@@ -377,6 +377,13 @@ public class RELAXNGReader extends TREXBaseReader {
 	
 	private final Stack dtLibStack = new Stack();
 	private final Stack dtLibURIStack = new Stack();
+
+	public String resolveNamespacePrefix( String prefix ) {
+		// In RELAX NG grammar, the default namespace should be resolved 
+		// to the current value of the ns attribute.
+		if(prefix.equals(""))	return targetNamespace;
+		else					return super.resolveNamespacePrefix(prefix);
+	}
 	
 	public void startElement( String a, String b, String c, Attributes d ) throws SAXException {
 		// handle 'datatypeLibrary' attribute propagation

@@ -61,6 +61,7 @@ public class AttributeGroupExp extends RedefinableExp implements AttWildcardExp 
 		super.redefine(_rhs);
 		
 		AttributeGroupExp rhs = (AttributeGroupExp)_rhs;
-		wildcard = rhs.wildcard.copy();
+		if(rhs.wildcard==null)	wildcard = null;
+		else					wildcard = rhs.wildcard.copy();
 	}
 }

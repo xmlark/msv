@@ -355,12 +355,14 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 		
 		ComplexTypeExp rhs = (ComplexTypeExp)_rhs;
 		body.exp = rhs.body.exp;
+		attWildcard.exp = rhs.attWildcard.exp;
 		complexBaseType = rhs.complexBaseType;
 		simpleBaseType = rhs.simpleBaseType;
 		derivationMethod = rhs.derivationMethod;
 		finalValue = rhs.finalValue;
 		block = rhs.block;
-		wildcard = rhs.wildcard.copy();
+		if(rhs.wildcard==null)	wildcard = null;
+		else					wildcard = rhs.wildcard.copy();
 		
 		if( this.parent != rhs.parent )
 			// those two must share the parent.

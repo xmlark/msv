@@ -22,8 +22,8 @@ import org.xml.sax.Locator;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.LocatorImpl;
 import java.util.Map;
+import java.util.Set;
 import java.util.Iterator;
-import java.util.Vector;
 
 /**
  * constructs {@link RELAXModule} object that exactly matches to
@@ -82,6 +82,7 @@ public class DTDReader implements
 			m.put( DTDParser.TYPE_CDATA,	NormalizedStringType.theInstance );
 			m.put( DTDParser.TYPE_ID,		IDType.theInstance );
 			m.put( DTDParser.TYPE_IDREF,	IDREFType.theInstance );
+			m.put( DTDParser.TYPE_IDREFS,	DataTypeFactory.deriveByList(DTDParser.TYPE_IDREFS, IDREFType.theInstance ) );
 			m.put( DTDParser.TYPE_ENTITY,	EntityType.theInstance );
 			m.put( DTDParser.TYPE_ENTITIES,	DataTypeFactory.deriveByList(DTDParser.TYPE_ENTITIES, EntityType.theInstance ) );
 			m.put( DTDParser.TYPE_NMTOKEN,	NmtokenType.theInstance );
@@ -104,39 +105,98 @@ public class DTDReader implements
 	}
 
 	/**
-	 * map from prefix to vector of possible namespace URI.
+	 * map from prefix to set of possible namespace URI.
 	 * default namespace (without prefix) is stored by using "" as a key.
 	 */
-//	protected final Map namespaces = new java.util.HashMap();
+	protected final Map namespaces = createInitialNamespaceMap();
 	
-	/**
-	 * when this value is in the above vector, that indicates
-	 * we couldn't detect what URIs are going to be used with that prefix.
-	 */
-//	protected static final String ABANDON_URI_SNIFFING = "*";
-	
-	protected NameClass getNameClass( String maybeQName ) {
-		return new LocalNameClass( stripPrefix(maybeQName) );
+	protected final static Map createInitialNamespaceMap() {
+		Map m = new java.util.HashMap();
+		// prefix xml is implicitly declared.
+		Set s = new java.util.HashSet();
+		s.add("http://www.w3.org/XML/1998/namespace");
+		m.put("xml",s);
+		return m;
 	}
 	
 	/**
-	 * returns local part if the given string is colonalized-name.
-	 * otherwise return it without any modification.
+	 * when this value is in the above set, that indicates
+	 * we couldn't detect what URIs are going to be used with that prefix.
 	 */
-	protected String stripPrefix( String maybeQName ) {
+	protected static final String ABANDON_URI_SNIFFING = "*";
+	
+	protected NameClass getNameClass( String maybeQName ) {
+		String[] s = splitQName(maybeQName);
+		Set vec = (Set)namespaces.get(s[0]/*uri*/);
+		if(vec==null) {
+			if(s[0].equals(""))
+				// this DTD does not attempt to use namespace.
+				// this is OK and we assume anonymous namespace.
+				return new SimpleNameClass("",s[1]);
+			
+			// we found element name like "html:p" but 
+			// we haven't see any "xmlns:html" attribute declaration.
+			// this is considered as an error for Tranquilo.
+			hadError = true;
+			controller.error( new Locator[]{locator},
+				Localizer.localize( ERR_UNDECLARED_PREFIX, s[0] ), null );
+			
+			// recover by returning something
+			return new LocalNameClass( s[1]/*local*/ );
+		}
+		
+		if( vec.contains(ABANDON_URI_SNIFFING) ) {
+//			System.out.println("sniffing abandoned for "+s[0]);
+			// possibly multiple URI can be assigned.
+			// so fall back to use LocalNameClass to at least check local part.
+			return new LocalNameClass( s[1] );
+		}
+		
+		// create choice of all possible namespace, and
+		// return it.
+		String[] candidates = (String[])vec.toArray(new String[vec.size()]);
+		NameClass nc = new SimpleNameClass( candidates[0], s[1] );
+//		System.out.println("candidate for "+s[0]+" is "+ candidates[0] );
+		for( int i=1; i<vec.size(); i++ ) {
+			nc = new ChoiceNameClass( nc,
+					new SimpleNameClass( candidates[i], s[1] ) );
+//			System.out.println("candidate for "+s[0]+" is "+ candidates[i] );
+		}
+		return nc;
+	}
+	
+	/**
+	 * returns an array of (URI,localName).
+	 */
+	protected String[] splitQName( String maybeQName ) {
 		int idx = maybeQName.indexOf(':');
-		if(idx<0)	return maybeQName;	// it wasn't a qname.
-		return maybeQName.substring(idx+1);
+		if(idx<0)
+			return new String[]{"",maybeQName};	// it wasn't a qname.
+		return new String[]{maybeQName.substring(0,idx), maybeQName.substring(idx+1)};
 	}
 	
 	
 	protected final RELAXModule module;
 
 	protected Locator locator;
-
+	
+	public void setDocumentLocator( Locator loc ) {
+		this.locator = loc;
+	}
+	
+	/** map from element name to its content model. */
 	protected final Map elementDecls = new java.util.HashMap();
+	/** map from element name to (map from attribute name to AttModel). */
 	protected final Map attributeDecls = new java.util.HashMap();
 	
+	private static class AttModel {
+		Expression	value;
+		boolean			required;
+		AttModel( Expression value, boolean required ) {
+			this.value = value;
+			this.required = required;
+		}
+	}
 	
 	
 	public void startContentModel( String elementName, short type ) {
@@ -279,15 +339,15 @@ public class DTDReader implements
 			// within a model group, operator must be the same.
 			throw new Error();
 	}
-/*
-	private Vector getNamespaceVector( String prefix ) {
-		Vector v = (Vector)namespaces.get(prefix);
-		if(v!=null)		return v;
-		v = new Vector();
-		namespaces.put(prefix,v);
-		return v;
+
+	private Set getPossibleNamespaces( String prefix ) {
+		Set s = (Set)namespaces.get(prefix);
+		if(s!=null)		return s;
+		s = new java.util.HashSet();
+		namespaces.put(prefix,s);
+		return s;
 	}
-*/	
+	
 	/**
 	 * this flag is set to true after reporting WRN_ATTEMPT_TO_USE_NAMESPACE.
 	 * this is used to prevent issuing the same warning more than once.
@@ -303,34 +363,39 @@ public class DTDReader implements
 			// this is namespace declaration
 			
 			if( !reportedXmlnsWarning )
-				controller.warning( new Locator[0],
+				controller.warning( new Locator[]{locator},
 					Localizer.localize( WRN_ATTEMPT_TO_USE_NAMESPACE ) );
 			reportedXmlnsWarning = true;
-/*			
+			
+			
 			if( defaultValue==null )
 				// we don't have a default value, so no way to determine URI.
 				defaultValue = ABANDON_URI_SNIFFING;
 			
-			Vector v;
+			Set s;
 			if( attributeName.equals("xmlns") )
-				v = getNamespaceVector("");
+				s = getPossibleNamespaces("");
 			else
-				v = getNamespaceVector( attributeName.substring(6) );
+				s = getPossibleNamespaces( attributeName.substring(6) );
 			
-			v.add( defaultValue );
-*/			
+			s.add( defaultValue );
+//			System.out.println("add " + defaultValue + " for att name " + attributeName );
+			
 			// xmlns:* cannot be added to attr constraint expression.
 			return;
 		}
 		
-		Expression attList = (Expression)attributeDecls.get(elementName);
-		if( attList==null )
+		Map attList = (Map)attributeDecls.get(elementName);
+		if( attList==null ) {
 			// the first attribute for this element.
-			attList = Expression.epsilon;
+			attList = new java.util.HashMap();
+			attributeDecls.put(elementName,attList);
+		}
 		
 		
 		// create DataType that validates attribute value.
 		DataType dt = (DataType)dtdTypes.get(attributeType);
+		if(dt==null)	throw new Error(attributeType);
 		
 		try {
 			if(enums!=null) {
@@ -352,19 +417,9 @@ public class DTDReader implements
 				e.getMessage(), locator, e );
 		}
 		
-		Expression exp = module.pool.createTypedString(dt);
-		
-		// wrap it by AttributeExp.
-		exp = module.pool.createAttribute( getNameClass(attributeName), exp );
-		
-		// apply attribute use.
-		// unless USE_REQUIRED, the attribute is optional.
-		if( attributeUse != USE_REQUIRED )
-			exp = module.pool.createOptional(exp);
-		
-		// append it to attribute list.
-		attList = module.pool.createSequence( exp, attList );
-		attributeDecls.put(elementName,attList);
+		// add it to the list.
+		attList.put( attributeName,
+			new AttModel(module.pool.createTypedString(dt), attributeUse==USE_REQUIRED ) );
 	}
 
     public void endDTD() throws SAXException {
@@ -380,10 +435,33 @@ public class DTDReader implements
 			
 			TagClause t = module.tags.getOrCreate(elementName);
 			t.nameClass = getNameClass(elementName);
-			t.exp = (Expression)attributeDecls.get(elementName);
-			if( t.exp==null )
+			Map attList = (Map)attributeDecls.get(elementName);
+			if( attList==null ) {
 				// this element has no attribute.
 				t.exp = Expression.epsilon;
+			} else {
+				t.exp = Expression.epsilon;		
+				
+				// create AttributeExps and append it to tag.
+				
+				Iterator jtr = attList.keySet().iterator();
+				while( jtr.hasNext() ) {
+					String attName = (String)jtr.next();
+					AttModel model = (AttModel)attList.get(attName);
+					
+					// wrap it by AttributeExp.
+					Expression exp = module.pool.createAttribute(
+						getNameClass(attName), model.value );
+		
+					// apply attribute use.
+					// unless USE_REQUIRED, the attribute is optional.
+					if( !model.required )
+						exp = module.pool.createOptional(exp);
+		
+					// append it to attribute list.
+					t.exp = module.pool.createSequence( exp, t.exp );
+				}
+			}
 			
 			ElementRules er = module.elementRules.getOrCreate(elementName);
 			er.addElementRule( module.pool,
@@ -406,7 +484,7 @@ public class DTDReader implements
 			if( exps[i].exp==null ) {
 				// this element is referenced but not defined.
 				hadError = true;
-				controller.error( new Locator[0],
+				controller.error( new Locator[]{locator},
 					Localizer.localize( ERR_UNDEFINED_ELEMENT, new Object[]{exps[i].name} ), null );
 			}
 	}
@@ -433,6 +511,7 @@ public class DTDReader implements
     public void warning(SAXParseException e) throws SAXException {
 		controller.warning( getLocation(e), e.getMessage() );
     }
+	
 	
 // validation context provider methods
 //----------------------------------------
@@ -509,4 +588,6 @@ public class DTDReader implements
 		"DTDReader.UndefinedElement";
 	public static final String WRN_ATTEMPT_TO_USE_NAMESPACE = // arg:0
 		"DTDReader.Warning.AttemptToUseNamespace";
+	public static final String ERR_UNDECLARED_PREFIX = // arg:1
+		"DTDReader.UndeclaredPrefix";
 }

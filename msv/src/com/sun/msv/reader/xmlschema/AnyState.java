@@ -17,6 +17,7 @@ import com.sun.msv.grammar.NamespaceNameClass;
 import com.sun.msv.grammar.ChoiceNameClass;
 import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.grammar.trex.DifferenceNameClass;
 import com.sun.msv.grammar.xmlschema.ElementDeclExp;
 import com.sun.msv.grammar.xmlschema.LaxDefaultNameClass;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
@@ -108,6 +109,7 @@ public abstract class AnyState extends ExpressionWithoutChildState {
 			}
 		}
 
-		return laxNc;
+		// laxNc - names in namespaces that are not allowed.
+		return new DifferenceNameClass( laxNc, new NotNameClass(allowedNc) );
 	}
 }

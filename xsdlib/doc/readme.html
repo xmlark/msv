@@ -19,8 +19,11 @@ Preview Version.1 March,2001<BR>
 <BR>
 Copyright (c) Sun Microsystems, 2001</DIV>
 <BR>
-<DIV style="text-align:right; font-size:smaller">
-Document written by Kohsuke KAWAGUCHI<BR>
+<DIV style="FONT-SIZE: smaller; TEXT-ALIGN: right">
+Document 
+written by <A href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke 
+KAWAGUCHI</A>
+    <BR>
 $Id$
 </DIV>
 
@@ -33,10 +36,11 @@ developers as their building block.</P>
 recommendation, which is only available to W3C members. As its date suggests, 
 this version is newer than publicly available <A 
 href="http://www.w3.org/TR/2000/CR-xmlschema-2-20001024/">24th,Oct,2000 
-edition</A>.</P>
-<P>W3C XML Schema Part 2 is still a candidate recommendation, which means it is subject to change. In fact, many 
-important changes are made from 24th,Oct,2000 edition and many changes are still 
-likely to be made before it becomes a recommendation. So developers should be warned 
+edition</A>.&nbsp;Therefore developers may 
+found some types renamed, some types removed, or some types added.</P>
+<P>  W3C XML Schema Part 2 is still a candidate recommendation, which means it is subject to change. In 
+fact, many important changes are made from 24th,Oct,2000 edition and many changes 
+are&nbsp;going to be made before it becomes a recommendation. So developers should be warned 
 for possible future changes including (but of course not limited 
 to)</P>
 <UL>
@@ -44,13 +48,16 @@ to)</P>
   <DIV>change/addition/removal of type names</DIV>
   <LI>
   <DIV>change/addition/removal of facets</DIV></LI></UL>
+<P>This product includes software developed by the Apache Software Foundation 
+(<A href="http://www.apache.org/">http://www.apache.org/</A>)</P>
 <H1>Known Limitations</H1>
 <OL>
   <LI>
-  <DIV>For "float" and "double" types. The spec says a lexical value must be 
-  mapped to the closest value in the value space, but XSDLib cannot accept 
-  values which are bigger than maximum value of that type or smaller than 
-  minimum value of that type.</DIV>
+  <DIV>For "float" and "double" types. The spec says a 
+  lexical value must be mapped to the closest value in the value space, but XSDLib 
+  cannot accept values which are bigger than maximum value of that type or 
+  smaller than minimum value of that type. However this shouldn't be a problem 
+  for the most of users.</DIV>
   <LI>
   "duration" facet and "period" facet are not 
   implemented because they are removed.
@@ -93,4 +100,20 @@ to)</P>
   correctly.</DIV>
   <LI>
   <DIV>Implementation of "precision" and "scale" should be considered as 
-  incomplete. The spec is not clear enough.</DIV></LI></OL></BODY></HTML>
+  incomplete. The spec is not clear enough.</DIV>
+  <LI>
+  <DIV>"uriReferenceType"&nbsp;is made to accept IP v6 
+  addresses like "::192.168.0.1", which is not accepted by the original BNF 
+  specified in RFC 2373. This modification should be considered as a "bug fix". Although, BNF&nbsp;specified in&nbsp;RFC 2373 has 
+  several other problems, those are not fixed. For example, the current release 
+  accepts "1:2:3:4:5:6:7:8:9", which is not a valid IP v6 
+address.</DIV>
+  <LI>
+  <DIV>"language" type is implemented in accordance with RFC 
+  1766, and language identifiers are treated in case-insensitive way. XML Schema 
+  Part 2 says that the lexical space of language type will be as defined in XML1.0 Recommendation 2nd edition, but that production&nbsp;was thrown away&nbsp;in 
+  the 2nd edition. Even worse, the derivation shown in XML Schema Part 
+  2 does not correctly implement the definition given in RFC 1766. So apparently 
+  there is a problem in the definition of "language" type. However, by making 
+  "language" case-insensitive, it is no longer a derived type of "token" 
+  type.</DIV></LI></OL></BODY></HTML>

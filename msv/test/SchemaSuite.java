@@ -11,6 +11,7 @@ import junit.framework.*;
 import org.xml.sax.*;
 import java.io.*;
 import com.sun.msv.verifier.*;
+import com.sun.msv.verifier.identity.IDConstraintChecker;
 import com.sun.msv.verifier.util.VerificationErrorHandlerImpl;
 import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
 import com.sun.msv.reader.util.GrammarLoader;
@@ -85,52 +86,47 @@ class SchemaSuite extends TestCase {
 	
 		
 	/** verifies one file */
-	class VerifyCase extends TestCase
-	{
+	class VerifyCase extends TestCase {
+		
+		/** instance file name to be tested. */
 		public final String fileName;
 			
-		public VerifyCase( String fileName )
-		{
+		public VerifyCase( String fileName ) {
 			super("testVerify("+fileName+")");
 			this.fileName = fileName;
 		}
 			
-		protected void runTest() throws Exception
-		{
+		protected void runTest() throws Exception {
 			if( docDecl==null )
 				fail("docDecl==null");
 			
-			try
-			{
+			try {
 				ValidityViolation vv=null;
-				try
-				{
+				try {
 					XMLReader r =parent.factory.newSAXParser().getXMLReader();
-					Verifier v =
-						new Verifier( docDecl,
-							new VerificationErrorHandlerImpl() );
+					Verifier v;
+					
+					if( parent.target.equals("xsd") )
+						v = new IDConstraintChecker( docDecl, new VerificationErrorHandlerImpl() );
+					else
+						v = new Verifier( docDecl, new VerificationErrorHandlerImpl() );
 					r.setContentHandler(v);
 						
 					r.parse( new InputSource(parent.dir+File.separatorChar+fileName) );
 					
 					assert( v.isValid() );
-				}
-				catch( ValidityViolation _vv )
-				{
+				} catch( ValidityViolation _vv ) {
 					vv = _vv;
 				}
 					
 //				if(vv!=null)		parent.report(vv);
 						
 				final boolean supposedToBeValid = (fileName.indexOf(".v")!=-1);
-				if( xor( supposedToBeValid , vv==null ) )
-				{
+				if( xor( supposedToBeValid , vv==null ) ) {
 					if( vv!=null )		fail( vv.getMessage() );
 					else				fail( "should be invalid" );
 				}
-			}
-			catch( SAXException se )
-			{
+			} catch( SAXException se ) {
 				if( se.getException()!=null )
 					throw se.getException();
 				else

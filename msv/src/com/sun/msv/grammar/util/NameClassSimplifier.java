@@ -99,6 +99,9 @@ public class NameClassSimplifier {
 			else					result = new NotNameClass(result);
 		}
 		
+		if( result==null )
+			result = new NotNameClass( AnyNameClass.theInstance );
+		
 		return result;
 	}
 }

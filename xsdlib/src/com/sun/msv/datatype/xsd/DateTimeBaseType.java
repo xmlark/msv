@@ -180,7 +180,9 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator {
 			result.append('-');
 			offset *= -1;
 		}
-			
+		
+		offset /= 60*1000;	// offset is in milli-seconds
+		
 		result.append(formatTwoDigits(offset/60));
 		result.append(':');
 		result.append(formatTwoDigits(offset%60));
@@ -208,8 +210,9 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator {
 	
 	/** converts our DateTimeValueType to a java-friendly Date type. */
 	public final Object createJavaObject( String literal, ValidationContext context ) {
-		BigDateTimeValueType v = ((IDateTimeValueType)createValue(literal,context)).getBigValue();
-		if(v==null)		return null;
+		IDateTimeValueType _v = (IDateTimeValueType)createValue(literal,context);
+		if(_v==null)	return null;
+		BigDateTimeValueType v = _v.getBigValue();
 		
 		// set fields of Calendar.
 		// In BigDateTimeValueType, the first day of the month is 0,

@@ -104,8 +104,19 @@ public abstract class DataTypeWithFacet extends XSDatatypeImpl
 	final public String convertToLexicalValue( Object o, SerializationContext context ) {
 		return concreteType.convertToLexicalValue(o,context);
 	}
-	public Class getJavaObjectType() {
+	final public Class getJavaObjectType() {
 		return concreteType.getJavaObjectType();
+	}
+// DatabindableDatatype implementation
+	final public Object createJavaObject( String literal, ValidationContext context ) {
+		// TODO: this can be more efficient
+		if(isValid(literal,context))
+			return baseType.createJavaObject(literal,context);
+		else
+			return null;
+	}
+	public String serializeJavaObject( Object value, SerializationContext context ) {
+		return baseType.serializeJavaObject( value, context );
 	}
 	
 	final protected void diagnoseValue(String content, ValidationContext context ) throws DatatypeException {

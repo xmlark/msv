@@ -55,7 +55,7 @@ public class GYearMonthType extends DateTimeBaseType {
 
 		result.append(formatYear(cal.get(cal.YEAR)));
 		result.append('-');
-		result.append(formatTwoDigits(cal.get(cal.MONTH)));
+		result.append(formatTwoDigits(cal.get(cal.MONTH)+1));
 		result.append(formatTimeZone(cal));
 		
 		return result.toString();

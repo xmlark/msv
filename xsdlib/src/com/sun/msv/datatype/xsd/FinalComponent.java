@@ -66,6 +66,12 @@ public final class FinalComponent extends XSDatatypeImpl {
 	public Class getJavaObjectType() {
 		return baseType.getJavaObjectType();
 	}
+	public Object createJavaObject( String literal, ValidationContext context ) {
+		return baseType.createJavaObject(literal,context);
+	}
+	public String serializeJavaObject( Object value, SerializationContext context ) {
+		return baseType.serializeJavaObject(value,context);
+	}
 	
 	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		return baseType.convertToLexicalValue(value,context);

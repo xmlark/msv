@@ -42,29 +42,6 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 		return convertToValue(whiteSpace.process(lexicalValue),context);
 	}
 	
-//
-// DatabindableDatatype implementation
-//===========================================
-// The default implementation yields to the createValue method and
-// the convertToLexicalValue method. If a derived class overrides the
-// createJavaObject method, then it must also override the serializeJavaObject method.
-//
-	public Object createJavaObject( String literal, ValidationContext context ) {
-		return createValue(literal,context);
-	}
-	public String serializeJavaObject( Object value, SerializationContext context ) {
-		String literal = convertToLexicalValue( value, context );
-		if(!isValid( literal, serializedValueChecker ))
-			return null;
-		else
-			return literal;
-	}
-	private static final ValidationContext serializedValueChecker =
-		new ValidationContext(){
-			public boolean isNotation( String s ) { return true; }
-			public boolean isUnparsedEntity( String s ) { return true; }
-			public String resolveNamespacePrefix( String ns ) { return "abc"; }
-		};
 	
 	/**
 	 * converts whitespace-processed lexical value into value object
@@ -164,7 +141,13 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 		return false;
 	}
 	
-	
+	protected static final ValidationContext serializedValueChecker =
+		new ValidationContext(){
+			public boolean isNotation( String s ) { return true; }
+			public boolean isUnparsedEntity( String s ) { return true; }
+			public String resolveNamespacePrefix( String ns ) { return "abc"; }
+		};
+		
 
 	
 	public static String localize( String prop, Object[] args ) {

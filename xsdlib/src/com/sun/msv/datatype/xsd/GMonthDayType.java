@@ -56,7 +56,7 @@ public class GMonthDayType extends DateTimeBaseType {
 		StringBuffer result = new StringBuffer();
 
 		result.append("--");
-		result.append(formatTwoDigits(cal.get(cal.MONTH)));
+		result.append(formatTwoDigits(cal.get(cal.MONTH)+1));
 		result.append('-');
 		result.append(formatTwoDigits(cal.get(cal.DAY_OF_MONTH)));
 		result.append(formatTimeZone(cal));

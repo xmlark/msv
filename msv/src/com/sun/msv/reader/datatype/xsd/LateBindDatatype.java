@@ -33,6 +33,8 @@ import org.xml.sax.Locator;
  * <p>
  * If the schema language is forward-reference free (e.g., RELAX NG, TREX),
  * then there is no need to worry about LateBindDatatype.
+ *
+ * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class LateBindDatatype implements XSDatatype {
 	

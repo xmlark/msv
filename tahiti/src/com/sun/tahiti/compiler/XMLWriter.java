@@ -33,6 +33,11 @@ public class XMLWriter {
 		start(name,attributes);
 		end(name);
 	}
+	public void element( String name, String contents ) {
+		start(name);
+		characters(contents);
+		end(name);
+	}
 	public void start( String name ) {
 		start(name, new String[0] );
 	}

@@ -247,18 +247,21 @@ public abstract class ExpressionAcceptor implements Acceptor
 	{
 		final CombinedChildContentExpCreator cccc = docDecl.getCombinedChildContentExp();
 		
+		// cccc leaves attributes. so we have to "remove" them.
+		// note the difference between pruning and removing.
+		// pruning replaces unconsumed attributes by nullSet, whereas removing
+		// replaces them by epsilon.
+		// since we are in error recovery, removing is what we want here.
 		final AttributeRemover ar = new AttributeRemover(docDecl.getPool());
 		
 		CombinedChildContentExpCreator.ExpressionPair combinedEoC =
 			cccc.get( expression, null, false, false );
-		combinedEoC.content.visit(ar);
 		
 		// get residual of EoC.
 		Expression eocr = docDecl.getResidualCalculator().calcResidual( expression, AnyElementToken.theInstance );
 		
 		CombinedChildContentExpCreator.ExpressionPair combinedEoC_EoCR =
 			cccc.continueGet( eocr, null, false, false );
-		combinedEoC_EoCR.content.visit(ar);
 			// append result to the previous result.
 
 		// alter this.expression for error recovery
@@ -268,10 +271,19 @@ public abstract class ExpressionAcceptor implements Acceptor
 		if( continuation==null || continuation==Expression.nullSet )
 			continuation = this.expression;
 				
-		return createAcceptor(
-			docDecl.getPool().createChoice(combinedEoC.content,combinedEoC_EoCR.content),
-			continuation,
-			cccc.getElementsOfConcern() );
+		Expression contentModel =
+			docDecl.getPool().createChoice(combinedEoC.content,combinedEoC_EoCR.content);
+		contentModel = contentModel.visit(ar);
+		
+		if( com.sun.tranquilo.driver.textui.Debug.debug )
+		{
+			System.out.println("content model of recovery acceptor:"+
+				com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter.printContentModel(contentModel) );
+			System.out.println("continuation of recovery acceptor:"+
+				com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter.printSmallest(continuation) );
+		}
+		
+		return createAcceptor( contentModel, continuation, cccc.getElementsOfConcern() );
 	}
 	
 	protected Acceptor recover( StartTagInfoEx sti, StringRef errRef )

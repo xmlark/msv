@@ -4,7 +4,7 @@
 
 <!-- This stylesheet is a customization of the DocBook XSL Stylesheets -->
 <!-- See http://sourceforge.net/projects/docbook/ -->
-<xsl:import href="file://c:/progra~1/applications/docbook/XSLT/docbook/html/docbook.xsl"/>
+<xsl:import href="file:///c:/progra~1/applications/docbook/XSLT/docbook/html/docbook.xsl"/>
 
 <!-- ============================================================ -->
 <!-- Parameters -->

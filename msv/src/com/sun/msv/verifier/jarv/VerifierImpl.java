@@ -24,6 +24,7 @@ import com.sun.msv.verifier.IVerifier;
 import com.sun.msv.verifier.util.ErrorHandlerImpl;
 import com.sun.msv.util.xml.SAXEventGenerator;
 import java.io.IOException;
+import jp.gr.xml.relax.sax.DOMSAXProducer;
 
 /**
  * Verifier implementation.
@@ -87,10 +88,8 @@ class VerifierImpl implements Verifier
 	}
 
 	public boolean verify(Node node) throws SAXException {
-		if(!(node instanceof Document))
-			throw new UnsupportedOperationException("nothing but Document is supported");
-		
-		SAXEventGenerator.parse((Document)node,verifier);
+		DOMSAXProducer producer = new DOMSAXProducer(node);
+		producer.makeEvent(verifier);
 		return verifier.isValid();
 	}
 

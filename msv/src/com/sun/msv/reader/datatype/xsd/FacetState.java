@@ -36,8 +36,9 @@ public class FacetState extends ChildlessState
 		s.add("minInclusive");
 		s.add("maxExclusive");
 		s.add("minExclusive");
-		s.add("precision");
 		s.add("whiteSpace");
+		s.add("fractionDigits");
+		s.add("totalDigits");
 		return s;
 	}
 	

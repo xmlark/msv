@@ -24,7 +24,7 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator
 {
 	protected DateTimeBaseType(String typeName) { super(typeName); }
 	
-	private final ISO8601Parser getParser( String content ) throws Exception
+	private static final ISO8601Parser getParser( String content ) throws Exception
 	{
 		return new ISO8601Parser( new ByteArrayInputStream( content.getBytes("UTF8") ) );
 	}

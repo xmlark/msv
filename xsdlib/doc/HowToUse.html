@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=Content-Type content="text/html; charset=unicode">
+<style>
+	.title
+	{
+		text-align:center;
+		font-weight:bold;
+	}
+	PRE
+	{
+		background-color: rgb(240,240,240);
+	}
+</style>
+<BODY>
+<DIV class="title">
+USAGE GUIDE FOR THE SUN XML SCHEMA PART 2 JAVA IMPLEMENTATION<BR>
+Preview Version.1 March,2001<BR>
+<BR>
+Copyright (c) Sun Microsystems, 2001</DIV>
+<BR>
+<DIV style="text-align:right; font-size:smaller">
+Document written by Kohsuke KAWAGUCHI<BR>
+$Id$
+</DIV>
+
+
+
+
+<P>The Sun XML Schema Part 2 Java Implemantation (XSDLib) is 
+an implementation of W3C XML Schema Part 2, intended for use by application 
+developers as their building block.</P>
+
+<H1>Contents of This Document</H1>
+<OL>
+  <LI><A href="#intro">Introduction</A>
+  <LI><A href="#derivation">Deriving A New Type</A>
+  <LI><A href="#diagnosis">Diagnosing Errors</A>
+  <LI><A href="#misc">Miscellaneous Notes</A>
+</OL>
+  
+
+<A NAME="intro">
+<H1>Introduction: Validating Strings</H1>
+<P>The following example validates a string with integer datatype.</P>
+<PRE>
+void f( String v ) {
+  // obtain a type object
+  DataType dt = DataTypeFactory.getTypeByName("integer");
+  // validates a type
+  if( dt.verify(v,null) )
+    ; // v is a valid integer
+  else
+    ; // v is not a valid integer
+}
+</PRE>
+<P>
+	Several types are context-dependent. For example, "QName" type, which
+	validates something like "prefix:localPart", neeeds to know that the
+	given prefix is properly declared.
+</P>
+<P>
+	These information must be supplied to DataType object by the caller.
+	To do this, the caller must provide an object that implements
+	ValidationContextProvider interface and pass it as the second parameter
+	of verify method.
+</P>
+<PRE>
+class MyContextProvider implements ValidationContextProvider
+{
+  String resolveNamespacePrefix( String prefix ) {
+    // resolve namespace prefix to namespace URI.
+  }
+
+  boolean isUnparsedEntity( String entityName ) {
+    // checks if given name is a valid entity name.
+  }
+}
+
+void f( String v, MyContextProvider context ) {
+  // obtain a type object
+  DataType dt = DataTypeFactory.getTypeByName("QName");
+  // validates a type
+  if( dt.verify(v,contest) )
+    ; // v is a valid QName
+  else
+    ; // v is not a valid QName
+}
+</PRE>
+<P>
+	Although the first example passes null as a ValidationContextProvider,
+	the caller must ALWAYS provide a valid ValidationContextProvider for
+	XSDLib to work correctly.
+</P>
+
+<A NAME="derivation">
+<H1>Deriving A New Type</H1>
+
+<H2>By List</H2>
+<P>
+	The following example derives a new type from existing DataType object by list.
+</P>
+<PRE>
+DataType deriveByList( DataType itemType ) throws BadTypeException {
+  return DataTypeFactory.deriveByList("myType",itemType);
+}
+</PRE>
+<P>
+	The first parameter specifies name of newly created type.
+	Note that those derived types cannot be found by getTypeByName method.
+</P>
+<P>
+	When an error is found while derivation, BadTypeException will be thrown.
+	For example, if you derive a type by list from list type,
+	an exception will be thrown.
+</P>
+
+<H2>By Union</H2>
+<P>
+	The following example derives a new type from existing DataType objects by union.
+</P>
+<PRE>
+DataType deriveByUnion( DataType[] memberTypes ) throws BadTypeException {
+  return DataTypeFactory.deriveByUnion("myType",memberTypes);
+}
+</PRE>
+<P>
+	The only difference between derivation by list and that by union
+	is union accepts more than one base types.
+</P>
+
+<H2>By Restriction</H2>
+<P>
+	The following exapmle derives a new type by adding facets.
+</P>
+<PRE>
+DataType f() throws BadTypeException {
+  DataType baseType = DataTypeFactory.getTypeByName("string");
+  
+  // create a type incubator with the base type
+  TypeIncubator incubator = new TypeIncubator(baseType);
+  
+  // add facets
+  incubator.add( "minLength", "5", false, null );
+  incubator.add( "maxLength", "20", false, null );
+  
+  // derive a new type by those facets
+  DataType derived = incubator.derive("newTypeName");
+  
+  return derived;
+}
+</PRE>
+<P>
+	The third parameter to add method specifies whether that facet should
+	be "fixed" or not. Once if a facet is fixed, derived class can
+	no longer restrict that facet.
+</P>
+<P>
+	The fourth parameter is again ValidationContextProvider, which is sometimes
+	necessary. Although the above example omits to supply one, the caller
+	has to supply an object that implements ValidationContextProvider.
+</P>
+<P>
+	BadTypeException can be thrown when you add a facet, or when you
+	call derive method.
+</P>
+
+
+
+<A NAME="diagnosis">
+<H1>Diagnosing Errors</H1>
+
+<P>
+	The following example provides a diagnosis message to users
+	about what is wrong with their value.
+</P>
+<PRE>
+void test( DataType dt, String v, ValidationContextProvider context ) {
+  if( dt.verify(v,context) )
+    System.out.println("valid");
+  else {
+    try {
+      DataTypeDiagnosis d = dt.diagnose(v,context);
+      // print diagnosis message
+      System.out.println("invalid: "+d.getMessage());
+    }
+    catch( NotSupportedOperationException e ) {
+      // data type may not support diagnosis.
+      System.out.println("invalid");
+    }
+  }
+}
+</PRE>
+<P>
+	In this way, the user gets informative error messages. If DataType object
+	does not support diagnosis, it throws NotSupportedOperationException.
+	It is the caller's responsibility to handle this expcetion correctly.
+</P>
+
+
+<A NAME="misc">
+<H1>Miscellaneous Notes</H1>
+<H2>DataType interface</H2>
+<P>
+	DataType interface is NOT intended to be used as a general interface for
+	datatype vocabularies. This interface is strongly coupled with XSD.
+	Believe it or not, it is very difficult to provide a generic interface
+	that can be used by various datatype vocabularies.
+</P>
+<P>
+	To implement your own type that implements DataType (possibly to spare
+	the shortcoming of the current release), you should implement your type
+	by deriving your class from <code>ConcreteType</code> class.
+</P>
+
+</BODY></HTML>

@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=Content-Type content="text/html; charset=unicode">
+<style>
+	.title
+	{
+		text-align:center;
+		font-weight:bold;
+	}
+	LI
+	{
+		margin-top: 1em;
+	}
+</style>
+<BODY>
+<DIV class="title">
+README FILE FOR THE SUN XML SCHEMA PART 2 JAVA IMPLEMENTATION<BR>
+Preview Version.1 March,2001<BR>
+<BR>
+Copyright (c) Sun Microsystems, 2001</DIV>
+<BR>
+<DIV style="text-align:right; font-size:smaller">
+Document written by Kohsuke KAWAGUCHI<BR>
+$Id$
+</DIV>
+
+
+
+<P>The Sun XML Schema Part 2 Java Implemantation (XSDLib) is 
+an implementation of W3C XML Schema Part 2, intended for use by application 
+developers as their building block.</P>
+<P>This preview version implements 31st,Jan,2001 version of the candidate 
+recommendation, which is only available to W3C members. As its date suggests, 
+this version is newer than publicly available <A 
+href="http://www.w3.org/TR/2000/CR-xmlschema-2-20001024/">24th,Oct,2000 
+edition</A>.</P>
+<P>W3C XML Schema Part 2 is still a candidate recommendation, which means it is subject to change. In fact, many 
+important changes are made from 24th,Oct,2000 edition and many changes are still 
+likely to be made before it becomes a recommendation. So developers should be warned 
+for possible future changes including (but of course not limited 
+to)</P>
+<UL>
+  <LI>
+  <DIV>change/addition/removal of type names</DIV>
+  <LI>
+  <DIV>change/addition/removal of facets</DIV></LI></UL>
+<H1>Known Limitations</H1>
+<OL>
+  <LI>
+  <DIV>For "float" and "double" types. The spec says a lexical value must be 
+  mapped to the closest value in the value space, but XSDLib cannot accept 
+  values which are bigger than maximum value of that type or smaller than 
+  minimum value of that type.</DIV>
+  <LI>
+  "duration" facet and "period" facet are not 
+  implemented because they are removed.
+  <LI>
+  <DIV>"binary" type and "encoding" facet are not implemented because they are 
+  removed. Instead, "base64Binary" type and "hexBinary" types are 
+  implemented.</DIV>
+  <LI>
+  <DIV>"ID", "IDREF", and "IDREFS" types are not implemented. These types are so special 
+  that it is impossible to provide a generic implementation. 
+  <code>com.sun.tranquilo.datatype.DataTypeFactory</code> does not 
+  recognize these three types.</DIV>
+  <LI>
+  <DIV>"CDATA" type is implemented as "normalizedString" type, again because it 
+  is renamed as such.</DIV>
+  <LI>
+  <DIV>"NOTATION" type is not implemented.
+  <code>com.sun.tranquilo.datatype.DataTypeFactory</code> does not 
+  recognize this type 
+  name. </DIV>
+  <LI>
+  <DIV>"timeInstant" type is implemented as "dateTime" 
+  type.</DIV>
+  <LI>
+  <DIV>"timeDuration" type is implemented as "duration" type.</DIV>
+  <LI>
+  <DIV>"timePeriod" type is not implemented because it is removed.</DIV>
+  <LI>
+  <DIV>"century" type is not implemented because it is removed.</DIV>
+  <LI>
+  <DIV>"month" type is implemented as "yearMonth" type.</DIV>
+  <LI>
+  <DIV>"recurringDate" type is implemented as "monthDay" type.</DIV>
+  <LI>
+  <DIV>"recurringDay" type is implemented as "day" type.</DIV>
+  <LI>
+  <DIV>"length", "minLength", and "maxLength" facet is effectively limited upto 
+  2147483647. Values above this limit&nbsp;are recognized, but will be treated 
+  as this limit. Items longer than this limit will not be validated 
+  correctly.</DIV>
+  <LI>
+  <DIV>Implementation of "precision" and "scale" should be considered as 
+  incomplete. The spec is not clear enough.</DIV></LI></OL></BODY></HTML>

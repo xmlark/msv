@@ -50,11 +50,6 @@ public class Driver {
 		boolean strict=false;
 		EntityResolver entityResolver=null;
 		
-		if( args.length==0 ) {
-			System.out.println( localize(MSG_USAGE) );
-			return;
-		}
-		
 		for( int i=0; i<args.length; i++ ) {
 			if( args[i].equalsIgnoreCase("-strict") )			strict = true;
 			else
@@ -121,6 +116,12 @@ public class Driver {
 				}
 			}
 		}
+		
+		if( grammarName==null ) {
+			System.out.println( localize(MSG_USAGE) );
+			return;
+		}
+		
 		
 		if( factory==null )
 			factory = SAXParserFactory.newInstance();

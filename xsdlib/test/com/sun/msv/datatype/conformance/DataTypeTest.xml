@@ -2,7 +2,31 @@
 <!-- $Id$ -->
 <suite>
 
-<case name="test for duration">
+<case name="test for dateTime">
+	<value>2001-01-01T00:00:00-14:00</value>
+	<value>2001-01-01T00:00:00-02:00</value>
+	<value>2001-01-01T00:00:00</value>
+	<value>2001-01-01T00:00:00Z</value>
+	<value>2001-01-01T00:00:00+02:00</value>
+	<value>2001-01-01T00:00:00+14:00</value>
+	
+	<!-- abuse -->
+	<value>9999999999999999999999999-05-13T02:14:00Z</value>
+	<value>2001-01-01T05:12:13.0000000000000000000000000000000000000000000001</value>
+	
+	<answer for="dateTime"		>oooooo oo</answer>
+	
+	<facets>
+		<facet		answer=		"oooooo oo" name="pattern" value=".*" />
+	</facets>
+	
+	<wrongs>
+		<value>0000-01-01T12:12:12Z</value>	<!-- no year 0 -->
+		<value>1999-02-29T10:00:00Z</value> <!-- leap year related -->
+	</wrongs>
+</case>
+	
+<case name="simple test for duration">
 	<value>P1Y1M1DT1H1M1.1111S</value>
 	<value>-P123Y</value>
 	

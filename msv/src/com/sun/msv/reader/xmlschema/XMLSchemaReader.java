@@ -34,8 +34,8 @@ import java.util.Iterator;
 import java.text.MessageFormat;
 import org.xml.sax.Locator;
 
-public class XMLSchemaReader extends GrammarReader
-{
+public class XMLSchemaReader extends GrammarReader {
+	
 	public XMLSchemaReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,

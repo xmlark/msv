@@ -85,7 +85,7 @@
 	</DD>
 	<DT>Grammar reader:</DT>
 	<DD>
-		a component used to parse schemata by using SAX to construct AGM.
+		a component used to parse schemata by using SAX to construct AGMs.
 	</DD>
 	
 	<DT>Verification grammar model (VGM):</DT>
@@ -96,7 +96,7 @@
 	
 	<DT>Validator:</DT>
 	<DD>
-		a component to validate an XML instance with VGM by using SAX.
+		a component to validate an XML instance with a VGM by using SAX.
 	</DD>
 	
 	<DT>Datatype validator: </DT>
@@ -266,13 +266,13 @@ Grammar loadDTD( String schemaFileNameOrURL )
 <A id="agm" />
 <H1>Playing with AGM</H1>
 <P>
-  AGM is the internal representation of a schema used by MSV.
+  The AGM is the internal representation of a schema used by MSV.
   It is a binarized regular expression commonly seen in many validating processors.
 </P>
 
 <A id="agm_dep" />
 <H2>Schema Language Dependency</H2>
-<P>AGM consists of four parts.</P>
+<P>The AGM consists of four parts.</P>
 <OL>
 	<LI>
 		<STRONG>Core:</STRONG> common part of TREX and RELAX. e.g., ChoiceExp, 
@@ -444,7 +444,7 @@ TREXGrammar create()
 can write your own visitor by implementing ExpressionVisitor. See javadoc of 
 ExpressionVisitor for details.</P>
 <P>
-  Usually, this is the easiest way to access AGM
+  Usually, this is the easiest way to access AGMs
 </P>
 
 <A id="agm_modify" />
@@ -500,10 +500,11 @@ Expression modifiedExp = originalExp.visit( new SwitchChoiceAndSequence() );
 <H2>Validation Grammar Model (VGM)</H2>
 <P>
   To validate documents with a AGM, you have to "wrap" it in a VGM.
-  VGM can be understood as an abstraction of AGM for the validator.
+  The VGM can be understood as an abstraction of an AGM for the validator.
 </P>
 <P>
-  VGM is a simple model which consists of two interfaces only: Acceptor and DocumentDeclaration.
+  The VGM is a simple model which consists of two interfaces only:
+  Acceptor and DocumentDeclaration.
   Any VGM implementation can be used as long as it implements them.
 </P>
 <P>
@@ -537,7 +538,7 @@ DocumentDeclaration createVGM( Expression exp ) {
 <A id="thread" />
 <H2>Multithreaded Environment</H2>
 <P>
-  AGM is thread-safe because it is immutable.
+  AGMs are thread-safe because they are immutable.
   A thread can safely use an AGM parsed by a different thread;
   or two threads can safely share the same AGM.
   ExpressionPool is also thread-safe. Multiple threads can share

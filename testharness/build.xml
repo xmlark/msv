@@ -5,16 +5,50 @@
 	<property name="cvsExportOpt" value="-D now" />	<!-- -r branch -->
 	
 	<!-- environment dependend -->
-	<property name="JUnitJar" value="c:/winnt/java/classes/junit.jar"/>
-	<property name="AntJar" value="c:/progra~1/development/ant/lib/ant.jar"/>
+	<property name="msvJar" value="../../tranquilo/package/msv.jar"/>
+	
+	
+	<target name="msvDriver">
+		<mkdir	dir="temp-src" />
+		<mkdir	dir="temp-bin" />
+		
+		<!-- obtain source codes from cvs -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="rngtsth/msvDriver"
+				command="export -d . -D now"
+				dest="temp-src" />
+				
+		<!-- creates source zip -->
+		<zip	zipfile="./package/msvDriver-src.zip"
+				basedir="temp-src"
+				includes="**/*.*" />
+		
+		<!-- compile -->
+		<javac	srcdir="temp-src"
+				destdir="temp-bin"
+				classpath="${msvJar}:bin">
+			<include name="**/*.java" />
+		</javac>
+		
+		<!-- create jar -->
+		<jar	jarfile="./package/msvDriver.jar"
+				compress="false">
+			<fileset dir="temp-bin" />
+		</jar>
+		
+		<!-- clean up -->
+		<delete dir="temp-src" />
+		<delete dir="temp-bin" />
+	</target>
 	
 	<!-- create a distribution package -->
-	<target name="release">
+	<target name="release" depends="msvDriver">
 		<tstamp />
 		<property name="stageName" value="rngtsth-${DSTAMP}"/>
 		
 		<delete	dir="${stageName}" />
 		<mkdir	dir="${stageName}/src" />
+		<mkdir	dir="${stageName}/examples" />
 		
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
@@ -25,6 +59,10 @@
 				package="rngtsth/doc"
 				command="export -d . -D now"
 				dest="${stageName}" />
+		<cvs	cvsRoot="${cvsRoot}"
+				package="rngtsth/examples"
+				command="export -d . -D now"
+				dest="${stageName}/examples" />
 		<fixcrlf	srcdir="${stageName}"
 					cr="remove"
 					eof="remove"
@@ -71,6 +109,9 @@
 		<!-- copy jar file to package dir -->
 		<copy file="${stageName}/rngtsth.jar" tofile="./package/rngtsth.jar" />
 		
+		<!-- include msvDriver.jar and its source code -->
+		<copy file="package/msvDriver.jar" tofile="${stageName}/msvDriver.jar"/>
+		<copy file="package/msvDriver-src.zip" tofile="${stageName}/msvDriver-src.zip"/>
 		
 		<!-- creates distribution package -->
 		<zip	zipfile="./package/rngtsth.${DSTAMP}.zip"

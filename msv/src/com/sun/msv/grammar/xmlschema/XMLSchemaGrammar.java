@@ -29,4 +29,13 @@ public class XMLSchemaGrammar implements Grammar {
 
 	/** map from namespace URI to loaded XMLSchemaSchema object. */
 	public final Map schemata = new java.util.HashMap();
+	
+	/** gets XMLSchemaSchema object that has the given target namespace.
+	 * 
+	 * @return null if no schema is associated with that namespace.
+	 */
+	public XMLSchemaSchema getByNamespace( String targetNamesapce ) {
+		return (XMLSchemaSchema)schemata.get(targetNamesapce);
+	}
+	
 }

@@ -45,4 +45,7 @@ public final class SimpleNameClass extends NameClass {
 		if( namespaceURI.length()==0 )	return localName;
 		else							return /*namespaceURI+":"+*/localName;
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

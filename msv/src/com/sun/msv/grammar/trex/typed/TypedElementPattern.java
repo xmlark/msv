@@ -28,4 +28,7 @@ public class TypedElementPattern extends ElementPattern {
 		super(nameClass,contentModel);
 		this.label = label;
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

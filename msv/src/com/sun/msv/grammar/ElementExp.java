@@ -64,4 +64,7 @@ public abstract class ElementExp extends Expression implements NameClassAndExpre
 	
 	protected final boolean calcEpsilonReducibility()
 	{ return false; }
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -61,4 +61,7 @@ public class XMLSchemaGrammar implements Grammar {
 		return schemata.values().iterator();
 	}
 	
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

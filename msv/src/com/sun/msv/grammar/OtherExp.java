@@ -90,4 +90,7 @@ public class OtherExp extends Expression {
 	public final Expression visit( ExpressionVisitorExpression visitor ){ return visitor.onOther(this); }
 	public final boolean visit( ExpressionVisitorBoolean visitor )		{ return visitor.onOther(this); }
 	public final void visit( ExpressionVisitorVoid visitor )			{ visitor.onOther(this); }
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -85,4 +85,7 @@ public abstract class BinaryExp extends Expression {
 		};
 	}
 	
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

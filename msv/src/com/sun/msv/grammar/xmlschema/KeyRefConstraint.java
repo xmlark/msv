@@ -24,4 +24,7 @@ public class KeyRefConstraint extends IdentityConstraint {
 	 * this field is intentionally non-final.
 	 */
 	public KeyConstraint key;
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -34,4 +34,7 @@ public class ChoiceNameClass extends NameClass {
 	public String toString() {
 		return '('+nc1.toString()+'|'+nc2.toString()+')';
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

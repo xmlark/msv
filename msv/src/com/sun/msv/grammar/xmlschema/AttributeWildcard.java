@@ -97,4 +97,7 @@ public class AttributeWildcard {
 			throw new Error("undefined process mode:"+processMode);
 		}
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

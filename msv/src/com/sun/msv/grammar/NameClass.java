@@ -56,6 +56,11 @@ public abstract class NameClass implements java.io.Serializable {
         
         return !r;
     }
+    
+    /** Returns true if this name class doesn't accept anything. */
+    public boolean isNull() {
+        return !new NameClassCollisionChecker().check(this,AnyNameClass.theInstance);
+    }
 
     /**
      * Computes the equivalent but simple name class.
@@ -87,8 +92,6 @@ public abstract class NameClass implements java.io.Serializable {
 			new ChoiceNameClass(lhs,rhs) );
 	}
     
-    /** Returns true if this name class doesn't accept anything. */
-    public boolean isNull() {
-        return !new NameClassCollisionChecker().check(this,AnyNameClass.theInstance);
-    }
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

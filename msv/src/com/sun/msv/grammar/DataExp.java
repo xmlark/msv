@@ -69,4 +69,7 @@ public final class DataExp extends Expression implements DataOrValueExp {
 	protected boolean calcEpsilonReducibility() {
 		return false;
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -34,4 +34,7 @@ public class XPath implements java.io.Serializable {
 	 */
 	public NameClass		attributeStep;
 
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -84,4 +84,7 @@ public class TREXGrammar extends ReferenceExp implements Grammar{
 	
 	public TREXGrammar( ExpressionPool pool )	{ this(pool,null); }
 	public TREXGrammar() { this(new ExpressionPool(),null); }
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

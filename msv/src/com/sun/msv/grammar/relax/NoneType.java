@@ -53,4 +53,7 @@ public class NoneType extends BuiltinAtomicType {
 	}
 	
 	// TODO: implement _checkValid
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -115,4 +115,7 @@ public class RELAXNGGrammar extends TREXGrammar {
 	}
 	
 */
+        
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

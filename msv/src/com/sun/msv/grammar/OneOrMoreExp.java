@@ -25,4 +25,7 @@ public final class OneOrMoreExp extends UnaryExp {
 	protected boolean calcEpsilonReducibility() {
 		return exp.isEpsilonReducible();
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

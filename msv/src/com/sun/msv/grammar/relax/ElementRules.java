@@ -65,4 +65,7 @@ public class ElementRules extends ReferenceExp implements Exportable {
 	
 	/** RELAXModule object to which this object belongs */
 	public final RELAXModule ownerModule;
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -101,4 +101,7 @@ public class LaxDefaultNameClass extends NameClass {
 		names.add( new StringPair(namespaceURI,LOCALNAME_WILDCARD) );
 		names.add( new StringPair(NAMESPACE_WILDCARD,localName) );
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -43,4 +43,7 @@ public abstract class RedefinableExp extends ReferenceExp {
 		
 		this.exp = rhs.exp;
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

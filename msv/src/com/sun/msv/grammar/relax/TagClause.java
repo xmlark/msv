@@ -45,4 +45,7 @@ public class TagClause extends ReferenceExp {
 	public void visit( RELAXExpressionVisitorVoid visitor )
 	{ visitor.onTag(this); }
 
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -54,4 +54,7 @@ public class EmptyStringType extends BuiltinAtomicType {
 	public Class getJavaObjectType() {
 		return String.class;
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

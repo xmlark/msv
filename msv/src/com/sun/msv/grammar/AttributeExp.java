@@ -49,4 +49,7 @@ public class AttributeExp extends Expression implements NameClassAndExpression {
 	protected boolean calcEpsilonReducibility() {
 		return false;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

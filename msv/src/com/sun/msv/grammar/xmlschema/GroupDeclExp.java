@@ -26,4 +26,7 @@ public class GroupDeclExp extends RedefinableExp {
 		exp.redefine(this);
 		return exp;
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -396,4 +396,7 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 	public boolean isDefined() {
 		return body.isDefined();
 	}
+        
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

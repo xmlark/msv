@@ -34,4 +34,7 @@ public final class NotNameClass extends NameClass {
 	}
 	
 	public String toString()	{ return "~"+child.toString(); }
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

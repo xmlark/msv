@@ -34,4 +34,7 @@ public class NamespaceNameClass extends NameClass {
 	public String toString() {
 		return namespaceURI+":*";
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

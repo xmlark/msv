@@ -39,4 +39,7 @@ public class AttributeDeclExp extends ReferenceExp {
 		self = exp;
 		this.exp = self;
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

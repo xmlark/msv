@@ -36,4 +36,7 @@ public class IdentityConstraint implements java.io.Serializable {
 		this.selectors = selectors;
 		this.fields = fields;
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

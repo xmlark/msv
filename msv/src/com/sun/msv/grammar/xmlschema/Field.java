@@ -22,4 +22,7 @@ public class Field implements java.io.Serializable {
 	 * 'A|B' is represented by using two FieldPath objects.
 	 */
 	public XPath[]	paths;
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -25,4 +25,7 @@ public class SkipElementExp extends com.sun.msv.grammar.trex.ElementPattern {
 	public SkipElementExp( NameClass nameClass, Expression contentModel ) {
 		super(nameClass,contentModel);
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

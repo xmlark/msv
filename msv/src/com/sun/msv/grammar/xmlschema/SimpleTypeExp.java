@@ -79,5 +79,8 @@ public class SimpleTypeExp extends XMLSchemaTypeExp {
         }
 	}
 	
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 
 }

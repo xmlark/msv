@@ -404,4 +404,7 @@ public class ExpressionPool implements java.io.Serializable {
 			count++;
 		}
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

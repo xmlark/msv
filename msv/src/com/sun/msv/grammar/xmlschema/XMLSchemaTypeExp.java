@@ -32,4 +32,7 @@ public abstract class XMLSchemaTypeExp extends RedefinableExp {
 	// defined in the ElementDeclExp.
 	public static final int RESTRICTION	= 0x1;
 	public static final int EXTENSION	= 0x2;
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -44,4 +44,7 @@ public class ElementRule extends ElementExp {
 		this.clause = clause;
 		this.attributeFreeContentModel = contentModel;
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

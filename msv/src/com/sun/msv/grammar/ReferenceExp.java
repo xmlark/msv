@@ -82,4 +82,7 @@ public class ReferenceExp extends Expression {
 	public final Expression visit( ExpressionVisitorExpression visitor ){ return visitor.onRef(this); }
 	public final boolean visit( ExpressionVisitorBoolean visitor )		{ return visitor.onRef(this); }
 	public final void visit( ExpressionVisitorVoid visitor )			{ visitor.onRef(this); }
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

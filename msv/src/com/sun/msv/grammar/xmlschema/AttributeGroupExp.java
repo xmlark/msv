@@ -64,4 +64,7 @@ public class AttributeGroupExp extends RedefinableExp implements AttWildcardExp 
 		if(rhs.wildcard==null)	wildcard = null;
 		else					wildcard = rhs.wildcard.copy();
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

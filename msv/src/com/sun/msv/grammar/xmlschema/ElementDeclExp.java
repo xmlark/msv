@@ -351,4 +351,7 @@ public class ElementDeclExp extends ReferenceExp
 		return super.isDefined() && element!=null;
 	}
 	
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

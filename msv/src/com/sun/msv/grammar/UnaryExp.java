@@ -31,4 +31,7 @@ public abstract class UnaryExp extends Expression {
 		// therefore, == is enough. (don't need to call equals)
 		return ((UnaryExp)o).exp == exp;
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

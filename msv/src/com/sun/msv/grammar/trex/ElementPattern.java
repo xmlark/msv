@@ -26,4 +26,7 @@ public class ElementPattern extends ElementExp {
 		super(contentModel,false);
 		this.nameClass = nameClass;
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -141,4 +141,7 @@ public class XMLSchemaSchema implements java.io.Serializable {
 	}
 	/** map from identity constraint name to IdentityConstraint object. */
 	public final IdentityConstraintContainer identityConstraints = new IdentityConstraintContainer();
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

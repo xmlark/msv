@@ -148,4 +148,7 @@ public class RELAXModule implements Grammar {
 		datatypes.add( EmptyStringType.theInstance );
 		datatypes.add( NoneType.theInstance );
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

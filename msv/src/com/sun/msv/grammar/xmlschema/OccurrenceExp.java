@@ -70,4 +70,7 @@ public class OccurrenceExp extends OtherExp {
      * The unit of repetition.
      */
     public final Expression itemExp;
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

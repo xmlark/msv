@@ -91,4 +91,7 @@ public abstract class ReferenceContainer implements java.io.Serializable {
 	public final int size()	{
 		return impl.size();
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -43,4 +43,7 @@ public final class ConcurExp extends BinaryExp {
 	protected boolean calcEpsilonReducibility() {
 		return exp1.isEpsilonReducible() && exp2.isEpsilonReducible();
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

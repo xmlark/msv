@@ -29,4 +29,8 @@ public final class AnyNameClass extends NameClass {
 	private AnyNameClass() {}
 	
 	public String toString()	{ return "*:*"; }
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
+    private Object readResolve() { return theInstance; }
 }

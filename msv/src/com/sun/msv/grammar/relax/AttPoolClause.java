@@ -45,4 +45,7 @@ public class AttPoolClause extends ReferenceExp implements Exportable {
 	public void visit( RELAXExpressionVisitorVoid visitor ) {
 		visitor.onAttPool(this);
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -35,4 +35,7 @@ public final class LocalNameClass extends NameClass {
 	public String toString() {
 		return localName;
 	}
+    
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

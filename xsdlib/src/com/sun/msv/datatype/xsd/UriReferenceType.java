@@ -16,7 +16,7 @@ import java.io.ByteArrayInputStream;
  * 
  * See http://www.w3.org/TR/xmlschema-2/#uriReference for the spec
  */
-public class UriReferenceType extends ConcreteType
+public class UriReferenceType extends ConcreteType implements Discrete
 {
 	public static final UriReferenceType theInstance = new UriReferenceType();
 	private UriReferenceType() { super("uriReference"); }
@@ -46,8 +46,8 @@ public class UriReferenceType extends ConcreteType
 				new UriReferenceParser( new ByteArrayInputStream( content.getBytes("UTF8") ) );
 			parser.start();
 		}
-		catch( Exception e )
-		{
+		catch( Throwable e )
+		{// JavaCC throws Error-derived classes in case of errors, so we have to catch them.
 			return null;
 		}
 		
@@ -65,5 +65,12 @@ public class UriReferenceType extends ConcreteType
 			return APPLICABLE;
 		else
 			return NOT_ALLOWED;
+	}
+	
+	public final int countLength( Object value )
+	{
+		// uriReference only allows US-ASCII characters.
+		// thus we don't need to count surrogate pairs.
+		return ((String)value).length();
 	}
 }

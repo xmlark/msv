@@ -239,7 +239,15 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	 * obtains elements of concern and their attribute-pruned content models.
 	 * 
 	 * This method should be called after calling get method. The result is
-	 * in effect until next invocation of get method.
+	 * in effect until next invocation of get method. 
+	 * 
+	 * <p>
+	 * The extra care should be taken not to hold reference to the result
+	 * longer than necessary.
+	 * The contents of the result is valid only until the next invocation.
+	 * Because OwnerAndContent objects are reused.
+	 * 
+	 * <p>
 	 * Apparently this is a bad design, but this design gives us better performance.
 	 */
 	protected final OwnerAndContent getElementsOfConcern() {

@@ -22,7 +22,9 @@ import org.xml.sax.Locator;
 public abstract class DefineState extends SequenceState {
 	
 	protected ReferenceExp getReference() {
-		if(!startTag.containsAttribute("name")) {
+		final String name = startTag.getAttribute("name");
+		
+		if(name==null) {
 			// name attribute is required.
 			reader.reportError( reader.ERR_MISSING_ATTRIBUTE,
 				"ref","name");
@@ -31,7 +33,6 @@ public abstract class DefineState extends SequenceState {
 		}
 		
 		final TREXBaseReader reader = (TREXBaseReader)this.reader;
-		final String name = startTag.getAttribute("name");
 		return reader.grammar.namedPatterns.getOrCreate(name);
 	}
 	

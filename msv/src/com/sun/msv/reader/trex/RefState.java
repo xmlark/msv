@@ -29,7 +29,9 @@ public class RefState extends ExpressionWithoutChildState {
 	
 	protected Expression makeExpression()
 	{
-		if(!startTag.containsAttribute("name")) {
+		final String name = startTag.getAttribute("name");
+		
+		if(name==null) {
 			// name attribute is required.
 			reader.reportError( TREXBaseReader.ERR_MISSING_ATTRIBUTE,
 				"ref","name");
@@ -37,7 +39,6 @@ public class RefState extends ExpressionWithoutChildState {
 			return Expression.nullSet;
 		}
 		
-		final String name = startTag.getAttribute("name");
 		TREXGrammar grammar = ((TREXBaseReader)this.reader).grammar;
 		
 		if( parentRef ) {

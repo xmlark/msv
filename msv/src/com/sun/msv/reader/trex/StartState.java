@@ -23,9 +23,10 @@ public class StartState extends SequenceState {
 	protected final TREXBaseReader getReader() { return (TREXBaseReader)reader; }
 	
 	protected Expression annealExpression( Expression exp ) {
-		if(startTag.containsAttribute("name")) {
+		final String name = startTag.getAttribute("name");
+		
+		if(name!=null) {
 			// name attribute is optional.
-			final String name = startTag.getAttribute("name");
 			ReferenceExp ref = getReader().grammar.namedPatterns.getOrCreate(name);
 			ref.exp = exp;
 			exp = ref;

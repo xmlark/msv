@@ -30,7 +30,7 @@ public abstract class ReferenceContainer
 	 * If you are programming an application over Tranquilo,
 	 * {@link _get} method is probably what you need.
 	 */
-	protected final ReferenceExp _getOrCreate( String name )
+	public final ReferenceExp _getOrCreate( String name )
 	{
 		Object o = impl.get(name);
 		if(o!=null)	return (ReferenceExp)o;

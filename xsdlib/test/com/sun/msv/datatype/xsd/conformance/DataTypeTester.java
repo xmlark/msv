@@ -354,9 +354,12 @@ public class DataTypeTester
 	};
 	
 	/** gets some built-in type randomly. */
-	private XSDatatype getRandomType()
-	{
-		return DatatypeFactory.getTypeByName(
-			builtinTypesList[ (int)(Math.random()*builtinTypesList.length) ] );
+	private XSDatatype getRandomType(){
+		try {
+			return DatatypeFactory.getTypeByName(
+				builtinTypesList[ (int)(Math.random()*builtinTypesList.length) ] );
+		} catch( DatatypeException e ) {
+			throw new Error();	// assertion failed
+		}
 	}
 }

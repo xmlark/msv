@@ -27,7 +27,7 @@ public class EnumerationFacet extends DataTypeWithValueConstraintFacet
 	}
 	
 	/** set of valid values */
-	private final Set values;
+	public final Set values;
 
 	public Object convertToValue( String literal, ValidationContextProvider context )
 	{

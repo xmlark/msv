@@ -83,7 +83,7 @@ abstract class DataTypeWithFacet extends DataTypeImpl
 	
 	protected boolean needValueCheck() { return needValueCheckFlag; }
 	
-	final protected DataTypeWithFacet getFacetObject( String facetName )
+	final public DataTypeWithFacet getFacetObject( String facetName )
 	{
 		if(this.facetName.equals(facetName))
 			return this;
@@ -91,7 +91,7 @@ abstract class DataTypeWithFacet extends DataTypeImpl
 			return baseType.getFacetObject(facetName);
 	}
 	
-	final protected ConcreteType getConcreteType()
+	final public ConcreteType getConcreteType()
 	{
 		return concreteType;
 	}

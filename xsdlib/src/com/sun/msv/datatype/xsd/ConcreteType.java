@@ -26,7 +26,7 @@ public abstract class ConcreteType extends DataTypeImpl
 		this( typeName, WhiteSpaceProcessor.theCollapse );
 	}
 	
-	final protected ConcreteType getConcreteType()
+	final public ConcreteType getConcreteType()
 	{
 		return this;
 	}

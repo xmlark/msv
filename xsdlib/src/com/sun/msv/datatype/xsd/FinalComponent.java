@@ -17,7 +17,7 @@ package com.sun.tranquilo.datatype;
 public final class FinalComponent extends DataTypeImpl
 {
 	/** immediate base type, which may be a concrete type or DataTypeWithFacet */
-	protected final DataTypeImpl baseType;
+	public final DataTypeImpl baseType;
 	
 	protected final int finalValue;
 	

@@ -75,7 +75,7 @@ public abstract class DataTypeImpl implements DataType
 	 * @return null
 	 *		if no such facet object exists.
 	 */
-	protected DataTypeWithFacet getFacetObject( String facetName )
+	public DataTypeWithFacet getFacetObject( String facetName )
 	{
 		return null;
 	}
@@ -83,7 +83,7 @@ public abstract class DataTypeImpl implements DataType
 	/**
 	 * gets the concrete type object of the restriction chain.
 	 */
-	abstract protected ConcreteType getConcreteType();
+	abstract public ConcreteType getConcreteType();
 	
 	
 

@@ -37,10 +37,13 @@
 		create a distribution package of MSV
 	release_generator
 		create a distribution package of XML Generator
-	release_rngconv
+	release_rngconverter
 		create a distribution package of RELAX NG Converter
-	release_trexconv
+	release_trexconverter
 		create a distribution package of TREX Converter
+	
+	relase_msv_all
+		= release_msv & release_generator & release_rngconverter & release_trexconverter
 	
 -->
 <project name="tranquilo" basedir="." default="jars">
@@ -52,6 +55,7 @@
 	<property name="libDir" value="./lib"/>
 	<property name="cvsRoot" value=":local:/cygdrive/c/Program Files/Development/CVS Repository" />
 	<property name="cvsExportOpt" value="-D now" />	<!-- -r branch -->
+	<property name="rngInterfaceSource" value="./lib/relaxng/src"/>
 	
 	<!-- test directory where you put your files like "relaxNNN.rlx" -->
 	<property name="testRoot" value="./testCases" />
@@ -133,12 +137,12 @@
 	
 	<!-- XSDLib -->
 	<patternset id="tps.xsdlib">
-		<include name="com/sun/msv/datatype/*Test.class" />
+		<include name="com/sun/msv/datatype/**/*Test.class" />
 	</patternset>
 	
 	<!-- MSV core -->
 	<patternset id="tps.msv">
-		<include name="batch/verifier/*Test.class" />
+		<include name="batch/verifier/**/*Test.class" />
 		<include name="com/sun/msv/util/*Test.class" />
 	</patternset>
 	
@@ -280,6 +284,7 @@
 					<pathelement location="${sourceDir}" />
 					<pathelement location="${testDir}" />
 					<pathelement location="lib/dispatcher" />
+					<pathelement location="lib/relaxng/relaxng.jar" />
 					<pathelement path="${java.class.path}" />
 				</classpath>
 			
@@ -381,7 +386,7 @@
 		
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/test/com/sun/msv/datatype/CommandLineTester.java"
+				package="tranquilo/test/com/sun/msv/datatype/xsd/CommandLineTester.java"
 				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}/src/com/sun/msv/datatype" />
 		<cvs	cvsRoot="${cvsRoot}"
@@ -392,10 +397,6 @@
 				package="tranquilo/src/com/sun/xml"
 				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}/src/com/sun/xml" />
-		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/relaxng"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}/src/" />
 
 		<!-- copy Xerces files into source directory -->
 		<copy todir="${stageName}/src">
@@ -417,9 +418,13 @@
 		<!-- compile files -->
 		<mkdir	dir="temp" />
 		<javac	srcdir="${stageName}/src"
-				destdir="temp">
+				destdir="temp"
+				classpath="lib/relaxng/relaxng.jar">
 			<include name="**/*.java" />
 		</javac>
+		
+		<!-- unzip contents from relaxng.jar into binary directory -->
+		<unjar src="lib/relaxng/relaxng.jar" dest="temp" />
 		
 		<!-- create a time stamp file -->
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
@@ -440,10 +445,10 @@
 		<!-- creates javadoc -->
 		<mkdir		dir="${stageName}/javadoc" />
 		<javadoc	locale="en_US"
-					packagenames="com.sun.msv.datatype.*"
-					sourcepath="${stageName}/src"
+					packagenames="com.sun.msv.datatype.*,org.relaxng.datatype.*"
+					sourcepath="${stageName}/src:${rngInterfaceSource}"
 					destdir="${stageName}/javadoc"
-					windowtitle="XML Schema Part 2 Implementation"
+					windowtitle="Sun XML Datatypes Library"
 					public="yes"
 					author="yes"
 					>
@@ -483,11 +488,6 @@
 				package="tranquilo/src"
 				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}/src/" />
-
-		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/relaxng"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}/src/" />
 		
 		<!-- obtain document files -->
 		<cvs	cvsRoot="${cvsRoot}"
@@ -504,10 +504,13 @@
 		<!-- for ease of use, iso-relax.jar is merged into msv.jar -->
 		<unjar src="${libDir}/iso-relax.jar" dest="temp" />
 		
+		<!-- unzip contents from relaxng.jar into binary directory -->
+		<unjar src="lib/relaxng/relaxng.jar" dest="temp" />
+		
 		<!-- compile files -->
 		<javac	srcdir="${stageName}/src"
 				destdir="temp"
-				classpath="temp:${java.class.path}">
+				classpath="temp:${java.class.path}:lib/relaxng/relaxng.jar">
 			<include name="**/*.java" />
 		</javac>
 		
@@ -533,8 +536,8 @@
 		<!-- creates javadoc -->
 		<mkdir		dir="${stageName}/javadoc" />
 		<javadoc	locale="en_US"
-					packagenames="com.sun.msv.*"
-					sourcepath="${stageName}/src"
+					packagenames="com.sun.msv.*,org.relaxng.datatype.*"
+					sourcepath="${stageName}/src:${rngInterfaceSource}"
 					classpath="temp;${java.class.path}"
 					destdir="${stageName}/javadoc"
 					windowtitle="Sun Multi Schema Validator"
@@ -647,8 +650,8 @@
 		<!-- creates javadoc -->
 		<mkdir		dir="${stageName}/javadoc" />
 		<javadoc	locale="en_US"
-					packagenames="com.sun.msv.generator.*"
-					sourcepath="${stageName}/src"
+					packagenames="com.sun.msv.generator.*,org.relaxng.datatype.*"
+					sourcepath="${stageName}/src:${rngInterfaceSource}"
 					destdir="${stageName}/javadoc"
 					windowtitle="Sun XML Generator"
 					public="yes"
@@ -833,5 +836,12 @@
 	</target>
 
 
+	<target name="release_msv_all"
+		depends="
+			release_msv,
+			release_generator,
+			release_rngconverter,
+			release_trexconverter
+	"/>
 
 </project>

@@ -6,7 +6,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.EntityResolver;
 import org.xml.sax.helpers.LocatorImpl;
 import org.xml.sax.helpers.NamespaceSupport;
 import java.util.ArrayList;
@@ -188,13 +187,10 @@ public abstract class GrammarReader
 		}
 		catch( MalformedURLException e ) { }
 	
-		// let EntityResolver redirects this URL to whatever it likes
-		EntityResolver er = parser.getEntityResolver();
-		InputSource source = null;
+		InputSource source;
 		try
 		{
-			if(er!=null)
-				source = er.resolveEntity( null, url );
+			source = controller.resolveInclude(url);
 			if(source==null)
 				source = new InputSource(url);	// default handling
 		}

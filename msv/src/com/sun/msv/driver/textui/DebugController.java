@@ -1,5 +1,6 @@
 package com.sun.tranquilo.driver.textui;
 
+import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import com.sun.tranquilo.reader.GrammarReaderController;
@@ -36,4 +37,6 @@ public class DebugController implements GrammarReaderController
 				loc[i].getColumnNumber()+"@"+
 				loc[i].getSystemId() );
 	}
+
+	public InputSource resolveInclude( String url ) { return null; }
 }

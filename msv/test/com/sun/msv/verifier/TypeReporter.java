@@ -20,10 +20,7 @@ public class TypeReporter extends DefaultHandler
 {
 	public static void main( String[] args ) throws Exception
 	{
-//		new TypeReporter().run(args);
-		new TypeReporter().run(
-		   new String[]{	"c:\\work\\relax\\relax\\relaxCore.rxm",
-							"c:\\work\\relax\\relax\\relaxCore.rxm" } );
+		new TypeReporter().run(args);
 	}
 	
 	private VerifierFilter filter;
@@ -80,7 +77,7 @@ public class TypeReporter extends DefaultHandler
 		indent++;
 		System.out.print("<"+qName+"> :");
 		
-		Object o = filter.getCurrentElementType();
+		Object o = filter.getVerifier().getCurrentElementType();
 		if(o==null)
 			System.out.println("???");
 		else
@@ -95,6 +92,11 @@ public class TypeReporter extends DefaultHandler
 	
 	public void endElement( String namespaceUri, String localName, String qName )
 	{
+		if( filter.getVerifier().getLastCharacterType()!=null )
+		{
+			printIndent();
+			System.out.println("-- "+filter.getVerifier().getLastCharacterType().getName()+" --");
+		}
 		indent--;
 		printIndent();
 		System.out.println("</"+qName+">");

@@ -35,6 +35,10 @@ class TestBuilderImpl implements TestBuilder
     }
     
     public Test createCorrectSchemaTest( File schema ) {
+        if(schema.getName().indexOf(".nogen.")!=-1)
+            // we will not test this schema
+            return emptyTest();
+        
         current = new SchemaTestCase(schema);
         return current;
     }

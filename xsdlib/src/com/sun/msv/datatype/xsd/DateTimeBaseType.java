@@ -197,7 +197,13 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
         
         // otherwise print out normally.        
         StringBuffer result = new StringBuffer();
-        int offset = tz.getOffset(cal.getTimeInMillis());
+        int offset;
+        if (tz.inDaylightTime(cal.getTime())) {
+            offset = tz.getRawOffset() + (tz.useDaylightTime()?3600000:0);
+        } else {
+            offset = tz.getRawOffset();
+        }
+
         if (offset >= 0)
             result.append('+');
         else {

@@ -30,10 +30,26 @@ public class LengthFacet extends DataTypeWithValueConstraintFacet
 		// consistency with minLength/maxLength is checked in DataTypeImpl.derive method.
 	}
 	
-	public Object convertToValue( String literal )
+	public Object convertToValue( String content )
 	{
-		Object o = baseType.convertToValue(literal);
-		if(o==null || ((Discrete)baseType).countLength(literal)!=length)	return null;
+		Object o = baseType.convertToValue(content);
+		if(o==null || ((Discrete)baseType).countLength(content)!=length)	return null;
 		return o;
+	}
+	
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
+	{
+		Object o = baseType.convertToValue(content);
+		// base type must have accepted this lexical value, otherwise 
+		// this method is never called.
+		if(o==null)	throw new IllegalStateException();	// assertion
+		
+		int cnt = ((Discrete)baseType).countLength(content);
+		if(cnt!=length)
+			return new DataTypeErrorDiagnosis( this, content, -1,
+				DataTypeErrorDiagnosis.ERR_LENGTH,
+				new Integer(cnt), new Integer(length) );
+		
+		return null;
 	}
 }

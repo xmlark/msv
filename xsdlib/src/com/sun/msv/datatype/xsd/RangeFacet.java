@@ -33,5 +33,14 @@ abstract class RangeFacet extends DataTypeWithValueConstraintFacet
 		return o;
 	}
 	
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
+	{
+		if( convertToValue(content)!=null )		return null;
+			
+		return new DataTypeErrorDiagnosis(this, content, -1,
+			DataTypeErrorDiagnosis.ERR_OUT_OF_RANGE, facetName, limitValue );
+	}
+	
+	
 	protected abstract boolean rangeCheck( int compareResult );
 }

@@ -29,7 +29,7 @@ import java.util.Vector;
  * "pattern" is a constraint facet which is applied against lexical space.
  * See http://www.w3.org/TR/xmlschema-2/#dt-pattern for the spec
  */
-public class PatternFacet extends DataTypeWithLexicalConstraintFacet
+final class PatternFacet extends DataTypeWithLexicalConstraintFacet
 {
 	/** actual object that performs regular expression validation.
 	 *
@@ -75,11 +75,20 @@ public class PatternFacet extends DataTypeWithLexicalConstraintFacet
 		// ignore it for now.
 	}
 	
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
+	{
+		if( checkLexicalConstraint(content) )	return null;
+		
+		if( exps.length==1 )
+			return new DataTypeErrorDiagnosis( this, content, -1,
+				DataTypeErrorDiagnosis.ERR_PATTERN_1, exps[0] );
+		else
+			return new DataTypeErrorDiagnosis( this, content, -1,
+				DataTypeErrorDiagnosis.ERR_PATTERN_MANY );
+	}
+	
 	protected final boolean checkLexicalConstraint( String literal )
 	{
-		// makes sure that the base type is satisfied
-		if( !baseType.checkFormat(literal) )	return false;
-
 		// makes sure that at least one of the patterns is satisfied.
 		for( int i=0; i<exps.length; i++ )
 			if(exps[i].matches(literal))

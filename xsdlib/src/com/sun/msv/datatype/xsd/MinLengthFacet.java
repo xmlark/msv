@@ -28,4 +28,20 @@ public class MinLengthFacet extends DataTypeWithValueConstraintFacet
 		if(o==null || ((Discrete)baseType).countLength(literal)<minLength)	return null;
 		return o;
 	}
+	
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
+	{
+		Object o = baseType.convertToValue(content);
+		// base type must have accepted this lexical value, otherwise 
+		// this method is never called.
+		if(o==null)	throw new IllegalStateException();	// assertion
+		
+		int cnt = ((Discrete)baseType).countLength(content);
+		if(cnt<minLength)
+			return new DataTypeErrorDiagnosis( this, content, -1,
+				DataTypeErrorDiagnosis.ERR_MINLENGTH,
+				new Integer(cnt), new Integer(minLength) );
+		
+		return null;
+	}
 }

@@ -2,7 +2,7 @@ package com.sun.tranquilo.datatype;
 
 import java.util.StringTokenizer;
 
-public class ListType extends ConcreteType implements Discrete
+final public class ListType extends ConcreteType implements Discrete
 {
 	/**
 	 * derives a new datatype from atomic datatype by list
@@ -38,7 +38,6 @@ public class ListType extends ConcreteType implements Discrete
 	
 	protected final boolean checkFormat( String content )
 	{
-		// TODO : make sure that separators are correctly handled.
 		// Are #x9, #xD, and #xA allowed as a separator, or not?
 		StringTokenizer tokens = new StringTokenizer(content);
 		
@@ -50,7 +49,6 @@ public class ListType extends ConcreteType implements Discrete
 	
 	public Object convertToValue( String content )
 	{
-		// TODO : make sure that separators are correctly handled.
 		// StringTokenizer correctly implements the semantics of whiteSpace="collapse"
 		StringTokenizer tokens = new StringTokenizer(content);
 		
@@ -58,7 +56,10 @@ public class ListType extends ConcreteType implements Discrete
 		int i=0;
 		
 		while( tokens.hasMoreTokens() )
-			values[i++] = itemType.convertToValue(tokens.nextToken());
+		{
+			if( ( values[i++] = itemType.convertToValue(tokens.nextToken()) )==null )
+				return null;
+		}
 			
 		return new ListValueType(values);
 	}
@@ -67,4 +68,21 @@ public class ListType extends ConcreteType implements Discrete
 	{// for list type, length is a number of items.
 		return ((ListValueType)value).values.length;
 	}
+	
+	/** The current implementation detects which list item is considered wrong. */
+	protected DataTypeErrorDiagnosis diagnoseValue(String content)
+	{
+		// StringTokenizer correctly implements the semantics of whiteSpace="collapse"
+		StringTokenizer tokens = new StringTokenizer(content);
+		
+		while( tokens.hasMoreTokens() )
+		{
+			String token = tokens.nextToken();
+			DataTypeErrorDiagnosis err = itemType.diagnose(token);
+			if(err!=null) return err;
+		}
+		
+		return null;	// accepted
+	}
+
 }

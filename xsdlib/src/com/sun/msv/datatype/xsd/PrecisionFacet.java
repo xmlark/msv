@@ -29,7 +29,23 @@ class PrecisionFacet extends DataTypeWithLexicalConstraintFacet
 		// consistency with scale is checked in DataTypeImpl.derive method.
 	}
 
-	protected boolean checkLexicalConstraint( String literal )
+	protected boolean checkLexicalConstraint( String content )
+	{
+		return countPrecision(content)<precision;
+	}
+	
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
+	{
+		final int cnt = countPrecision(content);
+		if( cnt<precision )
+			return null;
+		
+		return new DataTypeErrorDiagnosis(this, content, -1,
+			DataTypeErrorDiagnosis.ERR_TOO_MUCH_PRECISION, new Integer(cnt), new Integer(precision) );
+	}
+	
+	/** counts the number of digits */
+	private final int countPrecision( String literal )
 	{
 		// count the number of digits.
 		final int len = literal.length();
@@ -40,7 +56,7 @@ class PrecisionFacet extends DataTypeWithLexicalConstraintFacet
 		
 		for( int i=0; i<len; i++ )
 			if( skipMode )
-			{
+			{// in skip mode, leading zeros are skipped
 				if( '0'<chs[i] && chs[i]<='9' )
 				{
 					count++;
@@ -49,10 +65,10 @@ class PrecisionFacet extends DataTypeWithLexicalConstraintFacet
 			}
 			else
 			{
-				if( '0'<chs[i] && chs[i]<='9' )
+				if( '0'<=chs[i] && chs[i]<='9' )
 					count++;
 			}
 		
-		return count<=precision;
+		return count;
 	}
 }

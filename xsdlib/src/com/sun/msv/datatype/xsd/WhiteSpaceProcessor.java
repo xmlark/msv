@@ -2,7 +2,14 @@ package com.sun.tranquilo.datatype;
 
 public abstract class WhiteSpaceProcessor
 {
+	/** returns whitespace normalized text.
+	 *
+	 * behavior varies on what normalization mode is used.
+	 */
 	abstract String process( String text );
+	
+	/** higher return value indicates tigher constraint */
+	abstract int tightness();
 	
 	/**
 	 * returns a WhiteSpaceProcessor object if "whiteSpace" facet is specified.
@@ -11,24 +18,26 @@ public abstract class WhiteSpaceProcessor
 	protected static WhiteSpaceProcessor get( String name )
 		throws BadTypeException
 	{
-		if( name.equals("preserve") )		return theReplace;
+		name = theCollapse.process(name);
+		if( name.equals("preserve") )		return thePreserve;
 		if( name.equals("collapse") )		return theCollapse;
 		if( name.equals("replace") )		return theReplace;
 		
 		throw new BadTypeException( BadTypeException.ERR_INVALID_WHITESPACE_VALUE, name );
 	}
 	
-	private static boolean isWhiteSpace( char ch )
+	private static final boolean isWhiteSpace( char ch )
 	{
 		return ch==0x9 || ch==0xA || ch==0xD || ch==0x20;
 	}
 	
-	protected static WhiteSpaceProcessor thePreserve = new WhiteSpaceProcessor()
+	protected final static WhiteSpaceProcessor thePreserve = new WhiteSpaceProcessor()
 	{
 		public String process( String text )	{ return text; }
+		int tightness() { return 0; }
 	};
 	
-	protected static WhiteSpaceProcessor theReplace = new WhiteSpaceProcessor()
+	protected final static WhiteSpaceProcessor theReplace = new WhiteSpaceProcessor()
 	{
 		public String process( String text )
 		{
@@ -43,9 +52,10 @@ public abstract class WhiteSpaceProcessor
 			
 			return result.toString();		
 		}
+		int tightness() { return 1; }
 	};
 
-	protected static WhiteSpaceProcessor theCollapse= new WhiteSpaceProcessor()
+	protected final static WhiteSpaceProcessor theCollapse= new WhiteSpaceProcessor()
 	{
 		public String process( String text )
 		{
@@ -77,6 +87,7 @@ public abstract class WhiteSpaceProcessor
 			
 			return result.toString();
 		}
+		int tightness() { return 2; }
 	};
 }
 

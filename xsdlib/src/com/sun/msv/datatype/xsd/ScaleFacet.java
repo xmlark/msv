@@ -29,7 +29,22 @@ class ScaleFacet extends DataTypeWithLexicalConstraintFacet
 		// consistency with precision is checked in DataTypeImpl.derive method.
 	}
 
-	protected boolean checkLexicalConstraint( String literal )
+	protected boolean checkLexicalConstraint( String content )
+	{
+		return countScale(content)<=scale;
+	}
+	
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
+	{
+		final int cnt = countScale(content);
+		if(cnt<=scale)		return null;
+		
+		return new DataTypeErrorDiagnosis( this, content, -1, 
+			DataTypeErrorDiagnosis.ERR_TOO_MUCH_SCALE,
+			new Integer(cnt), new Integer(scale) );
+	}
+	
+	final private int countScale( String literal )
 	{
 		// count the number of digits.
 		final int len = literal.length();
@@ -50,6 +65,6 @@ class ScaleFacet extends DataTypeWithLexicalConstraintFacet
 					count++;
 			}
 		
-		return count<=scale;
+		return count;
 	}
 }

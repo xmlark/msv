@@ -43,6 +43,16 @@ abstract class DataTypeImpl implements DataType
 	 */
 	abstract protected Object convertToValue( String content );
 
+	
+	final public DataTypeErrorDiagnosis diagnose(String content)
+	{
+		return diagnoseValue(whiteSpace.process(content));
+	}
+	
+	/** actual 'meat' of diagnose method */
+	abstract protected DataTypeErrorDiagnosis diagnoseValue(String content)
+		throws UnsupportedOperationException;
+	
 
 	final public boolean verify( String literal )
 	{

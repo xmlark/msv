@@ -9,7 +9,7 @@ abstract class DataTypeWithFacet extends DataTypeImpl
 	protected final ConcreteType concreteType;
 	
 	/** name of this facet */
-	private final String facetName;
+	protected final String facetName;
 	
 	/** a flag that indicates the facet is fixed (derived types cannot specify this value anymore) */
 	protected final boolean isFacetFixed;
@@ -80,4 +80,18 @@ abstract class DataTypeWithFacet extends DataTypeImpl
 	{
 		return concreteType.isAtomType();
 	}
+	
+	final protected DataTypeErrorDiagnosis diagnoseValue(String content)
+	{
+		// if base type complains, pass it through.
+		DataTypeErrorDiagnosis err = baseType.diagnoseValue(content);
+		if(err!=null)		return err;
+		
+		// otherwise, perform own diagnosis.
+		return diagnoseByFacet(content);
+	}
+	
+	protected abstract DataTypeErrorDiagnosis diagnoseByFacet(String content)
+		throws UnsupportedOperationException;
+
 }

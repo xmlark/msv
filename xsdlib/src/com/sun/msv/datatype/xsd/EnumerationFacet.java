@@ -45,4 +45,13 @@ public class EnumerationFacet extends DataTypeWithValueConstraintFacet
 		if(o==null || !values.contains(o))		return null;
 		return o;
 	}
+	
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
+	{
+		if( convertToValue(content)!=null )	return null;
+			
+		return new DataTypeErrorDiagnosis(this, content, -1,
+			DataTypeErrorDiagnosis.ERR_ENUMERATION );
+	}
+
 }

@@ -40,14 +40,14 @@ public interface DataType extends Serializable,Cloneable
 	 * 
 	 * Application can call this method to provide detailed error message to user.
 	 * This method is kept separate from verify method to achieve higher performance
-	 * if no such message is necessary at all.
+	 * during normal validation
 	 * 
 	 * @return null
 	 *		if 'content' is accepted by this pattern, or 
 	 *		if the derived class doesn't support this operation
 	 */
-//	DataTypeErrorDiagnosis diagnose( String content )
-//		throws java.lang.UnsupportedOperationException;
+	DataTypeErrorDiagnosis diagnose( String content )
+		throws UnsupportedOperationException;
 	
 	/**
 	 * gets the name of this datatype

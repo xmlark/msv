@@ -23,7 +23,7 @@ public abstract class AnyState extends ExpressionWithoutChildState {
 	protected final Expression makeExpression() {
 		return createExpression(
 			startTag.getDefaultedAttribute("namespace","##any"),
-			startTag.getDefaultedAttribute("processContents","process") );
+			startTag.getDefaultedAttribute("processContents","strict") );
 	}
 	
 	protected abstract Expression createExpression( String namespace, String process );

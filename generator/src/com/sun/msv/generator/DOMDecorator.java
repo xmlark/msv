@@ -4,6 +4,9 @@ import org.w3c.dom.*;
 import java.util.Set;
 import java.util.Map;
 
+/**
+ * Decorates DOM with missing information so that it will be nicely serialized.
+ */
 public class DOMDecorator {
 	private static final String XMLNS_URI = "http://www.w3.org/2000/xmlns/";
 	
@@ -30,6 +33,17 @@ public class DOMDecorator {
 					if(idx<0)
 						usedPrefixes.add(qname.substring(idx+1));
 				}
+                
+                // compute the value of a child attribute by
+                // concatanating child nodes.
+                // With Xerces, a.getValue() works but witih Crimson,
+                // this doesn't work. So as a workaround, we need to
+                // process child nodes and recompute the attribute value here
+                StringBuffer buf = new StringBuffer();
+                NodeList lst = a.getChildNodes();
+                for( int j=0; j<lst.getLength(); j++ )
+                    buf.append( lst.item(j).getNodeValue() );
+                a.setValue( buf.toString() );
 			}
 		});
 		

@@ -72,35 +72,23 @@ class VerifierImpl implements Verifier
 
     public boolean verify(String uri) throws SAXException, IOException {
 		
-		reader.setContentHandler(getVerifierHandler());
-		try {
-			reader.parse(uri);
-			return true;
-		} catch(ValidityViolation v) {
-			return false;
-		}
+		reader.setContentHandler(verifier);
+		reader.parse(uri);
+		return verifier.isValid();
 	}
 
     public boolean verify(InputSource source) throws SAXException, IOException {
-		reader.setContentHandler(getVerifierHandler());
-		try {
-			reader.parse(source);
-			return true;
-		} catch(ValidityViolation v) {
-			return false;
-		}
+		reader.setContentHandler(verifier);
+		reader.parse(source);
+		return verifier.isValid();
 	}
 
 	public boolean verify(Node node) throws SAXException {
 		if(!(node instanceof Document))
 			throw new UnsupportedOperationException("nothing but Document is supported");
 		
-		try {
-			SAXEventGenerator.parse((Document)node,getVerifierHandler());
-			return true;
-		} catch(ValidityViolation v) {
-			return false;
-		}
+		SAXEventGenerator.parse((Document)node,verifier);
+		return verifier.isValid();
 	}
 
     public VerifierHandler getVerifierHandler() {

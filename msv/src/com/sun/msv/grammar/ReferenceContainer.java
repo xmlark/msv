@@ -65,4 +65,15 @@ public abstract class ReferenceContainer
 	{
 		return impl.values().iterator();
 	}
+	
+	/** obtains all items in this container. */
+	public final ReferenceExp[] getAll()
+	{
+		ReferenceExp[] r = new ReferenceExp[size()];
+		impl.values().toArray(r);
+		return r;
+	}
+	
+	/** gets the number of ReferenceExps in this container. */
+	public final int size()	{ return impl.size(); }
 }

@@ -23,7 +23,7 @@ public class ElementPattern extends ElementExp
 	
 	public ElementPattern( NameClass nameClass, Expression contentModel )
 	{
-		super(contentModel);
+		super(contentModel,false);
 		this.nameClass = nameClass;
 	}
 }

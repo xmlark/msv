@@ -48,7 +48,7 @@ public class RefState extends ExpressionWithoutChildState
 		}
 		
 		ReferenceExp r = grammar.namedPatterns.getOrCreate(name);
-		reader.backwardReference.memorizeLink(r,false);
+		reader.backwardReference.memorizeLink(r);
 		return r;
 	}
 }

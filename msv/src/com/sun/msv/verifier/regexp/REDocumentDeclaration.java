@@ -50,11 +50,6 @@ public abstract class REDocumentDeclaration implements DocumentDeclaration
 	/** obtains a thread-local copy of AttributeFreeMarker */
 	public abstract AttributeFreeMarker getAttributeFreeMarker();
 	
-	/**
-	 * returns a flag that enables RELAX semantics of attribute treatment.
-	 */
-	protected abstract boolean getIgnoreUndeclaredAttribute();
-	
 	public String localizeMessage( String propertyName, Object[] args )
 	{
 		String format = java.util.ResourceBundle.getBundle(
@@ -63,10 +58,12 @@ public abstract class REDocumentDeclaration implements DocumentDeclaration
 	    return java.text.MessageFormat.format(format, args );
 	}
 	
-	public final String localizeMessage( String propName, Object arg1 )
-	{ return localizeMessage(propName, new Object[]{arg1} ); }
-	public final String localizeMessage( String propName, Object arg1, Object arg2 )
-	{ return localizeMessage(propName, new Object[]{arg1,arg2} ); }
+	public final String localizeMessage( String propName, Object arg1 ) {
+		return localizeMessage(propName, new Object[]{arg1} );
+	}
+	public final String localizeMessage( String propName, Object arg1, Object arg2 ) {
+		return localizeMessage(propName, new Object[]{arg1,arg2} );
+	}
 
 	
 	public static final String DIAG_ELEMENT_NOT_ALLOWED =

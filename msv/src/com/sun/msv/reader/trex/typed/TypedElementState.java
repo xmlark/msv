@@ -22,7 +22,7 @@ public class TypedElementState extends ElementState
 {
 	protected Expression annealExpression( Expression contentModel )
 	{
-		final String label = startTag.getAttribute( TypedTREXGrammarReader.LABEL_NAMESPACE, "label" );
+		final String label = startTag.getAttribute( TypedTREXGrammarInterceptor.LABEL_NAMESPACE, "label" );
 		if( label==null )
 			return super.annealExpression( contentModel );
 		else

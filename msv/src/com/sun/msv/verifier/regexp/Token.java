@@ -18,7 +18,7 @@ import com.sun.tranquilo.grammar.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-abstract class Token
+public abstract class Token
 {
 	/** returns true if the given ElementExp can consume this token  */
 	boolean match( ElementExp p )		{ return false;	}

@@ -17,8 +17,8 @@ import com.sun.tranquilo.reader.datatype.DataTypeVocabularyMap;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TREXGrammar
-{
+public class TREXGrammar implements Grammar {
+	
 	static final public class RefContainer extends ReferenceContainer
 	{
 		public ReferenceExp getOrCreate( String name )
@@ -40,9 +40,11 @@ public class TREXGrammar
 	 * This pattern will be used to verify document element.
 	 */
 	public Expression start;
+	public Expression getTopLevel() { return start; }
 	
 	/** TREXPatternPool that is associated with this grammar */
 	public final TREXPatternPool pool;
+	public ExpressionPool getPool() { return pool; }
 	
 	/** in case of nested grammar, this variable points to the parent grammar.
 	 *  Otherwise null.

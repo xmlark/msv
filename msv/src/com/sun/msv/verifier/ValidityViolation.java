@@ -22,7 +22,7 @@ public class ValidityViolation extends org.xml.sax.SAXException
 	public final Locator locator;
 	
 	/** constructor for this package */
-	ValidityViolation( Locator loc, String msg )
+	public ValidityViolation( Locator loc, String msg )
 	{
 		super(msg);
 		this.locator = loc;

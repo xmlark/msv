@@ -24,13 +24,6 @@ public class AttributeFeeder implements ExpressionVisitorExpression
 {
 	protected final REDocumentDeclaration	docDecl;
 	protected final ExpressionPool			pool;
-	/**
-	 * a flag that enables RELAX semantics of attribute treatment.
-	 * 
-	 * When this flag is set, those Attributes which are not defined
-	 * in the schema are allowed without any error.
-	 */
-	private final boolean					ignoreUndeclaredAttribute;
 	
 	private final AttributeFreeMarker		marker;
 	
@@ -40,14 +33,13 @@ public class AttributeFeeder implements ExpressionVisitorExpression
 	{
 		this.docDecl	= docDecl;
 		this.pool		= docDecl.getPool();
-		this.ignoreUndeclaredAttribute	= docDecl.getIgnoreUndeclaredAttribute();
 		this.marker		= docDecl.getAttributeFreeMarker();
 	}
 
 	/** computes a residual without any attribute nodes,
 	 * after feeding all attributes and pruning all unused attributes
 	 */
-	public final Expression feedAll( Expression exp, StartTagInfoEx tagInfo )
+	public final Expression feedAll( Expression exp, StartTagInfoEx tagInfo, boolean ignoreUndeclaredAttribute )
 	{
 //		Object o = exp.verifierTag;
 //		if( o==null )
@@ -57,9 +49,8 @@ public class AttributeFeeder implements ExpressionVisitorExpression
 		
 		// feed attributes and obtain content model without attribute nodes.
 		final int len = tagInfo.attTokens.length;
-		for( int i=0; i<len; i++ )
-		{
-			exp = feed( exp, tagInfo.attTokens[i] );
+		for( int i=0; i<len; i++ ) {
+			exp = feed( exp, tagInfo.attTokens[i], ignoreUndeclaredAttribute );
 			// fails to consume an attribute
 			if(exp==Expression.nullSet)	return Expression.nullSet;
 		}
@@ -68,7 +59,7 @@ public class AttributeFeeder implements ExpressionVisitorExpression
 		return docDecl.getAttributePruner().prune(exp);
 	}
 	
-	public final Expression feed( Expression exp, AttributeToken token )
+	public final Expression feed( Expression exp, AttributeToken token, boolean ignoreUndeclaredAttribute )
 	{
 		this.token = token;
 		Expression r = exp.visit(this);
@@ -85,6 +76,7 @@ public class AttributeFeeder implements ExpressionVisitorExpression
 		
 		// if wild card token is rejected, then it must be the absence of declaration.
 		if(r==Expression.nullSet)	return exp;
+		
 		// otherwise the value was wrong.
 		return Expression.nullSet;
 		

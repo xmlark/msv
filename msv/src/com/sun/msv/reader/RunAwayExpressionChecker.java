@@ -25,53 +25,67 @@ import org.xml.sax.Locator;
  * &lt;/hedgeRule&gt;
  * 
  * Apparently, those expressions cannot be expressed in string regular expression.
- * run-away expressions are prohibited in both RELAX and TREX.
+ * Therefore run-away expressions are prohibited in both RELAX and TREX.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 {
-	/** number of ElementExp found */
-	private int depth = 0;
-	private final Map referenceDepth = new java.util.HashMap();
-	private final Stack refStack = new Stack();
+	/** this exception is thrown to abort check when a error is found. */
+	protected static final RuntimeException eureka = new RuntimeException();
+		
+	/** set of ElementExps which are already confirmed as being not a run-away exp. */
 	private final Set testedExps = new java.util.HashSet();
+	
+	/** Expressions which are used as the content model of current element. */
+	private Set contentModel = new java.util.HashSet();
+	
+	/** visited ReferenceExp.
+	 * this information is useful for the user to figure out where did they make a mistake.
+	 */
+	private Stack refStack = new Stack();
+	
 	private final GrammarReader reader;
 	
-	public RunAwayExpressionChecker( GrammarReader reader ) { this.reader = reader; }
+	protected RunAwayExpressionChecker( GrammarReader reader ) { this.reader = reader; }
 	
-	public void onAttribute( AttributeExp exp )		{ exp.exp.visit(this); }
+	public static void check( GrammarReader reader, Expression exp ) {
+		try {
+			exp.visit( new RunAwayExpressionChecker(reader) );
+		} catch( RuntimeException e ) {
+			if(e!=eureka)	throw e;
+		}
+	}
+	
+	public void onAttribute( AttributeExp exp ) {
+		enter(exp);
+		exp.exp.visit(this);
+		leave(exp);
+	}
 	public void onChoice( ChoiceExp exp )			{ binaryVisit(exp); }
-	public void onOneOrMore( OneOrMoreExp exp )		{ exp.exp.visit(this); }
-	public void onMixed( MixedExp exp )				{ exp.exp.visit(this); }
+	public void onOneOrMore( OneOrMoreExp exp )		{ unaryVisit(exp); }
+	public void onMixed( MixedExp exp )				{ unaryVisit(exp); }
 	public void onEpsilon()							{}
 	public void onNullSet()							{}
 	public void onAnyString()						{}
 	public void onSequence( SequenceExp exp )		{ binaryVisit(exp); }
 	public void onTypedString( TypedStringExp exp )	{}
 	
-	protected final void binaryVisit( BinaryExp exp )	{ exp.exp1.visit(this); exp.exp2.visit(this); }
-
-	public void onRef( ReferenceExp exp )
-	{
-		if( testedExps.contains(exp) )
-			// this expression is already tested. no need to test it again.
-			return;
-		
-		Integer d = (Integer)referenceDepth.get(exp);
-		if(d==null)
-		{// this is the first visit.
-			referenceDepth.put(exp, new Integer(depth));
-			refStack.push(exp);
-			exp.exp.visit(this);
-			refStack.pop();
-			testedExps.add(exp);	// this one was finished testing
-			return;
-		}
-		
-		if( d.intValue()==depth )
-		{
-			// this indicates that we have reached the same ReferenceExp
+	protected final void binaryVisit( BinaryExp exp ) {
+		enter(exp);
+		exp.exp1.visit(this);
+		exp.exp2.visit(this);
+		leave(exp);
+	}
+	protected final void unaryVisit( UnaryExp exp ) {
+		enter(exp);
+		exp.exp.visit(this);
+		leave(exp);
+	}
+	
+	private void enter( Expression exp ) {
+		if(contentModel.contains(exp)) {
+			// this indicates that we have reached the same expression object
 			// without visiting any ElementExp.
 			// so this one is a run-away expression.
 				
@@ -82,28 +96,53 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 			
 			Locator[] locs = new Locator[sz-i];
 			
-			for( ; i<sz; i++ )
-			{
+			for( ; i<sz; i++ ) {
 				ReferenceExp e = (ReferenceExp)refStack.elementAt(i);
-				s += e.name + " > ";
+				s += e.name;
+				if( i!=sz-1 )  s+= " > ";
 				locs[sz-i-1] = reader.getDeclaredLocationOf(e);
 			}
-			s += exp.name;
 				
 			reader.reportError( locs, GrammarReader.ERR_RUNAWAY_EXPRESSION, new Object[]{s} );
-				
-			testedExps.add(exp);	// mark it as tested
-									// so that we don't report the same error again.
+			
+			// abort further run-away check.
+			// usually, run-away expression error occurs by use of hedgeRules,
+			// and those rules tend to be shared among multiple elementRules.
+			
+			// So it is highly likely that further check will generate too many errors.
+			throw eureka;
 		}
-		
-		// this route is not recursive, but other routes may not.
-		// so we cannot mark it as tested yet.
+		contentModel.add(exp);
+	}
+	private void leave( Expression exp ) {
+		contentModel.remove(exp);
+	}
+
+	public void onRef( ReferenceExp exp ) {
+		refStack.push(exp);
+		enter(exp);
+		exp.exp.visit(this);
+		leave(exp);
+		refStack.pop();
 	}
 	
 	public void onElement( ElementExp exp )
 	{
-		depth++;
+		if( testedExps.contains(exp) )
+			// this expression is already tested. no need to test it again.
+			return;
+		
+		testedExps.add(exp);	// add it first to prevent infinite recursion.
+		
+		// restore the current basket, and use a fresh one to check this element.
+		Set previousContentModel = contentModel;
+		Stack previousRefStack = refStack;
+		contentModel = new java.util.HashSet();
+		refStack = new java.util.Stack();
+		
 		exp.contentModel.visit(this);
-		depth--;
+		
+		contentModel = previousContentModel;
+		refStack = previousRefStack;
 	}
 }

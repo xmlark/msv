@@ -29,7 +29,7 @@ import com.sun.tranquilo.grammar.ElementExp;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-final class AnyElementToken extends ElementToken
+public final class AnyElementToken extends ElementToken
 {
 	private AnyElementToken(){ super(null); }
 	public static final Token theInstance = new AnyElementToken();

@@ -24,20 +24,27 @@ import org.xml.sax.SAXException;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ReportErrorHandler
-	implements VerificationErrorHandler,
-				ErrorHandler
+	implements VerificationErrorHandler, ErrorHandler
 {
 	private int counter = 0;
+	public boolean hadError = false;
 	
-	public void error( SAXParseException spe )			{ printSAXParseException( spe, MSG_SAXPARSEEXCEPTION_ERROR ); }
-	public void fatalError( SAXParseException spe ) throws SAXException
-	{
+	public void error( SAXParseException spe ) {
+		hadError = true;
+		printSAXParseException( spe, MSG_SAXPARSEEXCEPTION_ERROR );
+	}
+	
+	public void fatalError( SAXParseException spe ) throws SAXException {
+		hadError = true;
 		printSAXParseException( spe, MSG_SAXPARSEEXCEPTION_FATAL );
 		throw new ValidationUnrecoverableException();
 	}
-	public void warning( SAXParseException spe )		{ printSAXParseException( spe, MSG_SAXPARSEEXCEPTION_WARNING ); }
-	protected static void printSAXParseException( SAXParseException spe, String prop )
-	{
+	
+	public void warning( SAXParseException spe ) {
+		printSAXParseException( spe, MSG_SAXPARSEEXCEPTION_WARNING );
+	}
+	
+	protected static void printSAXParseException( SAXParseException spe, String prop ) {
 		System.out.println(
 			Driver.localize( prop, new Object[]{
 				new Integer(spe.getLineNumber()), 
@@ -47,18 +54,16 @@ public class ReportErrorHandler
 	}
 	
 	public void onError( ValidityViolation vv )
-		throws ValidationUnrecoverableException
-	{
+		throws ValidationUnrecoverableException {
 		countCheck(vv);
 		print(vv,MSG_ERROR);
 	}
-	public void onWarning( ValidityViolation vv )
-	{
+	
+	public void onWarning( ValidityViolation vv ) {
 		print(vv,MSG_WARNING);
 	}
 	
-	private void print( ValidityViolation vv, String prop )
-	{
+	private void print( ValidityViolation vv, String prop ) {
 		System.out.println(
 			Driver.localize( prop, new Object[]{
 				new Integer(vv.locator.getLineNumber()), 
@@ -68,8 +73,7 @@ public class ReportErrorHandler
 	}
 	
 	private void countCheck( ValidityViolation vv )
-		throws ValidationUnrecoverableException
-	{
+		throws ValidationUnrecoverableException	{
 		if( counter++ < 20 )	return;
 		
 		System.out.println( Driver.localize(MSG_TOO_MANY_ERRORS) );

@@ -313,15 +313,21 @@ public abstract class ExpressionAcceptor implements Acceptor
 			
 			// Whether <concur> is used or not is very critical
 			// for the quality of error message.
-			final boolean isComplex = cccc.isComplex();
+//			final boolean isComplex = cccc.isComplex();
+			
+			// get the flag that indicates whether these ElementExps ignores
+			// undeclared attributes or not.
+			// Since this value depends on grammar language, all of EoC have the
+			// same value.
+			final boolean ignoreUndeclaredAttributes =
+				cccc.getElementsOfConcern().owner.ignoreUndeclaredAttributes;
 
 			// so let's see what attribute is wrong.
-			for( int i=0; i<sti.attTokens.length; i++ )
-			{
-				Expression r;
-				r = docDecl.getAttributeFeeder().feed( e, sti.attTokens[i] );
-				if( r!=Expression.nullSet )
-				{
+			for( int i=0; i<sti.attTokens.length; i++ ) {
+				
+				Expression r = docDecl.getAttributeFeeder().feed(
+					e, sti.attTokens[i], ignoreUndeclaredAttributes );
+				if( r!=Expression.nullSet ) {
 					e = r;
 					continue;
 				}
@@ -331,7 +337,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 				// try feeding wild card and see if it's accepted.
 				AttributeRecoveryToken rtoken = sti.attTokens[i].createRecoveryAttToken();
 				r = docDecl.getAttributeFeeder().feed(
-					e, rtoken );
+					e, rtoken, ignoreUndeclaredAttributes );
 					
 				if( r==Expression.nullSet )
 				{

@@ -18,6 +18,9 @@
  */
 package com.sun.tranquilo.grammar.relax;
 
+import com.sun.tranquilo.grammar.Expression;
+import com.sun.tranquilo.grammar.ExpressionPool;
+import com.sun.tranquilo.grammar.Grammar;
 import com.sun.tranquilo.grammar.ReferenceExp;
 import com.sun.tranquilo.grammar.ReferenceContainer;
 import com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary;
@@ -27,8 +30,8 @@ import com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class RELAXModule
-{
+public class RELAXModule implements Grammar {
+	
 	final public class ElementRulesContainer extends ReferenceContainer
 	{
 		public ElementRules getOrCreate( String name )
@@ -84,8 +87,8 @@ public class RELAXModule
 	}
 	/** map from role name to AttPoolClause object */
 	public final AttPoolContainer attPools = new AttPoolContainer();
-	/** map from role name to exported AttPoolClause object */
-	public final AttPoolContainer exportedAttPools = new AttPoolContainer();
+//	/** map from role name to exported AttPoolClause object */
+//	public final AttPoolContainer exportedAttPools = new AttPoolContainer();
 	
 	/*
 		exported AttPool objects are treated differently because
@@ -105,10 +108,10 @@ public class RELAXModule
 	 * creates an empty ReferenceExp that can then be used
 	 * for anyOtherElement.
 	 */
-	public final ReferenceExp createAnyOtherElementSkelton()
-	{
-		return new HedgeRules("##anyOtherElement",this);
-	}
+//	public final ReferenceExp createAnyOtherElementSkelton()
+//	{
+//		return new HedgeRules("##anyOtherElement",this);
+//	}
 	
 	/** target namespace URI */
 	public final String targetNamespace;
@@ -116,12 +119,27 @@ public class RELAXModule
 	/** datatypes */
 	public final XSDVocabulary userDefinedTypes = new XSDVocabulary();
 	
+	/**
+	 * chioce of all exported elementRules and hedgeRules.
+	 * 
+	 * This can be used as the top-level expression when a module is used
+	 * to validate documents by itself.
+	 */
+	public Expression topLevel;
+	public Expression getTopLevel() { return topLevel; }
 	
-	public RELAXModule( String targetNamespace )
+	/**
+	 * ExpressionPool object which was used to create this module.
+	 */
+	public final ExpressionPool pool;
+	public ExpressionPool getPool() { return pool; }
+	
+	public RELAXModule( ExpressionPool pool, String targetNamespace )
 	{
 		// if you don't want to namespace, specify ""
 		if( targetNamespace==null )		throw new NullPointerException();
 		
+		this.pool = pool;
 		this.targetNamespace = targetNamespace;
 		userDefinedTypes.addType( EmptyStringType.theInstance );
 		userDefinedTypes.addType( NoneType.theInstance );

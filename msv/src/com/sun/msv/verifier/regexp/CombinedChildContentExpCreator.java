@@ -170,7 +170,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 		// continuation cannot be used.
 	}
 	
-	/** computes a combined child content pattern and (,if possible,) continuation */
+	/** computes a combined child content pattern and (,if possible,) its continuation. */
 	public ExpressionPair get( Expression combinedPattern, StartTagInfoEx info )
 	{
 		StringPair sp=null;
@@ -187,7 +187,10 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 				numElements = 1;
 				result = new OwnerAndContent(
 					null,cache.owner,
-					feeder.feedAll(cache.owner.contentModel,info) );
+					feeder.feedAll(
+						cache.owner.contentModel,
+						info,
+						cache.owner.ignoreUndeclaredAttributes) );
 				return new ExpressionPair(result.content,cache.continuation);
 			}
 		}
@@ -215,10 +218,16 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 	 * in effect until next invocation of get method.
 	 * Apparently this is a bad design, but this design gives us better performance.
 	 */
-	protected final OwnerAndContent getElementsOfConcern()
-	{ return result; }
+	protected final OwnerAndContent getElementsOfConcern() {
+		return result;
+	}
 	
-	/** gets the number of elements of concern */
+	/** gets the number of elements of concern.
+	 * 
+	 * This method should be called after calling get method. The result is
+	 * in effect until next invocation of get method.
+	 * Apparently this is a bad design, but this design gives us better performance.
+	 */
 	protected final int numElementsOfConcern() { return numElements; }
 	
 	/**
@@ -251,6 +260,8 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 	
 	private static final ExpressionPair nullPair = new ExpressionPair(Expression.nullSet,Expression.nullSet);
 
+	
+	
 	public Object onAttribute( AttributeExp exp )	{ return nullPair; }
 	
 	public Object onChoice( ChoiceExp exp )
@@ -271,7 +282,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 			return nullPair;
 		
 		// check result and see if the same element is already registered.
-		// this will reduce the complex of the result.
+		// this will reduce the complexity of the result.
 		// some RELAX grammar may contain something like
 		// (A|B)* C? (A|B)* to implement interleaving of (A|B)* and C.
 		// this check becomes important for cases like this.
@@ -280,7 +291,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 				return new ExpressionPair(o.content,Expression.epsilon);
 		
 		// also, feeding and pruning attributes are relatively expensive operation.
-		// so this is the good place to check redundancy.
+		// so this is the good place to check other redundancy.
 		
 		
 		Expression prunedContentModel;
@@ -288,7 +299,10 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 		
 		if( feedAttributes )
 		{// feed and prune attributes
-			prunedContentModel = feeder.feedAll(exp.contentModel,tagInfo);
+			prunedContentModel = feeder.feedAll(
+				exp.contentModel,
+				tagInfo,
+				exp.ignoreUndeclaredAttributes);
 			if( prunedContentModel==Expression.nullSet )
 				return nullPair;	// this content model didn't accept attributes 
 		}

@@ -19,9 +19,9 @@ import com.sun.tranquilo.verifier.Acceptor;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-final class ComplexAcceptor extends ComplexAcceptorBaseImpl
+public final class ComplexAcceptor extends ComplexAcceptorBaseImpl
 {
-	protected final ElementExp[]	owners;
+	public final ElementExp[]	owners;
 	
 	public ComplexAcceptor(
 		TREXDocumentDeclaration docDecl,

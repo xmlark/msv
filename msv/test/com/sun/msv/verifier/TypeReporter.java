@@ -9,12 +9,14 @@
  */
 package com.sun.tranquilo.verifier;
 
+import com.sun.tranquilo.grammar.Grammar;
 import com.sun.tranquilo.grammar.relax.ElementRule;
-import com.sun.tranquilo.grammar.relax.RELAXGrammar;
 import com.sun.tranquilo.grammar.trex.TREXPatternPool;
 import com.sun.tranquilo.grammar.trex.typed.TypedElementPattern;
-import com.sun.tranquilo.reader.relax.RELAXReader;
-import com.sun.tranquilo.reader.trex.typed.TypedTREXGrammarReader;
+import com.sun.tranquilo.reader.relax.core.RELAXCoreReader;
+import com.sun.tranquilo.reader.relax.namespace.RELAXNSReader;
+import com.sun.tranquilo.reader.trex.typed.TypedTREXGrammarInterceptor;
+import com.sun.tranquilo.reader.trex.TREXGrammarReader;
 import com.sun.tranquilo.verifier.VerifierFilter;
 import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
 import javax.xml.parsers.SAXParserFactory;
@@ -44,7 +46,7 @@ public class TypeReporter extends DefaultHandler
 	{
 		if( args.length!=3 )
 		{
-			System.out.println("Usage: TypeReporter (relax|trex) <schema> <XML instance>\n");
+			System.out.println("Usage: TypeReporter (relaxNS|relaxCore|trex) <schema> <XML instance>\n");
 			return;
 		}
 		
@@ -53,37 +55,38 @@ public class TypeReporter extends DefaultHandler
 		factory.setNamespaceAware(true);
 		factory.setValidating(false);
 		
-		TREXDocumentDeclaration docDecl;
+		Grammar grammar;
 		
-		if( args[0].equals("relax") )
-		{
-			RELAXGrammar g =
-				RELAXReader.parse(
+		if( args[0].equals("relaxCore") )
+			grammar = RELAXCoreReader.parse(
 					args[1],
 					factory,
 					new com.sun.tranquilo.driver.textui.DebugController(false),
 					new TREXPatternPool() );
-			docDecl = new TREXDocumentDeclaration(
-				g.topLevel, (TREXPatternPool)g.pool, true );
-		}
 		else
-		{
-			docDecl = new TREXDocumentDeclaration(
-				TypedTREXGrammarReader.parse(
+		if( args[0].equals("relaxNS") )
+			grammar = RELAXNSReader.parse(
 					args[1],
 					factory,
-					new com.sun.tranquilo.driver.textui.DebugController(false) ) );
+					new com.sun.tranquilo.driver.textui.DebugController(false),
+					new TREXPatternPool() );
+		else {
+			TREXGrammarReader reader = new TREXGrammarReader(
+				new com.sun.tranquilo.driver.textui.DebugController(false),
+				factory, new TREXPatternPool() );
+			reader.addExpressionCreator( new TypedTREXGrammarInterceptor() );
+			((XMLFilter)reader).parse(args[1]);
+			grammar = reader.getResult();
 		}
-		
 		// use TREXPatternPool so that we can verify it like TREX.
 		
-		if( docDecl==null )
+		if( grammar==null )
 		{
 			System.err.println("failed to load a grammar");
 			return;
 		}
 		
-		filter = new VerifierFilter( docDecl,
+		filter = new VerifierFilter( new TREXDocumentDeclaration(grammar),
 			new com.sun.tranquilo.driver.textui.ReportErrorHandler() );
 		
 		filter.setParent(factory.newSAXParser().getXMLReader());

@@ -18,7 +18,7 @@ public abstract class UnaryExp extends Expression
 {
 	public final Expression exp;
 	
-	public UnaryExp( Expression exp, int hashKey )
+	protected UnaryExp( Expression exp, int hashKey )
 	{
 		super( hashCode(exp,hashKey) );
 		this.exp = exp;

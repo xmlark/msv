@@ -38,7 +38,7 @@ public class ElementRule extends ElementExp
 	
 	public ElementRule( ExpressionPool pool, TagClause clause, Expression contentModel )
 	{
-		super( pool.createSequence(clause,contentModel) );
+		super( pool.createSequence(clause,contentModel), true );
 		this.clause = clause;
 		this.attributeFreeContentModel = contentModel;
 	}

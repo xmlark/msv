@@ -61,7 +61,7 @@ class GrammarState extends MergeGrammarState
 		}
 		
 		// make sure that there is no recurisve patterns.
-		grammar.start.visit( new TREXRunAwayExpressionChecker(getReader()) );
+		TREXRunAwayExpressionChecker.check( getReader(), grammar.start );
 		if( !reader.hadError )
 			// make sure that there is no sequenced string.
 			// when run-away expression is found, calling this method results in

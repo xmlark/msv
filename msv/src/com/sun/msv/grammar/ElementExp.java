@@ -20,9 +20,12 @@ package com.sun.tranquilo.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public abstract class ElementExp extends Expression
-{
+public abstract class ElementExp extends Expression {
+	/** content model of this element declaration. */
 	public Expression contentModel;
+	
+	/** a flag that indicates undeclared attributes should be ignored. */
+	public boolean ignoreUndeclaredAttributes;
 	
 	/** obtains a constraint over tag name.
 	 * 
@@ -37,14 +40,16 @@ public abstract class ElementExp extends Expression
 	 */
 	abstract public NameClass getNameClass();
 	
-	public ElementExp( Expression contentModel )
-	{
+	public ElementExp( Expression contentModel, boolean ignoreUndeclaredAttributes ) {
+		// since ElementExp is not unified, no two ElementExp objects are considered equal.
+		// therefore essentially any value can be used as hash code.
+		// that's why this code works even when content model may be changed later.
 		super( hashCode( contentModel, HASHCODE_ELEMENT ) );
 		this.contentModel = contentModel;
+		this.ignoreUndeclaredAttributes = ignoreUndeclaredAttributes;
 	}
 
-	public final boolean equals( Object o )
-	{
+	public final boolean equals( Object o ) {
 		return this==o;
 	}
 

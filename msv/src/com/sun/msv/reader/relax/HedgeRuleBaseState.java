@@ -22,14 +22,14 @@ import com.sun.tranquilo.util.StartTagInfo;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-abstract class HedgeRuleBaseState extends SimpleState implements ExpressionOwner
+public abstract class HedgeRuleBaseState extends SimpleState implements ExpressionOwner
 {
 	private Expression contentModel = null;
 	
 	public void onEndChild( Expression exp )
 	{// this method is called after child expression is found and parsed
 		if( contentModel!=null )
-			reader.reportError( RELAXReader.ERR_MORE_THAN_ONE_CHILD_EXPRESSION );
+			reader.reportError( reader.ERR_MORE_THAN_ONE_CHILD_EXPRESSION );
 			// recover by ignoring previous expression
 		
 		contentModel = exp;
@@ -41,7 +41,7 @@ abstract class HedgeRuleBaseState extends SimpleState implements ExpressionOwner
 		
 		if( contentModel==null )
 		{
-			reader.reportError( RELAXReader.ERR_MISSING_CHILD_EXPRESSION );
+			reader.reportError( reader.ERR_MISSING_CHILD_EXPRESSION );
 			return;	// recover by ignoring this hedgeRule.
 		}
 		

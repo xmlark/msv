@@ -15,13 +15,16 @@ import com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter;
 import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.grammar.relax.*;
 import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.reader.trex.TREXGrammarReader;
-import com.sun.tranquilo.reader.relax.RELAXReader;
-import com.sun.tranquilo.reader.util.IntelligentLoader;
+import com.sun.tranquilo.reader.util.GrammarLoader;
+import com.sun.tranquilo.relaxns.grammar.RELAXGrammar;
+import com.sun.tranquilo.relaxns.verifier.SchemaProviderImpl;
 import com.sun.tranquilo.verifier.*;
 import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
 import com.sun.tranquilo.verifier.util.VerificationErrorHandlerImpl;
-import org.apache.xerces.parsers.SAXParser;
+import org.iso_relax.dispatcher.Dispatcher;
+import org.iso_relax.dispatcher.SchemaProvider;
+import org.iso_relax.dispatcher.impl.DispatcherImpl;
+//import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.*;
 import java.util.*;
 
@@ -40,8 +43,6 @@ public class Driver
 		
 		String grammarName = null;
 		boolean dump=false;
-		boolean relax=false;
-		boolean trex=false;
 		boolean verbose = false;
 		boolean warning = false;
 		boolean dtdValidation=false;
@@ -54,10 +55,6 @@ public class Driver
 		
 		for( int i=0; i<args.length; i++ )
 		{
-			if( args[i].equalsIgnoreCase("-relax") )			relax = true;
-			else
-			if( args[i].equalsIgnoreCase("-trex") )				trex = true;
-			else
 			if( args[i].equalsIgnoreCase("-dtd") )				dtdValidation = true;
 			else
 			if( args[i].equalsIgnoreCase("-dump") )				dump = true;
@@ -120,98 +117,73 @@ public class Driver
 					System.out.println( localize( MSG_FAILED_TO_IGNORE_EXTERNAL_DTD ) );
 			}
 		
-		if( trex && relax )	trex=false;	// if both is specified, assume it RELAX.
-		
 		
 		InputSource is = getInputSource(grammarName);
-
-		if(dump)
-		{
-			if(!relax && !trex)
-			{
-				System.out.println( localize( MSG_UNKNOWN_SCHEMA ) );
-				return;
-			}
-			
-			if(relax)		dumpRELAX(loadRELAX(is,warning));
-			else			dumpTREX(loadTREX(is,warning));
-			return;
-		}
 		
 
-		TREXDocumentDeclaration docDecl;
-		
 	// parse schema
 	//--------------------
 		final long stime = System.currentTimeMillis();
 		System.out.println( localize(MSG_START_PARSING_GRAMMAR) );
 
-			
-		if(relax)
-		{
-			RELAXGrammar g = loadRELAX(is,warning);
-			docDecl = new TREXDocumentDeclaration(g.topLevel, (TREXPatternPool)g.pool, true );
+//			Grammar grammar = GrammarLoader.loadSchema(is,new DebugController(warning),factory);
+		Grammar grammar=null;		
+		try {
+			grammar = GrammarLoader.loadSchema(is,new DebugController(warning),factory);
+		} catch(SAXException se ) {
+			se.getException().printStackTrace();
 		}
-		else
-		if(trex)
-			docDecl = new TREXDocumentDeclaration(loadTREX(is,warning));
-		else
-		{// sniff and load
-			if( verbose )
-				System.out.println( localize( MSG_SNIFF_SCHEMA ) );
-			docDecl = IntelligentLoader.loadVGM(is,new DebugController(warning),factory);
+		if( grammar==null ) {
+			System.out.println( localize(ERR_LOAD_GRAMMAR) );
+			return;
 		}
 			
 		long parsingTime = System.currentTimeMillis();
 		if( verbose )
 			System.out.println( localize( MSG_PARSING_TIME, new Long(parsingTime-stime) ) );
+
+
+		if(dump)
+		{
+			if( grammar instanceof RELAXModule )
+				dumpRELAXModule( (RELAXModule)grammar );
+			else
+			if( grammar instanceof RELAXGrammar )
+				dumpRELAXGrammar( (RELAXGrammar)grammar );
+			else
+			if( grammar instanceof TREXGrammar )
+				dumpTREX( (TREXGrammar)grammar );
+			
+			return;
+		}
 		
 	// validate documents
 	//--------------------
-		for( int i=0; i<fileNames.size(); i++ )
-		{
+		DocumentVerifier verifier;
+		if( grammar instanceof RELAXGrammar )
+			// use divide&validate framework to validate document
+			verifier = new RELAXNSVerifier( new SchemaProviderImpl((RELAXGrammar)grammar) );
+		else
+			// validate normally by using Verifier.
+			verifier = new SimpleVerifier( new TREXDocumentDeclaration(grammar) );
+		
+		for( int i=0; i<fileNames.size(); i++ )	{
+			
 			final String instName = (String)fileNames.elementAt(i);
 			System.out.println( localize( MSG_VALIDATING, instName) );
-			verify( docDecl, getInputSource(instName) );
+			
+			if(verifier.verify(getInputSource(instName)))
+				System.out.println(localize(MSG_VALID));
+			else
+				System.out.println(localize(MSG_INVALID));
+			
+			if( i!=fileNames.size()-1 )
+				System.out.println("--------------------------------------");
 		}
+		
 			
 		if( verbose )
 			System.out.println( localize( MSG_VALIDATION_TIME, new Long(System.currentTimeMillis()-parsingTime) ) );
-	}
-	
-	public static TREXGrammar loadTREX( InputSource is, boolean warning ) throws Exception
-	{
-		TREXGrammar g =
-		TREXGrammarReader.parse(
-			is,
-			factory,
-			new DebugController(warning) );
-
-		if( g==null )
-		{
-			System.out.println(localize(ERR_LOAD_GRAMMAR));
-			System.exit(-1);
-		}
-		return g;
-	}
-	
-	public static RELAXGrammar loadRELAX( InputSource is, boolean warning ) throws Exception
-	{
-		
-		RELAXGrammar g =
-			RELAXReader.parse(
-				is,
-				factory,
-				new DebugController(warning),
-				new TREXPatternPool() );
-		// use TREXPatternPool so that we can verify it like TREX.
-		
-		if( g==null )
-		{
-			System.out.println(localize(ERR_LOAD_GRAMMAR));
-			System.exit(-1);
-		}
-		return g;
 	}
 	
 	public static void dumpTREX( TREXGrammar g ) throws Exception
@@ -225,63 +197,96 @@ public class Driver
 				g.namedPatterns ) );
 	}
 	
-	public static void dumpRELAX( RELAXGrammar g ) throws Exception
+	public static void dumpRELAXModule( RELAXModule m ) throws Exception
 	{
 		
 		System.out.println("*** top level ***");
-		System.out.println(TREXPatternPrinter.printFragment(g.topLevel));
+		System.out.println(TREXPatternPrinter.printFragment(m.topLevel));
 		
-		for( Iterator itr=g.moduleMap.values().iterator(); itr.hasNext(); )
-		{
-			RELAXModule m = (RELAXModule)itr.next();
+		System.out.println("\n $$$$$$[ " + m.targetNamespace + " ]$$$$$$");
+		
+		System.out.println("*** elementRule ***");
+		System.out.print(
+			TREXPatternPrinter.fragmentInstance.printRefContainer(
+				m.elementRules ) );
+		System.out.println("*** hedgeRule ***");
+		System.out.print(
+			TREXPatternPrinter.fragmentInstance.printRefContainer(
+				m.hedgeRules ) );
+		System.out.println("*** attPool ***");
+		System.out.print(
+			TREXPatternPrinter.fragmentInstance.printRefContainer(
+				m.attPools ) );
+		System.out.println("*** tag ***");
+		System.out.print(
+			TREXPatternPrinter.fragmentInstance.printRefContainer(
+				m.tags ) );
+	}
+
+	public static void dumpRELAXGrammar( RELAXGrammar m ) throws Exception {
+		System.out.println("operation is not implemented yet.");
+	}
+
+	/** acts as a function closure to validate a document. */
+	private interface DocumentVerifier {
+		boolean verify( InputSource instance ) throws Exception;
+	}
+	
+	/** validates a document by using divide&amp; validate framework. */
+	private static class RELAXNSVerifier implements DocumentVerifier {
+		private final SchemaProvider sp;
+		
+		RELAXNSVerifier( SchemaProvider sp ) { this.sp=sp; }
+		
+		public boolean verify( InputSource instance ) throws Exception {
+			XMLReader p = factory.newSAXParser().getXMLReader();
+			Dispatcher dispatcher = new DispatcherImpl(sp);
+			dispatcher.attachXMLReader(p);
+			ReportErrorHandler errorHandler = new ReportErrorHandler();
+			dispatcher.setErrorHandler( errorHandler );
 			
-			System.out.println("\n $$$$$$[ " + m.targetNamespace + " ]$$$$$$");
-		
-			System.out.println("*** elementRule ***");
-			System.out.print(
-				TREXPatternPrinter.fragmentInstance.printRefContainer(
-					m.elementRules ) );
-			System.out.println("*** hedgeRule ***");
-			System.out.print(
-				TREXPatternPrinter.fragmentInstance.printRefContainer(
-					m.hedgeRules ) );
-			System.out.println("*** attPool ***");
-			System.out.print(
-				TREXPatternPrinter.fragmentInstance.printRefContainer(
-					m.attPools ) );
-			System.out.println("*** tag ***");
-			System.out.print(
-				TREXPatternPrinter.fragmentInstance.printRefContainer(
-					m.tags ) );
+			try {
+				p.parse(instance);
+				return !errorHandler.hadError;
+			} catch( com.sun.tranquilo.verifier.ValidationUnrecoverableException vv ) {
+				System.out.println(localize(MSG_BAILOUT));
+			} catch( SAXParseException se ) {
+				; // error is already reported by ErrorHandler
+			} catch( SAXException e ) {
+				  e.getException().printStackTrace();
+			}
+			return false;
 		}
 	}
 	
-	public static void verify( DocumentDeclaration schema, InputSource instance ) throws Exception
-	{
-		XMLReader p = factory.newSAXParser().getXMLReader();
+	private static class SimpleVerifier implements DocumentVerifier {
+		private final DocumentDeclaration docDecl;
 		
-		ReportErrorHandler reh = new ReportErrorHandler();
-		Verifier v = new Verifier( schema, reh );
+		SimpleVerifier( DocumentDeclaration docDecl ) { this.docDecl = docDecl; }
+
+		public boolean verify( InputSource instance ) throws Exception {
+			XMLReader p = factory.newSAXParser().getXMLReader();
 		
-		p.setDTDHandler(v);
-		p.setContentHandler(v);
-		p.setErrorHandler(reh);
+			ReportErrorHandler reh = new ReportErrorHandler();
+			Verifier v = new Verifier( docDecl, reh );
 		
-		try
-		{
-			p.parse( instance );
+			p.setDTDHandler(v);
+			p.setContentHandler(v);
+			p.setErrorHandler(reh);
+		
+			try {
+				p.parse( instance );
+				return v.isValid();
+			} catch( com.sun.tranquilo.verifier.ValidationUnrecoverableException vv ) {
+				System.out.println(localize(MSG_BAILOUT));
+			} catch( SAXParseException se ) {
+				; // error is already reported by ErrorHandler
+			} catch( SAXException e ) {
+				  e.getException().printStackTrace();
+			}
+			
+			return false;
 		}
-		catch( com.sun.tranquilo.verifier.ValidationUnrecoverableException vv )
-		{
-			System.out.println(localize(MSG_BAILOUT));
-		}
-		catch( SAXParseException se )
-		{
-			; // error is already reported by ErrorHandler
-		}
-		
-		if( v.isValid() )	System.out.println(localize(MSG_VALID));
-		else				System.out.println(localize(MSG_INVALID));
 	}
 
 	private static InputSource getInputSource( String fileOrURL )
@@ -327,6 +332,6 @@ public class Driver
 	public static final String ERR_LOAD_GRAMMAR =		"Driver.ErrLoadGrammar";
 	public static final String MSG_BAILOUT =			"Driver.BailOut";
 	public static final String MSG_FAILED_TO_IGNORE_EXTERNAL_DTD ="Driver.FailedToIgnoreExternalDTD";
-	public static final String MSG_SNIFF_SCHEMA =		"Driver.SniffSchema";
-	public static final String MSG_UNKNOWN_SCHEMA =		"Driver.UnknownSchema";
+//	public static final String MSG_SNIFF_SCHEMA =		"Driver.SniffSchema";
+//	public static final String MSG_UNKNOWN_SCHEMA =		"Driver.UnknownSchema";
 }

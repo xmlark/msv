@@ -7,6 +7,6 @@ package com.sun.tranquilo.generator;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class GenerateAndVerifyTester extends Driver
+public class GenerateAndVerifyTester // extends Driver
 {
 }

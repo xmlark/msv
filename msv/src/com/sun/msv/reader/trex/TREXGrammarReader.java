@@ -26,43 +26,40 @@ import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.reader.*;
 import com.sun.tranquilo.reader.datatype.DataTypeVocabulary;
 import com.sun.tranquilo.util.StartTagInfo;
+import org.iso_relax.dispatcher.IslandSchema;
 
 /**
  * reads TREX grammar from SAX2 and constructs abstract grammar model.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TREXGrammarReader extends GrammarReader
+public class TREXGrammarReader
+	extends GrammarReader
 {
 	/** loads TREX pattern */
 	public static TREXGrammar parse( String grammarURL,
 		SAXParserFactory factory, GrammarReaderController controller )
-		throws SAXException,ParserConfigurationException
 	{
 		TREXGrammarReader reader = new TREXGrammarReader(controller,factory,new TREXPatternPool());
-		reader.guardedParse(grammarURL);
+		reader.parse(grammarURL);
 		
-		if(reader.hadError)	return null;
-		else				return reader.grammar;
+		return reader.getResult();
 	}
 	
 	/** loads TREX pattern */
 	public static TREXGrammar parse( InputSource grammar,
 		SAXParserFactory factory, GrammarReaderController controller )
-		throws SAXException,ParserConfigurationException
 	{
 		TREXGrammarReader reader = new TREXGrammarReader(controller,factory,new TREXPatternPool());
-		reader.guardedParse(grammar);
+		reader.parse(grammar);
 		
-		if(reader.hadError)	return null;
-		else				return reader.grammar;
+		return reader.getResult();
 	}
 	
 	public TREXGrammarReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
 		TREXPatternPool pool )
-		throws SAXException,ParserConfigurationException
 	{
 		super(controller,parserFactory,pool,new RootState());
 	}
@@ -176,7 +173,7 @@ public class TREXGrammarReader extends GrammarReader
 		return namespace;
 	}
 	
-	public State createExpressionChildState( StartTagInfo tag )
+	public State createDefaultExpressionChildState( StartTagInfo tag )
 	{
 		if(tag.localName.equals("element"))		return new ElementState();
 		if(tag.localName.equals("attribute"))	return new AttributeState();

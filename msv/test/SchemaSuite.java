@@ -7,14 +7,14 @@
  * Use is subject to license terms.
  * 
  */
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
 import junit.framework.*;
-import com.sun.tranquilo.reader.trex.TREXGrammarReader;
-import com.sun.tranquilo.reader.relax.RELAXReader;
 import org.xml.sax.*;
 import java.io.*;
 import com.sun.tranquilo.verifier.*;
 import com.sun.tranquilo.verifier.util.VerificationErrorHandlerImpl;
+import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.tranquilo.reader.util.GrammarLoader;
+import com.sun.tranquilo.reader.util.IgnoreController;
 import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.grammar.relax.*;
 import com.sun.tranquilo.grammar.*;
@@ -68,45 +68,21 @@ class SchemaSuite extends TestCase
 		is.setSystemId(pathName);
 			
 		// load grammar
-		docDecl =
-			parent.target.equals("relax")?loadRELAX(is):loadTREX(is);
-			
-		if( xor( docDecl==null, pathName.endsWith(".e"+parent.ext) ) )
-			fail("unexpected result");	// unexpected result
-	}
-
-	public TREXDocumentDeclaration loadTREX( InputSource is ) throws Exception
-	{
-		TREXGrammar g =
-		TREXGrammarReader.parse(
-			is,
-			parent.factory,
-			new ThrowErrorController() );
-
-		if( g==null )	return null;
-		return new TREXDocumentDeclaration(g);
+		if( pathName.endsWith(".e"+parent.ext) ) {
+			docDecl = GrammarLoader.loadVGM( is,
+				new IgnoreController(), parent.factory );
+			if( docDecl!=null )
+				fail("unexpected result");
+		} else {
+			docDecl = GrammarLoader.loadVGM( is,
+				new ThrowErrorController(), parent.factory );
+			if( docDecl==null )
+				fail("unexpected result");	// unexpected result
+		}
 	}
 	
-	public TREXDocumentDeclaration loadRELAX( InputSource is ) throws Exception
-	{
-		
-		RELAXGrammar g =
-			RELAXReader.parse(
-				is,
-				parent.factory,
-				new ThrowErrorController(),
-				new TREXPatternPool() );
-		// use TREXPatternPool so that we can verify it like TREX.
-		
-		if( g==null )		return null;
-		else
-			return new TREXDocumentDeclaration(g.topLevel,(TREXPatternPool)g.pool,true);
-	}
-
 	
-	
-	public static boolean xor( boolean a, boolean b )
-	{
+	public static boolean xor( boolean a, boolean b ) {
 		return (a && !b) || (!a && b);
 	}
 	

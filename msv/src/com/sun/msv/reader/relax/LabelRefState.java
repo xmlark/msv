@@ -28,6 +28,8 @@ abstract class LabelRefState extends ExpressionWithoutChildState
 	protected Expression makeExpression()
 	{
 		final String label = startTag.getAttribute("label");
+		final String namespace = startTag.getAttribute("namespace");
+		final RELAXReader reader = (RELAXReader)this.reader;
 		
 		if(label==null)
 		{// label attribute is required.
@@ -37,16 +39,9 @@ abstract class LabelRefState extends ExpressionWithoutChildState
 			return Expression.nullSet;
 		}
 		
-		final RELAXReader reader = (RELAXReader)this.reader;
-		final RELAXModule target = reader.resolveModuleReference(startTag);
-		ReferenceExp ref = getOrCreate( target, label );
-		
-		// memorize this reference so that we can report the source of error
-		// if this reference is an error.
-		reader.backwardReference.memorizeLink(ref, target!=reader.currentModule );
-		return ref;
+		return resolve(namespace,label);
 	}
 	
 	/** gets or creates appropriate reference */
-	protected abstract ReferenceExp getOrCreate( RELAXModule module, String label );
+	protected abstract Expression resolve( String namespace, String label );
 }

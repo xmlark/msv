@@ -14,6 +14,8 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.ElementExp;
 import com.sun.tranquilo.verifier.Acceptor;
 import com.sun.tranquilo.verifier.regexp.StringToken;
+import com.sun.tranquilo.verifier.regexp.Token;
+import com.sun.tranquilo.verifier.regexp.AnyElementToken;
 import com.sun.tranquilo.verifier.regexp.ElementToken;
 import com.sun.tranquilo.verifier.regexp.ResidualCalculator;
 import com.sun.tranquilo.util.StringRef;
@@ -57,14 +59,20 @@ public class ComplexAcceptorBaseImpl extends ContentModelAcceptor
 		if(!super.stepForward(child,errRef))	return false;
 
 		final ResidualCalculator res = docDecl.getResidualCalculator();
-		ElementToken token;
+		Token token;
 		
-		if( child instanceof SimpleAcceptor )
+		if( child instanceof SimpleAcceptor ) {
 			// this is possible although it is very rare.
 			// continuation cannot be used here, because
 			// some contents[i] may reject this owner.
-			token = new ElementToken( new ElementExp[]{((SimpleAcceptor)child).owner} );
-		else
+			ElementExp cowner = ((SimpleAcceptor)child).owner;
+			if( cowner==null )
+				// cowner==null means we are currently recovering from an error.
+				// so use AnyElementToken to make contents[i] happy.
+				token = AnyElementToken.theInstance;
+			else
+				token = new ElementToken( new ElementExp[]{cowner} );
+		} else {
 			if( errRef!=null )
 				// in error recovery mode
 				// pretend that every candidate of child ComplexAcceptor is happy
@@ -72,9 +80,10 @@ public class ComplexAcceptorBaseImpl extends ContentModelAcceptor
 			else
 				// in normal mode, collect only those satisfied owners.
 				token = new ElementToken( ((ComplexAcceptor)child).getSatisfiedOwners() );
+		}
 		
 		for( int i=0; i<contents.length; i++ )
-			contents[i] = docDecl.getResidualCalculator().calcResidual( contents[i], token );
+			contents[i] = res.calcResidual( contents[i], token );
 		
 		return true;
 	}

@@ -34,7 +34,7 @@ public class Verifier implements
 	DTDHandler,
 	IDContextProvider
 {
-	private Acceptor current;
+	protected Acceptor current;
 	
 	private static final class Context
 	{
@@ -59,7 +59,7 @@ public class Verifier implements
 	private Locator locator;
 	
 	/** error handler */
-	private final VerificationErrorHandler errorHandler;
+	protected VerificationErrorHandler errorHandler;
 	
 	/** this flag will be set to true if an error is found */
 	private boolean hadError;
@@ -80,7 +80,7 @@ public class Verifier implements
 	public final boolean isValid() { return !hadError && isFinished; }
 	
 	/** Schema object against which the validation will be done */
-	private final DocumentDeclaration docDecl;
+	protected final DocumentDeclaration docDecl;
 	
 	/** panic level.
 	 * 
@@ -91,7 +91,7 @@ public class Verifier implements
 	 * and is decreased by successful stepForward and createChildAcceptor.
 	 * This value is also propagated to child acceptors.
 	 */
-	private int panicLevel = 0;
+	protected int panicLevel = 0;
 	
 	private final static int INITIAL_PANIC_LEVEL = 3;
 
@@ -136,14 +136,7 @@ public class Verifier implements
 					final char ch = text.charAt(i);
 					if( ch!=' ' && ch!='\t' && ch!='\r' && ch!='\n' )
 					{// error
-						hadError = true;
-						
-						if( panicLevel==0 && errorHandler!=null )
-						{
-							errorHandler.onError( new ValidityViolation(
-								locator, localizeMessage( ERR_UNEXPECTED_TEXT, null ) ) );
-							panicLevel = INITIAL_PANIC_LEVEL;
-						}
+						onError( null, localizeMessage( ERR_UNEXPECTED_TEXT, null ) );
 						break;// recover by ignoring this token
 					}
 				}
@@ -153,24 +146,13 @@ public class Verifier implements
 				final String txt = new String(text);
 				if(!current.stepForward( txt, this, null, characterType ))
 				{// error
-					hadError = true;
-					
 					// diagnose error, if possible
 					StringRef err = new StringRef();
 					characterType.type=null;
 					current.stepForward( txt, this, err, characterType );
 					
 					// report an error
-					if( panicLevel==0 )
-					{
-						if( err.str==null )
-							errorHandler.onError( new ValidityViolation(
-								locator, localizeMessage( ERR_UNEXPECTED_TEXT, null ) ) );
-						else
-							errorHandler.onError( new ValidityViolation(
-								locator, err.str ) );
-						panicLevel = INITIAL_PANIC_LEVEL;
-					}
+					onError( err, localizeMessage( ERR_UNEXPECTED_TEXT, null ) );
 				}
 				break;
 				
@@ -208,33 +190,18 @@ public class Verifier implements
 			if( com.sun.tranquilo.driver.textui.Debug.debug )
 				System.out.println("-- no children accepted: error recovery");
 
-			hadError = true;
-
 			// let acceptor recover from this error.
 			StringRef ref = new StringRef();
 			next = current.createChildAcceptor(sti,ref);
 			
-			ValidityViolation vv;
-			if( ref.str!=null )
-			{// error message is available
-				vv = new ValidityViolation(locator,ref.str);
-			}
-			else
-			{// no error message is avaiable, use default.
-				vv = new ValidityViolation( locator,
-					localizeMessage( ERR_UNEXPECTED_STARTTAG, new Object[]{qName} ) );
-			}
+			ValidityViolation vv = onError( ref, localizeMessage( ERR_UNEXPECTED_STARTTAG, new Object[]{qName} ) );
 			
-			if( errorHandler!=null && panicLevel==0 )
-				errorHandler.onError(vv);
-			
-			if( errorHandler==null || next==null )
+			if( next==null )
 			{
 				if( com.sun.tranquilo.driver.textui.Debug.debug )
 					System.out.println("-- unable to recover");
 				throw new ValidationUnrecoverableException(vv);
 			}
-			panicLevel = INITIAL_PANIC_LEVEL;
 		}
 		else
 			panicLevel = Math.max( panicLevel-1, 0 );
@@ -259,13 +226,7 @@ public class Verifier implements
 		if( !current.isAcceptState() && panicLevel==0 )
 		{
 			// TODO: diagnosis?
-			hadError = true;
-			panicLevel = INITIAL_PANIC_LEVEL;
-			errorHandler.onError( new ValidityViolation(
-				locator,
-				localizeMessage( ERR_UNCOMPLETED_CONTENT,
-				new Object[]{qName} ) ) );	// report an error
-			
+			onError( null, localizeMessage( ERR_UNCOMPLETED_CONTENT,new Object[]{qName} ) );
 			// error recovery: pretend as if this state is satisfied
 			// fall through is enough
 		}
@@ -279,28 +240,35 @@ public class Verifier implements
 		
 		if(!current.stepForward( child, null ))
 		{// error
-			hadError = true;
 			StringRef ref = new StringRef();
 			current.stepForward( child, ref );	// force recovery
-			ValidityViolation vv;
 			
-			if( ref.str!=null )
-			{// error message is available
-				vv = new ValidityViolation(locator,ref.str);
-			}
-			else
-			{// no error message is avaiable, use default.
-				vv = new ValidityViolation( locator,
-					localizeMessage( ERR_UNCOMPLETED_CONTENT, new Object[]{qName} ) );
-			}
-			
-			if( errorHandler!=null && panicLevel==0 )
-				errorHandler.onError(vv);
-			
-			panicLevel = INITIAL_PANIC_LEVEL;
+			onError( ref, localizeMessage( ERR_UNEXPECTED_ELEMENT, new Object[]{qName} ) );
 		}
 		else
 			panicLevel = Math.max( panicLevel-1, 0 );
+	}
+	
+	/**
+	 * signals an error.
+	 */
+	protected ValidityViolation onError( StringRef ref, String defaultMsg ) throws SAXException
+	{
+		ValidityViolation vv;
+		hadError = true;
+			
+		if( ref!=null && ref.str!=null )
+			// error message is available
+			vv = new ValidityViolation(locator,ref.str);
+		else
+			// no error message is avaiable, use default.
+			vv = new ValidityViolation( locator, defaultMsg );
+			
+		if( errorHandler!=null && panicLevel==0 )
+			errorHandler.onError(vv);
+			
+		panicLevel = INITIAL_PANIC_LEVEL;
+		return vv;
 	}
 	
 	/**
@@ -343,15 +311,29 @@ public class Verifier implements
 	}
 	public void endPrefixMapping( String prefix )	{}
 	
-	public void startDocument()
+	protected void init()
 	{
-		// reset everything
-		current = docDecl.createAcceptor();
 		hadError=false;
 		isFinished=false;
 		ids.clear();
 		idrefs.clear();
 	}
+	
+	public void startDocument()
+	{
+		// reset everything.
+		// since Verifier maybe reused, initialization is better done here
+		// rather than constructor.
+		init();
+		// if Verifier is used without "divide&validate", 
+		// this method is called and the initial acceptor
+		// is set by this method.
+		// When Verifier is used in IslandVerifierImpl,
+		// then initial acceptor is set at the constructor
+		// and this method is not called.
+		current = docDecl.createAcceptor();
+	}
+	
 	public void endDocument() throws SAXException
 	{
 		// ID/IDREF check
@@ -382,7 +364,7 @@ public class Verifier implements
 	 * 
 	 * this object memorizes mapping information.
 	 */
-	private final NamespaceSupport namespaceSupport = new NamespaceSupport();
+	protected final NamespaceSupport namespaceSupport = new NamespaceSupport();
 
 	/** unparsed entities found in the document */
 	private final Set unparsedEntities = new java.util.HashSet();
@@ -406,7 +388,7 @@ public class Verifier implements
 	}
 
 	
-	public String localizeMessage( String propertyName, Object[] args )
+	public static String localizeMessage( String propertyName, Object[] args )
 	{
 		String format = java.util.ResourceBundle.getBundle(
 			"com.sun.tranquilo.verifier.Messages").getString(propertyName);
@@ -420,6 +402,8 @@ public class Verifier implements
 		"Verifier.Error.UnexpectedStartTag";
 	public static final String ERR_UNCOMPLETED_CONTENT = // arg:1
 		"Verifier.Error.UncompletedContent";
+	public static final String ERR_UNEXPECTED_ELEMENT = // arg:1
+		"Verifier.Error.UnexpectedElement";
 	public static final String ERR_UNSOLD_IDREF = // arg:1
 		"Verifier.Error.UnsoldIDREF";
 }

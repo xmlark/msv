@@ -10,6 +10,7 @@
 package com.sun.tranquilo.reader.trex;
 
 import com.sun.tranquilo.reader.RunAwayExpressionChecker;
+import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.trex.TREXPatternVisitorVoid;
 import com.sun.tranquilo.grammar.trex.ConcurPattern;
 import com.sun.tranquilo.grammar.trex.InterleavePattern;
@@ -23,8 +24,16 @@ public class TREXRunAwayExpressionChecker
 	extends RunAwayExpressionChecker
 	implements TREXPatternVisitorVoid
 {
-	public TREXRunAwayExpressionChecker( TREXGrammarReader reader ) { super(reader); }
+	private TREXRunAwayExpressionChecker( TREXGrammarReader reader ) { super(reader); }
 
+	public static void check( TREXGrammarReader reader, Expression exp ) {
+		try {
+			exp.visit( new TREXRunAwayExpressionChecker(reader) );
+		} catch( RuntimeException e ) {
+			if(e!=eureka)	throw e;
+		}
+	}
+	
 	public void onConcur( ConcurPattern exp )			{ binaryVisit(exp);	}
 	public void onInterleave( InterleavePattern exp )	{ binaryVisit(exp);	}
 }

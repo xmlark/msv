@@ -10,13 +10,11 @@
 package com.sun.tranquilo.verifier.multithread;
 
 import javax.xml.parsers.*;
+import com.sun.tranquilo.grammar.Grammar;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.ExpressionPool;
-import com.sun.tranquilo.grammar.relax.RELAXGrammar;
+import com.sun.tranquilo.reader.util.GrammarLoader;
 import com.sun.tranquilo.grammar.trex.TREXPatternPool;
-import com.sun.tranquilo.grammar.trex.TREXGrammar;
-import com.sun.tranquilo.reader.relax.RELAXReader;
-import com.sun.tranquilo.reader.trex.TREXGrammarReader;
 import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
 import com.sun.tranquilo.verifier.Verifier;
 import com.sun.tranquilo.verifier.ValidityViolation;
@@ -36,9 +34,7 @@ public class Daemon implements Runnable
 		new Daemon()._main(args);
 	}
 	
-	Expression topLevel;
-	ExpressionPool pool;
-	boolean ignoreAttr;
+	Grammar grammar;
 	/** file names that have to be validated. */
 	private final Stack jobs = new Stack();
 	
@@ -58,33 +54,16 @@ public class Daemon implements Runnable
 		factory.setNamespaceAware(true);
 		factory.setValidating(false);
 		
-		TREXDocumentDeclaration docDecl;
+		String schemaName;
+
+		if( args[0].equals("relax") )	schemaName = args[1]+".rlx";
+		else							schemaName = args[1]+".trex";
+
+		grammar = GrammarLoader.loadSchema(
+				schemaName,
+				new com.sun.tranquilo.driver.textui.DebugController(false),
+				factory );
 		
-		if( args[0].equals("relax") )
-		{
-			RELAXGrammar g =
-				RELAXReader.parse(
-					args[1]+".rlx",
-					factory,
-					new com.sun.tranquilo.driver.textui.DebugController(false),
-					new TREXPatternPool() );
-			
-			topLevel = g.topLevel;
-			pool = g.pool;
-			ignoreAttr = true;
-		}
-		else
-		{
-			TREXGrammar g =
-				TREXGrammarReader.parse(
-					args[1]+".trex",
-					factory,
-					new com.sun.tranquilo.driver.textui.DebugController(false) );
-			
-			topLevel = g.start;
-			pool = g.pool;
-			ignoreAttr = false;
-		}
 		
 		for( int i=100; i<=999; i++ )
 			jobs.push( args[1]+".v"+i+args[2] );
@@ -115,7 +94,8 @@ public class Daemon implements Runnable
 		{
 			SAXParserFactory factory = new org.apache.xerces.jaxp.SAXParserFactoryImpl();
 			factory.setNamespaceAware(true);
-			TREXPatternPool localPool = new TREXPatternPool(this.pool);
+			TREXPatternPool localPool = new TREXPatternPool(grammar.getPool());
+//			TREXPatternPool localPool = new TREXPatternPool();
 			
 			while(true)
 			{
@@ -132,8 +112,8 @@ public class Daemon implements Runnable
 				
 				XMLReader r = factory.newSAXParser().getXMLReader();
 				Verifier v = new Verifier(
-					new TREXDocumentDeclaration(topLevel,(TREXPatternPool)pool,ignoreAttr),
-//					new TREXDocumentDeclaration(topLevel,localPool,ignoreAttr),
+					new TREXDocumentDeclaration(grammar),
+//					new TREXDocumentDeclaration(grammar.getTopLevel(),localPool),
 					new com.sun.tranquilo.verifier.util.VerificationErrorHandlerImpl() );
 				r.setContentHandler(v);
 				try

@@ -34,8 +34,10 @@ public final class SimpleAcceptor extends ContentModelAcceptor
 	 * This acceptor is verifying the content model of this ElementExp.
 	 * This value is usually non-null, but can be null when Verifier is
 	 * recovering from eariler errors.
+	 * null owner means this acceptor is "synthesized" just for proper error recovery,
+	 * therefor there is no owner element expression.
 	 */
-	protected final ElementExp owner;
+	public final ElementExp owner;
 
 	public final Object getOwnerType()	{ return owner; }
 

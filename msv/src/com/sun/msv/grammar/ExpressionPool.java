@@ -38,6 +38,10 @@ import com.sun.tranquilo.datatype.DataType;
  */
 public class ExpressionPool
 {
+	public final Expression createAttribute( NameClass nameClass )
+	{
+		return unify(new AttributeExp(nameClass,Expression.anyString));
+	}
 	public final Expression createAttribute( NameClass nameClass, Expression content )
 	{
 		return unify(new AttributeExp(nameClass,content));

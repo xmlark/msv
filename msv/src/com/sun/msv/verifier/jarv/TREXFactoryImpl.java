@@ -33,28 +33,18 @@ public class TREXFactoryImpl extends FactoryImpl
 		throws VerifierConfigurationException,
 			   SAXException
 	{
-		try
-		{
-			TREXGrammar g = TREXGrammarReader.parse(uri,factory,new IgnoreController());
-			if(g==null)		return null;	// load failure
-			return getVerifier(g);
-		}
-		catch( ParserConfigurationException pce )
-		{ throw new VerifierConfigurationException(pce); }
+		TREXGrammar g = TREXGrammarReader.parse(uri,factory,new IgnoreController());
+		if(g==null)		return null;	// load failure
+		return getVerifier(g);
 	}
 
 	public Verifier newVerifier( InputSource source )
 		throws VerifierConfigurationException,
 			   SAXException
 	{
-		try
-		{
-			TREXGrammar g = TREXGrammarReader.parse(source,factory,new IgnoreController());
-			if(g==null)		return null;	// load failure
-			return getVerifier(g);
-		}
-		catch( ParserConfigurationException pce )
-		{ throw new VerifierConfigurationException(pce); }
+		TREXGrammar g = TREXGrammarReader.parse(source,factory,new IgnoreController());
+		if(g==null)		return null;	// load failure
+		return getVerifier(g);
 	}
 	
 	public Verifier newVerifier( java.io.File source )

@@ -63,10 +63,10 @@ public abstract class GrammarReader
 	public Locator locator;
 	
 	/** this object receives errors and warnings */
-	protected final GrammarReaderController controller;
+	public final GrammarReaderController controller;
 	
 	/** Reader may create another SAXParser from this factory */
-	protected final SAXParserFactory parserFactory;
+	public final SAXParserFactory parserFactory;
 
 	/** this object must be used to create a new expression */
 	public final ExpressionPool pool;
@@ -76,18 +76,14 @@ public abstract class GrammarReader
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
 		ExpressionPool pool,
-		State initialState )
-		throws SAXException, ParserConfigurationException
-	{
+		State initialState ) {
+		
 		this.controller = controller;
 		this.parserFactory = parserFactory;
 		if( !parserFactory.isNamespaceAware() )
 			throw new IllegalArgumentException("parser factory must be namespace-aware");
 		this.pool = pool;
 		pushState( initialState, null );
-		
-		// creates initial SAX parser
-		parserFactory.newSAXParser().getXMLReader().setContentHandler(this);
 	}
 	
 	
@@ -101,7 +97,7 @@ public abstract class GrammarReader
 	 * namespace prefix to URI conversion map.
 	 * this variable is evacuated to InclusionContext when the parser is switched.
 	 */
-	private NamespaceSupport namespaceSupport = new NamespaceSupport();
+	public NamespaceSupport namespaceSupport = new NamespaceSupport();
 	
 	/**
 	 * calls processName method of NamespaceSupport
@@ -191,7 +187,35 @@ public abstract class GrammarReader
 	 * Then this stack hold "foo.rlx","bar.rlx","joe.rlx" when parsing "joe.rlx".
 	 */
 	private Stack includeStack = new Stack();
-		
+	
+	/**
+	 * resolve relative URL to the absolute URL.
+	 * 
+	 * Also this method allows GrammarReaderController to redirect or
+	 * prohibit inclusion.
+	 * 
+	 * @return
+	 *		return null if an error occurs.
+	 */
+	public final InputSource resolveLocation( String url ) {
+		// resolve a relative URL to an absolute one
+		try {
+			url = new URL( new URL(locator.getSystemId()), url ).toExternalForm();
+		} catch( MalformedURLException e ) {}
+	
+		try {
+			InputSource source = controller.resolveInclude(url);
+			if(source==null)	return new InputSource(url);	// default handling
+			else				return source;
+		} catch( IOException ie ) {
+			reportError( ie, ERR_IO_EXCEPTION );
+			return null;
+		} catch( SAXException se ) {
+			reportError( se, ERR_SAX_EXCEPTION );
+			return null;
+		}
+	}
+	
 	/**
 	 * switchs InputSource to the specified URL and
 	 * parses it by the specified state.
@@ -202,38 +226,16 @@ public abstract class GrammarReader
 	 *		this state will parse top-level of new XML source.
 	 *		this state receives document element by its createChildState method.
 	 */
-	public void switchSource( String url, State newState )
-	{
-		// resolve a relative URL to an absolute one
-		try
-		{
-			url = new URL( new URL(locator.getSystemId()), url ).toExternalForm();
-		}
-		catch( MalformedURLException e ) { }
-	
-		InputSource source;
-		try
-		{
-			source = controller.resolveInclude(url);
-			if(source==null)
-				source = new InputSource(url);	// default handling
-		}
-		catch( IOException ie )
-		{
-			reportError( ie, ERR_IO_EXCEPTION );
-			return;
-		}
-		catch( SAXException se )
-		{
-			reportError( se, ERR_SAX_EXCEPTION );
-			return;	// recover by ignoring this include
-		}
+	public void switchSource( String url, State newState ) {
+		
+		final InputSource source = resolveLocation(url);
+		if(source==null)		return;	// recover by ignoring this.
 		
 		url = source.getSystemId();
 		
 		for( InclusionContext ic = pendingIncludes; ic!=null; ic=ic.previousContext )
-			if( ic.systemId.equals(url) )
-			{// recursive include.
+			if( ic.systemId.equals(url) ) {
+				// recursive include.
 				// computes what files are recurisve.
 				String s="";
 				for( int i = includeStack.indexOf(url); i<includeStack.size(); i++ )
@@ -246,39 +248,41 @@ public abstract class GrammarReader
 		
 		pushInclusionContext();
 		State currentState = getCurrentState();
-		try
-		{
+		try {
 			// this state will receive endDocument event.
 			pushState( newState, null );
-			guardedParse( source );
-		}
-		finally
-		{
+			parse( source );
+		} finally {
 			// restore the current state.
 			super.setContentHandler(currentState);
 			popInclusionContext();
 		}
 	}
 	
-	/**
-	 * calls parse method.
-	 * 
-	 * this method handls all errors and reports it to the appropriate handler.
-	 */
-	protected final void guardedParse( Object source )
-	{
-		try
-		{
+	/** parses a grammar from the specified source */
+	public final void parse( String source ) {
+		_parse(source);
+	}
+	
+	/** parses a grammar from the specified source */
+	public final void parse( InputSource source ) {
+		_parse(source);
+	}
+	
+	/** parses a grammar from the specified source */
+	private void _parse( Object source ) {
+		try {
+			XMLReader reader = parserFactory.newSAXParser().getXMLReader();
+			reader.setContentHandler(this);
+			
 			// invoke XMLReader
-			if( source instanceof InputSource )		super.parse((InputSource)source);
-			if( source instanceof String )			super.parse((String)source);
-		}
-		catch( IOException e )
-		{
+			if( source instanceof InputSource )		reader.parse((InputSource)source);
+			if( source instanceof String )			reader.parse((String)source);
+		} catch( ParserConfigurationException e ) {
+			reportError( e, ERR_XMLPARSERFACTORY_EXCEPTION, e.getMessage() );
+		} catch( IOException e ) {
 			reportError( e, ERR_IO_EXCEPTION, e.getMessage() );
-		}
-		catch( SAXException e )
-		{
+		} catch( SAXException e ) {
 			reportError( e, ERR_SAX_EXCEPTION, e.getMessage() );
 		}
 	}
@@ -291,32 +295,29 @@ public abstract class GrammarReader
 	
 	public class BackwardReferenceMap
 	{
-		private final Map[] impl = new Map[]
-				{new java.util.HashMap(),new java.util.HashMap()};
+		private final Map impl = new java.util.HashMap();
 														 
-		public void memorizeLink( Object target, boolean externalLink )
+		public void memorizeLink( Object target )
 		{
-			ArrayList list; int idx = externalLink?1:0;
-			if( impl[idx].containsKey(target) )	list = (ArrayList)impl[idx].get(target);
+			ArrayList list;
+			if( impl.containsKey(target) )	list = (ArrayList)impl.get(target);
 			else
 			{// new target.
 				list = new ArrayList();
-				impl[idx].put(target,list);
+				impl.put(target,list);
 			}
 			
 			list.add(new LocatorImpl(locator));
 		}
 		
 		// TODO: does anyone want to get all of the refer?
-		public Locator[] getReferer( Object target, boolean externalLink )
+		public Locator[] getReferer( Object target )
 		{
-			int idx = externalLink?1:0;
-			if( impl[idx].containsKey(target) )
+			if( impl.containsKey(target) )
 			{
-				ArrayList lst = (ArrayList)impl[idx].get(target);
+				ArrayList lst = (ArrayList)impl.get(target);
 				Locator[] locs = new Locator[lst.size()];
-				for( int i=0; i<locs.length; i++ )
-					locs[i] = (Locator)lst.get(i);
+				lst.toArray(locs);
 				return locs;
 			}
 			else							return null;
@@ -374,7 +375,7 @@ public abstract class GrammarReader
 			ReferenceExp ref = (ReferenceExp)itr.next();
 			if( ref.exp==null )
 			{
-				reportError( backwardReference.getReferer(ref,false),
+				reportError( backwardReference.getReferer(ref),
 							errMsg, new Object[]{ref.name} );
 				ref.exp=Expression.nullSet;
 				// recover by assuming a null definition.
@@ -419,8 +420,39 @@ public abstract class GrammarReader
 	/**
 	 * creates an appropriate State object for parsing particle/pattern.
 	 */
-	public abstract State createExpressionChildState( StartTagInfo tag );
+	public final State createExpressionChildState( StartTagInfo tag ) {
+		// try external interceptors first.
+		int len = externalExpressionCreators.size();
+		for( int i=0; i<len; i++ ) {
+			State s = ((ExternalExpressionCreator)externalExpressionCreators.get(i)).create(tag);
+			if(s!=null)		return s;
+		}
+		
+		// then language default.
+		return createDefaultExpressionChildState(tag);
+	}
 
+	/**
+	 * the third object can implement this interface to change the state object
+	 * created.
+	 */
+	public static interface ExternalExpressionCreator {
+		State create( StartTagInfo tag );
+	}
+	
+	/** set of ExternalExpressionCreators. */
+	private final ArrayList externalExpressionCreators = new ArrayList();
+	
+	public void addExpressionCreator( ExternalExpressionCreator creator ) {
+		externalExpressionCreators.add(creator);
+	}
+	
+	/**
+	 * this method must be implemented by the derived class to create
+	 * language-default expresion state.
+	 */
+	protected abstract State createDefaultExpressionChildState( StartTagInfo tag );
+	
 	
 // SAX events interception
 //============================================

@@ -9,7 +9,7 @@
  */
 package com.sun.tranquilo.reader.relax;
 
-import com.sun.tranquilo.grammar.ReferenceExp;
+import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.relax.RELAXModule;
 
 /**
@@ -19,8 +19,6 @@ import com.sun.tranquilo.grammar.relax.RELAXModule;
  */
 public class ElementRefState extends LabelRefState
 {
-	protected final ReferenceExp getOrCreate( RELAXModule module, String label )
-	{
-		return module.elementRules.getOrCreate(label);
-	}
+	protected final Expression resolve( String namespace, String label )
+	{ return ((RELAXReader)reader).resolveElementRef(namespace,label); }
 }

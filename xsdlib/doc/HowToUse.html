@@ -20,9 +20,9 @@
 	</style>
 </HEAD>
 <BODY>
-<P ALIGN=center STYLE="MARGIN-BOTTOM: 0in"><B>USAGE GUIDE FOR THE
-XSDLib, SUN'S JAVA IMPLEMENTATION OF XML SCHEMA PART 2<BR>Preview
-Version.1 March,2001<BR><BR>Copyright (c) Sun Microsystems, 2001</B></P>
+<P ALIGN=center STYLE="MARGIN-BOTTOM: 0in"><B> USAGE GUIDE FOR
+XSDLib, SUN'S JAVA IMPLEMENTATION OF XML SCHEMA PART 2<BR>Preview Version.1
+March, 2001<BR><BR>Copyright (c) Sun Microsystems, 2001</B></P>
 <P STYLE="MARGIN-BOTTOM: 0in"><BR>
 </P>
 <P ALIGN=right>Document written by <A href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke
@@ -116,7 +116,7 @@ The only difference between derivation by list and derivation by
 union is that the latter accepts more than one base type. 
 </P>
 <H2>By Restriction</H2>
-<P>The following exapmle derives a new type by adding facets. 
+<P>The following example derives a new type by adding facets. 
 </P>
 <PRE>DataType f() throws BadTypeException {
   DataType baseType = DataTypeFactory.getTypeByName("string");
@@ -138,15 +138,15 @@ should be "fixed" or not. Once a facet is fixed, a derived
 class can no longer restrict that facet. 
 </P>
 <P>The fourth parameter is again ValidationContextProvider, which is
-sometimes necessary. Although the above example omits to supply one,
+sometimes necessary. Although the above example does not supply one,
 the caller has to supply an object that implements
 ValidationContextProvider. 
 </P>
-<P>BadTypeException can be thrown when you add a facet, or when you
+<P>BadTypeException can be thrown when you add a facet or when you
 call the derive method. 
 </P>
 <H1><A NAME="diagnosis"></A>Diagnosing Errors</H1>
-<P>The following example provides a diagnosis message to users about
+<P>The following example provides a diagnostic message to users about
 what is wrong with their value. 
 </P>
 <PRE>void test( DataType dt, String v, ValidationContextProvider context ) {

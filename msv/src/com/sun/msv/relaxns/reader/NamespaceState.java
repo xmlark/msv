@@ -133,12 +133,15 @@ public class NamespaceState extends State
 		throws SAXException
 	{
 		if(bailOut) {
+			// in bail-out mode, ignore all children.
 			reader.pushState( new IgnoreState(), new StartTagInfo(namespace,localName,qName,atts,reader) );
+			return;
 		}
 		
-		if(!inlineModuleExpected)
-		{// expecets nothing
+		if(!inlineModuleExpected) {
+			// expecets nothing
 			reader.reportError(reader.ERR_MALPLACED_ELEMENT, qName );
+			bailOut=true;	// so that we don't issue errors for every child.
 			return;
 		}
 		

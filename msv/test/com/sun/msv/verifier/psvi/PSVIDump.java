@@ -11,14 +11,14 @@ package com.sun.msv.verifier.psvi;
 
 import com.sun.msv.datatype.DatabindableDatatype;
 import com.sun.msv.driver.textui.DebugController;
-import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.AttributeExp;
 import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.grammar.util.ExpressionPrinter;
 import com.sun.msv.reader.util.GrammarLoader;
-import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import org.xml.sax.XMLReader;
+import com.sun.msv.verifier.DocumentDeclaration;
+import com.sun.msv.verifier.util.VerificationErrorHandlerImpl;
 import javax.xml.parsers.SAXParserFactory;
+import org.xml.sax.XMLReader;
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.ValidationContext;
 
@@ -38,7 +38,7 @@ public class PSVIDump implements TypedContentHandler {
 		// load a schema. GrammarLoader will detect the schema language automatically.
 		GrammarLoader loader = new GrammarLoader();
 		loader.setController( new DebugController(false,false) );
-		Grammar grammar = loader.loadSchema( args[0] );
+		DocumentDeclaration grammar = loader.loadVGM( args[0] );
 		
 		if( grammar==null ) {
 			System.err.println("failed to load a grammar");
@@ -49,7 +49,7 @@ public class PSVIDump implements TypedContentHandler {
 		XMLReader reader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 		
 		// create an instance of verifier,
-		TypeDetector verifier = new TypeDetector(grammar);
+		TypeDetector verifier = new TypeDetector(grammar, new VerificationErrorHandlerImpl() );
 		
 		// configure a pipeline so that the verifier will receive SAX events first.
 		reader.setContentHandler(verifier);

@@ -214,4 +214,6 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
 	public Class getJavaObjectType() {
 		return Calendar.class;
 	}
+    
+    private static final long serialVersionUID = 1465669066779112677L;
 }

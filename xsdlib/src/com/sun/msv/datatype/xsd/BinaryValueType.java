@@ -42,4 +42,6 @@ class BinaryValueType implements java.io.Serializable {
 	public BinaryValueType( byte[] rawData ) {
 		this.rawData = rawData;
 	}
+    
+    private static final long serialVersionUID = -2609017982625895534L;    
 }

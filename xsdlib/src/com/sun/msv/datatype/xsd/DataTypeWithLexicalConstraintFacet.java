@@ -38,4 +38,6 @@ abstract class DataTypeWithLexicalConstraintFacet extends DataTypeWithFacet {
 	}
 
 	protected abstract boolean checkLexicalConstraint( String literal );
+    
+    private static final long serialVersionUID = 6093401348890059498L;
 }

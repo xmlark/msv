@@ -56,4 +56,6 @@ abstract class BinaryBaseType extends BuiltinAtomicType implements Discrete {
 	public Class getJavaObjectType() {
 		return byte[].class;
 	}
+
+    private static final long serialVersionUID = -6355125980881791215L;
 }

@@ -53,4 +53,5 @@ abstract class FloatingNumberType extends BuiltinAtomicType implements Comparato
 			return NOT_ALLOWED;
 	}
 
+    private static final long serialVersionUID = -224134863141700384L;
 }

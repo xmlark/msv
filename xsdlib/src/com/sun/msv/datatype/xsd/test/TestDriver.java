@@ -11,8 +11,8 @@ class TestDriver implements ErrorReceiver
 	public static void main (String args[]) throws Exception
 	{
 		// reads test case file
-		Document doc = new SAXBuilder().build(new FileInputStream( //"testcase.txt"));
-		"C:\\Documents and Settings\\Bear\\My Documents\\Sun\\tranquilo\\src\\com\\sun\\tranquilo\\datatype\\test\\DataTypeTest.txt" ));
+		Document doc = new SAXBuilder().build(
+			TestDriver.class.getResourceAsStream("DataTypeTest.xml") );
 
 		DataTypeTester tester = new DataTypeTester(System.out,new TestDriver());
 		// perform test for each "case" item
@@ -24,13 +24,23 @@ class TestDriver implements ErrorReceiver
 	public boolean report( UnexpectedResultException exp )
 	{
 		System.err.println("************* error *************");
-		System.err.println("type name:"+exp.baseTypeName);
-		System.err.println("tested instance: \""+exp.testInstance+"\"");
-		System.err.println("supposed to be valid?"+exp.supposedToBeValid);
+		System.err.println("type name            : "+exp.baseTypeName);
+		System.err.println("tested instance      : \""+exp.testInstance+"\"");
+		System.err.println("supposed to be valid : "+exp.supposedToBeValid);
+		System.err.println("verify method        : "+exp.type.verify(exp.testInstance) );
+		System.err.println("diagnose method      : "+(exp.type.diagnose(exp.testInstance)==null) );
+		
 		if( exp.testCase.facets.isEmpty() )
 			System.err.println("facets: none");
 		else
 			exp.testCase.facets.dump(System.err);
+
+		DataTypeErrorDiagnosis err = exp.type.diagnose(exp.testInstance);
+		
+		if( err!=null && err.message!=null )
+			System.err.println("diagnosis: " + err.message);
+		else
+			System.err.println("diagnosis: N/A");
 		
 		// do it again (for trace purpose)
 		exp.type.verify(exp.testInstance);

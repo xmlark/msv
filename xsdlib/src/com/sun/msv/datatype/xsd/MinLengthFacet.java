@@ -2,7 +2,7 @@ package com.sun.tranquilo.datatype;
 
 public class MinLengthFacet extends DataTypeWithValueConstraintFacet
 {
-	private final int minLength;
+	protected final int minLength;
 	
 	protected MinLengthFacet( String typeName, DataTypeImpl baseType, Facets facets )
 		throws BadTypeException
@@ -25,18 +25,18 @@ public class MinLengthFacet extends DataTypeWithValueConstraintFacet
 	public Object convertToValue( String literal )
 	{
 		Object o = baseType.convertToValue(literal);
-		if(o==null || ((Discrete)baseType).countLength(literal)<minLength)	return null;
+		if(o==null || ((Discrete)concreteType).countLength(literal)<minLength)	return null;
 		return o;
 	}
 	
 	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
 	{
-		Object o = baseType.convertToValue(content);
+		Object o = concreteType.convertToValue(content);
 		// base type must have accepted this lexical value, otherwise 
 		// this method is never called.
 		if(o==null)	throw new IllegalStateException();	// assertion
 		
-		int cnt = ((Discrete)baseType).countLength(content);
+		int cnt = ((Discrete)concreteType).countLength(content);
 		if(cnt<minLength)
 			return new DataTypeErrorDiagnosis( this, content, -1,
 				DataTypeErrorDiagnosis.ERR_MINLENGTH,

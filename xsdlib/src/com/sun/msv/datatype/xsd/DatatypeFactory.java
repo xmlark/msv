@@ -63,7 +63,15 @@ public class DataTypeFactory
 	}
 	
 	private static void add( Map m, DataType type )
-	{ m.put( type.getName(), type ); }
+	{
+		if( m.containsKey(type.getName()) )
+			// this error is considered as an assertion,
+			// since this object doesn't allow external programs to
+			// add types to the object.
+			throw new IllegalArgumentException("multiple definition");
+		
+		m.put( type.getName(), type );
+	}
 	
 	/** creates a map that contains all static types */
 	private static Map createStaticTypes()

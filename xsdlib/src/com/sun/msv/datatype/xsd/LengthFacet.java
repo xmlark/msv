@@ -33,18 +33,18 @@ public class LengthFacet extends DataTypeWithValueConstraintFacet
 	public Object convertToValue( String content )
 	{
 		Object o = baseType.convertToValue(content);
-		if(o==null || ((Discrete)baseType).countLength(content)!=length)	return null;
+		if(o==null || ((Discrete)concreteType).countLength(content)!=length)	return null;
 		return o;
 	}
 	
 	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
 	{
-		Object o = baseType.convertToValue(content);
+		Object o = concreteType.convertToValue(content);
 		// base type must have accepted this lexical value, otherwise 
 		// this method is never called.
 		if(o==null)	throw new IllegalStateException();	// assertion
 		
-		int cnt = ((Discrete)baseType).countLength(content);
+		int cnt = ((Discrete)concreteType).countLength(content);
 		if(cnt!=length)
 			return new DataTypeErrorDiagnosis( this, content, -1,
 				DataTypeErrorDiagnosis.ERR_LENGTH,

@@ -4,17 +4,18 @@ package com.sun.tranquilo.datatype;
  */
 abstract class FloatingNumberType extends ConcreteType implements Comparator
 {
-	protected FloatingNumberType( String typeName ) { super("typeName"); }
+	protected FloatingNumberType( String typeName ) { super(typeName); }
 	
 	final protected boolean checkFormat( String lexicalValue )
 	{// FloatType and DoubleType checks format by trying to convert it to value object
 		return convertToValue(lexicalValue)!=null;
 	}
 	
-	protected static boolean isDigitOrPeriod( char ch )
+	protected static boolean isDigitOrPeriodOrSign( char ch )
 	{
 		if( '0'<=ch && ch<='9' )	return true;
-		return ch=='.';
+		if( ch=='+' || ch=='-' || ch=='.' )	return true;
+		return false;
 	}
 	
 	public final int compare( Object lhs, Object rhs )

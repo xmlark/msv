@@ -31,13 +31,13 @@ class PrecisionFacet extends DataTypeWithLexicalConstraintFacet
 
 	protected boolean checkLexicalConstraint( String content )
 	{
-		return countPrecision(content)<precision;
+		return countPrecision(content)<=precision;
 	}
 	
 	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
 	{
 		final int cnt = countPrecision(content);
-		if( cnt<precision )
+		if( cnt<=precision )
 			return null;
 		
 		return new DataTypeErrorDiagnosis(this, content, -1,

@@ -20,9 +20,10 @@ public class DoubleType extends FloatingNumberType
 			if(lexicalValue.equals("-INF"))	return new Double(Double.NEGATIVE_INFINITY);
 			
 			if(lexicalValue.length()==0
-			|| !isDigitOrPeriod(lexicalValue.charAt(0))
-			|| !isDigitOrPeriod(lexicalValue.charAt(lexicalValue.length()-1)) )
+			|| !isDigitOrPeriodOrSign(lexicalValue.charAt(0))
+			|| !isDigitOrPeriodOrSign(lexicalValue.charAt(lexicalValue.length()-1)) )
 				return null;
+			
 			
 			// these screening process is necessary due to the wobble of Float.valueOf method
 			return Double.valueOf(lexicalValue);

@@ -127,6 +127,9 @@ public class DataTypeTester
 			if(typeObj!=null)
 			{
 				final String answer = testCase.answer;
+				
+				if( answer.length()!=values.length )
+					throw new IllegalStateException("answer and values have different length");
 
 //				if( testCase.facets.isEmpty())	out.println("nofacet");
 //				else	testCase.facets.dump(out);
@@ -134,14 +137,14 @@ public class DataTypeTester
 				// test each value and see what happens
 				for( int i=0; i<values.length; i++ )
 				{
-					if(typeObj.verify(values[i]))
-					{
-						if(answer.charAt(i)=='o')	continue;	// as predicted
-					}
-					else
-					{
-						if(answer.charAt(i)=='.')	continue;	// as predicted
-					}
+					boolean v = typeObj.verify(values[i]);
+					boolean d = (typeObj.diagnose(values[i])==null);
+					
+					if(v && d && answer.charAt(i)=='o')
+						continue;	// as predicted
+					if(!v && !d && answer.charAt(i)=='.')
+						continue;	// as predicted
+					
 					// dump error messages
 					if( !err.report( new UnexpectedResultException(
 							typeObj, baseType.getName(),
@@ -155,7 +158,8 @@ public class DataTypeTester
 
 				// test each wrong values and makes sure that they are rejected.
 				for( int i=0; i<wrongs.length; i++ )
-					if(typeObj.verify(wrongs[i]))
+					if( typeObj.verify(wrongs[i])
+					||  typeObj.diagnose(wrongs[i])==null )
 					{
 						if( !err.report( new UnexpectedResultException(
 							typeObj, baseType.getName(),

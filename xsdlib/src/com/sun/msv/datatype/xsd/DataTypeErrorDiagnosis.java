@@ -48,7 +48,7 @@ public class DataTypeErrorDiagnosis
 		this.type = type;
 		this.column = column;
 		this.message = java.text.MessageFormat.format(
-			java.util.ResourceBundle.getBundle("com.sun.tranquilo.resources.datatype").getString(resourcePropertyName),
+			java.util.ResourceBundle.getBundle("com.sun.tranquilo.datatype.Messages").getString(resourcePropertyName),
 			args );
 	}
 	

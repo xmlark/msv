@@ -25,18 +25,18 @@ public class MaxLengthFacet extends DataTypeWithValueConstraintFacet
 	public Object convertToValue( String literal )
 	{
 		Object o = baseType.convertToValue(literal);
-		if(o==null || ((Discrete)baseType).countLength(literal)>maxLength)	return null;
+		if(o==null || ((Discrete)concreteType).countLength(literal)>maxLength)	return null;
 		return o;
 	}
 	
 	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
 	{
-		Object o = baseType.convertToValue(content);
+		Object o = concreteType.convertToValue(content);
 		// base type must have accepted this lexical value, otherwise 
 		// this method is never called.
 		if(o==null)	throw new IllegalStateException();	// assertion
 		
-		int cnt = ((Discrete)baseType).countLength(content);
+		int cnt = ((Discrete)concreteType).countLength(content);
 		if(cnt>maxLength)
 			return new DataTypeErrorDiagnosis( this, content, -1,
 				DataTypeErrorDiagnosis.ERR_MAXLENGTH,

@@ -229,7 +229,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 		// pruning replaces unconsumed attributes by nullSet, whereas removing
 		// replaces them by epsilon.
 		// since we are in error recovery, removing is what we want here.
-		final AttributeRemover ar = new AttributeRemover(docDecl.getPool());
+		final AttributeRemover ar = docDecl.getAttributeRemover();
 		
 		CombinedChildContentExpCreator.ExpressionPair combinedEoC =
 			cccc.get( expression, null, false, false );

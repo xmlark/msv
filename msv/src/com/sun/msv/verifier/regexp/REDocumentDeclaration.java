@@ -38,8 +38,11 @@ public abstract class REDocumentDeclaration implements DocumentDeclaration
 	/** obtains a thread-local copy of AttributeFeeder */
 	public abstract AttributeFeeder getAttributeFeeder();
 
-	/** obtains a thread-local copy of AttributeFeeder */
+	/** obtains a thread-local copy of AttributePruner */
 	public abstract AttributePruner getAttributePruner();
+
+	/** obtains a thread-local copy of AttributeRemover */
+	public abstract AttributeRemover getAttributeRemover();
 
 	/** obtains a thread-local copy of ElementsOfConcernCollector */
 	public abstract ElementsOfConcernCollector getElementsOfConcernCollector();

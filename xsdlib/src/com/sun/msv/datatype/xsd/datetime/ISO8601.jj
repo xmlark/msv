@@ -30,7 +30,7 @@ public class ISO8601Parser
 	Number		mSecond;			// Integer or BigDecimal
 	TimeZone	zone;				// TimeZone
 	
-	private static final String[] trail = new String[]{"0000","000","00","0",""};
+	private static final String[] trail = new String[]{"000","00","0",""};
 	
 	private void reset() { yy=mm=dd=HH=MM=mSecond=null; zone=null; }
 }
@@ -68,7 +68,8 @@ void secondV() : { int ss; Token t2=null; }
 		
 		if( t2.image.length()<4 )
 		{// integer is enough
-			mSecond = new Integer(ss*1000 + Integer.parseInt(t2.image));
+			int v = Integer.parseInt(t2.image + trail[t2.image.length()]);
+			mSecond = new Integer(ss*1000+v );
 			return;
 		}
 		
@@ -227,7 +228,7 @@ void timeZoneModifierL() : { int h,m=0; }
 
 void timeZoneModifierV() :
 {
-	int h,m;int sign;
+	int h,m=0;int sign;
 }
 {
 	"Z"
@@ -236,7 +237,7 @@ void timeZoneModifierV() :
 	}
 |
 	( "+" {sign=1;} | "-" {sign=-1;} )
-	h=NN(0,14) ":" m=NN(0,59)
+	h=NN(0,14) [":" m=NN(0,59)]
 	{
 		if(h==14 && m!=0)	throw new ParseException();
 		zone = TimeZone.create( sign*(h*60+m) );

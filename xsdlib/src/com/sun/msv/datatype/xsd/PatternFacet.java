@@ -85,10 +85,15 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
 	}
 	
 	protected final boolean checkLexicalConstraint( String literal ) {
-		// makes sure that at least one of the patterns is satisfied.
-		for( int i=0; i<exps.length; i++ )
-			if(exps[i].matches(literal))
-				return true;
+        // makes sure that at least one of the patterns is satisfied.
+        
+        // regexp can be not thread-safe. Make sure only one thread uses it
+        // at any given time.
+        synchronized(this) {
+    		for( int i=0; i<exps.length; i++ )
+    			if(exps[i].matches(literal))
+    				return true;
+        }
 		// otherwise fail
 		return false;
 	}

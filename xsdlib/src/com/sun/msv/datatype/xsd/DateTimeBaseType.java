@@ -197,7 +197,7 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
         
         // otherwise print out normally.        
         StringBuffer result = new StringBuffer();
-        int offset = tz.getRawOffset();
+        int offset = tz.getOffset(cal.getTimeInMillis());
         if (offset >= 0)
             result.append('+');
         else {

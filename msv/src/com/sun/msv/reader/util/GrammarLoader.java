@@ -19,9 +19,9 @@ import com.sun.msv.relaxns.grammar.RELAXGrammar;
 import com.sun.msv.relaxns.reader.RELAXNSReader;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
-import com.sun.msv.grammar.relax.RELAXModule;
-import com.sun.msv.grammar.trex.TREXGrammar;
+import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
+import com.sun.msv.verifier.regexp.xmlschema.XSREDocDecl;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
@@ -77,7 +77,7 @@ public class GrammarLoader
 		throws SAXException, ParserConfigurationException, java.io.IOException
 	{
 		Grammar g = loadSchema(url,controller,factory);
-		if(g!=null)		return new REDocumentDeclaration(g);
+		if(g!=null)		return wrapByVGM(g);
 		else			return null;
 	}
 	
@@ -87,8 +87,15 @@ public class GrammarLoader
 		throws SAXException, ParserConfigurationException, java.io.IOException
 	{
 		Grammar g = loadSchema(source,controller,factory);
-		if(g!=null)		return new REDocumentDeclaration(g);
+		if(g!=null)		return wrapByVGM(g);
 		else			return null;
+	}
+	
+	private static REDocumentDeclaration wrapByVGM( Grammar g ) {
+		if( g instanceof XMLSchemaGrammar )
+			return new XSREDocDecl((XMLSchemaGrammar)g);
+		else
+			return new REDocumentDeclaration(g);
 	}
 	
 

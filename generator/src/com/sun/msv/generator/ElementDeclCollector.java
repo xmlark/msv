@@ -9,9 +9,13 @@
  */
 package com.sun.msv.generator;
 
-import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.util.ExpressionWalker;
 import java.util.Set;
+
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.ConcurExp;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.util.ExpressionWalker;
 
 /**
  * collects all distinct element declaration in the grammar.

@@ -9,17 +9,43 @@
  */
 package com.sun.msv.generator;
 
-import org.w3c.dom.*;
-import org.xml.sax.ContentHandler;
-import org.relaxng.datatype.ValidationContext;
-import com.sun.msv.datatype.xsd.XSDatatype;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.Vector;
+
+import org.relaxng.datatype.Datatype;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
+
 import com.sun.msv.datatype.xsd.NmtokenType;
 import com.sun.msv.datatype.xsd.StringType;
-import com.sun.msv.grammar.*;
-import com.sun.msv.util.StringPair;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.BinaryExp;
+import com.sun.msv.grammar.ChoiceExp;
+import com.sun.msv.grammar.ConcurExp;
+import com.sun.msv.grammar.DataExp;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.ExpressionVisitorVoid;
+import com.sun.msv.grammar.InterleaveExp;
+import com.sun.msv.grammar.ListExp;
+import com.sun.msv.grammar.MixedExp;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.OneOrMoreExp;
+import com.sun.msv.grammar.OtherExp;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.SequenceExp;
+import com.sun.msv.grammar.ValueExp;
 import com.sun.msv.grammar.util.ExpressionPrinter;
+import com.sun.msv.util.StringPair;
 import com.sun.xml.util.XmlChars;
-import java.util.*;
 
 /**
  * generates an XML DOM instance that conforms to the given schema.
@@ -117,7 +143,7 @@ public class Generator implements ExpressionVisitorVoid {
 		Node com = domDoc.createComment("  "+error+"  ");
 		
 		Node n = node;
-		if( n.getNodeType()==n.ATTRIBUTE_NODE ) {
+		if( n.getNodeType()==Node.ATTRIBUTE_NODE ) {
 			n = ((Attr)n).getOwnerElement();
 			n.insertBefore( com, n.getFirstChild() );
 		} else {
@@ -328,7 +354,7 @@ public class Generator implements ExpressionVisitorVoid {
 			return;
 		}
 				
-		if( node.getNodeType()!=node.DOCUMENT_NODE ) {
+		if( node.getNodeType()!=Node.DOCUMENT_NODE ) {
 			// these errors cannot be generated for the document element
 			if( opts.random.nextDouble() < opts.probMissingElemError ) {
 				// missing element error. skip generating this instance.
@@ -409,8 +435,8 @@ public class Generator implements ExpressionVisitorVoid {
 			ids.add(value);
 		}
 		else
-		if( exp.dt.getIdType()==exp.dt.ID_TYPE_IDREF
-		||  exp.dt.getIdType()==exp.dt.ID_TYPE_IDREFS ) {
+		if( exp.dt.getIdType()==Datatype.ID_TYPE_IDREF
+		||  exp.dt.getIdType()==Datatype.ID_TYPE_IDREFS ) {
 			Node n = domDoc.createTextNode("{TmpIDRef}");
 			node.appendChild(n);
 			idrefs.add(n); // memorize this node so that we can patch it later.

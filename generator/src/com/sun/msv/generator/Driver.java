@@ -9,26 +9,44 @@
  */
 package com.sun.msv.generator;
 
-import javax.xml.parsers.*;
-import java.io.*;
-import org.xml.sax.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.URL;
-import com.sun.msv.grammar.trex.*;
-import com.sun.msv.grammar.relax.*;
-import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
-import com.sun.msv.grammar.*;
+import java.util.Random;
+import java.util.Set;
+import java.util.Vector;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+
+import com.sun.msv.driver.textui.DebugController;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.relax.RELAXModule;
 import com.sun.msv.grammar.util.RefExpRemover;
+import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
+import com.sun.msv.reader.dtd.DTDReader;
+import com.sun.msv.reader.util.GrammarLoader;
+import com.sun.msv.relaxns.grammar.RELAXGrammar;
 import com.sun.msv.util.StringPair;
 import com.sun.msv.verifier.Verifier;
-import com.sun.msv.verifier.util.*;
 import com.sun.msv.verifier.regexp.ElementsOfConcernCollector;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import com.sun.msv.relaxns.grammar.RELAXGrammar;
-import com.sun.msv.driver.textui.DebugController;
-import com.sun.msv.reader.util.GrammarLoader;
-import com.sun.msv.reader.dtd.DTDReader;
-import org.apache.xml.serialize.*;
+import com.sun.msv.verifier.util.ErrorHandlerImpl;
+import com.sun.msv.verifier.util.IgnoreErrorHandler;
 
 /**
  * command line driver.

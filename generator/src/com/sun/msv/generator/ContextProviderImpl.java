@@ -10,10 +10,11 @@
 package com.sun.msv.generator;
 
 import org.relaxng.datatype.ValidationContext;
-import com.sun.msv.datatype.SerializationContext;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+
+import com.sun.msv.datatype.SerializationContext;
 
 /**
  * dummy implementation of ValidationContextProvider.

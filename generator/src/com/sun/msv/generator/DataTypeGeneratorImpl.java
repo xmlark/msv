@@ -9,13 +9,41 @@
  */
 package com.sun.msv.generator;
 
-import com.sun.msv.datatype.xsd.*;
-import org.relaxng.datatype.Datatype;
-import org.relaxng.datatype.ValidationContext;
-import java.util.Random;
-import java.util.Map;
-import java.util.Set;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+
+import org.relaxng.datatype.Datatype;
+
+import com.sun.msv.datatype.xsd.AnyURIType;
+import com.sun.msv.datatype.xsd.BooleanType;
+import com.sun.msv.datatype.xsd.DoubleType;
+import com.sun.msv.datatype.xsd.EnumerationFacet;
+import com.sun.msv.datatype.xsd.FinalComponent;
+import com.sun.msv.datatype.xsd.FloatType;
+import com.sun.msv.datatype.xsd.IntType;
+import com.sun.msv.datatype.xsd.IntegerType;
+import com.sun.msv.datatype.xsd.LengthFacet;
+import com.sun.msv.datatype.xsd.ListType;
+import com.sun.msv.datatype.xsd.LongType;
+import com.sun.msv.datatype.xsd.MaxLengthFacet;
+import com.sun.msv.datatype.xsd.MinLengthFacet;
+import com.sun.msv.datatype.xsd.NcnameType;
+import com.sun.msv.datatype.xsd.NmtokenType;
+import com.sun.msv.datatype.xsd.NonNegativeIntegerType;
+import com.sun.msv.datatype.xsd.NormalizedStringType;
+import com.sun.msv.datatype.xsd.NumberType;
+import com.sun.msv.datatype.xsd.PositiveIntegerType;
+import com.sun.msv.datatype.xsd.QnameType;
+import com.sun.msv.datatype.xsd.ShortType;
+import com.sun.msv.datatype.xsd.StringType;
+import com.sun.msv.datatype.xsd.TokenType;
+import com.sun.msv.datatype.xsd.UnionType;
+import com.sun.msv.datatype.xsd.UnsignedIntType;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.XSDatatypeImpl;
+import com.sun.msv.datatype.xsd.XmlNames;
 import com.sun.xml.util.XmlChars;
 
 /**
@@ -160,7 +188,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		if( dt instanceof XSDatatypeImpl ) {
 			// if it contains EnumerationFacet, we can try that.
 			XSDatatypeImpl dti = (XSDatatypeImpl)dt;
-			EnumerationFacet e = (EnumerationFacet)dti.getFacetObject( dti.FACET_ENUMERATION );
+			EnumerationFacet e = (EnumerationFacet)dti.getFacetObject( XSDatatype.FACET_ENUMERATION );
 			if(e!=null) {
 				Object[] items = e.values.toArray();
 				for( int i=0; i<10; i++ ) {
@@ -223,15 +251,15 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 	protected String generateList(XSDatatypeImpl dti, ContextProviderImpl context) {
 		try {
 			ListType base = (ListType)dti.getConcreteType();
-			LengthFacet lf = (LengthFacet)dti.getFacetObject(dti.FACET_LENGTH);
+			LengthFacet lf = (LengthFacet)dti.getFacetObject(XSDatatype.FACET_LENGTH);
 			int n;	// compute # of items into this value.
 		
 			if(lf!=null) {
 				n = lf.length;
 			} else {
-				MaxLengthFacet xlf = (MaxLengthFacet)dti.getFacetObject(dti.FACET_MAXLENGTH);
+				MaxLengthFacet xlf = (MaxLengthFacet)dti.getFacetObject(XSDatatype.FACET_MAXLENGTH);
 				int max = (xlf!=null)?xlf.maxLength:16;
-				MinLengthFacet nlf = (MinLengthFacet)dti.getFacetObject(dti.FACET_MINLENGTH);
+				MinLengthFacet nlf = (MinLengthFacet)dti.getFacetObject(XSDatatype.FACET_MINLENGTH);
 				int min = (nlf!=null)?nlf.minLength:0;
 				
 				n = random.nextInt(max-min)+min;

@@ -9,16 +9,24 @@
  */
 package batch.generator;
 
-import batch.model.*;
-import batch.driver.ISchemaImpl;
-import junit.framework.*;
-import com.sun.msv.generator.*;
 import java.io.File;
 import java.util.Iterator;
 import java.util.Vector;
+
 import javax.xml.parsers.SAXParserFactory;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.xml.sax.XMLReader;
-import org.xml.sax.InputSource;
+
+import batch.model.ISchema;
+import batch.model.IValidator;
+import batch.model.TestBuilder;
+
+import com.sun.msv.generator.Driver;
+import com.sun.msv.generator.ExampleReader;
 
 class TestBuilderImpl implements TestBuilder
 {

@@ -1,10 +1,6 @@
 package batch.generator;
 
-import junit.framework.*;
-import batch.model.*;
-import batch.driver.ISchemaImpl;
-import java.util.Iterator;
-import com.sun.msv.generator.*;
+import batch.model.TestReader;
 
 /**
  * command line driver. Useful for hand-debugging.

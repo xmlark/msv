@@ -10,8 +10,9 @@
 package com.sun.msv.generator;
 
 import java.util.Set;
-import org.xml.sax.helpers.DefaultHandler;
+
 import org.xml.sax.Attributes;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * collects all string literals appeared in the text.

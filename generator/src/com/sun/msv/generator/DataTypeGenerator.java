@@ -10,7 +10,6 @@
 package com.sun.msv.generator;
 
 import org.relaxng.datatype.Datatype;
-import org.relaxng.datatype.ValidationContext;
 
 /**
  * generates an text value that matchs to a datatype.

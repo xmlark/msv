@@ -10,6 +10,7 @@
 package com.sun.msv.generator;
 
 import java.util.Random;
+
 import com.sun.msv.grammar.ExpressionPool;
 
 /**

@@ -1,8 +1,14 @@
 package com.sun.msv.generator;
 
-import org.w3c.dom.*;
-import java.util.Set;
 import java.util.Map;
+import java.util.Set;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Decorates DOM with missing information so that it will be nicely serialized.

@@ -10,8 +10,6 @@
 package batch.generator;
 
 import junit.framework.TestSuite;
-import java.util.StringTokenizer;
-import batch.*;
 
 /**
  * batch test class that is called from ant as a part of the whole test.
@@ -21,7 +19,7 @@ import batch.*;
 public class GeneratorTest {
 	
 	public static void main( String[] args ) throws Exception {
-		junit.textui.TestRunner.run(new GeneratorTest().suite());
+		junit.textui.TestRunner.run(GeneratorTest.suite());
 	}
 	
 	public static TestSuite suite() throws Exception {

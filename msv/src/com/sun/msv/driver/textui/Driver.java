@@ -172,8 +172,9 @@ public class Driver {
         if( factory==null )
             factory = SAXParserFactory.newInstance();
         
-        if( verbose )
-            System.out.println( localize( MSG_PARSER, factory.getClass().getName()) );
+        if( verbose ) {
+            System.out.println( localize( MSG_PARSER, Util.which(factory.getClass()) ) );
+        }
         
         factory.setNamespaceAware(true);
         factory.setValidating(false);

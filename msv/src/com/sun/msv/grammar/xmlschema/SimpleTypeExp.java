@@ -37,7 +37,7 @@ public class SimpleTypeExp extends RedefinableExp {
 	}
 	
 	protected XSDatatype type;
-	/** gets the XSDatatype object that validates this simple type. */
+	/** gets the XSDatatype object that represents this simple type. */
 	public XSDatatype getType() {
 		return type;
 	}

@@ -22,16 +22,6 @@ package com.sun.msv.grammar;
  * See {@link ExpressionCloner} for example.
  * 
  * <p>
- * ExpressionVisitorXXX classes (including this class) is only capable
- * of handling AGM without any TREX extension. If you visit AGM which contains
- * TREX exntension primitives with a visitor that implements ExpressionVisitorXXX,
- * some exception will be thrown.
- * 
- * <p>
- * To support TREX exntension primitives, implement
- * {@link com.sun.msv.grammar.trex.TREXPatternVisitor} or its family.
- * 
- * <p>
  * onRef method is called for all subclass of ReferenceExp. So you can safely use this
  * interface to visit AGMs from RELAX grammar.
  * 

@@ -15,8 +15,8 @@ import com.sun.msv.grammar.Expression;
 /**
  * ElementExp that is used for &lt;any processContents="skip"/&gt;.
  * 
- * This is kept in the separate class so that others can see that this element
- * is used for skip element.
+ * This is kept in the separate class so that the wildcard element
+ * can be easily distinguished by the application program.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

@@ -12,12 +12,18 @@ package com.sun.msv.grammar.xmlschema;
 import com.sun.msv.grammar.NameClass;
 
 /**
- * internal representation of 'aaa/bbb/ccc/ ... /eee'.
+ * internal representation of XPath ('aaa/bbb/ccc/ ... /eee').
  * Note that 'A|B' is repsented by using two Path instances.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class XPath implements java.io.Serializable {
+	/**
+	 * this field is true if the XPath starts with '//' operator.
+	 */
 	public boolean			isAnyDescendant;
+	/**
+	 * each name class represents each step.
+	 */
 	public NameClass[]		steps;
 }

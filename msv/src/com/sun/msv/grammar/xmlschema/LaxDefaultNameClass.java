@@ -17,18 +17,40 @@ import com.sun.msv.grammar.DifferenceNameClass;
 import com.sun.msv.util.StringPair;
 import java.util.Set;
 
-
+/**
+ * Special name class implementation used for the wild card of the "lax" mode.
+ * 
+ * <p>
+ * In "lax" mode, we need a name class that matches all undefined names.
+ * Although it is possible to use DifferenceNameClass for this purpose,
+ * it is not a cost-efficient way because typically it becomes very large.
+ * (If there are twenty element declarations, we'll need twenty DifferenceNameClass
+ * to exclude all defined names).
+ * 
+ * <p>
+ * This name class uses a {@link Set} to hold multiple names. If a name
+ * is contained in that set, it'll be rejected. If a name is not contained,
+ * it'll be accepted.
+ * 
+ * <p>
+ * Special care is taken to make this NC as seamless as possible.
+ * When the visit method is called, the equivalent name class is constructed
+ * internally and the visitor will visit that name class. In this way, the visitors
+ * won't notice the existance of this "special" name class.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class LaxDefaultNameClass extends NameClass {
 	
 	public LaxDefaultNameClass() {
-		allowedNames.add( new StringPair(NAMESPACE_WILDCARD,LOCALNAME_WILDCARD) );
+		names.add( new StringPair(NAMESPACE_WILDCARD,LOCALNAME_WILDCARD) );
 	}
 	
 	public Object visit( NameClassVisitor visitor ) {
 		// create equivalent name class and let visitor visit it.
 		if( equivalentNameClass==null ) {
 			NameClass nc = AnyNameClass.theInstance;
-			StringPair[] items = (StringPair[])allowedNames.toArray(new StringPair[0]);
+			StringPair[] items = (StringPair[])names.toArray(new StringPair[0]);
 			for( int i=0; i<items.length; i++ ) {
 				if( items[i].namespaceURI==NAMESPACE_WILDCARD
 				 || items[i].localName==LOCALNAME_WILDCARD )
@@ -50,18 +72,22 @@ public class LaxDefaultNameClass extends NameClass {
 	protected NameClass equivalentNameClass;
 	
 	public boolean accepts( String namespaceURI, String localName ) {
-		return !allowedNames.contains( new StringPair(namespaceURI,localName) );
+		return !names.contains( new StringPair(namespaceURI,localName) );
 	}
 	
-	/** set of StringPair.
-	 * each item represents one allowed name.
+	/**
+	 * set of {@link StringPair}s.
+	 * each item represents one name.
 	 * it also contains WILDCARD as entry.
 	 */
-	private final Set allowedNames = new java.util.HashSet();
+	private final Set names = new java.util.HashSet();
 	
-	public void addAllowedName( String namespaceURI, String localName ) {
-		allowedNames.add( new StringPair(namespaceURI,localName) );
-		allowedNames.add( new StringPair(namespaceURI,LOCALNAME_WILDCARD) );
-		allowedNames.add( new StringPair(NAMESPACE_WILDCARD,localName) );
+	/**
+	 * add a name so that this name will be rejected by the accepts method.
+	 */
+	public void addName( String namespaceURI, String localName ) {
+		names.add( new StringPair(namespaceURI,localName) );
+		names.add( new StringPair(namespaceURI,LOCALNAME_WILDCARD) );
+		names.add( new StringPair(NAMESPACE_WILDCARD,localName) );
 	}
 }

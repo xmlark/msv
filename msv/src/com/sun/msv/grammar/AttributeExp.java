@@ -14,14 +14,11 @@ package com.sun.msv.grammar;
  * 
  * <p>
  * Attribute declaration consists of a NameClass that verifies attribute name
- * and an Expression that verifies attribute value.
- * 
- * <p>
- * This class can be extended.
+ * and an Expression that verifies the value of the attribute.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class AttributeExp extends Expression implements NameClassAndExpression {
+public final class AttributeExp extends Expression implements NameClassAndExpression {
 	
 	/** constraint over attribute name */
 	public final NameClass nameClass;

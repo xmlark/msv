@@ -16,6 +16,7 @@ package com.sun.msv.grammar;
  */
 public final class AnyNameClass extends NameClass {
 	
+	/** AnyNameClass accpets any name, as its name suggests. */
 	public boolean accepts( String namespaceURI, String localName ) {
 		return true;
 	}

@@ -14,7 +14,7 @@ import com.sun.msv.util.StringPair;
 /**
  * validator of (namespaceURI,localPart) pair.
  * 
- * This is equivalent to TREX's "name class".
+ * This is equivalent to RELAX NG's "name class".
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
@@ -25,8 +25,8 @@ public abstract class NameClass implements java.io.Serializable {
 	 * @param namespaceURI
 	 *		namespace URI to be tested. If this value equals to
 	 *		NAMESPACE_WILDCARD, implementation must assume that
-	 *		valid namespace is specified. this twist will be used to
-	 *		recovery from error.
+	 *		valid namespace is specified. this twist will be used for
+	 *		error diagnosis.
 	 * 
 	 * @param localName
 	 *		local part to be tested. As with namespaceURI, LOCALNAME_WILDCARD

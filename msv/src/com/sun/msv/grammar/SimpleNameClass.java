@@ -12,7 +12,7 @@ package com.sun.msv.grammar;
 import com.sun.msv.util.StringPair;
 
 /**
- * a NameClass that accepts only one fixed tag name.
+ * a NameClass that accepts only one fixed name.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

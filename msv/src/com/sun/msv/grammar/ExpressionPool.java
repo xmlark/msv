@@ -18,7 +18,7 @@ import com.sun.msv.util.StringPair;
  * Creates a new Expression by combining existing expressions.
  * 
  * all expressions are memorized and unified so that every subexpression
- * will be shared and reused. Optimization will be done transparently.
+ * will be shared and reused. Optimization will be also done transparently.
  * For example, createChoice(P,P) will result in P. createSequence(P,nullSet)
  * will result in nullSet.
  * 
@@ -30,11 +30,15 @@ import com.sun.msv.util.StringPair;
  * bottle neck. In particular, createChoice and createSequence are two most
  * commonly called methods.
  * 
+ * <p>
  * For example, when validating a DocBook XML (150KB) twice against
  * DocBook.trex(237KB), createChoice is called 63000 times and createSequence
- * called 23000 times. (the third is createOptional method and only 1560 times.)
+ * called 23000 times. (the third is the createOptional method and only 1560 times.)
  * And they took more than 10% of validation time, which is the worst
  * time-consuming method.
+ * 
+ * <p>
+ * Therefore, please beware that this class includes several ugly code optimization.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

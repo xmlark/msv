@@ -12,11 +12,17 @@ package com.sun.msv.grammar;
 /**
  * NameClass that acts a not operator.
  * 
+ * Actually, A NotNameClass can be represented by using a DifferenceNameClass
+ * and AnyNameClass.
+ * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class NotNameClass extends NameClass {
 	public final NameClass child;
 
+	/**
+	 * accepts a name if it is not accepted by the child name class.
+	 */
 	public boolean accepts( String namespaceURI, String localName ) {
 		return !child.accepts(namespaceURI,localName);
 	}

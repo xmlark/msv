@@ -12,8 +12,18 @@ package com.sun.msv.grammar;
 /**
  * clones an expression.
  * 
- * This class is used as a default implementation for relevant task.
- * Theere are no default implementations for onAttribute, onElement, and onRef methods.
+ * <p>
+ * By visiting an expression, returns a cloned expression.
+ * 
+ * <p>
+ * This class is useless by itself since expressions are shared and unified.
+ * It should be used as a base class for various AGM-related tasks to modify
+ * AGM.
+ * 
+ * <p>
+ * Note that this class doesn't provide default implementations for
+ * onAttribute, onElement, and onRef methods.
+ * Typically, the derived class needs to do something to prevent infinite recursion.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

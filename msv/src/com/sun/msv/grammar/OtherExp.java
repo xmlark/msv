@@ -13,7 +13,8 @@ package com.sun.msv.grammar;
  * Base class for application-specific AGM annotation.
  * 
  * <p>
- * This expression should be treated as do-nothing expression.
+ * This expression should be treated as do-nothing expression for those
+ * who don't understand the application-specific semantics.
  * Application can derive this class and use it for annotating AGM.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>

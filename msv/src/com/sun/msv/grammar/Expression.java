@@ -13,32 +13,40 @@ import org.xml.sax.*;
 import java.util.Collection;
 
 /**
- * Primitive of regular expression.
+ * Primitive of the tree regular expression.
  * 
- * most of the derived class is immutable (except ReferenceExp, ElementExp).
+ * most of the derived class is immutable (except ReferenceExp, ElementExp and OtherExp).
  * 
+ * <p>
  * By making it immutable, it becomes possible to share subexpressions among expressions.
  * This is very important for regular-expression-derivation based validation algorithm,
- * as well as smaller memory footprint.
+ * as well as for smaller memory footprint.
  * This sharing is automatically achieved by ExpressionPool.
  * 
- * ReferebceExp is also shared, but its unification is based on its 'name',
- * and its life-cycle is controlled by grammar object.
+ * <p>
+ * ReferebceExp, ElementExp, and OtherExp are also placed in the pool,
+ * but these are not unified. Since they are not unified,
+ * application can derive classes from these expressions
+ * and mix them into AGM. This technique is heavily used to introduce schema language
+ * specific primitives into AGM. See various sub-packages of this package for examples.
  * 
- * ElementExp is not shared and therefore is not unified. This is due to the difference
- * of RELAX and TREX in handling tag name constraint. Note that
- * ElementExps are by their nature rarely can be shared; sharing is only possible
- * when they have exactly same content model, attribute constraint and tag name
- * constraint. In case of well-written grammar, this will never happens.
- * 
- * equals method must be implemented by the derived type. equals method will be
+ * <p>
+ * The equals method must be implemented by the derived type. equals method will be
  * used to unify the expressions. equals method can safely assume that its children
  * are already unified (therefore == can be used to test the equality, rather than
  * equals method).
  * 
+ * <p>
+ * To achieve unification, we overload the equals method so that
+ * <code>o1.equals(o2)</code> is true if o1 and o2 are identical.
+ * There, those two objects must return the same hash code. For this purpose,
+ * the hash code is calculated statically and cached internally.
+ *
+ * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class Expression implements java.io.Serializable {
+	
 	/** cached value of epsilon reducibility.
 	 * 
 	 * Epsilon reducibility can only be calculated after parsing the entire expression,
@@ -46,13 +54,15 @@ public abstract class Expression implements java.io.Serializable {
 	 */
 	private Boolean epsilonReducibility;
 	
-	/** returns true if this expression accepts "".
+	/** returns true if this expression accepts empty sequence.
 	 * 
-	 * This method is called when creating Expressions, then this method
+	 * <p>
+	 * If this method is called while creating Expressions, then this method
 	 * may return approximated value. When this method is used while validation,
 	 * this method is guaranteed to return the correct value.
 	 */
 	public boolean isEpsilonReducible() {
+		// epsilon reducibility is cached internally.
 		if( epsilonReducibility==null )
 			epsilonReducibility = calcEpsilonReducibility()?Boolean.TRUE:Boolean.FALSE;
 		
@@ -150,6 +160,11 @@ public abstract class Expression implements java.io.Serializable {
 		protected boolean calcEpsilonReducibility() { return true; }
 		public boolean equals( Object o ) { return this==o; }	// this class is used as singleton.
 	};
+	/**
+	 * Special expression object that represents epsilon (&#x3B5;).
+	 * This expression matches to "empty".
+	 * Epsilon can be thought as an empty sequence.
+	 */
 	public static final Expression epsilon = new EpsilonExpression();
 	
 	private static class NullSetExpression extends Expression {
@@ -161,6 +176,11 @@ public abstract class Expression implements java.io.Serializable {
 		protected boolean calcEpsilonReducibility() { return false; }
 		public boolean equals( Object o ) { return this==o; }	// this class is used as singleton.
 	};
+	/**
+	 * special expression object that represents the empty set (&#x3A6;).
+	 * This expression doesn't match to anything.
+	 * NullSet can be thought as an empty choice.
+	 */
 	public static final Expression nullSet = new NullSetExpression();
 	
 	private static class AnyStringExpression extends Expression {
@@ -178,5 +198,14 @@ public abstract class Expression implements java.io.Serializable {
 		protected boolean calcEpsilonReducibility() { return true; }
 		public boolean equals( Object o ) { return this==o; }	// this class is used as singleton.
 	};
+	/**
+	 * special expression object that represents "any string".
+	 * It is close to xsd:string datatype, but they have different semantics
+	 * in several things.
+	 * 
+	 * <p>
+	 * This object is used as &lt;anyString/> pattern of TREX and
+	 * &lt;text/> pattern of RELAX NG.
+	 */
 	public static final Expression anyString = new AnyStringExpression();
 }

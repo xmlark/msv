@@ -12,10 +12,17 @@ package com.sun.msv.grammar.xmlschema;
 /**
  * attribute group declaration.
  * 
- * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ * the inherited exp field contains the attributes defined in this declaration.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class AttributeGroupExp extends RedefinableExp {
 	
+	/**
+	 * name of this attribute group declaration.
+	 * According to the spec, the name must be unique within one schema
+	 * (in our object model, one XMLSchemaSchema object).
+	 */
 	public AttributeGroupExp( String typeLocalName ) {
 		super(typeLocalName);
 	}

@@ -17,6 +17,9 @@ package com.sun.msv.grammar;
 public class NamespaceNameClass extends NameClass {
 	public final String	namespaceURI;
 	
+	/**
+	 * accepts a name if its namespace URI matches to the namespaceURI field.
+	 */
 	public boolean accepts( String namespaceURI, String localName ) {
 		if( NAMESPACE_WILDCARD==namespaceURI )	return true;
 		return this.namespaceURI.equals(namespaceURI);

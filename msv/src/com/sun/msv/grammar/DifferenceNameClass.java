@@ -18,6 +18,9 @@ public class DifferenceNameClass extends NameClass {
 	public final NameClass nc1;
 	public final NameClass nc2;
 	
+	/**
+	 * accepts a name if it is accepted by nc1 and not by nc2.
+	 */
 	public boolean accepts( String namespaceURI, String localPart ) {
 		return nc1.accepts(namespaceURI,localPart)
 			&& !nc2.accepts(namespaceURI,localPart);

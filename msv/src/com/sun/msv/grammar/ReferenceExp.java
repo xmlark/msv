@@ -22,7 +22,7 @@ package com.sun.msv.grammar;
  * rather than ExpressionPool. Therefore, this object is not a subject to unification.
  * 
  * <p>
- * This class can be extended.
+ * This class can be derived. In fact, many classes derive this class.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

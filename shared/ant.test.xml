@@ -16,7 +16,7 @@
 		<pathelement path="${testRoot}/suites/JepaX"/>
 		<pathelement path="${testRoot}/suites/NITF"/>
 		<pathelement path="${testRoot}/suites/errorRELAXGrammar/lrgErrRatio"/>
-		<pathelement path="${testRoot}/errorRELAXGrammar/smlErrRatio" />
+		<pathelement path="${testRoot}/suites/errorRELAXGrammar/smlErrRatio" />
 	</path>
 	
 	<path id="RELAXBatchTestDir">
@@ -125,7 +125,9 @@
 				<pathelement location="src" />
 				<pathelement location="test" />
 				<pathelement location="../xsdlib/bin/" />
+				<pathelement location="../xsdlib/src/" />
 				<pathelement location="../msv/bin/" />
+				<pathelement location="../msv/src/" />
 				<pathelement location="../testharness/bin/" />
 				<pathelement location="${relaxng.jar}" />
 				<pathelement path="${java.class.path}" />

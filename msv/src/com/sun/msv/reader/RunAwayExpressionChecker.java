@@ -13,6 +13,7 @@ import com.sun.tranquilo.grammar.*;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.Vector;
 import org.xml.sax.Locator;
 
 /**
@@ -40,7 +41,8 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 	/** Expressions which are used as the content model of current element. */
 	private Set contentModel = new java.util.HashSet();
 	
-	/** visited ReferenceExp.
+	/** 
+	 * visited Expressions.
 	 * this information is useful for the user to figure out where did they make a mistake.
 	 */
 	private Stack refStack = new Stack();
@@ -94,16 +96,18 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 			int i = refStack.indexOf(exp);
 			int sz = refStack.size();
 			
-			Locator[] locs = new Locator[sz-i];
+			Vector locs = new Vector();
 			
 			for( ; i<sz; i++ ) {
-				ReferenceExp e = (ReferenceExp)refStack.elementAt(i);
-				s += e.name;
-				if( i!=sz-1 )  s+= " > ";
-				locs[sz-i-1] = reader.getDeclaredLocationOf(e);
+				if( refStack.elementAt(i) instanceof ReferenceExp ) {
+					ReferenceExp e = (ReferenceExp)refStack.elementAt(i);
+					s += e.name;
+					if( i!=sz-1 )  s+= " > ";
+					locs.add(reader.getDeclaredLocationOf(e));
+				}
 			}
 				
-			reader.reportError( locs, GrammarReader.ERR_RUNAWAY_EXPRESSION, new Object[]{s} );
+			reader.reportError( (Locator[])locs.toArray(new Locator[0]), GrammarReader.ERR_RUNAWAY_EXPRESSION, new Object[]{s} );
 			
 			// abort further run-away check.
 			// usually, run-away expression error occurs by use of hedgeRules,
@@ -113,17 +117,17 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 			throw eureka;
 		}
 		contentModel.add(exp);
+		refStack.push(exp);
 	}
 	private void leave( Expression exp ) {
 		contentModel.remove(exp);
+		refStack.pop();
 	}
 
 	public void onRef( ReferenceExp exp ) {
-		refStack.push(exp);
 		enter(exp);
 		exp.exp.visit(this);
 		leave(exp);
-		refStack.pop();
 	}
 	
 	public void onElement( ElementExp exp )

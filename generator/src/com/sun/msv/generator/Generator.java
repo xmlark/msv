@@ -200,8 +200,18 @@ public class Generator implements TREXPatternVisitorVoid
 		{// greedy choice error. visit twice.
 			noteError("greedy choice:"+
 					  TREXPatternPrinter.printSmallest(cp));
-			((Expression)vec.get(opts.random.nextInt(vec.size()))).visit(this);
-			((Expression)vec.get(opts.random.nextInt(vec.size()))).visit(this);
+			for( int i=0; i<2; i++ )
+			{
+				Expression exp;
+				do
+				{
+					exp = (Expression)vec.get(opts.random.nextInt(vec.size()));
+				}while(exp==Expression.epsilon);
+
+				noteError("greedy choice("+i+"):"+
+					  TREXPatternPrinter.printSmallest(exp));
+				exp.visit(this);
+			}
 			return;
 		}
 		
@@ -272,17 +282,21 @@ public class Generator implements TREXPatternVisitorVoid
 			onElement( elementDecls[opts.random.nextInt(elementDecls.length)] );
 			return;
 		}
-			
-		if( opts.random.nextDouble() < opts.probMissingElemError )
-		{// missing element error. skip generating this instance.
-			noteError("missing element: "+TREXPatternPrinter.printSmallest(exp) );
-			return;
-		}
+				
+		if( node.getNodeType()!=node.DOCUMENT_NODE )
+		{// these errors cannot be generated for the document element
+			if( opts.random.nextDouble() < opts.probMissingElemError )
+			{// missing element error. skip generating this instance.
+				noteError("missing element: "+TREXPatternPrinter.printSmallest(exp) );
+				return;
+			}
 		
-		if( opts.random.nextDouble() < opts.probSlipInElemError )
-		{// slip-in error. generate random element.
-			onElement( elementDecls[opts.random.nextInt(elementDecls.length)] );
-			noteError("slip-in element: "+TREXPatternPrinter.printSmallest(exp) );
+			if( opts.random.nextDouble() < opts.probSlipInElemError )
+			{// slip-in error. generate random element.
+				ElementExp e = elementDecls[opts.random.nextInt(elementDecls.length)];
+				noteError("slip-in element: "+TREXPatternPrinter.printSmallest(e) );
+				onElement( e );
+			}
 		}
 		
 		StringPair name = getName(exp.getNameClass());

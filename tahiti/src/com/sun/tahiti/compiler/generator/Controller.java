@@ -10,13 +10,15 @@
 package com.sun.tahiti.compiler.generator;
 
 import com.sun.tahiti.grammar.TypeItem;
+import com.sun.msv.reader.GrammarReaderController;
 import java.io.OutputStream;
 import java.io.IOException;
 
 /**
- * this interface will be implemented by the caller.
+ * this interface will be implemented by the caller of the model generator
+ * to control the process.
  */
-public interface OutputResolver {
+public interface Controller extends GrammarReaderController {
 	/**
 	 * the contents of the specified {@link TypeItem} will be sent
 	 * to the returned DocumentHandler.

@@ -12,8 +12,8 @@ package com.sun.tahiti.compiler.generator;
 import com.sun.msv.grammar.*;
 import com.sun.tahiti.compiler.Symbolizer;
 import com.sun.tahiti.compiler.XMLWriter;
+import com.sun.tahiti.compiler.sm.MarshallerGenerator;
 import com.sun.tahiti.grammar.*;
-import com.sun.tahiti.grammar.util.ClassCollector;
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
@@ -22,31 +22,28 @@ import org.apache.xml.serialize.OutputFormat;
 import java.util.Iterator;
 import java.io.IOException;
 
+/**
+ * produces XML representation of the object model.
+ */
 class XMLGenerator
 {
-	XMLGenerator( Expression topLevel, String grammarClassName, Symbolizer symbolizer, OutputResolver resolver ) {
-		this.topLevel = topLevel;
+	XMLGenerator( AnnotatedGrammar grammar, Symbolizer symbolizer, Controller controller ) {
+		this.grammar = grammar;
 		this.symbolizer = symbolizer;
-		this.outResolver = resolver;
-		this.grammarClassName = grammarClassName;
+		this.controller = controller;
 	}
 	
-	private final Expression topLevel;
+	private final AnnotatedGrammar grammar;
 	private final Symbolizer symbolizer;
-	private final OutputResolver outResolver;
-	private final String grammarClassName;
+	private final Controller controller;
 		
 	void generate() throws SAXException, IOException {
 		try {
-			// collect all ClassItems.
-			ClassCollector col = new ClassCollector();
-			topLevel.visit(col);
-		
-			ClassItem[] types = (ClassItem[])col.classItems.toArray(new ClassItem[0]);
+			ClassItem[] types = grammar.getClasses();
 			for( int i=0; i<types.length; i++ )
 				write( types[i] );
 		
-			InterfaceItem[] itfs = (InterfaceItem[])col.interfaceItems.toArray(new InterfaceItem[0]);
+			InterfaceItem[] itfs = grammar.getInterfaces();
 			for( int i=0; i<itfs.length; i++ )
 				write( itfs[i] );
 		
@@ -59,7 +56,7 @@ class XMLGenerator
 	private void write( TypeItem type ) throws SAXException, IOException {
 				
 		DocumentHandler outHandler = new XMLSerializer(
-			outResolver.getOutput(type),
+			controller.getOutput(type),
 			new OutputFormat("xml",null,true) );
 		XMLWriter out = new XMLWriter(outHandler);
 				
@@ -83,7 +80,19 @@ class XMLGenerator
 				new String[]{"name",type.getSuperType().getTypeName()});
 		
 		writeType( type, out );
+		
+		if( type instanceof ClassItem ) {
+			// put a marshaller.
+			try {
+				byte[] marshaller = MarshallerGenerator.write( (ClassItem)type, controller );
+				if( marshaller!=null ) {
 					
+				}
+			} catch( SAXException e ) {
+				controller.error( null, "SAX exception", e );
+			}
+		}
+				
 		out.end("class");
 	}
 	

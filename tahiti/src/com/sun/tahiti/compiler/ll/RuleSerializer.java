@@ -26,11 +26,11 @@ import java.util.Iterator;
 import java.text.MessageFormat;
 
 /**
- * produces an XML file that contains grammar information.
+ * serializes a LL grammar into the XML representation.
  */
-public class RuleFileGenerator implements Symbolizer {
+public class RuleSerializer implements Symbolizer {
 	
-	private RuleFileGenerator() {}
+	private RuleSerializer() {}
 	
 	/**
 	 * 
@@ -47,9 +47,9 @@ public class RuleFileGenerator implements Symbolizer {
 	 * @return
 	 *		return a symbolizer that is necessary to serialize class definitions.
 	 */
-	public static Symbolizer generate( Grammar grammar, Map rules, String grammarClassName, DocumentHandler outHandler ) throws SAXException {
-		RuleFileGenerator gen = new RuleFileGenerator();
-		gen._generate( grammar, rules, grammarClassName, outHandler );
+	public static Symbolizer serialize( AnnotatedGrammar grammar, Map rules, DocumentHandler outHandler ) throws SAXException {
+		RuleSerializer gen = new RuleSerializer();
+		gen._serialize( grammar, rules, outHandler );
 		return gen;
 	}
 	
@@ -69,7 +69,7 @@ public class RuleFileGenerator implements Symbolizer {
 		return s;
 	}
 	
-	private void _generate( Grammar grammar, Map rules, String grammarClassName, DocumentHandler outHandler ) throws SAXException {
+	private void _serialize( AnnotatedGrammar grammar, Map rules, DocumentHandler outHandler ) throws SAXException {
 		
 		// add pre-defined special symbols.
 		allNames.put( Expression.epsilon, "epsilon" );
@@ -82,12 +82,12 @@ public class RuleFileGenerator implements Symbolizer {
 			out.start("grammar");
 			
 			{
-				int idx = grammarClassName.lastIndexOf('.');
+				int idx = grammar.grammarName.lastIndexOf('.');
 				if(idx<0) {
-					out.element("name", grammarClassName);
+					out.element("name", grammar.grammarName);
 				} else {
-					out.element("package", grammarClassName.substring(0,idx));
-					out.element("name", grammarClassName.substring(idx+1));
+					out.element("package", grammar.grammarName.substring(0,idx));
+					out.element("name", grammar.grammarName.substring(idx+1));
 				}
 			}
 			

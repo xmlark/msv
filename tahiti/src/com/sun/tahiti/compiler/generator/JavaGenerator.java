@@ -13,7 +13,6 @@ import com.sun.msv.grammar.*;
 import com.sun.tahiti.compiler.Symbolizer;
 import com.sun.tahiti.grammar.*;
 import com.sun.tahiti.grammar.util.Multiplicity;
-import com.sun.tahiti.grammar.util.ClassCollector;
 import com.sun.tahiti.reader.NameUtil;
 import com.sun.tahiti.util.text.Formatter;
 import java.util.Iterator;
@@ -22,37 +21,38 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.text.MessageFormat;
 
+/**
+ * produces Java source codes of the object model.
+ */
 class JavaGenerator
 {
-	JavaGenerator( Expression topLevel, String grammarClassName, Symbolizer symbolizer, OutputResolver resolver ) {
-		this.topLevel = topLevel;
+	JavaGenerator( AnnotatedGrammar grammar, Symbolizer symbolizer, Controller controller ) {
+		this.grammar = grammar;
 		this.symbolizer = symbolizer;
-		this.outResolver = resolver;
-		this.grammarClassName = grammarClassName;
+		this.controller = controller;
+		this.grammarClassName = grammar.grammarName;
 		
 		int idx = grammarClassName.lastIndexOf('.');
 		if(idx<0)	grammarShortClassName = grammarClassName;
 		else		grammarShortClassName = grammarClassName.substring(idx+1);
 	}
 	
-	private final Expression topLevel;
+	private final AnnotatedGrammar grammar;
 	private final Symbolizer symbolizer;
-	private final OutputResolver outResolver;
+	private final Controller controller;
 	private final String grammarClassName;
 	private final String grammarShortClassName;
 		
 	void generate() throws IOException {
 		// collect all ClassItems.
-		ClassCollector col = new ClassCollector();
-		topLevel.visit(col);
 		
-		ClassItem[] types = (ClassItem[])col.classItems.toArray(new ClassItem[0]);
+		ClassItem[] types = grammar.getClasses();
 		for( int i=0; i<types.length; i++ )
-			writeClass( types[i], new PrintWriter(outResolver.getOutput(types[i])) );
+			writeClass( types[i], new PrintWriter(controller.getOutput(types[i])) );
 		
-		InterfaceItem[] itfs = (InterfaceItem[])col.interfaceItems.toArray(new InterfaceItem[0]);
+		InterfaceItem[] itfs = grammar.getInterfaces();
 		for( int i=0; i<itfs.length; i++ )
-			writeClass( itfs[i], new PrintWriter(outResolver.getOutput(itfs[i])) );
+			writeClass( itfs[i], new PrintWriter(controller.getOutput(itfs[i])) );
 	}
 	
 	
@@ -76,7 +76,8 @@ class JavaGenerator
 	 * name is returned. Otherwise fully qualified name is returned.
 	 */
 	private String toPrintName( Type type ) {
-		if( packageName.equals( type.getPackageName() )
+		if( packageName==type.getPackageName()
+		|| 	(packageName!=null && packageName.equals( type.getPackageName() ))
 		||  "java.lang".equals( type.getPackageName() ) )
 			return type.getBareName();
 		else

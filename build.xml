@@ -4,6 +4,7 @@
 	<target name="binary">
 		<ant target="binary" dir="xsdlib" />
 		<ant target="binary" dir="testharness" />
+		<ant dir="testCases" /> <!-- build test cases. This relies on test harness -->
 		<ant target="binary" dir="msv" />
 		<ant target="binary" dir="generator" />
 		<ant target="binary" dir="relames" />

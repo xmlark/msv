@@ -1,5 +1,15 @@
 
-(RELAX) supports "Java API for RELAX Verifier".
+(both)  Fixed a bug that makes validation a little bit slower
+		and that sometimes interferes with type-assignment.
+(both)	Added "optimistic" type-assignment mechanism for Verifier.
+		This is the equivalent of "RELAXEffortlessHandler" which
+		is implemented in "RELAX Verifier for Java" by Swift,Inc.
+		This mechanism is "optimistic" in the sense that Verifier
+		will report type as long as it can decide it; once if Verifier
+		fails to decide type, it bails out (verification will be continued).
+(both)	Implemented VerifierFilter that acts as XMLFilter.
+(both)  Fixed bugs in integer-derived types and uriReference type.
+(RELAX) Supports "Java API for RELAX Verifier".
 (both)  XML parser can now be choosed from Xerces or Crimson,
         by using a command line switch.
 (both)  Performance optimization

@@ -34,7 +34,9 @@ public class IntegerType extends IntegerDerivedType {
 	}
 	
 	public Object _createJavaObject( String literal, ValidationContext context ) {
-        return load(literal);
+		IntegerValueType o = (IntegerValueType)_createValue(literal,context);
+		if(o==null)		return null;
+		return new BigInteger(o.toString());
 	}
     
     public static BigInteger load( String s ) {

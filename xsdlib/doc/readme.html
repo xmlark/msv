@@ -88,4 +88,10 @@ address.</DIV>
   2 does not correctly implement the definition given in RFC 1766. So apparently 
   there is a problem in the definition of "language" type. However, by making 
   "language" case-insensitive, it is no longer a derived type of "token" 
-  type.</DIV></LI></OL></BODY></HTML>
+  type.</DIV>
+  <LI>
+  <DIV>Regarding "base64Binary" type, RFC 2045 states that "any characters 
+  outside of the base64 alphabet are to be ignored in base64-encoded data." This 
+  makes "validation" of base64Binary mostly meaningless. For example, 
+  &lt;picture&gt;))))&lt;/picture&gt; is considered as valid base64Binary. 
+  Developers&nbsp;should keep this in mind.<BR></DIV></LI></OL></BODY></HTML>

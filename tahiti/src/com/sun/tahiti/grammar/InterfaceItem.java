@@ -9,9 +9,13 @@
  */
 package com.sun.tahiti.grammar;
 
+import com.sun.msv.grammar.Expression;
+
 public class InterfaceItem extends TypeItem {
-	public InterfaceItem( String name ) {
+	
+	protected InterfaceItem( String name, Expression body ) {
 		super(name);
+		this.exp = body;
 	}
 
 	public Type getSuperType() { return null; } // interfaces do not have the super type.

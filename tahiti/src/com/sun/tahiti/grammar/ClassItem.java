@@ -13,12 +13,8 @@ import com.sun.msv.grammar.Expression;
 
 public class ClassItem extends TypeItem {
 	
-	public ClassItem( String name ) {
+	protected ClassItem( String name, Expression exp ) {
 		super(name);
-	}
-	
-	public ClassItem( String name, Expression exp ) {
-		this(name);
 		this.exp = exp;
 	}
 	

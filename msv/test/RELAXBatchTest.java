@@ -24,7 +24,7 @@ public class RELAXBatchTest {
 		TestSuite s = new TestSuite();
 		while( tokens.hasMoreTokens() ) {
 			BatchVerifyTester t = new BatchVerifyTester();
-			t.init("relax", tokens.nextToken(), ".relax", BatchTester.genericLoader);
+			t.init("relax", tokens.nextToken(), ".rlx", BatchTester.genericLoader);
 			s.addTest( t.suite() );
 		}
 		

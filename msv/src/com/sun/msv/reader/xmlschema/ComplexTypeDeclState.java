@@ -39,15 +39,23 @@ public class ComplexTypeDeclState extends ExpressionWithChildState {
 		
 		// simpleContent, ComplexContent, group, all, choice, and sequence
 		// are allowed only when we haven't seen type definition.
+		if(tag.localName.equals("simpleContent") )	return reader.sfactory.simpleContent(this,tag);
+		if(tag.localName.equals("complexContent") )	return reader.sfactory.complexContent(this,tag,decl);
+		State s = reader.createModelGroupState(this,tag);
+		if(s!=null)		return s;
+		
 		if( super.exp==null ) {
-			if(tag.localName.equals("simpleContent") )	return reader.sfactory.simpleContent(this,tag);
-			if(tag.localName.equals("complexContent") )	return reader.sfactory.complexContent(this,tag,decl);
-			return reader.createModelGroupState(this,tag);
-		} else {
-			// attribute, attributeGroup, and anyAttribtue can be specified
-			// after content model is given.
-			return reader.createAttributeState(this,tag);
+			// no content model was given.
+			// I couldn't "decipher" what should we do in this case.
+			// I assume "empty" just because it's most likely.
+			exp = Expression.epsilon;
 		}
+		
+		// TODO: attributes are prohibited after simpleContent/complexContent.
+		
+		// attribute, attributeGroup, and anyAttribtue can be specified
+		// after content model is given.
+		return reader.createAttributeState(this,tag);
 	}
 	
 	protected Expression castExpression( Expression halfCastedExpression, Expression newChildExpression ) {

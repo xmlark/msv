@@ -25,9 +25,8 @@ import com.sun.tranquilo.util.StartTagInfo;
 public class ListState extends TypeWithOneChildState
 {
 	protected final String newTypeName;
-	protected ListState( XSDVocabulary voc, String newTypeName )
+	protected ListState( String newTypeName )
 	{
-		super(voc);
 		this.newTypeName = newTypeName;
 	}
 	
@@ -53,7 +52,7 @@ public class ListState extends TypeWithOneChildState
 		if( !startTag.namespaceURI.equals(tag.namespaceURI) )	return null;
 		
 		if( tag.localName.equals("annotation") )	return new IgnoreState();
-		if( tag.localName.equals("simpleType") )	return new SimpleTypeState(vocabulary);
+		if( tag.localName.equals("simpleType") )	return new SimpleTypeState();
 		
 		return null;	// unrecognized
 	}

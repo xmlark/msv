@@ -27,9 +27,8 @@ import java.util.StringTokenizer;
 public class UnionState extends TypeState implements TypeOwner
 {
 	protected final String newTypeName;
-	protected UnionState( XSDVocabulary voc, String newTypeName )
+	protected UnionState( String newTypeName )
 	{
-		super(voc);
 		this.newTypeName = newTypeName;
 	}
 	
@@ -41,7 +40,7 @@ public class UnionState extends TypeState implements TypeOwner
 		if( !startTag.namespaceURI.equals(tag.namespaceURI) )	return null;
 		
 		if( tag.localName.equals("annotation") )	return new IgnoreState();
-		if( tag.localName.equals("simpleType") )	return new SimpleTypeState(vocabulary);
+		if( tag.localName.equals("simpleType") )	return new SimpleTypeState();
 		
 		return null;	// unrecognized
 	}

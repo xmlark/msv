@@ -25,20 +25,18 @@ import java.util.Map;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class XSDVocabulary implements DataTypeVocabulary
-{
+public class XSDVocabulary implements DataTypeVocabulary {
+	
 	/** namespace URI of XML Schema */
 	public static final String XMLSchemaNamespace = "http://www.w3.org/2001/XMLSchema-datatypes";
 	public static final String XMLSchemaNamespace2= "http://www.w3.org/2001/XMLSchema";
 	
-	public State createTopLevelReaderState( StartTagInfo tag )
-	{
-		if( tag.localName.equals("simpleType") )	return new SimpleTypeState(this);
+	public State createTopLevelReaderState( StartTagInfo tag ) {
+		if( tag.localName.equals("simpleType") )	return new SimpleTypeState();
 		else	return null;
 	}
 	
-	public DataType getType( String localTypeName )
-	{
+	public DataType getType( String localTypeName ) {
 		DataType dt = (DataType)userDefinedTypes.get(localTypeName);
 		if(dt==null)	dt = DataTypeFactory.getTypeByName(localTypeName);
 		return dt;
@@ -47,19 +45,18 @@ public class XSDVocabulary implements DataTypeVocabulary
 	/** user-defined named types */
 	private final Map userDefinedTypes = new java.util.HashMap();
 	
-	public void addType( DataType type )
-	{
+	public void addType( DataType type ) {
 		userDefinedTypes.put( type.getName(), type );
 	}
 	
-	public XSDVocabulary()
-	{// ID and IDREF are implemented in a different package.
-		try
-		{
+	public XSDVocabulary() {
+		// ID and IDREF are implemented in a different package.
+		try {
 			addType( IDType.theInstance );
 			addType( IDREFType.theInstance );
 			addType( DataTypeFactory.deriveByList("IDREFS",IDREFType.theInstance ) );
+		} catch( BadTypeException bte ) {
+			throw new Error();	// this is not possible
 		}
-		catch( BadTypeException bte ) { throw new Error(); }	// this is not possible
 	}
 }

@@ -26,9 +26,8 @@ import com.sun.tranquilo.util.StartTagInfo;
 public class RestrictionState extends TypeWithOneChildState implements FacetStateParent
 {
 	protected final String newTypeName;
-	protected RestrictionState( XSDVocabulary voc, String newTypeName )
+	protected RestrictionState( String newTypeName )
 	{
-		super(voc);
 		this.newTypeName = newTypeName;
 	}
 	
@@ -47,14 +46,12 @@ public class RestrictionState extends TypeWithOneChildState implements FacetStat
 	}
 
 	
-	protected void startSelf()
-	{
+	protected void startSelf() {
 		super.startSelf();
 		
 		// if base attribute is used, try to load it.
 		String base = startTag.getAttribute("base");
-		if(base!=null)
-		{
+		if(base!=null) {
 			type = reader.resolveDataType(base);
 			incubator = new TypeIncubator(type);
 		}
@@ -66,7 +63,7 @@ public class RestrictionState extends TypeWithOneChildState implements FacetStat
 		if( !startTag.namespaceURI.equals(tag.namespaceURI) )	return null;
 		
 		if( tag.localName.equals("annotation") )	return new IgnoreState();
-		if( tag.localName.equals("simpleType") )	return new SimpleTypeState(vocabulary);
+		if( tag.localName.equals("simpleType") )	return new SimpleTypeState();
 		if( FacetState.facetNames.contains(tag.localName) )
 		{
 			if( incubator==null )

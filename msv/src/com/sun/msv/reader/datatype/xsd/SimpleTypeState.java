@@ -23,10 +23,8 @@ import java.util.StringTokenizer;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class SimpleTypeState extends TypeWithOneChildState
+public class SimpleTypeState extends TypeWithOneChildState
 {
-	SimpleTypeState( XSDVocabulary voc ) { super(voc); }
-	
 	protected State createChildState( StartTagInfo tag )
 	{
 		// accepts elements from the same namespace only.
@@ -35,9 +33,9 @@ class SimpleTypeState extends TypeWithOneChildState
 		final String name = startTag.getAttribute("name");
 		
 		if( tag.localName.equals("annotation") )	return new IgnoreState();
-		if( tag.localName.equals("restriction") )	return new RestrictionState(vocabulary,name);
-		if( tag.localName.equals("list") )			return new ListState(vocabulary,name);
-		if( tag.localName.equals("union") )			return new UnionState(vocabulary,name);
+		if( tag.localName.equals("restriction") )	return new RestrictionState(name);
+		if( tag.localName.equals("list") )			return new ListState(name);
+		if( tag.localName.equals("union") )			return new UnionState(name);
 		
 		return null;	// unrecognized
 	}

@@ -26,8 +26,6 @@ abstract class TypeWithOneChildState extends TypeState implements TypeOwner
 {
 	protected DataType type;
 
-	TypeWithOneChildState( XSDVocabulary voc )	{ super(voc); }
-
 	/** receives a Pattern object that is contained in this element. */
 	public void onEndChild( DataType child )
 	{

@@ -29,25 +29,17 @@ import com.sun.tranquilo.util.StartTagInfo;
  */
 abstract class TypeState extends SimpleState
 {
-	/** datatype vocabulary to store named datatypes. can be null. */
-	protected final XSDVocabulary vocabulary;
-	
-	TypeState( XSDVocabulary vocabulary )	{ this.vocabulary=vocabulary; }
-	
 	public void endSelf()
 	{
 		super.endSelf();
 		
-		if( parentState instanceof TypeOwner )
-		{
+		if( parentState instanceof TypeOwner ) {
 			// if the parent can understand what we are creating,
 			// then pass the result.
 			((TypeOwner)parentState).onEndChild( _makeType() );
 			return;
-		}
-		else
-		if( parentState instanceof ExpressionOwner )
-		{
+		} else
+		if( parentState instanceof ExpressionOwner ) {
 			// if the parent expects Expression, convert type into Expression
 			((ExpressionOwner)parentState).onEndChild(
 				reader.pool.createTypedString( _makeType() ) );
@@ -58,19 +50,11 @@ abstract class TypeState extends SimpleState
 		throw new Error();
 	}
 	
-	DataType _makeType()
-	{// makeType method with protection against possible exception
-		try
-		{
-			DataType t = makeType();
-			if(t.getName()!=null)
-			{// if this one is a named type, register it to the user-defined type map
-				vocabulary.addType(t);
-			}
-			return t;
-		}
-		catch( BadTypeException be )
-		{
+	/** makeType method with protection against possible exception. */
+	DataType _makeType() {
+		try {
+			return makeType();
+		} catch( BadTypeException be ) {
 			reader.reportError( be, reader.ERR_BAD_TYPE );
 			return StringType.theInstance;	// recover by assuming a valid type.
 		}

@@ -2,6 +2,64 @@
 <!-- $Id$ -->
 <suite>
 
+<case name="test for language">
+	<value>en-us</value>
+	<value>En-Us</value>
+	<value>en-cockney</value>
+	<value>jp-ja</value>
+	
+	<value>my-own-language</value>
+	<value>     en-GB </value>
+	<value>it-can-be-as-long-as-you-want</value>
+	<value>fr</value>
+
+	<answer for="language"	>oooo oooo</answer>
+
+	<facets><combination>
+		
+		<choice>
+			<!-- length test -->
+			<facet answer=			"oo.o .o.." name="length" value="5" />
+			<facet answer=			"..o. ...." name="length" value="10" />
+			<!-- min/maxLength -->
+			<combination>
+				<choice>
+					<facet answer=	"oooo ooo." name="minLength" value="4" />
+					<facet answer=	"..o. o.o." name="minLength" value="6" />
+				</choice>
+				<choice>
+					<facet answer=	"oooo .o.o" name="maxLength" value="10" />
+					<facet answer=	"oooo oo.o" name="maxLength" value="15" />
+					<facet answer=	"oooo oooo" name="maxLength" value="40" />
+				</choice>
+			</combination>
+		</choice>
+		
+		<!-- enumeration -->
+		<combination mode="or">
+			<facet			answer=	"oo.. ...." name="enumeration" value="  EN-US &#xD; " />
+			<facet			answer=	"...o ...." name="enumeration" value="jP-jA" />
+			<facet			answer=	".... o..." name="enumeration" value="my-own-language" />
+		</combination>
+		
+		<!-- pattern -->
+		<combination mode="or">
+			<facet			answer=	"o.o. .o.." name="pattern" value="en-.*" />	<!-- pattern is applied to lexical space, so case sensitive. -->
+			<facet			answer=	"o.o. ooo." name="pattern" value=".*e.*" />
+		</combination>
+	</combination></facets>
+		
+	<wrongs>
+		<value>space  -  within-lang</value>
+		<value>morethan-eight-characters-token</value>
+		<value>-mal-formed</value>
+		<value>mal--formed</value>
+		<value>number-is-NG-1</value>
+		<value></value>
+		<value>&#x10005;</value>	<!-- non-ascii -->
+	</wrongs>
+</case>
+
 <comment>
 
 <case name="test for token">

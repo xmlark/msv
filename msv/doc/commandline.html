@@ -174,22 +174,6 @@ available options by invoking MSV without any arguments.</P>
 		that are rejected by other conforming processors.
 	</LI>
 	<LI>
-		Forward reference of <A href="http://www.w3.org/TR/xmlschema-1/#Simple_Type_Definitions">simple type</A> is not supported. Therefore, the following schema cannot be used.
-		<PRE><XMP>
-<xs:simpleType name="foo">
- <xs:restriction base="bar">
-  <xs:fractionDigits value="2"/>
- </xs:restriction>
-</xs:simpleType>
-
-<xs:simpleType name="bar">
- <xs:restriction base="xs:decimal">
-  <xs:totalDigits value="5" />
- </xs:restriction>
-</xs:simpleType>
-		</XMP></PRE>
-	</LI>
-	<LI>
 		<A href="http://www.w3.org/TR/xmlschema-1/#conformance-missing">
 		"Missing sub-components" </A> are treated as immediate errors.
 		This behavior better serves the majority of users.

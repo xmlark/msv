@@ -38,6 +38,7 @@
 			<classpath path="../msv/bin" />
 			<classpath path="../xsdlib/bin" />
 			<classpath path="../testharness/bin" />
+			<classpath path="${xerces.jar}:${relaxngDatatype.jar}:${isorelax.jar}:${junit.jar}"/>
 		</javac>
 	</target>
 	

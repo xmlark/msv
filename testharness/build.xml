@@ -13,6 +13,7 @@
 			destdir="./bin"
 			debug="on"
 			optimize="off"
+			classpath="${xerces.jar}:${junit.jar}"
 			/>
 	</target>
 </project>

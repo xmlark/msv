@@ -16,6 +16,7 @@
 			
 			<classpath path="../msv/bin" />
 			<classpath path="../xsdlib/bin" />
+			<classpath path="${xerces.jar}:${xalan.jar}:${relaxngDatatype.jar}:${isorelax.jar}"/>
 		</javac>
 	</target>
 	

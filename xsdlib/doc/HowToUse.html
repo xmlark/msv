@@ -1,53 +1,52 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=Content-Type content="text/html; charset=unicode">
-<style>
-	.title
-	{
-		text-align:center;
-		font-weight:bold;
-	}
-	PRE
-	{
-		background-color: rgb(240,240,240);
-	}
-</style>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE>USAGE GUIDE FOR THE XSDLib, SUN'S JAVA IMPLEMENTATION OF XML SCHEMA PART 2</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.2 (Solaris Sparc)">
+	<META NAME="CREATED" CONTENT="20010322;14525300">
+	<META NAME="CHANGEDBY" CONTENT="Eduardo Gutentag">
+	<META NAME="CHANGED" CONTENT="20010322;15064500">
+	<style>
+		.title
+		{
+			text-align:center;
+			font-weight:bold;
+		}
+		PRE
+		{
+			background-color: rgb(240,240,240);
+		}
+	</style>
+</HEAD>
 <BODY>
-<DIV class="title">
-USAGE GUIDE FOR THE SUN XML SCHEMA PART 2 JAVA IMPLEMENTATION<BR>
-Preview Version.1 March,2001<BR>
-<BR>
-Copyright (c) Sun Microsystems, 2001</DIV>
-<BR>
-<DIV style="FONT-SIZE: smaller; TEXT-ALIGN: right">
-Document 
-written by <A href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke 
-KAWAGUCHI</A>
-    <BR>
-$Id$
-</DIV>
-
-
-
-
-<P>The Sun XML Schema Part 2 Java Implemantation (XSDLib) is 
-an implementation of W3C XML Schema Part 2, intended for use by application 
-developers as their building block.</P>
-
+<P ALIGN=center STYLE="MARGIN-BOTTOM: 0in"><B>USAGE GUIDE FOR THE
+XSDLib, SUN'S JAVA IMPLEMENTATION OF XML SCHEMA PART 2<BR>Preview
+Version.1 March,2001<BR><BR>Copyright (c) Sun Microsystems, 2001</B></P>
+<P STYLE="MARGIN-BOTTOM: 0in"><BR>
+</P>
+<P ALIGN=right>Document written by <A href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke
+KAWAGUCHI</A> <BR>$Id: HowToUse.html,v 1.3 2001/03/19 20:12:30 Bear
+Exp $ 
+</P>
+<P>XSDLib, Sun's Java Implemantation of XML Schema Part 2, is
+intended for use by application developers as a building block.</P>
 <H1>Contents of This Document</H1>
 <OL>
-  <LI><A href="#intro">Introduction</A>
-  <LI><A href="#derivation">Deriving A New Type</A>
-  <LI><A href="#diagnosis">Diagnosing Errors</A>
-  <LI><A href="#misc">Miscellaneous Notes</A></LI>
+	<LI><P STYLE="MARGIN-BOTTOM: 0in"><A href="#intro">Introduction</A> 
+	</P>
+	<LI><P STYLE="MARGIN-BOTTOM: 0in"><A href="#derivation">Deriving A
+	New Type</A> 
+	</P>
+	<LI><P STYLE="MARGIN-BOTTOM: 0in"><A href="#diagnosis">Diagnosing
+	Errors</A> 
+	</P>
+	<LI><P><A href="#misc">Miscellaneous Notes</A> 
+	</P></LI>
 </OL>
-  
-
-<A NAME="intro">
-<H1>Introduction: Validating Strings</H1>
+<H1><A NAME="intro"></A>Introduction: Validating Strings</H1>
 <P>The following example validates a string with integer datatype.</P>
-<PRE>
-void f( String v ) {
+<PRE>void f( String v ) {
   // obtain a type object
   DataType dt = DataTypeFactory.getTypeByName("integer");
   // validates a type
@@ -55,24 +54,20 @@ void f( String v ) {
     ; // v is a valid integer
   else
     ; // v is not a valid integer
-}
-</PRE>
-<P>
-	Several types are context-dependent. For example, "QName" type, which
-	validates something like "prefix:localPart", neeeds to know that the
-	given prefix is properly declared.
+}</PRE><P>
+Several types are context-dependent. For example, the "QName"
+type, which validates something like "prefix:localPart",
+neeeds to know that the given prefix is properly declared. 
 </P>
-<P>
-	These information must be supplied to DataType object by the caller.
-	To do this, the caller must provide an object that implements
-	ValidationContextProvider interface and pass it as the second parameter
-	of verify method.
+<P>This information must be supplied to DataType object by the
+caller. To do this, the caller must provide an object that implements
+the ValidationContextProvider interface and pass it as the second
+parameter of the verify method. 
 </P>
-<PRE>
-class MyContextProvider implements ValidationContextProvider
+<PRE>class MyContextProvider implements ValidationContextProvider
 {
   String resolveNamespacePrefix( String prefix ) {
-    // resolve namespace prefix to namespace URI.
+    // resolves namespace prefix to namespace URI.
   }
 
   boolean isUnparsedEntity( String entityName ) {
@@ -88,56 +83,42 @@ void f( String v, MyContextProvider context ) {
     ; // v is a valid QName
   else
     ; // v is not a valid QName
-}
-</PRE>
-<P>
-	Although the first example passes null as a ValidationContextProvider,
-	the caller must ALWAYS provide a valid ValidationContextProvider for
-	XSDLib to work correctly.
+}</PRE><P>
+Although the first example passes null as a
+ValidationContextProvider, the caller must ALWAYS provide a valid
+ValidationContextProvider for XSDLib to work correctly. 
 </P>
-
-<A NAME="derivation">
-<H1>Deriving A New Type</H1>
-
+<H1><A NAME="derivation"></A>Deriving A New Type</H1>
 <H2>By List</H2>
-<P>
-	The following example derives a new type from existing DataType object by list.
+<P>The following example derives a new type from an existing DataType
+object by list. 
 </P>
-<PRE>
-DataType deriveByList( DataType itemType ) throws BadTypeException {
+<PRE>DataType deriveByList( DataType itemType ) throws BadTypeException {
   return DataTypeFactory.deriveByList("myType",itemType);
-}
-</PRE>
-<P>
-	The first parameter specifies name of newly created type.
-	Note that those derived types cannot be found by getTypeByName method.
+}</PRE><P>
+The first parameter 
+specifies the name of the newly created type. Note that these
+derived types cannot be found through the getTypeByName method of
+DataTypeFactory class. 
 </P>
-<P>
-	When an error is found while derivation, BadTypeException will be thrown.
-	For example, if you derive a type by list from list type,
-	an exception will be thrown.
+<P>When an error is found during derivation, a BadTypeException will
+be thrown. For example, if you derive a type by list from list type,
+an exception will be thrown. 
 </P>
-
 <H2>By Union</H2>
-<P>
-	The following example derives a new type from existing DataType objects by union.
+<P>The following example derives a new type from existing DataType
+objects by union. 
 </P>
-<PRE>
-DataType deriveByUnion( DataType[] memberTypes ) throws BadTypeException {
+<PRE>DataType deriveByUnion( DataType[] memberTypes ) throws BadTypeException {
   return DataTypeFactory.deriveByUnion("myType",memberTypes);
-}
-</PRE>
-<P>
-	The only difference between derivation by list and that by union
-	is union accepts more than one base types.
+}</PRE><P>
+The only difference between derivation by list and derivation by
+union is that the latter accepts more than one base type. 
 </P>
-
 <H2>By Restriction</H2>
-<P>
-	The following exapmle derives a new type by adding facets.
+<P>The following exapmle derives a new type by adding facets. 
 </P>
-<PRE>
-DataType f() throws BadTypeException {
+<PRE>DataType f() throws BadTypeException {
   DataType baseType = DataTypeFactory.getTypeByName("string");
   
   // create a type incubator with the base type
@@ -151,34 +132,24 @@ DataType f() throws BadTypeException {
   DataType derived = incubator.derive("newTypeName");
   
   return derived;
-}
-</PRE>
-<P>
-	The third parameter to add method specifies whether that facet should
-	be "fixed" or not. Once if a facet is fixed, derived class can
-	no longer restrict that facet.
+}</PRE><P>
+The third parameter to the add method specifies whether that facet
+should be "fixed" or not. Once a facet is fixed, a derived
+class can no longer restrict that facet. 
 </P>
-<P>
-	The fourth parameter is again ValidationContextProvider, which is sometimes
-	necessary. Although the above example omits to supply one, the caller
-	has to supply an object that implements ValidationContextProvider.
+<P>The fourth parameter is again ValidationContextProvider, which is
+sometimes necessary. Although the above example omits to supply one,
+the caller has to supply an object that implements
+ValidationContextProvider. 
 </P>
-<P>
-	BadTypeException can be thrown when you add a facet, or when you
-	call derive method.
+<P>BadTypeException can be thrown when you add a facet, or when you
+call the derive method. 
 </P>
-
-
-
-<A NAME="diagnosis">
-<H1>Diagnosing Errors</H1>
-
-<P>
-	The following example provides a diagnosis message to users
-	about what is wrong with their value.
+<H1><A NAME="diagnosis"></A>Diagnosing Errors</H1>
+<P>The following example provides a diagnosis message to users about
+what is wrong with their value. 
 </P>
-<PRE>
-void test( DataType dt, String v, ValidationContextProvider context ) {
+<PRE>void test( DataType dt, String v, ValidationContextProvider context ) {
   if( dt.verify(v,context) )
     System.out.println("valid");
   else {
@@ -192,29 +163,22 @@ void test( DataType dt, String v, ValidationContextProvider context ) {
       System.out.println("invalid");
     }
   }
-}
-</PRE>
-<P>
-	In this way, the user gets informative error messages. If DataType object
-	does not support diagnosis, it throws NotSupportedOperationException.
-	It is the caller's responsibility to handle this expcetion correctly.
+}</PRE><P>
+In this way, the user gets informative error messages. If the
+DataType object does not support diagnosis, it throws
+NotSupportedOperationException. It is the caller's responsibility to
+handle this exception correctly. 
 </P>
-
-
-<A NAME="misc">
-<H1>Miscellaneous Notes</H1>
+<H1><A NAME="misc"></A>Miscellaneous Notes</H1>
 <H2>DataType interface</H2>
-<P>
-	DataType 
-	interface is NOT intended to be used as a general interface for datatype
-	vocabularies. This interface is strongly coupled with XSD. Believe
-	it or not, it is very difficult to provide a generic interface that
-	can be used by various fully-fledged datatype vocabularies.
+<P>The DataType interface is NOT intended to be used as a general
+interface for datatype vocabularies. This interface is strongly
+coupled with XSD. Providing a generic interface that can be used by
+various full-fledged datatype vocabularies is not trivial. 
 </P>
-<P>
-	To implement your own type that implements DataType (possibly to spare
-	the shortcoming of the current release), you should implement your type
-	by deriving your class from <code>ConcreteType</code> class.
-</P></A>
-
-</BODY></HTML>
+<P>In order to overcome this shortcoming in the current release of
+XSDLib, developers wishing to implement their own type that
+implements Datatype should do so by deriving their class from
+<CODE>ConcreteType</CODE> class.</P>
+</BODY>
+</HTML>

@@ -54,18 +54,15 @@ public class Generator implements TREXPatternVisitorVoid
 	private final AttributeExp[] attributeDecls;
 	
 	/** generates instance by using default settings. */
-	public static void generate( Expression exp, Document emptyDoc )
-	{
+	public static void generate( Expression exp, Document emptyDoc ) {
 		generate( exp, emptyDoc, new GeneratorOption() );
 	}
 	
 	/** generates instance by custom settings. */
-	public static void generate( Expression exp, Document emptyDoc, GeneratorOption opts )
-	{
+	public static void generate( Expression exp, Document emptyDoc, GeneratorOption opts ) {
 		Generator g;
 		
-		do
-		{
+		do {
 			while( emptyDoc.getFirstChild()!=null ) // delete any existing children
 				emptyDoc.removeChild( emptyDoc.getFirstChild() );
 			
@@ -79,8 +76,7 @@ public class Generator implements TREXPatternVisitorVoid
 		
 		// patch IDREF.
 		Iterator itr = g.idrefs.iterator();
-		while( itr.hasNext() )
-		{
+		while( itr.hasNext() ) {
 			if( ids.length==0 )	throw new Error("no ID");
 			
 			Text node = (Text)itr.next();
@@ -88,8 +84,7 @@ public class Generator implements TREXPatternVisitorVoid
 		}
 	}
 	
-	protected Generator( Expression exp, Document emptyDoc, GeneratorOption opts )
-	{
+	protected Generator( Expression exp, Document emptyDoc, GeneratorOption opts ) {
 		opts.fillInByDefault();
 		this.opts = opts;
 		this.pool = opts.pool;
@@ -104,22 +99,17 @@ public class Generator implements TREXPatternVisitorVoid
 	}
 	
 	/** annotate DOM by adding a comment that an error is generated. */
-	private void noteError( String error )
-	{
+	private void noteError( String error ) {
 		errorGenerated = true;
 		if( !opts.insertComment )	return;
 		
 		Node com = domDoc.createComment("  "+error+"  ");
-//		Node com = domDoc.createProcessingInstruction("error",error);
 		
 		Node n = node;
-		if( n.getNodeType()==n.ATTRIBUTE_NODE )
-		{
+		if( n.getNodeType()==n.ATTRIBUTE_NODE ) {
 			n = n.getParentNode();
 			n.insertBefore( com, n.getFirstChild() );
-		}
-		else
-		{
+		} else {
 			n.appendChild(com);
 		}
 	}
@@ -128,13 +118,12 @@ public class Generator implements TREXPatternVisitorVoid
 	public void onEpsilon() {}
 	public void onNullSet() { throw new Error(); }	// assertion failed
 	
-	public void onSequence( SequenceExp exp )
-	{
+	public void onSequence( SequenceExp exp ) {
 		if(!(exp.exp1 instanceof AttributeExp)
-		&& !(exp.exp2 instanceof AttributeExp) )
-		{// sequencing error of attribute is meaningless.
-			if( opts.random.nextDouble() < opts.probSeqError )
-			{// generate sequencing error
+		&& !(exp.exp2 instanceof AttributeExp) ) {
+			// sequencing error of attribute is meaningless.
+			if( opts.random.nextDouble() < opts.probSeqError ) {
+				// generate sequencing error
 				noteError("swap sequence to "+
 						  TREXPatternPrinter.printSmallest(exp.exp2)+","+
 						  TREXPatternPrinter.printSmallest(exp.exp1) );
@@ -149,15 +138,13 @@ public class Generator implements TREXPatternVisitorVoid
 		exp.exp2.visit(this);
 	}
 	
-	public void onInterleave( InterleavePattern ip )
-	{
+	public void onInterleave( InterleavePattern ip ) {
 		// collect children
 		Vector vec = getChildren(ip);
 		
 		Node old = node;
 		// generate XML fragment for each child.
-		for( int i=0; i<vec.size(); i++ )
-		{
+		for( int i=0; i<vec.size(); i++ ) {
 			node = domDoc.createElement("dummy");
 			
 			((Expression)vec.get(i)).visit(this);
@@ -167,12 +154,11 @@ public class Generator implements TREXPatternVisitorVoid
 		node = old;
 		
 		// interleave them.
-		while( vec.size()!=0 )
-		{
+		while( vec.size()!=0 ) {
 			int idx = opts.random.nextInt(vec.size());
 			Element e = (Element)vec.get(idx);
-			if(!e.hasChildNodes())
-			{// this one has no more child.
+			if(!e.hasChildNodes()) {
+				// this one has no more child.
 				vec.remove(idx);
 				continue;
 			}
@@ -180,16 +166,13 @@ public class Generator implements TREXPatternVisitorVoid
 		}
 	}
 	
-	public void onChoice( ChoiceExp cp )
-	{
+	public void onChoice( ChoiceExp cp ) {
 		// "A*" is modeled as (epsilon|A+)
-		if( cp.exp1==Expression.epsilon && cp.exp2 instanceof OneOrMoreExp )
-		{
+		if( cp.exp1==Expression.epsilon && cp.exp2 instanceof OneOrMoreExp ) {
 			onZeroOrMore( (OneOrMoreExp)cp.exp2 );
 			return;
 		}
-		if( cp.exp2==Expression.epsilon && cp.exp1 instanceof OneOrMoreExp )
-		{
+		if( cp.exp2==Expression.epsilon && cp.exp1 instanceof OneOrMoreExp ) {
 			onZeroOrMore( (OneOrMoreExp)cp.exp1 );
 			return;
 		}
@@ -200,12 +183,11 @@ public class Generator implements TREXPatternVisitorVoid
 		// gather candidates
 		Vector vec = getChildren(cp);
 
-		if( opts.random.nextDouble() < opts.probGreedyChoiceError )
-		{// greedy choice error. visit twice.
+		if( opts.random.nextDouble() < opts.probGreedyChoiceError ) {
+			// greedy choice error. visit twice.
 			Expression[] es = new Expression[2];
 			for( int i=0; i<2; i++ )
-				do
-				{
+				do {
 					es[i] = (Expression)vec.get(opts.random.nextInt(vec.size()));
 				}while(es[i]==Expression.epsilon);
 
@@ -222,35 +204,33 @@ public class Generator implements TREXPatternVisitorVoid
 		((Expression)vec.get(opts.random.nextInt(vec.size()))).visit(this);
 	}
 	
-	public void onMixed( MixedExp exp )
-	{// convert it to interleave so that we can generate some pcdata.
+	public void onMixed( MixedExp exp ) {
+		// convert it to interleave so that we can generate some pcdata.
 		pool.createInterleave(
 			pool.createZeroOrMore(Expression.anyString),
 			exp.exp ).visit(this);
 	}
 	
-	public void onRef( ReferenceExp exp )
-	{
+	public void onRef( ReferenceExp exp ) {
 		exp.exp.visit(this);
 	}
 	
-	public void onAttribute( AttributeExp exp )
-	{
-		if( opts.random.nextDouble() < opts.probMutatedAttrError )
-		{// mutated element error. generate a random attribute and ignore this declaration.
+	public void onAttribute( AttributeExp exp ) {
+		if( opts.random.nextDouble() < opts.probMutatedAttrError ) {
+			// mutated element error. generate a random attribute and ignore this declaration.
 			noteError("mutated attribute "+exp.nameClass);
 			onAttribute( attributeDecls[opts.random.nextInt(attributeDecls.length)] );
 			return;
 		}
 		
-		if( opts.random.nextDouble() < opts.probMissingAttrError )
-		{// missing attribute error. skip generating this instance.
+		if( opts.random.nextDouble() < opts.probMissingAttrError ) {
+			// missing attribute error. skip generating this instance.
 			noteError("missing attribute "+exp.nameClass);
 			return;
 		}
 		
-		if( opts.random.nextDouble() < opts.probSlipInAttrError )
-		{// slip-in error. generate random attribute.
+		if( opts.random.nextDouble() < opts.probSlipInAttrError ) {
+			// slip-in error. generate random attribute.
 			AttributeExp a = attributeDecls[opts.random.nextInt(attributeDecls.length)];
 			noteError("slip-in attribute "+a.nameClass);
 			onAttribute( a );
@@ -260,14 +240,12 @@ public class Generator implements TREXPatternVisitorVoid
 		// generate attribute name
 		StringPair name;
 		int retry=0;
-		do
-		{
+		do {
 			name = getName(exp.nameClass);
 		}while( ((Element)node).getAttributeNodeNS(name.namespaceURI,name.localName)!=null
 			&&  retry++<100/*abort after several retries*/ );
 
-		if( opts.random.nextDouble() < opts.probAttrNameTypo )
-		{
+		if( opts.random.nextDouble() < opts.probAttrNameTypo ) {
 			noteError("attribute name typo: "+name.localName);
 			name = generateTypo(name);
 		}
@@ -284,25 +262,24 @@ public class Generator implements TREXPatternVisitorVoid
 		node = old;
 	}
 	
-	public void onElement( ElementExp exp )
-	{
-		if( opts.random.nextDouble() < opts.probMutatedElemError )
-		{// mutated element error. generate a random element and ignore this declaration.
+	public void onElement( ElementExp exp ) {
+		if( opts.random.nextDouble() < opts.probMutatedElemError ) {
+			// mutated element error. generate a random element and ignore this declaration.
 			noteError("mutated element");
 			onElement( elementDecls[opts.random.nextInt(elementDecls.length)] );
 			return;
 		}
 				
-		if( node.getNodeType()!=node.DOCUMENT_NODE )
-		{// these errors cannot be generated for the document element
-			if( opts.random.nextDouble() < opts.probMissingElemError )
-			{// missing element error. skip generating this instance.
+		if( node.getNodeType()!=node.DOCUMENT_NODE ) {
+			// these errors cannot be generated for the document element
+			if( opts.random.nextDouble() < opts.probMissingElemError ) {
+				// missing element error. skip generating this instance.
 				noteError("missing element: "+TREXPatternPrinter.printSmallest(exp) );
 				return;
 			}
 		
-			if( opts.random.nextDouble() < opts.probSlipInElemError )
-			{// slip-in error. generate random element.
+			if( opts.random.nextDouble() < opts.probSlipInElemError ) {
+				// slip-in error. generate random element.
 				ElementExp e = elementDecls[opts.random.nextInt(elementDecls.length)];
 				noteError("slip-in element: "+TREXPatternPrinter.printSmallest(e) );
 				onElement( e );
@@ -311,8 +288,7 @@ public class Generator implements TREXPatternVisitorVoid
 		
 		StringPair name = getName(exp.getNameClass());
 
-		if( opts.random.nextDouble() < opts.probElemNameTypo )
-		{
+		if( opts.random.nextDouble() < opts.probElemNameTypo ) {
 			noteError("element name typo: "+name.localName);
 			name = generateTypo(name);
 		}
@@ -329,15 +305,12 @@ public class Generator implements TREXPatternVisitorVoid
 		node = child.getParentNode();
 	}
 	
-	public void onAnyString()
-	{
+	public void onAnyString() {
 		node.appendChild( domDoc.createTextNode(opts.dtGenerator.generate(StringType.theInstance)) );
 	}
 	
-	public void onOneOrMore( OneOrMoreExp exp )
-	{
-		if( opts.random.nextDouble() < opts.probMissingPlus )
-		{
+	public void onOneOrMore( OneOrMoreExp exp ) {
+		if( opts.random.nextDouble() < opts.probMissingPlus ) {
 			noteError("missing " + TREXPatternPrinter.printSmallest(exp) );
 			return;
 		}
@@ -348,51 +321,42 @@ public class Generator implements TREXPatternVisitorVoid
 			exp.exp.visit(this);
 	}
 	
-	public void onZeroOrMore( OneOrMoreExp exp )
-	{
+	public void onZeroOrMore( OneOrMoreExp exp ) {
 		int m = opts.width.next();
 		if( cutBack() )	m=0;
 		for( int i=0; i<m; i++ )
 			exp.exp.visit(this);
 	}
 	
-	public void onTypedString( TypedStringExp exp )
-	{
+	public void onTypedString( TypedStringExp exp ) {
 		String value;
-		if( "ID".equals(exp.dt.getName()) )
-		{
-			do
-			{
+		if( "ID".equals(exp.dt.getName()) ) {
+			do {
 				value = opts.dtGenerator.generate(NmtokenType.theInstance);
 			}while( ids.contains(value) );
 			ids.add(value);
 		}
 		else
-		if( "IDREF".equals(exp.dt.getName()) || "IDREFS".equals(exp.dt.getName()) )
-		{
+		if( "IDREF".equals(exp.dt.getName()) || "IDREFS".equals(exp.dt.getName()) ) {
 			Node n = domDoc.createTextNode("{TmpIDRef}");
 			node.appendChild(n);
 			idrefs.add(n); // memorize this node so that we can patch it later.
 			return;
-		}
-		else
-		{
+		} else {
 			value = opts.dtGenerator.generate(exp.dt);
 		}
 		
 		node.appendChild( domDoc.createTextNode(value) );
 	}
 	
-	public void onConcur( ConcurPattern exp )
-	{
+	public void onConcur( ConcurPattern exp ) {
 		throw new Error("concur is not supported");
 	}
 	
 	
 	/** generaets a name that satisfies given NameClass */
-	private StringPair getName( NameClass nc )
-	{
-		StringPair name = (StringPair)nc.visit(opts.nameGenerator);
+	private StringPair getName( NameClass nc ) {
+		StringPair name = opts.nameGenerator.generate(nc);
 		
 		if( !nc.accepts( name.namespaceURI, name.localName ) )
 			throw new Error();	// invalid
@@ -402,8 +366,7 @@ public class Generator implements TREXPatternVisitorVoid
 	
 	
 	/** enumerates children of BinaryExp into a vector. */
-	private Vector getChildren( BinaryExp exp )
-	{
+	private Vector getChildren( BinaryExp exp ) {
 		final Vector vec = new Vector();
 		Iterator itr = exp.children();
 		while( itr.hasNext() )	vec.add( itr.next() );
@@ -413,8 +376,7 @@ public class Generator implements TREXPatternVisitorVoid
 	/**
 	 * generates 'typo'.
 	 */
-	protected StringPair generateTypo( StringPair pair )
-	{
+	protected StringPair generateTypo( StringPair pair ) {
 		// in this implementation, typo is made only to localName.
 		StringBuffer buf = new StringBuffer(pair.localName);
 		

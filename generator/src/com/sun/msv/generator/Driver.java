@@ -16,6 +16,9 @@ import java.util.*;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.grammar.relax.*;
 import com.sun.msv.grammar.*;
+import com.sun.msv.verifier.Verifier;
+import com.sun.msv.verifier.util.*;
+import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
 import com.sun.msv.driver.textui.DebugController;
 import com.sun.msv.reader.util.GrammarLoader;
@@ -26,18 +29,15 @@ import org.apache.xml.serialize.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class Driver
-{
-	protected void usage()
-	{
+public class Driver {
+	
+	protected void usage() {
 		System.out.println(
 			"Sun XMLGenerator\n"+
 			"----------------\n"+
 			"Usage: XMLGenerator <options> <schema> [<output name>]\n"+
 			"Options:\n"+
-			"  -relax    : assume RELAX as a schema\n"+
-			"  -trex     : assume TREX as a schema\n"+
-			"  -ascii    : use ASCII character only\n"+
+			"  -ascii    : use US-ASCII characters only\n"+
 			"  -seed <n> : set random seed\n"+
 			"  -depth <n>: set cut back depth\n"+
 			"  -width <n>: maximum number of times '*'/'+' are repeated\n" +
@@ -46,6 +46,8 @@ public class Driver
 			"  -error <n>/<m>: error ratio. generate n errors per m elemnts (average).\n"+
 			"                  to control error generation, see manual for details.\n"+
 			"  -nocomment: suppress insertion of comments that indicate generated errors.\n"+
+			"  -validate : validate documents before write to output.\n"+
+			"      when generating errors, check that the document is actually invalid.\n"+
 			"\n"+
 			"  <output name> must include one '$'. '$' will be replaced by number.\n"+
 			"  e.g., test.$.xml -> test.1.xml test.2.xml test.3.xml ...\n"+
@@ -53,21 +55,18 @@ public class Driver
 			);
 	}
 
-	public static void main( String[] args ) throws Exception
-	{
+	public static void main( String[] args ) throws Exception {
 		new Driver().run(args);
 	}
 	
-	protected double getRatio( String s )
-	{
+	protected double getRatio( String s ) {
 		int idx = s.indexOf('/');
 		double n = Double.parseDouble(s.substring(0,idx));
 		double m = Double.parseDouble(s.substring(idx+1));
 						
 		double ratio = n/m;
 						
-		if( ratio<=0 || ratio>1 )
-		{
+		if( ratio<=0 || ratio>1 ) {
 			System.out.println("error ratio out of range");
 			usage();
 			System.exit(-1);
@@ -75,11 +74,12 @@ public class Driver
 		return ratio;
 	}
 	
-	protected void run( String[] args ) throws Exception
-	{
+	protected void run( String[] args ) throws Exception {
 		String grammarName=null;
 		String outputName=null;
 		String encoding="UTF-8";
+		boolean createError = false;
+		boolean validate = false;
 		
 		int number = 1;
 
@@ -90,10 +90,8 @@ public class Driver
 
 		// parse options
 		//===========================================
-		try
-		{
-			for( int i=0; i<args.length; i++ )
-			{
+		try {
+			for( int i=0; i<args.length; i++ ) {
 				if( args[i].equalsIgnoreCase("-ascii") )
 					((DataTypeGeneratorImpl)opt.dtGenerator).asciiOnly = true;
 				else
@@ -106,8 +104,7 @@ public class Driver
 				if( args[i].equalsIgnoreCase("-width") )
 					opt.width = new Rand.UniformRand( opt.random, new Integer(args[++i]).intValue() );
 				else
-				if( args[i].equalsIgnoreCase("-n") )
-				{
+				if( args[i].equalsIgnoreCase("-n") ) {
 					number = new Integer(args[++i]).intValue();
 					if( number<1 )	number=1;
 				}
@@ -118,58 +115,66 @@ public class Driver
 				if( args[i].equalsIgnoreCase("-seed") )
 					opt.random.setSeed( new Long(args[++i]).longValue() );
 				else
-				if( args[i].equalsIgnoreCase("-error") )
-				{
-					opt.probGreedyChoiceError=
-					opt.probMissingAttrError=
-					opt.probMissingElemError=
-					opt.probMutatedAttrError=
-					opt.probMutatedElemError=
-					opt.probSeqError=
-					opt.probSlipInAttrError=
-					opt.probSlipInElemError=
-					opt.probMissingPlus=
-					opt.probAttrNameTypo=
-					opt.probElemNameTypo=
-						getRatio(args[++i]);
+				if( args[i].equalsIgnoreCase("-validate") )
+					validate = true;
+				else
+				if( args[i].startsWith("-error") ) {
+					createError = true;
+					if( args[i].equalsIgnoreCase("-error") ) {
+						opt.probGreedyChoiceError=
+						opt.probMissingAttrError=
+						opt.probMissingElemError=
+						opt.probMutatedAttrError=
+						opt.probMutatedElemError=
+						opt.probSeqError=
+						opt.probSlipInAttrError=
+						opt.probSlipInElemError=
+						opt.probMissingPlus=
+						opt.probAttrNameTypo=
+						opt.probElemNameTypo=
+							getRatio(args[++i]);
+					}
+					else
+					if( args[i].equalsIgnoreCase("-error-greedyChoice") )
+						opt.probGreedyChoiceError	= getRatio(args[++i]);
+					else
+					if( args[i].equalsIgnoreCase("-error-missingAttribute") )
+						opt.probMissingAttrError	= getRatio(args[++i]);
+					else
+					if( args[i].equalsIgnoreCase("-error-missingElement") )
+						opt.probMissingElemError	= getRatio(args[++i]);
+					else
+					if( args[i].equalsIgnoreCase("-error-mutatedAttribute") )
+						opt.probMutatedAttrError	= getRatio(args[++i]);
+					else
+					if( args[i].equalsIgnoreCase("-error-mutatedElement") )
+						opt.probMutatedElemError	= getRatio(args[++i]);
+					else
+					if( args[i].equalsIgnoreCase("-error-sequenceError") )
+						opt.probSeqError			= getRatio(args[++i]);
+					else
+					if( args[i].equalsIgnoreCase("-error-slipInAttribute") )
+						opt.probSlipInAttrError		= getRatio(args[++i]);
+					else
+					if( args[i].equalsIgnoreCase("-error-slipInElement") )
+						opt.probSlipInElemError		= getRatio(args[++i]);
+					else
+					if( args[i].equalsIgnoreCase("-error-missingPlus") )
+						opt.probMissingPlus			= getRatio(args[++i]);
+					else
+					if( args[i].equalsIgnoreCase("-error-attributeNameTypo") )
+						opt.probAttrNameTypo		= getRatio(args[++i]);
+					else
+					if( args[i].equalsIgnoreCase("-error-attributeNameTypo") )
+							opt.probElemNameTypo	= getRatio(args[++i]);
+					else {
+						System.err.println("unrecognized option :" + args[i]);
+						usage();
+						return;
+					}
 				}
-				else
-				if( args[i].equalsIgnoreCase("-error-greedyChoice") )
-					opt.probGreedyChoiceError	= getRatio(args[++i]);
-				else
-				if( args[i].equalsIgnoreCase("-error-missingAttribute") )
-					opt.probMissingAttrError	= getRatio(args[++i]);
-				else
-				if( args[i].equalsIgnoreCase("-error-missingElement") )
-					opt.probMissingElemError	= getRatio(args[++i]);
-				else
-				if( args[i].equalsIgnoreCase("-error-mutatedAttribute") )
-					opt.probMutatedAttrError	= getRatio(args[++i]);
-				else
-				if( args[i].equalsIgnoreCase("-error-mutatedElement") )
-					opt.probMutatedElemError	= getRatio(args[++i]);
-				else
-				if( args[i].equalsIgnoreCase("-error-sequenceError") )
-					opt.probSeqError			= getRatio(args[++i]);
-				else
-				if( args[i].equalsIgnoreCase("-error-slipInAttribute") )
-					opt.probSlipInAttrError		= getRatio(args[++i]);
-				else
-				if( args[i].equalsIgnoreCase("-error-slipInElement") )
-					opt.probSlipInElemError		= getRatio(args[++i]);
-				else
-				if( args[i].equalsIgnoreCase("-error-missingPlus") )
-					opt.probMissingPlus			= getRatio(args[++i]);
-				else
-				if( args[i].equalsIgnoreCase("-error-attributeNameTypo") )
-					opt.probAttrNameTypo		= getRatio(args[++i]);
-				else
-				if( args[i].equalsIgnoreCase("-error-attributeNameTypo") )
-						opt.probElemNameTypo	= getRatio(args[++i]);
-				else
-				{
-					if( args[i].charAt(0)=='-' )
-					{
+				else {
+					if( args[i].charAt(0)=='-' ) {
 						System.err.println("unrecognized option :" + args[i]);
 						usage();
 						return;
@@ -178,23 +183,19 @@ public class Driver
 					if( grammarName==null )	grammarName = args[i];
 					else
 					if( outputName==null ) outputName = args[i];
-					else
-					{
+					else {
 						System.err.println("too many parameters");
 						usage();
 						return;
 					}
 				}
 			}
-		}
-		catch(Exception e)
-		{
+		} catch(Exception e) {
 			usage();
 			return;
 		}
 		
-		if( grammarName==null )
-		{
+		if( grammarName==null ) {
 			usage();
 			return;
 		}
@@ -208,12 +209,10 @@ public class Driver
 		factory.setNamespaceAware(true);
 		factory.setValidating(false);
 		
-		try
-		{
+		try {
 			factory.setFeature("http://xml.org/sax/features/validation",false);
 			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
-		}
-		catch(Exception e) { ;	}
+		} catch(Exception e) { ;	}
 		
 		Expression topLevel;
 		
@@ -236,23 +235,36 @@ public class Driver
 		
 		// generate instances
 		//===========================================
-		for( int i=0; i<number; i++ )
-		{
+		for( int i=0; i<number; i++ ) {
 			if( number<10 )		System.err.println("generating a document #"+(i+1));
 			else				System.err.print('.');
 			
-			org.w3c.dom.Document dom = domFactory.newDocumentBuilder().newDocument();
-			
-			Generator.generate(topLevel,dom,opt);
+			org.w3c.dom.Document dom;
+			while(true) {
+				dom = domFactory.newDocumentBuilder().newDocument();
+				Generator.generate(topLevel,dom,opt);
+				
+				if( !validate)		break;
+				
+				// check the validity of generated document.
+				DOM2toSAX2 d2s = new DOM2toSAX2();
+				Verifier v = new Verifier(
+					new TREXDocumentDeclaration(grammar),
+					new VerificationErrorHandlerImpl() );
+				d2s.setContentHandler(v);
+				d2s.traverse(dom);
+				
+				if( createError && !v.isValid() )	break;
+				if( !createError && v.isValid() )	break;
+				// do it again
+			}
 		
 			// serialize it
 			OutputStream os;
 			if( outputName==null )		os = System.out;	// in case no output file name is specified
-			else
-			{
+			else {
 				int idx = outputName.indexOf('$');
-				if( idx!=-1 )
-				{
+				if( idx!=-1 ) {
 					String s = Integer.toString(i);
 					for( int j=s.length(); j<Integer.toString(number-1).length(); j++ )
 						s = "0"+s;
@@ -268,23 +280,17 @@ public class Driver
 			s.serialize(dom);
 			
 			if( os!=System.out )	os.close();
-			else
-			{
-				System.in.read();
-			}
 		}
 	}
 	
-	private static InputSource getInputSource( String fileOrURL )
-	{
-		try
-		{// try it as a file
+	private static InputSource getInputSource( String fileOrURL ) {
+		try {
+			// try it as a file
 			InputSource is = new InputSource(new java.io.FileInputStream(fileOrURL));
 			is.setSystemId(new File(fileOrURL).getCanonicalPath());
 			return is;
-		}
-		catch( Exception e )
-		{// try it as an URL
+		} catch( Exception e ) {
+			// try it as an URL
 			return new InputSource(fileOrURL);
 		}
 	}

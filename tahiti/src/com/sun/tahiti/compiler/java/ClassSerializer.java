@@ -200,7 +200,7 @@ public class ClassSerializer
 				"//\n"+
 				"// <%2>\n"+
 				"//\n"+
-				"	protected <%1> <%2> = <%3>;\n"+
+				"	protected <%1> <%2> <%3>;\n"+
 				"	public void set<%0>( <%1> newVal ) {\n"+
 				"		this.<%2> = newVal;\n"+
 				"	}\n"+
@@ -309,8 +309,52 @@ public class ClassSerializer
 		out.flush();
 		out.close();
 	}
-		
+	
+	/**
+	 * Java objects which has the corresponding built-in type.
+	 */
+	private static final Map boxTypes;
+	static {
+		boxTypes = new java.util.HashMap();
+		boxTypes.put( "java.lang.Integer",	"int" );
+		boxTypes.put( "java.lang.Boolean",	"boolean" );
+		boxTypes.put( "java.lang.Double",	"double" );
+		boxTypes.put( "java.lang.Float",	"float" );
+		boxTypes.put( "java.lang.Char",		"char" );
+		boxTypes.put( "java.lang.Long",		"long" );
+		boxTypes.put( "java.lang.Byte",		"byte" );
+		boxTypes.put( "java.lang.Short",	"short" );
+	}
+	
 	private FieldSerializer getFieldSerializer( final FieldUse fu ) {
+		if( fu.multiplicity.isUnique() && boxTypes.containsKey(fu.type.getTypeName()) ) {
+			final String boxType = toPrintName(fu.type);
+			final String primitiveType = (String)boxTypes.get(fu.type.getTypeName());
+			// use the unboxed type.
+			return new FieldSerializer(){
+				public String getTypeStr() {
+					return primitiveType;
+				}
+				public String getInitializer() {
+					return "";
+				}
+				public String setField( String objName ) {
+					return format("this.{0}=(({1}){2}).{3}Value();",
+						fu.name, boxType, objName, primitiveType );
+				}
+				public String marshallerInitializer() {
+					return null;
+				}
+				public String hasMoreToken() {
+					return "true";
+				}
+				public String marshall( Element e ) {
+					return format("out.data(new {0}({1}),{2}.{3});",
+						boxType, fu.name,
+						grammarShortClassName, e.getAttribute("dataSymbol") );
+				}
+			};
+		}
 		if( fu.multiplicity.isAtMostOnce() )
 			// use item type itself.
 			return new FieldSerializer(){
@@ -318,7 +362,7 @@ public class ClassSerializer
 					return toPrintName(fu.type);
 				}
 				public String getInitializer() {
-					return "null";
+					return "=null";
 				}
 				public String setField( String objName ) {
 					return format("this.{0}=({1}){2};",fu.name,getTypeStr(),objName);
@@ -348,7 +392,7 @@ public class ClassSerializer
 						return fu.type.getTypeName()+"[]";
 					}
 					public String getInitializer() {
-						return format("new {0}[{1}]",
+						return format("=new {0}[{1}]",
 							fu.type.getTypeName(),
 							new Integer(fu.multiplicity.min));
 					}
@@ -361,7 +405,7 @@ public class ClassSerializer
 				return "java.util.Vector /* of " + toPrintName(fu.type) +" */";
 			}
 			public String getInitializer() {
-				return "new java.util.Vector()";
+				return "=new java.util.Vector()";
 			}
 			public String setField( String objName ) {
 				return format("this.{0}.add({1});",fu.name,objName);

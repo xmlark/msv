@@ -42,6 +42,7 @@ public final class TREXDocumentDeclaration extends REDocumentDeclaration
 		
 		resCalc		= new TREXResidualCalculator(pool);
 		attFeeder	= new TREXAttributeFeeder(this);
+		attPicker	= new TREXAttributePicker(this);
 		attPruner	= new TREXAttributePruner(pool);
 		attRemover	= new TREXAttributeRemover(pool);
 		cccec		= new TREXCombinedChildContentExpCreator(pool,attFeeder);
@@ -55,6 +56,7 @@ public final class TREXDocumentDeclaration extends REDocumentDeclaration
 	private final TREXCombinedChildContentExpCreator	cccec;
 	private final TREXAttributeFeeder					attFeeder;
 	private final TREXAttributePruner					attPruner;
+	private final TREXAttributePicker					attPicker;
 	private final TREXAttributeRemover					attRemover;
 	private final TREXElementsOfConcernCollector		ecc;
 								  
@@ -65,6 +67,7 @@ public final class TREXDocumentDeclaration extends REDocumentDeclaration
 	public AttributeFeeder getAttributeFeeder()							{ return attFeeder; }
 	public AttributePruner getAttributePruner()							{ return attPruner; }
 	public AttributeRemover getAttributeRemover()						{ return attRemover; }
+	public AttributePicker getAttributePicker()							{ return attPicker; }
 	public ElementsOfConcernCollector getElementsOfConcernCollector()	{ return ecc; }
 	public StringCareLevelCalculator getStringCareLevelCalculator()		{ return TREXStringCareLevelCalculator.theInstance; }
 	public AttributeFreeMarker getAttributeFreeMarker()					{ return TREXAttributeFreeMarker.theInstance; }

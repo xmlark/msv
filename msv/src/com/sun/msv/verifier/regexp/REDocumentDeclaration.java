@@ -44,6 +44,9 @@ public abstract class REDocumentDeclaration implements DocumentDeclaration
 	/** obtains a thread-local copy of AttributeRemover */
 	public abstract AttributeRemover getAttributeRemover();
 
+	/** obtains a thread-local copy of AttributePicker */
+	public abstract AttributePicker getAttributePicker();
+
 	/** obtains a thread-local copy of ElementsOfConcernCollector */
 	public abstract ElementsOfConcernCollector getElementsOfConcernCollector();
 	

@@ -704,7 +704,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 			// TODO: reduce strength by converting concur to choice?
 			return null;
 		
-		e = e.visit(new AttributePicker(docDecl.getPool()));
+		e = e.visit(docDecl.getAttributePicker());
 				
 		if( e.isEpsilonReducible() )	throw new Error();	// assertion
 		// if attribute expression is epsilon reducible, then

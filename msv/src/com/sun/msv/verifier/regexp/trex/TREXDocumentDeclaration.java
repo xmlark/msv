@@ -42,7 +42,7 @@ public final class TREXDocumentDeclaration extends REDocumentDeclaration
 		
 		resCalc		= new TREXResidualCalculator(pool);
 		attFeeder	= new TREXAttributeFeeder(this);
-		attPicker	= new TREXAttributePicker(this);
+		attPicker	= new TREXAttributePicker(pool);
 		attPruner	= new TREXAttributePruner(pool);
 		attRemover	= new TREXAttributeRemover(pool);
 		cccec		= new TREXCombinedChildContentExpCreator(pool,attFeeder);

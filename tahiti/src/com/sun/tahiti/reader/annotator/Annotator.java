@@ -29,7 +29,7 @@ public class Annotator
 		are added while parsing various grammars into the AGM. And some
 		of them are unnecessary.
 		*/
-		topLevel = topLevel.visit( new TemporaryClassItemRemover(reader.pool) );
+		topLevel = TemporaryClassItemRemover.remove( topLevel, reader.pool );
 		
 		/*
 		perform field annotation. this will normalize

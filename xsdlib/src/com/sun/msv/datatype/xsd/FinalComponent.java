@@ -25,7 +25,12 @@ public final class FinalComponent extends DataTypeImpl
 	
 	public FinalComponent( DataTypeImpl baseType, int finalValue )
 	{
-		super( baseType.getName(), baseType.whiteSpace );
+		this( baseType.getName(), baseType, finalValue );
+	}
+	
+	public FinalComponent( String newTypeName, DataTypeImpl baseType, int finalValue )
+	{
+		super( newTypeName, baseType.whiteSpace );
 		this.baseType = baseType;
 		this.finalValue = finalValue;
 	}

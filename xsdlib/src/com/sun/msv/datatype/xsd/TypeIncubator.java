@@ -121,8 +121,15 @@ public class TypeIncubator
 		if( baseType.isFinal(DataType.DERIVATION_BY_RESTRICTION) )
 			throw new BadTypeException(BadTypeException.ERR_INVALID_BASE_TYPE, baseType.displayName() );
 		
-		// if no facet is specified, no need to create another object.
-		if( isEmpty() )	return baseType;
+		if( isEmpty() )
+		{
+			// if no facet is specified, and user wants anonymous type,
+			// then no need to create another object.
+			if( newName==null )	return baseType;
+			
+			// using FinalComponent as a wrapper.
+			return new FinalComponent(newName,baseType,0);
+		}
 		
 		
 		DataTypeImpl r = baseType;	// start from current datatype

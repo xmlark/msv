@@ -12,7 +12,7 @@ class TestDriver implements ErrorReceiver
 	{
 		// reads test case file
 		Document doc = new SAXBuilder().build(new FileInputStream( //"testcase.txt"));
-		"C:\\Documents and Settings\\Bear\\My Documents\\Sun\\tranquilo\\src\\com\\sun\\tranquilo\\datatype\\test\\testcase.txt" ));
+		"C:\\Documents and Settings\\Bear\\My Documents\\Sun\\tranquilo\\src\\com\\sun\\tranquilo\\datatype\\test\\DataTypeTest.txt" ));
 
 		DataTypeTester tester = new DataTypeTester(System.out,new TestDriver());
 		// perform test for each "case" item

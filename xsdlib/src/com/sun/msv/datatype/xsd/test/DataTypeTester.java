@@ -8,6 +8,9 @@ import java.util.List;
 import java.io.PrintStream;
 import com.sun.tranquilo.datatype.*;
 
+/**
+ * tests DataType.verify method with various types and various lexical values.
+ */
 public class DataTypeTester
 {
 	/** progress indication will be sent to this object */
@@ -107,7 +110,9 @@ public class DataTypeTester
 		{
 			if((cnt%500)==0 && cnt!=0 )	out.print("\r"+cnt+"    ");
 			
+			if( !pattern.hasMore() )	break;
 			final TestCase testCase = pattern.get();
+			
 			// derive a type with test facets.
 			DataType typeObj=null;
 			try
@@ -123,8 +128,8 @@ public class DataTypeTester
 			{
 				final String answer = testCase.answer;
 
-	//			if( testCase.facets.isEmpty())	out.println("nofacet");
-	//			else	testCase.facets.dump(out);
+//				if( testCase.facets.isEmpty())	out.println("nofacet");
+//				else	testCase.facets.dump(out);
 
 				// test each value and see what happens
 				for( int i=0; i<values.length; i++ )
@@ -163,8 +168,6 @@ public class DataTypeTester
 			}
 			
 			cnt++;
-			if( !pattern.hasMore() )	break;
-			
 			pattern.next();
 		}
 		

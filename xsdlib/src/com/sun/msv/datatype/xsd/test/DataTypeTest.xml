@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- $Id$ -->
 <suite>
-<comment>
 <case name="test for year">
 	<value>  -999999999999999999999999999999999999999999999999999999999999999999Z</value>
 	<value  >-10000</value>
@@ -77,6 +76,7 @@
 		<value>01999</value>
 	</wrongs>
 </case>
+<comment>
 
 <case name="test for date">
 	<value>-0013-08-31</value>
@@ -185,7 +185,6 @@
 		<value>1</value>
 	</wrongs>
 </case>
-</comment>
 
 <!-- test case for integer and derived types -->
 <case name="test for integer and its derived types">
@@ -319,7 +318,6 @@
 	</wrongs>
 </case>
 
-<comment>
 <!-- test case for float and double -->
 <case>
 	<value>-INF</value>

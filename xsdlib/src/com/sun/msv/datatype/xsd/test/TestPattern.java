@@ -14,5 +14,6 @@ public interface TestPattern
 	/** generate next test case */
 	void next();
 	
+	/** true indicates get method can be safely called */
 	boolean hasMore();
 }

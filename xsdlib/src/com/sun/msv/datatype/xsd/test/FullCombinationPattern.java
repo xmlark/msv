@@ -10,8 +10,8 @@ class FullCombinationPattern implements TestPattern
 	/** True indicates 'AND' mode. False is 'OR' mode. */
 	private final boolean mergeMode;
 	
-	private boolean noMore;
-
+	private boolean noMore = false;
+	
 	public FullCombinationPattern( TestPattern[] children, boolean mergeMode )
 	{
 		this.children = children;
@@ -41,25 +41,29 @@ class FullCombinationPattern implements TestPattern
 		for( int i=0; i<children.length; i++ )
 			children[i].reset();
 		noMore=false;
-		next();	// get the first one
+		theCase=null;
 	}
 
-	public TestCase get() { return theCase; }
+	public TestCase get()
+	{
+		if(theCase==null)
+		{
+			theCase = new TestCase();
+			try
+			{
+				for( int i=0; i<children.length; i++ )
+					theCase.merge( children[i].get(), mergeMode );
+			}
+			catch(BadTypeException bte) { throw new RuntimeException(bte.getMessage()); }
+		}
+		return theCase;
+	}
 
 	/** generate next test case */
 	public void next()
 	{
-		// debug
-		if(!hasMore())	throw new IllegalStateException();
-			
-		theCase = new TestCase();
-		try
-		{
-			for( int i=0; i<children.length; i++ )
-				theCase.merge( children[i].get(), mergeMode );
-		}
-		catch(BadTypeException bte) { throw new RuntimeException(bte.getMessage()); }
-
+		theCase = null;	// clear the cache
+		
 		// increment.
 		// Imagine a increment of number.
 		// 09999 + 1 => 10000
@@ -77,8 +81,8 @@ class FullCombinationPattern implements TestPattern
 				return;
 			}
 		}
-
-		if(i==-1)	noMore=true;	// test completed. no more pattern.
+		
+		noMore = true;
 	}
 
 	public boolean hasMore()

@@ -21,7 +21,8 @@ import org.relaxng.datatype.ValidationContext;
  */
 public class NmtokenType extends TokenType {
 	public static final NmtokenType theInstance = new NmtokenType("NMTOKEN");
-	protected NmtokenType(String typeName) { super(typeName); }
+	
+    protected NmtokenType(String typeName) { super(typeName,false); }
 	
 	final public XSDatatype getBaseType() {
 		return TokenType.theInstance;

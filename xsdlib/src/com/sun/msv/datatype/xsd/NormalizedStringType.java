@@ -18,9 +18,11 @@ package com.sun.msv.datatype.xsd;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NormalizedStringType extends StringType {
-	public static final NormalizedStringType theInstance = new NormalizedStringType("normalizedString");
-	protected NormalizedStringType(String typeName) {
-		super(typeName, WhiteSpaceProcessor.theReplace);
+	public static final NormalizedStringType theInstance =
+        new NormalizedStringType("normalizedString",true);
+	
+    protected NormalizedStringType( String typeName, boolean isAlwaysValid ) {
+		super(typeName, WhiteSpaceProcessor.theReplace, isAlwaysValid);
 	}
 	
 	public XSDatatype getBaseType() {

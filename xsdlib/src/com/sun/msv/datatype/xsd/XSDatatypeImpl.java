@@ -80,6 +80,9 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 			// lexical validation is enough.
 			return checkFormat(literal,context);
 	}
+    
+    // default implementation
+    public boolean isAlwaysValid() { return false; }
 	
 	public DatatypeStreamingValidator createStreamingValidator( ValidationContext context ) {
 		return new StreamingValidatorImpl(this,context);

@@ -21,7 +21,7 @@ import org.relaxng.datatype.ValidationContext;
  */
 public class NameType extends TokenType {
 	public static final NameType theInstance = new NameType();
-	private NameType() { super("Name"); }
+	private NameType() { super("Name",false); }
 	
 	final public XSDatatype getBaseType() {
 		return TokenType.theInstance;

@@ -20,9 +20,9 @@ import org.relaxng.datatype.ValidationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NcnameType extends TokenType {
-	public static final NcnameType theInstance = new NcnameType();
-	private NcnameType() { super("NCName"); }
-	protected NcnameType( String typeName ) { super(typeName); }
+	public static final NcnameType theInstance = new NcnameType("NCName");
+	
+	protected NcnameType( String typeName ) { super(typeName,false); }
 	
 	final public XSDatatype getBaseType() {
 		return NameType.theInstance;

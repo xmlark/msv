@@ -24,7 +24,7 @@ import org.relaxng.datatype.ValidationContext;
 public class LanguageType extends TokenType {
 	
 	public static final LanguageType theInstance = new LanguageType();
-	private LanguageType() { super("language"); }
+	private LanguageType() { super("language",false); }
 	
 	final public XSDatatype getBaseType() {
 		return TokenType.theInstance;

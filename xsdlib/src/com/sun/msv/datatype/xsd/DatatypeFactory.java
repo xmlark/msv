@@ -215,7 +215,7 @@ public class DatatypeFactory {
 				add( builtinType, createBuiltinList("NMTOKENS",NmtokenType.theInstance) );
 			else
 			if( dataTypeName.equals("NOTATION") )
-				add( builtinType, new StringType("NOTATION", WhiteSpaceProcessor.theCollapse) );
+				add( builtinType, new StringType("NOTATION", WhiteSpaceProcessor.theCollapse, false) );
 			else
 			if( dataTypeName.equals("nonPositiveInteger") )
 				add( builtinType, NonPositiveIntegerType.theInstance );

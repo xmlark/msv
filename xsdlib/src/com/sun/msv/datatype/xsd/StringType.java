@@ -23,10 +23,20 @@ import com.sun.msv.datatype.SerializationContext;
 public class StringType extends BuiltinAtomicType implements Discrete {
 	
 	public static final StringType theInstance
-		= new StringType("string",WhiteSpaceProcessor.thePreserve);
+		= new StringType("string",WhiteSpaceProcessor.thePreserve,true);
 	
-	protected StringType( String typeName, WhiteSpaceProcessor whiteSpace ) {
+    /**
+     * Value returned from the isAlwaysValid method.
+     */
+    private final boolean isAlwaysValid;
+
+    protected StringType( String typeName, WhiteSpaceProcessor whiteSpace ) {
+        this( typeName, whiteSpace, false );
+    }
+    
+	protected StringType( String typeName, WhiteSpaceProcessor whiteSpace, boolean _isAlwaysValid ) {
 		super(typeName,whiteSpace);
+        this.isAlwaysValid = _isAlwaysValid;
 	}
 	
 	public XSDatatype getBaseType() {
@@ -69,4 +79,8 @@ public class StringType extends BuiltinAtomicType implements Discrete {
 		else
 			return NOT_ALLOWED;
 	}
+
+    public boolean isAlwaysValid() {
+        return isAlwaysValid;
+    }
 }

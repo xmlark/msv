@@ -227,6 +227,18 @@ public interface XSDatatype extends Serializable, DatabindableDatatype {
 	 */
 	public boolean isDerivedTypeOf( XSDatatype baseType, boolean restrictionAllowed );
     
+    /**
+     * Returns true if this datatype is known to accept any string.
+     * This is just a hint that allows the client code to do
+     * certain optimization.
+     * 
+     * <p>
+     * This method can return false even if the datatype actually accepts
+     * any string. That is, it's perfectly OK for any datatype to return
+     * false from this method.
+     */
+    public boolean isAlwaysValid();
+    
     
     public static final String XMLSCHEMA_NSURI =
         "http://www.w3.org/2001/XMLSchema";

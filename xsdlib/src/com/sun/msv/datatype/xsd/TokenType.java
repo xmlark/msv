@@ -19,9 +19,10 @@ package com.sun.msv.datatype.xsd;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TokenType extends StringType {
-	public static final TokenType theInstance = new TokenType("token");
-	protected TokenType( String typeName ) {
-		super(typeName,WhiteSpaceProcessor.theCollapse);
+	public static final TokenType theInstance = new TokenType("token",true);
+    
+	protected TokenType( String typeName, boolean isAlwaysValid ) {
+		super(typeName,WhiteSpaceProcessor.theCollapse,isAlwaysValid);
 	}
 	
 	public XSDatatype getBaseType() {

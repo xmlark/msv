@@ -54,6 +54,10 @@ public class DatatypeFactory {
 	 */
 	public static XSDatatype deriveByList( String nsUri, String newTypeName, XSDatatype itemType )
 		throws DatatypeException {
+        
+        // if the base type contains an error, avoid producing more errors.
+        if(itemType instanceof ErrorType)   return itemType;
+        
 		return new ListType(nsUri,newTypeName,(XSDatatypeImpl)itemType);
 	}
 
@@ -82,6 +86,10 @@ public class DatatypeFactory {
 	 */
 	public static XSDatatype deriveByUnion( String nsUri, String newTypeName, XSDatatype[] memberTypes )
 		throws DatatypeException {
+        
+        // if the base type contains an error, avoid producing more errors.
+        for( int i=0; i<memberTypes.length; i++ )
+            if(memberTypes[i] instanceof ErrorType)   return memberTypes[i];
 		
 		return new UnionType(nsUri,newTypeName,memberTypes);
 	}
@@ -109,7 +117,7 @@ public class DatatypeFactory {
 		for( int i=0; i<m.length; i++ )
 			m[i] = (XSDatatypeImpl)itr.next();
 		
-		return new UnionType(nsUri,newTypeName,m);
+		return deriveByUnion(nsUri,newTypeName,m);
 	}
 	
 	

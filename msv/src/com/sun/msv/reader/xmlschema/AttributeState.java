@@ -121,7 +121,7 @@ public class AttributeState extends ExpressionWithChildState {
 					reader.ERR_DUPLICATE_ATTRIBUTE_DEFINITION,
 					new Object[]{name} );
 			reader.setDeclaredLocationOf(decl);
-			decl.exp = exp;
+			decl.set( (AttributeExp)exp );
 			
 			// TODO: @use is prohibited in global
 			

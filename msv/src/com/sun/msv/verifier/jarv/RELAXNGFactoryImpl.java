@@ -26,7 +26,4 @@ public class RELAXNGFactoryImpl extends FactoryImpl {
 	protected Grammar parse( InputSource is, GrammarReaderController controller ) {
 		return RELAXNGReader.parse(is,factory,controller);
 	}
-	protected Grammar parse( String source, GrammarReaderController controller ) {
-		return RELAXNGReader.parse(source,factory,controller);
-	}
 }

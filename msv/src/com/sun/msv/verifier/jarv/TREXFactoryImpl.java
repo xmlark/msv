@@ -25,7 +25,4 @@ public class TREXFactoryImpl extends FactoryImpl
 	protected Grammar parse( InputSource is, GrammarReaderController controller ) {
 		return TREXGrammarReader.parse(is,factory,controller);
 	}
-	protected Grammar parse( String source, GrammarReaderController controller ) {
-		return TREXGrammarReader.parse(source,factory,controller);
-	}
 }

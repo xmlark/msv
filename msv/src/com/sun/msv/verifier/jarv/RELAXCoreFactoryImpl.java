@@ -27,7 +27,4 @@ public class RELAXCoreFactoryImpl extends FactoryImpl
 	protected Grammar parse( InputSource is, GrammarReaderController controller ) {
 		return RELAXCoreReader.parse(is,factory,controller,new ExpressionPool());
 	}
-	protected Grammar parse( String source, GrammarReaderController controller ) {
-		return RELAXCoreReader.parse(source,factory,controller,new ExpressionPool());
-	}
 }

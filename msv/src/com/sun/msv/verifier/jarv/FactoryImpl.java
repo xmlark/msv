@@ -36,12 +36,6 @@ import com.sun.msv.verifier.regexp.xmlschema.XSREDocDecl;
 public abstract class FactoryImpl extends VerifierFactory {
 	protected final SAXParserFactory factory;
 	
-	/**
-	 * To be used to resolve files included/imported by the schema. Can be null.
-	 */
-	private EntityResolver resolver;
-	
-	
 	protected FactoryImpl( SAXParserFactory factory ) {
 		this.factory = factory;
 	}
@@ -50,25 +44,11 @@ public abstract class FactoryImpl extends VerifierFactory {
 		factory.setNamespaceAware(true);
 	}
 	
-	public boolean isFeature(String feature)
-		throws SAXNotRecognizedException {
-		throw new SAXNotRecognizedException(feature);
-	}
-
-	public void setFeature(String feature, boolean value)
-		throws SAXNotRecognizedException {
-		throw new SAXNotRecognizedException(feature);
-	}
-
-	public Object getProperty(String property)
-		throws SAXNotRecognizedException {
-		throw new SAXNotRecognizedException(property);
-	}
-
-	public void setProperty(String property, Object value)
-		throws SAXNotRecognizedException {
-		throw new SAXNotRecognizedException(property);
-	}
+	
+	/**
+	 * To be used to resolve files included/imported by the schema. Can be null.
+	 */
+	private EntityResolver resolver;
 	
 	public void setEntityResolver( EntityResolver _resolver ) {
 		this.resolver = _resolver;
@@ -86,26 +66,7 @@ public abstract class FactoryImpl extends VerifierFactory {
 	protected abstract Grammar parse(
 		InputSource source, GrammarReaderController controller )
 			throws SAXException,VerifierConfigurationException;
-	protected abstract Grammar parse(
-		String source, GrammarReaderController controller )
-			throws SAXException,VerifierConfigurationException;
 	
-	
-	public Schema compileSchema( String uri )
-		throws VerifierConfigurationException, SAXException {
-		try {
-			Grammar g = parse(uri,new ThrowController());
-			if(g==null)
-				// theoretically this isn't possible because we throw an exception
-				// if an error happens.
-				throw new VerifierConfigurationException("unable to parse the schema");
-			return new SchemaImpl(g,factory);
-		} catch( WrapperException we ) {
-			throw we.e;
-		} catch( Exception pce ) {
-			throw new VerifierConfigurationException(pce);
-		}
-	}
 	
 	public Schema compileSchema( InputSource source )
 		throws VerifierConfigurationException, SAXException {
@@ -125,39 +86,6 @@ public abstract class FactoryImpl extends VerifierFactory {
 	
 	
 	
-	public Verifier newVerifier( String uri )
-		throws VerifierConfigurationException, SAXException {
-		try {
-			Grammar g = parse(uri,new ThrowController());
-			if(g==null)
-				// theoretically this isn't possible because we throw an exception
-				// if an error happens.
-				throw new VerifierConfigurationException("unable to parse the schema");
-			return getVerifier(g);
-		} catch( WrapperException we ) {
-			throw we.e;
-		} catch( Exception pce ) {
-			throw new VerifierConfigurationException(pce);
-		}
-	}
-
-	public Verifier newVerifier( InputSource source )
-		throws VerifierConfigurationException, SAXException {
-		try {
-			Grammar g = parse(source,new ThrowController());
-			if(g==null)
-				// theoretically this isn't possible because we throw an exception
-				// if an error happens.
-				throw new VerifierConfigurationException("unable to parse the schema");
-			return getVerifier(g);
-		} catch( WrapperException we ) {
-			throw we.e;
-		} catch( Exception pce ) {
-			throw new VerifierConfigurationException(pce);
-		}
-	}
-	
-	
 	/**
 	 * gets the VGM by sniffing its type.
 	 * 
@@ -173,16 +101,6 @@ public abstract class FactoryImpl extends VerifierFactory {
 			return new com.sun.msv.verifier.Verifier(
 				new REDocumentDeclaration(g),
 				new ErrorHandlerImpl() );
-	}
-	
-	protected final Verifier getVerifier( Grammar g )
-			throws VerifierConfigurationException, SAXException {
-		try	{
-			return new VerifierImpl(
-				createVerifier(g), factory.newSAXParser().getXMLReader() );
-		} catch( ParserConfigurationException pce ) {
-			throw new VerifierConfigurationException(pce);
-		}
 	}
 	
 	

@@ -91,7 +91,7 @@ public abstract class DataTypeImpl implements DataType
 	public static String localize( String prop, Object[] args )
 	{
 		return java.text.MessageFormat.format(
-			java.util.ResourceBundle.getBundle("com.sun.tranquilo.grammar.trex.Messages").getString(prop),
+			java.util.ResourceBundle.getBundle("com.sun.tranquilo.datatype.Messages").getString(prop),
 			args );
 	}
 	

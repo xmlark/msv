@@ -20,6 +20,13 @@ import org.relaxng.datatype.*;
  */
 public class BuiltinDatatypeLibrary implements DatatypeLibrary {
 	
+	/**
+	 * the sole instance of this class.
+	 */
+	public static final BuiltinDatatypeLibrary theInstance = new BuiltinDatatypeLibrary();
+	
+	protected BuiltinDatatypeLibrary() {}
+	
 	public Datatype createDatatype( String name ) throws DatatypeException {
 		if( name.equals("string") )
 			return com.sun.msv.datatype.xsd.StringType.theInstance;
@@ -31,4 +38,5 @@ public class BuiltinDatatypeLibrary implements DatatypeLibrary {
 	public DatatypeBuilder createDatatypeBuilder( String name ) throws DatatypeException {
 		return new DatatypeBuilderImpl( createDatatype(name) );
 	}
+	
 }

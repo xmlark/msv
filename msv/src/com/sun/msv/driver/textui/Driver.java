@@ -34,12 +34,11 @@ import java.util.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class Driver
-{
+public class Driver {
+	
 	static SAXParserFactory factory;
 	
-	public static void main( String[] args ) throws Exception
-	{
+	public static void main( String[] args ) throws Exception {
 		final Vector fileNames = new Vector();
 		
 		String grammarName = null;
@@ -50,14 +49,12 @@ public class Driver
 		
 		boolean dtdAsSchema = false;
 		
-		if( args.length==0 )
-		{
+		if( args.length==0 ) {
 			System.out.println( localize(MSG_USAGE) );
 			return;
 		}
 		
-		for( int i=0; i<args.length; i++ )
-		{
+		for( int i=0; i<args.length; i++ ) {
 			if( args[i].equalsIgnoreCase("-loose") )			loose = true;
 			else
 			if( args[i].equalsIgnoreCase("-dtd") )				dtdAsSchema = true;
@@ -76,23 +73,18 @@ public class Driver
 			else
 			if( args[i].equalsIgnoreCase("-warning") )			warning = true;
 			else
-			if( args[i].equalsIgnoreCase("-version") )
-			{
+			if( args[i].equalsIgnoreCase("-version") ) {
 				System.out.println("Tranquilo Ver."+
 					java.util.ResourceBundle.getBundle("version").getString("version") );
 				return;
-			}
-			else
-			{
-				if( args[i].charAt(0)=='-' )
-				{
+			} else {
+				if( args[i].charAt(0)=='-' ) {
 					System.err.println(localize(MSG_UNRECOGNIZED_OPTION,args[i]));
 					return;
 				}
 				
 				if( grammarName==null )	grammarName = args[i];
-				else
-				{
+				else {
 					fileNames.add(args[i]);
 				}
 			}
@@ -110,13 +102,10 @@ public class Driver
 			System.out.println( localize( MSG_DTDVALIDATION ) );
 		
 		if( loose )
-			try
-			{
+			try {
 				factory.setFeature("http://xml.org/sax/features/validation",false);
 				factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
-			}
-			catch(Exception e)
-			{
+			} catch(Exception e) {
 //				e.printStackTrace();
 				if( verbose )
 					System.out.println( localize( MSG_FAILED_TO_IGNORE_EXTERNAL_DTD ) );
@@ -156,8 +145,7 @@ public class Driver
 			System.out.println( localize( MSG_PARSING_TIME, new Long(parsingTime-stime) ) );
 
 
-		if(dump)
-		{
+		if(dump) {
 			if( grammar instanceof RELAXModule )
 				dumpRELAXModule( (RELAXModule)grammar );
 			else
@@ -202,9 +190,7 @@ public class Driver
 			System.out.println( localize( MSG_VALIDATION_TIME, new Long(System.currentTimeMillis()-parsingTime) ) );
 	}
 	
-	public static void dumpTREX( TREXGrammar g ) throws Exception
-	{
-
+	public static void dumpTREX( TREXGrammar g ) throws Exception {
 		System.out.println("*** start ***");
 		System.out.println(TREXPatternPrinter.printFragment(g.start));
 		System.out.println("*** others ***");
@@ -214,7 +200,6 @@ public class Driver
 	}
 	
 	public static void dumpXMLSchema( XMLSchemaGrammar g ) throws Exception {
-		
 		System.out.println("*** top level ***");
 		System.out.println(TREXPatternPrinter.printFragment(g.topLevel));
 		
@@ -241,8 +226,7 @@ public class Driver
 				s.complexTypes ) );
 	}
 	
-	public static void dumpRELAXModule( RELAXModule m ) throws Exception
-	{
+	public static void dumpRELAXModule( RELAXModule m ) throws Exception {
 		
 		System.out.println("*** top level ***");
 		System.out.println(TREXPatternPrinter.printFragment(m.topLevel));
@@ -333,20 +317,17 @@ public class Driver
 		}
 	}
 
-	private static InputSource getInputSource( String fileOrURL )
-	{
-		try
-		{// try it as a file
+	private static InputSource getInputSource( String fileOrURL ) {
+		try {
+			// try it as a file
 			return new InputSource( new File(fileOrURL).toURL().toExternalForm() );
-		}
-		catch( Exception e )
-		{// try it as an URL
+		} catch( Exception e ) {
+			// try it as an URL
 			return new InputSource(fileOrURL);
 		}
 	}
 
-	public static String localize( String propertyName, Object[] args )
-	{
+	public static String localize( String propertyName, Object[] args ) {
 		String format = java.util.ResourceBundle.getBundle(
 			"com.sun.tranquilo.driver.textui.Messages").getString(propertyName);
 	    return java.text.MessageFormat.format(format, args );

@@ -1,19 +1,18 @@
 package com.sun.tranquilo.datatype.datetime;
+
 import java.math.BigInteger;
-
 import java.math.BigDecimal;
-
 import com.sun.tranquilo.datatype.Comparator;
-
 import junit.framework.*;
+import java.io.ByteArrayInputStream;
 
 public class BigTimeDurationValueTypeTest extends TestCase {    
 	
-	public BigTimeDurationValueTypeTest(java.lang.String testName) {
+	public BigTimeDurationValueTypeTest(String testName) {
 		super(testName);
 	}
 	
-	public static void main(java.lang.String[] args) {
+	public static void main(String[] args) {
 		junit.textui.TestRunner.run(suite());
 	}
 	
@@ -21,34 +20,52 @@ public class BigTimeDurationValueTypeTest extends TestCase {
 		return new TestSuite(BigTimeDurationValueTypeTest.class);
 	}
 	
-	/** Test of equals method, of class com.sun.tranquilo.datatype.datetime.BigTimeDurationValueType. */
-	public void testEquals() {
-		System.out.println("testEquals");
-		// Add your test code here.
+	private ITimeDurationValueType get( String s ) throws Exception
+	{
+		return new ISO8601Parser(new ByteArrayInputStream(s.getBytes("UTF-8"))).durationTypeV();
 	}
 	
 	/** Test of hashCode method, of class com.sun.tranquilo.datatype.datetime.BigTimeDurationValueType. */
-	public void testHashCode() {
-		System.out.println("testHashCode");
-		// Add your test code here.
+	public void testHashCode() throws Exception
+	{
+		assertEquals( get("P400Y").hashCode(), get("P146097D").hashCode() );
+		assertEquals( get("P1D").hashCode(), get("PT24H").hashCode() );
 	}
 	
 	/** Test of compare method, of class com.sun.tranquilo.datatype.datetime.BigTimeDurationValueType. */
-	public void testCompare() {
-		System.out.println("testCompare");
-		// Add your test code here.
+	public void testCompare() throws Exception
+	{
+		assertEquals( get("P1D").compare( get("PT24H") ), Comparator.EQUAL );
+
+		assertEquals( get("P1Y").compare( get("P364D") ), Comparator.GREATER );
+		assertEquals( get("P1Y").compare( get("P365D") ), Comparator.GREATER );
+		assertEquals( get("P1Y").compare( get("P366D") ), Comparator.LESS );
+		assertEquals( get("P1Y").compare( get("P367D") ), Comparator.LESS );
+
+		assertEquals( get("P1M").compare( get("P27D") ), Comparator.GREATER );
+		assertEquals( get("P1M").compare( get("P28D") ), Comparator.GREATER );
+		assertEquals( get("P1M").compare( get("P29D") ), Comparator.UNDECIDABLE );
+		assertEquals( get("P1M").compare( get("P30D") ), Comparator.UNDECIDABLE );
+		assertEquals( get("P1M").compare( get("P31D") ), Comparator.LESS );
+		assertEquals( get("P1M").compare( get("P32D") ), Comparator.LESS );
+		
+		assertEquals( get("P5M").compare( get("P149D") ), Comparator.GREATER );
+		assertEquals( get("P5M").compare( get("P150D") ), Comparator.GREATER );
+		assertEquals( get("P5M").compare( get("P151D") ), Comparator.UNDECIDABLE );
+		assertEquals( get("P5M").compare( get("P152D") ), Comparator.UNDECIDABLE );
+		assertEquals( get("P5M").compare( get("P153D") ), Comparator.LESS );
+		assertEquals( get("P5M").compare( get("P154D") ), Comparator.LESS );
+		
+		assertEquals( get("P400Y").compare( get("P146097D") ), Comparator.EQUAL );
 	}
 	
 	/** Test of getBigValue method, of class com.sun.tranquilo.datatype.datetime.BigTimeDurationValueType. */
-	public void testGetBigValue() {
-		System.out.println("testGetBigValue");
-		// Add your test code here.
+	public void testGetBigValue() throws Exception
+	{
+		ITimeDurationValueType td = get("P153D");
+		assertSame( td.getBigValue(), td );
 	}
 	
-	/** Test of fromMinutes method, of class com.sun.tranquilo.datatype.datetime.BigTimeDurationValueType. */
-	public void testFromMinutes() {
-		System.out.println("testFromMinutes");
-		// Add your test code here.
-	}
-	
+//	/** Test of fromMinutes method, of class com.sun.tranquilo.datatype.datetime.BigTimeDurationValueType. */
+///	public void testFromMinutes()
 }

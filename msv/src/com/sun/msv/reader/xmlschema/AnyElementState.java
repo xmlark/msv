@@ -104,5 +104,9 @@ public class AnyElementState extends AnyState
 		// minOccurs/maxOccurs is processed through interception
 		return exp;
 	}
+
+	protected NameClass getNameClassFrom( ReferenceExp exp ) {
+		return ((ElementDeclExp)exp).self.getNameClass();
+	}
 	
 }

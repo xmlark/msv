@@ -84,6 +84,7 @@ public abstract class AnyState extends ExpressionWithoutChildState {
 		return choices;
 	}
 	
+	protected abstract NameClass getNameClassFrom( ReferenceExp exp );
 					
 	protected NameClass createLaxNameClass( NameClass allowedNc, XMLSchemaReader.RefResolver res ) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
@@ -95,14 +96,13 @@ public abstract class AnyState extends ExpressionWithoutChildState {
 			if(allowedNc.accepts( schema.targetNamespace, NameClass.LOCALNAME_WILDCARD )) {
 				ReferenceExp[] refs = res.get(schema).getAll();
 				for( int i=0; i<refs.length; i++ ) {
-					ElementDeclExp decl = (ElementDeclExp)refs[i];
-					NameClass elementName = decl.self.getNameClass();
+					NameClass name = getNameClassFrom(refs[i]);
 							
-					if(!(elementName instanceof SimpleNameClass ))
+					if(!(name instanceof SimpleNameClass ))
 						// assertion failed.
 						// XML Schema's element declaration is always simple name.
 						throw new Error();
-					SimpleNameClass snc = (SimpleNameClass)elementName;
+					SimpleNameClass snc = (SimpleNameClass)name;
 							
 					laxNc.addAllowedName(snc.namespaceURI,snc.localName);
 				}

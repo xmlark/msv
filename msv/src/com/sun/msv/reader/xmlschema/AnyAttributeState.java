@@ -14,6 +14,7 @@ import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
+import com.sun.msv.grammar.xmlschema.AttributeDeclExp;
 import com.sun.msv.reader.State;
 import java.util.StringTokenizer;
 import java.util.Iterator;
@@ -78,7 +79,7 @@ public class AnyAttributeState extends AnyState {
 				NameClass laxNc = createLaxNameClass( nc,
 					new XMLSchemaReader.RefResolver() {
 						public ReferenceContainer get( XMLSchemaSchema schema ) {
-							return schema.elementDecls;
+							return schema.attributeDecls;
 						}
 					});
 				
@@ -93,5 +94,9 @@ public class AnyAttributeState extends AnyState {
 		anyAttExp.exp = Expression.nullSet;	// dummy for a while.
 		
 		return anyAttExp;
+	}
+
+	protected NameClass getNameClassFrom( ReferenceExp exp ) {
+		return ((AttributeDeclExp)exp).self.nameClass;
 	}
 }

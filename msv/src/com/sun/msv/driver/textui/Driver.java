@@ -39,6 +39,11 @@ public class Driver {
 	
 	static SAXParserFactory factory;
 	
+    /** Prints the usage screen. */
+    private static void usage() {
+		System.out.println( localize(MSG_USAGE) );
+    }
+    
 	public static void main( String[] args ) throws Exception {
         System.exit(run(args));
     }
@@ -56,6 +61,11 @@ public class Driver {
 		EntityResolver entityResolver=null;
 		
 		for( int i=0; i<args.length; i++ ) {
+            if( args[i].equalsIgnoreCase("-h")
+            ||  args[i].equalsIgnoreCase("-?")) {
+                usage();
+                return -1;
+            }
 			if( args[i].equalsIgnoreCase("-strict") )			strict = true;
 			else
 			if( args[i].equalsIgnoreCase("-standalone") )		standalone = true;
@@ -114,6 +124,7 @@ public class Driver {
 			} else {
 				if( args[i].charAt(0)=='-' ) {
 					System.err.println(localize(MSG_UNRECOGNIZED_OPTION,args[i]));
+                    usage();
 					return -1;
 				}
 				

@@ -2,7 +2,7 @@
 <HTML>
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
-	<TITLE>USAGE GUIDE FOR SUN XML GENERATOR</TITLE>
+	<TITLE>USER'S GUIDE FOR SUN XML GENERATOR</TITLE>
 	<style>
 		.title
 		{
@@ -31,6 +31,7 @@ $Id$ </P>
 <H1>Contents of This Document</H1>
 <OL>
 	<LI><A href="#quick">Quick Start</A>
+	<LI><A href="#example">Providing Examples</A>
 	<LI><A href="#size">Controlling Size of Documents</A>
 	<LI><A href="#error">Generating Invalid Documents</A>
 <!--	<LI><A href="#custom">Writing Code to Customize Behavior</A>	-->
@@ -73,14 +74,16 @@ $ java -jar xmlgen.jar -error 1/100 mine.xsd invalid.xml
 $ java -jar xmlgen.jar -error 1/2 mine.xsd terrible.xml
 </PRE>
 
-<H2>Providing examples</H2>
+
+<A name="example">
+<H1>Providing Examples</H1></A>
 <P>
   Due to the expressiveness of W3C XML Schema Part 2, sometimes it is difficult
-  to generate a string for given datatype, especially when the type is derived with
+  to generate a string that satisfies a given datatype, especially when the type is derived with
   many facets.
 </P>
 <P>
-  If that is the case, XML Generator reports the following error and stops.
+  If this is the case, XML Generator reports the following error and stops.
 </P>
 <PRE>
 unable to generate value for this datatype: XXXX
@@ -94,7 +97,7 @@ unable to generate value for this datatype: XXXX
 $ java -jar xmlgen.jar joe.trex <b>-example abc.xml</b>
 </PRE>
 <P>
-  XML Generator will read given example and extracts literals found in it. Those literals
+  XML Generator will read that file and extracts literals found in it. Those literals
   are then used to generate instances. You can specify many examples but you have to add
   "-example" for each example.
 </P>
@@ -137,10 +140,11 @@ $ java -jar xmlgen.jar joe.trex -example ex1.xml -example ex2.xml
 </P>
 <P>
 	You can control the probability of each pattern,
-	or you can set all probabilities to the same value by "-error" option.
+	or you can set all probabilities to the same value by the "-error" option.
 </P>
 <P>
-	Probabilities are set by "m/n". "2/100" indicates probability of 2%.
+	Probabilities are set by a fractional number "m/n".
+	"2/100" indicates probability of 2%.
 </P>
 <P>
 	The following sub sections enumerates each pattern and command line option to control the probability.
@@ -149,7 +153,8 @@ $ java -jar xmlgen.jar joe.trex -example ex1.xml -example ex2.xml
 
 <H3>Greedy Choice</H3>
 <P>
-	"Greedy choice" error is an error of taking more than one choice items.
+	"Greedy choice" error is an error of taking more than one choice items
+	at the same time.
 </P>
 <PRE><XMP>
 Schema:
@@ -169,7 +174,7 @@ Instance:
 
 <H3>Missing Attribute</H3>
 <P>
-	"Missing attribute" error is made by intentionally skipping required attribute.
+	"Missing attribute" error is made by intentionally skipping a required attribute.
 	This probability can be controlled through the "-error-missingAttribute" option.
 </P>
 <PRE><XMP>

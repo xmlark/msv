@@ -38,7 +38,7 @@
 </P>
 <P>
   Sun Tranquilo Verifier  is  a Java tool to validate XML documents with
-  schema language. It supports RELAX Namespace, RELAX Core, and TREX.
+  a schema . It supports RELAX Namespace, RELAX Core, and TREX.
 </P>
 
 
@@ -74,17 +74,17 @@
 <P>Tranquilo consists of five components.</P>
 <OL>
   <LI>
-  <DIV><STRONG>Abstract grammar model(AGM):</STRONG> schema language independent 
+  <DIV><STRONG>Abstract grammar model(AGM):</STRONG> schema-independent grammar
   model. Both TREX and RELAX can be parsed into this internal representation. 
-  This model may&nbsp;be useful for other applications.</DIV>
+  This model, coupled with reader, may be useful for other applications.</DIV>
   <LI>
-  <DIV><STRONG>Grammar reader:</STRONG> a component to construct AGM from RELAX 
-  and TREX by using SAX.</DIV>
+  <DIV><STRONG>Grammar reader:</STRONG> a component to parser RELAX 
+  and TREX by using SAX and construct AGM.</DIV>
   <LI>
   <DIV><STRONG>Verification grammar model(VGM):</STRONG> a bridge between AGM 
-  and Verifier. Grammar model suitable for validation.</DIV>
+  and Verifier. Grammar model from the viewpoint of Verifier.</DIV>
   <LI>
-  <DIV><STRONG>Verifier:</STRONG> validate XML instance with VGM by using 
+  <DIV><STRONG>Verifier:</STRONG> a component to validate XML instance with VGM by using 
   SAX.</DIV>
   <LI>
   <DIV><STRONG>Datatype validator: </STRONG>a component separately available as 
@@ -101,7 +101,12 @@ needs, then this section will be the only section you have to read.</P>
 use "Java API for RELAX Verifiers" (JARV). JARV is an implementation-independent 
 interface set, so you can even switch to a different verifier implementation if 
 you like.&nbsp;For information about JARV, see @@@@@@.</P>
-<P>The following example illustrates a typical usage of JARV.</P>
+<P>
+  Unlike its name, JARV is not limited to RELAX, but it can be used with TREX.
+</P>
+<P>
+  The following example illustrates a typical usage of JARV.
+</P>
 <PRE>
 import org.iso_relax.verifier.*;
 import javax.xml.parsers.SAXParserFactory;
@@ -112,9 +117,11 @@ void f( SAXParserFactory pf )
   pf.setNamespaceAware( true );
   
   // create a VerifierFactory
-  VerifierFactory factory = new com.sun.tranquilo.verifier.jarv.FactoryImpl(pf);
+  VerifierFactory factory = new com.sun.tranquilo.verifier.jarv.RELAXFactoryImpl(pf);
   
-  // load schema
+  // load RELAX schema
+  // <b>if you'd like to use TREX schema, then </b>
+  // <b>create TREXFactoryImpl instead of RELAXFactoryImpl</b>
   Verifier verifier = factory.newVerifier( new File("foo.rxg") );
   
   try {
@@ -145,38 +152,63 @@ void f( SAXParserFactory pf )
 <A id="load" />
 <H1>Loading Schemata</H1>
 <P>
-  First of all, you need to load and compile schemata. To load TREX grammar,
+  If you need finer control, then you may want to control Tranquilo directly
+  instead of using generic JARV interface. this section and following sections
+  will focus on the direct use of Tranquilo.
+</P>
+<P>
+  To load TREX grammar,
 </P>
 <PRE>
 import com.sun.tranquilo.grammar.trex.TREXGrammar;
 import com.sun.tranquilo.reader.trex.TREXGrammarReader;
+import javax.xml.parsers.SAXParserFactory;
 
 TREXGrammar loadTREX( String schemaFileNameOrURL )
 {
+  SAXParserFactory factory = new javax.xml.parsers.SAXParserFactory();
+  // or you can use different parser like Xerces-J by
+  // <b>new org.apache.xerces.parsers.jaxp.SAXParserFactoryImpl();</b>
+
+  factory.setNamespaceAware(true);
+  
   return TREXGrammarReader.parse(
                         schemaFileNameOrURL,
-                        new javax.xml.parsers.SAXParserFactory(),
+                        factory,
                         new com.sun.tranquilo.reader.util.IgnoreController() );
 }
 </PRE>
 <P>
-  The second parameter specifies SAXParserFactory to be used. The third 
+  The second parameter specifies SAXParserFactory to be used. Both TREX and RELAX
+  use namespace, so configure factory as namespace-aware.
+  
+  The third 
   parameter specifies "controller" object that receives notifacations and controls 
-  behavior of loading. parse method also accepts several other forms of arguments 
-  (e.g., InputSource).
+  behavior of loading. By providing a different object, you can control the parsing
+  process.
+  
+  parse method also accepts several other forms of arguments (e.g., InputSource).
 </P>
-<P>If loading fails, parse method returns null.</P>
-<P>The following snip illustrate how to load RELAX module or RELAX grammar.</P>
+<P>
+  If loading fails, parse method returns null. 
+</P>
+<P>
+  The following snip illustrates how to load RELAX module or RELAX grammar.
+</P>
 <PRE>
 import com.sun.tranquilo.grammar.relax.RELAXGrammar;
 import com.sun.tranquilo.grammar.trex.TREXPatternPool;
 import com.sun.tranquilo.reader.relax.RELAXReader;
+import javax.xml.parsers.SAXParserFactory;
 
 RELAXGrammar loadRELAX( String schemaFileNameOrURL )
 {
+  SAXParserFactory factory = new javax.xml.parsers.SAXParserFactory();
+  factory.setNamespaceAware(true);
+  
   return RELAXReader.parse(
                         schemaFileNameOrURL,
-                        new javax.xml.parsers.SAXParserFactory(),
+                        factory,
                         new com.sun.tranquilo.reader.util.IgnoreController(),
                         new TREXPatternPool() );
 }
@@ -195,8 +227,7 @@ RELAXGrammar loadRELAX( String schemaFileNameOrURL )
 <A id="agm" />
 <H1>Playing with  AGM</H1>
 <P>
-  AGM is the internal representation of schema used by 
-  Tranquilo.
+  AGM is the internal representation of schema used by Tranquilo.
 </P>
 
 <A id="agm_dep" />
@@ -252,8 +283,10 @@ com.sun.tranquilo.verifier.regexp is one of such examples.</P>
 </P>
 <P>
   Mixing two expressions created from two different pool is possible, but not recommended.
-  If you are going to use Tranquilo in multithread environment, you have to be really
-  careful to the use of ExpressionPool. see @@@@
+  As you see, ExpressionPool has several important characteristics.
+  If you are going to use Tranquilo in multithread environment, or
+  you are going to use it in a daemon process, this document contains sections dedicated
+  to them.
 </P>
 
 
@@ -272,14 +305,14 @@ TREXGrammar create()
   TREXGrammar g = new TREXGrammar(pool); // create an empty grammar
 	  
   g.start = new ElementPattern(
-    // name class
+    // name class that constrains tag name
     new SimpleNameClass("http://namespace.uri/","tagname"),
     // content model
       pool.createMixed(
         pool.createSequence(
           new ElementPattern(
             new SimpleNameClass("http://namespace.uri/","tagname2"),
-            pool.createEpsilon()
+            pool.createEpsilon() // empty
           ),
           pool.createAttribute(
             new SimpleNameClass("","attr"),
@@ -288,6 +321,7 @@ TREXGrammar create()
         )
       )
     );
+  // ElementPatterns are created outside ExpressionPool
   
   return g;
 }
@@ -308,8 +342,8 @@ TREXGrammar create()
 &lt;/element&gt;
 </PRE>
 <P>
-  As you see, use ExpressionPool to create a tree of 
-  "Expression". All the primitive operators created by pool are 
+  As you see, you have to use ExpressionPool to create a tree of 
+  "Expression". All the primitive operators are 
   immutable.
 </P>
 <P>
@@ -332,9 +366,11 @@ TREXGrammar create()
 }
 </PRE>
 <P>
-  As you see, you can refer to the named expression before the actual 
-  definition is provided. The grammar created by this example is equivalent 
-  to the following TREX pattern.</P>
+  You can refer to the named expression before the actual 
+  definition is provided. It is the responsibility of application to
+  ensure that every named expression have its definition.
+  The grammar created by this example is equivalent to the following TREX pattern.
+</P>
 <PRE><XMP>
 <grammar>
   <start>
@@ -357,13 +393,15 @@ TREXGrammar create()
 <P>One feature that you may find useful is "visitor" design pattern support. You 
 can write your own visitor by implementing ExpressionVisitor. See javadoc of 
 ExpressionVisitor for details.</P>
-
+<P>
+  Usually, this is the easiest way to access AGM
+</P>
 
 <A id="agm_modify" />
 <H2>Manipulating AGM</H2>
-<P>Due to the immutability of AGM, you cannot "modify" AGM. Instead, you have to 
+<P>Due to the immutability of AGM, you cannot "modify" AGM. Instead, you
 create modified AGM. To do this, use ExpressionCloner. The following example 
-changes ChoiceExp to SequenceExp and SequenceExp to ChoiceExp.</P>
+creates a new AGM that changes ChoiceExp to SequenceExp and SequenceExp to ChoiceExp.</P>
 <PRE>
 class SwitchChoiceAndSequence extends com.sun.tranquilo.grammar.ExpressionCloner {
 
@@ -414,9 +452,12 @@ Expression modifiedExp = originalExp.visit( new SwitchChoiceAndSequence() );
   VGM can be understood as a view of AGM from the viewpoint of verifier.
 </P>
 <P>
-  VGM consists of two interfaces: Acceptor and DocumentDeclaration.
-  Currently, only one implementation is available, which is placed under
-  com.sun.tranquilo.verifier.regexp package.
+  VGM is a simple model which consists of two interfaces only: Acceptor and DocumentDeclaration.
+  Any VGM implementation can be used as long as it implements them.
+</P>
+<P>
+  Currently, only one VGM implementation is available, which is placed under
+  <code>com.sun.tranquilo.verifier.regexp</code> package.
 </P>
 <P>
   The following example creates a RegExp VGM from a TREXGrammar.
@@ -446,6 +487,13 @@ DocumentDeclaration createVGM( RELAXGrammar g ) {
 <P>
   Alternatively, you can still pass a newly created TREXPatternPool as the 2nd parameter.
 </P>
+<PRE>
+import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
+
+DocumentDeclaration createVGM( RELAXGrammar g ) {
+  return new TREXDocumentDeclaration( g.topLevel, new TREXPatternPool(), true );
+}
+</PRE>
 
 
 <A id="thread" />
@@ -464,6 +512,19 @@ DocumentDeclaration createVGM( RELAXGrammar g ) {
   Verifier is another thread-<b>un</b>safe component. Also, it's not
   made reentrant so you can only use one object to validate one document at a time.
 </P>
+<P>
+  When a new expression is found, it is memorized to the pool. To do this,
+  a thread has to acquire the lock. And the pool is very frequently called
+  during validation. So you might think that sharing a pool might cause a
+  performance bottle neck.
+</P>
+<P>
+  However, a casual experiment shows that this is not always the case.
+  Yes, a thread has to acquire the lock to modify the pool, but this update
+  can be done concurrently while other threads reads the pool. And update
+  is far less frequent than retrieval.
+  So please benchmark by yourself to find the optimal setting for your application.
+</P>
 
 
 <A id="daemon" />
@@ -480,7 +541,8 @@ DocumentDeclaration createVGM( RELAXGrammar g ) {
 </P>
 <P>
   Its size will eventually reach the certain limit, and the growth stops there.
-  If your schema is RELAX or TREX without interleave, then this limit size is moderate.
+  If your schema is RELAX or TREX without interleave, then this limit size is mostly moderate.
+  So you can keep using the same pool forever.
 </P>
 <P>
   However, if the grammar is TREX with &lt;interleave&gt; pattern,
@@ -489,6 +551,10 @@ DocumentDeclaration createVGM( RELAXGrammar g ) {
   If this is the case, and your application runs 24/7 as a daemon process,
   then you should occasionally throw away the pool
   to prevent its size from going sky high.
+</P>
+<P>
+  Note that expansion is slow; to make a pool exponential size, you have to parse
+  at least exponential number of documents, which takes quite a long time.
 </P>
 <P>
   To throw away ExpressionPool, simply create a new VGM with a brand-new pool, like this.
@@ -510,6 +576,8 @@ DocumentDeclaration vgm = new TREXDocumentDeclaration( trexGrammarAGM, new TREXP
   To retrieve it, call <code>getCurrentElementType</code> method of Verifier class.
   This method returns the correct value only
   when called immediately after it processed a startElement method.
+  If you are using <code>com.sun.tranquilo.verifier.VerifierFilter</code>,
+  then you can call this method only in your handler's startElement method.
 </P>
 <P>
   The following code illustrates how to retrieve RELAX "label" from your
@@ -559,7 +627,7 @@ void startElement( .... )
 <PRE><XMP>
 <grammar xmlns:ext="http://www.sun.com/xml/tranquilo/trex-type">
   <start>
-    <element ext:label="root" name="root">
+    <element ext:label="rootLabel" name="root">
       ...
       <element name="child"> <!-- label attribute is optional -->
         ...

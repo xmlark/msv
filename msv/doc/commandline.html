@@ -29,19 +29,27 @@ KAWAGUCHI</A> <BR>
 $Id$ 
 </P>
 <P>Sun Tranquilo Verifier  is  a Java tool to validate XML documents with
-schema language. It supports RELAX Namespace, RELAX Core, and TREX.</P>
+a schema. It supports RELAX Namespace, RELAX Core, and TREX.</P>
 <H1>Usage</H1>
-<P>To validate XML documents with a schema, do as follows</P><PRE>$ java -jar tranquilo.jar MySchema.rxg MyDocument1.xml MyDocument2.xml</PRE>
-<P>Or if you'd like to use TREX,</P><PRE>$ java -jar tranquilo.jar MySchema.trex MyDocument1.xml MyDocument2.xml</PRE>
-<P>You can also use&nbsp;URL&nbsp;instead of&nbsp;filename. 
-Under some operating systems (including Windows), wild card for filenames is not 
-available.</P>
-<P>If the schema contains some errors, you will see messages like 
-this.</P>
+<P>
+  To validate XML documents with a schema, do as follows
+</P>
+<PRE>$ java -jar tranquilo.jar MySchema.rxg MyDocument1.xml MyDocument2.xml</PRE>
+<P>
+  Or if you'd like to use TREX,
+</P>
+<PRE>$ java -jar tranquilo.jar MySchema.trex MyDocument1.xml MyDocument2.xml</PRE>
+<P>
+  You can also use URL instead of filename. 
+  Under some operating systems (including Windows), wild card for filenames is not 
+  available.
+</P>
+<P>
+  If the schema contains some errors, you will see messages like this.
+</P>
 <PRE>
-start parsing 
-a grammar. the following
-hedgeRules form a infinite recursion ( y &gt; z  &gt;  y )
+start parsing a grammar.
+the following hedgeRules form a infinite recursion ( y &gt; z  &gt;  y )
   18:23@file:///c:/work/relax/relax024.e.rlx
   14:23@file:///c:/work/relax/relax024.e.rlx
 failed to load a grammar.

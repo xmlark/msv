@@ -11,6 +11,8 @@ package com.sun.msv.grammar.relax;
 
 import com.sun.msv.datatype.SerializationContext;
 import com.sun.msv.datatype.xsd.ConcreteType;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.SimpleURType;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -24,6 +26,11 @@ public class EmptyStringType extends ConcreteType {
 	
 	public static final EmptyStringType theInstance = new EmptyStringType();
 	private EmptyStringType() { super("emptyString"); }
+	
+	
+	final public XSDatatype getBaseType() {
+		return SimpleURType.theInstance;
+	}
 	
 	public int isFacetApplicable( String facetName ) {
 		return NOT_ALLOWED;

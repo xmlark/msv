@@ -11,6 +11,8 @@ package com.sun.msv.grammar.relax;
 
 import com.sun.msv.datatype.SerializationContext;
 import com.sun.msv.datatype.xsd.ConcreteType;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.SimpleURType;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -24,6 +26,10 @@ public class NoneType extends ConcreteType {
 	
 	public static final NoneType theInstance = new NoneType();
 	private NoneType() { super("none"); }
+	
+	final public XSDatatype getBaseType() {
+		return SimpleURType.theInstance;
+	}
 	
 	public int isFacetApplicable( String facetName ) {
 		return NOT_ALLOWED;

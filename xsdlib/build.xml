@@ -18,8 +18,7 @@
 	
 	
 	<!-- compile Java source files -->
-	<target name="binary"
-		description="compile everything to the bin directory">
+	<target name="binary-core">
 		<mkdir dir="./bin"/>
 		<javac
 			srcdir="./src:./test"
@@ -29,6 +28,18 @@
 			classpath="${xerces.jar}:${relaxngDatatype.jar}:${junit.jar}:${jdom.jar}:${isorelax.jar}:${xalan.jar}"
 			/>
 	</target>
+	<target name="binary-apache" unless="no.apache">
+		<mkdir dir="./bin"/>
+		<javac
+			srcdir="./src-apache"
+			destdir="./bin"
+			debug="on"
+			optimize="off"
+			classpath="${xerces.jar}:${relaxngDatatype.jar}:${junit.jar}:${jdom.jar}:${isorelax.jar}:${xalan.jar}"
+			/>
+	</target>
+	<target name="binary" depends="binary-core,binary-apache"
+		description="compile everything to the bin directory" />
 	
 	
 	<!-- generate javadoc documentation from the working copy -->

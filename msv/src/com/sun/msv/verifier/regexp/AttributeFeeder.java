@@ -20,8 +20,7 @@ import org.xml.sax.Attributes;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class AttributeFeeder implements ExpressionVisitorExpression
-{
+public class AttributeFeeder implements ExpressionVisitorExpression {
 	protected final REDocumentDeclaration	docDecl;
 	protected final ExpressionPool			pool;
 	
@@ -29,8 +28,7 @@ public class AttributeFeeder implements ExpressionVisitorExpression
 	
 	private Token							token;
 		
-	protected AttributeFeeder( REDocumentDeclaration docDecl )
-	{
+	protected AttributeFeeder( REDocumentDeclaration docDecl ) {
 		this.docDecl	= docDecl;
 		this.pool		= docDecl.getPool();
 		this.marker		= docDecl.getAttributeFreeMarker();
@@ -39,8 +37,7 @@ public class AttributeFeeder implements ExpressionVisitorExpression
 	/** computes a residual without any attribute nodes,
 	 * after feeding all attributes and pruning all unused attributes
 	 */
-	public final Expression feedAll( Expression exp, StartTagInfoEx tagInfo, boolean ignoreUndeclaredAttribute )
-	{
+	public final Expression feedAll( Expression exp, StartTagInfoEx tagInfo, boolean ignoreUndeclaredAttribute ) {
 //		Object o = exp.verifierTag;
 //		if( o==null )
 //			exp.verifierTag = o = new OptimizationTag();
@@ -59,8 +56,7 @@ public class AttributeFeeder implements ExpressionVisitorExpression
 		return docDecl.getAttributePruner().prune(exp);
 	}
 	
-	public final Expression feed( Expression exp, AttributeToken token, boolean ignoreUndeclaredAttribute )
-	{
+	public final Expression feed( Expression exp, AttributeToken token, boolean ignoreUndeclaredAttribute ) {
 		this.token = token;
 		Expression r = exp.visit(this);
 		
@@ -86,8 +82,7 @@ public class AttributeFeeder implements ExpressionVisitorExpression
 	}
 	
 
-	public Expression onAttribute( AttributeExp exp )
-	{
+	public Expression onAttribute( AttributeExp exp ) {
 		if( token.match(exp) )	return Expression.epsilon;
 		else					return Expression.nullSet;
 	}
@@ -97,49 +92,41 @@ public class AttributeFeeder implements ExpressionVisitorExpression
 	 * 
 	 * if a expression is attribute free, then the residual must be nullSet.
 	 */
-	protected final boolean isAttributeFree( Expression exp )
-	{
+	protected final boolean isAttributeFree( Expression exp ) {
 		Object o = exp.verifierTag;
 		return o!=null && ((OptimizationTag)o).isAttributeFree==Boolean.TRUE;
 	}
 	
-	public Expression onChoice( ChoiceExp exp )
-	{
-		if( isAttributeFree(exp) )	return Expression.nullSet;
+	public Expression onChoice( ChoiceExp exp ) {
+//		if( isAttributeFree(exp) )	return Expression.nullSet;
 		return pool.createChoice( exp.exp1.visit(this), exp.exp2.visit(this) );
 	}
-	public Expression onElement( ElementExp exp )
-	{
+	public Expression onElement( ElementExp exp ) {
 		return Expression.nullSet;
 	}
-	public Expression onOneOrMore( OneOrMoreExp exp )
-	{
-		if( isAttributeFree(exp) )	return Expression.nullSet;
+	public Expression onOneOrMore( OneOrMoreExp exp ) {
+//		if( isAttributeFree(exp) )	return Expression.nullSet;
 		return pool.createSequence(
 			exp.exp.visit(this),
 			pool.createZeroOrMore(exp.exp) );
 	}
-	public Expression onMixed( MixedExp exp )
-	{
+	public Expression onMixed( MixedExp exp ) {
 		return pool.createMixed( exp.exp.visit(this) );
 	}
 	public Expression onEpsilon()		{ return Expression.nullSet; }
 	public Expression onNullSet()		{ return Expression.nullSet; }
 	public Expression onAnyString()		{ return Expression.nullSet; }
-	public Expression onRef( ReferenceExp exp )
-	{
+	public Expression onRef( ReferenceExp exp ) {
 		return exp.exp.visit(this);
 	}
-	public Expression onSequence( SequenceExp exp )
-	{
-		if( isAttributeFree(exp) )	return Expression.nullSet;
+	public Expression onSequence( SequenceExp exp ) {
+//		if( isAttributeFree(exp) )	return Expression.nullSet;
 		// for attributes only, sequence acts as orderless
 		return pool.createChoice(
 			pool.createSequence( exp.exp1.visit(this), exp.exp2 ),
 			pool.createSequence( exp.exp1, exp.exp2.visit(this) ) );
 	}
-	public Expression onTypedString( TypedStringExp exp )
-	{
+	public Expression onTypedString( TypedStringExp exp ) {
 		return Expression.nullSet;
 	}
 }

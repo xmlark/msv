@@ -70,15 +70,7 @@ public class DateTimeType extends DateTimeBaseType {
 		result.append(':');
 		result.append(formatTwoDigits(cal.get(Calendar.MINUTE)));
 		result.append(':');
-		result.append(formatTwoDigits(cal.get(Calendar.SECOND)));
-		if( cal.isSet(Calendar.MILLISECOND) ) {// milliseconds
-			String ms = Integer.toString(cal.get(Calendar.MILLISECOND));
-			while(ms.length()<3)	ms = "0"+ms;	// left 0 paddings.
-			
-			result.append('.');
-			result.append(ms);
-		}
-		
+		result.append(formatSeconds(cal));
 		result.append(formatTimeZone(cal));
 
 		return result.toString();

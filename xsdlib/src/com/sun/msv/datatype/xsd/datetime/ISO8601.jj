@@ -233,7 +233,7 @@ void timeZoneModifierV() :
 {
 	"Z"
 	{
-		zone = TimeZone.GMT;
+		zone = TimeZone.ZERO;
 	}
 |
 	( "+" {sign=1;} | "-" {sign=-1;} )

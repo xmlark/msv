@@ -10,7 +10,7 @@
 package com.sun.msv.generator;
 
 import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.relax.*;
+import com.sun.msv.grammar.trex.*;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -21,7 +21,7 @@ import java.util.Set;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class SchemaLocationRemover extends ExpressionCloner {
+public class SchemaLocationRemover extends TREXPatternCloner {
 	
 	/** set of visited ElementExps */
 	private final Set visitedElements = new java.util.HashSet();

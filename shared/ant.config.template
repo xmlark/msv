@@ -1,0 +1,38 @@
+
+#
+# all directories are relative to the project directory
+# (e.g., ****/msv/xsdlib or ****/msv/relames, etc.)
+#
+
+cvsRoot = \
+	:local:c:/Program Files/Development/CVS Repository
+
+# otherwise "-r branch"
+cvsExportOpt = \
+	-D now
+
+rngInterfaceSource = \
+	../../relaxng/datatype/java/src
+	
+
+#
+# Environment dependend values
+#
+javaCClib = \
+	c:/program files/development/javacc/bin/lib
+
+junir.jar = \
+	c:/winnt/java/classes/junit.jar
+
+ant.jar = \
+	c:/progra~1/development/ant/lib/ant.jar
+
+relaxngDatatype.jar = \
+	../../relaxng/datatype/java/relaxngDatatype.jar
+
+isorelax.jar = \
+	c:/winnt/java/classes/isorelax.jar
+
+xerces.source = \
+	C:/Program Files/Development/Xerces/src
+

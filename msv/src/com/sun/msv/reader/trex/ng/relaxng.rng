@@ -70,12 +70,14 @@
 					<data type="NCName"/>
 				</attribute>
 				<ref name="common-atts"/>
+				<ref name="other"/>
 			</element>
 			<element name="parentRef">
 				<attribute name="name">
 					<data type="NCName"/>
 				</attribute>
 				<ref name="common-atts"/>
+				<ref name="other"/>
 			</element>
 			<element name="empty">
 				<ref name="common-atts"/>
@@ -107,6 +109,7 @@
 								<attribute name="name">
 									<data type="NCName"/>
 								</attribute>
+                <ref name="common-atts"/>
 								<text/>
 							</element>
 						</zeroOrMore>

@@ -16,8 +16,8 @@ import java.util.Map;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class DataTypeVocabularyMap
-{
+public class DataTypeVocabularyMap {
+	
 	/** map from namespace URI to DataTypeVocabulary */
 	private final Map impl = new java.util.HashMap();
 	
@@ -26,14 +26,13 @@ public class DataTypeVocabularyMap
 	 * 
 	 * If necessary, Vocabulary is located and instanciated.
 	 */
-	public DataTypeVocabulary get( String namespaceURI )
-	{
+	public DataTypeVocabulary get( String namespaceURI ) {
+		
 		DataTypeVocabulary v = (DataTypeVocabulary)impl.get(namespaceURI);
 		if(v!=null)		return v;
 		
 		// TODO: generic way to load a vocabulary
-		if( namespaceURI.equals( com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace ) )
-		{
+		if( namespaceURI.equals( com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace ) ) {
 			v = new com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary();
 			impl.put( com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace, v );
 			impl.put( com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace2, v );
@@ -43,8 +42,7 @@ public class DataTypeVocabularyMap
 	}
 	
 	/** manually adds DataTypeVocabulary into this map. */
-	public void put( String namespaceURI, DataTypeVocabulary voc )
-	{
+	public void put( String namespaceURI, DataTypeVocabulary voc ) {
 		impl.put( namespaceURI, voc );
 	}
 }

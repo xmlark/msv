@@ -109,18 +109,18 @@ public abstract class BatchWriterTester extends batch.BatchTester {
 		// test valid instances
 		itr = test.iterateValidDocuments();
 		while( itr.hasNext() ) {
-			final XMLDocument document = (XMLDocument)itr.next();
+			final ValidDocument document = (ValidDocument)itr.next();
 			
-			if(document.getHeader()!=null
-			&& invalidTestCases.contains(document.getHeader().getProperty("","fileName")) )
+			if(document.document.getHeader()!=null
+			&& invalidTestCases.contains(document.document.getHeader().getProperty("","fileName")) )
 				continue;	// this should be skipped
 				
 			suite.addTest( new TestCase(
-				getName(test.header)+"/"+getName(document.getHeader()) ){
+				getName(test.header)+"/"+getName(document.document.getHeader()) ){
 				public void runTest() throws Exception {
 					assert(
 						"validator fails to accept a valid document",
-						validator.validate( grammar[0], document )
+						validator.validate( grammar[0], document.document )
 					);
 				}
 			});

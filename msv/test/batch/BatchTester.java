@@ -13,15 +13,14 @@ import javax.xml.parsers.*;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.io.*;
-//import java.net.URL;
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.InputSource;
 import org.relaxng.testharness.model.*;
 import junit.framework.*;
 import com.sun.msv.verifier.*;
 import com.sun.msv.reader.GrammarReaderController;
-import com.sun.msv.reader.dtd.DTDReader;
-import com.sun.msv.reader.util.GrammarLoader;
+//import com.sun.msv.reader.dtd.DTDReader;
+//import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.resolver.tools.CatalogResolver;
@@ -111,13 +110,14 @@ public abstract class BatchTester {
 		
 		junit.textui.TestRunner.run( suite(s) );
 	}
-	
+
+	/*
 	public static void report( ValidityViolation vv ) {
 		System.out.println(
 			vv.getLineNumber()+":"+vv.getColumnNumber()+
 			"  " + vv.getMessage());
 	}
-
+	*/
 	
 	
 	/**

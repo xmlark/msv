@@ -53,8 +53,8 @@ public class GeneratorTester extends batch.BatchTester {
 				
 				// parse example documents
 				while( itr.hasNext() ) {
-					XMLDocument example = (XMLDocument)itr.next();
-					example.getAsSAX( new ExampleReader(driver.exampleTokens) );
+					ValidDocument example = (ValidDocument)itr.next();
+					example.document.getAsSAX( new ExampleReader(driver.exampleTokens) );
 				}
 				
 				// set the grammar

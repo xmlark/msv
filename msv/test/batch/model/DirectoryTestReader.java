@@ -62,9 +62,10 @@ public class DirectoryTestReader
 			if( instances!=null ) {
 				for( int i=0; i<instances.length; i++ ) {
 					boolean isValid = instances[i].indexOf(".v")!=-1;
-					XMLDocument doc = new XMLDocumentImpl(new File(parent,instances[i]));
+					XMLDocument doc = 
+						new XMLDocumentImpl(new File(parent,instances[i]));
 					
-					if(isValid)		tcase.addValidDocument(doc);
+					if(isValid)		tcase.addValidDocument(new ValidDocument(doc));
 					else			tcase.addInvalidDocument(doc);
 				}
 			}

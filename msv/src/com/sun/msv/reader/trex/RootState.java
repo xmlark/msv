@@ -28,10 +28,9 @@ class RootState extends SimpleState implements ExpressionOwner
 			final TREXGrammarReader reader = (TREXGrammarReader)this.reader;
 			reader.grammar = new TREXGrammar( reader.getPool(), null );
 			simple = true;
-			return s;
 		}
 		
-		return null;
+		return s;
 	}
 	
 	/**

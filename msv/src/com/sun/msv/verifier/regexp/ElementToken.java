@@ -33,4 +33,12 @@ public class ElementToken extends Token
 			if( acceptedPatterns[i]==exp )	return true;
 		return false;
 	}
+	
+	public String toString()
+	{
+		String s = "ElementToken";
+		for( int i=0; i<acceptedPatterns.length; i++ )
+			s += "/"+acceptedPatterns[i].getNameClass().toString();
+		return s;
+	}
 }

@@ -12,6 +12,7 @@ package com.sun.tranquilo.relaxns.reader;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.reader.State;
 import com.sun.tranquilo.reader.relax.HedgeRuleBaseState;
+import com.sun.tranquilo.reader.relax.core.RELAXCoreReader;
 import com.sun.tranquilo.util.StartTagInfo;
 
 /**
@@ -21,23 +22,34 @@ import com.sun.tranquilo.util.StartTagInfo;
  */
 public class TopLevelState extends HedgeRuleBaseState
 {
-	protected void endSelf( Expression contentModel )
-	{
+	protected void endSelf( Expression contentModel ) {
 		((RELAXNSReader)reader).grammar.topLevel = contentModel;
 	}
 
 	protected State createChildState( StartTagInfo tag )
 	{
-		State s = super.createChildState(tag);
-		if(s!=null)		return s;
-		
 		// user tends to forget to specify RELAX Core namespace for
 		// topLevel elements. see if this is the case
 		if( tag.namespaceURI.equals(RELAXNSReader.RELAXNamespaceNamespace))
 		{// bingo.
 			reader.reportError( RELAXNSReader.ERR_TOPLEVEL_PARTICLE_MUST_BE_RELAX_CORE );
 			// return null so that user will also receive "malplaced element" error.
+			return null;
 		}
-		return null;	
+		
+		return super.createChildState(tag);
+	}
+
+	protected boolean isGrammarElement( StartTagInfo tag ) {
+		// children of <topLevel> must be RELAXCore.
+		if( tag.namespaceURI.equals(RELAXCoreReader.RELAXCoreNamespace) )
+			return true;
+		
+		// for better error message, allow RELAX Namespace elements.
+		// this error is handled at createChildState method.
+		if( tag.namespaceURI.equals(RELAXNSReader.RELAXNamespaceNamespace) )
+			return true;
+		
+		return false;
 	}
 }

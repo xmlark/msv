@@ -21,20 +21,27 @@ import org.xml.sax.Locator;
  */
 public abstract class DefineState extends SequenceState {
 	
-	protected Expression annealExpression( Expression exp ) {
-		
+	protected ReferenceExp getReference() {
 		if(!startTag.containsAttribute("name")) {
 			// name attribute is required.
 			reader.reportError( reader.ERR_MISSING_ATTRIBUTE,
 				"ref","name");
 			// recover by returning something that can be interpreted as Pattern
-			return Expression.nullSet;
+			return null;
 		}
 		
 		final TREXBaseReader reader = (TREXBaseReader)this.reader;
 		final String name = startTag.getAttribute("name");
-		final ReferenceExp ref = reader.grammar.namedPatterns.getOrCreate(name);
+		return reader.grammar.namedPatterns.getOrCreate(name);
+	}
+	
+	protected Expression annealExpression( Expression exp ) {
+
+		final TREXBaseReader reader = (TREXBaseReader)this.reader;
+		final ReferenceExp ref = getReference();
 		final String combine = startTag.getAttribute("combine");
+		
+		if(ref==null)	return Expression.nullSet;
 		
 		// combine two patterns
 		Expression newexp = doCombine( ref, exp, combine );

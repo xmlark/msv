@@ -1,4 +1,5 @@
 import junit.framework.*;
+import java.util.StringTokenizer;
 
 /**
  * tests the entire RELAX test suite by using BatchVerifyTester.
@@ -9,10 +10,13 @@ public class TREXBatchTest
 {
 	public static TestSuite suite()
 	{
-		return
-			new BatchVerifyTester(
-				"trex",
-				System.getProperty("TREXBatchTestDir"),
-				".trex" ).suite();
+		StringTokenizer tokens = new StringTokenizer( System.getProperty("TREXBatchTestDir"), ";" );
+		
+		TestSuite s = new TestSuite();
+		while( tokens.hasMoreTokens() )
+			s.addTest(
+				new BatchVerifyTester("trex", tokens.nextToken(), ".trex").suite() );
+		
+		return s;
 	}
 }

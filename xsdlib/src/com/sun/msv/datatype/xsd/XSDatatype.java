@@ -200,6 +200,20 @@ public interface XSDatatype extends Serializable, DatabindableDatatype {
 	 * B.
 	 */
 	public XSDatatype getBaseType();
+    
+    /**
+     * Gets the nearest ancestor built-in type.
+     * 
+     * <p>
+     * This method traverses the inheritance chain from this datatype
+     * to the root type (anySimpleType) and return the first built-in
+     * type it finds.
+     * 
+     * <p>
+     * For example, if you derive a type Foo from NCName and Bar from Foo,
+     * then this method returns NCName. 
+     */
+    public XSDatatype getAncestorBuiltinType();
 	
 	/**
 	 * tests if this type is a derived type of the specified type.

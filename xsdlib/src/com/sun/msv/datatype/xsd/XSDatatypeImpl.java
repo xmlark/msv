@@ -174,6 +174,15 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 		
 		return false;
 	}
+    
+    public XSDatatype getAncestorBuiltinType() {
+        XSDatatype dt = this;
+        
+        while( !dt.getNamespaceUri().equals(XMLSCHEMA_NSURI) )
+            dt = dt.getBaseType();
+        return dt;
+    }
+
 	
 	/**
 	 * A property for RELAX NG DTD compatibility datatypes.

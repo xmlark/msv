@@ -10,8 +10,8 @@
 	<property name="javaCClib" value="C:\Progra~1\Development\JavaCC\bin\lib" />
 	
 	<!-- test directory where you put your files like "relaxNNN.rlx" -->
-	<property name="RELAXBatchTestDir" value="C:/work/relax/" />
-	<property name="TREXBatchTestDir" value="C:/work/trex/" />
+	<property name="RELAXBatchTestDir" value="C:/work/relax;c:/work/NITF;c:/work/JepaX" />
+	<property name="TREXBatchTestDir" value="C:/work/trex;c:/work/NITF;c:/work/JepaX" />
 
 
 	<target name="javacc">

@@ -566,7 +566,7 @@ public class TREXWriter {
 		}
 	
 		public void onNullSet() {
-			element("nullSet");
+			element("notAllowed");
 		}
 	
 		public void onAnyString() {

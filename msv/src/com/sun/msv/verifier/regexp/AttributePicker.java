@@ -75,7 +75,7 @@ public class AttributePicker implements ExpressionVisitorExpression
 		{ return Expression.epsilon; }
 	
 	public Expression onNullSet()
-		{ throw new Error(); }	// this method shall never be called
+		{ return Expression.nullSet; }
 	
 	public Expression onRef( ReferenceExp exp )
 		{ return exp.exp.visit(this); }

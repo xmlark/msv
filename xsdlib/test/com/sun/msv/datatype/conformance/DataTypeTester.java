@@ -14,7 +14,7 @@ package com.sun.msv.datatype.conformance;
 
 import org.jdom.*;
 import java.util.*;
-import java.io.PrintStream;
+import java.io.*;
 import com.sun.msv.datatype.*;
 
 /**
@@ -100,6 +100,16 @@ public class DataTypeTester
 		}
 	}
 	
+	class TheSerializationContext implements SerializationContextProvider {
+		public String getNamespacePrefix( String uri ) {
+			// this method is not implemented seriously.
+			// basically, we don't test QName serizliation by this method.
+			return "abc";
+		}
+	}
+	
+	private SerializationContextProvider scp = new TheSerializationContext();
+	
 	/**
 	 * tests one datatype
 	 *
@@ -165,6 +175,18 @@ public class DataTypeTester
 			{
 				err.reportTestCaseError(baseType,ti,bte);
 			}
+
+			{// make sure that the serialization works.
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				ObjectOutputStream oos = new ObjectOutputStream(bos);
+		
+				// serialize it
+				oos.writeObject( typeObj );
+				oos.flush();
+				
+				// obtain byte array (just in case)
+				bos.toByteArray();
+			}
 			
 			if(typeObj!=null)
 			{
@@ -187,7 +209,7 @@ public class DataTypeTester
 					try {
 						if(o!=null) {
 							// should be able to convert it back.
-							String s = typeObj.convertToLexicalValue(o,null);
+							String s = typeObj.convertToLexicalValue(o,scp);
 							// try round trip conversion.
 							Object o2 = typeObj.convertToValueObject(s,DummyContextProvider.theInstance);
 							if( o2==null || !o.equals(o2) )

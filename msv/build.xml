@@ -8,73 +8,180 @@
 	<property name="packageDir" value="./package"/>
 	<property name="libDir" value="./lib"/>
 	<property name="javaCClib" value="C:\Progra~1\Development\JavaCC\bin\lib" />
+	<property name="cvsRoot" value=":local:/cygdrive/c/Program Files/Development/CVS Repository" />
 	
 	<!-- test directory where you put your files like "relaxNNN.rlx" -->
 	<property name="RELAXBatchTestDir" value="C:/work/relax;c:/work/NITF;c:/work/JepaX" />
 	<property name="TREXBatchTestDir" value="C:/work/trex;c:/work/NITF;c:/work/JepaX" />
 
 
-	<target name="javacc">
-		<!-- run javacc for ISO8601Parser -->
-		<javacc	target="${sourceDir}/com/sun/tranquilo/datatype/datetime/ISO8601.jj"
-				outputdirectory="${sourceDir}/com/sun/tranquilo/datatype/datetime"
-				javacchome="${javaCClib}"
-		/>
-
-		<!-- run javacc for UriReference -->
-		<javacc	target="${sourceDir}/com/sun/tranquilo/datatype/anyURI.jj"
-				outputdirectory="${sourceDir}/com/sun/tranquilo/datatype"
-				javacchome="${javaCClib}"
-		/>
-	</target>
 	
+	<!-- compile Java source files -->
 	<target name="binary" depends="javacc">
-		
-		<!-- compile Java source files -->
 		<javac srcdir="${sourceDir}" destdir="${buildDir}"/>
 	</target>
 	
-	<!-- generate XSDLib release -->
-	<target name="xsd" depends="javacc">
+	
+		<!-- internal task -->
+		<target name="doJavacc">
+			<javacc	target="${src}/com/sun/tranquilo/datatype/datetime/ISO8601.jj"
+					outputdirectory="${src}/com/sun/tranquilo/datatype/datetime"
+					javacchome="${javaCClib}"
+			/>
+
+			<!-- run javacc for UriReference -->
+			<javacc	target="${src}/com/sun/tranquilo/datatype/anyURI.jj"
+					outputdirectory="${src}/com/sun/tranquilo/datatype"
+					javacchome="${javaCClib}"
+			/>
+		</target>
+	
+	<!-- run javacc -->
+	<target name="javacc">
+		<!-- run javacc -->
+		<antcall target="doJavacc">
+			<param name="src" value="${sourceDir}" />
+		</antcall>
+	</target>
+
+	
+	
+	
+	<!--  run all the test suites -->
+	<target name="test">
+		<mkdir dir="./testLog" />
+		<!--
+			please remove jaxp.jar from ant directory,
+			because it uses an old one, and this test needs the latest one
+		-->
+		<junit haltonfailure="yes" printsummary="yes" fork="yes">
+			<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
+			<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
+			
+  			<formatter type="plain" />
+			
+			<classpath>
+				<pathelement location="${buildDir}" />
+				<pathelement location="${sourceDir}" />
+				<pathelement location="${testDir}" />
+				<pathelement path="${java.class.path}" />
+			</classpath>
+		
+			<batchtest todir="./testLog">
+				<fileset dir="${buildDir}">
+					<include name="**/*Test.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	
+	
+	<!-- generate jar files -->
+	<target name="jars" depends="binary">
 		<tstamp />
 		
-		<mkdir	dir="xsdrelease" />
+		<!-- standard archive -->
+		<jar	jarfile="${packageDir}/tranquilo.${DSTAMP}.jar"
+				manifest="./META-INF/MANIFEST.MF"
+				compress="false">
+			<fileset dir="${sourceDir}" includes="**/*.properties" />
+			<fileset dir="${buildDir}" includes="**/*.class" />
+			<fileset dir="${libDir}" includes="**/*.class" />
+			<fileset dir="c:/winnt/java/classes" includes="org/apache/**/*, org/xml/**/*, org/w3c/**/*" />
+		</jar>
+	</target>
+	
+	<!-- generate javadoc documentation -->
+	<target name="javadoc">
+		<javadoc	locale="en_US"
+					packagenames="com.sun.tranquilo.*"
+					sourcepath="${sourceDir}"
+					destdir="${documentDir}"
+					windowtitle="Tranquilo RELAX/TREX Verifier"
+					public="yes"
+					>
+			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
+			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
+		</javadoc>
+	</target>
+	
+	
+	
+	
+	
+<!--
+	release task
+	************************************************
+-->
+	
+	
+	
+	<!-- generate XSDLib release -->
+	<target name="xsd">
+		<tstamp />
+		<property name="stageName" value="xsdlib-${DSTAMP}"/>
+		
+		<delete	dir="${stageName}" />
+		<mkdir	dir="${stageName}" />
+		<mkdir	dir="${stageName}/src" />
+		<mkdir	dir="${stageName}/src/com/sun/tranquilo/datatype" />
+		<mkdir	dir="${stageName}/src/com/sun/xml" />
+		
+		<!-- obtain source codes from cvs -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="tranquilo/test/com/sun/tranquilo/datatype/CommandLineTester.java"
+				command="export -d . -D now"
+				dest="${stageName}/src/com/sun/tranquilo/datatype" />
+		<cvs	cvsRoot="${cvsRoot}"
+				package="tranquilo/src/com/sun/tranquilo/datatype"
+				command="export -d . -D now"
+				dest="${stageName}/src/com/sun/tranquilo/datatype" />
+		<cvs	cvsRoot="${cvsRoot}"
+				package="tranquilo/src/com/sun/xml"
+				command="export -d . -D now"
+				dest="${stageName}/src/com/sun/xml" />
 
-		<!-- copy document files -->
-		<copy	todir="xsdrelease">
-			<fileset dir="doc/datatype" includes="**/*.*" />
-		</copy>
+		<!-- obtain document files -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="tranquilo/doc/datatype"
+				command="export -d . -D now"
+				dest="${stageName}" />
 				
-		<!-- compile files again -->
+		<!-- run javacc -->
+		<antcall target="doJavacc">
+			<param name="src" value="${stageName}/src" />
+		</antcall>
+		
+		<copy todir="${stageName}/src">
+			<fileset dir="C:\Program Files\Development\Xerces\src" includes="org/apache/xerces/utils/regex/*.*" />
+		</copy>
+		
+		<!-- compile files -->
 		<mkdir	dir="temp" />
-		<javac	srcdir="${sourceDir}"
+		<javac	srcdir="${stageName}/src"
 				destdir="temp">
-			<include name="**/tranquilo/datatype/**/*.java" />
-			<include name="**/sun/xml/*.java" />
-		</javac>
-		<javac	srcdir="${testDir}"
-				destdir="temp">
-			<include name="com/sun/tranquilo/datatype/CommandLineTester.java" />
+			<include name="**/*.java" />
 		</javac>
 		
 		<!-- creates binary jar -->
-		<jar	jarfile="xsdrelease/xsdlib.jar"
+		<jar	jarfile="${stageName}/xsdlib.jar"
 				manifest="./META-INF/XSD.MANIFEST.MF"
 				compress="false">
-			<fileset dir="${sourceDir}" includes="**/tranquilo/datatype/**/*.properties" />
-			<fileset dir="temp" />
+			<fileset dir="." includes="temp/**/*.*" />
 			<fileset dir="c:\winnt\java\classes" includes="org/apache/xerces/utils/regex/*.*" />
 		</jar>
-		
 		<delete dir="temp" />
+		
+		<!-- copy additional files into src dir. this must be done after compilation -->
 		
 		
 		<!-- creates javadoc -->
-		<mkdir		dir="xsdrelease/javadoc" />
+		<mkdir		dir="${stageName}/javadoc" />
 		<javadoc	locale="en_US"
 					packagenames="com.sun.tranquilo.datatype.*"
-					sourcepath="${sourceDir}"
-					destdir="xsdrelease/javadoc"
+					sourcepath="${stageName}/src"
+					destdir="${stageName}/javadoc"
 					windowtitle="XML Schema Part 2 Implementation"
 					public="yes"
 					>
@@ -83,14 +190,11 @@
 		</javadoc>
 		
 		<!-- creates distribution package -->
-		<zip	zipfile="${packageDir}/xsdlib.${DSTAMP}.zip">
-			<fileset dir="." includes="src/**/tranquilo/datatype/**/*.*" />
-			<fileset dir="." includes="src/**/sun/xml/**/*.*" />
-			<fileset dir="C:\Program Files\Development\Xerces" includes="src/org/apache/xerces/utils/regex/*.*" />
-			<fileset dir="xsdrelease" />
-		</zip>
+		<zip	zipfile="${packageDir}/xsdlib.${DSTAMP}.zip"
+				basedir="."
+				includes="${stageName}/**/*.*" />
 		
-		<delete dir="xsdrelease" />
+		<delete	dir="${stageName}" />
 	</target>
 	
 	
@@ -159,65 +263,5 @@
 		</zip>
 		
 		<delete dir="release" />
-	</target>
-	
-	
-	<!--  run all the test suites -->
-	<target name="test">
-		<mkdir dir="./testLog" />
-		<!--
-			please remove jaxp.jar from ant directory,
-			because it uses an old one, and this test needs the latest one
-		-->
-		<junit haltonfailure="yes" printsummary="yes" fork="yes">
-			<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
-			<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
-			
-  			<formatter type="plain" />
-			
-			<classpath>
-				<pathelement location="${buildDir}" />
-				<pathelement location="${sourceDir}" />
-				<pathelement location="${testDir}" />
-				<pathelement path="${java.class.path}" />
-			</classpath>
-		
-			<batchtest todir="./testLog">
-				<fileset dir="${buildDir}">
-					<include name="**/*Test.class" />
-				</fileset>
-			</batchtest>
-		</junit>
-	</target>
-	
-	
-	
-	<!-- generate jar files -->
-	<target name="jars" depends="binary">
-		<tstamp />
-		
-		<!-- standard archive -->
-		<jar	jarfile="${packageDir}/tranquilo.${DSTAMP}.jar"
-				manifest="./META-INF/MANIFEST.MF"
-				compress="false">
-			<fileset dir="${sourceDir}" includes="**/*.properties" />
-			<fileset dir="${buildDir}" includes="**/*.class" />
-			<fileset dir="${libDir}" includes="**/*.class" />
-			<fileset dir="c:/winnt/java/classes" includes="org/apache/**/*, org/xml/**/*, org/w3c/**/*" />
-		</jar>
-	</target>
-	
-	<!-- generate javadoc documentation -->
-	<target name="javadoc">
-		<javadoc	locale="en_US"
-					packagenames="com.sun.tranquilo.*"
-					sourcepath="${sourceDir}"
-					destdir="${documentDir}"
-					windowtitle="Tranquilo RELAX/TREX Verifier"
-					public="yes"
-					>
-			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
-			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
-		</javadoc>
 	</target>
 </project>

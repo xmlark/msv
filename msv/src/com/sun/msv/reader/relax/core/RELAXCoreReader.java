@@ -177,7 +177,7 @@ public class RELAXCoreReader extends RELAXReader
 			else								return new ElementRuleWithHedgeState();
 		}
 		protected State simpleType( State parent, StartTagInfo tag) {
-			return ((RELAXCoreReader)parent.reader).module.userDefinedTypes.createTopLevelReaderState(parent.getStartTag());
+			return ((RELAXCoreReader)parent.reader).module.userDefinedTypes.createTopLevelReaderState(tag);
 		}
 	}
 

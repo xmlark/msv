@@ -200,9 +200,11 @@ public class Driver {
                 String root = args[++i];
                 int idx = root.indexOf('}');
                 if(idx<0)
-                    throw new CommandLineException("format of the root parameter is wrong");
-                
-                rootName = new StringPair( root.substring(1,idx), root.substring(idx+1) );
+                    // short form XXX
+                    rootName = new StringPair( "", root );
+                else
+                    // full form {XXX}YYY
+                    rootName = new StringPair( root.substring(1,idx), root.substring(idx+1) );
             }
             else
 			if( args[i].equalsIgnoreCase("-encoding") )

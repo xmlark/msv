@@ -27,7 +27,11 @@ import java.util.*;
  */
 public abstract class ExpressionAcceptor implements Acceptor
 {
-	/** current state. At the same time, right language. */
+	/** current state.
+	 * 
+	 * At the same time, right language (a regular expression that represents
+	 * the language it can accept from now on).
+	 */
 	private Expression	expression;
 	
 	
@@ -161,33 +165,6 @@ public abstract class ExpressionAcceptor implements Acceptor
 		
 		// TODO: diagnose uncompleted content model.
 		return false;
-	}
-	
-	protected final boolean stepForward(
-		Expression[] contents, ElementExp[] owners, StringRef errRef )
-	{
-		ElementExp[] satisfied;
-		if(errRef==null)
-		{// in normal mode
-			int i,cnt;
-			// count # of satisfied ElementExp.
-			for( i=0,cnt=0; i<contents.length; i++ )
-				if( contents[i].isEpsilonReducible() )	cnt++;
-			
-			if(cnt==0)	return false;	// no one is satisfied.
-			
-			satisfied = new ElementExp[cnt];
-			for( i=0,cnt=0; i<contents.length; i++ )
-				if( contents[i].isEpsilonReducible() )
-					satisfied[cnt++] = owners[i];
-		}
-		else
-		{// in error recovery mode
-			// assume everyone accepts this content
-			satisfied = owners;
-		}
-		
-		return stepForward( new ElementToken(satisfied), errRef );
 	}
 	
 	

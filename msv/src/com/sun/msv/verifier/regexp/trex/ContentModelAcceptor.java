@@ -44,8 +44,15 @@ class ContentModelAcceptor extends ExpressionAcceptor
 			return stepForwardByContinuation( sa.continuation, errRef );
 		}
 		if( child instanceof ComplexAcceptor )
+		{
+			ComplexAcceptor ca = (ComplexAcceptor)child;
 			return stepForward(
-				((ComplexAcceptor)child).contents, ((ComplexAcceptor)child).owners, errRef ); 
+				new ElementToken(
+					(errRef!=null)?
+						ca.owners:	// in error recovery mode, pretend that every owner is happy.
+						ca.getSatisfiedOwners() ),
+				errRef);
+		}
 		throw new Error();	// child must be either Simple or Complex.
 	}
 	
@@ -67,7 +74,8 @@ class ContentModelAcceptor extends ExpressionAcceptor
 				continuation );
 		}
 
-		// TODO: implements MultipleAcceptor for cases that combined expression is unnecessary
+		// TODO: implements MultipleAcceptor for cases that
+		// combined expression is unnecessary but there are more than one primitive.
 		
 		if( com.sun.tranquilo.driver.textui.Debug.debug )
 			System.out.println("ComplexAcceptor is used");

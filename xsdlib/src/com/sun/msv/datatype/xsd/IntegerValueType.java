@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import java.math.BigInteger;
+
 /**
  * Value object of "integer" type.
  * 
@@ -26,9 +28,15 @@ public class IntegerValueType implements Comparable
 	private final String value;
 	
 	/** internal use only: construct object from canonicalized value */
-	private IntegerValueType( String canonicalizedValue )
-	{
+	private IntegerValueType( String canonicalizedValue ) {
 		value = canonicalizedValue;
+	}
+	
+	/**
+	 * translates a BigInteger to an IntegerValueType.
+	 */
+	public static IntegerValueType create( BigInteger bi ) {
+		return create(bi.toString());
 	}
 	
 	/**
@@ -176,5 +184,10 @@ public class IntegerValueType implements Comparable
 	public boolean isNonNegative()
 	{
 		return value.charAt(0)!='-';
+	}
+	
+	/** converts to BigInteger. */
+	public BigInteger toBigInteger() {
+		return new BigInteger(value);
 	}
 }

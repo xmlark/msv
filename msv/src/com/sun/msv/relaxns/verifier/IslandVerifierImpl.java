@@ -26,6 +26,7 @@ import com.sun.tranquilo.verifier.regexp.trex.ComplexAcceptor;
 import com.sun.tranquilo.verifier.regexp.trex.SimpleAcceptor;
 import com.sun.tranquilo.util.StringRef;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -234,8 +235,27 @@ class IslandVerifierImpl
 		super.endElement( lastNamaespaceUri, lastLocalName, lastQName );
 	}
 	
-	public ElementDecl[] endIsland()
-	{
+	public ElementDecl[] endIsland() {
 		return ((RulesAcceptor)current).getSatisfiedElementDecls();
 	}
+	
+	/**
+	 * set of unparsed entity names.
+	 * this set is created on demand.
+	 */
+	private Set unparsedEntities;
+	
+	// IslandVerifier resolves unparsed entity through dispatcher
+	public boolean isUnparsedEntity( String entityName ) {
+		// create the set only when it is used.
+		if( unparsedEntities==null ) {
+			unparsedEntities = new java.util.HashSet();
+			int len = dispatcher.countUnparsedEntityDecls();
+			for( int i=0; i<len; i++ )
+				unparsedEntities.add( dispatcher.getUnparsedEntityDecl(i).name );
+		}
+		
+		return unparsedEntities.contains(entityName);
+	}
+
 }

@@ -84,6 +84,14 @@ public class DOMMarshaller implements Marshaller {
 	
 	public void data( Object data, DatabindableDatatype type ) {
 		// TODO: we should use the type object to convert data into XML representation.
-		parent.appendChild( document.createTextNode(data.toString()) );
+		
+		// to workaround the bug of Crimson, call the setValue method if
+		// the parent is an attribute. Crimson seems to ignore Text nodes
+		// as children of Attr nodes.
+		if( parent instanceof Attr ) {
+			Attr a = (Attr)parent;
+			a.setValue( a.getValue()+data.toString() );
+		} else
+			parent.appendChild( document.createTextNode(data.toString()) );
 	}
 }

@@ -23,123 +23,206 @@ import java.util.Iterator;
  * is true) if they are unnecessary.
  * 
  * <p>
- * In this implementation, we don't propagate any information from the ancestor nodes
- * to child nodes. Therefore it is safe to rewrite the body of ReferenceExp (and
- * the content model field of ElementExps).
+ * The current implementation employs the following criteria to find "unnecessary"
+ * class items.
+ * 
+ * <ol>
+ *  <li>Any ClassItem that are referenced from InterfaceItem or SuperClassItem
+ *		cannot be removed. InterfaceItem requires its children to be a ClassItem,
+ *		so does SuperClassItem. Thus we cannot remove them.
+ * 
+ *  <li>Any ClassItem that has more than one child ClassItem/InterfaceItem/
+ *		PrimitiveItem cannot be removed.
+ *		Those items are considered too complex to be removed.
+ * 
+ *  <li>Any ClassItem that can be reached from more than one ClassItem (or the top
+ *		level expression) cannot be	removed. Counting a reference from the top
+ *		level expression is very important. Otherwise a ClassItem will be removed
+ *		if it is the only one ClassItem in the entire grammar.
+ * </ol>
  */
-class TemporaryClassItemRemover extends ExpressionCloner {
+class TemporaryClassItemRemover {
 	
-	public TemporaryClassItemRemover( ExpressionPool pool ) {
-		super(pool);
-	}
-	
-// assertions. these method may never be called.
-	public Expression onNullSet()							{ throw new Error(); }
-	public Expression onConcur( ConcurExp exp )				{ throw new Error(); }
-
-// attribute/element.
-	public Expression onAttribute( AttributeExp exp ) {
-		Expression body = exp.exp.visit(this);
-		if( body==exp.exp )	return exp;
-		else	return pool.createAttribute( exp.nameClass, body );
-	}
-	
-	private final Set visitedExps = new java.util.HashSet();
-	
-	public Expression onElement( ElementExp exp ) {
-		if( !visitedExps.add(exp) )
-			// this exp is already processed. this check will prevent infinite recursion.
-			return exp;
-		exp.contentModel = exp.contentModel.visit(this);
-		return exp;
-	}
-	
-	private static class TooComplex extends RuntimeException{};
-	
-	public Expression onRef( ReferenceExp exp ) {
-		if( !visitedExps.add(exp) )
-			// this exp is already processed. this check will prevent infinite recursion.
-			return exp;
-		// update the definition and return self.
-		exp.exp = exp.exp.visit(this);
-		return exp;
-	}
-	
-	public Expression onOther( OtherExp exp ) {
+	public static Expression remove( Expression topLevel, ExpressionPool pool ) {
+		// run the first pass and determine which class items can be removed.
+		Pass1 p1 = new Pass1();
+		topLevel.visit(p1);
 		
-		if( exp instanceof ClassItem ) {
-			ClassItem ci = (ClassItem)exp;
-			if( ci.isTemporary ) {
-/*
-				// computes the multiplicity of child JavaItem.
-				Multiplicity childOccurence = Multiplicity.calc(
-					ci.exp, MultiplicityCounter.javaItemCounter );
-				if( childOccurence.isAtMostOnce() )
-					// this temporary class item is unnecessary. remove it.
-					// but don't forget to recurse its descendants.
-					return ci.exp.visit(this);
-*/
-				// the above algorithm might be too strong.
-				// it tries to remove <neg> of the "superClass/exp.plain.rng" file.
-				
-				ExpressionWalker w = new ExpressionWalker(){
-					private PrimitiveItem child = null;
-					private Set visitedExps = new java.util.HashSet();
-					
-					public void onElement( ElementExp exp ) {
-						if(visitedExps.add(exp))	super.onElement(exp);
-					}
-					public void onAttribute( AttributeExp exp ) {
-						if(visitedExps.add(exp))	super.onAttribute(exp);
-					}
-					public void onRef( ReferenceExp exp ) {
-						if(visitedExps.add(exp))	super.onRef(exp);
-					}
-					public void onOther( OtherExp exp ) {
-						if(!visitedExps.add(exp))	return;
-						if(exp instanceof JavaItem) {
-							if(exp instanceof PrimitiveItem) {
-								if(child==null)
-									child = (PrimitiveItem)exp;
-								else
-								if(child!=exp)
-									throw new TooComplex();
-							}
-							else
-								throw new TooComplex();
-						}
-						super.onOther(exp);
-					}
-				};
-				try {
-					ci.exp.visit(w);
-					// this temporary class item is unnecessary. remove it.
-					// but don't forget to recurse its descendants.
-					return ci.exp.visit(this);
-				} catch( TooComplex tc ) {
-					// the contents of this class item is too complex to be removed.
-					;
-				}
-				
+		p1.allClasses.removeAll( p1.notRemovableClasses );
+		
+		// run the second pass and remove unnecessary class items.
+		return topLevel.visit( new Pass2( pool, p1.allClasses ) );
+	}
+	
+	/**
+	 * computes exact ClassItems to be removed.
+	 */
+	private static class Pass1 extends ExpressionWalker implements JavaItemVisitor {
+		
+		/** this set stores all examined ClassItems. */
+		private final Set checkedClasses = new java.util.HashSet();
+		
+		/** this set stores ClassItems that are determined not to be removed. */
+		final Set notRemovableClasses = new java.util.HashSet();
+		
+		/** this set stores all ClassItems that are found. */
+		final Set allClasses = new java.util.HashSet();
+		
+		/** this set stores all the children of the current ClassItem. */
+		private Set childItems = new java.util.HashSet();
+		
+		private JavaItem parentItem;
+		
+		public void onOther( OtherExp exp ) {
+			
+			if(!(exp instanceof JavaItem )) {
+				// we don't know what this OtherExp is.
+				super.onOther(exp);
+				return;
 			}
 			
-			/*
-			TODO:
-			We can remove ClassItem if there is only one child JavaItem for it.
-			For example,
+			((JavaItem)exp).visitJI(this);
+		}
 			
-			<class>
-				<oneOrMore>
-					<field/>
-				</oneOrMore>
-			</class>
-			
-			Although the multiplicity is (1,*), this class item can be still removed.
-			*/
+		public Object onIgnore( IgnoreItem item ) {
+			// since IgnoreItem is completely ignored, don't perform recursion.
+			return null;
 		}
 		
-		// update the definition and return self.
-		exp.exp = exp.exp.visit(this);
-		return exp;
-	}
+		public Object onField( FieldItem item ) {
+			// we are not interested in FieldItems now.
+			// just perform recursion.
+			super.onOther(item);
+			return null;
+		}
+		
+		public Object onSuper( SuperClassItem item ) { updateAndVisit(item); return null; }
+		public Object onInterface( InterfaceItem item ) { updateAndVisit(item); return null; }
+		
+		private void updateAndVisit( JavaItem item ) {
+			childItems.add(item);
+			// update the parentItem field, and check the body.
+			JavaItem old = parentItem;
+			parentItem=item;
+			super.onOther(item);
+			parentItem=old;
+		}
+		
+		public Object onPrimitive( PrimitiveItem item ) {
+			// we don't need to check the body of a PrimitiveItem.
+			// just store it and return.
+			childItems.add(item);
+			return null;
+		}
+		
+		public Object onClass( ClassItem item ) {
+			allClasses.add(item);
+			
+			childItems.add(item);	// this has to be done before the checkedClasses field is examined.
+			
+			if((parentItem instanceof SuperClassItem)
+			|| (parentItem instanceof InterfaceItem))
+				// if a ClassItem is referenced from SuperClassItem or InterfaceItem,
+				// then it can't be removed.
+				notRemovableClasses.add(item);
+			
+			if(!checkedClasses.add(item)) {
+				// if this ClassItem is already checked don't check it again.
+				// This also means that this ClassItem is referenced more than once.
+				// so this ClassItem cannot be removed.
+				notRemovableClasses.add(item);
+				return null;
+			}
+			
+			if( !item.isTemporary )
+				// if this ClassItem is not a temporary one,
+				// of course it cannot be removed.
+				notRemovableClasses.add(item);
+			
+			// prepare a fresh set to collect child JavaItems.
+			Set oldChildItems = childItems;
+			childItems = new java.util.HashSet();
+			JavaItem oldParent = parentItem;
+			parentItem = item;
+			
+			// visit the children and see what are children of this ClassItem.
+			super.onOther(item);
+			
+			if( childItems.size()>1 ) {
+				// if a ClassItem has more than one child items,
+				// then it cannot be removed.
+				notRemovableClasses.add(item);
+			} else {
+				// if its sole child is not a primitive item, then it cannot
+				// be removed either.
+				if(!(childItems.iterator().next() instanceof PrimitiveItem ))
+					notRemovableClasses.add(item);
+			}
+			
+			childItems = oldChildItems;
+			parentItem = oldParent;
+			
+			return null;
+		}
+	};
+	
+	/**
+	 * removes specified ClassItems.
+	 * <p>
+	 * In this implementation, we don't propagate any information from the ancestor nodes
+	 * to child nodes. Therefore it is safe to rewrite the body of ReferenceExp (and
+	 * the content model field of ElementExps).
+	 */
+	private static class Pass2 extends ExpressionCloner {
+		
+		Pass2( ExpressionPool pool, Set targets ) {
+			super(pool);
+			this.targets = targets;
+		}
+		
+		/** ClassItems contained in this set will be removed by this procedure. */
+		private final Set targets;
+		
+	// assertions. these method may never be called.
+		public Expression onNullSet()							{ throw new Error(); }
+		public Expression onConcur( ConcurExp exp )				{ throw new Error(); }
+
+	// attribute/element.
+		public Expression onAttribute( AttributeExp exp ) {
+			Expression body = exp.exp.visit(this);
+			if( body==exp.exp )	return exp;
+			else	return pool.createAttribute( exp.nameClass, body );
+		}
+	
+		private final Set visitedExps = new java.util.HashSet();
+	
+		public Expression onElement( ElementExp exp ) {
+			if( !visitedExps.add(exp) )
+				// this exp is already processed. this check will prevent infinite recursion.
+				return exp;
+			exp.contentModel = exp.contentModel.visit(this);
+			return exp;
+		}
+	
+		public Expression onRef( ReferenceExp exp ) {
+			if( !visitedExps.add(exp) )
+				// this exp is already processed. this check will prevent infinite recursion.
+				return exp;
+			// update the definition and return self.
+			exp.exp = exp.exp.visit(this);
+			return exp;
+		}
+	
+		public Expression onOther( OtherExp exp ) {
+			if( targets.contains(exp) ) {
+				// this temporary class item is unnecessary. remove it.
+				// but don't forget to recurse its descendants.
+				return exp.exp.visit(this);
+			}
+			
+			// update the definition and return self.
+			exp.exp = exp.exp.visit(this);
+			return exp;
+		}
+	};
 }

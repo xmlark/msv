@@ -17,7 +17,6 @@ import javax.xml.parsers.SAXParserFactory;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.reader.ChoiceState;
-import com.sun.msv.reader.ExpressionState;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.SequenceState;
@@ -84,7 +83,7 @@ public abstract class RELAXReader extends GrammarReader
     }
 
     /** returns true if the given state can have "occurs" attribute. */
-    protected boolean canHaveOccurs( ExpressionState state )
+    protected boolean canHaveOccurs( State state )
     {
         return
             state instanceof SequenceState
@@ -93,7 +92,7 @@ public abstract class RELAXReader extends GrammarReader
         ||    state instanceof ChoiceState;
     }
 
-    protected Expression interceptExpression( ExpressionState state, Expression exp )
+    protected Expression interceptExpression( State state, Expression exp )
     {
         // handle occurs attribute here.
         final String occurs= state.getStartTag().getAttribute("occurs");

@@ -16,6 +16,7 @@ import org.relaxng.datatype.DataType;
 import com.sun.msv.reader.trex.classic.TREXGrammarReader;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.datatype.DataTypeImpl;
+import com.sun.msv.writer.*;
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributeListImpl;
@@ -125,7 +126,7 @@ import java.util.Vector;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TREXWriter {
+public class TREXWriter implements GrammarWriter {
 	
 	/**
 	 * this class is used to wrap SAXException by RuntimeException.
@@ -803,6 +804,7 @@ public class TREXWriter {
 				if( appliedFacets.contains(facetName) )
 					// find the same facet twice.
 					break;
+				appliedFacets.add(facetName);
 				
 				x = ((DataTypeWithFacet)x).baseType;
 			}

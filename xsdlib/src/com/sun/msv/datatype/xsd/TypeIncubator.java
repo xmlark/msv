@@ -63,8 +63,12 @@ public class TypeIncubator {
 		switch( baseType.isFacetApplicable(name) ) {
 		case XSDatatypeImpl.APPLICABLE:	break;
 		case XSDatatypeImpl.FIXED:
-			throw new DatatypeException( XSDatatypeImpl.localize(
-				XSDatatypeImpl.ERR_OVERRIDING_FIXED_FACET, name ) );
+            // simply ignore this facet.
+            return;
+            // to issue an error, we need to first make sure that the
+            // specified value is different from the fixed value.
+//			throw new DatatypeException( XSDatatypeImpl.localize(
+//				XSDatatypeImpl.ERR_OVERRIDING_FIXED_FACET, name ) );
 		case XSDatatypeImpl.NOT_ALLOWED:
 			throw new DatatypeException( XSDatatypeImpl.localize(
 				XSDatatypeImpl.ERR_NOT_APPLICABLE_FACET, name ) );

@@ -18,6 +18,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.LocatorImpl;
 import org.xml.sax.helpers.XMLFilterImpl;
+import org.apache.xml.utils.URI;
 import org.relaxng.datatype.Datatype;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,8 +27,6 @@ import java.util.Stack;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.io.IOException;
-//import java.net.URL;
-//import java.net.MalformedURLException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import com.sun.msv.datatype.xsd.XSDatatype;
@@ -35,7 +34,6 @@ import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 import com.sun.msv.util.StartTagInfo;
-import com.sun.msv.util.Uri;
 
 /**
  * base implementation of grammar readers that read grammar from SAX2 stream.
@@ -372,14 +370,18 @@ public abstract class GrammarReader
 	 * converts the relative URL to the absolute one by using the specified base URL.
 	 */
 	public final String combineURI( String baseURI, String relativeURI ) {
-        return Uri.resolve(baseURI,relativeURI);
+        try {
+            return new URI( new URI(baseURI), relativeURI ).toString();
+        } catch( URI.MalformedURIException e ) {
+            return relativeURI;
+        }
 	}
 
     /**
      * @deprecated use the combineURI method.
      */
     public final String combineURL( String baseURI, String relativeURI ) {
-        return Uri.resolve(baseURI,relativeURI);
+        return combineURI( baseURI, relativeURI );
     }
     
 	/**

@@ -27,6 +27,10 @@ the following command:
 $ java -jar relames.jar MySchema.rng doc1.xml [doc2.xml ...]
 
 
+To run the program, you must have Xalan-Java [4] and JAXP-compliant
+XML parser in your classpath.
+
+
 
 ----------------------------------------------------------------------
 HOW TO EMBED SCHEMATRON
@@ -104,5 +108,7 @@ REFERENCES
       http://www.ascc.net/xml/resource/schematron/schematron.html
 [ 3] Apache Software Foundation
       http://www.apache.org/
+[ 4] Xalan-Java
+      http://xml.apache.org/xalan-j/
 ======================================================================
 END OF README

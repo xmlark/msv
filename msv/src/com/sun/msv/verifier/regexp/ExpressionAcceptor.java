@@ -718,14 +718,20 @@ public abstract class ExpressionAcceptor implements Acceptor
 		if( vec.size()==0 )		return null;
 		
 		// at least one candidate is found
-		return docDecl.localizeMessage(
-			docDecl.DIAG_MISSING_ATTRIBUTE_WRAPUP,
-			new Object[]{
+		if( vec.size()==1 && !more )
+		{// only one candidate
+			return docDecl.localizeMessage(
+				docDecl.DIAG_MISSING_ATTRIBUTE_SIMPLE,
+				sti.qName, vec.get(0) );
+		}
+		else
+			// list candidates
+			return docDecl.localizeMessage(
+				docDecl.DIAG_MISSING_ATTRIBUTE_WRAPUP,
 				sti.qName,
 				concatenateMessages( vec, more,
 					docDecl.DIAG_MISSING_ATTRIBUTE_SEPARATOR,
-					docDecl.DIAG_MISSING_ATTRIBUTE_MORE )
-			});
+					docDecl.DIAG_MISSING_ATTRIBUTE_MORE ) );
 	}
 	
 	private final String diagnoseUnexpectedLiteral( StringToken token )

@@ -95,6 +95,8 @@ public abstract class REDocumentDeclaration implements DocumentDeclaration
 		"Diagnosis.BadAttributeValue.Separator";
 	public static final String DIAG_BAD_ATTRIBUTE_VALUE_MORE =
 		"Diagnosis.BadAttributeValue.More";
+	public static final String DIAG_MISSING_ATTRIBUTE_SIMPLE =
+		"Diagnosis.MissingAttribute.Simple";
 	public static final String DIAG_MISSING_ATTRIBUTE_GENERIC =
 		"Diagnosis.MissingAttribute.Generic";
 	public static final String DIAG_MISSING_ATTRIBUTE_WRAPUP =

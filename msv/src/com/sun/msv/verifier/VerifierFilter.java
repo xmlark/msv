@@ -43,7 +43,7 @@ public class VerifierFilter extends XMLFilterImpl implements IVerifier {
 	public Object getCurrentElementType() {
 		return verifier.getCurrentElementType();
 	}
-	public DataType getLastCharacterType() {
+	public DataType[] getLastCharacterType() {
 		return verifier.getLastCharacterType();
 	}
 	public final Locator getLocator() {

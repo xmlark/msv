@@ -212,6 +212,9 @@ public interface XSDatatype extends Serializable, DatabindableDatatype {
      * <p>
      * For example, if you derive a type Foo from NCName and Bar from Foo,
      * then this method returns NCName. 
+     * 
+     * @return
+     *      Always return non-null valid object.
      */
     public XSDatatype getAncestorBuiltinType();
 	

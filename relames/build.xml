@@ -50,6 +50,12 @@
 					cr="remove"
 					eof="remove"
 					includes="*.txt"/>
+    <replace dir="${stageName}">
+        <include name="**/*.html"/>
+        <include name="**/*.txt"/>
+        <replacefilter token="@@VERSION@@" value="${DSTAMP}" />
+        <replacefilter token="@@YEAR@@" value="${YEAR}" />
+    </replace>
 		
 		<!-- compile files -->
 		<mkdir	dir="temp" />

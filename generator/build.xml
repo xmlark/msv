@@ -87,6 +87,12 @@
 				package="msv/generator/doc"
 				command="export -d ${stageName} ${cvsExportOpt}"
 				dest="." />
+    <replace dir="${stageName}">
+        <include name="**/*.html"/>
+        <include name="**/*.txt"/>
+        <replacefilter token="@@VERSION@@" value="${DSTAMP}" />
+        <replacefilter token="@@YEAR@@" value="${YEAR}" />
+    </replace>
 		
 		
 		<!-- compile files -->

@@ -1,7 +1,7 @@
 ======================================================================
    README FILE FOR SUN MULTI-SCHEMA XML VALIDATOR SCHEMATRON ADD-ON
-                           Apr, 2002 version
-             Copyright (c) Sun Microsystems, 2001-2002
+                         version @@VERSION@@
+             Copyright (c) Sun Microsystems, 2001-@@YEAR@@
 Document written by Kohsuke Kawaguchi (kohsuke.kawaguchi@eng.sun.com)
                                                      $Revision$
 ======================================================================

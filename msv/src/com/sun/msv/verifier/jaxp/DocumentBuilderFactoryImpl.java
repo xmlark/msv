@@ -166,5 +166,10 @@ public class DocumentBuilderFactoryImpl extends DocumentBuilderFactory {
     public void setValidating( boolean newVal ) {
         core.setValidating(newVal);
     }
-    
+    public boolean getFeature(String name) {
+        throw new UnsupportedOperationException();
+    }
+    public void setFeature(String name,boolean value) {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -101,7 +101,7 @@ public class AttributeState extends ExpressionWithChildState implements XSTypeOw
 		
 		if( startTag.containsAttribute("ref") ) {
 			if( fixed!=null )
-				reader.reportError( reader.ERR_UNIMPLEMENTED_FEATURE,
+				reader.reportWarning( reader.ERR_UNIMPLEMENTED_FEATURE,
 					"<attribute> element with both 'ref' and 'fixed' attributes" );
 			
 			exp = contentType;

@@ -117,7 +117,7 @@ public class Generator implements TREXPatternVisitorVoid
 		
 		Node n = node;
 		if( n.getNodeType()==n.ATTRIBUTE_NODE ) {
-			n = n.getParentNode();
+			n = ((Attr)n).getOwnerElement();
 			n.insertBefore( com, n.getFirstChild() );
 		} else {
 			n.appendChild(com);

@@ -2,6 +2,54 @@
 <!-- $Id$ -->
 <suite>
 
+<!--
+	untested types
+		
+-->
+
+<case name="test for day">
+	<value> ---01 </value>
+	<value> ---02 </value>
+	<value> ---05 </value>
+	<value> ---28 </value>
+	<value> ---29 </value>
+	<value> ---30 </value>
+	<value> ---31 </value>
+	
+	<value> ---10  </value>
+	<value> ---10-14:00 </value>
+	<value> ---10-08:00 </value>
+	<value> ---10Z </value>
+	<value> ---10+05:00 </value>
+	<value> ---10+09:00 </value>
+	
+	<answer for="gDay"			>ooooooo oooooo</answer>
+	
+	<facets><combination>
+		<combination mode="or">
+			<facet answer=		"ooo.... ......" name="pattern" value="---0." />
+			<facet answer=		"....... oooooo" name="pattern" value=".*10.*" />
+		</combination>
+		<combination mode="or">
+			<facet answer=		"....... ......" name="enumeration" value="---01Z" />
+			<facet answer=		"....... .o...." name="enumeration" value="---09+10:00" />
+		</combination>
+		<choice>
+			<facet answer=		"..ooooo oooooo" name="minInclusive" value="---05" />
+			<facet answer=		"...oooo oooooo" name="minExclusive" value="---05" />
+			<facet answer=		"...oooo o....." name="minInclusive" value="---10" />
+		</choice>
+	</combination></facets>
+	
+	<wrongs>
+		<value> ---10-5:00 </value>
+		<value> 10 </value>
+		<value> ---1 </value>
+		<value> ---00 </value>
+		<value> ---32 </value>
+	</wrongs>
+</case>
+
 <case name="test for anyURI(2)">
 	<value> http://&#x125;.gr.jp/" </value>
 	<value> http://&#x937;.gr.jp/" </value>
@@ -61,7 +109,6 @@
 	</wrongs>
 </case>
 
-<comment>
 
 <case name="test for time">
 	<!-- ad hoc values -->
@@ -845,7 +892,7 @@
 	<value>-2147483648</value><!-- minimum possible value for int -->
 	<value>-32769</value><!-- MIN_SHORT -1 -->
 	<value>-32768</value><!-- MIN_SHORT -->
-	<value>-11100</value><!-- precision=3? precision=5? -->
+	<value>-11100</value><!-- totalDigits=3, not 5 -->
 	
 	<value>-129</value><!-- MIN_BYTE -1 -->
 	<value>-128</value><!-- MIN_BYTE -->
@@ -907,8 +954,8 @@
 	
 	<facets><combination>
 		<choice>
-			<facet answer=				"..... ..... ooooo ooooo  oooo. ..... ..... ..... ooo" name="totalDigits" value="3" />
-			<facet answer=				"..... ..... ooooo ooooo  ooooo ..... ..... ..... ooo" name="totalDigits" value="4" />
+			<facet answer=				"..... ....o ooooo ooooo  oooo. ..... ..... ..... ooo" name="totalDigits" value="3" />
+			<facet answer=				"..... ....o ooooo ooooo  ooooo ..... ..... ..... ooo" name="totalDigits" value="4" />
 			<facet answer=				"..... ..ooo ooooo ooooo  ooooo oooo. ..... ..... ooo" name="totalDigits" value="5" />
 			<facet answer=				"ooooo ooooo ooooo ooooo  ooooo ooooo ooooo oooo. ooo" name="totalDigits" value="400" />
 <!-- precision can be any positiveInteger, but no way to support this in Java -->
@@ -1024,5 +1071,4 @@
 		<value>0x123</value>
 	</wrongs>
 </case>
-</comment>
 </suite>

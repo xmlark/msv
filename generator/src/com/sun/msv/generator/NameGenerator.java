@@ -69,7 +69,7 @@ class NameGenerator implements TREXNameClassVisitor
 	
 	public Object onDifference( DifferenceNameClass nc )
 	{
-		throw new Error("not name class is not supported");
+		throw new Error("difference name class is not supported");
 	}
 	
 	private String getRandomName()

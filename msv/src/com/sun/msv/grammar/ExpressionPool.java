@@ -48,6 +48,7 @@ public class ExpressionPool implements java.io.Serializable {
 		return unify(new AttributeExp(nameClass,Expression.anyString));
 	}
 	public final Expression createAttribute( NameClass nameClass, Expression content ) {
+		if(content==Expression.nullSet)		return content;
 		return unify(new AttributeExp(nameClass,content));
 	}
 	

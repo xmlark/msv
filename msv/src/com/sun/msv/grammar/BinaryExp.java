@@ -82,7 +82,7 @@ public abstract class BinaryExp extends Expression {
 			}
 			public boolean hasNext() { return idx!=items.length; }
 			public void remove() { throw new UnsupportedOperationException(); }
-		}
+		};
 	}
 	
 }

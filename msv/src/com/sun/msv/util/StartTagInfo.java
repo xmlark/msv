@@ -60,7 +60,7 @@ public class StartTagInfo {
 	}
 	
 	public final String getDefaultedAttribute( String attrName, String defaultValue ) {
-		return getDefaultedAttribute("",attrName);
+		return getDefaultedAttribute("",attrName,defaultValue);
 	}
 	
 	public final String getDefaultedAttribute( String namespaceURI, String attrName, String defaultValue ) {

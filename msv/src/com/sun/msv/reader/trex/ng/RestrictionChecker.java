@@ -69,9 +69,6 @@ public class RestrictionChecker {
 	/** Object that checks conflicting elements in interleave. */
 	private DuplicateElementsChecker elemDupChecker;
 	
-	/** Object that checks conflicting values in &lt;interleave> in &lt;list>. */
-	private final DuplicateValueChecker valueDupChecker = new DuplicateValueChecker();
-	
 /*
 	
 	content model checker
@@ -253,16 +250,7 @@ public class RestrictionChecker {
 			reportError( exp, ERR_DATA_IN_INTERLEAVE_IN_LIST );
 		}
 		public void onValue( ValueExp exp ) {
-			// check <value> in <interleave>, which can only happen
-			// inside <list>.
-			valueDupChecker.add(exp);
-		}
-		public void onInterleave( InterleaveExp exp ) {
-			int idx = valueDupChecker.start();
-			exp.exp1.visit(this);
-			valueDupChecker.endLeftBranch(idx);
-			exp.exp2.visit(this);
-			valueDupChecker.endRightBranch();
+			reportError( exp, ERR_VALUE_IN_INTERLEAVE_IN_LIST );
 		}
 	};
 	/**
@@ -270,7 +258,6 @@ public class RestrictionChecker {
 	 */
 	private final ExpressionWalker inList = new ListChecker() {
 		public void onInterleave( InterleaveExp exp ) {
-			valueDupChecker.reset();
 			inInterleaveInList.onInterleave(exp);
 		}
 	};
@@ -505,88 +492,6 @@ public class RestrictionChecker {
 		protected String getErrorMessage() { return ERR_DUPLICATE_ATTRIBUTES; }
 	}
 	
-	/**
-	 * Checks &lt;value>s in &lt;interleave> in &lt;list>.
-	 * 
-	 * The algorithm here is basically the same as DuplicateNameChecker.
-	 */
-	private class DuplicateValueChecker {
-		
-		/** ValueExps will be added into this array. */
-		protected ValueExp[] exps = new ValueExp[16];
-		/** Number of items in the atts array. */
-		protected int expsLen=0;
-
-		/** areas. */
-		protected int[] areas = new int[8];
-		protected int areaLen=0;
-		
-		/** Adds newly found value. */
-		public void add( ValueExp exp ) {
-			check(exp);	// perform duplication check
-			
-			// add it to the array
-			if(exps.length==expsLen) {
-				// expand buffer
-				ValueExp[] n = new ValueExp[expsLen*2];
-				System.arraycopy(exps,0,n,0,expsLen);
-				exps = n;
-			}
-			exps[expsLen++] = exp;
-		}
-		
-		/** Tests a new value against existing values. */
-		private void check( ValueExp exp ) {
-			// make sure that this new exp has the correct type name.
-			if( expsLen!=0 && !exps[0].getName().equals(exp.getName()) ) {
-				// datatype names are different
-				reportError( exp, 
-					ERR_DIFFERENT_VALUE_TYPES_IN_INTERLEAVE,
-					new Object[]{
-						exps[0].getName().localName,
-						exp.getName().localName} );
-				return;
-			}
-			
-			// check this value with all values in active areas
-			for( int i=0; i<areaLen; i+=2 )
-				for( int j=areas[i]; j<areas[i+1]; j++ )
-					check(exp,exps[j]);
-		}
-		
-		private void check( ValueExp v1, ValueExp v2 ) {
-			if( v1.dt.sameValue( v1.value, v2.value ) )
-				reportError( v1, ERR_SAME_VALUE_IN_INTERLEAVE );
-		}
-		
-		public int start() { return expsLen; }
-		
-		public void endLeftBranch( int start ) {
-			if( areas.length==areaLen ) {
-				// expand buffer
-				int[] n = new int[areaLen*2];
-				System.arraycopy(areas,0,n,0,areaLen);
-				areas = n;
-			}
-			// create an area
-			areas[areaLen++] = start;
-			areas[areaLen++] = expsLen;
-		}
-		
-		/** Removes an area */
-		public void endRightBranch() { areaLen-=2; }
-		
-		/**
-		 * Resets all stored expressions.
-		 * This is just an optimization to keep the array small
-		 * by purging unnecessary ValueExps.
-		 */
-		public void reset() {
-			if(areaLen!=0)	throw new Error();	// assertion failed
-			expsLen=0;
-		}
-	}
-	
 	
 // error messages
 	
@@ -640,6 +545,8 @@ public class RestrictionChecker {
 		"RELAXNGReader.TextInInterleave";
 	private static final String ERR_DATA_IN_INTERLEAVE_IN_LIST =
 		"RELAXNGReader.DataInInterleaveInList";
+	private static final String ERR_VALUE_IN_INTERLEAVE_IN_LIST =
+		"RELAXNGReader.ValueInInterleaveInList";
 	
 	private static final String ERR_ANYNAME_IN_ANYNAME =
 		"RELAXNGReader.AnyNameInAnyName";
@@ -652,10 +559,4 @@ public class RestrictionChecker {
 		"RELAXNGReader.DuplicateAttributes";
 	private static final String ERR_DUPLICATE_ELEMENTS =
 		"RELAXNGReader.DuplicateElements";
-	
-	private static final String ERR_DIFFERENT_VALUE_TYPES_IN_INTERLEAVE =
-		"RELAXNGReader.DifferentValueTypesInInterleave";
-	private static final String ERR_SAME_VALUE_IN_INTERLEAVE =
-		"RELAXNGReader.SameValueInInterleave";
-	
 }

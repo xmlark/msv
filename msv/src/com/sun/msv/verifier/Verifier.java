@@ -1,3 +1,12 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.tranquilo.verifier;
 
 import org.xml.sax.*;
@@ -81,7 +90,7 @@ public class Verifier implements
 	 */
 	private int panicLevel = 0;
 	
-	private final static int INITIAL_PANIC_LEVEL = 3;
+	private final static int INITIAL_PANIC_LEVEL = 5;
 
 	public Verifier( DocumentDeclaration documentDecl, VerificationErrorHandler errorHandler )
 	{

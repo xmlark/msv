@@ -1,3 +1,12 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.tranquilo.driver.textui;
 
 import javax.xml.parsers.*;
@@ -72,7 +81,7 @@ public class Driver
 		}
 		
 		if( factory==null )
-			factory = new org.apache.xerces.jaxp.SAXParserFactoryImpl();
+			factory = (SAXParserFactory)Class.forName("org.apache.xerces.jaxp.SAXParserFactoryImpl").newInstance();
 		
 		if( verbose )
 			System.out.println( localize( MSG_PARSER, factory.getClass().getName()) );
@@ -90,7 +99,7 @@ public class Driver
 			}
 			catch(Exception e)
 			{
-				e.printStackTrace();
+//				e.printStackTrace();
 				if( verbose )
 					System.out.println( localize( MSG_FAILED_TO_IGNORE_EXTERNAL_DTD ) );
 			}

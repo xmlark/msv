@@ -3,14 +3,14 @@ import junit.framework.*;
 /**
  * tests the entire RELAX test suite by using BatchVerifyTester 
  */
-public class RELAXBatchTest
+public class TREXBatchTest
 {
 	public static TestSuite suite()
 	{
 		return
 			new BatchVerifyTester(
-				"relax",
-				System.getProperty("RELAXBatchTestDir"),
-				".rlx" ).suite();
+				"trex",
+				System.getProperty("TREXBatchTestDir"),
+				".trex" ).suite();
 	}
 }

@@ -389,8 +389,11 @@ public class RELAXNGReader extends TREXBaseReader {
 	 * So care should be taken not to report the same error again.
 	 */
 	protected DatatypeLibrary datatypeLib = new BuiltinDatatypeLibrary();
-	/** the namespace URI of the currently active datatype library. */
-	protected String datatypeLibURI = RELAXNGNamespace;
+	/**
+	 * the namespace URI of the currently active datatype library.
+	 * The empty string indicates the built-in datatype library.
+	 */
+	protected String datatypeLibURI = "";
 	
 	private final Stack dtLibStack = new Stack();
 	private final Stack dtLibURIStack = new Stack();
@@ -400,6 +403,21 @@ public class RELAXNGReader extends TREXBaseReader {
 		// to the current value of the ns attribute.
 		if(prefix.equals(""))	return targetNamespace;
 		else					return super.resolveNamespacePrefix(prefix);
+	}
+	
+	public void startDocument() throws SAXException {
+		// the datatypeLibrary attribute does not do chameleon
+		dtLibStack.push(datatypeLib);
+		dtLibURIStack.push(datatypeLibURI);
+		datatypeLib = new BuiltinDatatypeLibrary();
+		datatypeLibURI = "";
+
+		super.startDocument();
+	}
+	public void endDocument() throws SAXException {
+		super.endDocument();
+		datatypeLib = (DatatypeLibrary)dtLibStack.pop();
+		datatypeLibURI = (String)dtLibURIStack.pop();
 	}
 	
 	public void startElement( String a, String b, String c, Attributes d ) throws SAXException {

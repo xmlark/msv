@@ -31,6 +31,13 @@
 					</xsl:for-each>
 				</table>
 				
+				<h1>root type</h1>
+				<p>
+					the common base type of possible root classes is
+					<b><code>
+						<xsl:value-of select="rootType/@name"/>
+					</code></b>
+				</p>
 				
 				<h1>parser table</h1>
 				<p>

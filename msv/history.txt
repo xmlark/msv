@@ -1,4 +1,6 @@
 
+(dt)	'fractionDigit' facet is now correctly implemented.
+(both)  added a mechanism to controll inclusion
 (RELAX) Tranquilo will issue an error for <anyOtherElement> with
         both "includeNamespace" and "excludeNamespace" attributes.
 (TREX)  error diagnosis for <string> is supported

@@ -53,27 +53,40 @@ class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet
 			new Integer(cnt), new Integer(scale)) );
 	}
 	
-	final private int countScale( String literal )
+	/** count the number of fractional digits.
+	 * 
+	 * this method can assume that the given literal is appropriate
+	 * as an decimal value.
+	 * 
+	 * "the number of fractional digits" is defined in
+	 * http://www.w3.org/TR/xmlschema-2/#number
+	 */
+	final protected static int countScale( String literal )
 	{
-		// count the number of digits.
 		final int len = literal.length();
 		boolean skipMode = true;
-		char[] chs = literal.toCharArray();
 
 		int count=0;
+		int trailingZero=0;
 		
 		for( int i=0; i<len; i++ )
+		{
+			final char ch = literal.charAt(i);
 			if( skipMode )
 			{
-				if( chs[i]=='.' )
+				if( ch=='.' )
 					skipMode = false;
 			}
 			else
 			{
-				if( '0'<chs[i] && chs[i]<='9' )
+				if( ch=='0' )	trailingZero++;
+				else			trailingZero=0;
+				
+				if( '0'<=ch && ch<='9' )
 					count++;
 			}
+		}
 		
-		return count;
+		return count-trailingZero;
 	}
 }

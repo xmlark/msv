@@ -4,12 +4,8 @@
 -->
 <project name="tahiti" basedir="." default="release">
 	
-	<property name="sourceDir" value="./src"/>
-	<property name="buildDir" value="./bin"/>
-	<property name="packageDir" value="./package"/>
-	<property name="cvsExportOpt" value="-D now" />	<!-- -r branch -->
-	
 	<!-- environment dependent variables. -->
+	<property name="cvsExportOpt" value="-D now" />	<!-- or "-r branch". useful to create older version. -->
 	<property name="cvsRoot" value=":local:/cygdrive/c/Program Files/Development/CVS Repository" />
 	<property name="JUnitJar" value="c:/winnt/java/classes/junit.jar"/>
 	<property name="AntJar" value="c:/progra~1/development/ant/lib/ant.jar"/>
@@ -25,11 +21,11 @@
 		
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
-				package="relames/src"
+				package="tahiti/src"
 				command="export -d . -D now"
 				dest="${stageName}/src/" />
 		<cvs	cvsRoot="${cvsRoot}"
-				package="relames/doc"
+				package="tahiti/doc"
 				command="export -d . -D now"
 				dest="${stageName}" />
 		<fixcrlf	srcdir="${stageName}"
@@ -38,7 +34,7 @@
 					includes="*.txt"/>
 		
 		<!-- compile documents -->
-		<style basedir="${stageName}" destdir="${stageName}" extension="html"
+		<style basedir="${stageName}" destdir="${stageName}" extension=".html"
 				style="tahiti.xsl" includes="*.docbook"/>
 		
 		<!-- then remove docbook source -->
@@ -88,6 +84,7 @@
 
 		
 		<!-- copy jar file to package dir -->
+		<mkdir dir="./package"/>
 		<copy file="${stageName}/tahiti.jar" tofile="./package/tahiti.jar" />
 		
 		

@@ -25,7 +25,7 @@ import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 public class Driver {
 	public static void main( String[] args ) throws Exception {
 		
-		if( args.length!=1 ) {
+		if( args.length<1 ) {
 			System.out.println( localize(MSG_USAGE) );
 			return;
 		}

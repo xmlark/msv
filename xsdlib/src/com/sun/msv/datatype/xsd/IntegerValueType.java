@@ -136,7 +136,8 @@ public class IntegerValueType implements Comparable
 	}
 	
 	public int hashCode() { return value.hashCode(); }
-	
+	public String toString() { return value; }
+						 
 	public int precision()
 	{
 		// TODO : what is the exact definition of "precision"?

@@ -159,6 +159,7 @@ public abstract class Expression implements java.io.Serializable {
 		public void visit( ExpressionVisitorVoid visitor )				{ visitor.onEpsilon(); }
 		protected boolean calcEpsilonReducibility() { return true; }
 		public boolean equals( Object o ) { return this==o; }	// this class is used as singleton.
+		private Object readResolve() { return this.epsilon; }
 	};
 	/**
 	 * Special expression object that represents epsilon (&#x3B5;).
@@ -175,6 +176,7 @@ public abstract class Expression implements java.io.Serializable {
 		public void visit( ExpressionVisitorVoid visitor )				{ visitor.onNullSet(); }
 		protected boolean calcEpsilonReducibility() { return false; }
 		public boolean equals( Object o ) { return this==o; }	// this class is used as singleton.
+		private Object readResolve() { return this.nullSet; }
 	};
 	/**
 	 * special expression object that represents the empty set (&#x3A6;).
@@ -197,6 +199,7 @@ public abstract class Expression implements java.io.Serializable {
 		// That is, residual of anyString by StringToken is not the epsilon but an anyString.
 		protected boolean calcEpsilonReducibility() { return true; }
 		public boolean equals( Object o ) { return this==o; }	// this class is used as singleton.
+		private Object readResolve() { return this.anyString; }
 	};
 	/**
 	 * special expression object that represents "any string".

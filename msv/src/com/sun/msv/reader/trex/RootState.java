@@ -12,7 +12,7 @@ import com.sun.tranquilo.grammar.trex.TREXGrammar;
  * 
  * This class accepts grammar element only.
  */
-class RootState extends SimpleState implements ExpressionOwner
+public class RootState extends SimpleState implements ExpressionOwner
 {
 	protected State createChildState( StartTagInfo tag )
 	{

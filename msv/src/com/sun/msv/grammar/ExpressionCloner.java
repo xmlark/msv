@@ -13,10 +13,11 @@ package com.sun.tranquilo.grammar;
  * clones an expression.
  * 
  * This class is used as a default implementation for relevant task.
+ * Theere are no default implementations for onAttribute, onElement, and onRef methods.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ExpressionCloner implements ExpressionVisitorExpression
+public abstract class ExpressionCloner implements ExpressionVisitorExpression
 {
 	protected final ExpressionPool	pool;
 		
@@ -54,18 +55,6 @@ public class ExpressionCloner implements ExpressionVisitorExpression
 	public Expression onNullSet()	{ return Expression.nullSet; }
 	public Expression onAnyString()	{ return Expression.anyString; }
 	public Expression onTypedString( TypedStringExp exp )
-	{
-		return exp;
-	}
-	public Expression onAttribute( AttributeExp exp )
-	{
-		return exp;
-	}
-	public Expression onElement( ElementExp exp )
-	{
-		return exp;
-	}
-	public Expression onRef( ReferenceExp exp )
 	{
 		return exp;
 	}

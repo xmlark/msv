@@ -93,7 +93,8 @@ public abstract class State implements ContentHandler
 	 * always null.
 	 */
 	protected State parentState;
-	
+    public final State getParentState() { return parentState; }
+
 	/**
 	 * reader object who is the owner of this object.
 	 * This information is avaiable after init method is called.

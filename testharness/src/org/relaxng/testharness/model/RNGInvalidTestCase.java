@@ -9,6 +9,9 @@
  */
 package org.relaxng.testharness.model;
 
+import java.util.Vector;
+import java.util.Iterator;
+
 /**
  * test case that consists of invalid RELAX NG patterns.
  * 
@@ -17,12 +20,15 @@ package org.relaxng.testharness.model;
  */
 public class RNGInvalidTestCase extends RNGTest {
 
-	/**
-	 * patterns to be tested.
-	 * 
-	 * All the patterns are invalid.
-	 */
-	public XMLDocument[] patterns;
+	/** valid documents in this test case. */
+	private final Vector patterns = new Vector();
+	
+	public void addPattern( XMLDocument doc ) {
+		patterns.add(doc);
+	}
+	public Iterator iteratePatterns() {
+		return patterns.iterator();
+	}
 	
 	public Object visit( TestVisitor visitor ) {
 		return visitor.onInvalidTest(this);

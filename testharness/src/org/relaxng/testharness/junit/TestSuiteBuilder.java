@@ -12,6 +12,7 @@ package org.relaxng.testharness.junit;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import java.util.Iterator;
 import org.xml.sax.InputSource;
 import org.relaxng.testharness.model.*;
 import org.relaxng.testharness.validator.*;
@@ -49,7 +50,11 @@ public class TestSuiteBuilder implements TestVisitor {
 	 * in the specified RELAX NG Test Suite.
 	 */
 	public TestSuite create( RNGTestSuite suite ) {
-		TestSuite jsuite = new TestSuite();
+		String title = null;
+		if( suite.header!=null ) title = suite.header.getName();
+		if(title==null)	title="";
+		
+		TestSuite jsuite = new TestSuite(title);
 		
 		RNGTest[] tests = suite.getAllTests();
 		
@@ -57,6 +62,13 @@ public class TestSuiteBuilder implements TestVisitor {
 			jsuite.addTest( (Test)tests[i].visit(this) );
 		
 		return jsuite;
+	}
+	
+	private String getName( RNGHeader header, String defaultValue ) {
+		if(header==null)	return defaultValue;
+		String value = header.getName();
+		if(value!=null)		return value;
+		else				return defaultValue;
 	}
 	
 	/**
@@ -68,35 +80,74 @@ public class TestSuiteBuilder implements TestVisitor {
 		
 		final ISchema[] schema = new ISchema[1];
 		
-		String caseTitle = testCase.header.getTitle();
-		if(caseTitle==null)	caseTitle="";
+		String caseTitle = getName(testCase.header,"no-name");
 		
 		// parse the schema first
 		jsuite.addTest( new TestCase( caseTitle ){
 			public void runTest() throws Exception {
 				// load schema
-				schema[0] = validator.parseSchema( testCase.pattern );
+				schema[0] = validator.parseSchema( testCase.pattern, testCase.header );
 				assert( "validator fails to compile a valid pattern", schema[0]!=null );
+				
+				checkCompatibility(
+					schema[0].isAnnotationCompatible(),
+					testCase.isAnnotationCompatible,
+					"annotation");
+				checkCompatibility(
+					schema[0].isDefaultValueCompatible(),
+					testCase.isDefaultValueCompatible,
+					"default value");
+				checkCompatibility(
+					schema[0].isIdIdrefCompatible(),
+					testCase.isIdIdrefCompatible,
+					"ID/IDREF");
+			}
+			
+			private void checkCompatibility( Boolean result, boolean expected, String msg ) {
+				if(result==null)
+					return;	// this implementation is not a compatibility processor.
+				if(result.booleanValue()!=expected) {
+					// error. different from the expected result.
+					if(expected==true)
+						fail("the schema parser fails to recognize a "+msg+" compatible schema");
+					else
+						fail("the schema parser fails to detect a "+msg+" incompatible schema");
+				}
 			}
 		});
 		
-		for( int i=0; i<testCase.validDocuments.length; i++ ) {
-			final XMLDocument instance = testCase.validDocuments[i];
-			jsuite.addTest( new TestCase( caseTitle+":v"+i ){
+		Iterator itr = testCase.iterateValidDocuments();
+		int i=0;
+		while( itr.hasNext() ) {
+			final ValidDocument instance = (ValidDocument)itr.next();
+			jsuite.addTest( new TestCase(
+				getName(instance.document.getHeader(), caseTitle+":v"+(i++)) ){
 				public void runTest() throws Exception {
 					// if the validator failed to parse the schema,
 					// skip this test.
 					if( schema[0]==null)	return;
-					assert(
-						"validator rejects a valid document",
-						validator.validate( schema[0], instance ) );
+					
+					boolean result = validator.validate( schema[0], instance.document );
+					
+					// TODO: this is a quick hack. fix it.
+					boolean expected = instance.isIdIdrefSound;
+					
+					if(result!=expected) {
+						if(expected==true)
+							fail("validator rejects a valid document");
+						else
+							fail("validator accepts an invalid document");
+					}
 				}
 			});
 		}
 		
-		for( int i=0; i<testCase.invalidDocuments.length; i++ ) {
-			final XMLDocument instance = testCase.invalidDocuments[i];
-			jsuite.addTest( new TestCase( caseTitle+":n"+i ){
+		itr = testCase.iterateInvalidDocuments();
+		i=0;
+		while( itr.hasNext() ) {
+			final XMLDocument instance = (XMLDocument)itr.next();
+			jsuite.addTest( new TestCase(
+				getName(instance.getHeader(), caseTitle+":n"+(i++)) ){
 				public void runTest() throws Exception {
 					// if the validator failed to parse the schema,
 					// skip this test.
@@ -118,15 +169,17 @@ public class TestSuiteBuilder implements TestVisitor {
 	public TestSuite create( final RNGInvalidTestCase testCase ) {
 		TestSuite jsuite = new TestSuite();
 
-		String caseTitle = testCase.header.getTitle();
+		String caseTitle = testCase.header.getName();
 		if(caseTitle==null)	caseTitle="";
 		
-		for( int i=0; i<testCase.patterns.length; i++ ) {
-			final XMLDocument instance = testCase.patterns[i];
-			jsuite.addTest( new TestCase( caseTitle+":"+i ){
+		Iterator itr = testCase.iteratePatterns();
+		int i=0;
+		while( itr.hasNext() ) {
+			final XMLDocument instance = (XMLDocument)itr.next();
+			jsuite.addTest( new TestCase( caseTitle+":"+(i++) ){
 				public void runTest() throws Exception {
 					// load schema
-					ISchema schema = validator.parseSchema( instance );
+					ISchema schema = validator.parseSchema( instance, testCase.header );
 					assert( "validator didn't reject an invalid pattern", schema==null );
 				}
 			});

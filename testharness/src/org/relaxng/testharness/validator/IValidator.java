@@ -10,6 +10,7 @@
 package org.relaxng.testharness.validator;
 
 import org.relaxng.testharness.model.XMLDocument;
+import org.relaxng.testharness.model.RNGHeader;
 
 /**
  * A validator has to implement this interface to be tested with this harness.
@@ -22,6 +23,9 @@ public interface IValidator
 	/**
 	 * compiles the specified RELAX NG pattern.
 	 * 
+	 * @param	header
+	 *		header information of the test case.
+	 * 
 	 * @return
 	 * If the validator accepts the pattern, it should return a compiled
 	 * schema object. This object will be then used to validate XML instances.
@@ -30,7 +34,7 @@ public interface IValidator
 	 * @exception
 	 *		Any exception is considered as an conformance violation.
 	 */
-	ISchema parseSchema( XMLDocument pattern ) throws Exception;
+	ISchema parseSchema( XMLDocument pattern, RNGHeader header ) throws Exception;
 	
 	/**
 	 * validates the specified instance with the schema.

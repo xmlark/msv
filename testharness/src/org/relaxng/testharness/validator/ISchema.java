@@ -10,7 +10,7 @@
 package org.relaxng.testharness.validator;
 
 /**
- * represents a compiled shcmea.
+ * Represents a compiled shcmea.
  * 
  * The format of the compiled schema is implementation-dependent.
  * 
@@ -19,4 +19,31 @@ package org.relaxng.testharness.validator;
  */
 public interface ISchema
 {
+	/**
+	 * Checks if this schema is compatible with the annotation feature.
+	 * 
+	 * <p>
+	 * If the implementation does not support the DTD compatibility spec,
+	 * return null.
+	 */
+	Boolean isAnnotationCompatible();
+	
+	/**
+	 * Checks if this schema is compatible with the ID/IDREF feature.
+	 * 
+	 * <p>
+	 * If the implementation does not support the DTD compatibility spec,
+	 * return null.
+	 */
+	Boolean isIdIdrefCompatible();
+
+	/**
+	 * Checks if this schema is compatible with the attribute
+	 * default value feature.
+	 * 
+	 * <p>
+	 * If the implementation does not support the DTD compatibility spec,
+	 * return null.
+	 */
+	Boolean isDefaultValueCompatible();
 }

@@ -11,6 +11,7 @@ package org.relaxng.testharness.reader;
 
 import java.util.Vector;
 import java.io.IOException;
+import java.io.File;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.relaxng.testharness.model.*;
@@ -21,7 +22,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * parses a test suite XML document.
+ * parses a test suite XML document into the test suite object model.
  * 
  * @author
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
@@ -43,6 +44,12 @@ public class TestSuiteReader {
 		return new TestSuiteReader(factory)._parse(source);
 	}
 	
+	public static RNGTestSuite parse( File source )
+			throws ParserConfigurationException,SAXException, IOException {
+	
+		return new TestSuiteReader()._parse(
+			new InputSource(source.getAbsolutePath()) );
+	}	
 	
 	/** DOM factory. */
 	private DocumentBuilderFactory factory;
@@ -108,23 +115,36 @@ public class TestSuiteReader {
 		
 		testCase.header = parseHeader(testCaseNode);
 		
-		testCase.pattern = parseXMLDocument(
-			(Element)testCaseNode.getElementsByTagName("validPattern").item(0) );
+		Element pattern = (Element)testCaseNode.getElementsByTagName("validPattern").item(0);
+		testCase.pattern = parseXMLDocument(pattern);
+		
+		if( "ng".equals(pattern.getAttribute("annotation")) )
+			testCase.isAnnotationCompatible = false;
+		if( "ng".equals(pattern.getAttribute("defaultValue")) )
+			testCase.isDefaultValueCompatible = false;
+		if( "ng".equals(pattern.getAttribute("ididref")) )
+			testCase.isIdIdrefCompatible = false;
+		
 		
 		{// load valid test documents.
 			NodeList lst = testCaseNode.getElementsByTagName("valid");
 			int len = lst.getLength();
-			testCase.validDocuments = new XMLDocument[len];
-			for( int i=0; i<len; i++ )
-				testCase.validDocuments[i] = parseXMLDocument( (Element)lst.item(i) );
+			for( int i=0; i<len; i++ ) {
+				Element e = (Element)lst.item(i);
+				ValidDocument doc = new ValidDocument(parseXMLDocument(e));
+				
+				if( "ng".equals(e.getAttribute("ididref")) )
+					doc.isIdIdrefSound = false;
+				
+				testCase.addValidDocument(doc);
+			}
 		}
 		
 		{// load invalid test documents.
 			NodeList lst = testCaseNode.getElementsByTagName("invalid");
 			int len = lst.getLength();
-			testCase.invalidDocuments = new XMLDocument[len];
 			for( int i=0; i<len; i++ )
-				testCase.invalidDocuments[i] = parseXMLDocument( (Element)lst.item(i) );
+				testCase.addInvalidDocument( parseXMLDocument((Element)lst.item(i)) );
 		}
 		
 		return testCase;
@@ -141,9 +161,8 @@ public class TestSuiteReader {
 		{// load patterns
 			NodeList lst = testCaseNode.getElementsByTagName("invalidPattern");
 			int len = lst.getLength();
-			testCase.patterns = new XMLDocument[len];
 			for( int i=0; i<len; i++ )
-				testCase.patterns[i] = parseXMLDocument( (Element)lst.item(i) );
+				testCase.addPattern( parseXMLDocument( (Element)lst.item(i) ) );
 		}
 		
 		return testCase;
@@ -159,7 +178,7 @@ public class TestSuiteReader {
 		// currently, no header field is defined.
 		NodeList headers = item.getElementsByTagName("header");
 		if( headers.getLength()>0 )
-			return new RNGHeader( (Element)headers.item(0) );
+			return new RNGHeaderImpl( (Element)headers.item(0) );
 		else
 			return null;
 	}

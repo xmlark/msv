@@ -55,7 +55,8 @@ public class UnionTypeTest extends TestCase
 	public void testIsAtomType() throws DatatypeException
 	{
 		// union is not an atom
-		assert(!createUnion( "test", "string", "integer", "QName" ).isAtomType());
+		assertEquals( XSDatatype.VARIETY_UNION,
+			createUnion( "test", "string", "integer", "QName" ).getVariety() );
 	}
 	
 	/** test verify method */

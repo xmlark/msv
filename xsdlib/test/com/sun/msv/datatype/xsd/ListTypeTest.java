@@ -40,11 +40,12 @@ public class ListTypeTest extends TestCase
 		return createList( newName, DatatypeFactory.getTypeByName(itemType) );
 	}
 	
-	/** test get method */
-	public void testIsAtomType() throws DatatypeException
+	/** test getVariety method */
+	public void testGetVariety() throws DatatypeException
 	{
 		// list is not an atom
-		assert(!createList( "test", "string" ).isAtomType());
+		assertEquals( XSDatatype.VARIETY_LIST,
+			createList( "test", "string" ).getVariety() );
 	}
 	
 	/** test verify method */

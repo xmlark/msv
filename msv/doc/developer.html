@@ -29,7 +29,7 @@
 <BODY>
 <P ALIGN=center STYLE="MARGIN-BOTTOM: 0in">
   <B>DEVELOPER'S GUIDE TO SUN MULTI-SCHEMA VALIADTOR<BR>
-  Preview Version.1 April, 2001<BR>
+  Preview Version. June, 2001<BR>
   <BR>
   Copyright &copy; Sun Microsystems, 2001</B>
   </P>
@@ -41,7 +41,7 @@
 </P>
 <P>
   Sun Mutli-Schema Validator is  a Java tool to validate XML documents against
-  XML schemata. It supports RELAX Namespace, RELAX Core, TREX, XML DTD,
+  XML schemata. It supports RELAX Namespace, RELAX Core, RELAX NG, TREX, XML DTD,
   and a subset of W3C XML Schema Part 1.
 </P>
 
@@ -205,8 +205,8 @@ Grammar loadGrammar( String schemaFileNameOrURL )
 }
 </PRE>
 <P>
-  GrammarLoaded automatically detects the type of schema (RELAX Core/TREX/RELAX Namespace/W3C)
-  and handles it appropriately.
+  GrammarLoader automatically detects the type of schema
+  (RELAX Core/TREX/RELAX Namespace/RELAX NG/W3C) and handles it appropriately.
   
   The second 
   parameter specifies a "controller" object that receives notifications and controls 
@@ -222,15 +222,15 @@ Grammar loadGrammar( String schemaFileNameOrURL )
 </P>
 <PRE>
 import com.sun.msv.grammar.Grammar;
-import com.sun.msv.reader.util.GrammarLoader;
+import com.sun.msv.reader.trex.ng.RELAXNGReader;
 import javax.xml.parsers.SAXParserFactory;
 
-TREXGrammar loadTREX( String schemaFileNameOrURL )
+TREXGrammar loadRELAXNG( String schemaFileNameOrURL )
 {
   SAXParserFactory factory = new javax.xml.parsers.SAXParserFactory();
   factory.setNamespaceAware(true);
   
-  return TREXGrammarReader.parse(
+  return RELAXNGReader.parse(
                         schemaFileNameOrURL,
                         factory,
                         new com.sun.msv.reader.util.IgnoreController() );
@@ -241,7 +241,24 @@ TREXGrammar loadTREX( String schemaFileNameOrURL )
   If loading fails, the parse method returns null. 
 </P>
 <P>
-  In this way, you can parse the XML representation of the specific language into MSV's AGM.
+  Grammar readers implements <code>ContentHandler</code>, so you can also parse a grammar by the following way:
+</P>
+<PRE>
+TREXGrammar loadRELAXNG( String schemaFileNameOrURL )
+{
+  RELAXNGReader reader = new RELAXNGGrammar( factory, new IgnoreController() );
+  
+  XMLReader xmlParser = new YourFavoriteXMLReader();
+  
+  xmlParser.setContentHandler(reader);
+  xmlParser.parse(schemaFileNameOrURL);  // parse
+  
+  // this method returns null if loading fails.
+  return reader.getResult();
+}
+</PRE>
+<P>
+  In these ways, you can parse the XML representation of the specific language into MSV's AGM.
 </P>
 <P>
   Since XML DTDs are not written in XML format, they have to be parsed differently.
@@ -272,24 +289,23 @@ Grammar loadDTD( String schemaFileNameOrURL )
 
 <A id="agm_dep" />
 <H2>Schema Language Dependency</H2>
-<P>The AGM consists of four parts.</P>
+<P>The AGM consists of two parts.</P>
 <OL>
 	<LI>
-		<STRONG>Core:</STRONG> common part of TREX and RELAX. e.g., ChoiceExp, 
+		<STRONG>Core:</STRONG> common part of various languages. e.g., ChoiceExp, 
 		SequenceExp, MixedExp, and more. Also contains several abstract classes 
 		(ReferenceExp and ElementExp).
-	<LI>
-		<STRONG>TREX extension:</STRONG> primitives introduced for 
-		TREX: InterleavePattern and ConcurPattern.
 	<LI>
 		<STRONG>language-specific stubs:</STRONG>
 		concrete implementations of abstract classes
 		and composite expressions of the specific language.
 </OL>
 <P>
-	TREX introduces several language primitives that are not available in other languages.
-	These primitives are placed in the TREX extension part. AGMs constructed from TREX 
-	grammars may contain those primitives. AGMs from RELAX never contain TREX extension primitives.
+	Several primitives in the core set (concur, list, and interleave) are not used by some languages.
+	Those primitives are still placed in the core set, but the application may want to refuse
+	to process such primitives.
+	For example, AGMs from RELAX Core never contain ConcurExp or InterleaveExp. So an application that only
+	processes RELAX Core can safely skip implementing concur related operations.
 </P>
 <P>
 	You should also note that the AGM is designed to handle differences between schema languages.
@@ -317,9 +333,14 @@ Grammar loadDTD( String schemaFileNameOrURL )
 </UL>
 <P>
 	Generally speaking, you may want to avoid dependency on the stub parts. If 
-	your code only depends on the core part and the TREX extension, your code 
+	your code only depends on the core part, then your code 
 	will work with AGMs created from any language.
 	<code> com.sun.msv.verifier.regexp </code> is one of such code that works with any AGM.
+</P>
+<P>
+	<code>InterleaveExp</code> is used only by RELAX NG, TREX, and W3C XML Schema Part1.
+	<code>ConcurExp</code> is used solely by TREX. Application may reject those primitives
+	if your target schema language does not use them.
 </P>
 
 
@@ -352,7 +373,7 @@ import com.sun.msv.grammar.*;
 
 TREXGrammar create()
 {
-  TREXPatternPool pool = new TREXPatternPool();
+  ExpressionPool pool = new ExpressionPool();
   TREXGrammar g = new TREXGrammar(pool); // create an empty grammar
 	  
   g.start = new ElementPattern(
@@ -406,7 +427,7 @@ TREXGrammar create()
 </P>
 <PRE>
 {
-  TREXPatternPool pool = new TREXPatternPool();
+  ExpressionPool pool = new ExpressionPool();
   TREXGrammar g = new TREXGrammar(pool); // create an empty grammar
   
   g.start = pool.createZeroOrMore( g.namedPatterns.getOrCreate("label") );
@@ -470,8 +491,7 @@ class SwitchChoiceAndSequence extends com.sun.msv.grammar.ExpressionCloner {
 Expression modifiedExp = originalExp.visit( new SwitchChoiceAndSequence() );
 </PRE>
 <P>
-   See javadoc of ExpressionCloner for details. For expressions that may contain TREX
-  primitives (interleave and concur), you have to also implement TREXPatternVisitorExpression.
+   See javadoc of ExpressionCloner for details.
 </P>
 
 
@@ -517,11 +537,11 @@ Expression modifiedExp = originalExp.visit( new SwitchChoiceAndSequence() );
   RELAXGrammar, RELAXModule, TREXGrammar, and XMLSchemaGrammar.
 </P>
 <PRE>
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.grammar.Grammar;
 
 DocumentDeclaration createVGM( Grammar g ) {
-  return new TREXDocumentDeclaration(g);
+  return new REDocumentDeclaration(g);
 }
 </PRE>
 <P>
@@ -530,10 +550,13 @@ DocumentDeclaration createVGM( Grammar g ) {
 </P>
 <PRE>
 DocumentDeclaration createVGM( Expression exp ) {
-  return new TREXDocumentDeclaration( exp, new TREXPatternPool() );
+  return new REDocumentDeclaration( exp, new ExpressionPool() );
 }
 </PRE>
-
+<P>
+  Then VGM can be passed to the constructor of <code>Verifier</code> class to
+  actually perform a validation.
+</P>
 
 <A id="thread" />
 <H2>Multithreaded Environment</H2>
@@ -601,7 +624,7 @@ DocumentDeclaration createVGM( Expression exp ) {
   To throw away ExpressionPool, simply create a new VGM with a brand-new pool, like this.
 </P>
 <PRE>
-DocumentDeclaration vgm = new TREXDocumentDeclaration( grammar.getTopLevel(), new TREXPatternPool() );
+DocumentDeclaration vgm = new REDocumentDeclaration( grammar.getTopLevel(), new ExpressionPool() );
 </PRE>
 
 
@@ -685,7 +708,7 @@ TREXGrammarReader reader = new TREXGrammarReader(
     myGrammarReaderControllerObject,
     saxParserFactory,
     new com.sun.msv.reader.trex.typed.TypedTREXGrammarInterceptor(),
-    new TREXPatternPool() );
+    new ExpressionPool() );
 ((XMLReader)reader).parse(schemaFileName);
 
 // obtain parsed grammar object. it returns null in case of error

@@ -8,8 +8,8 @@ Document written by Kohsuke Kawaguchi (kohsuke.kawaguchi@eng.sun.com)
 
 Sun Multi-Schema Validator is  a Java tool to validate XML documents
 against several kinds of XML schemata. It supports DTD, RELAX Namespace,
-RELAX Core, TREX, and a subset of W3C XML Schema Part 1. This release
-includes software developed by the Apache Software Foundation [1].
+RELAX Core, RELAX NG, TREX, and a subset of W3C XML Schema Part 1. This
+release includes software developed by the Apache Software Foundation [1].
 
 ----------------------------------------------------------------------
 OVERVIEW
@@ -43,14 +43,17 @@ This preview version implements:
 3. RELAX Namespace [3], based on the draft of 2001-03-11 [8] plus
    enhancements based on discussions held at the same mailing list.
 
-4. TREX [9], based on the draft of 2001-02-13 [10] and the 
+4. RELAX NG [14], based on the formal semantics [15], the tutorial [16],
+   and information available at the discussion list [17].
+
+5. TREX [9], based on the draft of 2001-02-13 [10] and the 
    reference implementation [11]. The only datatype vocabulary available
    is W3C XML Schema Part 2 PR [12].
 
-5. A limited subset of W3C XML Schema Part 1 PR [13].
+6. A limited subset of W3C XML Schema Part 1 PR [13].
    See commandline.html for details of limitations.
 
-6. W3C XML Schema Part 2 PR [12] as a datatype vocabulary.
+7. W3C XML Schema Part 2 PR [12] as a datatype vocabulary.
 
 
 ----------------------------------------------------------------------
@@ -75,7 +78,7 @@ REFERENCES
       http://groups.yahoo.com/group/reldeve
 [ 8] RELAX Namespace specification
     The original writen in Japanese
-      http://www.y-adagio.com/public/standards/tr_relax_ns/toc.htm">)
+      http://www.y-adagio.com/public/standards/tr_relax_ns/toc.htm"
     No translation available.
 [ 9] TREX
       http://www.thaiopensource.com/trex/
@@ -87,6 +90,13 @@ REFERENCES
       http://www.w3.org/TR/2001/PR-xmlschema-2-20010316/
 [13] W3C XML Schema Part 1: Structure
       http://www.w3.org/TR/2001/PR-xmlschema-1-20010316/
-
+[14] RELAX NG
+      http://www.oasis-open.org/committees/relax-ng/
+[15] RELAX NG Formal Semantics
+      http://www.oasis-open.org/committees/relax-ng/proofsystem.html
+[16] RELAX NG tutorial
+      http://www.oasis-open.org/committees/relax-ng/tutorial.html
+[17] RELAX NG discussion list archive
+      http://lists.oasis-open.org/archives/relax-ng/
 ======================================================================
 END OF README

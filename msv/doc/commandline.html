@@ -21,13 +21,13 @@
 <BODY>
 <P ALIGN=center>
 <B>USAGE GUIDE FOR SUN MULTI-SCHEMA VALIDATOR<BR>
-Preview Version.1 April,2001<BR><BR>Copyright &copy; Sun
+Preview Version.   1 June,2001<BR><BR>Copyright &copy; Sun
 Microsystems, 2001</B></P>
 <P><BR></P>
 <P ALIGN=right>Document written by <A href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</A> <BR>
 $Id$ 
 </P>
-<P>Sun Multi-Schema Validator(MSV) is  a Java tool to validate XML documents against XML schemata. It supports RELAX Namespace, RELAX Core, TREX, XML DTDs, and a subset of XML Schema Part 1.</P>
+<P>Sun Multi-Schema Validator(MSV) is  a Java tool to validate XML documents against XML schemata. It supports RELAX Namespace, RELAX Core, RELAX NG, TREX, XML DTDs, and a subset of W3C XML Schema Part 1.</P>
 
 <H1>Usage</H1>
 <P>
@@ -133,6 +133,14 @@ available options by invoking MSV without any arguments.</P>
 	</a>
 </P>
 
+<H2>RELAX NG</H2>
+<P>
+	This implementation attempts to fully implement the spec.
+	But it must be considered as an experimental implementation because
+	no official spec is available at the moment of the writing.
+	W3C XML Schema Part 2 is the only one datatype vocabulary supported.
+</P>
+
 <H2>RELAX Core</H2>
 <P>
 	This implementation fully conforms to the current JIS TR specification.
@@ -156,15 +164,14 @@ available options by invoking MSV without any arguments.</P>
 <H2>W3C XML Schema Part 1</H2>
 <OL>
 	<LI>
+		The identity constraint is only partially implemented. Specifically, keys are not considered as typed data.
+		They are compared by their lexical values.
+	</LI>
+	<LI>
 		<A href="http://www.w3.org/TR/xmlschema-1/#concepts-schemaConstraints">
 		"Schema component constraints" and "Schema representation constraints"
 		</A> are not fully enforced. In other words, MSV accepts schemata
 		that are rejected by other conforming processors.
-	</LI>
-	<LI>
-		<A href="http://www.w3.org/TR/xmlschema-1/#cIdentity-constraint_Definitions">"Identity constraints"</A> are not implemented.
-		key, keyref and unique declarations are ignored and no check
-		is performed.
 	</LI>
 	<LI>
 		Forward reference of <A href="http://www.w3.org/TR/xmlschema-1/#Simple_Type_Definitions">simple type</A> is not supported. Therefore, the following schema cannot be used.
@@ -205,6 +212,7 @@ available options by invoking MSV without any arguments.</P>
 <P>To learn RELAX, <A href="http://www.xml.gr.jp/relax/">"How to RELAX"</A> 
 is a good starter. To learn TREX, there is the <A 
 href="http://thaiopensource.com/trex/tutorial.html">"TREX tutorial"</A>.
+RELAX NG also has its own <a href="http://www.oasis-open.org/committees/relax-ng/tutorial.html">tutorial</a>.
 For W3C XML Schema Part 2, see <A 
 href="http://www.w3.org/TR/2001/PR-xmlschema-0-20010316/#CreatDt">section 
 2.3 of XML Schema Part 0: Primer</A>.</P>

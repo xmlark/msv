@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<project name="relames" basedir="." default="release">
+	<property name="sourceDir" value="./src"/>
+	<property name="buildDir" value="./bin"/>
+	<property name="packageDir" value="./package"/>
+	<property name="cvsRoot" value=":local:/cygdrive/c/Program Files/Development/CVS Repository" />
+	<property name="cvsExportOpt" value="-D now" />	<!-- -r branch -->
+	
+	<!-- environment dependend -->
+	<property name="JUnitJar" value="c:/winnt/java/classes/junit.jar"/>
+	<property name="AntJar" value="c:/progra~1/development/ant/lib/ant.jar"/>
+	<property name="msvJar" value="../tranquilo/package/msv.jar"/>
+	
+	<!-- create a distribution package -->
+	<target name="release">
+		<tstamp />
+		<property name="stageName" value="relames-${DSTAMP}"/>
+		
+		<delete	dir="${stageName}" />
+		<mkdir	dir="${stageName}/src" />
+		
+		<!-- obtain source codes from cvs -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="relames/src"
+				command="export -d . -D now"
+				dest="${stageName}/src/" />
+		<cvs	cvsRoot="${cvsRoot}"
+				package="relames/doc"
+				command="export -d . -D now"
+				dest="${stageName}" />
+		
+		<!-- compile files -->
+		<mkdir	dir="temp" />
+		<javac	srcdir="${stageName}/src"
+				destdir="temp"
+				classpath="${msvJar}">
+			<include name="**/*.java" />
+		</javac>
+		
+		<!-- create a time stamp file -->
+		<echo file="temp/version.properties">version=${DSTAMP}</echo>
+
+		<!-- creates light-weight jar -->
+		<jar	jarfile="${stageName}/relames.light.jar"
+				manifest="./MANIFEST.MF"
+				compress="false">
+			<fileset dir="temp" />
+			<!-- resource files -->
+			<fileset dir="${stageName}/src" includes="**/*.properties" />
+		</jar>
+		
+		<!-- unzip related jars -->
+		<unzip src="c:/winnt/java/classes/xalan.jar" dest="temp"/>
+		<unzip src="c:/winnt/java/classes/xerces.jar" dest="temp"/>
+		<unzip src="${msvJar}" dest="temp"/>
+		
+		<!-- creates binary jar -->
+		<jar	jarfile="${stageName}/relames.jar"
+				manifest="./MANIFEST.MF"
+				compress="false">
+			<fileset dir="temp" />
+			<!-- resource files -->
+			<fileset dir="${stageName}/src" includes="**/*.properties" />
+		</jar>
+		<delete dir="temp" />
+
+		
+		<!-- copy jar file to package dir -->
+		<copy file="${stageName}/relames.jar" tofile="./package/relames.jar" />
+		
+		
+		<!-- creates distribution package -->
+		<zip	zipfile="./package/relames.${DSTAMP}.zip"
+				basedir="."
+				includes="${stageName}/**/*.*" />
+		
+		<delete	dir="${stageName}" />
+	</target>
+</project>

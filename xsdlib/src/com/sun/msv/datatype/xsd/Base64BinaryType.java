@@ -104,20 +104,23 @@ public class Base64BinaryType extends BinaryBaseType
 
 		for( i=0; i<len; i++ )
 		{
+			if( buf[i]=='=' )	// decodeMap['=']!=-1, so we have to check this first.
+				break;
 			if( decodeMap[buf[i]]!=-1 )
 				base64count++;
-			else
-			if( buf[i]=='=' )
-				break;
 		}
 
 		// once we saw '=', nothing but '=' can be appeared.
 		for( ; i<len; i++ )
+		{
+			if( buf[i]=='=' )
+			{
+				paddingCount++;
+				continue;
+			}
 			if( decodeMap[buf[i]]!=-1 )
 				return -1;
-			else
-			if( buf[i]=='=' )
-				paddingCount++;
+		}
 
 		// no more than two paddings are allowed.
 		if( paddingCount > 2 )		return -1;

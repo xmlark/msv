@@ -40,7 +40,7 @@ abstract class IntegerDerivedType extends ConcreteType implements Comparator
 	}
 	
 	public String convertToLexicalValue( Object value ) {
-		if( value instanceof Number )
+		if( value instanceof Number || value instanceof IntegerValueType )
 			return value.toString();
 		else
 			throw new IllegalArgumentException();

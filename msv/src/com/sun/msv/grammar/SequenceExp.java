@@ -14,7 +14,7 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class SequenceExp extends BinaryExp {
+public final class SequenceExp extends BinaryExp {
 	
 	SequenceExp( Expression left, Expression right )	{ super(left,right,HASHCODE_SEQUENCE); }
 	

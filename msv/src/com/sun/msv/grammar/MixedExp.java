@@ -27,7 +27,7 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class MixedExp extends UnaryExp {
+public final class MixedExp extends UnaryExp {
 	
 	MixedExp( Expression exp )	{ super( exp,HASHCODE_MIXED ); }
 	

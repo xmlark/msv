@@ -18,6 +18,9 @@ package com.sun.msv.grammar;
  * Each grammar must/can provide only one concrete implementation.
  * Therefore, they cannot override visit method.
  * 
+ * <p>
+ * This class can be extended.
+ * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class ElementExp extends Expression implements NameClassAndExpression {

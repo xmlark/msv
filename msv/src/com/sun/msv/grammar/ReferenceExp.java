@@ -21,6 +21,9 @@ package com.sun.msv.grammar;
  * This object is created and controlled by TREXGrammar/RELAXModule object,
  * rather than ExpressionPool. Therefore, this object is not a subject to unification.
  * 
+ * <p>
+ * This class can be extended.
+ * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ReferenceExp extends Expression {

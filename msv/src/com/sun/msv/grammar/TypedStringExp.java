@@ -15,6 +15,9 @@ import org.relaxng.datatype.ValidationContext;
 /**
  * Expression that matchs characters of the particular {@link DataType}.
  * 
+ * <p>
+ * This class can be extended.
+ * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TypedStringExp extends Expression {

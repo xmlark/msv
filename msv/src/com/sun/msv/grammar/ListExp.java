@@ -16,7 +16,7 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ListExp extends UnaryExp {
+public final class ListExp extends UnaryExp {
 	
 	ListExp( Expression exp )	{ super( exp,HASHCODE_LIST ); }
 	

@@ -392,19 +392,16 @@ public abstract class GrammarReader
 	 * 
 	 * this method is used in the final wrap-up process of parsing.
 	 */
-	public void detectUndefinedOnes( ReferenceContainer container, String errMsg )
-	{
+	public void detectUndefinedOnes( ReferenceContainer container, String errMsg ) {
 		Iterator itr = container.iterator();
-		while( itr.hasNext() )
-		{
+		while( itr.hasNext() ) {
 			// ReferenceExp object is created when it is first referenced or defined.
 			// its exp field is supplied when it is defined.
 			// therefore, ReferenceExp with its exp field null means
 			// it is referenced but not defined.
 			
 			ReferenceExp ref = (ReferenceExp)itr.next();
-			if( ref.exp==null )
-			{
+			if( !ref.isDefined() ) {
 				reportError( backwardReference.getReferer(ref),
 							errMsg, new Object[]{ref.name} );
 				ref.exp=Expression.nullSet;

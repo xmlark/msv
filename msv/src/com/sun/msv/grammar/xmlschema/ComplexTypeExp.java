@@ -73,6 +73,10 @@ public class ComplexTypeExp extends RedefinableExp {
 		// self will be added later if this complex type turns out to be non-abstract.
 		this.exp = schema.pool.createChoice( extensions, restrictions );
 	}
+
+	public boolean isDefined() {
+		return self.exp!=null;
+	}
 	
 	/** derives a QName type that only accepts this type name. */
 	private static DataType getQNameType( final String namespaceURI, final String localName ) {

@@ -23,8 +23,7 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ReferenceExp extends Expression
-{
+public class ReferenceExp extends Expression {
 	/** child expression. Due to the possible forward reference,
 	 * this variable is not available when the object is instanciated.
 	 * 
@@ -38,19 +37,25 @@ public class ReferenceExp extends Expression
 	 */
 	public final String name;
 	
-	public ReferenceExp( String name )
-	{
+	public ReferenceExp( String name ) {
 		super( hashCode(name==null?"":name,HASHCODE_REF) );
 		this.name = name;
 	}
 	
-	public boolean equals( Object o )
-	{
+	/**
+	 * checks if this ReferenceExp is properly defined.
+	 * this method is used to detect undeclared definitions.
+	 * Derived classes can override this method.
+	 */
+	public boolean isDefined() {
+		return exp!=null;
+	}
+	
+	public boolean equals( Object o ) {
 		return this==o;
 	}
 	
-	protected boolean calcEpsilonReducibility()
-	{
+	protected boolean calcEpsilonReducibility() {
 		if(exp==null)
 //			// actual expression is not supplied yet.
 //			// actual definition of the referenced expression must be supplied

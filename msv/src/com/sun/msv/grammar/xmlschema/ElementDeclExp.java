@@ -31,6 +31,10 @@ public class ElementDeclExp extends ReferenceExp
 		super(typeLocalName);
 		this.exp = Expression.nullSet;
 	}
+
+	public boolean isDefined() {
+		return self!=null;
+	}
 	
 	/**
 	 * those who set the value to this field is also responsible to

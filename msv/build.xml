@@ -55,7 +55,7 @@
 	<property name="libDir" value="./lib"/>
 	<property name="cvsRoot" value=":local:/cygdrive/c/Program Files/Development/CVS Repository" />
 	<property name="cvsExportOpt" value="-D now" />	<!-- -r branch -->
-	<property name="rngInterfaceSource" value="./lib/relaxng/src"/>
+	<property name="rngInterfaceSource" value="../relaxng/datatype/java/src"/>
 	
 	<!-- test directory where you put your files like "relaxNNN.rlx" -->
 	<property name="testRoot" value="./testCases" />
@@ -68,9 +68,11 @@
 		value="${testRoot}/xmlschema;${testRoot}/xmlschema/tutorialExamples;${commonTestDir};${testRoot}/xmlschema/identity" />
 	
 	<!-- environment dependend -->
-	<property name="javaCClib" value="./ref/javacc/bin/lib" />
-	<property name="JUnitJar" value="c:/winnt/java/classes/junit.jar"/>
-	<property name="AntJar" value="c:/progra~1/development/ant/lib/ant.jar"/>
+	<property name="javaCClib"				value="./ref/javacc/bin/lib" />
+	<property name="JUnitJar"				value="c:/winnt/java/classes/junit.jar"/>
+	<property name="AntJar"					value="c:/progra~1/development/ant/lib/ant.jar"/>
+	<property name="relaxngDatatype.jar"	value="../relaxng/datatype/java/relaxngDatatype.jar"/>
+	<property name="isorelax.jar"			value="c:/winnt/java/classes/isorelax.jar"/>
 
 	
 	<!-- compile Java source files -->
@@ -104,8 +106,8 @@
 	<!-- generate javadoc documentation from the working copy -->
 	<target name="javadoc">
 		<javadoc	locale="en_US"
-					packagenames="com.sun.msv.*"
-					sourcepath="${sourceDir}"
+					packagenames="com.sun.msv.*, org.relaxng.*, org.iso_relax.verifier.*, org.iso_relax.dispatcher.*"
+					sourcepath="${sourceDir};../relaxng/datatype/java/src;lib/dispatcher;lib"
 					classpath="lib/dispatcher;${java.class.path}"
 					destdir="${documentDir}"
 					windowtitle="Internal Use Only --- Sun Multi Schema Validator"
@@ -474,7 +476,7 @@
 	
 	
 	<!-- generate MSV release -->
-	<target name="release_msv">
+	<target name="release_msv" depends="release_xsdlib">
 		<tstamp />
 		<property name="stageName" value="msv-${DSTAMP}" />
 		
@@ -483,7 +485,7 @@
 		<mkdir	dir="${stageName}/src" />
 		<delete	dir="temp"/>
 		<mkdir	dir="temp"/>
-
+		
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/src"
@@ -501,25 +503,37 @@
 				package="tranquilo/test/com/sun/msv/verifier/psvi"
 				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}/src/com/sun/msv/verifier/psvi" />
-	
+		
+		<!-- move the xsdlib part to a different temporary directory so that it won't get compiled -->
+		<mkdir dir="temp_xsdlibsrc"/>
+		<move todir="temp_xsdlibsrc">
+			<fileset dir="${stageName}/src">
+				<include name="com/sun/msv/datatype/**/*.*" />
+			</fileset>
+		</move>
+		
 		<!-- run javacc -->
 		<antcall target="doJavacc">
-			<param name="src" value="${stageName}/src" />
+			<param name="src" value="temp_xsdlibsrc" />
 		</antcall>
-		
-		<!-- unzip contents from iso-relax.jar into binary directory -->
-		<!-- for ease of use, iso-relax.jar is merged into msv.jar -->
-		<unjar src="${libDir}/iso-relax.jar" dest="temp" />
-		
-		<!-- unzip contents from relaxng.jar into binary directory -->
-		<unjar src="lib/relaxng/relaxng.jar" dest="temp" />
 		
 		<!-- compile files -->
 		<javac	srcdir="${stageName}/src"
-				destdir="temp"
-				classpath="temp:${java.class.path}:lib/relaxng/relaxng.jar">
+				destdir="temp">
+			
+			<classpath path="temp"/>
+			<classpath path="${java.class.path}"/>
+			<classpath path="${relaxngDatatype.jar}"/>
+			<classpath path="${isorelax.jar}"/>
+			<classpath path="package/xsdlib.jar"/>
+			
 			<include name="**/*.java" />
 		</javac>
+		
+		<copy file="package/xsdlib.jar" tofile="${stageName}/xsdlib.jar" />
+		<copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
+		<copy file="${isorelax.jar}" tofile="${stageName}/isorelax.jar" />
+		<copy file="c:\winnt\java\classes\xerces.jar" tofile="${stageName}/xerces.jar" />
 		
 		<!-- unzip contents from xerces.jar -->
 		<mkdir dir="xerces" />
@@ -528,8 +542,8 @@
 		<!-- create a time stamp file -->
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
 		
-		<!-- creates light-weight binary jar -->
-		<jar	jarfile="${stageName}/msv.light.jar"
+		<!-- creates binary jar -->
+		<jar	jarfile="${stageName}/msv.jar"
 				manifest="./META-INF/MANIFEST.MF"
 				compress="false">
 			<fileset dir="${stageName}/src" includes="**/msv/**/*.properties" />
@@ -537,30 +551,22 @@
 			<fileset dir="c:\winnt\java\classes" includes="org/apache/xerces/utils/regex/*.*" />
 		</jar>
 		
-		<!-- creates binary jar -->
-		<jar	jarfile="${stageName}/msv.jar"
-				manifest="./META-INF/MANIFEST.MF"
-				compress="false">
-			<fileset dir="${stageName}/src" includes="**/msv/**/*.properties" />
-			<fileset dir="${libDir}" includes="javax/xml/parsers/*.class" />
-			<fileset dir="temp" />
-			<fileset dir="xerces" includes="org/apache/xerces/**/*.*" />
-<!--			<fileset dir="c:\winnt\java\classes" includes="org/apache/xerces/utils/regex/*.*" />	-->
-			<fileset dir="c:\winnt\java\classes" includes="org/xml/sax/**/*.class org/w3c/dom/**/*.class" />
-		</jar>
-		
 		<!-- creates javadoc -->
 		<mkdir		dir="${stageName}/javadoc" />
 		<javadoc	locale="en_US"
 					packagenames="com.sun.msv.*,org.relaxng.datatype.*"
-					sourcepath="${stageName}/src:${rngInterfaceSource}"
-					classpath="temp;${java.class.path}"
+					sourcepath="${stageName}/src:${rngInterfaceSource}:temp_xsdlibsrc"
 					destdir="${stageName}/javadoc"
 					windowtitle="Sun Multi Schema XML Validator"
 					overview="${stageName}/src/com/sun/msv/overview.html"
 					author="yes"
 					public="yes"
 					>
+			
+			<classpath path="temp"/>
+			<classpath path="${isorelax.jar}"/>
+			<classpath path="${java.class.path}"/>
+			
 			<!--
 				if you have encountered error around here,
 				please remove all offline="true" and packagelistLoc="...".
@@ -575,6 +581,7 @@
 
 		<delete dir="temp" />
 		<delete dir="xerces" />
+		<delete dir="temp_xsdlibsrc"/>
 
 		<!-- copy sample files -->
 		<copy todir="${stageName}/examples">
@@ -591,7 +598,6 @@
 				includes="${stageName}/**/*.*" />
 		
 		<!-- copy jar file to package dir -->
-		<copy file="${stageName}/msv.light.jar" tofile="./package/msv.light.jar" />
 		<copy file="${stageName}/msv.jar" tofile="./package/msv.jar" />
 		
 		<delete dir="${stageName}" />

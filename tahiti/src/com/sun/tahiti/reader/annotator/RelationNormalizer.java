@@ -438,7 +438,10 @@ class RelationNormalizer {
 				// class-class, class-interface, or class-primitive relation.
 				// FieldItemAnnotator should run before this process
 				// to prevent such situations from happening in the normalizer.
-				throw new Error("internal error. C-C/C-I/C-P relation");
+				throw new Error("internal error. C-C/C-I/C-P relation "
+					+ ((ClassItem)parent).getTypeName()+" "+
+					child.toString()+
+					" "+ com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(parent) );
 			}
 		}
 		

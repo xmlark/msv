@@ -17,7 +17,7 @@ import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.tahiti.reader.annotator.Annotator;
 import com.sun.tahiti.reader.NameUtil;
-import com.sun.tahiti.reader.ReaderResult;
+import com.sun.tahiti.reader.TahitiGrammarReader;
 import com.sun.tahiti.grammar.*;
 import javax.xml.parsers.SAXParserFactory;
 import java.util.Map;
@@ -27,30 +27,29 @@ import java.text.MessageFormat;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 
-public class TRELAXNGReader extends RELAXNGReader {
+public class TRELAXNGReader extends RELAXNGReader implements TahitiGrammarReader {
 
 	public static final String TahitiNamespace = 
 		"http://www.sun.com/xml/tahiti/";
 	
 	public TRELAXNGReader(
 		GrammarReaderController controller, SAXParserFactory parserFactory,
-		StateFactory stateFactory, ExpressionPool pool,	ReaderResult result ) {
+		StateFactory stateFactory, ExpressionPool pool ) {
 		
 		super( controller, parserFactory, stateFactory, pool );
-		this.result = result;
 	}
 
 	public TRELAXNGReader(
-		GrammarReaderController controller, SAXParserFactory parserFactory,
-		ReaderResult result ) {
+		GrammarReaderController controller, SAXParserFactory parserFactory ) {
 		
 		super( controller, parserFactory );
-		this.result = result;
 	}
 	
-	/** ReaderResult object that should be filled by this class. */
-	private final ReaderResult result;
-	
+	private final AnnotatedGrammar annGrammar = new AnnotatedGrammar( null, pool );
+	public AnnotatedGrammar getAnnotatedResult() {
+		return annGrammar;
+	}
+
 	protected Expression interceptExpression( ExpressionState state, Expression exp ) {
 		// if an error was found, stop processing.
 		if( hadError )	return exp;
@@ -69,12 +68,12 @@ public class TRELAXNGReader extends RELAXNGReader {
 			if( tag.localName.equals("element") ) {
 //			if( exp instanceof ElementExp ) {
 				ElementExp eexp = (ElementExp)exp;
-				ClassItem t = new ClassItem( decideName(state,exp,"class") );
+				// add a ClassItem between the ElementExp and the content model.
+				ClassItem t = annGrammar.createClassItem( decideName(state,exp,"class"), eexp.contentModel );
+				eexp.contentModel = t;
+				
 				t.isTemporary = true;	// this flag indicates that this class item is a temporary one.
 				
-				// add a ClassItem between the ElementExp and the content model.
-				t.exp = eexp.contentModel;
-				eexp.contentModel = t;
 				return eexp;
 			} else {
 				// if this element has the t:name attribute, store that
@@ -129,13 +128,13 @@ public class TRELAXNGReader extends RELAXNGReader {
 					rexp.exp = ((ClassItem)rexp.exp).exp;
 			}
 */			
-			roleExp = new ClassItem(decideName(state,exp,role));
+			roleExp = annGrammar.createClassItem(decideName(state,exp,role),null);
 		} else
 		if( role.equals("field") ) {
 			roleExp = new FieldItem(decideName(state,exp,role));
 		} else
 		if( role.equals("interface") ) {
-			roleExp = new InterfaceItem(decideName(state,exp,role));
+			roleExp = annGrammar.createInterfaceItem(decideName(state,exp,role),null);
 		} else
 		if( role.equals("ignore") ) {
 			roleExp = new IgnoreItem();
@@ -220,11 +219,13 @@ public class TRELAXNGReader extends RELAXNGReader {
 		if(hadError)	return;
 
 		// if no package name is specified, place it to the root pacakge.
-		if(result.grammarName==null)
-			result.grammarName = "Grammar";
+		if(annGrammar.grammarName==null)
+			annGrammar.grammarName = "Grammar";
 		
 		// add missing annotations and normalizes them.
-		grammar.start = Annotator.annotate( grammar.start, this );
+		annGrammar.topLevel = grammar.start;
+		Annotator.annotate( annGrammar, this );
+		grammar.start = annGrammar.topLevel;
 	}
 
 	/**
@@ -242,8 +243,8 @@ public class TRELAXNGReader extends RELAXNGReader {
 			
 			// if this is the first time the package name is specified,
 			// then use it for the grammar's name.
-			if(result.grammarName==null)
-				result.grammarName = defaultPackageName+".Grammar";
+			if(annGrammar.grammarName==null)
+				annGrammar.grammarName = defaultPackageName+".Grammar";
 		}
 		
 		super.startElement(a,b,c,d);

@@ -33,7 +33,7 @@ public class NameUtil
 	/**
 	 * capitalizes the first character.
 	 */
-	private static String capitalizeFirst( String name ) {
+	public static String capitalizeFirst( String name ) {
 			return Character.toUpperCase(name.charAt(0))+name.substring(1);
 	}
 }

@@ -14,9 +14,9 @@ import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
 import com.sun.msv.grammar.trex.ElementPattern;
 import com.sun.tahiti.grammar.*;
-import com.sun.tahiti.grammar.util.ClassCollector;
 import com.sun.tahiti.grammar.util.Multiplicity;
 import com.sun.tahiti.grammar.util.MultiplicityCounter;
+import com.sun.tahiti.reader.NameUtil;
 import java.util.Set;
 import java.util.Map;
 import java.util.Stack;
@@ -30,18 +30,14 @@ import java.util.Iterator;
  */
 class FieldItemAnnotation
 {
-	public static Expression annotate( Expression exp, ExpressionPool pool ) {
-		ClassCollector col = new ClassCollector();
-		exp.visit(col);
+	public static void annotate( AnnotatedGrammar g ) {
 		
 		FieldItemAnnotation ann = new FieldItemAnnotation();
 		
 		// process all class items.
-		ClassItem[] classes = (ClassItem[])col.classItems.toArray(new ClassItem[0]);
+		ClassItem[] classes = g.getClasses();
 		for( int i=0; i<classes.length; i++ )
-			classes[i].exp = classes[i].exp.visit(ann.new Annotator(pool,classes[i]));
-		
-		return exp;
+			classes[i].exp = classes[i].exp.visit(ann.new Annotator(g,classes[i]));
 	}
 	
 	private FieldItemAnnotation() {}
@@ -55,9 +51,10 @@ class FieldItemAnnotation
 
 	private class Annotator extends ExpressionCloner {
 		
-		private Annotator( ExpressionPool pool, ClassItem owner ) {
-			super(pool);
+		private Annotator( AnnotatedGrammar g, ClassItem owner ) {
+			super(g.getPool());
 			this.owner = owner;
+			this.grammar = g;
 			names.push("value");	// if no other name is available, this name will be used.
 		}
 		
@@ -68,6 +65,10 @@ class FieldItemAnnotation
 		 */
 		private final Stack names = new Stack();
 		
+		/** the grammar object to which we are adding annotation. */
+		private final AnnotatedGrammar grammar;
+		
+		/** the current ClassItem object. Its body is what we are dealing with now. */
 		private final ClassItem owner;
 		
 		/**
@@ -88,6 +89,17 @@ class FieldItemAnnotation
 			r = exp.exp.visit(this);
 			annotatedRefs.put(exp,r);	// store the annotated result.
 			
+//	debug: assertion check
+			r.visit( new ExpressionWalker(){
+				public void onOther( OtherExp exp ) {
+					if( exp instanceof FieldItem )
+						return;
+					if( exp instanceof JavaItem )
+						throw new Error();
+				}
+			});
+			
+			
 			if(pushed)	names.pop();
 			return r;
 		}
@@ -97,10 +109,12 @@ class FieldItemAnnotation
 			if( exp instanceof PrimitiveItem
 			||  exp instanceof InterfaceItem
 			||  exp instanceof ClassItem )
-//				return new FieldItem(
-//					typeNameToFieldName(((Type)exp).getBareName()),
-//					exp );
-				return new FieldItem( decideName(), exp );
+				return  new FieldItem( decideName(), exp );
+//			{
+//				String name = decideName();
+//				System.out.println("added "+name+" field for "+exp);
+//				return new FieldItem(name,exp);
+//			}
 			
 			if( exp instanceof IgnoreItem
 			||  exp instanceof SuperClassItem
@@ -159,6 +173,73 @@ class FieldItemAnnotation
 			return body;
 		}
 
+		/**
+		 * annotate ChoiceExp with FieldItem.
+		 * 
+		 * <p>
+		 * children of a ChoiceExp is called "branches". In this method,
+		 * branches of the entire choice group is considered.
+		 * 
+		 * <p>
+		 * We consider a branch is "alive" if there is some JavaItem in that branch.
+		 * For example, &lt;empty&gt; is not a live branch. IgnoreItem is another
+		 * example of non-live branch.
+		 * 
+		 * <p>
+		 * If only one branch out of the entire branches is alive, then this choice
+		 * is not treated at all, and the live branch is recursively processed.
+		 * This handles &lt;optional> p &lt;/optional>.
+		 * 
+		 * <p>
+		 * Otherwise, the following algorithm is applied:
+		 * 
+		 * <p>
+		 * A branch is said to be "complex", if the multiplicity of child JavaItem is
+		 * more than one. For example,
+		 * 
+		 * <PRE><XMP>
+		 * <oneOrMore>
+		 *   <tahiti:classItem>
+		 *     <element name="..."/>
+		 *       ...
+		 *     </element>
+		 *   </tahiti:classItem>
+		 * </oneOrMore>
+		 * </XMP></PRE>
+		 * 
+		 * <p>
+		 * is a complex branch. If a branch is complex, then it is wrapped by a 
+		 * ClassItem, then a FieldItem. Wrapping by a ClassItem makes its
+		 * multiplicity (1,1). This ensures that every branch has the multiplicity
+		 * of at-most-one.
+		 * 
+		 * <p>
+		 * For other live but not complex branches, if a branch doesn't contain
+		 * FieldItems, then it is wrapped by a FieldItem. Since FieldItem cannot be
+		 * wrapped by a FieldItem, we cannot wrap a branch by a FieldItem if
+		 * it contains FieldItem. This case happens only when a user explicitly
+		 * annotate a part of the grammar like this:
+		 * 
+		 * <PRE><XMP>
+		 * <choice>
+		 *   <group>
+		 *     <element name="A"/>
+		 *     <element name="B"/>
+		 *   </group>
+		 *   <group>
+		 *     &lt;!-- explicit annotation -->
+		 *     <ref name="X" t:role="field"/>
+		 *	   ...
+		 *   </group>
+		 * </choice>
+		 * </XMP></PRE>
+		 * 
+		 * In this case, we recursively process that branch (since that branch may
+		 * contains other bare ClassItems.)
+		 * 
+		 * <p>
+		 * All 
+		 */
 		public Expression onChoice( ChoiceExp exp ) {
 			// check whether there is only one meaningul branch, or more than one of them.
 			Expression[] b = exp.getChildren();
@@ -167,6 +248,7 @@ class FieldItemAnnotation
 			int numLiveBranch = 0;
 			
 			boolean bBranchWithField = false;
+			final boolean[] bBranchWithPrimitive = new boolean[1];
 			
 			for( int i=0; i<b.length; i++ ) {
 				final boolean[] hasChildFieldItem = new boolean[1];
@@ -177,6 +259,7 @@ class FieldItemAnnotation
 					new MultiplicityCounter(){
 						protected Multiplicity isChild( Expression exp ) {
 							if(exp instanceof FieldItem)	hasChildFieldItem[0] = true;
+							if(exp instanceof PrimitiveItem)	bBranchWithPrimitive[0] = true;
 							
 							if(exp instanceof IgnoreItem)	return Multiplicity.zero;
 							if(exp instanceof JavaItem)		return Multiplicity.one;
@@ -208,7 +291,7 @@ class FieldItemAnnotation
 			}
 			
 			if( numLiveBranch<=1 ) {
-				// there are only one meaningful branch.
+				// there is only one meaningful branch.
 				// this happens for patterns like <optional>.
 				
 				// visit all unvisited branch
@@ -217,8 +300,8 @@ class FieldItemAnnotation
 						b[i] = b[i].visit(this);
 				
 				Expression r = Expression.nullSet;
-				for( int i=b.length-1; i>=0; i-- )
-					r = pool.createChoice( b[i], r );
+				for( int i=0; i<b.length; i++ )
+					r = pool.createChoice( r, b[i] );
 			
 				return r;
 				
@@ -229,10 +312,10 @@ class FieldItemAnnotation
 				if we don't have any branch with FieldItem, then we just need
 				one FieldItem to cover the entire branches.
 				
-				TODO: actually this would be done better. Even if there are 
+				TODO:(?) actually this would be done better. Even if there are 
 				branches with FieldItems, one created FieldItem can cover all
 				FieldItem-less branches, and then that FieldItem and other
-				branches can be combined.
+				branches can be combined. But is it an improvement?
 				*/
 				
 				for( int i=0; i<b.length; i++ ) {
@@ -245,7 +328,7 @@ class FieldItemAnnotation
 						// insert a new class item here.
 						String className = owner.getTypeName()+"Subordinate"+(++iota);
 						
-						b[i] = new ClassItem( className, b[i].visit(this) );
+						b[i] = grammar.createClassItem( className, b[i].visit(this) );
 						if( bBranchWithField )
 							b[i] = new FieldItem( fieldName, b[i] );
 						
@@ -253,11 +336,29 @@ class FieldItemAnnotation
 				}
 			
 				Expression r = Expression.nullSet;
-				for( int i=b.length-1; i>=0; i-- )
-					r = pool.createChoice( b[i], r );
+				for( int i=0; i<b.length; i++ )
+					r = pool.createChoice( r, b[i] );
 
-				if( !bBranchWithField )
+				if( !bBranchWithField ) {
+					// there is no branch with FieldItem.
+					
+					if( !bBranchWithPrimitive[0] ) {
+						// if there is no branch with a PrimitiveItem,
+						// add an interface item automatically.
+					
+						String intfName = owner.getPackageName();
+						if(intfName==null)	intfName="";
+						else				intfName=intfName+".";
+					
+						intfName += "I"+NameUtil.capitalizeFirst(fieldName);
+						// TODO: name uniqueness check
+					
+						r = grammar.createInterfaceItem( intfName, r );
+					}
+					
+					// then wrap it by a FieldItem.
 					r = new FieldItem( fieldName, r );
+				}
 				return r;
 			}
 		}

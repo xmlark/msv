@@ -43,15 +43,18 @@ import java.util.Iterator;
  */
 class TemporaryClassItemRemover {
 	
-	public static Expression remove( Expression topLevel, ExpressionPool pool ) {
+	public static void remove( AnnotatedGrammar grammar ) {
 		// run the first pass and determine which class items can be removed.
 		Pass1 p1 = new Pass1();
-		topLevel.visit(p1);
+		grammar.topLevel.visit(p1);
 		
-		p1.allClasses.removeAll( p1.notRemovableClasses );
+		Set cs = new java.util.HashSet(grammar.classes);
+		cs.removeAll( p1.notRemovableClasses );
 		
 		// run the second pass and remove unnecessary class items.
-		return topLevel.visit( new Pass2( pool, p1.allClasses ) );
+		grammar.topLevel = grammar.topLevel.visit(
+			new Pass2( grammar.getPool(), cs ) );
+		grammar.removeClassItems(cs);
 	}
 	
 	/**
@@ -64,9 +67,6 @@ class TemporaryClassItemRemover {
 		
 		/** this set stores ClassItems that are determined not to be removed. */
 		final Set notRemovableClasses = new java.util.HashSet();
-		
-		/** this set stores all ClassItems that are found. */
-		final Set allClasses = new java.util.HashSet();
 		
 		/** this set stores all the children of the current ClassItem. */
 		private Set childItems = new java.util.HashSet();
@@ -116,7 +116,6 @@ class TemporaryClassItemRemover {
 		}
 		
 		public Object onClass( ClassItem item ) {
-			allClasses.add(item);
 			
 			childItems.add(item);	// this has to be done before the checkedClasses field is examined.
 			

@@ -9,6 +9,7 @@
  */
 package jarv;
 
+import java.io.File;
 import org.iso_relax.verifier.*;
 import com.sun.msv.driver.textui.ReportErrorHandler;
 
@@ -43,7 +44,7 @@ public class JARVDemo
 		 
 		// parse a schema.
 		// other overloaded methods allows you to parse a schema from InputSource, URL, etc.
-		Verifier verifier = factory.newVerifier(args[0]);
+		Verifier verifier = factory.newVerifier(new File(args[0]));
 		
 		// set the error handler. This object receives validation errors.
 		// you can pass any class that implements org.sax.ErrorHandler.
@@ -52,7 +53,7 @@ public class JARVDemo
 		// use the verify method to validate documents.
 		// or you can validate SAX events by using the getVerifierHandler method.
 		for( int i=1; i<args.length; i++ )
-			if(verifier.verify(args[i]))
+			if(verifier.verify(new File(args[i])))
 				System.out.println(args[i]+" is valid");
 			else
 				System.out.println(args[i]+" is NOT valid");

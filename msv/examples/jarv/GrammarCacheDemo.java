@@ -9,6 +9,7 @@
  */
 package jarv;
 
+import java.io.File;
 import org.iso_relax.verifier.*;
 import com.sun.msv.verifier.util.IgnoreErrorHandler;
 
@@ -46,7 +47,7 @@ public class GrammarCacheDemo
 		
 		// compile a schema.
 		// other overloaded methods allows you to parse a schema from InputSource, URL, etc.
-		final Schema schema = factory.compileSchema(args[0]);
+		final Schema schema = factory.compileSchema(new File(args[0]));
 		
 		// launch a thread for each instance file.
 		// this will simulate the multi-thread environment.
@@ -64,7 +65,7 @@ public class GrammarCacheDemo
 
 						// use the verify method to validate documents.
 						// or you can validate SAX events by using the getVerifierHandler method.
-						if(verifier.verify(fileName))
+						if(verifier.verify(new File(fileName)))
 							System.out.println(fileName+" is valid");
 						else
 							System.out.println(fileName+" is NOT valid");

@@ -4,8 +4,6 @@ import com.sun.tahiti.runtime.sm.*;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
-import org.apache.xml.serialize.XMLSerializer;
-import org.apache.xml.serialize.OutputFormat;
 
 public class TestDriver
 {
@@ -40,11 +38,9 @@ public class TestDriver
 		
 		MarshallableObject mo = unmarshaller.getResult();
 		System.out.println(mo);
-		DOMMarshaller dom = new DOMMarshaller( new org.apache.xerces.dom.DocumentImpl() );
-		mo.marshall(dom);
 		
 		// serialize
-		new XMLSerializer( System.out, new OutputFormat("xml","UTF-8",true) ).serialize(dom.getResult());
+		MarshallerAPI.marshall( mo, System.out, "UTF-8", true );
 	}
 	
 	static BindableGrammar getGrammar( String className ) throws Exception {

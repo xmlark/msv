@@ -63,6 +63,10 @@ public class Proxy extends XSDatatypeImpl {
 	public Object _createValue( String content, ValidationContext context ) {
 		return baseType._createValue(content,context);
 	}
+
+    public DataTypeWithFacet getFacetObject( String facetName ) {
+        return baseType.getFacetObject(facetName);
+    }
     
 	public Class getJavaObjectType() {
 		return baseType.getJavaObjectType();

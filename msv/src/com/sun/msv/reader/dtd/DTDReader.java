@@ -10,7 +10,6 @@
 package com.sun.msv.reader.dtd;
 
 import com.sun.msv.datatype.BadTypeException;
-import com.sun.msv.datatype.ValidationContextProvider;
 import com.sun.msv.datatype.TypeIncubator;
 import com.sun.msv.datatype.DataTypeFactory;
 import com.sun.msv.datatype.DataType;
@@ -41,7 +40,7 @@ import java.util.Iterator;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DTDReader implements
-	DTDEventListener, IDContextProvider {
+	DTDEventListener {
 	
 	public DTDReader( GrammarReaderController controller, 
 		String targetNamespace, ExpressionPool pool ) {
@@ -412,7 +411,7 @@ public class DTDReader implements
 			if(enums!=null) {
 				TypeIncubator incubator = new TypeIncubator(dt);
 				for( int i=0; i<enums.length; i++ )
-					incubator.add( DataType.FACET_ENUMERATION, enums[i], false, this );
+					incubator.add( DataType.FACET_ENUMERATION, enums[i], false, null );
 				dt = incubator.derive(null);
 			}
 		
@@ -420,7 +419,7 @@ public class DTDReader implements
 				// in case of #FIXED, derive a datatype with default value as 
 				// an enumeration value.
 				TypeIncubator incubator = new TypeIncubator(dt);
-				incubator.add( DataType.FACET_ENUMERATION, defaultValue, false, this );
+				incubator.add( DataType.FACET_ENUMERATION, defaultValue, false, null );
 				dt = incubator.derive(null);
 			}
 		} catch( BadTypeException e ) {
@@ -545,11 +544,6 @@ public class DTDReader implements
 		// therefore this method shall never be called.
 		throw new Error();
 	}
-	
-	// these methods may be also called when adding enumeration values to
-	// IDREF types. Just allow anything.
-	public void onIDREF( String token ) {}
-	public boolean onID( String token ) { return true; }
 	
 	
 // unused methods

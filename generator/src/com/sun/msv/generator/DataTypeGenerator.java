@@ -17,5 +17,5 @@ import com.sun.msv.datatype.DataType;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface DataTypeGenerator {
-	String generate( DataType dt );
+	String generate( DataType dt, ContextProvider context );
 }

@@ -86,7 +86,17 @@ public class Driver {
 		GeneratorOption opt = new GeneratorOption();
 		opt.random = new Random();
 		
-		opt.dtGenerator = new DataTypeGeneratorImpl();
+		SAXParserFactory factory = new org.apache.xerces.jaxp.SAXParserFactoryImpl();
+		factory.setNamespaceAware(true);
+		factory.setValidating(false);
+		
+		// this set will receive tokens found in the given examples.
+		Set exampleTokens = new java.util.HashSet();
+		
+		DataTypeGeneratorImpl dtgi = new DataTypeGeneratorImpl();
+		opt.dtGenerator = dtgi;
+		dtgi.tokens = exampleTokens;
+		
 
 		// parse options
 		//===========================================
@@ -101,6 +111,11 @@ public class Driver {
 				if( args[i].equalsIgnoreCase("-depth") )
 					opt.cutBackDepth = new Integer(args[++i]).intValue();
 				else
+				if( args[i].equalsIgnoreCase("-example") ) {
+					XMLReader p = factory.newSAXParser().getXMLReader();
+					p.setContentHandler( new ExampleReader(exampleTokens) );
+					p.parse( getInputSource(args[++i]) );
+				} else
 				if( args[i].equalsIgnoreCase("-width") )
 					opt.width = new Rand.UniformRand( opt.random, new Integer(args[++i]).intValue() );
 				else
@@ -203,11 +218,8 @@ public class Driver {
 		
 			
 		
-		SAXParserFactory factory = new org.apache.xerces.jaxp.SAXParserFactoryImpl();
 		DocumentBuilderFactory domFactory = new org.apache.xerces.jaxp.DocumentBuilderFactoryImpl();
 	
-		factory.setNamespaceAware(true);
-		factory.setValidating(false);
 		
 		try {
 			factory.setFeature("http://xml.org/sax/features/validation",false);
@@ -275,8 +287,10 @@ public class Driver {
 					os = new FileOutputStream( outputName );
 			}
 			
+			DOMDecorator.decorate(dom);
+			
 			// write generated instance.
-			XMLSerializer2 s = new XMLSerializer2( os, new OutputFormat("XML",encoding,true) );
+			XMLSerializer3 s = new XMLSerializer3( os, new OutputFormat("XML",encoding,true) );
 			s.serialize(dom);
 			
 			if( os!=System.out )	os.close();

@@ -13,6 +13,7 @@ import com.sun.msv.datatype.*;
 import java.util.Random;
 import java.util.Map;
 import java.util.Set;
+import java.util.Iterator;
 import com.sun.xml.util.XmlChars;
 
 /**
@@ -26,36 +27,79 @@ import com.sun.xml.util.XmlChars;
 public class DataTypeGeneratorImpl implements DataTypeGenerator {
 	private final Random random;
 	
-	public DataTypeGeneratorImpl( Random random ) { this.random = random; }
 	public DataTypeGeneratorImpl() { this(new Random()); }
+	public DataTypeGeneratorImpl( Random random ) {
+		this.random = random;
+	}
 	
 	/**
 	 * if this flag is set to true, then non-ASCII characters will not be used.
 	 */
 	public boolean asciiOnly = false;
 	
-	
+	/**
+	 * map from DataType to Set that holds generated values for types.
+	 * This map is used when we fail to generate an appropriate value for a type.
+	 */
 	protected Map generatedValues = new java.util.HashMap();
+	
+	/**
+	 * set that contains tokens that are found in example files.
+	 * This set is used as the last resort to generate a value for a type.
+	 */
+	protected Set tokens;
 
-	public String generate( DataType dt ) {
-		String s = _generate(dt);
+	public String generate( DataType dt, ContextProvider context ) {
+		String s=null; int i;
+
+		// obtain previously generated values.
+		Set vs = (Set)generatedValues.get(dt);
+		if(vs==null) {
+			generatedValues.put(dt, vs=new java.util.HashSet() );
+			
+			// copy values from examples.
+			Iterator itr = tokens.iterator();
+			while(itr.hasNext()) {
+				String token = (String)itr.next();
+				try {// we have to be able to verify this without depending on the context.
+					if(dt.verify(token,null))
+						vs.add(token);
+				}catch(Exception e){}
+			}
+		}
+
+		if(vs==null || vs.size()<32) {
+			// we need more diversity. generate more.
+			
+			for( i=0; i<10; i++ ) {
+				s = _generate(dt,context);
+				if( dt.verify(s,context) )
+					break;	// this value is OK.
+			}
+			if(i==10)
+				// we retried 10 times but failed to generate a value.
+				// 'vs' is already used in the _generate method if necessary.
+				// So this situation is an absolute failure.
+				fail(dt);
+		}
 		
 		// memorize generated values so that we can use them later.
-		Set vs = (Set)generatedValues.get(dt);
-		if(vs==null)
-			generatedValues.put(dt, vs=new java.util.HashSet() );
 		vs.add(s);
 		
 		return s;
 	}
 		
-	protected String _generate( DataType dt ) {
+	/**
+	 * actual generation.
+	 * this method can return an invalid value.
+	 */
+	protected String _generate( DataType dt, ContextProvider context ) {
 		if( dt instanceof AnyURIType ) {
 			// anyURI
 			String r;
 			do {
 				r = generateString();	// any string should work
-			}while(!dt.verify(r,null));
+			}while(!dt.verify(r,context));
 			return r;
 		}
 		
@@ -74,7 +118,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		if( dt.getClass()==ShortType.class )	return Long.toString( (short)random.nextInt() );
 		if( dt.getClass()==IntType.class )		return Long.toString( random.nextInt() );
 		if( dt.getClass()==LongType.class )		return Long.toString( random.nextLong() );
-		if( dt.getClass()==IntegerType.class )	return Long.toString( random.nextLong() );
+		if( dt instanceof IntegerType )			return Long.toString( random.nextLong() );
 		if( dt.getClass()==StringType.class )	return generateString();
 		if( dt.getClass()==TokenType.class )	return generateString();
 		if( dt.getClass()==NormalizedStringType.class )	return generateString();
@@ -82,9 +126,11 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		if( dt.getClass()==NcnameType.class )	return generateNCName();
 		if( dt.getClass()==NumberType.class )	return generateDecimal();
 		if( dt.getClass()==BooleanType.class )	return generateBoolean();
+		// TODO: implement this method better.
+		if( dt.getClass()==QnameType.class )	return generateNCName();
 		
 		if( dt instanceof FinalComponent )	// ignore final component
-			return generate( ((FinalComponent)dt).baseType );
+			return generate( ((FinalComponent)dt).baseType, context );
 		
 		if( dt instanceof com.sun.msv.grammar.relax.EmptyStringType )
 			return "";
@@ -104,33 +150,37 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 				Object[] items = e.values.toArray();
 				for( int i=0; i<10; i++ ) {
 					try {
-						return dt.convertToLexicalValue(items[random.nextInt(items.length)],null);
+						return dt.convertToLexicalValue(items[random.nextInt(items.length)],context);
 					} catch( Exception x ) { ; }
 				}
 			}
 			
 			DataType baseType = dti.getConcreteType();
 			
-			if( baseType.getClass()==ListType.class )	return generateList(dti);
+			if( baseType instanceof ListType )
+				return generateList(dti,context);
+			if( baseType instanceof UnionType )
+				return generateUnion((UnionType)baseType,context);
 			
-			if( baseType!=dti ) {
-				for( int i=0; i<10; i++ ) {
-					String s = generate(baseType);
-					if(dti.verify(s,null))	return s;
-				}
-			}
+			if( baseType!=dti )
+				return generate(baseType,context);
 		}
 		
-		// use previously generated value if such a thing exist.
+		// use previously generated value if such a thing exists.
 		Set vs = (Set)generatedValues.get(dt);
-		if(vs!=null)
+		if(vs!=null && vs.size()!=0 )
 			return (String)vs.toArray()[random.nextInt(vs.size())];
 		
 		
-		
+		fail(dt);
+		// fail will never return
+		return null;
+	}
+
+	protected void fail( DataType dt ) {
 		throw new Error("unable to generate value for this datatype: " + dt.displayName() );
 	}
-	
+
 	protected String generateNMTOKEN() {
 		// string
 		int len = random.nextInt(15)+1;
@@ -148,7 +198,11 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		return r;
 	}
 	
-	protected String generateList(DataTypeImpl dti) {
+	protected String generateUnion(UnionType ut, ContextProvider context ) {
+		return generate( ut.memberTypes[random.nextInt(ut.memberTypes.length)], context );
+	}
+		
+	protected String generateList(DataTypeImpl dti, ContextProvider context) {
 		ListType base = (ListType)dti.getConcreteType();
 		LengthFacet lf = (LengthFacet)dti.getFacetObject(dti.FACET_LENGTH);
 		int n;	// compute # of items into this value.
@@ -166,7 +220,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		
 		String s="";
 		for( int i=0; i<n; i++ )
-			s += " " + generate(base.itemType) + " ";
+			s += " " + generate(base.itemType,context) + " ";
 		return s;
 	}
 	

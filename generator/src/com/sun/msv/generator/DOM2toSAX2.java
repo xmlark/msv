@@ -7,6 +7,8 @@ import org.xml.sax.helpers.AttributesImpl;
 public class DOM2toSAX2 {
 	
 	public DOM2toSAX2() {}
+
+	private static final String XMLNS_URI = "http://www.w3.org/2000/xmlns/";
 	
 	protected ContentHandler handler;
 	public void setContentHandler( ContentHandler handler ) {
@@ -31,6 +33,7 @@ public class DOM2toSAX2 {
 		AttributesImpl sa = new AttributesImpl();
 		for( int i=0; i<atts.getLength(); i++ ) {
 			Attr a = (Attr)atts.item(i);
+			if(a.getNamespaceURI().equals(XMLNS_URI))	continue;
 			sa.addAttribute( a.getNamespaceURI(), a.getLocalName(), a.getName(),
 				null, a.getValue() );
 		}
@@ -38,6 +41,18 @@ public class DOM2toSAX2 {
 	}
 	
 	protected void onElement( Element e ) throws SAXException {
+		
+		// declare namespace prefix
+		NamedNodeMap atts =	e.getAttributes();
+		for( int i=0; i<atts.getLength(); i++ ) {
+			Attr a = (Attr)atts.item(i);
+			if(!a.getName().startsWith("xmlns"))	continue;
+			
+			String prefix = a.getName();
+			int idx = prefix.indexOf(':');
+			if(idx<0)	handler.startPrefixMapping("",a.getValue());
+			else		handler.startPrefixMapping(prefix.substring(idx+1),a.getValue());
+		}
 		
 		handler.startElement(
 			e.getNamespaceURI(), e.getLocalName(), e.getTagName(),
@@ -53,6 +68,17 @@ public class DOM2toSAX2 {
 		}
 		
 		handler.endElement( e.getNamespaceURI(), e.getLocalName(), e.getTagName() );
+
+		// end namespace mapping
+		for( int i=0; i<atts.getLength(); i++ ) {
+			Attr a = (Attr)atts.item(i);
+			if(!a.getName().startsWith("xmlns"))	continue;
+			
+			String prefix = a.getName();
+			int idx = prefix.indexOf(':');
+			if(idx<0)	handler.endPrefixMapping("");
+			else		handler.endPrefixMapping(prefix.substring(idx+1));
+		}
 	}
 	
 	protected void onText( Text t ) throws SAXException {

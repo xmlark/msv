@@ -326,7 +326,7 @@ public class Generator implements TREXPatternVisitorVoid
 	}
 	
 	public void onAnyString() {
-		node.appendChild( domDoc.createTextNode(opts.dtGenerator.generate(StringType.theInstance)) );
+		node.appendChild( domDoc.createTextNode(opts.dtGenerator.generate(StringType.theInstance,getContext())) );
 	}
 	
 	public void onOneOrMore( OneOrMoreExp exp ) {
@@ -352,7 +352,7 @@ public class Generator implements TREXPatternVisitorVoid
 		String value;
 		if( "ID".equals(exp.dt.getName()) ) {
 			do {
-				value = opts.dtGenerator.generate(NmtokenType.theInstance);
+				value = opts.dtGenerator.generate(NmtokenType.theInstance,getContext());
 			}while( ids.contains(value) );
 			ids.add(value);
 		}
@@ -363,7 +363,7 @@ public class Generator implements TREXPatternVisitorVoid
 			idrefs.add(n); // memorize this node so that we can patch it later.
 			return;
 		} else {
-			value = opts.dtGenerator.generate(exp.dt);
+			value = opts.dtGenerator.generate(exp.dt,getContext());
 		}
 		
 		node.appendChild( domDoc.createTextNode(value) );
@@ -373,6 +373,17 @@ public class Generator implements TREXPatternVisitorVoid
 		throw new Error("concur is not supported");
 	}
 	
+	protected ContextProvider getContext() {
+		Node n = node;
+		while(!(n instanceof Element) && n!=null) {
+			if(n instanceof Attr)
+				n = ((Attr)n).getOwnerElement();
+			else
+				n = n.getParentNode();
+		}
+		if(n==null)		throw new Error();	// impossible
+		return new ContextProvider((Element)n);
+	}
 	
 	/** generaets a name that satisfies given NameClass */
 	private StringPair getName( NameClass nc ) {

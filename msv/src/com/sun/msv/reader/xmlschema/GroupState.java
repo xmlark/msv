@@ -5,9 +5,9 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.ReferenceContainer;
 import com.sun.tranquilo.grammar.xmlschema.GroupDeclExp;
 import com.sun.tranquilo.grammar.xmlschema.XMLSchemaSchema;
-import com.sun.tranquilo.grammar.xmlschema.XMLSchemaExp;
 import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.reader.State;
+import org.xml.sax.Locator;
 
 public class GroupState extends RedefinableDeclState {
 	

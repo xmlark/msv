@@ -1,6 +1,9 @@
 package com.sun.tranquilo.reader.xmlschema;
 
+import com.sun.tranquilo.datatype.DataType;
+import com.sun.tranquilo.grammar.xmlschema.SimpleTypeExp;
 import com.sun.tranquilo.reader.ChildlessState;
+import com.sun.tranquilo.reader.datatype.xsd.SimpleTypeState;
 
 public class RedefineState extends GlobalDeclState {
 	

@@ -42,7 +42,7 @@ public abstract class RedefinableDeclState extends ExpressionWithChildState {
 				// this error will be reported in annealExpression method.
 				return;
 			
-			oldDecl = (XMLSchemaExp)con._get(name);
+			oldDecl = (RedefinableExp)con._get(name);
 			if(exp==null) {
 				reader.reportError( reader.ERR_REDEFINE_UNDEFINED, name );
 				return;

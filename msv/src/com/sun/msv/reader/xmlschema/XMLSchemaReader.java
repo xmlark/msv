@@ -586,4 +586,7 @@ public class XMLSchemaReader extends GrammarReader
 		null;
 	public static final String ERR_DUPLICATE_ATTRIBUTE_GROUP_DEFINITION = // arg:1
 		null;
+	public static final String ERR_DUPLICATE_GROUP_DEFINITION = // arg:1
+		null;
+
 }

@@ -12,6 +12,7 @@ import com.sun.tranquilo.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.reader.State;
 import com.sun.tranquilo.reader.IgnoreState;
+import com.sun.tranquilo.reader.ExpressionWithChildState;
 
 /**
  * used to parse &lt;element &gt; element without ref attribute.
@@ -19,7 +20,7 @@ import com.sun.tranquilo.reader.IgnoreState;
  * this state uses ExpressionWithChildState to collect content model
  * of this element declaration.
  */
-public class ElementDeclState extends DelclarationState {
+public class ElementDeclState extends ExpressionWithChildState {
 
 	protected State createChildState( StartTagInfo tag ) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
@@ -196,5 +197,9 @@ public class ElementDeclState extends DelclarationState {
 		// TODO: @block
 		// TODO: @final
 		return decl;
+	}
+
+	protected boolean isGlobal() {
+		return parentState instanceof GlobalDeclState;
 	}
 }

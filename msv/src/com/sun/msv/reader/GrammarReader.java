@@ -331,6 +331,7 @@ public abstract class GrammarReader
 	public class BackwardReferenceMap {
 		private final Map impl = new java.util.HashMap();
 														 
+		/** memorize a reference to an object. */
 		public void memorizeLink( Object target ) {
 			ArrayList list;
 			if( impl.containsKey(target) )	list = (ArrayList)impl.get(target);
@@ -343,8 +344,13 @@ public abstract class GrammarReader
 			list.add(new LocatorImpl(locator));
 		}
 		
-		// TODO: does anyone want to get all of the refer?
+		/**
+		 * gets all the refer who have a reference to this object.
+		 * @return null
+		 *		if no one refers it.
+		 */
 		public Locator[] getReferer( Object target ) {
+			// TODO: does anyone want to get all of the refer?
 			if( impl.containsKey(target) ) {
 				ArrayList lst = (ArrayList)impl.get(target);
 				Locator[] locs = new Locator[lst.size()];

@@ -10,15 +10,12 @@
 package com.sun.msv.verifier.jarv;
 
 import org.iso_relax.verifier.*;
-import com.sun.msv.grammar.relax.RELAXModule;
+import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.relax.core.RELAXCoreReader;
-import com.sun.msv.reader.util.IgnoreController;
-import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * VerifierFactory implementation of RELAX Core.
@@ -27,24 +24,10 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class RELAXCoreFactoryImpl extends FactoryImpl
 {
-	public RELAXCoreFactoryImpl( SAXParserFactory factory ) { super(factory); }
-
-	public Verifier newVerifier( String uri )
-		throws VerifierConfigurationException, SAXException
-	{
-		ExpressionPool pool = new ExpressionPool();
-		RELAXModule m = RELAXCoreReader.parse(uri,factory,new IgnoreController(),pool);
-		if(m==null)		return null;	// load failure
-		return getVerifier(m);
+	protected Grammar parse( InputSource is, GrammarReaderController controller ) {
+		return RELAXCoreReader.parse(is,factory,controller,new ExpressionPool());
 	}
-
-	public Verifier newVerifier( InputSource source )
-		throws VerifierConfigurationException,
-			   SAXException
-	{
-		ExpressionPool pool = new ExpressionPool();
-		RELAXModule m = RELAXCoreReader.parse(source,factory,new IgnoreController(),pool);
-		if(m==null)		return null;	// load failure
-		return getVerifier(m);
+	protected Grammar parse( String source, GrammarReaderController controller ) {
+		return RELAXCoreReader.parse(source,factory,controller,new ExpressionPool());
 	}
 }

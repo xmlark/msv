@@ -10,6 +10,7 @@
 package com.sun.msv.verifier.jarv;
 
 import org.iso_relax.verifier.*;
+import org.iso_relax.verifier.impl.VerifierFilterImpl;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.EntityResolver;
@@ -18,9 +19,9 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
 import org.w3c.dom.Node;
 import org.w3c.dom.Document;
-import com.sun.msv.verifier.DocumentDeclaration;
 import com.sun.msv.verifier.ValidityViolation;
-import com.sun.msv.verifier.util.VerificationErrorHandlerImpl;
+import com.sun.msv.verifier.IVerifier;
+import com.sun.msv.verifier.util.SAXErrorHandlerAdaptor;
 import com.sun.msv.util.xml.SAXEventGenerator;
 import java.io.IOException;
 
@@ -31,11 +32,12 @@ import java.io.IOException;
  */
 class VerifierImpl implements Verifier
 {
-	private final DocumentDeclaration grammar;
+	private final IVerifier verifier;
+	private VerifierFilter filter = null;
 	private final XMLReader reader;
 	
-	VerifierImpl( DocumentDeclaration grammar, XMLReader reader ) {
-		this.grammar = grammar;
+	VerifierImpl( IVerifier verifier, XMLReader reader ) {
+		this.verifier = verifier;
 		this.reader	= reader;
 	}
 	
@@ -62,14 +64,15 @@ class VerifierImpl implements Verifier
 	
 	public void setErrorHandler( ErrorHandler handler ) {
 		reader.setErrorHandler(handler);
+		verifier.setVerificationErrorHandler(new SAXErrorHandlerAdaptor(handler));
 	}
 	
 	public void setEntityResolver( EntityResolver handler ) {
 		reader.setEntityResolver(handler);
 	}
 
-    public boolean verify(String uri)
-			throws SAXException, IOException {
+    public boolean verify(String uri) throws SAXException, IOException {
+		
 		reader.setContentHandler(getVerifierHandler());
 		try {
 			reader.parse(uri);
@@ -102,10 +105,13 @@ class VerifierImpl implements Verifier
 	}
 
     public VerifierHandler getVerifierHandler() {
-		return new HandlerImpl( grammar, new VerificationErrorHandlerImpl() );
+		return verifier;
     }
 
     public VerifierFilter getVerifierFilter() {
-		return new FilterImpl( grammar, new VerificationErrorHandlerImpl() );
+		if(filter==null)
+			filter = new VerifierFilterImpl(verifier);
+		
+		return filter;
     }
 }

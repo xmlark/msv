@@ -10,15 +10,10 @@
 package com.sun.msv.verifier.jarv;
 
 import org.iso_relax.verifier.*;
-import com.sun.msv.grammar.trex.TREXGrammar;
-import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.trex.classic.TREXGrammarReader;
-import com.sun.msv.reader.util.IgnoreController;
-import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * VerifierFactory implementation for TREX.
@@ -27,23 +22,10 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class TREXFactoryImpl extends FactoryImpl
 {
-	public TREXFactoryImpl( SAXParserFactory factory ) { super(factory); }
-
-	public Verifier newVerifier( String uri )
-		throws VerifierConfigurationException,
-			   SAXException
-	{
-		TREXGrammar g = TREXGrammarReader.parse(uri,factory,new IgnoreController());
-		if(g==null)		return null;	// load failure
-		return getVerifier(g);
+	protected Grammar parse( InputSource is, GrammarReaderController controller ) {
+		return TREXGrammarReader.parse(is,factory,controller);
 	}
-
-	public Verifier newVerifier( InputSource source )
-		throws VerifierConfigurationException,
-			   SAXException
-	{
-		TREXGrammar g = TREXGrammarReader.parse(source,factory,new IgnoreController());
-		if(g==null)		return null;	// load failure
-		return getVerifier(g);
+	protected Grammar parse( String source, GrammarReaderController controller ) {
+		return TREXGrammarReader.parse(source,factory,controller);
 	}
 }

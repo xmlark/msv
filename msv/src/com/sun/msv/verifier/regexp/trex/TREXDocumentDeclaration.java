@@ -91,6 +91,6 @@ public final class TREXDocumentDeclaration extends REDocumentDeclaration
 	public Acceptor createAcceptor()
 	{
 		// top-level Acceptor cannot have continuation.
-		return new SimpleAcceptor(this, topLevel, Expression.epsilon);
+		return new SimpleAcceptor(this, topLevel, null, Expression.epsilon);
 	}
 }

@@ -51,7 +51,9 @@ class ContentModelAcceptor extends ExpressionAcceptor
 			// therefore we don't need to keep track of primitive patterns.
 			return new SimpleAcceptor(
 				(TREXDocumentDeclaration)docDecl,
-				combined, continuation );
+				combined,
+				(primitives==null)?null:primitives.owner,
+				continuation );
 		}
 
 		// TODO: implements MultipleAcceptor for cases that combined expression is unnecessary
@@ -63,4 +65,8 @@ class ContentModelAcceptor extends ExpressionAcceptor
 			(TREXDocumentDeclaration)docDecl,
 			combined, primitives );
 	}
+	
+	// ContentModelAcceptor does not support type-assignment.
+	// This will be supported by SimpleAcceptor only.
+	public Object getOwnerType() { return null; }
 }

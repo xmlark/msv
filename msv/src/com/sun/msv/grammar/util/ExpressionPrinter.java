@@ -25,19 +25,19 @@ public abstract class ExpressionPrinter implements ExpressionVisitor
 	 * 
 	 * Suitable to dump the entire grammar
 	 */
-	public final static boolean FRAGMENT = true;
+	public final static int FRAGMENT = 0x001;
 	
 	/** in this mode, element declaration is
 	 * one of the terminal symbol of stringnization.
 	 * 
 	 * Suitable to dump the content model of element declarations.
 	 */
-	public final static boolean CONTENTMODEL = false;
+	public final static int CONTENTMODEL = 0x002;
 	
 	/** this flag controls how expression will be stringnized */
-	protected final boolean mode;
+	protected final int mode;
 	
-	protected ExpressionPrinter( boolean mode ) { this.mode = mode; }
+	protected ExpressionPrinter( int mode ) { this.mode = mode; }
 	
 	/** dumps all the contents of ReferenceContainer.
 	 * 
@@ -106,10 +106,10 @@ public abstract class ExpressionPrinter implements ExpressionVisitor
 	}
 	public Object onElement( ElementExp exp )
 	{
-		if( mode==FRAGMENT )
-			return exp.getNameClass().toString()+"<"+exp.contentModel.visit(this)+">";
-		else
+		if( (mode&CONTENTMODEL)!=0 )
 			return exp.getNameClass().toString();
+		else
+			return exp.getNameClass().toString()+"<"+exp.contentModel.visit(this)+">";
 	}
 	public Object onOneOrMore( OneOrMoreExp exp )
 	{

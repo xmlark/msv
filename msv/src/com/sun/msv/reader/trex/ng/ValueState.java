@@ -33,7 +33,8 @@ public class ValueState extends ExpressionWithoutChildState {
 	
 	protected Expression makeExpression() {
 		final RELAXNGReader reader = (RELAXNGReader)this.reader;
-		final String typeName = startTag.getAttribute("type");
+		String typeName = startTag.getCollapsedAttribute("type");
+		
 		Datatype type;
 		
 		StringPair typeFullName;

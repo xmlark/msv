@@ -58,7 +58,7 @@ public class DataState extends ExpressionState implements ExpressionOwner {
 			reader.reportError( reader.ERR_DISALLOWED_ATTRIBUTE, startTag.qName, "keyref" );
 		}
 		
-		final String localName = startTag.getAttribute("type");
+		final String localName = startTag.getCollapsedAttribute("type");
 		if( localName==null ) {
 			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "data", "type" );
 		} else {

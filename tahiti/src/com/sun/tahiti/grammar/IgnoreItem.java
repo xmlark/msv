@@ -9,6 +9,8 @@
  */
 package com.sun.tahiti.grammar;
 
+import com.sun.msv.grammar.Expression;
+
 /**
  * used to denote the ignored part of the grammar.
  * 
@@ -18,6 +20,10 @@ package com.sun.tahiti.grammar;
 public class IgnoreItem extends JavaItem {
 	public IgnoreItem() { super("$ignore"); }
 
+	public IgnoreItem( Expression exp ) {
+		this();
+		this.exp=exp;
+	}
 	public Object visitJI( JavaItemVisitor visitor ) {
 		return visitor.onIgnore(this);
 	}

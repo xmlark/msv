@@ -9,6 +9,8 @@
  */
 package com.sun.tahiti.grammar;
 
+import com.sun.msv.grammar.Expression;
+
 /**
  * represents a derivation relationship between two classes.
  * 
@@ -18,6 +20,11 @@ package com.sun.tahiti.grammar;
 public class SuperClassItem extends JavaItem {
 	public SuperClassItem() {
 		super("superClass-marker");
+	}
+	
+	public SuperClassItem( Expression exp ) {
+		this();
+		this.exp=exp;
 	}
 	
 	/** actual super class definition. */

@@ -45,10 +45,9 @@ public class DateTimeBaseTypeTest extends TestCase
         // time zone less.
         o = (Calendar)DateTimeType.theInstance.createJavaObject(
             "2001-01-02T03:04:05", null );
-        // it should assume the local time zone.
-        assertEquals(
-            TimeZone.getDefault().getRawOffset(),
-            o.getTimeZone().getRawOffset() );
+        // 
+        assertSame( com.sun.msv.datatype.xsd.datetime.TimeZone.JAVA_TIME_ZONE_MISSING,
+            o.getTimeZone() );
         
         // non-GMT.
         // when California (-08:00) is 3 AM, it will be 11AM in Greenwich.

@@ -80,7 +80,7 @@ public class BigDateTimeValueTypeTest extends TestCase {
     {
         BigDateTimeValueType v;
         
-        v = (BigDateTimeValueType)getParser("2000-03-04T23:00:00-03").dateTimeTypeV().normalize();
+        v = (BigDateTimeValueType)getParser("2000-03-04T23:00:00-03:00").dateTimeTypeV().normalize();
         
         // equals method compares two by calling normalize,
         // so actually this cannot be said as a testing.
@@ -103,9 +103,9 @@ public class BigDateTimeValueTypeTest extends TestCase {
                 getParser("-P3M").durationTypeV() ).getBigValue();
         assertEquals( v, getParser("1999-10").yearMonthTypeV() );
         
-        v = getParser("2000-01-12-05").dateTypeV().add(
+        v = getParser("2000-01-12-05:00").dateTypeV().add(
                 getParser("PT33H").durationTypeV() ).getBigValue();
-        assertEquals( v, getParser("2000-01-13-05").dateTypeV() );
+        assertEquals( v, getParser("2000-01-13-05:00").dateTypeV() );
     }
     
 }

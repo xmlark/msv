@@ -63,12 +63,12 @@ public class ISO8601ParserTest extends TestCase {
             {
                 test.L(getParser(prohibited[i]));
                 fail();
-            } catch( Throwable e ) {;}
+            } catch( Exception e ) {;}
             try
             {
                 test.V(getParser(prohibited[i]));
                 fail();
-            } catch( Throwable e ) {;}
+            } catch( Exception e ) {;}
         }
     }
     

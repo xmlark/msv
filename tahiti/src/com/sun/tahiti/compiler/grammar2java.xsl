@@ -219,8 +219,21 @@ public class ]]></xsl:text>
 		<xsl:for-each select="dataSymbol">
 			<xsl:text>			</xsl:text>
 			<xsl:value-of select="@id"/>
-			<xsl:text> = com.sun.msv.datatype.xsd.DatatypeFactory.getTypeByName("</xsl:text>
-			<xsl:value-of select="@type"/>
+			<xsl:text> = </xsl:text>
+			<xsl:choose>
+				<xsl:when test="library='' or
+								library='http://www.w3.org/2001/XMLSchema' or
+								library='http://www.w3.org/2001/XMLSchema-datatypes'">
+					<xsl:text>com.sun.msv.datatype.xsd.DatatypeFactory</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:message terminate="yes">
+						Unsupported datatype library
+					</xsl:message>
+				</xsl:otherwise>
+			</xsl:choose>
+			<xsl:text>.getTypeByName("</xsl:text>
+			<xsl:value-of select="name"/>
 			<xsl:text>");</xsl:text>
 			<xsl:call-template name="CRLF"/>
 		</xsl:for-each>

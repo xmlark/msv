@@ -2,32 +2,25 @@
 
 <project name="tranquilo" basedir="." default="jars">
 	<property name="sourceDir" value="./src"/>
+	<property name="testDir" value="./test"/>
 	<property name="buildDir" value="./build"/>
 	<property name="documentDir" value="./doc/javadoc"/>
 	<property name="packageDir" value="./package"/>
 	<property name="libDir" value="./lib"/>
-	<property name="javaCCbin" value="C:\Progra~1\Development\JavaCC\bin\lib\JavaCC.zip" />
+	<property name="javaCClib" value="C:\Progra~1\Development\JavaCC\bin\lib" />
 
 	<target name="javacc">
 		<!-- run javacc for ISO8601Parser -->
-		<java classname="COM.sun.labs.javacc.Main" fork="true">
-			<arg value="-OUTPUT_DIRECTORY=${sourceDir}/com/sun/tranquilo/datatype/datetime" />
-			<arg value="${sourceDir}/com/sun/tranquilo/datatype/datetime/ISO8601.jj" />
-			<classpath>
-				<pathelement location="${javaCCbin}" />
-				<pathelement path="${java.class.path}" />
-            </classpath>
-       	</java>
+		<javacc	target="${sourceDir}/com/sun/tranquilo/datatype/datetime/ISO8601.jj"
+				outputdirectory="${sourceDir}/com/sun/tranquilo/datatype/datetime"
+				javacchome="${javaCClib}"
+		/>
 
 		<!-- run javacc for UriReference -->
-		<java classname="COM.sun.labs.javacc.Main" fork="true">
-			<arg value="-OUTPUT_DIRECTORY=${sourceDir}/com/sun/tranquilo/datatype" />
-			<arg value="${sourceDir}/com/sun/tranquilo/datatype/uriReference.jj" />
-			<classpath>
-				<pathelement location="${javaCCbin}" />
-				<pathelement path="${java.class.path}" />
-            </classpath>
-       	</java>
+		<javacc	target="${sourceDir}/com/sun/tranquilo/datatype/uriReference.jj"
+				outputdirectory="${sourceDir}/com/sun/tranquilo/datatype"
+				javacchome="${javaCClib}"
+		/>
 	</target>
 	
 	<target name="binary" depends="javacc">
@@ -35,7 +28,66 @@
 		<!-- compile Java source files -->
 		<javac srcdir="${sourceDir}" destdir="${buildDir}" />
 	</target>
+	
+	<!-- generate XSDLib release -->
+	<target name="xsd">
+		<tstamp />
+		
+		<mkdir	dir="xsdrelease" />
 
+		<!-- copy document files -->
+		<copy	todir="xsdrelease">
+			<fileset dir="doc/datatype" includes="**/*.*" />
+		</copy>
+				
+		<!-- compile files again -->
+		<mkdir	dir="temp" />
+		<javac	srcdir="${sourceDir}"
+				destdir="temp">
+			<include name="**/tranquilo/datatype/**/*.java" />
+			<include name="**/sun/xml/*.java" />
+		</javac>
+		<javac	srcdir="${testDir}"
+				destdir="temp">
+			<include name="com/sun/tranquilo/datatype/CommandLineTester.java" />
+		</javac>
+		
+		<!-- creates binary jar -->
+		<jar	jarfile="xsdrelease/xsdlib.jar"
+				manifest="./META-INF/XSD.MANIFEST.MF"
+				compress="false">
+			<fileset dir="${sourceDir}" includes="**/tranquilo/datatype/**/*.properties" />
+			<fileset dir="temp" />
+			<fileset dir="c:\winnt\java\classes" includes="org/apache/xerces/utils/regex/*.*" />
+		</jar>
+		
+		<delete dir="temp" />
+		
+		
+		<!-- creates javadoc -->
+		<mkdir		dir="xsdrelease/javadoc" />
+		<javadoc	packagenames="com.sun.tranquilo.datatype.*"
+					sourcepath="${sourceDir}"
+					destdir="xsdrelease/javadoc"
+					locale="en_US"
+					windowtitle="XML Schema Part 2 Implementation"
+					public="yes"
+					>
+			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
+			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
+		</javadoc>
+		
+		<!-- creates distribution package -->
+		<zip	zipfile="${packageDir}/xsdlib.${DSTAMP}.zip">
+			<fileset dir="." includes="src/**/tranquilo/datatype/**/*.*" />
+			<fileset dir="." includes="src/**/sun/xml/**/*.*" />
+			<fileset dir="C:\Program Files\Development\Xerces" includes="src/org/apache/xerces/utils/regex/*.*" />
+			<fileset dir="xsdrelease" />
+		</zip>
+		
+		<delete dir="xsdrelease" />
+	</target>
+	
 	<!-- generate jar files -->
 	<target name="jars" depends="binary">
 		<tstamp />

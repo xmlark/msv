@@ -49,5 +49,5 @@ public class ExternalAttributeExp extends ReferenceExp {
 	 * where did this reference is written in the source file.
 	 * can be set to null (to reduce memory usage) at anytime.
 	 */
-	public Locator source;
+	public transient Locator source;
 }

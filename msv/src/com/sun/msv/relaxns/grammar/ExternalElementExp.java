@@ -44,7 +44,7 @@ public class ExternalElementExp extends ElementExp
 	 * 
 	 * can be set to null (to reduce memory usage) at anytime.
 	 */
-	public Locator source;
+	public transient Locator source;
 	
 	/**
 	 * imported ElementDecl object that actually validates this element.

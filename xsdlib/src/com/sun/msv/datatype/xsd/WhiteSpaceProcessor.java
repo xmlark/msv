@@ -57,6 +57,15 @@ public abstract class WhiteSpaceProcessor implements Serializable {
     protected Object readResolve() throws InvalidObjectException {
         // return the singleton instead of deserialized object.
         try {
+            // backward compatibility with JDK1.3. we can't rely on the
+            // order of inner classes
+            if( this.getClass()==backwardCompatibiliyHook1.getClass() )
+                return thePreserve;
+            if( this.getClass()==backwardCompatibiliyHook2.getClass() )
+                return theCollapse;
+            if( this.getClass()==backwardCompatibiliyHook3.getClass() )
+                return theReplace;
+            
             return get(getName());
         } catch (DatatypeException bte) {
             throw new InvalidObjectException("Unknown Processing Mode");

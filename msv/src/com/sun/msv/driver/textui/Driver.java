@@ -34,7 +34,8 @@ public class Driver
 		
 		String grammarName = null;
 		boolean dump=false;
-		boolean relax=true;
+		boolean relax=false;
+		boolean trex=false;
 		boolean verbose = false;
 		boolean dtdValidation=false;
 		
@@ -48,7 +49,7 @@ public class Driver
 		{
 			if( args[i].equalsIgnoreCase("-relax") )			relax = true;
 			else
-			if( args[i].equalsIgnoreCase("-trex") )				relax = false;
+			if( args[i].equalsIgnoreCase("-trex") )				trex = true;
 			else
 			if( args[i].equalsIgnoreCase("-dtd") )				dtdValidation = true;
 			else
@@ -104,8 +105,27 @@ public class Driver
 					System.out.println( localize( MSG_FAILED_TO_IGNORE_EXTERNAL_DTD ) );
 			}
 		
-		InputSource is = new InputSource(new java.io.FileInputStream(grammarName));
-		is.setSystemId(new File(grammarName).getAbsolutePath());
+		if( trex && relax )	trex=false;	// if both is specified, assume it RELAX.
+		if( !trex && !relax )
+		{// schema type is not specified. sniff it.
+			if( verbose )
+				System.out.println( localize( MSG_SNIFF_SCHEMA ) );
+			
+			SAXException e = SchemaDetector.detect(
+				factory.newSAXParser().getXMLReader(),
+				getInputSource(grammarName) );
+			
+			if( e==SchemaDetector.relax )	relax=true;
+			else
+			if( e==SchemaDetector.trex )	trex=true;
+			else
+			{
+				System.out.println( localize( MSG_UNKNOWN_SCHEMA, grammarName ) );
+				return;
+			}
+		}
+		
+		InputSource is = getInputSource(grammarName);
 
 		if(dump)
 		{
@@ -135,11 +155,9 @@ public class Driver
 			
 			for( int i=0; i<fileNames.size(); i++ )
 			{
-				final String fileName = (String)fileNames.elementAt(i);
-				System.out.println( localize( MSG_VALIDATING, fileName) );
-				InputSource xml = new InputSource(new java.io.FileInputStream(fileName));
-				xml.setSystemId(new File(fileName).getAbsolutePath());
-				verify( docDecl, xml );
+				final String instName = (String)fileNames.elementAt(i);
+				System.out.println( localize( MSG_VALIDATING, instName) );
+				verify( docDecl, getInputSource(instName) );
 			}
 			
 			if( verbose )
@@ -252,6 +270,20 @@ public class Driver
 		else				System.out.println(localize(MSG_INVALID));
 	}
 
+	private static InputSource getInputSource( String fileOrURL )
+	{
+		try
+		{// try it as a file
+			InputSource is = new InputSource(new java.io.FileInputStream(fileOrURL));
+			is.setSystemId(new File(fileOrURL).getAbsolutePath());
+			return is;
+		}
+		catch( Exception e )
+		{// try it as an URL
+			return new InputSource(fileOrURL);
+		}
+	}
+
 	public static String localize( String propertyName, Object[] args )
 	{
 		String format = java.util.ResourceBundle.getBundle(
@@ -278,4 +310,6 @@ public class Driver
 	public static final String ERR_LOAD_GRAMMAR =		"Driver.ErrLoadGrammar";
 	public static final String MSG_BAILOUT =			"Driver.BailOut";
 	public static final String MSG_FAILED_TO_IGNORE_EXTERNAL_DTD ="Driver.FailedToIgnoreExternalDTD";
+	public static final String MSG_SNIFF_SCHEMA =		"Driver.SniffSchema";
+	public static final String MSG_UNKNOWN_SCHEMA =		"Driver.UnknownSchema";
 }

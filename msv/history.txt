@@ -1,4 +1,7 @@
 
+(both)  command line Verifier now detects type ofschema automatically.
+(both)  switched default parser back to Xerces-J, due to the bug of Crimson
+        in SAXParserFactory.setFeature method.
 (TREX)  added proprietary type extension mechanism for TREX.
 (both)  SAX parser is configured not to read external DTD by default.
         Added error message handler for SAX parse exception.

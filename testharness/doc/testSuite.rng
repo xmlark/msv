@@ -7,10 +7,17 @@
 	-->
 	
 	<start>
+		<ref name="testSuite"/>
+	</start>
+	
+	<define name="testSuite">
 		<element name="testSuite">
 			<ref name="header"/>
 			<oneOrMore>
 				<choice>
+					<!-- testSuite can be nested -->
+					<ref name="testSuite"/>
+					<!-- a single test case -->
 					<ref name="testCase"/>
 					<!--
 						resources are by itself a RELAX NG pattern, and it can be 
@@ -26,7 +33,7 @@
 				</choice>
 			</oneOrMore>
 		</element>
-	</start>
+	</define>
 
 	<define name="testCase">
 		<element name="testCase">

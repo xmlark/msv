@@ -185,12 +185,19 @@ the document is NOT valid.
 <blockquote>
 <p>This implementation is intended to almost fully implement the spec (Aug,11,2001 version) except the followings:</p>
 <ul>
-	<li><p>fragment identifiers in the <code>href</code> attribute are not treated correctly (section 4.5 of the spec.)</p></li>
 	<li><p>recursive self reference check is performed after <code>notAllowed</code> is expanded. Therefore MSV fails to catch some of the error. (section 4.18 of the spec.)</p></li>
 </ul>
 
 <p>
-	This implementation supports <a href="http://www.oasis-open.org/committees/relax-ng/compatibility-20010907.html">RELAX NG DTD Compatibility Spec (2001/09/07)</a>. MSV implements all three features and all of them conform to level 1 (everything except infoset modification.)
+	MSV supports <a href="http://www.oasis-open.org/committees/relax-ng/compatibility-20010907.html">RELAX NG DTD Compatibility Spec (2001/09/07)</a>. MSV implements all three features and all of them conform to level 1 (everything except infoset modification.)
+</p>
+
+<p>
+	MSV supports
+	<a href="http://sourceforge.net/projects/relaxng">
+	a vendor-independent Java interface for RELAX NG datatype libraries</a>.
+	
+	MSV can work with any datatype library that implements this interface. For more information, see <a href="RNGDatatypeLibrary.html">RNGDatatypeLibrary.html</a>.
 </p>
 </blockquote>
 

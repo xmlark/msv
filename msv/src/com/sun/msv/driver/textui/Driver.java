@@ -45,7 +45,7 @@ public class Driver
 		boolean dump=false;
 		boolean verbose = false;
 		boolean warning = false;
-		boolean dtdValidation=false;
+		boolean loose=false;
 		
 		boolean dtdAsSchema = false;
 		
@@ -57,7 +57,7 @@ public class Driver
 		
 		for( int i=0; i<args.length; i++ )
 		{
-			if( args[i].equalsIgnoreCase("-strict") )			dtdValidation = true;
+			if( args[i].equalsIgnoreCase("-loose") )			loose = true;
 			else
 			if( args[i].equalsIgnoreCase("-dtd") )				dtdAsSchema = true;
 			else
@@ -108,7 +108,7 @@ public class Driver
 		if( dtdValidation && verbose )
 			System.out.println( localize( MSG_DTDVALIDATION ) );
 		
-		if( !dtdValidation )
+		if( loose )
 			try
 			{
 				factory.setFeature("http://xml.org/sax/features/validation",false);
@@ -132,18 +132,18 @@ public class Driver
 
 //			Grammar grammar = GrammarLoader.loadSchema(is,new DebugController(warning),factory);
 		Grammar grammar=null;
-		if(dtdAsSchema) {
-			grammar = DTDReader.parse(is,new DebugController(warning),"",new TREXPatternPool());
-		} else {
 			// other XML-based grammars: GrammarLoader will detect the language.
-			try {
+		try {
+			if(dtdAsSchema) {
+				grammar = DTDReader.parse(is,new DebugController(warning),"",new TREXPatternPool());
+			} else {
 				grammar = GrammarLoader.loadSchema(is,new DebugController(warning),factory);
-			} catch(SAXParseException spe) {
-				; // this error is already reported.
-			} catch(SAXException se ) {
-				if( se.getException()!=null ) throw se.getException();
-				throw se;
 			}
+		} catch(SAXParseException spe) {
+			; // this error is already reported.
+		} catch(SAXException se ) {
+			if( se.getException()!=null ) throw se.getException();
+			throw se;
 		}
 		if( grammar==null ) {
 			System.out.println( localize(ERR_LOAD_GRAMMAR) );

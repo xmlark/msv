@@ -154,16 +154,6 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		if( dt instanceof com.sun.msv.grammar.relax.EmptyStringType )
 			return "";
 		
-		if( dt instanceof com.sun.msv.grammar.trex.TypedString )
-			return ((com.sun.msv.grammar.trex.TypedString)dt).value;
-		
-		if( dt instanceof com.sun.msv.grammar.relaxng.ValueType ) {
-			com.sun.msv.grammar.relaxng.ValueType t =
-				(com.sun.msv.grammar.relaxng.ValueType)dt;
-			
-			if( t.baseType instanceof XSDatatypeImpl )
-				return ((XSDatatypeImpl)t.baseType).convertToLexicalValue(t.value,context);
-		}
 		
 		
 		// getting desparate...

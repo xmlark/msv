@@ -35,7 +35,7 @@ import org.apache.xml.serialize.*;
  */
 public class Driver {
 	
-	protected void usage() {
+	protected static void usage() {
 		System.err.println(
 			"Sun XMLGenerator\n"+
 			"----------------\n"+
@@ -67,7 +67,15 @@ public class Driver {
 
 	public static void main( String[] args ) throws Exception {
 		try {
-			System.exit( new Driver().run(args, System.err) );
+			Driver driver = new Driver();
+			try {
+				driver.parseArguments(args);
+			} catch( Exception e ) {
+				usage();
+				System.exit(-1);
+			}
+			
+			System.exit( driver.run(System.err) );
 		} catch( DataTypeGenerator.GenerationException e ) {
 			System.err.println(e.getMessage());
 		}
@@ -88,204 +96,204 @@ public class Driver {
 		return ratio;
 	}
 	
-	/**
-	 * runs command line tool.
-	 * 
-	 * @return 0 if it run successfully. Non-zero if any error is encountered.
-	 */
-	public int run( String[] args, PrintStream out ) throws Exception {
-		String grammarName=null;
-		String outputName=null;
-		String encoding="UTF-8";
-		boolean createError = false;
-		boolean validate = true;
-		boolean debug = false;
-		boolean quiet = false;
-		boolean warning = false;
-		boolean dtdAsSchema = false;
-		
-		int number = 1;
-
-		GeneratorOption opt = new GeneratorOption();
+	public Grammar grammar;
+	public String outputName=null;
+	private String encoding="UTF-8";
+	private boolean createError = false;
+	private boolean validate = true;
+	private boolean debug = false;
+	private boolean quiet = false;
+	private boolean warning = false;
+	private GeneratorOption opt = new GeneratorOption();
+	{
 		opt.random = new Random();
-		
-		SAXParserFactory factory = new org.apache.xerces.jaxp.SAXParserFactoryImpl();
+	}
+	private int number = 1;
+	
+	
+	private SAXParserFactory factory = SAXParserFactory.newInstance();
+	{
 		factory.setNamespaceAware(true);
 		factory.setValidating(false);
-		
-		// this set will receive tokens found in the given examples.
-		Set exampleTokens = new java.util.HashSet();
-		
-		DataTypeGeneratorImpl dtgi = new DataTypeGeneratorImpl();
-		opt.dtGenerator = dtgi;
-		dtgi.tokens = exampleTokens;
-		
-
-		// parse options
-		//===========================================
-		try {
-			for( int i=0; i<args.length; i++ ) {
-				if( args[i].equalsIgnoreCase("-debug") )	// secret option
-					debug = true;
-				else
-				if( args[i].equalsIgnoreCase("-dtd") )
-					dtdAsSchema = true;
-				else
-				if( args[i].equalsIgnoreCase("-quiet") )
-					quiet = true;
-				else
-				if( args[i].equalsIgnoreCase("-warning") )
-					warning = true;
-				else
-				if( args[i].equalsIgnoreCase("-ascii") )
-					((DataTypeGeneratorImpl)opt.dtGenerator).asciiOnly = true;
-				else
-				if( args[i].equalsIgnoreCase("-nocomment") )
-					opt.insertComment = false;
-				else
-				if( args[i].equalsIgnoreCase("-depth") )
-					opt.cutBackDepth = new Integer(args[++i]).intValue();
-				else
-				if( args[i].equalsIgnoreCase("-example") ) {
-					XMLReader p = factory.newSAXParser().getXMLReader();
-					p.setContentHandler( new ExampleReader(exampleTokens) );
-					p.parse( getInputSource(args[++i]) );
-				} else
-				if( args[i].equalsIgnoreCase("-width") )
-					opt.width = new Rand.UniformRand( opt.random, new Integer(args[++i]).intValue() );
-				else
-				if( args[i].equalsIgnoreCase("-n") ) {
-					number = new Integer(args[++i]).intValue();
-					if( number<1 )	number=1;
-				}
-				else
-				if( args[i].equalsIgnoreCase("-encoding") )
-					encoding = args[++i];
-				else
-				if( args[i].equalsIgnoreCase("-seed") )
-					opt.random.setSeed( new Long(args[++i]).longValue() );
-				else
-				if( args[i].equalsIgnoreCase("-nonvalidate") )	// secret option
-					validate = false;
-				else
-				if( args[i].startsWith("-error") ) {
-					createError = true;
-					if( args[i].equalsIgnoreCase("-error") ) {
-						opt.probGreedyChoiceError=
-						opt.probMissingAttrError=
-						opt.probMissingElemError=
-						opt.probMutatedAttrError=
-						opt.probMutatedElemError=
-						opt.probSeqError=
-						opt.probSlipInAttrError=
-						opt.probSlipInElemError=
-						opt.probMissingPlus=
-						opt.probAttrNameTypo=
-						opt.probElemNameTypo=
-							getRatio(args[++i]);
-					}
-					else
-					if( args[i].equalsIgnoreCase("-error-greedyChoice") )
-						opt.probGreedyChoiceError	= getRatio(args[++i]);
-					else
-					if( args[i].equalsIgnoreCase("-error-missingAttribute") )
-						opt.probMissingAttrError	= getRatio(args[++i]);
-					else
-					if( args[i].equalsIgnoreCase("-error-missingElement") )
-						opt.probMissingElemError	= getRatio(args[++i]);
-					else
-					if( args[i].equalsIgnoreCase("-error-mutatedAttribute") )
-						opt.probMutatedAttrError	= getRatio(args[++i]);
-					else
-					if( args[i].equalsIgnoreCase("-error-mutatedElement") )
-						opt.probMutatedElemError	= getRatio(args[++i]);
-					else
-					if( args[i].equalsIgnoreCase("-error-sequenceError") )
-						opt.probSeqError			= getRatio(args[++i]);
-					else
-					if( args[i].equalsIgnoreCase("-error-slipInAttribute") )
-						opt.probSlipInAttrError		= getRatio(args[++i]);
-					else
-					if( args[i].equalsIgnoreCase("-error-slipInElement") )
-						opt.probSlipInElemError		= getRatio(args[++i]);
-					else
-					if( args[i].equalsIgnoreCase("-error-missingPlus") )
-						opt.probMissingPlus			= getRatio(args[++i]);
-					else
-					if( args[i].equalsIgnoreCase("-error-attributeNameTypo") )
-						opt.probAttrNameTypo		= getRatio(args[++i]);
-					else
-					if( args[i].equalsIgnoreCase("-error-attributeNameTypo") )
-							opt.probElemNameTypo	= getRatio(args[++i]);
-					else {
-						System.err.println("unrecognized option :" + args[i]);
-						usage();
-						return -1;
-					}
-				}
-				else {
-					if( args[i].charAt(0)=='-' ) {
-						System.err.println("unrecognized option :" + args[i]);
-						usage();
-						return -1;
-					}
-					
-					if( grammarName==null )	grammarName = args[i];
-					else
-					if( outputName==null ) outputName = args[i];
-					else {
-						System.err.println("too many parameters");
-						usage();
-						return -1;
-					}
-				}
-			}
-		} catch(Exception e) {
-			usage();
-			return -1;
-		}
-		
-		if( grammarName==null ) {
-			usage();
-			return -1;
-		}
-		
-		
-			
-		
-		DocumentBuilderFactory domFactory = new org.apache.xerces.jaxp.DocumentBuilderFactoryImpl();
-	
-		
 		try {
 			factory.setFeature("http://xml.org/sax/features/validation",false);
 			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
-		} catch(Exception e) { ;	}
-		
-		Expression topLevel;
-		
-		if(!quiet)
-			out.println("parsing a grammar: "+grammarName);
-		
-		
-		// load a schema
-		//===========================================
-		Grammar grammar;
-		InputSource is = getInputSource(grammarName);
-		
-		if(dtdAsSchema) {
-			grammar = DTDReader.parse(
-				is,
-				new DebugController(warning,quiet),
-				"",
-				new ExpressionPool());
-		} else {
-			grammar = GrammarLoader.loadSchema(
-				is,
-				new DebugController(warning,quiet),
-				factory);
+		} catch(Exception e) { ; }
+	}
+
+	private DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+	{
+		domFactory.setNamespaceAware(true);
+		domFactory.setValidating(false);
+	}
+	
+	// this set will receive tokens found in the given examples.
+	public final Set exampleTokens = new java.util.HashSet();
+	private DataTypeGeneratorImpl dtgi = new DataTypeGeneratorImpl();
+	{
+		opt.dtGenerator = dtgi;
+		dtgi.tokens = exampleTokens;
+	}
+	
+	
+	/**
+	 * Parses the arguments and fill the fields accordingly.
+	 */
+	public void parseArguments( String[] args ) throws Exception {
+		String grammarName=null;
+		boolean dtdAsSchema = false;
+
+		for( int i=0; i<args.length; i++ ) {
+			if( args[i].equalsIgnoreCase("-debug") )	// secret option
+				debug = true;
+			else
+			if( args[i].equalsIgnoreCase("-dtd") )
+				dtdAsSchema = true;
+			else
+			if( args[i].equalsIgnoreCase("-quiet") )
+				quiet = true;
+			else
+			if( args[i].equalsIgnoreCase("-warning") )
+				warning = true;
+			else
+			if( args[i].equalsIgnoreCase("-ascii") )
+				((DataTypeGeneratorImpl)opt.dtGenerator).asciiOnly = true;
+			else
+			if( args[i].equalsIgnoreCase("-nocomment") )
+				opt.insertComment = false;
+			else
+			if( args[i].equalsIgnoreCase("-depth") )
+				opt.cutBackDepth = new Integer(args[++i]).intValue();
+			else
+			if( args[i].equalsIgnoreCase("-example") ) {
+				XMLReader p = factory.newSAXParser().getXMLReader();
+				p.setContentHandler( new ExampleReader(exampleTokens) );
+				p.parse( getInputSource(args[++i]) );
+			} else
+			if( args[i].equalsIgnoreCase("-width") )
+				opt.width = new Rand.UniformRand( opt.random, new Integer(args[++i]).intValue() );
+			else
+			if( args[i].equalsIgnoreCase("-n") ) {
+				number = new Integer(args[++i]).intValue();
+				if( number<1 )	number=1;
+			}
+			else
+			if( args[i].equalsIgnoreCase("-encoding") )
+				encoding = args[++i];
+			else
+			if( args[i].equalsIgnoreCase("-seed") )
+				opt.random.setSeed( new Long(args[++i]).longValue() );
+			else
+			if( args[i].equalsIgnoreCase("-nonvalidate") )	// secret option
+				validate = false;
+			else
+			if( args[i].startsWith("-error") ) {
+				createError = true;
+				if( args[i].equalsIgnoreCase("-error") ) {
+					opt.probGreedyChoiceError=
+					opt.probMissingAttrError=
+					opt.probMissingElemError=
+					opt.probMutatedAttrError=
+					opt.probMutatedElemError=
+					opt.probSeqError=
+					opt.probSlipInAttrError=
+					opt.probSlipInElemError=
+					opt.probMissingPlus=
+					opt.probAttrNameTypo=
+					opt.probElemNameTypo=
+						getRatio(args[++i]);
+				}
+				else
+				if( args[i].equalsIgnoreCase("-error-greedyChoice") )
+					opt.probGreedyChoiceError	= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-missingAttribute") )
+					opt.probMissingAttrError	= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-missingElement") )
+					opt.probMissingElemError	= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-mutatedAttribute") )
+					opt.probMutatedAttrError	= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-mutatedElement") )
+					opt.probMutatedElemError	= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-sequenceError") )
+					opt.probSeqError			= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-slipInAttribute") )
+					opt.probSlipInAttrError		= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-slipInElement") )
+					opt.probSlipInElemError		= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-missingPlus") )
+					opt.probMissingPlus			= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-attributeNameTypo") )
+					opt.probAttrNameTypo		= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-attributeNameTypo") )
+						opt.probElemNameTypo	= getRatio(args[++i]);
+				else {
+					System.err.println("unrecognized option :" + args[i]);
+					throw new Error();
+				}
+			}
+			else {
+				if( args[i].charAt(0)=='-' ) {
+					System.err.println("unrecognized option :" + args[i]);
+					throw new Error();
+				}
+					
+				if( grammarName==null )	grammarName = args[i];
+				else
+				if( outputName==null ) outputName = args[i];
+				else {
+					System.err.println("too many parameters");
+					throw new Error();
+				}
+			}
 		}
 		
-		topLevel = grammar.getTopLevel();
+		
+		if(grammar!=null) {
+			// load a schema
+			if(!quiet)
+				System.err.println("parsing a grammar: "+grammarName);
+		
+			InputSource is = getInputSource(grammarName);
+		
+			if(dtdAsSchema) {
+				grammar = DTDReader.parse(
+					is,
+					new DebugController(warning,quiet),
+					"",
+					new ExpressionPool());
+			} else {
+				grammar = GrammarLoader.loadSchema(
+					is,
+					new DebugController(warning,quiet),
+					factory);
+			}
+		}
+	}
+	
+	/**
+	 * Generate XML instances.
+	 * 
+	 * @return 0 if it run successfully. Non-zero if any error is encountered.
+	 */
+	public int run( PrintStream out ) throws Exception {
+		
+		if( grammar==null ) {
+			usage();
+			return -1;
+		}
+		
+		
+		Expression topLevel  = grammar.getTopLevel();
 		
 		// polish up this AGM for instance generation.
 		if( grammar instanceof RELAXGrammar
@@ -296,7 +304,7 @@ public class Driver {
 			topLevel = topLevel.visit( new SchemaLocationRemover(grammar.getPool()) );
 		
 	
-		topLevel = topLevel.visit( new RefExpRemover(grammar.getPool()) );
+		topLevel = topLevel.visit( new RefExpRemover(grammar.getPool(),true) );
 		opt.pool = grammar.getPool();
 		
 		// generate instances

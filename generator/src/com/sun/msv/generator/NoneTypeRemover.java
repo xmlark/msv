@@ -45,7 +45,7 @@ public class NoneTypeRemover extends ExpressionCloner {
 			return pool.createAttribute( exp.nameClass, content );
 	}
 	
-	public Expression onTypedString( TypedStringExp exp ) {
+	public Expression onData( DataExp exp ) {
 		if( exp.dt == NoneType.theInstance )	return Expression.nullSet;
 		else									return exp;
 	}

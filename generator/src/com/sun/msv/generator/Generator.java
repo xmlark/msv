@@ -12,6 +12,7 @@ package com.sun.msv.generator;
 import org.w3c.dom.*;
 import org.xml.sax.ContentHandler;
 import org.relaxng.datatype.ValidationContext;
+import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.datatype.xsd.NmtokenType;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.*;
@@ -385,7 +386,21 @@ public class Generator implements ExpressionVisitorVoid {
 			exp.exp.visit(this);
 	}
 	
-	public void onTypedString( TypedStringExp exp ) {
+	public void onValue( ValueExp exp ) {
+		String text;
+		if( exp.dt instanceof XSDatatype ) {
+			XSDatatype xsd = (XSDatatype)exp.dt;
+			text = xsd.convertToLexicalValue(exp.value,getContext());
+		} else {
+			text = exp.value.toString();
+			if(!exp.dt.sameValue( exp.value, exp.dt.createValue(text,getContext()) ) )
+				throw new Error("unable to produce a value for the datatype:"+exp.name);
+		}
+		
+		node.appendChild( domDoc.createTextNode(text) );
+		return;
+	}
+	public void onData( DataExp exp ) {
 		String value;
 		if( exp.dt==com.sun.msv.datatype.xsd.IDType.theInstance ) {
 			do {

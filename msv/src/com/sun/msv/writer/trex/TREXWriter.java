@@ -11,22 +11,23 @@ package com.sun.msv.writer.trex;
 
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
-import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.*;
 import com.sun.msv.reader.trex.TREXGrammarReader;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.datatype.DataTypeImpl;
-import org.xml.sax.ContentHandler;
+import org.xml.sax.DocumentHandler;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
+import org.xml.sax.helpers.AttributeListImpl;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Vector;
 
 /**
- * converts any Grammar into TREX XML representation through SAX2 events.
+ * converts any Grammar into TREX XML representation through SAX1 events.
  * 
  * <h2>How it works</h2>
  * 
@@ -112,6 +113,13 @@ import java.util.HashSet;
  * </p><p>
  *   Finally, each island is written as one named pattern under &lt;define&gt;
  *   element. All inter-island references are replaced by &lt;ref&gt; element.
+ * </p>
+ * 
+ * <h2>Why SAX1?</h2>
+ * <p>
+ *   Due to the bug and insufficient supports for the serialization through SAX2,
+ *   The decision is made to use SAX1. SAX1 allows us to control namespace prefix
+ *   mappings better than SAX2.
  * </p>
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
@@ -242,10 +250,19 @@ public class TREXWriter {
 		// generates SAX events
 		try {
 			handler.startDocument();
-			handler.startPrefixMapping("",TREXGrammarReader.TREXNamespace);
+//			handler.startPrefixMapping("",TREXGrammarReader.TREXNamespace);
+//			handler.startPrefixMapping("trex",TREXGrammarReader.TREXNamespace);
+//			handler.startPrefixMapping("xsd",XSDVocabulary.XMLSchemaNamespace);
+
+			// to work around the bug of current serializer,
+			// report xmlns declarations as attributes.
 			
 			if( defaultNs!=null )
-				start("grammar",new String[]{"ns",defaultNs});
+				start("grammar",new String[]{
+					"ns",defaultNs,
+					"xmlns",TREXGrammarReader.TREXNamespace,
+					"xmlns:trex", TREXGrammarReader.TREXNamespace,
+					"xmlns:xsd", XSDVocabulary.XMLSchemaNamespace });
 			else
 				start("grammar");
 			
@@ -367,9 +384,9 @@ public class TREXWriter {
 	protected String defaultNs;
 	
 	
-	protected ContentHandler handler;
-	/** this contentHandler will receive XML representation of TREX pattern. */
-	public void setContentHandler( ContentHandler handler ) {
+	protected DocumentHandler handler;
+	/** this DocumentHandler will receive XML representation of TREX pattern. */
+	public void setDocumentHandler( DocumentHandler handler ) {
 		this.handler = handler;
 	}
 	
@@ -388,22 +405,49 @@ public class TREXWriter {
 		start(name, new String[0] );
 	}
 	protected void start( String name, String[] attributes ) {
-		AttributesImpl as = new AttributesImpl();
-		for( int i=0; i<attributes.length/2; i+=2 )
-			as.addAttribute( "", attributes[i], attributes[i], "", attributes[i+1] );
+		
+		// create attributes.
+		AttributeListImpl as = new AttributeListImpl();
+		for( int i=0; i<attributes.length; i+=2 )
+			as.addAttribute( attributes[i], "", attributes[i+1] );
+		
 		try {
-			handler.startElement( TREXGrammarReader.TREXNamespace, name, name, as );
+			handler.startElement( name, as );
 		} catch( SAXException e ) {
 			throw new SAXWrapper(e);
 		}
 	}
 	protected void end( String name ) {
 		try {
-			handler.endElement( TREXGrammarReader.TREXNamespace, name, name );
+			handler.endElement( name );
 		} catch( SAXException e ) {
 			throw new SAXWrapper(e);
 		}
 	}
+/*
+	protected String[] resolveAttrQName( String name ) {
+		return resolveQName( name, "" );
+	}
+	protected String[] resolveElementQName( String name ) {
+		return resolveQName( name, TREXGrammarReader.TREXNamespace );
+	}
+	protected String[] resolveQName( String qname, String defaultNs ) {
+		int idx = qname.indexOf(':');
+		if(idx<0)
+			return new String[]{defaultNs,qname,qname};
+		
+		String prefix = qname.substring(0,idx);
+		String local = qname.substring(idx+1);
+		
+		if( prefix.equals("xsd") )
+			return new String[]{"http://www.w3.org/2001/XMLSchema",local,qname};
+		if( prefix.equals("trex") )
+			return new String[]{TREXGrammarReader.TREXNamespace,local,qname};
+		
+		throw new Error();	// unsupported prefix name.
+	}
+*/	
+	
 	protected void characters( String str ) {
 		try {
 			handler.characters( str.toCharArray(), 0, str.length() );
@@ -501,7 +545,8 @@ public class TREXWriter {
 	
 	
 	/** visits Expression and writes its XML representation. */
-	protected class PatternWriter implements TREXPatternVisitorVoid {
+	protected class PatternWriter
+		implements TREXPatternVisitorVoid {
 		
 		public void onRef( ReferenceExp exp ) {
 			String uniqueName = (String)exp2name.get(exp);
@@ -681,7 +726,7 @@ public class TREXWriter {
 		}
 		
 		public void onTypedString( TypedStringExp exp ) {
-			try {
+//			try {
 				DataType dt = exp.dt;
 				if( dt instanceof TypedString ) {
 					TypedString ts = (TypedString)dt;
@@ -697,16 +742,212 @@ public class TREXWriter {
 				}
 			
 				if( dt instanceof DataTypeImpl ) {
-					handler.startPrefixMapping("xsd",XSDVocabulary.XMLSchemaNamespace);
-					// TODO: support serialization of derived types.
-					element("data",new String[]{"type","xsd:"+dt.getName()});
-					handler.endPrefixMapping("xsd");
+					
+					if( dt instanceof ConcreteType
+					 && !(dt instanceof ListType)
+					 && !(dt instanceof UnionType) ) {
+						// it's a pre-defined types.
+						element( "data", new String[]{"type","xsd:"+dt.getName()} );
+					} else {
+						start("xsd:simpleType", new String[]{"trex:role","datatype"});
+						serializeDataType(dt);
+						end("xsd:simpleType");
+					}
 					return;
 				}
 			
 				throw new UnsupportedOperationException( dt.getClass().getName() );
-			} catch( SAXException e ) {
-				throw new SAXWrapper(e);
+//			} catch( SAXException e ) {
+//				throw new SAXWrapper(e);
+//			}
+		}
+		
+		
+		/**
+		 * serializes the given datatype.
+		 * 
+		 * The caller should generate events for &lt;simpleType&gt; element
+		 * if necessary.
+		 */
+		protected void serializeDataType( DataType dt ) {
+			
+			if( dt instanceof UnionType ) {
+				serializeUnionType((UnionType)dt);
+				return;
+			}
+			if( dt instanceof ListType ) {
+				serializeListType((ListType)dt);
+				return;
+			}
+			
+			// store applied facets into this set
+			Set appliedFacets = new HashSet();
+			
+			DataType x = dt;
+			while( x instanceof DataTypeWithFacet ) {
+				String facetName = ((DataTypeWithFacet)x).facetName;
+				if( appliedFacets.contains(facetName) )
+					// find the same facet twice.
+					break;
+				
+				x = ((DataTypeWithFacet)x).baseType;
+			}
+			
+			if( !isBuiltinType(x) ) {
+				// this type has to be serialized to multiple derivation.
+				// so serialize the base type first.
+				start("xsd:restriction");
+				start("xsd:simpleType");
+				serializeDataType(x);
+				end("xsd:simpleType");
+			} else {
+				// now we have reached the built-in concrete type.
+				start("xsd:restriction", new String[]{"base","xsd:"+x.getName()});
+			}
+			
+			// serialize facets
+			while( dt!=x ) {
+				DataTypeWithFacet dtf = (DataTypeWithFacet)dt;
+				if( dtf instanceof LengthFacet ) {
+					element("xsd:length",new String[]{"value",
+						Long.toString(((LengthFacet)dtf).length) });
+				} else
+				if( dtf instanceof MinLengthFacet ) {
+					element("xsd:minLength",new String[]{"value",
+						Long.toString(((MinLengthFacet)dtf).minLength) });
+				} else
+				if( dtf instanceof MaxLengthFacet ) {
+					element("xsd:maxLength",new String[]{"value",
+						Long.toString(((MaxLengthFacet)dtf).maxLength) });
+				} else
+				if( dtf instanceof PatternFacet ) {
+					PatternFacet pf = (PatternFacet)dtf;
+					for( int i=0; i<pf.exps.length; i++ )
+						element("xsd:pattern", new String[]{"value",
+							pf.exps[i].toString()} );
+				} else
+				if( dtf instanceof EnumerationFacet ) {
+					Object[] values = ((EnumerationFacet)dtf).values.toArray();
+					for( int i=0; i<values.length; i++ ) {
+						final Vector ns = new Vector();
+						
+						String lex = dtf.convertToLexicalValue( values[i],
+							new SerializationContextProvider() {
+								public String getNamespacePrefix( String namespaceURI ) {
+									int cnt = ns.size()/2;
+//									try {
+//										handler.startPrefixMapping( "ns"+cnt, namespaceURI );
+										ns.add( "xmlns:ns"+cnt );
+										ns.add( namespaceURI );
+//									} catch( SAXException e ) {
+//										throw new SAXWrapper(e);
+//									}
+									return "ns"+cnt;
+								}
+							} );
+						
+						ns.add("value");
+						ns.add(lex);
+						
+						element("xsd:enumeration", (String[])ns.toArray(new String[0]) );
+					}
+				} else
+				if( dtf instanceof TotalDigitsFacet ) {
+					element("xsd:totalDigits", new String[]{"value",
+						Long.toString(((TotalDigitsFacet)dtf).precision)} );
+				} else
+				if( dtf instanceof FractionDigitsFacet ) {
+					element("xsd:fractionDigits", new String[]{"value",
+						Long.toString(((FractionDigitsFacet)dtf).scale)} );
+				} else
+				if( dtf instanceof RangeFacet ) {
+					element("xsd:"+dtf.facetName, new String[]{"value",
+						dtf.convertToLexicalValue(
+							((RangeFacet)dtf).limitValue, null ) } );
+					// we don't need to pass SerializationContext because it is only
+					// for QName.
+				} else
+				if( dtf instanceof WhiteSpaceFacet ) {
+					String value;
+					if( dtf.whiteSpace==WhiteSpaceProcessor.theCollapse )
+						value = "collapse";
+					else
+					if( dtf.whiteSpace==WhiteSpaceProcessor.theReplace )
+						value = "replace";
+					else
+					if( dtf.whiteSpace==WhiteSpaceProcessor.thePreserve )
+						value = "preserve";
+					else
+						throw new Error();	// undefined white space type.
+					
+					element("xsd:whiteSpace", new String[]{"value",value});
+				} else
+					// undefined facet type
+					throw new Error();
+				
+				dt = ((DataTypeWithFacet)dt).baseType;
+			}
+
+			end("xsd:restriction");
+		}
+
+		/**
+		 * returns true if the specified type is a built-in type
+		 * without any facet.
+		 */
+		protected boolean isBuiltinType( DataType x ) {
+			return !(x instanceof DataTypeWithFacet
+				|| x instanceof UnionType
+				|| x instanceof ListType);
+		}
+		
+		/**
+		 * serializes a union type.
+		 * this method is called by serializeDataType method.
+		 */
+		protected void serializeUnionType( UnionType dt ) {
+			// find which member can be serialized without 
+			String memberTypes=" ";
+			for( int i=0; i<dt.memberTypes.length; i++ ) {
+				if( isBuiltinType(dt.memberTypes[i]) )
+					memberTypes += "xsd:"+dt.memberTypes[i].getName()+" ";
+			}
+			
+			if(memberTypes.equals(" "))
+				start("xsd:union");
+			else
+				start("xsd:union", new String[]{"memberTypes",memberTypes});
+			
+			// serialize complex member types.
+			for( int i=0; i<dt.memberTypes.length; i++ ) {
+				if( !isBuiltinType(dt.memberTypes[i]) ) {
+					if( dt.getName()==null )
+						start("xsd:simpleType");
+					else
+						start("xsd:simpleType", new String[]{"name",dt.getName()});
+					
+					serializeDataType(dt.memberTypes[i]);
+					end("xsd:simpleType");
+				}
+			}
+			
+			end("xsd:union");
+		}
+		
+		/**
+		 * serializes a list type.
+		 * this method is called by serializeDataType method.
+		 */
+		protected void serializeListType( ListType dt ) {
+			if( isBuiltinType(dt.itemType) )
+				element("xsd:list", new String[]{"itemType","xsd:"+dt.itemType.getName()});
+			else {
+				// complex item type
+				start("xsd:list");
+				start("xsd:simpleType");
+				serializeDataType(dt.itemType);
+				end("xsd:simpleType");
+				end("xsd:list");
 			}
 		}
 	}

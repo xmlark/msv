@@ -7,6 +7,7 @@
  * Use is subject to license terms.
  * 
  */
+package com.sun.msv.writer.trex;
 
 import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.grammar.Grammar;
@@ -36,17 +37,17 @@ public class Driver {
 		
 		// load a grammar.
 		Grammar g = GrammarLoader.loadSchema( args[0],
-			new com.sun.msv.driver.textui.DebugController(false,false),
+			new com.sun.msv.driver.textui.DebugController( false,false, System.err ),
 			pf );
 		if( g==null ) {
-			System.out.println("failed to load the grammar");
+			System.err.println("failed to load the grammar");
 			return;
 		}
 		
 		TREXWriter writer = new TREXWriter();
 		// use XMLSerializer of Apache to serialize SAX event into plain text.
 		// OutputFormat specifies "pretty printing".
-		writer.setContentHandler(
+		writer.setDocumentHandler(
 			new XMLSerializer( new PrintWriter(System.out),
 			new OutputFormat("xml",null,true) ) );
 		// visit TREXGrammar and generate its XML representation.

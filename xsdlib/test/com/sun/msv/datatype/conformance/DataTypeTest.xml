@@ -7,6 +7,125 @@
 		
 -->
 
+<case name="test for anyURI">
+	<value>http://www.swiftinc.co.jp/	</value>
+	<value>http://www.swiftinc.co.jp/mypage.html#fragment	</value>
+	<value>ftp://user:pwd@www.swiftinc.co.jp/?query=a+b-c	</value>
+	<value>telnet://192.168.0.1:1234/ip/v4#address </value>
+	
+	<!-- IPv6 addresses (taken from RFC2732) -->
+	<value>http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html</value>
+	<value>http://[1080:0:0:0:8:800:200C:417A]/index.html</value>
+	<value>http://[3ffe:2a00:100:7031::1]</value>
+	<value>http://[1080::8:800:200C:417A]/foo</value>
+	<value>http://[::192.9.5.5]/ipng</value>
+	<value>http://[::FFFF:129.144.52.38]:80/index.html</value>
+	<value>http://[2010:836B:4179::836B:4179]</value>
+	
+
+	<!-- examples from RFC2396 -->
+	<value>ftp://ftp.is.co.za/rfc/rfc1808.txt</value>
+	<value>gopher://spinaltap.micro.umn.edu/00/Weather/California/Los%20Angeles</value>
+	<value>http://www.math.uio.no/faq/compression-faq/part1.html</value>
+	<value>mailto:mduerst@ifi.unizh.ch</value>
+	<value>news:comp.infosystems.www.servers.unix</value>
+	<value>telnet://melvyl.ucop.edu/</value>
+	
+	<!-- relative URIs taken from http://www.ics.uci.edu/~fielding/url/test1.html 40 items. -->
+	<value>g:h</value>
+	<value>g</value>
+	<value>./g</value>
+	<value>g/</value>
+	<value>/g</value>
+	<value>//g</value>
+	<value>g?y</value>
+	<value>#s</value>
+	<value>g#s</value>
+	
+	<value>g?y#s</value>
+	<value>;x</value>
+	<value>g;x</value>
+	<value>g;x?y#s</value>
+	<value>.</value>
+	<value>./</value>
+	<value>..</value>
+	<value>../g</value>
+	<value>../../</value>
+	<value>../../g</value>
+	
+	<value>../../../g</value>
+	<value>../../../../g</value>
+	<value>/./g</value>
+	<value>/../g</value>
+	<value>g.</value>
+	<value>.g</value>
+	<value>g..</value>
+	<value>..g</value>
+	<value>./../g</value>
+	<value>./g/.</value>
+	
+	<value>g/./h</value>
+	<value>g/../h</value>
+	<value>g;x=1/./y</value>
+	<value>g;x=1/../y</value>
+	<value>g?y/./x</value>
+	<value>g?y/../x</value>
+	<value>g#s/./x</value>
+	<value>g#s/../x</value>
+	<value>http:g</value>
+	<value>http:</value>
+	
+	<!-- ad hoc test -->
+	<!-- <scheme>:<opaque_part> -->
+	<value>		x56:-_.!*'();/?:@&amp;=+$, </value>
+	
+	<answer for="anyURI"		>oooo ooooooo oooooo  ooooooooo oooooooooo oooooooooo ooooooooo.  o</answer>
+	
+	<facets><combination>
+		<choice>
+			<!-- length related facet -->
+			<facet answer=		".... ....... ......  o.o..oo.o ..o....... ......oo.. ..........  ."	name="length" value="3" />
+			<combination>
+				<facet answer=	"oooo ooooooo oooooo  ......... o..o....oo oo.o....oo oooooooooo  o"	name="minLength" value="5" />
+				<facet answer=	".... ....... ......  ooooooooo oooooooooo o.oooooooo oooooooooo  ."	name="maxLength" value="10" />
+			</combination>
+		</choice>
+		
+		<combination mode="or">
+			<facet answer=		"oo.. ooooooo ..o...  ......... .......... .......... ........oo  ."	name="pattern" value="h.*" />
+			<facet answer=		"oooo ooooooo ooo..o  ......... .......... .......... ..........  ."	name="pattern" value=".+//.+" />
+		</combination>
+	</combination></facets>
+	
+	<wrongs>
+		<!--	wrong scheme -->
+		<value>123://mydomain.com/</value>
+<!--		<value>http://no.space.com/allowed in/URI</value>	-->
+<!-- character escape makes the above case valid -->
+		
+		
+		<!-- surprisingly, the following URL is valid
+		
+		<value> http://12345.67/ </value>
+		
+		because it can be interpreted as 
+  
+	absoluteURI
+->	scheme ":" hier_part
+->	"http:" abs_path
+->	"http" ":" "/" path_segments
+->	"http" ":" "/" segment ("/" segment )*
+->	"http" ":" "/" segment "/" segment "/" segment
+->	"http" ":" "/"         "/" pchar*  "/"
+->	"http" ":" "/"         "/" "12345.678" "/"
+->	"http://12345.678/"
+
+	In fact, any net_path production but IPv6addresses
+	can be accepted by this production.
+-->
+	</wrongs>
+</case>
+
 <case name="test for day">
 	<value> ---01 </value>
 	<value> ---02 </value>
@@ -455,125 +574,6 @@
 	<wrongs />	<!-- nothing can be wrong as normalizedString -->
 </case>
 
-
-<case name="test for anyURI">
-	<value>http://www.swiftinc.co.jp/	</value>
-	<value>http://www.swiftinc.co.jp/mypage.html#fragment	</value>
-	<value>ftp://user:pwd@www.swiftinc.co.jp/?query=a+b-c	</value>
-	<value>telnet://192.168.0.1:1234/ip/v4#address </value>
-	
-	<!-- IPv6 addresses (taken from RFC2732) -->
-	<value>http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html</value>
-	<value>http://[1080:0:0:0:8:800:200C:417A]/index.html</value>
-	<value>http://[3ffe:2a00:100:7031::1]</value>
-	<value>http://[1080::8:800:200C:417A]/foo</value>
-	<value>http://[::192.9.5.5]/ipng</value>
-	<value>http://[::FFFF:129.144.52.38]:80/index.html</value>
-	<value>http://[2010:836B:4179::836B:4179]</value>
-	
-
-	<!-- examples from RFC2396 -->
-	<value>ftp://ftp.is.co.za/rfc/rfc1808.txt</value>
-	<value>gopher://spinaltap.micro.umn.edu/00/Weather/California/Los%20Angeles</value>
-	<value>http://www.math.uio.no/faq/compression-faq/part1.html</value>
-	<value>mailto:mduerst@ifi.unizh.ch</value>
-	<value>news:comp.infosystems.www.servers.unix</value>
-	<value>telnet://melvyl.ucop.edu/</value>
-	
-	<!-- relative URIs taken from http://www.ics.uci.edu/~fielding/url/test1.html 40 items. -->
-	<value>g:h</value>
-	<value>g</value>
-	<value>./g</value>
-	<value>g/</value>
-	<value>/g</value>
-	<value>//g</value>
-	<value>g?y</value>
-	<value>#s</value>
-	<value>g#s</value>
-	
-	<value>g?y#s</value>
-	<value>;x</value>
-	<value>g;x</value>
-	<value>g;x?y#s</value>
-	<value>.</value>
-	<value>./</value>
-	<value>..</value>
-	<value>../g</value>
-	<value>../../</value>
-	<value>../../g</value>
-	
-	<value>../../../g</value>
-	<value>../../../../g</value>
-	<value>/./g</value>
-	<value>/../g</value>
-	<value>g.</value>
-	<value>.g</value>
-	<value>g..</value>
-	<value>..g</value>
-	<value>./../g</value>
-	<value>./g/.</value>
-	
-	<value>g/./h</value>
-	<value>g/../h</value>
-	<value>g;x=1/./y</value>
-	<value>g;x=1/../y</value>
-	<value>g?y/./x</value>
-	<value>g?y/../x</value>
-	<value>g#s/./x</value>
-	<value>g#s/../x</value>
-	<value>http:g</value>
-	<value>http:</value>
-	
-	<!-- ad hoc test -->
-	<!-- <scheme>:<opaque_part> -->
-	<value>		x56://-_.!*'();/?:@&amp;=+$, </value>
-	
-	<answer for="anyURI"		>oooo ooooooo oooooo  ooooooooo oooooooooo oooooooooo ooooooooo.  o</answer>
-	
-	<facets><combination>
-		<choice>
-			<!-- length related facet -->
-			<facet answer=		".... ....... ......  o.o..oo.o ..o....... ......oo.. ..........  ."	name="length" value="3" />
-			<combination>
-				<facet answer=	"oooo ooooooo oooooo  ......... o..o....oo oo.o....oo oooooooooo  o"	name="minLength" value="5" />
-				<facet answer=	".... ....... ......  ooooooooo oooooooooo o.oooooooo oooooooooo  ."	name="maxLength" value="10" />
-			</combination>
-		</choice>
-		
-		<combination mode="or">
-			<facet answer=		"oo.. ooooooo ..o...  ......... .......... .......... ........oo  ."	name="pattern" value="h.*" />
-			<facet answer=		"oooo ooooooo ooo..o  ......... .......... .......... ..........  o"	name="pattern" value=".+//.+" />
-		</combination>
-	</combination></facets>
-	
-	<wrongs>
-		<!--	wrong scheme -->
-		<value>123://mydomain.com/</value>
-<!--		<value>http://no.space.com/allowed in/URI</value>	-->
-<!-- character escape makes the above case valid -->
-		
-		
-		<!-- surprisingly, the following URL is valid
-		
-		<value> http://12345.67/ </value>
-		
-		because it can be interpreted as 
-  
-	absoluteURI
-->	scheme ":" hier_part
-->	"http:" abs_path
-->	"http" ":" "/" path_segments
-->	"http" ":" "/" segment ("/" segment )*
-->	"http" ":" "/" segment "/" segment "/" segment
-->	"http" ":" "/"         "/" pchar*  "/"
-->	"http" ":" "/"         "/" "12345.678" "/"
-->	"http://12345.678/"
-
-	In fact, any net_path production but IPv6addresses
-	can be accepted by this production.
--->
-	</wrongs>
-</case>
 
 <case name="test for QName">
 	<!--

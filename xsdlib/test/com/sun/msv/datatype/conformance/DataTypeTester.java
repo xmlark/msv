@@ -129,6 +129,7 @@ public class DataTypeTester
 		boolean completenessOnly )
 		throws Exception
 	{
+		long startTime = System.currentTimeMillis();
 		out.println("  testing " + baseType.getName() +
 			" (total "+pattern.totalCases()+" patterns)" );
 		
@@ -186,7 +187,7 @@ public class DataTypeTester
 					try {
 						if(o!=null) {
 							// should be able to convert it back.
-							String s = typeObj.convertToLexicalValue(o);
+							String s = typeObj.convertToLexicalValue(o,null);
 							// try round trip conversion.
 							Object o2 = typeObj.convertToValueObject(s,DummyContextProvider.theInstance);
 							if( o2==null || !o.equals(o2) )
@@ -252,7 +253,7 @@ public class DataTypeTester
 		
 		out.println();
 		// test done
-		out.println("  " + cnt + " cases tested");
+		out.println("  " + cnt + " cases tested ("+(System.currentTimeMillis()-startTime)+"ms)");
 	}
 	
 	public static final String[] builtinTypesList =

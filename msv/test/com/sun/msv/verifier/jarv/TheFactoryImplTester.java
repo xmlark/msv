@@ -20,11 +20,11 @@ import org.iso_relax.verifier.VerifierFactory;
  */
 public class TheFactoryImplTester extends JARVTester
 {
-	public static void main(java.lang.String[] args) throws Exception {
-		new TheFactoryImplTester().run(args);
-	}
-	
-	protected VerifierFactory getFactory(String language) {
-		return new TheFactoryImpl();
-	}
+    public static void main(java.lang.String[] args) throws Exception {
+        new TheFactoryImplTester().run(args);
+    }
+    
+    protected VerifierFactory getFactory(String language) {
+        return new TheFactoryImpl();
+    }
 }

@@ -21,10 +21,10 @@ public class MinExclusiveFacet extends RangeFacet {
         throws DatatypeException {
         super( nsUri, typeName, baseType, FACET_MINEXCLUSIVE, limit, _isFixed );
     }
-	
-	protected final boolean rangeCheck( int r ) {
-		return r==Comparator.LESS;
-	}
+    
+    protected final boolean rangeCheck( int r ) {
+        return r==Comparator.LESS;
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

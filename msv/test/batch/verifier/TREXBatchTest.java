@@ -19,8 +19,8 @@ import junit.framework.TestSuite;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TREXBatchTest {
-	public static TestSuite suite() throws Exception {
-		return new BatchVerifyTester().createFromProperty(
-			"trex","TREXBatchTestDir");
-	}
+    public static TestSuite suite() throws Exception {
+        return new BatchVerifyTester().createFromProperty(
+            "trex","TREXBatchTestDir");
+    }
 }

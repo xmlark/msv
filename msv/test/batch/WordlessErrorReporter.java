@@ -18,23 +18,23 @@ import org.xml.sax.SAXParseException;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class WordlessErrorReporter implements ErrorHandler {
-	
-	private boolean first = true;
-	private SAXParseException error = null;
-	
-	public SAXParseException getError() { return error; }
-	
-	public void fatalError( SAXParseException e ) throws SAXParseException {
-		error(e);
-		throw e;
-	}
-	public void error( SAXParseException error ) {
-		if( first ) {
-			System.out.println(error.getMessage());
-			this.error = error;
-		}
-		first = false;
-	}
-		
-	public void warning( SAXParseException warning ) {}
+    
+    private boolean first = true;
+    private SAXParseException error = null;
+    
+    public SAXParseException getError() { return error; }
+    
+    public void fatalError( SAXParseException e ) throws SAXParseException {
+        error(e);
+        throw e;
+    }
+    public void error( SAXParseException error ) {
+        if( first ) {
+            System.out.println(error.getMessage());
+            this.error = error;
+        }
+        first = false;
+    }
+        
+    public void warning( SAXParseException warning ) {}
 }

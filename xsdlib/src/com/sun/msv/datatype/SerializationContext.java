@@ -17,19 +17,19 @@ package com.sun.msv.datatype;
  * @author Kohsuke KAWAGUCHI
  */
 public interface SerializationContext {
-	/**
-	 * get namespace prefix for the given namespace URI.
-	 * 
-	 * this method is used to convert QName. 
-	 * 
-	 * It is a responsibility of the callee to ensure that
-	 * the returned prefix is properly declared.
-	 * 
-	 * @return
-	 *		prefix for this namespace URI.
-	 *		return null to indicate that this namespace URI is the
-	 *		default name space. In this case, QNames are converted into
-	 *		unqualified names (just the local names only as NCNames).
-	 */
-	String getNamespacePrefix( String namespaceURI );
+    /**
+     * get namespace prefix for the given namespace URI.
+     * 
+     * this method is used to convert QName. 
+     * 
+     * It is a responsibility of the callee to ensure that
+     * the returned prefix is properly declared.
+     * 
+     * @return
+     *        prefix for this namespace URI.
+     *        return null to indicate that this namespace URI is the
+     *        default name space. In this case, QNames are converted into
+     *        unqualified names (just the local names only as NCNames).
+     */
+    String getNamespacePrefix( String namespaceURI );
 }

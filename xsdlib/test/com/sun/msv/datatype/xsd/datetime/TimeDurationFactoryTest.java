@@ -18,22 +18,22 @@ import junit.framework.TestSuite;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TimeDurationFactoryTest extends TestCase {    
-	
-	public TimeDurationFactoryTest(java.lang.String testName) {
-		super(testName);
-	}
-	
-	public static void main(java.lang.String[] args) {
-		junit.textui.TestRunner.run(suite());
-	}
-	
-	public static Test suite() {
-		return new TestSuite(TimeDurationFactoryTest.class);
-	}
-	
-	/** Test of create method, of class com.sun.msv.datatype.datetime.TimeDurationFactory. */
-	public void testCreate() {
-		// TODO: Add your test code here.
-	}
-	
+    
+    public TimeDurationFactoryTest(java.lang.String testName) {
+        super(testName);
+    }
+    
+    public static void main(java.lang.String[] args) {
+        junit.textui.TestRunner.run(suite());
+    }
+    
+    public static Test suite() {
+        return new TestSuite(TimeDurationFactoryTest.class);
+    }
+    
+    /** Test of create method, of class com.sun.msv.datatype.datetime.TimeDurationFactory. */
+    public void testCreate() {
+        // TODO: Add your test code here.
+    }
+    
 }

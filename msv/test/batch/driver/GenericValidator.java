@@ -10,8 +10,8 @@ import com.sun.msv.reader.util.GrammarLoader;
  * Generic Driver for MSV
  */
 public class GenericValidator extends AbstractValidatorExImpl {
-	
-	public Grammar parseSchema( InputSource is, GrammarReaderController controller ) throws Exception {
-		return GrammarLoader.loadSchema(is,controller);
-	}
+    
+    public Grammar parseSchema( InputSource is, GrammarReaderController controller ) throws Exception {
+        return GrammarLoader.loadSchema(is,controller);
+    }
 }

@@ -40,7 +40,7 @@ public class TypeIncubator {
      * adds a facet to the type.
      *
      * @deprecated
-     *		please use the addFacet method, which is better named.
+     *        please use the addFacet method, which is better named.
      */
     public void add(String name, String strValue, boolean fixed, ValidationContext context) throws DatatypeException {
         addFacet(name, strValue, fixed, context);
@@ -48,8 +48,8 @@ public class TypeIncubator {
 
     /** adds a facet to the type.
      *
-     * @exception	DatatypeException
-     *		when given facet is already specified
+     * @exception    DatatypeException
+     *        when given facet is already specified
      */
     public void addFacet(String name, String strValue, boolean fixed, ValidationContext context)
         throws DatatypeException {
@@ -66,8 +66,8 @@ public class TypeIncubator {
                 return;
                 // to issue an error, we need to first make sure that the
                 // specified value is different from the fixed value.
-                //			throw new DatatypeException( XSDatatypeImpl.localize(
-                //				XSDatatypeImpl.ERR_OVERRIDING_FIXED_FACET, name ) );
+                //            throw new DatatypeException( XSDatatypeImpl.localize(
+                //                XSDatatypeImpl.ERR_OVERRIDING_FIXED_FACET, name ) );
             case XSDatatypeImpl.NOT_ALLOWED :
                 throw new DatatypeException(XSDatatypeImpl.localize(XSDatatypeImpl.ERR_NOT_APPLICABLE_FACET, name));
             default :
@@ -126,9 +126,9 @@ public class TypeIncubator {
      * which means the derivation of an anonymous datatype.
      *
      * @exception DatatypeException
-     *		DatatypeException is thrown if derivation is somehow invalid.
-     *		For example, not applicable facets are applied, or enumeration
-     *		has invalid values, ... things like that.
+     *        DatatypeException is thrown if derivation is somehow invalid.
+     *        For example, not applicable facets are applied, or enumeration
+     *        has invalid values, ... things like that.
      */
     public XSDatatypeImpl derive(String newNameUri, String newLocalName) throws DatatypeException {
 
@@ -156,40 +156,40 @@ public class TypeIncubator {
 
         // TODO : make sure that the following interpretation is true
         /*
-        	several facet consistency check is done here.
-        	those which are done in this time are:
+            several facet consistency check is done here.
+            those which are done in this time are:
         
-        		- length and (minLength/maxLength) are exclusive
-        		- maxInclusive and maxExclusive are exclusive
-        		- minInclusive and minExclusive are exclusive
-        
-        
-        	those are exclusive within the one restriction;
-        	that is, it is legal to derive types in the following way:
-        
-        	<simpleType name="foo">
-        		<restriction baseType="string">
-        			<minLength value="3" />
-        		</restrction>
-        	</simpleType>
-        
-        	<simpleType name="bar">
-        		<restriction baseType="foo">
-        			<length value="5" />
-        		</restrction>
-        	</simpleType>
-        
-        	although the following is considered as an error
-        
-        	<simpleType name="bar">
-        		<restriction baseType="foo">
-        			<length value="5" />
-        			<minLength value="3" />
-        		</restrction>
-        	</simpleType>
+                - length and (minLength/maxLength) are exclusive
+                - maxInclusive and maxExclusive are exclusive
+                - minInclusive and minExclusive are exclusive
         
         
-        	This method is the perfect place to perform this kind of check. 
+            those are exclusive within the one restriction;
+            that is, it is legal to derive types in the following way:
+        
+            <simpleType name="foo">
+                <restriction baseType="string">
+                    <minLength value="3" />
+                </restrction>
+            </simpleType>
+        
+            <simpleType name="bar">
+                <restriction baseType="foo">
+                    <length value="5" />
+                </restrction>
+            </simpleType>
+        
+            although the following is considered as an error
+        
+            <simpleType name="bar">
+                <restriction baseType="foo">
+                    <length value="5" />
+                    <minLength value="3" />
+                </restrction>
+            </simpleType>
+        
+        
+            This method is the perfect place to perform this kind of check. 
         */
 
         // makes sure that no mutually exclusive facets are specified
@@ -301,7 +301,7 @@ public class TypeIncubator {
             checkRangeConsistency(r, XSDatatypeImpl.FACET_MINEXCLUSIVE, XSDatatypeImpl.FACET_MAXEXCLUSIVE);
 
             // TODO : I'm not sure that the following two checks should be done or not.
-            //			since the spec doesn't have these constraints
+            //            since the spec doesn't have these constraints
             checkRangeConsistency(r, XSDatatypeImpl.FACET_MININCLUSIVE, XSDatatypeImpl.FACET_MAXEXCLUSIVE);
             checkRangeConsistency(r, XSDatatypeImpl.FACET_MINEXCLUSIVE, XSDatatypeImpl.FACET_MAXINCLUSIVE);
         }
@@ -314,7 +314,7 @@ public class TypeIncubator {
      * they are consistent
      * 
      * @exception BadTypeException
-     *		when two facets are inconsistent
+     *        when two facets are inconsistent
      */
     private static void checkRangeConsistency(XSDatatypeImpl newType, String facetName1, String facetName2)
         throws DatatypeException {
@@ -430,7 +430,7 @@ public class TypeIncubator {
      * in this map.
      * 
      * @exception BadTypeException
-     *		if the parameter cannot be parsed as a positive integer
+     *        if the parameter cannot be parsed as a positive integer
      */
     public int getPositiveInteger(String facetName) throws DatatypeException {
         try {
@@ -461,7 +461,7 @@ public class TypeIncubator {
      * in this map.
      * 
      * @exception BadTypeException
-     *		if the parameter cannot be parsed as a non-negative integer
+     *        if the parameter cannot be parsed as a non-negative integer
      */
     public int getNonNegativeInteger(String facetName) throws DatatypeException {
         try {

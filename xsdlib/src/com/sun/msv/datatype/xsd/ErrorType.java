@@ -22,7 +22,7 @@ import com.sun.msv.datatype.SerializationContext;
  * 
  * 
  * @author
- * 	Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
+ *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public class ErrorType extends BuiltinAtomicType {
 

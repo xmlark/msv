@@ -25,16 +25,16 @@ package com.sun.msv.datatype.xsd;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class IDType extends NcnameType {
-	
-	public static final IDType theInstance = new IDType();
-	protected IDType()	{ super("ID"); }
-	
-	protected Object readResolve() {
-		// prevent serialization from breaking the singleton.
-		return theInstance;
-	}
-	
-	public int getIdType() { return ID_TYPE_ID; }
+    
+    public static final IDType theInstance = new IDType();
+    protected IDType()    { super("ID"); }
+    
+    protected Object readResolve() {
+        // prevent serialization from breaking the singleton.
+        return theInstance;
+    }
+    
+    public int getIdType() { return ID_TYPE_ID; }
 
     // serialization support
     private static final long serialVersionUID = 1;    

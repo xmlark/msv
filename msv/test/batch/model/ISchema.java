@@ -17,7 +17,7 @@ import com.sun.msv.grammar.Grammar;
  * The format of the compiled schema is implementation-dependent.
  * 
  * @author
- *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ *    <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface ISchema {
     Grammar asGrammar();

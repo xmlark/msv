@@ -24,34 +24,34 @@ import org.relaxng.datatype.ValidationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class UnsignedIntType extends LongType {
-	
-	public static final UnsignedIntType theInstance = new UnsignedIntType();
-	private UnsignedIntType() {
+    
+    public static final UnsignedIntType theInstance = new UnsignedIntType();
+    private UnsignedIntType() {
         super("unsignedInt",createRangeFacet(
             UnsignedLongType.theInstance,
             null,
             new Long(4294967295L)));
     }
-	
-	final public XSDatatype getBaseType() {
-		return UnsignedLongType.theInstance;
-	}
+    
+    final public XSDatatype getBaseType() {
+        return UnsignedLongType.theInstance;
+    }
 
     /** upper bound value. this is the maximum possible valid value as an unsigned int */
     private static final long upperBound = 4294967295L;
-	
-	public Object _createValue( String lexicalValue, ValidationContext context ) {
-		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
-		try {
-			Long v = (Long)super._createValue(lexicalValue,context);
-			if( v==null )						return null;
-			if( v.longValue()<0 )               return null;
-			if( v.longValue()>upperBound )      return null;
-			return v;
-		} catch( NumberFormatException e ) {
-			return null;
-		}
-	}
+    
+    public Object _createValue( String lexicalValue, ValidationContext context ) {
+        // Implementation of JDK1.2.2/JDK1.3 is suitable enough
+        try {
+            Long v = (Long)super._createValue(lexicalValue,context);
+            if( v==null )                        return null;
+            if( v.longValue()<0 )               return null;
+            if( v.longValue()>upperBound )      return null;
+            return v;
+        } catch( NumberFormatException e ) {
+            return null;
+        }
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

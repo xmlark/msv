@@ -29,38 +29,38 @@ import com.sun.msv.verifier.regexp.REDocumentDeclaration;
  */
 public abstract class IValidatorImpl extends AbstractValidatorExImpl
 {
-	/**
-	 * If true, this validator will apply extra checkes to the schema.
-	 */
-	private final boolean strictCheck;
-	
-	/**
-	 * SAXParserFactory which should be used to parse a schema.
-	 */
-	protected SAXParserFactory factory;
-	
-	public IValidatorImpl( boolean _strictCheck ) {
-		strictCheck = _strictCheck;
-		
-		if(strictCheck) {
-			// if we run a strict check, wrap it by the s4s
-			factory = new com.sun.msv.verifier.jaxp.SAXParserFactoryImpl(
-				getSchemaForSchema());
-		} else {
-			// create a plain SAXParserFactory
-			factory = SAXParserFactory.newInstance();
-			factory.setNamespaceAware(true);
-		}
-	}
-	
-	/**
-	 * Gets the schema for schema for this language.
-	 */
-	protected Schema getSchemaForSchema() { return null; }
-	
-	public ISchema parseSchema( File file ) throws Exception {
-		GrammarReader reader = getReader();
-		
+    /**
+     * If true, this validator will apply extra checkes to the schema.
+     */
+    private final boolean strictCheck;
+    
+    /**
+     * SAXParserFactory which should be used to parse a schema.
+     */
+    protected SAXParserFactory factory;
+    
+    public IValidatorImpl( boolean _strictCheck ) {
+        strictCheck = _strictCheck;
+        
+        if(strictCheck) {
+            // if we run a strict check, wrap it by the s4s
+            factory = new com.sun.msv.verifier.jaxp.SAXParserFactoryImpl(
+                getSchemaForSchema());
+        } else {
+            // create a plain SAXParserFactory
+            factory = SAXParserFactory.newInstance();
+            factory.setNamespaceAware(true);
+        }
+    }
+    
+    /**
+     * Gets the schema for schema for this language.
+     */
+    protected Schema getSchemaForSchema() { return null; }
+    
+    public ISchema parseSchema( File file ) throws Exception {
+        GrammarReader reader = getReader();
+        
         InputSource source = com.sun.msv.util.Util.getInputSource(
             file.getAbsolutePath());
         XMLReader parser = factory.newSAXParser().getXMLReader();
@@ -68,27 +68,27 @@ public abstract class IValidatorImpl extends AbstractValidatorExImpl
         if(!strictCheck) {
             parser.setContentHandler(reader);
         } else {
-			Schema schema = getSchemaForSchema();
-			final boolean[] error = new boolean[1];
-			
-			// set up a pipe line so that the file will be validated by s4s
-			VerifierFilter filter = schema.newVerifier().getVerifierFilter();
-			filter.setErrorHandler( new ReportErrorHandler() {
-				public void error( SAXParseException e ) throws SAXException {
-					super.error(e);
-					error[0]=true;
-				}
-				public void fatalError( SAXParseException e ) throws SAXException {
-					super.fatalError(e);
-					error[0]=true;
-				}
-			});
+            Schema schema = getSchemaForSchema();
+            final boolean[] error = new boolean[1];
             
-			filter.setContentHandler(reader);
+            // set up a pipe line so that the file will be validated by s4s
+            VerifierFilter filter = schema.newVerifier().getVerifierFilter();
+            filter.setErrorHandler( new ReportErrorHandler() {
+                public void error( SAXParseException e ) throws SAXException {
+                    super.error(e);
+                    error[0]=true;
+                }
+                public void fatalError( SAXParseException e ) throws SAXException {
+                    super.fatalError(e);
+                    error[0]=true;
+                }
+            });
+            
+            filter.setContentHandler(reader);
             parser.setContentHandler((ContentHandler)filter);
-			
-			if( error[0]==true )		return null;
-		}
+            
+            if( error[0]==true )        return null;
+        }
 
         try {
             parser.parse(source);
@@ -97,37 +97,37 @@ public abstract class IValidatorImpl extends AbstractValidatorExImpl
             return null;
         }
         
-		Grammar grammar = getGrammarFromReader(reader,file);
-		
-		if( grammar==null )	return null;
-		else				return new ISchemaImpl( grammar );
-	}
+        Grammar grammar = getGrammarFromReader(reader,file);
+        
+        if( grammar==null )    return null;
+        else                return new ISchemaImpl( grammar );
+    }
 
-	public Grammar parseSchema( InputSource is, GrammarReaderController controller ) throws Exception {
-		return GrammarLoader.loadSchema(is,createController(),factory);
-	}
+    public Grammar parseSchema( InputSource is, GrammarReaderController controller ) throws Exception {
+        return GrammarLoader.loadSchema(is,createController(),factory);
+    }
 
-	/**
-	 * creates a GrammarReader object to parse a grammar.
-	 * 
-	 * <p>
-	 * override this method to use different reader implementation.
-	 * RELAX NG test harness can be used to test XML Schema, TREX, etc.
-	 */
-	protected abstract GrammarReader getReader();
-	
-	protected Grammar getGrammarFromReader( GrammarReader reader, File schema ) {
-		return reader.getResultAsGrammar();
-	}
-	
-	/**
-	 * creates a Verifier object to validate a document.
-	 * 
-	 * <p>
-	 * override this method to use a different verifier implementation.
-	 */
-	protected IVerifier getVerifier( Grammar grammar ) {
-		return new Verifier( new REDocumentDeclaration(grammar),
-			new ReportErrorHandler() );
-	}
+    /**
+     * creates a GrammarReader object to parse a grammar.
+     * 
+     * <p>
+     * override this method to use different reader implementation.
+     * RELAX NG test harness can be used to test XML Schema, TREX, etc.
+     */
+    protected abstract GrammarReader getReader();
+    
+    protected Grammar getGrammarFromReader( GrammarReader reader, File schema ) {
+        return reader.getResultAsGrammar();
+    }
+    
+    /**
+     * creates a Verifier object to validate a document.
+     * 
+     * <p>
+     * override this method to use a different verifier implementation.
+     */
+    protected IVerifier getVerifier( Grammar grammar ) {
+        return new Verifier( new REDocumentDeclaration(grammar),
+            new ReportErrorHandler() );
+    }
 }

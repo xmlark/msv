@@ -21,7 +21,7 @@ import com.sun.msv.datatype.xsd.Comparator;
  * @author Kohsuke KAWAGUCHI
  */
 public class BigTimeDurationValueType implements ITimeDurationValueType {
-	
+    
     protected BigInteger year;
     protected BigInteger month;
     protected BigInteger day;
@@ -39,7 +39,7 @@ public class BigTimeDurationValueType implements ITimeDurationValueType {
                 new BigInteger("1903"), 2/*Mar*/, 0/*1st*/, 0,0, new BigDecimal(0), TimeZone.ZERO ),
             new BigDateTimeValueType(
                 new BigInteger("1903"), 6/*Jul*/, 0/*1st*/, 0,0, new BigDecimal(0), TimeZone.ZERO ) };
-																				
+                                                                                
 
     public boolean equals(Object o) {
         return equals((ITimeDurationValueType)o);
@@ -49,7 +49,7 @@ public class BigTimeDurationValueType implements ITimeDurationValueType {
     }
     
     public String toString() {
-        return	((year==null||year.signum()<0)?"-":"")+
+        return    ((year==null||year.signum()<0)?"-":"")+
             "P"+nullAsZero(year).abs()+"Y"+
             nullAsZero(month)+"M"+
             nullAsZero(day)+"DT"+
@@ -57,14 +57,14 @@ public class BigTimeDurationValueType implements ITimeDurationValueType {
             nullAsZero(minute)+"M"+
             (second==null?"":second.toString())+"S";
     }
-	
+    
     private BigInteger nullAsZero(BigInteger o) {
         if (o == null)
             return BigInteger.ZERO;
         else
             return o;
     }
-	
+    
     /**
      * hash code has to be consistent with equals method.
      */
@@ -89,7 +89,7 @@ public class BigTimeDurationValueType implements ITimeDurationValueType {
 
         return compare(this, (BigTimeDurationValueType)o);
     }
-	
+    
     static private int compare(BigTimeDurationValueType lhs, BigTimeDurationValueType rhs) {
         boolean less = false, greater = false, noDeterminate = false;
 
@@ -120,24 +120,24 @@ public class BigTimeDurationValueType implements ITimeDurationValueType {
         return Comparator.EQUAL;
     }
 
-	public BigTimeDurationValueType getBigValue() { return this; }
+    public BigTimeDurationValueType getBigValue() { return this; }
 
-	public BigTimeDurationValueType(
-		BigInteger year, BigInteger month, BigInteger day,
-		BigInteger hour, BigInteger minute, BigDecimal second ) {
-		this.year	= year!=null?year:BigInteger.ZERO;
-		this.month	= month!=null?month:BigInteger.ZERO;
-		this.day	= day!=null?day:BigInteger.ZERO;
-		this.hour	= hour!=null?hour:BigInteger.ZERO;
-		this.minute	= minute!=null?minute:BigInteger.ZERO;
-		this.second	= second!=null?second:new BigDecimal(0);
-	}
-	
-	public static BigTimeDurationValueType fromMinutes( int minutes )
-	{ return fromMinutes(Util.int2bi(minutes)); }
-	public static BigTimeDurationValueType fromMinutes( BigInteger minutes )
-	{ return new BigTimeDurationValueType(null,null,null,null,minutes,null); }
-	
+    public BigTimeDurationValueType(
+        BigInteger year, BigInteger month, BigInteger day,
+        BigInteger hour, BigInteger minute, BigDecimal second ) {
+        this.year    = year!=null?year:BigInteger.ZERO;
+        this.month    = month!=null?month:BigInteger.ZERO;
+        this.day    = day!=null?day:BigInteger.ZERO;
+        this.hour    = hour!=null?hour:BigInteger.ZERO;
+        this.minute    = minute!=null?minute:BigInteger.ZERO;
+        this.second    = second!=null?second:new BigDecimal(0);
+    }
+    
+    public static BigTimeDurationValueType fromMinutes( int minutes )
+    { return fromMinutes(Util.int2bi(minutes)); }
+    public static BigTimeDurationValueType fromMinutes( BigInteger minutes )
+    { return new BigTimeDurationValueType(null,null,null,null,minutes,null); }
+    
 
     // serialization support
     private static final long serialVersionUID = 1;    

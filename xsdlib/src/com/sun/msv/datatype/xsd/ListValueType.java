@@ -17,32 +17,32 @@ package com.sun.msv.datatype.xsd;
  */
 public class ListValueType implements java.io.Serializable
 {
-	public final Object[] values;
-	
-	public ListValueType( Object[] values ) { this.values=values; }
-	
-	/**
-	 * Two ListValueType are equal if and only if all the array members
-	 * are equal respectively.
-	 */
-	public boolean equals( Object o ) {
-		ListValueType rhs = (ListValueType)o;
-		final int len = values.length;
-		if( len!=rhs.values.length )	return false;
-		for( int i=0; i<len; i++ )
-			if(!values[i].equals(rhs.values[i]))	return false;
-		
-		return true;
-	}
-	
-	public int hashCode() {
-		int h=1;
-		final int len = values.length;
-		for( int i=0; i<len; i++ )
-			h += values[i].hashCode();
-		
-		return h;
-	}
+    public final Object[] values;
+    
+    public ListValueType( Object[] values ) { this.values=values; }
+    
+    /**
+     * Two ListValueType are equal if and only if all the array members
+     * are equal respectively.
+     */
+    public boolean equals( Object o ) {
+        ListValueType rhs = (ListValueType)o;
+        final int len = values.length;
+        if( len!=rhs.values.length )    return false;
+        for( int i=0; i<len; i++ )
+            if(!values[i].equals(rhs.values[i]))    return false;
+        
+        return true;
+    }
+    
+    public int hashCode() {
+        int h=1;
+        final int len = values.length;
+        for( int i=0; i<len; i++ )
+            h += values[i].hashCode();
+        
+        return h;
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

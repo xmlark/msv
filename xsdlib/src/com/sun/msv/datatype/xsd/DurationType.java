@@ -26,62 +26,62 @@ import com.sun.msv.datatype.xsd.datetime.ITimeDurationValueType;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class DurationType extends BuiltinAtomicType implements Comparator {
-	
-	public static final DurationType theInstance = new DurationType();
-	private DurationType() { super("duration"); }
-	
-	final public XSDatatype getBaseType() {
-		return SimpleURType.theInstance;
-	}
+    
+    public static final DurationType theInstance = new DurationType();
+    private DurationType() { super("duration"); }
+    
+    final public XSDatatype getBaseType() {
+        return SimpleURType.theInstance;
+    }
 
-	private final ISO8601Parser getParser( String content ) throws Exception {
-		return new ISO8601Parser( new StringReader( content ) );
-	}
-	
-	protected boolean checkFormat( String content, ValidationContext context ) {
-		try {
-			getParser(content).durationTypeL();
-			return true;
-		} catch( Throwable e ) {
-			return false;
-		}
-	}
-	
-	public Object _createValue( String content, ValidationContext context ) {
-		try {
-			return getParser(content).durationTypeV();
-		} catch( Throwable e ) {
-			return null;
-		}
-	}
-	public Class getJavaObjectType() {
-		return ITimeDurationValueType.class;
-	}
-	
-	/** compare two TimeDurationValueType */
-	public int compare( Object lhs, Object rhs ) {
-		return ((ITimeDurationValueType)lhs).compare((ITimeDurationValueType)rhs);
-	}
-	
-	public final int isFacetApplicable( String facetName ) {
-		if( facetName.equals(FACET_PATTERN)
-		||	facetName.equals(FACET_ENUMERATION)
+    private final ISO8601Parser getParser( String content ) throws Exception {
+        return new ISO8601Parser( new StringReader( content ) );
+    }
+    
+    protected boolean checkFormat( String content, ValidationContext context ) {
+        try {
+            getParser(content).durationTypeL();
+            return true;
+        } catch( Throwable e ) {
+            return false;
+        }
+    }
+    
+    public Object _createValue( String content, ValidationContext context ) {
+        try {
+            return getParser(content).durationTypeV();
+        } catch( Throwable e ) {
+            return null;
+        }
+    }
+    public Class getJavaObjectType() {
+        return ITimeDurationValueType.class;
+    }
+    
+    /** compare two TimeDurationValueType */
+    public int compare( Object lhs, Object rhs ) {
+        return ((ITimeDurationValueType)lhs).compare((ITimeDurationValueType)rhs);
+    }
+    
+    public final int isFacetApplicable( String facetName ) {
+        if( facetName.equals(FACET_PATTERN)
+        ||    facetName.equals(FACET_ENUMERATION)
         ||  facetName.equals(FACET_WHITESPACE)
-		||	facetName.equals(FACET_MAXINCLUSIVE)
-		||	facetName.equals(FACET_MAXEXCLUSIVE)
-		||	facetName.equals(FACET_MININCLUSIVE)
-		||	facetName.equals(FACET_MINEXCLUSIVE) )
-			return APPLICABLE;
-		else
-			return NOT_ALLOWED;
-	}
-	
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
-		if(!(value instanceof ITimeDurationValueType))
-			throw new IllegalArgumentException();
-		
-		return ((ITimeDurationValueType)value).getBigValue().toString();
-	}
+        ||    facetName.equals(FACET_MAXINCLUSIVE)
+        ||    facetName.equals(FACET_MAXEXCLUSIVE)
+        ||    facetName.equals(FACET_MININCLUSIVE)
+        ||    facetName.equals(FACET_MINEXCLUSIVE) )
+            return APPLICABLE;
+        else
+            return NOT_ALLOWED;
+    }
+    
+    public String convertToLexicalValue( Object value, SerializationContext context ) {
+        if(!(value instanceof ITimeDurationValueType))
+            throw new IllegalArgumentException();
+        
+        return ((ITimeDurationValueType)value).getBigValue().toString();
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

@@ -85,7 +85,7 @@ public abstract class WhiteSpaceProcessor implements Serializable {
     public final static WhiteSpaceProcessor theCollapse = new Collapse();
 
     /*
-    	Actual processor implementation
+        Actual processor implementation
     */
     private static class Preserve extends WhiteSpaceProcessor
     {

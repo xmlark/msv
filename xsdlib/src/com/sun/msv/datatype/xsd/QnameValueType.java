@@ -14,27 +14,27 @@ package com.sun.msv.datatype.xsd;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class QnameValueType implements java.io.Serializable {
-	public final String namespaceURI;
-	public final String localPart;
-	
-	public boolean equals( Object o ) {
-		QnameValueType rhs = (QnameValueType)o;
-		
-		return namespaceURI.equals(rhs.namespaceURI) && localPart.equals(rhs.localPart);
-	}
-	
-	public int hashCode() {
-		return namespaceURI.hashCode()+localPart.hashCode();
-	}
-	
-	public String toString() {
-		return "{"+namespaceURI+"}:"+localPart;
-	}
-	
-	public QnameValueType( String uri, String localPart ) {
-		this.namespaceURI	= uri;
-		this.localPart		= localPart;
-	}
+    public final String namespaceURI;
+    public final String localPart;
+    
+    public boolean equals( Object o ) {
+        QnameValueType rhs = (QnameValueType)o;
+        
+        return namespaceURI.equals(rhs.namespaceURI) && localPart.equals(rhs.localPart);
+    }
+    
+    public int hashCode() {
+        return namespaceURI.hashCode()+localPart.hashCode();
+    }
+    
+    public String toString() {
+        return "{"+namespaceURI+"}:"+localPart;
+    }
+    
+    public QnameValueType( String uri, String localPart ) {
+        this.namespaceURI    = uri;
+        this.localPart        = localPart;
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

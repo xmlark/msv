@@ -25,42 +25,42 @@ import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class GYearMonthType extends DateTimeBaseType {
-	public static final GYearMonthType theInstance = new GYearMonthType();
-	private GYearMonthType() { super("gYearMonth"); }
+    public static final GYearMonthType theInstance = new GYearMonthType();
+    private GYearMonthType() { super("gYearMonth"); }
 
-	protected void runParserL( ISO8601Parser p ) throws Exception {
-		p.yearMonthTypeL();
-	}
+    protected void runParserL( ISO8601Parser p ) throws Exception {
+        p.yearMonthTypeL();
+    }
 
-	protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception {
-		return p.yearMonthTypeV();
-	}
-	
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
-		if(!(value instanceof IDateTimeValueType ))
-			throw new IllegalArgumentException();
-		
-		BigDateTimeValueType bv = ((IDateTimeValueType)value).getBigValue();
-		return	formatYear(bv.getYear())+"-"+
-				formatTwoDigits(bv.getMonth(),1)+
-				formatTimeZone(bv.getTimeZone());
-	}
+    protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception {
+        return p.yearMonthTypeV();
+    }
+    
+    public String convertToLexicalValue( Object value, SerializationContext context ) {
+        if(!(value instanceof IDateTimeValueType ))
+            throw new IllegalArgumentException();
+        
+        BigDateTimeValueType bv = ((IDateTimeValueType)value).getBigValue();
+        return    formatYear(bv.getYear())+"-"+
+                formatTwoDigits(bv.getMonth(),1)+
+                formatTimeZone(bv.getTimeZone());
+    }
 
-	
-	public String serializeJavaObject( Object value, SerializationContext context ) {
-		if(!(value instanceof Calendar))	throw new IllegalArgumentException();
-		Calendar cal = (Calendar)value;
-		
-		
-		StringBuffer result = new StringBuffer();
+    
+    public String serializeJavaObject( Object value, SerializationContext context ) {
+        if(!(value instanceof Calendar))    throw new IllegalArgumentException();
+        Calendar cal = (Calendar)value;
+        
+        
+        StringBuffer result = new StringBuffer();
 
-		result.append(formatYear(cal.get(Calendar.YEAR)));
-		result.append('-');
-		result.append(formatTwoDigits(cal.get(Calendar.MONTH)+1));
-		result.append(formatTimeZone(cal));
-		
-		return result.toString();
-	}
+        result.append(formatYear(cal.get(Calendar.YEAR)));
+        result.append('-');
+        result.append(formatTwoDigits(cal.get(Calendar.MONTH)+1));
+        result.append(formatTimeZone(cal));
+        
+        return result.toString();
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

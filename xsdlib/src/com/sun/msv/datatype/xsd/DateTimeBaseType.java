@@ -27,7 +27,7 @@ import com.sun.msv.datatype.xsd.datetime.TimeZone;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator {
-	
+    
     protected DateTimeBaseType(String typeName) {
         super(typeName);
     }
@@ -35,11 +35,11 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
     final public XSDatatype getBaseType() {
         return SimpleURType.theInstance;
     }
-	
+    
     private static final ISO8601Parser getParser(String content) throws Exception {
         return new ISO8601Parser(new StringReader(content));
     }
-	
+    
     protected final boolean checkFormat(String content, ValidationContext context) {
         // string derived types should use _createValue method to check its validity
         try {
@@ -49,7 +49,7 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
             return false;
         }
     }
-	
+    
     /** invokes the appropriate lexical parse method to check lexical format */
     abstract protected void runParserL(ISO8601Parser p) throws Exception;
 
@@ -70,7 +70,7 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
     public int compare(Object lhs, Object rhs) {
         return ((IDateTimeValueType)lhs).compare((IDateTimeValueType)rhs);
     }
-	
+    
     public final int isFacetApplicable(String facetName) {
         if(facetName.equals(FACET_PATTERN)
         || facetName.equals(FACET_ENUMERATION)
@@ -101,7 +101,7 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
             s = "-" + s;
         return s;
     }
-	
+    
     /**
      * formats BigInteger into year representation.
      * 
@@ -122,7 +122,7 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
             s = "-" + s;
         return s;
     }
-	
+    
     protected String formatTwoDigits(Integer v) {
         return formatTwoDigits(v, 0);
     }
@@ -138,7 +138,7 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
         if (n < 10)     return "0" + n;
         else            return Integer.toString(n);
     }
-	
+    
     /** formats BigDecimal into two- -wide string. */
     protected String formatSeconds(java.math.BigDecimal dec) {
         if (dec == null)
@@ -153,7 +153,7 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
             s = "0" + s;
         return s;
     }
-	
+    
     protected String formatSeconds(Calendar cal) {
         StringBuffer result = new StringBuffer();
         result.append(formatTwoDigits(cal.get(Calendar.SECOND)));
@@ -170,7 +170,7 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
         }
         return result.toString();
     }
-	
+    
     /** formats time zone specifier. */
     protected String formatTimeZone(TimeZone tz) {
         if (tz == null)
@@ -214,15 +214,15 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
         return result.toString();
     }
 
-	
-	
-	
+    
+    
+    
     /** converts Number to integer. null object is considered as 0 */
     protected static int nullAsZero(Number n) {
         if (n == null)      return 0;
         else                return n.intValue();
     }
-	
+    
     /** converts our DateTimeValueType to a java-friendly Date type. */
     public final Object _createJavaObject(String literal, ValidationContext context) {
         IDateTimeValueType v = (IDateTimeValueType)createValue(literal, context);
@@ -235,7 +235,7 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
     // since we've overrided the createJavaObject method, the serializeJavaObject method
     // needs to be overrided, too.
     public abstract String serializeJavaObject(Object value, SerializationContext context);
-	
+    
     public Class getJavaObjectType() {
         return Calendar.class;
     }

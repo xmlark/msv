@@ -20,17 +20,17 @@ import org.relaxng.datatype.ValidationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NameType extends TokenType {
-	public static final NameType theInstance = new NameType();
-	private NameType() { super("Name",false); }
-	
-	final public XSDatatype getBaseType() {
-		return TokenType.theInstance;
-	}
-	
-	public Object _createValue( String content, ValidationContext context ) {
-		if(XmlNames.isName(content))	return content;
-		else							return null;
-	}
+    public static final NameType theInstance = new NameType();
+    private NameType() { super("Name",false); }
+    
+    final public XSDatatype getBaseType() {
+        return TokenType.theInstance;
+    }
+    
+    public Object _createValue( String content, ValidationContext context ) {
+        if(XmlNames.isName(content))    return content;
+        else                            return null;
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

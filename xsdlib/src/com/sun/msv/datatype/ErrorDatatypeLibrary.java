@@ -21,28 +21,28 @@ import com.sun.msv.datatype.xsd.StringType;
  * to recover from "unknown datatype library" error.
  * 
  * @author
- *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ *    <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ErrorDatatypeLibrary
-		implements DatatypeLibrary, DatatypeBuilder {
-	
-	/** The sole instance of this class. */
-	public static final ErrorDatatypeLibrary theInstance = new ErrorDatatypeLibrary();
-	
-	private ErrorDatatypeLibrary() {}
-	
-	public Datatype createDatatype( String name ) {
-		return StringType.theInstance;
-	}
-	public DatatypeBuilder createDatatypeBuilder( String name ) {
-		return this;
-	}
-	
-	public Datatype createDatatype() {
-		return StringType.theInstance;
-	}
-	public void addParameter( String name, String value, ValidationContext context ) {
-	}
-	
-	
+        implements DatatypeLibrary, DatatypeBuilder {
+    
+    /** The sole instance of this class. */
+    public static final ErrorDatatypeLibrary theInstance = new ErrorDatatypeLibrary();
+    
+    private ErrorDatatypeLibrary() {}
+    
+    public Datatype createDatatype( String name ) {
+        return StringType.theInstance;
+    }
+    public DatatypeBuilder createDatatypeBuilder( String name ) {
+        return this;
+    }
+    
+    public Datatype createDatatype() {
+        return StringType.theInstance;
+    }
+    public void addParameter( String name, String value, ValidationContext context ) {
+    }
+    
+    
 }

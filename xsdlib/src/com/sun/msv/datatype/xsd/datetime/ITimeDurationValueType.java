@@ -15,10 +15,10 @@ package com.sun.msv.datatype.xsd.datetime;
  * @author Kohsuke KAWAGUCHI
  */
 public interface ITimeDurationValueType extends java.io.Serializable {
-	BigTimeDurationValueType getBigValue();
+    BigTimeDurationValueType getBigValue();
 
-	/** compare two ITimeDurationValueType as defined in
-	 *  com.sun.msv.datatype/Comparator
-	 */
-	int compare( ITimeDurationValueType rhs );
+    /** compare two ITimeDurationValueType as defined in
+     *  com.sun.msv.datatype/Comparator
+     */
+    int compare( ITimeDurationValueType rhs );
 }

@@ -165,7 +165,7 @@ public class AnyURIType extends BuiltinAtomicType implements Discrete {
         String uricNoSlash = "(" + unreserved + "|" + escaped + "|[;\\?:@&=\\+$,])";
         String opaquePart = uricNoSlash + "(" + uric + ")*";
         String hierPart = "((" + netPath + ")|(" + absPath + "))(\\?" + query + ")?";
-        //		String path			= "(("+absPath+")|("+opaquePart+"))?";
+        //        String path            = "(("+absPath+")|("+opaquePart+"))?";
         String relativeURI = "((" + netPath + ")|(" + absPath + ")|(" + relPath + "))(\\?" + query + ")?";
         String absoluteURI = scheme + ":((" + hierPart + ")|(" + opaquePart + "))";
         String uriRef = "(" + absoluteURI + "|" + relativeURI + ")?(#" + fragment + ")?";

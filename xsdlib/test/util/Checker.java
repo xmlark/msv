@@ -16,5 +16,5 @@ package util;
  */
 public interface Checker
 {
-	void check( String propertyName ) throws Exception;
+    void check( String propertyName ) throws Exception;
 }

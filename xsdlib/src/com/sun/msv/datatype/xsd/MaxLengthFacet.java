@@ -34,32 +34,32 @@ public class MaxLengthFacet extends DataTypeWithValueConstraintFacet
 
         this.maxLength = _maxLength;
 
-		// loosened facet check
-		DataTypeWithFacet o = baseType.getFacetObject(FACET_MAXLENGTH);
-		if(o!=null && ((MaxLengthFacet)o).maxLength < this.maxLength )
-			throw new DatatypeException( localize( ERR_LOOSENED_FACET,
-				FACET_MAXLENGTH, o.displayName() ) );
-		
-		// consistency with minLength is checked in XSDatatypeImpl.derive method.
-	}
-	
-	public Object _createValue( String literal, ValidationContext context ) {
-		Object o = baseType._createValue(literal,context);
-		if(o==null || ((Discrete)concreteType).countLength(o)>maxLength)	return null;
-		return o;
-	}
-	
-	protected void diagnoseByFacet(String content, ValidationContext context) throws DatatypeException {
-		Object o = concreteType._createValue(content,context);
-		// base type must have accepted this lexical value, otherwise 
-		// this method is never called.
-		if(o==null)	throw new IllegalStateException();	// assertion
-		
-		int cnt = ((Discrete)concreteType).countLength(o);
-		if(cnt>maxLength)
-			throw new DatatypeException( DatatypeException.UNKNOWN,
-				localize(ERR_MAXLENGTH, new Integer(cnt), new Integer(maxLength)) );
-	}
+        // loosened facet check
+        DataTypeWithFacet o = baseType.getFacetObject(FACET_MAXLENGTH);
+        if(o!=null && ((MaxLengthFacet)o).maxLength < this.maxLength )
+            throw new DatatypeException( localize( ERR_LOOSENED_FACET,
+                FACET_MAXLENGTH, o.displayName() ) );
+        
+        // consistency with minLength is checked in XSDatatypeImpl.derive method.
+    }
+    
+    public Object _createValue( String literal, ValidationContext context ) {
+        Object o = baseType._createValue(literal,context);
+        if(o==null || ((Discrete)concreteType).countLength(o)>maxLength)    return null;
+        return o;
+    }
+    
+    protected void diagnoseByFacet(String content, ValidationContext context) throws DatatypeException {
+        Object o = concreteType._createValue(content,context);
+        // base type must have accepted this lexical value, otherwise 
+        // this method is never called.
+        if(o==null)    throw new IllegalStateException();    // assertion
+        
+        int cnt = ((Discrete)concreteType).countLength(o);
+        if(cnt>maxLength)
+            throw new DatatypeException( DatatypeException.UNKNOWN,
+                localize(ERR_MAXLENGTH, new Integer(cnt), new Integer(maxLength)) );
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

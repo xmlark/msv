@@ -22,10 +22,10 @@ import com.sun.msv.datatype.SerializationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class StringType extends BuiltinAtomicType implements Discrete {
-	
-	public static final StringType theInstance
-		= new StringType("string",WhiteSpaceProcessor.thePreserve,true);
-	
+    
+    public static final StringType theInstance
+        = new StringType("string",WhiteSpaceProcessor.thePreserve,true);
+    
     /**
      * Value returned from the isAlwaysValid method.
      */
@@ -35,51 +35,51 @@ public class StringType extends BuiltinAtomicType implements Discrete {
         this( typeName, whiteSpace, false );
     }
     
-	protected StringType( String typeName, WhiteSpaceProcessor whiteSpace, boolean _isAlwaysValid ) {
-		super(typeName,whiteSpace);
+    protected StringType( String typeName, WhiteSpaceProcessor whiteSpace, boolean _isAlwaysValid ) {
+        super(typeName,whiteSpace);
         this.isAlwaysValid = _isAlwaysValid;
-	}
-	
-	public XSDatatype getBaseType() {
-		return SimpleURType.theInstance;
-	}
+    }
+    
+    public XSDatatype getBaseType() {
+        return SimpleURType.theInstance;
+    }
 
-	protected final boolean checkFormat( String content, ValidationContext context ) {
-		// string derived types should use _createValue method to check its validity
-		return _createValue(content,context)!=null;
-	}
-	
-	public Object _createValue( String lexicalValue, ValidationContext context ) {
-		// for string, lexical space is value space by itself
-		return lexicalValue;
-	}
-	public Class getJavaObjectType() {
-		return String.class;
-	}
+    protected final boolean checkFormat( String content, ValidationContext context ) {
+        // string derived types should use _createValue method to check its validity
+        return _createValue(content,context)!=null;
+    }
+    
+    public Object _createValue( String lexicalValue, ValidationContext context ) {
+        // for string, lexical space is value space by itself
+        return lexicalValue;
+    }
+    public Class getJavaObjectType() {
+        return String.class;
+    }
 
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
-		if( value instanceof String )
-			return (String)value;
-		else
-			throw new IllegalArgumentException();
-	}
-	
-	public final int countLength( Object value ) {
-		// for string-derived types, length means number of XML characters.
-		return UnicodeUtil.countLength( (String)value );
-	}
-	
-	public final int isFacetApplicable( String facetName ) {
-		if( facetName.equals(FACET_PATTERN)
-		||	facetName.equals(FACET_ENUMERATION)
-		||	facetName.equals(FACET_WHITESPACE)
-		||	facetName.equals(FACET_LENGTH)
-		||	facetName.equals(FACET_MAXLENGTH)
-		||	facetName.equals(FACET_MINLENGTH) )
-			return APPLICABLE;
-		else
-			return NOT_ALLOWED;
-	}
+    public String convertToLexicalValue( Object value, SerializationContext context ) {
+        if( value instanceof String )
+            return (String)value;
+        else
+            throw new IllegalArgumentException();
+    }
+    
+    public final int countLength( Object value ) {
+        // for string-derived types, length means number of XML characters.
+        return UnicodeUtil.countLength( (String)value );
+    }
+    
+    public final int isFacetApplicable( String facetName ) {
+        if( facetName.equals(FACET_PATTERN)
+        ||    facetName.equals(FACET_ENUMERATION)
+        ||    facetName.equals(FACET_WHITESPACE)
+        ||    facetName.equals(FACET_LENGTH)
+        ||    facetName.equals(FACET_MAXLENGTH)
+        ||    facetName.equals(FACET_MINLENGTH) )
+            return APPLICABLE;
+        else
+            return NOT_ALLOWED;
+    }
 
     public boolean isAlwaysValid() {
         return isAlwaysValid;

@@ -19,8 +19,8 @@ import junit.framework.TestSuite;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RELAXBatchTest {
-	public static TestSuite suite() throws Exception {
-		return new BatchVerifyTester().createFromProperty(
-			"relax","RELAXBatchTestDir");
-	}
+    public static TestSuite suite() throws Exception {
+        return new BatchVerifyTester().createFromProperty(
+            "relax","RELAXBatchTestDir");
+    }
 }

@@ -19,19 +19,19 @@ import com.sun.msv.datatype.xsd.XSDatatype;
  */
 public class UnexpectedResultException extends Exception
 {
-	public final XSDatatype type;
-	public final String baseTypeName;
-	public final String testInstance;
-	public final boolean supposedToBeValid;
-	public final TypeIncubator incubator;
+    public final XSDatatype type;
+    public final String baseTypeName;
+    public final String testInstance;
+    public final boolean supposedToBeValid;
+    public final TypeIncubator incubator;
 
-	UnexpectedResultException( XSDatatype typeObj, String baseTypeName,
-		String testInstance, boolean supposedToBeValid, TypeIncubator ti )
-	{
-		this.type				= typeObj;
-		this.baseTypeName		= baseTypeName;
-		this.testInstance		= testInstance;
-		this.supposedToBeValid	= supposedToBeValid;
-		this.incubator			= ti;
-	}
+    UnexpectedResultException( XSDatatype typeObj, String baseTypeName,
+        String testInstance, boolean supposedToBeValid, TypeIncubator ti )
+    {
+        this.type                = typeObj;
+        this.baseTypeName        = baseTypeName;
+        this.testInstance        = testInstance;
+        this.supposedToBeValid    = supposedToBeValid;
+        this.incubator            = ti;
+    }
 }

@@ -22,51 +22,51 @@ import com.sun.msv.datatype.SerializationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class SimpleURType extends BuiltinAtomicType {
-	
-	public static final SimpleURType theInstance = new SimpleURType();
-	
-	protected SimpleURType() {
-		super("anySimpleType",WhiteSpaceProcessor.thePreserve);
-	}
-	
-	/**
-	 * SimpleURType always returns null to indicate that 
-	 * there is no base type for this type.
-	 */
-	final public XSDatatype getBaseType() {
-		return null;
-	}
-	
-	/**
-	 * simple ur-type accepts anything.
-	 */
-	protected final boolean checkFormat( String content, ValidationContext context ) {
-		return true;
-	}
-	
-	/**
-	 * the value object of the simple ur-type is the lexical value itself.
-	 */
-	public Object _createValue( String lexicalValue, ValidationContext context ) {
-		return lexicalValue;
-	}
-	public Class getJavaObjectType() {
-		return String.class;
-	}
+    
+    public static final SimpleURType theInstance = new SimpleURType();
+    
+    protected SimpleURType() {
+        super("anySimpleType",WhiteSpaceProcessor.thePreserve);
+    }
+    
+    /**
+     * SimpleURType always returns null to indicate that 
+     * there is no base type for this type.
+     */
+    final public XSDatatype getBaseType() {
+        return null;
+    }
+    
+    /**
+     * simple ur-type accepts anything.
+     */
+    protected final boolean checkFormat( String content, ValidationContext context ) {
+        return true;
+    }
+    
+    /**
+     * the value object of the simple ur-type is the lexical value itself.
+     */
+    public Object _createValue( String lexicalValue, ValidationContext context ) {
+        return lexicalValue;
+    }
+    public Class getJavaObjectType() {
+        return String.class;
+    }
 
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
-		if( value instanceof String )
-			return (String)value;
-		else
-			throw new IllegalArgumentException();
-	}
-	
-	/**
-	 * no facet is applicable to the simple ur-type.
-	 */
-	public final int isFacetApplicable( String facetName ) {
-		return APPLICABLE;
-	}
+    public String convertToLexicalValue( Object value, SerializationContext context ) {
+        if( value instanceof String )
+            return (String)value;
+        else
+            throw new IllegalArgumentException();
+    }
+    
+    /**
+     * no facet is applicable to the simple ur-type.
+     */
+    public final int isFacetApplicable( String facetName ) {
+        return APPLICABLE;
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

@@ -21,8 +21,8 @@ public class IntegerValueType extends Number implements Comparable, java.io.Seri
      * 
      * BNF of canonical representation
      * 
-     * canonical_integer	:=  "0" | nonzero
-     * nonzero				:= '-'? ["1"-"9"] ["0"-"9"]*
+     * canonical_integer    :=  "0" | nonzero
+     * nonzero                := '-'? ["1"-"9"] ["0"-"9"]*
      */
     private final String value;
 
@@ -46,10 +46,10 @@ public class IntegerValueType extends Number implements Comparable, java.io.Seri
      * translates non-canonicalized representation of an integer into
      * an IntegerValueType.
      * 
-     * @return	null
-     *		when the parameter is not even valid with respect to
-     *		the lexical space of "integer" type specified in
-     *		XML Schema datatype spec.
+     * @return    null
+     *        when the parameter is not even valid with respect to
+     *        the lexical space of "integer" type specified in
+     *        XML Schema datatype spec.
      */
     public static IntegerValueType create(String nonCanonicalizedValue) {
         int idx = 0;

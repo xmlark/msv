@@ -16,22 +16,22 @@ package com.sun.msv.datatype.xsd;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class FinalComponent extends Proxy {
-	
-	private final int finalValue;
-	
-	public FinalComponent( XSDatatypeImpl baseType, int finalValue ) {
-		this( baseType.getNamespaceUri(),  baseType.getName(), baseType, finalValue );
-	}
-	
-	public FinalComponent( String nsUri, String newTypeName, XSDatatypeImpl baseType, int finalValue ) {
-		super( nsUri, newTypeName, baseType );
-		this.finalValue = finalValue;
-	}
-	
-	public boolean isFinal( int derivationType ) {
-		if( (finalValue&derivationType) != 0 )	return true;
-		return super.isFinal(derivationType);
-	}
+    
+    private final int finalValue;
+    
+    public FinalComponent( XSDatatypeImpl baseType, int finalValue ) {
+        this( baseType.getNamespaceUri(),  baseType.getName(), baseType, finalValue );
+    }
+    
+    public FinalComponent( String nsUri, String newTypeName, XSDatatypeImpl baseType, int finalValue ) {
+        super( nsUri, newTypeName, baseType );
+        this.finalValue = finalValue;
+    }
+    
+    public boolean isFinal( int derivationType ) {
+        if( (finalValue&derivationType) != 0 )    return true;
+        return super.isFinal(derivationType);
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

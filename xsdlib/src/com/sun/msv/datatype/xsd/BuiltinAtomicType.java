@@ -19,35 +19,35 @@ import org.relaxng.datatype.DatatypeException;
  */
 public abstract class BuiltinAtomicType extends ConcreteType
 {
-	protected BuiltinAtomicType( String typeName, WhiteSpaceProcessor whiteSpace ) {
-		super( XMLSCHEMA_NSURI, typeName, whiteSpace );
-	}
-	
-	protected BuiltinAtomicType( String typeName ) {
-		this( typeName, WhiteSpaceProcessor.theCollapse );
-	}
-	
-	public final int getVariety() { return VARIETY_ATOMIC; }
+    protected BuiltinAtomicType( String typeName, WhiteSpaceProcessor whiteSpace ) {
+        super( XMLSCHEMA_NSURI, typeName, whiteSpace );
+    }
+    
+    protected BuiltinAtomicType( String typeName ) {
+        this( typeName, WhiteSpaceProcessor.theCollapse );
+    }
+    
+    public final int getVariety() { return VARIETY_ATOMIC; }
 
-	
-	public final String displayName() {
+    
+    public final String displayName() {
         // built-in types always have fixed names.
         return getName();
     }
-	
-	protected Object readResolve() throws java.io.ObjectStreamException {
-		// return the sigleton object, if any.
-		String name = getName();
-		if(name!=null) {
-			try {
-				return DatatypeFactory.getTypeByName(name);
-			} catch( DatatypeException e ) {
-				;
-			}
-		}
-		
-		return this;
-	}
+    
+    protected Object readResolve() throws java.io.ObjectStreamException {
+        // return the sigleton object, if any.
+        String name = getName();
+        if(name!=null) {
+            try {
+                return DatatypeFactory.getTypeByName(name);
+            } catch( DatatypeException e ) {
+                ;
+            }
+        }
+        
+        return this;
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

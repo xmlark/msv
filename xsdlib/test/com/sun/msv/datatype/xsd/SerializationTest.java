@@ -25,16 +25,16 @@ import junit.framework.TestSuite;
  */
 public class SerializationTest extends TestCase
 {
-	public SerializationTest( String name ) { super(name); }
-	
-	public static void main(java.lang.String[] args) {
-		junit.textui.TestRunner.run(suite());
-	}
-	
-	public static Test suite() {
-		return new TestSuite(SerializationTest.class);
-	}
-	
+    public SerializationTest( String name ) { super(name); }
+    
+    public static void main(java.lang.String[] args) {
+        junit.textui.TestRunner.run(suite());
+    }
+    
+    public static Test suite() {
+        return new TestSuite(SerializationTest.class);
+    }
+    
     // serialize and de-serialize
     public Object freezeDry( Object dt ) throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -50,8 +50,8 @@ public class SerializationTest extends TestCase
         return ois.readObject();
     }
     
-	/** test singleton-ness of built-in datatypes. */
-	public void testSingletonness() throws Exception {
+    /** test singleton-ness of built-in datatypes. */
+    public void testSingletonness() throws Exception {
         for( int i=0; i<Const.builtinTypeNames.length; i++ ) {
             String name = Const.builtinTypeNames[i];
             

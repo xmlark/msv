@@ -15,9 +15,9 @@ package com.sun.msv.datatype.xsd;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 interface Discrete {
-	/** count the number of item in value type.
-	 * 
-	 * Actual semantics of this method varies.
-	 */
-	public int countLength( Object value );
+    /** count the number of item in value type.
+     * 
+     * Actual semantics of this method varies.
+     */
+    public int countLength( Object value );
 }

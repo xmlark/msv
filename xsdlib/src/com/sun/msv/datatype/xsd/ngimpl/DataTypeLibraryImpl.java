@@ -24,24 +24,24 @@ import com.sun.msv.datatype.xsd.XSDatatype;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DataTypeLibraryImpl implements DatatypeLibrary, DatatypeLibraryFactory {
-	
-	public Datatype createDatatype( String typeName ) throws DatatypeException  {
-		return getType(typeName);
-	}
-	
-	private XSDatatype getType( String typeName) throws DatatypeException {
-		return DatatypeFactory.getTypeByName(typeName);
-	}
-	
-	public DatatypeBuilder createDatatypeBuilder( String typeName ) throws DatatypeException {
-		return new DatatypeBuilderImpl( getType(typeName) );
-	}
-	
-	public DatatypeLibrary createDatatypeLibrary( String uri ) {
-		if( uri.equals("http://www.w3.org/2001/XMLSchema")
-		||  uri.equals("http://www.w3.org/2001/XMLSchema-datatypes"))
-			return this;
-		
-		return null;
-	}
+    
+    public Datatype createDatatype( String typeName ) throws DatatypeException  {
+        return getType(typeName);
+    }
+    
+    private XSDatatype getType( String typeName) throws DatatypeException {
+        return DatatypeFactory.getTypeByName(typeName);
+    }
+    
+    public DatatypeBuilder createDatatypeBuilder( String typeName ) throws DatatypeException {
+        return new DatatypeBuilderImpl( getType(typeName) );
+    }
+    
+    public DatatypeLibrary createDatatypeLibrary( String uri ) {
+        if( uri.equals("http://www.w3.org/2001/XMLSchema")
+        ||  uri.equals("http://www.w3.org/2001/XMLSchema-datatypes"))
+            return this;
+        
+        return null;
+    }
 }

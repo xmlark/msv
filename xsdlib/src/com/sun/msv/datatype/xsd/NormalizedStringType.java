@@ -18,16 +18,16 @@ package com.sun.msv.datatype.xsd;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NormalizedStringType extends StringType {
-	public static final NormalizedStringType theInstance =
+    public static final NormalizedStringType theInstance =
         new NormalizedStringType("normalizedString",true);
-	
+    
     protected NormalizedStringType( String typeName, boolean isAlwaysValid ) {
-		super(typeName, WhiteSpaceProcessor.theReplace, isAlwaysValid);
-	}
-	
-	public XSDatatype getBaseType() {
-		return StringType.theInstance;
-	}
+        super(typeName, WhiteSpaceProcessor.theReplace, isAlwaysValid);
+    }
+    
+    public XSDatatype getBaseType() {
+        return StringType.theInstance;
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

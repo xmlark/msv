@@ -25,17 +25,17 @@ package com.sun.msv.datatype.xsd;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class IDREFType extends NcnameType {
-	
-	public static final IDREFType theInstance = new IDREFType();
-	
-	protected IDREFType()	{ super("IDREF"); }
-	
-	public int getIdType() { return ID_TYPE_IDREF; }
-	
-	protected Object readResolve() {
-		// prevent serialization from breaking the singleton.
-		return theInstance;
-	}
+    
+    public static final IDREFType theInstance = new IDREFType();
+    
+    protected IDREFType()    { super("IDREF"); }
+    
+    public int getIdType() { return ID_TYPE_IDREF; }
+    
+    protected Object readResolve() {
+        // prevent serialization from breaking the singleton.
+        return theInstance;
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

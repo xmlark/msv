@@ -275,7 +275,7 @@ public class BigDateTimeValueType implements IDateTimeValueType {
      * will never be made.
      */
     private IDateTimeValueType normalizedValue = null;
-	
+    
     public IDateTimeValueType normalize() {
         // see if this object is already normalized
         if (zone == null || zone==TimeZone.ZERO)
@@ -303,7 +303,7 @@ public class BigDateTimeValueType implements IDateTimeValueType {
 
         return normalizedValue;
     }
-	
+    
     private static BigInteger nullAs0(BigInteger o) {
         if (o != null)
             return o;
@@ -452,31 +452,31 @@ public class BigDateTimeValueType implements IDateTimeValueType {
     }
 
     /*
-    	public static void main( String[] args )
-    	{
-    		Object o1 = new BigDateTimeValueType( new BigInteger("2001"), new Integer(5), new Integer(1), null, null, null, null );
-    		Object o2 = new BigDateTimeValueType( new BigInteger("2001"), new Integer(5), new Integer(1), null, null, null, null );
-    		
-    		System.out.println(o1.hashCode());
-    		System.out.println(o2.hashCode());
-    		System.out.println(o1.equals(o2));
-    		System.out.println(o2.equals(o1));
-    		
-    		java.util.Set s = new java.util.HashSet();
-    		s.add(o1);
-    		System.out.println( s.contains(o2) );
-    	}
+        public static void main( String[] args )
+        {
+            Object o1 = new BigDateTimeValueType( new BigInteger("2001"), new Integer(5), new Integer(1), null, null, null, null );
+            Object o2 = new BigDateTimeValueType( new BigInteger("2001"), new Integer(5), new Integer(1), null, null, null, null );
+            
+            System.out.println(o1.hashCode());
+            System.out.println(o2.hashCode());
+            System.out.println(o1.equals(o2));
+            System.out.println(o2.equals(o1));
+            
+            java.util.Set s = new java.util.HashSet();
+            s.add(o1);
+            System.out.println( s.contains(o2) );
+        }
     
-    	public static void main( String[] args )
-    	{
-    		Object o1 = new BigDateTimeValueType( new BigInteger("1512"), new Integer(1), new Integer(4), null, null, null, TimeZone.create(-12*60) );
-    		Object o2 = new BigDateTimeValueType( new BigInteger("1512"), new Integer(1), new Integer(5), null, null, null, TimeZone.create(+12*60) );
-    		
-    		System.out.println(o1.hashCode());
-    		System.out.println(o2.hashCode());
-    		System.out.println(o1.equals(o2));
-    		System.out.println(o2.equals(o1));
-    	}
+        public static void main( String[] args )
+        {
+            Object o1 = new BigDateTimeValueType( new BigInteger("1512"), new Integer(1), new Integer(4), null, null, null, TimeZone.create(-12*60) );
+            Object o2 = new BigDateTimeValueType( new BigInteger("1512"), new Integer(1), new Integer(5), null, null, null, TimeZone.create(+12*60) );
+            
+            System.out.println(o1.hashCode());
+            System.out.println(o2.hashCode());
+            System.out.println(o1.equals(o2));
+            System.out.println(o2.equals(o1));
+        }
      */
 
     // serialization support

@@ -20,34 +20,34 @@ import org.relaxng.datatype.ValidationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ByteType extends IntegerDerivedType {
-	public final static ByteType theInstance = new ByteType();
-	private ByteType() {
+    public final static ByteType theInstance = new ByteType();
+    private ByteType() {
         super("byte",createRangeFacet(ShortType.theInstance,
             new Byte(Byte.MIN_VALUE), new Byte(Byte.MAX_VALUE)));
     }
-	
-	final public XSDatatype getBaseType() {
-		return ShortType.theInstance;
-	}
-	
-	public Object _createValue( String content, ValidationContext context ) {
+    
+    final public XSDatatype getBaseType() {
+        return ShortType.theInstance;
+    }
+    
+    public Object _createValue( String content, ValidationContext context ) {
         return load(content);
     }
     
     public static Byte load( String s ) {
-		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
-		try {
-			return new Byte(removeOptionalPlus(s));
-		} catch( NumberFormatException e ) {
-			return null;
-		}
-	}
+        // Implementation of JDK1.2.2/JDK1.3 is suitable enough
+        try {
+            return new Byte(removeOptionalPlus(s));
+        } catch( NumberFormatException e ) {
+            return null;
+        }
+    }
     public static String save( Byte v ) {
         return v.toString();
     }
-	public Class getJavaObjectType() {
-		return Byte.class;
-	}
+    public Class getJavaObjectType() {
+        return Byte.class;
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

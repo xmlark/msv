@@ -20,30 +20,30 @@ import org.relaxng.datatype.ValidationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class UnsignedLongType extends IntegerType {
-	public static final UnsignedLongType theInstance = new UnsignedLongType();
-	private UnsignedLongType() {
+    public static final UnsignedLongType theInstance = new UnsignedLongType();
+    private UnsignedLongType() {
         super("unsignedLong",createRangeFacet(
             NonNegativeIntegerType.theInstance,
             null,
             IntegerValueType.create("18446744073709551615")));
     }
-	
-	final public XSDatatype getBaseType() {
-		return NonNegativeIntegerType.theInstance;
-	}
+    
+    final public XSDatatype getBaseType() {
+        return NonNegativeIntegerType.theInstance;
+    }
 
     /** upper bound value. this is the maximum possible valid value as an unsigned long */
     private static final IntegerValueType upperBound
-		= IntegerValueType.create("18446744073709551615");
-	
-	public Object _createValue( String lexicalValue, ValidationContext context ) {
-		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
-		final IntegerValueType v = IntegerValueType.create(lexicalValue);
-		if(v==null)							return null;
-		if( !v.isNonNegative() )            return null;
-		if( upperBound.compareTo(v)<0 )     return null;
-		return v;
-	}
+        = IntegerValueType.create("18446744073709551615");
+    
+    public Object _createValue( String lexicalValue, ValidationContext context ) {
+        // Implementation of JDK1.2.2/JDK1.3 is suitable enough
+        final IntegerValueType v = IntegerValueType.create(lexicalValue);
+        if(v==null)                            return null;
+        if( !v.isNonNegative() )            return null;
+        if( upperBound.compareTo(v)<0 )     return null;
+        return v;
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

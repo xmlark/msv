@@ -25,40 +25,40 @@ import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class GYearType extends DateTimeBaseType {
-	
-	public static final GYearType theInstance = new GYearType();
-	private GYearType() { super("gYear"); }
+    
+    public static final GYearType theInstance = new GYearType();
+    private GYearType() { super("gYear"); }
 
-	protected void runParserL( ISO8601Parser p ) throws Exception {
-		p.yearTypeL();
-	}
+    protected void runParserL( ISO8601Parser p ) throws Exception {
+        p.yearTypeL();
+    }
 
-	protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception {
-		return p.yearTypeV();
-	}
+    protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception {
+        return p.yearTypeV();
+    }
 
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
-		if(!(value instanceof IDateTimeValueType ))
-			throw new IllegalArgumentException();
-		
-		BigDateTimeValueType bv = ((IDateTimeValueType)value).getBigValue();
-		return	formatYear(bv.getYear())+
-				formatTimeZone(bv.getTimeZone());
-	}
+    public String convertToLexicalValue( Object value, SerializationContext context ) {
+        if(!(value instanceof IDateTimeValueType ))
+            throw new IllegalArgumentException();
+        
+        BigDateTimeValueType bv = ((IDateTimeValueType)value).getBigValue();
+        return    formatYear(bv.getYear())+
+                formatTimeZone(bv.getTimeZone());
+    }
 
-	
-	public String serializeJavaObject( Object value, SerializationContext context ) {
-		if(!(value instanceof Calendar))	throw new IllegalArgumentException();
-		Calendar cal = (Calendar)value;
-		
-		
-		StringBuffer result = new StringBuffer();
+    
+    public String serializeJavaObject( Object value, SerializationContext context ) {
+        if(!(value instanceof Calendar))    throw new IllegalArgumentException();
+        Calendar cal = (Calendar)value;
+        
+        
+        StringBuffer result = new StringBuffer();
 
-		result.append(formatYear(cal.get(Calendar.YEAR)));
-		result.append(formatTimeZone(cal));
-		
-		return result.toString();
-	}
+        result.append(formatYear(cal.get(Calendar.YEAR)));
+        result.append(formatTimeZone(cal));
+        
+        return result.toString();
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

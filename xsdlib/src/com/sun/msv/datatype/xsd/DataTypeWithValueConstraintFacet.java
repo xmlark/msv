@@ -18,19 +18,19 @@ import org.relaxng.datatype.ValidationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class DataTypeWithValueConstraintFacet extends DataTypeWithFacet {
-	
-	DataTypeWithValueConstraintFacet(
-		String nsUri, String typeName, XSDatatypeImpl baseType, String facetName, boolean _isFixed )
-		throws DatatypeException {
-	
-		super( nsUri, typeName, baseType, facetName, _isFixed );
-	}
-	
-	final protected boolean needValueCheck() { return true; }
-	
-	protected final boolean checkFormat( String literal, ValidationContext context ) {
-		return _createValue(literal,context)!=null;
-	}
+    
+    DataTypeWithValueConstraintFacet(
+        String nsUri, String typeName, XSDatatypeImpl baseType, String facetName, boolean _isFixed )
+        throws DatatypeException {
+    
+        super( nsUri, typeName, baseType, facetName, _isFixed );
+    }
+    
+    final protected boolean needValueCheck() { return true; }
+    
+    protected final boolean checkFormat( String literal, ValidationContext context ) {
+        return _createValue(literal,context)!=null;
+    }
     
     // serialization support
     private final static long serialVersionUID =  2497055158497151572L;

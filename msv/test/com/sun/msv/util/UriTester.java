@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
  * Tests the {@link Uri} class.
  * 
  * @author
- * 	Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
+ *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public class UriTester {
     public static void main(String[] args) throws IOException {

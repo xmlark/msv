@@ -21,18 +21,18 @@ import com.sun.msv.datatype.xsd.XSDatatype;
  */
 interface ErrorReceiver
 {
-	/**
-	 * when unexpected result is encountered, this method is called
-	 *
-	 * return true to abort test
-	 */
-	boolean report( UnexpectedResultException exp );
-	
-	/**
-	 * when derivation by restriction failed, this method is called
-	 *
-	 * return true to abort test
-	 */
-	boolean reportTestCaseError( XSDatatype baseType, TypeIncubator incubator,
-		DatatypeException e );
+    /**
+     * when unexpected result is encountered, this method is called
+     *
+     * return true to abort test
+     */
+    boolean report( UnexpectedResultException exp );
+    
+    /**
+     * when derivation by restriction failed, this method is called
+     *
+     * return true to abort test
+     */
+    boolean reportTestCaseError( XSDatatype baseType, TypeIncubator incubator,
+        DatatypeException e );
 }

@@ -20,27 +20,27 @@ import org.relaxng.datatype.ValidationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class PositiveIntegerType extends IntegerType {
-	
-	public static final PositiveIntegerType theInstance = new PositiveIntegerType();
-	private PositiveIntegerType() {
+    
+    public static final PositiveIntegerType theInstance = new PositiveIntegerType();
+    private PositiveIntegerType() {
         super("positiveInteger",createRangeFacet(
             NonNegativeIntegerType.theInstance,
             IntegerValueType.create("1"),
             null));
     }
-	
-	final public XSDatatype getBaseType() {
-		return NonNegativeIntegerType.theInstance;
-	}
-	
-	public Object _createValue( String lexicalValue, ValidationContext context ) {
-		Object o = super._createValue(lexicalValue,context);
-		if(o==null)		return null;
-		
-		final IntegerValueType v = (IntegerValueType)o;
-		if( !v.isPositive() )	return null;
-		return v;
-	}
+    
+    final public XSDatatype getBaseType() {
+        return NonNegativeIntegerType.theInstance;
+    }
+    
+    public Object _createValue( String lexicalValue, ValidationContext context ) {
+        Object o = super._createValue(lexicalValue,context);
+        if(o==null)        return null;
+        
+        final IntegerValueType v = (IntegerValueType)o;
+        if( !v.isPositive() )    return null;
+        return v;
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

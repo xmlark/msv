@@ -23,9 +23,9 @@ import org.relaxng.datatype.ValidationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class IntegerType extends IntegerDerivedType {
-	
+    
     /** Singleton instance. */
-	public static final IntegerType theInstance;
+    public static final IntegerType theInstance;
     
     static {
         try {
@@ -36,42 +36,42 @@ public class IntegerType extends IntegerDerivedType {
         }
     }
 
-	
+    
     
     protected IntegerType(String typeName,XSDatatypeImpl baseFacets) {
         super(typeName,baseFacets);
     }
     
     
-	public XSDatatype getBaseType() {
-		return NumberType.theInstance;
-	}
-	
-	public Object _createValue( String lexicalValue, ValidationContext context ) {
-		return IntegerValueType.create(lexicalValue);
-	}
-	
-	public Object _createJavaObject( String literal, ValidationContext context ) {
-		IntegerValueType o = (IntegerValueType)_createValue(literal,context);
-		if(o==null)		return null;
-		return new BigInteger(o.toString());
-	}
+    public XSDatatype getBaseType() {
+        return NumberType.theInstance;
+    }
+    
+    public Object _createValue( String lexicalValue, ValidationContext context ) {
+        return IntegerValueType.create(lexicalValue);
+    }
+    
+    public Object _createJavaObject( String literal, ValidationContext context ) {
+        IntegerValueType o = (IntegerValueType)_createValue(literal,context);
+        if(o==null)        return null;
+        return new BigInteger(o.toString());
+    }
     
     public static BigInteger load( String s ) {
-		IntegerValueType o = IntegerValueType.create(s);
-		if(o==null)		return null;
-		return new BigInteger(o.toString());
+        IntegerValueType o = IntegerValueType.create(s);
+        if(o==null)        return null;
+        return new BigInteger(o.toString());
     }
     public static String save( BigInteger v ) {
         return v.toString();
     }
-	
-	// the default implementation of the serializeJavaObject method works correctly.
-	// so there is no need to override it here.
-	
-	public Class getJavaObjectType() {
-		return BigInteger.class;
-	}
+    
+    // the default implementation of the serializeJavaObject method works correctly.
+    // so there is no need to override it here.
+    
+    public Class getJavaObjectType() {
+        return BigInteger.class;
+    }
     
 
     

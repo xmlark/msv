@@ -15,21 +15,21 @@ import com.sun.msv.verifier.identity.IDConstraintChecker;
  * Driver for MSV as XML Schema validator.
  */
 public class IValidatorImplForXS extends IValidatorImpl {
-	
-	public IValidatorImplForXS( boolean strict ) {
-		super(strict);
-	}
-	
-	protected Schema getSchemaForSchema() {
-		return XMLSchemaReader.getXmlSchemaForXmlSchema();
-	}
+    
+    public IValidatorImplForXS( boolean strict ) {
+        super(strict);
+    }
+    
+    protected Schema getSchemaForSchema() {
+        return XMLSchemaReader.getXmlSchemaForXmlSchema();
+    }
 
-	protected GrammarReader getReader() {
-		return new XMLSchemaReader( createController(), factory, new ExpressionPool() );
-	}
-	
-	protected IVerifier getVerifier( Grammar grammar ) {
-		return new IDConstraintChecker( (XMLSchemaGrammar)grammar,
-			new ReportErrorHandler() );
-	}
+    protected GrammarReader getReader() {
+        return new XMLSchemaReader( createController(), factory, new ExpressionPool() );
+    }
+    
+    protected IVerifier getVerifier( Grammar grammar ) {
+        return new IDConstraintChecker( (XMLSchemaGrammar)grammar,
+            new ReportErrorHandler() );
+    }
 }

@@ -25,56 +25,56 @@ import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DateTimeType extends DateTimeBaseType {
-	
-	public static final DateTimeType theInstance = new DateTimeType();
-	private DateTimeType() {
-		super("dateTime");
-	}
+    
+    public static final DateTimeType theInstance = new DateTimeType();
+    private DateTimeType() {
+        super("dateTime");
+    }
 
-	protected void runParserL( ISO8601Parser p ) throws Exception {
-		p.dateTimeTypeL();
-	}
+    protected void runParserL( ISO8601Parser p ) throws Exception {
+        p.dateTimeTypeL();
+    }
 
-	protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception {
-		return p.dateTimeTypeV();
-	}
-	
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
-		if(!(value instanceof IDateTimeValueType))
-			throw new IllegalArgumentException();
-		
-		BigDateTimeValueType bv = ((IDateTimeValueType)value).getBigValue();
-		return	formatYear(bv.getYear())+"-"+
-				formatTwoDigits(bv.getMonth(),1)+"-"+
-				formatTwoDigits(bv.getDay(),1)+"T"+
-				formatTwoDigits(bv.getHour())+":"+
-				formatTwoDigits(bv.getMinute())+":"+
-				formatSeconds(bv.getSecond())+
-				formatTimeZone(bv.getTimeZone());
-	}
-	
-	public String serializeJavaObject( Object value, SerializationContext context ) {
-		if(!(value instanceof Calendar))	throw new IllegalArgumentException();
-		Calendar cal = (Calendar)value;
-		
-		
-		StringBuffer result = new StringBuffer();
+    protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception {
+        return p.dateTimeTypeV();
+    }
+    
+    public String convertToLexicalValue( Object value, SerializationContext context ) {
+        if(!(value instanceof IDateTimeValueType))
+            throw new IllegalArgumentException();
+        
+        BigDateTimeValueType bv = ((IDateTimeValueType)value).getBigValue();
+        return    formatYear(bv.getYear())+"-"+
+                formatTwoDigits(bv.getMonth(),1)+"-"+
+                formatTwoDigits(bv.getDay(),1)+"T"+
+                formatTwoDigits(bv.getHour())+":"+
+                formatTwoDigits(bv.getMinute())+":"+
+                formatSeconds(bv.getSecond())+
+                formatTimeZone(bv.getTimeZone());
+    }
+    
+    public String serializeJavaObject( Object value, SerializationContext context ) {
+        if(!(value instanceof Calendar))    throw new IllegalArgumentException();
+        Calendar cal = (Calendar)value;
+        
+        
+        StringBuffer result = new StringBuffer();
 
-		result.append(formatYear(cal.get(Calendar.YEAR)));
-		result.append('-');
-		result.append(formatTwoDigits(cal.get(Calendar.MONTH)+1));
-		result.append('-');
-		result.append(formatTwoDigits(cal.get(Calendar.DAY_OF_MONTH)));
-		result.append('T');
-		result.append(formatTwoDigits(cal.get(Calendar.HOUR_OF_DAY)));
-		result.append(':');
-		result.append(formatTwoDigits(cal.get(Calendar.MINUTE)));
-		result.append(':');
-		result.append(formatSeconds(cal));
-		result.append(formatTimeZone(cal));
+        result.append(formatYear(cal.get(Calendar.YEAR)));
+        result.append('-');
+        result.append(formatTwoDigits(cal.get(Calendar.MONTH)+1));
+        result.append('-');
+        result.append(formatTwoDigits(cal.get(Calendar.DAY_OF_MONTH)));
+        result.append('T');
+        result.append(formatTwoDigits(cal.get(Calendar.HOUR_OF_DAY)));
+        result.append(':');
+        result.append(formatTwoDigits(cal.get(Calendar.MINUTE)));
+        result.append(':');
+        result.append(formatSeconds(cal));
+        result.append(formatTimeZone(cal));
 
-		return result.toString();
-	}
+        return result.toString();
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

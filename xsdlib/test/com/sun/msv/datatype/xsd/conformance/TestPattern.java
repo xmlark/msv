@@ -20,21 +20,21 @@ import com.sun.msv.datatype.xsd.TypeIncubator;
  */
 public interface TestPattern
 {
-	/** returns the number of test cases to be generated */
-	long totalCases();
-	
-	/** restart generating test cases */
-	void reset();
-	
-	/** decorate the given TestCase.
-	 * 
-	 * @return answer
-	 */
-	String get(TypeIncubator ti) throws DatatypeException;
-	
-	/** generate next test case */
-	void next();
-	
-	/** true indicates get method can be safely called */
-	boolean hasMore();
+    /** returns the number of test cases to be generated */
+    long totalCases();
+    
+    /** restart generating test cases */
+    void reset();
+    
+    /** decorate the given TestCase.
+     * 
+     * @return answer
+     */
+    String get(TypeIncubator ti) throws DatatypeException;
+    
+    /** generate next test case */
+    void next();
+    
+    /** true indicates get method can be safely called */
+    boolean hasMore();
 }

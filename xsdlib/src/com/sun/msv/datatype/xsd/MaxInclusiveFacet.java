@@ -21,10 +21,10 @@ public class MaxInclusiveFacet extends RangeFacet {
         throws DatatypeException {
         super( nsUri, typeName, baseType, FACET_MAXINCLUSIVE, limit, _isFixed );
     }
-	
-	protected final boolean rangeCheck( int r ) {
-		return r==Comparator.GREATER || r==Comparator.EQUAL;
-	}
+    
+    protected final boolean rangeCheck( int r ) {
+        return r==Comparator.GREATER || r==Comparator.EQUAL;
+    }
 
     // serialization support
     private static final long serialVersionUID = 1;    

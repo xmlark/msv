@@ -18,30 +18,30 @@ import junit.framework.TestSuite;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DatetimeSuite extends TestCase {    
-	
-	public DatetimeSuite(java.lang.String testName) {
-		super(testName);
-	}
-	
-	public static void main(java.lang.String[] args) {
-		junit.textui.TestRunner.run(suite());
-	}
-	
-	public static Test suite() {
-		//--JUNIT:
-		//This block was automatically generated and can be regenerated again.
-		//Do NOT change lines enclosed by the --JUNIT: and :JUNIT-- tags.
-		TestSuite suite = new TestSuite("DatetimeSuite");
-		suite.addTest(com.sun.msv.datatype.xsd.datetime.TimeDurationFactoryTest.suite());
-		suite.addTest(com.sun.msv.datatype.xsd.datetime.UtilTest.suite());
-		suite.addTest(com.sun.msv.datatype.xsd.datetime.DateTimeFactoryTest.suite());
-		suite.addTest(com.sun.msv.datatype.xsd.datetime.BigTimeDurationValueTypeTest.suite());
-		suite.addTest(com.sun.msv.datatype.xsd.datetime.BigDateTimeValueTypeTest.suite());
-		suite.addTest(com.sun.msv.datatype.xsd.datetime.TimeZoneTest.suite());
-		suite.addTest(com.sun.msv.datatype.xsd.datetime.ISO8601ParserTest.suite());
-		//:JUNIT--
-		//This value MUST ALWAYS be returned from this function.
-		return suite;
-	}
-	
+    
+    public DatetimeSuite(java.lang.String testName) {
+        super(testName);
+    }
+    
+    public static void main(java.lang.String[] args) {
+        junit.textui.TestRunner.run(suite());
+    }
+    
+    public static Test suite() {
+        //--JUNIT:
+        //This block was automatically generated and can be regenerated again.
+        //Do NOT change lines enclosed by the --JUNIT: and :JUNIT-- tags.
+        TestSuite suite = new TestSuite("DatetimeSuite");
+        suite.addTest(com.sun.msv.datatype.xsd.datetime.TimeDurationFactoryTest.suite());
+        suite.addTest(com.sun.msv.datatype.xsd.datetime.UtilTest.suite());
+        suite.addTest(com.sun.msv.datatype.xsd.datetime.DateTimeFactoryTest.suite());
+        suite.addTest(com.sun.msv.datatype.xsd.datetime.BigTimeDurationValueTypeTest.suite());
+        suite.addTest(com.sun.msv.datatype.xsd.datetime.BigDateTimeValueTypeTest.suite());
+        suite.addTest(com.sun.msv.datatype.xsd.datetime.TimeZoneTest.suite());
+        suite.addTest(com.sun.msv.datatype.xsd.datetime.ISO8601ParserTest.suite());
+        //:JUNIT--
+        //This value MUST ALWAYS be returned from this function.
+        return suite;
+    }
+    
 }

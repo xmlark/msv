@@ -64,7 +64,7 @@ public class BatchVerifyTester
 	{
 		if( av.length<2 )
 		{
-			System.out.println("usage RELAXBatchTester (relax|trex) <test case directory>");
+			System.out.println("usage BatchVerifyTester (relax|trex) <test case directory>");
 			return;
 		}
 		

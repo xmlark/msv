@@ -14,6 +14,8 @@ import com.sun.tahiti.compiler.Symbolizer;
 import com.sun.tahiti.grammar.*;
 import com.sun.tahiti.grammar.util.Multiplicity;
 import com.sun.tahiti.grammar.util.ClassCollector;
+import com.sun.tahiti.reader.NameUtil;
+import com.sun.tahiti.util.text.Formatter;
 import java.util.Iterator;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -67,9 +69,28 @@ class JavaGenerator
 		return MessageFormat.format(fmt,new Object[]{arg1,arg2,arg3});
 	}
 	
+	/**
+	 * computes the type name that will can be placed into the source code.
+	 * 
+	 * If the given type obejct is in the current package, then only the local type
+	 * name is returned. Otherwise fully qualified name is returned.
+	 */
+	private String toPrintName( Type type ) {
+		if( packageName.equals( type.getPackageName() )
+		||  "java.lang".equals( type.getPackageName() ) )
+			return type.getBareName();
+		else
+			return type.getTypeName();
+	}
 	
 	/**
-	 * writes body of ClassItem.
+	 * the name of the package into which this class is placed.
+	 * This field is set to null to indicate the root package.
+	 */
+	private String packageName;
+	
+	/**
+	 * writes the body of a ClassItem.
 	 */
 	private void writeClass( TypeItem type, PrintWriter out ) {
 
@@ -81,7 +102,7 @@ class JavaGenerator
 		else							iitm = (InterfaceItem)type;
 	
 		
-		String packageName = type.getPackageName();
+		packageName = type.getPackageName();
 		if( packageName!=null )
 			out.println(format("package {0};\n",packageName));
 		
@@ -93,15 +114,17 @@ class JavaGenerator
 			citm!=null?"class":"interface",	type.getBareName() ));
 		
 		if( citm!=null && citm.getSuperType()!=null )
-			out.print(format(" extends {0}",type.getSuperType().getTypeName()));
+			out.print(format(" extends {0}",
+				toPrintName( type.getSuperType() ) ));
 		
 		Type[] itfs = type.getInterfaces();
 		if(itfs.length!=0) {
 			out.print(format(" {0} {1}",
-				citm!=null?"implements":"extends", itfs[0].getTypeName()));
+				citm!=null?"implements":"extends",
+				toPrintName(itfs[0])));
 			
 			for( int i=1;i<itfs.length;i++ )
-				out.print(format(", {0}",itfs[i].getTypeName()));
+				out.print(format(", {0}",toPrintName(itfs[i])));
 		}
 		
 		out.println(" {");
@@ -115,17 +138,46 @@ class JavaGenerator
 			FieldUse fu = (FieldUse)type.fields.get(fieldName);
 			
 			Container cont = getContainer(fu);
+			
+			
+/*		// simple version: public field
 			out.println(format("\tpublic {0} {1} = {2};\n",
 				new Object[]{
 					cont.getTypeStr(),
 					fu.name,
 					cont.getInitializer() }));
+*/			
+		// complex version: protected field with accessor method
+			out.println(Formatter.format(
+				"\n"+
+				"//\n"+
+				"// <%2>\n"+
+				"//\n"+
+				"	protected <%1> <%2> = <%3>;\n"+
+				"	public void set<%0>( <%1> newVal ) {\n"+
+				"		this.<%2> = newVal;\n"+
+				"	}\n"+
+				"	\n"+
+				"	public <%1> get<%0>() {\n"+
+				"		return <%2>;\n"+
+				"	}\n",
+				new Object[]{
+					NameUtil.xmlNameToJavaName( "class", fu.name ),
+					cont.getTypeStr(),
+					fu.name,
+					cont.getInitializer(),
+				}));
 		}
 		
 	// generate the setField method
 	//------------------------------------------
 		if( citm!=null ) {
 			out.println("\n\n");
+			out.println(
+				"\t/**\n"+
+				"\t * unmarshalling handler.\n"+
+				"\t * This method is called to unmarshall objects from XML.\n"+
+				"\t */");
 			out.println("\tpublic void setField( NamedSymbol name, Object item ) throws Exception {");
 			itr = type.fields.keySet().iterator();
 			while( itr.hasNext() ) {
@@ -171,10 +223,7 @@ class JavaGenerator
 			// use item type itself.
 			return new Container(){
 				public String getTypeStr() {
-					if( fu.type.getPackageName().equals("java.lang") )
-						return fu.type.getBareName();
-					else
-						return fu.type.getTypeName();
+					return toPrintName(fu.type);
 				}
 				public String getInitializer() {
 					return "null";

@@ -2,12 +2,13 @@ package com.sun.tranquilo.datatype;
 
 import java.util.Map;
 import java.util.Vector;
+import java.util.Iterator;
 
 /**
  * Type-safe map that contains facets bundle.
  *
  */
-class Facets
+public class Facets
 {
 	/** storage for non-repeatable facets */
 	private final Map impl = new java.util.HashMap();
@@ -15,6 +16,19 @@ class Facets
 	private static boolean isRepeatable( String facetName )
 	{
 		return facetName.equals("enumeration") || facetName.equals("pattern");
+	}
+	
+	public Facets() {}
+	
+	/** shallow copy constructor.
+	 * 
+	 * this constructor does NOT produce a deep copy.
+	 * "consume" method and read operations can be safely used,
+	 * but do not call other methods.
+	 */
+	public Facets( Facets rhs )
+	{
+		this.impl.putAll(rhs.impl);
 	}
 	
 	/** adds a facet to this set.
@@ -67,7 +81,7 @@ class Facets
 	 */
 	public String getFacet( String facetName )
 	{
-		return (String)impl.get(facetName);
+		return (String)((FacetInfo)impl.get(facetName)).value;
 	}
 	
 	/**
@@ -78,7 +92,7 @@ class Facets
 	 */
 	public Vector getVector(String facetName)
 	{
-		return (Vector)impl.get(facetName);
+		return (Vector)((FacetInfo)impl.get(facetName)).value;
 	}
 	
 	/**
@@ -158,6 +172,28 @@ class Facets
 		return impl.isEmpty();
 	}
 	
+	/** merge the contents of rhs into this object.
+	 *
+	 * "fixed" properties are ignored.
+	 */
+	public void merge( Facets rhs )
+		throws BadTypeException
+	{
+		Iterator itr = rhs.impl.keySet().iterator();
+		while(itr.hasNext())
+		{
+			String key = (String)itr.next();
+			if( isRepeatable(key) )
+			{
+				Vector vec = rhs.getVector(key);
+				for( int i=0; i<vec.size(); i++ )
+					add( key,(String)vec.elementAt(i),false );
+			}
+			else
+				add( key, rhs.getFacet(key), false );
+		}
+	}
+	
 	private static class FacetInfo
 	{
 		public Object value;
@@ -167,5 +203,46 @@ class Facets
 			this.value = value;
 			this.fixed = fixed;
 		}
+	}
+	
+	/** dumps the contents to the given object.
+	 * 
+	 * this method is for debug use only.
+	 */
+	public void dump( java.io.PrintStream out )
+	{
+		Iterator itr = impl.keySet().iterator();
+		while(itr.hasNext())
+		{
+			String facetName = (String)itr.next();
+			FacetInfo fi = (FacetInfo)impl.get(facetName);
+			
+			if( fi.value instanceof String )
+				out.println( facetName + " : " + (String)fi.value );
+			else
+			{
+				out.println( facetName + " :");
+				Vector v = (Vector)fi.value;
+				for( int i=0; i<v.size(); i++ )
+					out.println( "  " +v.elementAt(i) );
+			}
+		}
+	}
+	
+	/** gets names of the facets in this object
+	 *
+	 * this method is used to produce error messages
+	 */
+	public String getFacetNames()
+	{
+		String r="";
+		Iterator itr = impl.keySet().iterator();
+		while(itr.hasNext())
+		{
+			if(r.length()!=0)	r+=", ";
+			r += (String)itr.next();
+		}
+		
+		return r;
 	}
 }

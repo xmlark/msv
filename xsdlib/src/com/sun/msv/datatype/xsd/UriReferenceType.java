@@ -28,22 +28,18 @@ import java.io.ByteArrayInputStream;
  */
 public class UriReferenceType extends DataTypeImpl
 {
-	/** singleton access to the plain string type */
-	public static UriReferenceType theInstance =
-		new UriReferenceType("uriReference",null,null,null);
+	public static final UriReferenceType theInstance = new UriReferenceType();
+	private UriReferenceType() { super("uriReference"); }
 	
-	public boolean verify( String content )
+	protected boolean checkFormat( String content )
 	{
-		// performs whitespace pre-processing
-		content = WhiteSpaceProcessor.theCollapse.process(content);
-		
-		// checks additional facets
-		if( pattern!=null && !pattern.verify(content) )		return false;
-		if( lengths!=null && !lengths.verify(UnicodeUtil.countLength(content)))	return false;
-		
-		// we use lexical value as a value in value space for uriReference.
-		// so we don't need to call convertValue method here.
-		if( enumeration!=null && !enumeration.verify(content) )	return false;
+		return convertToValue(content)!=null;
+	}
+	
+	public Object convertToValue( String content )
+	{
+		// we can't use java.net.URL (for example, it cannot handle IPv6.)
+		// so use lexical value instead
 		
 		try
 		{// make sure it conforms [RFC2396] (amended by [RFC2732])
@@ -62,55 +58,22 @@ public class UriReferenceType extends DataTypeImpl
 		}
 		catch( Exception e )
 		{
-			return false;
+			return null;
 		}
 		
-		return true;
+		return content;
 	}
 	
-	public DataTypeErrorDiagnosis diagnose( String content )
+	public final int isFacetApplicable( String facetName )
 	{
-		// TODO : implement this method
-		return null;
+		// TODO : should we allow scale facet, or not?
+		if( facetName.equals(FACET_LENGTH)
+		||	facetName.equals(FACET_MINLENGTH)
+		||	facetName.equals(FACET_MAXLENGTH)
+		||	facetName.equals(FACET_PATTERN)
+		||	facetName.equals(FACET_ENUMERATION) )
+			return APPLICABLE;
+		else
+			return NOT_ALLOWED;
 	}
-	
-	public Object convertValue( String lexicalValue )
-	{
-		// we can't use java.net.URL (for example, it cannot handle IPv6.)
-		// just for now, use lexical value
-		return lexicalValue;
-	}
-	
-	public DataType derive( String newName, Facets facets )
-		throws BadTypeException
-	{
-		// no facets specified. So no need for derivation
-		if( facets.isEmpty() )		return this;
-
-		return new UriReferenceType( newName,
-			LengthFacet.merge(this.lengths,facets),
-			PatternFacet.merge(this.pattern,facets),
-			EnumerationFacet.merge(this,this.enumeration,facets) );
-	}
-	
-	private final LengthFacet lengths;
-	private final PatternFacet pattern;
-	private final EnumerationFacet enumeration;
-	
-	/**
-	 * constructor for derived-type from uriReference by restriction.
-	 * 
-	 * To derive a datatype by restriction from uriReference, call derive method.
-	 * This method is only accessible within this class.
-	 */
-	private UriReferenceType( String typeName, 
-					    LengthFacet lengths, PatternFacet pattern,
-						EnumerationFacet enumeration )
-	{
-		super( typeName );
-		this.lengths	= lengths;
-		this.pattern	= pattern;
-		this.enumeration= enumeration;
-	}
-	
 }

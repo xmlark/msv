@@ -11,47 +11,25 @@ package com.sun.tranquilo.datatype;
  */
 public class UnsignedIntType extends LongType
 {
-	/** singleton access to the plain unsignedInt type */
-	public static UnsignedIntType theInstance
-		= new UnsignedIntType("unsignedInt",null,null,null,null);
-	
-    /** upper bound value. this is the maximum possible valid value as an unsigned int */
-    private static final long upperBound
-                            = 4294967295L;
-    
-	public Object convertValue( String lexicalValue )
-		throws ConvertionException
-	{
-        Long v = (Long)super.convertValue(lexicalValue);
-        if( v.longValue()<0 )               throw new ConvertionException();
-        if( v.longValue()>upperBound )      throw new ConvertionException();
-		return v;
-	}
-	
-	public DataType derive( String newName, Facets facets )
-		throws BadTypeException
-	{
-		// no facets specified. So no need for derivation
-		if( facets.isEmpty() )		return this;
+	public static final UnsignedIntType theInstance = new UnsignedIntType();
+	private UnsignedIntType() { super("unsignedInt"); }
 
-		return new UnsignedIntType( newName,
-			RangeFacet.merge(this,this.range,facets),
-			PrecisionScaleFacet.merge(this.precisionScale,facets),
-			PatternFacet.merge(this.pattern,facets),
-			EnumerationFacet.merge(this,this.enumeration,facets) );
-	}
+    /** upper bound value. this is the maximum possible valid value as an unsigned int */
+    private static final long upperBound = 4294967295L;
 	
-	/**
-	 * constructor for derived-type from unsignedInt by restriction.
-	 * 
-	 * To derive a datatype by restriction from unsignedInt, call derive method.
-	 * This method is only accessible within this class.
-	 */
-	private UnsignedIntType( String typeName, 
-					    RangeFacet range, PrecisionScaleFacet precisionScale, PatternFacet pattern,
-						EnumerationFacet enumeration )
+	public Object convertToValue( String lexicalValue )
 	{
-		super( typeName, range, precisionScale, pattern, enumeration );
+		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
+		try
+		{
+			Long v = (Long)super.convertToValue(lexicalValue);
+			if( v.longValue()<0 )               return null;
+			if( v.longValue()>upperBound )      return null;
+			return v;
+		}
+		catch( NumberFormatException e )
+		{
+			return null;
+		}
 	}
-	
 }

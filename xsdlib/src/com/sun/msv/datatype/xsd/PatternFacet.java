@@ -29,7 +29,7 @@ import java.util.Vector;
  * "pattern" is a constraint facet which is applied against lexical space.
  * See http://www.w3.org/TR/xmlschema-2/#dt-pattern for the spec
  */
-public class PatternFacet
+public class PatternFacet extends DataTypeWithLexicalConstraintFacet
 {
 	/** actual object that performs regular expression validation.
 	 *
@@ -37,14 +37,6 @@ public class PatternFacet
 	 */
 	final private RegularExpression[] exps;
 
-	/** a flag that indicates pattern facet is fixed and therefore
-	 *  no further derivation is possible
-	 */
-	final private boolean isFixed;
-	
-	/** PatternFacet of base type. can be null */
-	final private PatternFacet base;
-		
 	
 	
 	/**
@@ -53,11 +45,16 @@ public class PatternFacet
 	 *		(see http://www.w3.org/TR/xmlschema-2/#dt-regex )
 	 *		There patterns are considered as an 'OR' set.
 	 */
-	public PatternFacet( PatternFacet base, Vector regExps, boolean isFixed )
+	public PatternFacet( String typeName, DataTypeImpl baseType, Facets facets )
 		throws BadTypeException
 	{
+		super( typeName, baseType, FACET_PATTERN, facets );
+		
+		
 		// TODO : am I supposed to implement my own regexp validator?
 		// at this time, I use Xerces' one.
+		
+		Vector regExps = facets.getVector(FACET_PATTERN);
 		
 		exps = new RegularExpression[regExps.size()];
 		try
@@ -72,72 +69,19 @@ public class PatternFacet
 				pe.getMessage() );
 		}
 		
-		this.base = base;
-		this.isFixed = isFixed;
+		facets.consume(FACET_PATTERN);
 	}
 	
-	/**
-	 * checks if 'content' matchs this pattern
-	 * 
-	 * @return true if 'content' is accepted by this pattern
-	 */
-	public boolean verify( String lexicalValue )
+	protected final boolean checkLexicalConstraint( String literal )
 	{
-		if(base!=null)
-			if(!base.verify(lexicalValue))
-				return false;	// chain of ExpSet is considered as AND set
+		// makes sure that the base type is satisfied
+		if( !baseType.checkFormat(literal) )	return false;
 
+		// makes sure that at least one of the patterns is satisfied.
 		for( int i=0; i<exps.length; i++ )
-			if(exps[i].matches(lexicalValue))
+			if(exps[i].matches(literal))
 				return true;
-
+		// otherwise fail
 		return false;
-	}
-	
-	/**
-	 * computes the reason of error
-	 * 
-	 * Application can call this method to provide detailed error message to user.
-	 * This method is kept separate from verify method to achieve higher performance
-	 * if no such message is necessary at all.
-	 * 
-	 * @return null
-	 *		if 'content' is accepted by this pattern, or 
-	 *		if the derived class doesn't support this operation
-	 */
-	public DataTypeErrorDiagnosis diagnose( String lexicalValue )
-	{
-		return null;
-	}
-	
-	/**
-	 * returns a PatternFacet object if "pattern" facet is specified.
-	 * Otherwise returns null.
-	 */
-	public static PatternFacet create( Facets facets )
-		throws BadTypeException
-	{
-		return merge(null,facets);
-	}
-	
-	public static PatternFacet merge( PatternFacet base, Facets facets )
-		throws BadTypeException
-	{
-		// if no pattern facet is specified
-		if( !facets.contains("pattern") )
-			return base;
-		
-		// makes sure that further derivation is allowed
-		if( base!=null && base.isFixed )
-			throw new BadTypeException(
-				BadTypeException.ERR_OVERRIDING_FIXED_FACET, "pattern" );
-		
-		PatternFacet r = new PatternFacet(
-			base!=null?base:null,
-			facets.getVector("pattern"),
-			facets.isFixed("pattern") );
-		
-		facets.consume("pattern");
-		return r;
 	}
 }

@@ -19,108 +19,45 @@
  */
 package com.sun.tranquilo.datatype;
 
-import java.util.Hashtable;
-
 /**
  * "string" and string-derived types
  * 
  * See http://www.w3.org/TR/xmlschema-2/#string for the spec
  */
-public class StringType extends DataTypeImpl
+public class StringType extends DataTypeImpl implements Discrete
 {
-	/** singleton access to the plain string type */
-	public static StringType theInstance = new StringType("string");
+	public static final StringType theInstance
+		= new StringType("string",WhiteSpaceProcessor.thePreserve);
 	
-	public boolean verify( String content )
-	{
-		// if base type exists, verify lexical value with the base type
-		if( baseType!=null & !baseType.verify(content) )	return false;
-		
-		// performs whitespace pre-processing
-		if( whiteSpace!=null )	content = whiteSpace.process(content);
-		
-		// checks additional facets
-		if( pattern!=null && !pattern.verify(content) )		return false;
-		if( lengths!=null && !lengths.verify(UnicodeUtil.countLength(content)))	return false;
-		
-		// string is a special case that lexical space is exactly the same as value space.
-		// so we don't need to call convertValue method here.
-		if( enumeration!=null && !enumeration.verify(content) )	return false;
-		
-		// XML parser should already checked that
-		// the lexical value is actually a sequence of characters
-		// specified in http://www.w3.org/TR/REC-xml#NT-Char
-		
-		// so no further check is necessary
-		
-		return true;
+	protected StringType( String typeName, WhiteSpaceProcessor whiteSpace )
+	{ super(typeName,whiteSpace); }
+	
+	protected final boolean checkFormat( String content )
+	{// string derived types should use convertToValue method to check its validity
+		return convertToValue(content)!=null;
 	}
 	
-	public DataTypeErrorDiagnosis diagnose( String content )
-	{
-		// TODO : implement this method
-		return null;
-	}
-	
-	public Object convertValue( String lexicalValue )
+	public Object convertToValue( String lexicalValue )
 	{// for string, lexical space is value space by itself
 		return lexicalValue;
 	}
 	
-	public DataType derive( String newName, Hashtable facets )
-		throws BadTypeException
-	{
-		// no facets specified. So no need for derivation
-		if( facets.size()==0 )		return this;
-
-		return new StringType( newName,
-							   LengthFacet.merge(this,facets),
-							   PatternFacet.merge(this,facets),
-							   EnumerationFacet.create(this,facets),
-							   WhiteSpaceProcessor.create(facets),
-							   this );
+	public final int countLength( Object value )
+	{// for string-derived types, length means number of XML characters.
+		return UnicodeUtil.countLength( (String)value );
 	}
 	
-	private final LengthFacet lengths;
-	private final PatternFacet pattern;
-	private final EnumerationFacet enumeration;
-	private final WhiteSpaceProcessor whiteSpace;
-	private final DataType baseType;
-	
-	/**
-	 * creates a plain string type which is specified in
-	 * http://www.w3.org/TR/xmlschema-2/#string
-	 * 
-	 * This method is only accessible within this class.
-	 * To use a plain string type, use theInstance property instead.
-	 */
-	protected StringType( String typeName )
+	public final int isFacetApplicable( String facetName )
 	{
-		super( typeName );
-		lengths		= null;
-		pattern		= null;
-		enumeration	= null;
-		whiteSpace	= null;
-		baseType	= null;
+		// TODO : should we allow scale facet, or not?
+		if( facetName.equals(FACET_PATTERN)
+		||	facetName.equals(FACET_ENUMERATION)
+		||	facetName.equals(FACET_WHITESPACE)
+		||	facetName.equals(FACET_LENGTH)
+		||	facetName.equals(FACET_MAXLENGTH)
+		||	facetName.equals(FACET_MINLENGTH) )
+			return APPLICABLE;
+		else
+			return NOT_ALLOWED;
 	}
-	
-	/**
-	 * constructor for derived-type from string by restriction.
-	 * 
-	 * To derive a datatype by restriction from string, call derive method.
-	 * This method is only accessible within this class.
-	 */
-	protected StringType( String typeName, 
-					    LengthFacet lengths, PatternFacet pattern,
-						EnumerationFacet enumeration, WhiteSpaceProcessor whiteSpace,
-						DataType baseType )
-	{
-		super( typeName );
-		this.lengths	= lengths;
-		this.pattern	= pattern;
-		this.enumeration= enumeration;
-		this.whiteSpace	= whiteSpace;
-		this.baseType	= baseType;
-	}
-	
 }

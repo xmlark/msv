@@ -14,36 +14,41 @@ public class IntegerValueType implements Comparable
 	 */
 	private final String value;
 	
+	/** internal use only: construct object from canonicalized value */
+	private IntegerValueType( String canonicalizedValue )
+	{
+		value = canonicalizedValue;
+	}
+	
 	/**
 	 * translates non-canonicalized representation of an integer into
 	 * an IntegerValueType.
 	 * 
-	 * @exception	ConvertionException
+	 * @return	null
 	 *		when the parameter is not even valid with respect to
 	 *		the lexical space of "integer" type specified in
 	 *		XML Schema datatype spec.
 	 */
-	public IntegerValueType( String nonCanonicalizedValue )
-		throws ConvertionException
+	public static IntegerValueType create( String nonCanonicalizedValue )
 	{
 		int idx=0; String v="";
 		final int len = nonCanonicalizedValue.length();
 		
-		if(len==0)	throw new ConvertionException();
+		if(len==0)	return null;
 		switch(nonCanonicalizedValue.charAt(idx))
 		{
 		case '+':
 			idx++;
 			break;	// ignore the sign
 		case '-':
-			v += "-";
+			v += '-';
 			idx++;
 			break;
 		case '0': case '1': case '2': case '3': case '4':
 		case '5': case '6': case '7': case '8': case '9':
 			break;
 		default:
-			throw new ConvertionException();
+			return null;
 		}
 		
 		// skip leading '0'
@@ -52,8 +57,7 @@ public class IntegerValueType implements Comparable
 		
 		if( idx==len )
 		{// all the digits are skipped : that means this value is 0
-			value = "0";
-			return;
+			return new IntegerValueType("0");
 		}
 		
 		// adding digits
@@ -61,10 +65,10 @@ public class IntegerValueType implements Comparable
 		{
 			final char ch = nonCanonicalizedValue.charAt(idx++);
 			if( '0'<=ch && ch<='9' )	v += ch;
-			else						throw new ConvertionException();	// illegal char
+			else						return null;	// illegal char
 		}
 		
-		value = v;
+		return new IntegerValueType(v);
 	}
 	
 	/**
@@ -101,7 +105,7 @@ public class IntegerValueType implements Comparable
 		while( llen>0 )
 		{
 			final char lch = value.charAt(lp++);
-			final char rch = value.charAt(rp++);
+			final char rch = rhs.value.charAt(rp++);
 			
 			if( lch > rch )		return lhsIsNegative?-1:1;
 			if( lch < rch )		return lhsIsNegative?1:-1;

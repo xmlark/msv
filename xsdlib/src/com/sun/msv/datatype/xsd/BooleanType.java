@@ -26,58 +26,25 @@ package com.sun.tranquilo.datatype;
  */
 public class BooleanType extends DataTypeImpl
 {
-	/** singleton access to the plain string type */
-	public static BooleanType theInstance = new BooleanType("boolean",null);
-
-	public boolean verify( String content )
+	public static final BooleanType theInstance = new BooleanType();
+	
+	private BooleanType()	{ super("boolean"); }
+	
+	protected boolean checkFormat( String content )
 	{
-		// performs whitespace pre-processing
-		content = WhiteSpaceProcessor.theCollapse.process(content);
-		
-		// checks additional facets
-		if( pattern!=null && !pattern.verify(content) )		return false;
-
-		// checks the lexical value
 		return "true".equals(content) || "false".equals(content);
 	}
 	
-	public DataTypeErrorDiagnosis diagnose( String content )
-	{
-		// TODO : implement this method
+	public Object convertToValue( String lexicalValue )
+	{// for string, lexical space is value space by itself
+		if( lexicalValue.equals("true") )		return Boolean.TRUE;
+		if( lexicalValue.equals("false") )		return Boolean.FALSE;
 		return null;
 	}
 	
-	public Object convertValue( String lexicalValue )
-		throws ConvertionException
-	{// for string, lexical space is value space by itself
-		if( lexicalValue.equals("true") )		return new Boolean(true);
-		if( lexicalValue.equals("false") )		return new Boolean(false);
-		throw new ConvertionException();
-	}
-	
-	public DataType derive( String newName, Facets facets )
-		throws BadTypeException
+	public int isFacetApplicable( String facetName )
 	{
-		// no facets specified. So no need for derivation
-		if( facets.isEmpty() )		return this;
-
-		return new BooleanType( newName,
-								PatternFacet.merge(this.pattern,facets)
-								);
+		if(facetName.equals("pattern"))		return APPLICABLE;
+		return NOT_ALLOWED;
 	}
-
-	private final PatternFacet pattern;
-	
-	/**
-	 * constructor for derived-type from boolean by restriction.
-	 * 
-	 * To derive a datatype by restriction from boolean, call derive method.
-	 * This method is only accessible within this class.
-	 */
-	private BooleanType( String typeName, PatternFacet pattern )
-	{
-		super( typeName );
-		this.pattern	= pattern;
-	}
-	
 }

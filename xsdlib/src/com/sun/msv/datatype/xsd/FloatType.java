@@ -5,49 +5,12 @@ package com.sun.tranquilo.datatype;
  * 
  * See http://www.w3.org/TR/xmlschema-2/#float for the spec
  */
-public class FloatType extends DataTypeImpl
+public class FloatType extends FloatingNumberType
 {
-	/** singleton access to the plain float type */
-	public static FloatType theInstance =
-		new FloatType("float",null,null,null);
+	public static final FloatType theInstance = new FloatType();
+	private FloatType() { super("float"); }
 	
-	public boolean verify( String content )
-	{
-		// performs whitespace pre-processing
-		content = WhiteSpaceProcessor.theCollapse.process(content);
-		
-		// checks additional facets
-		if( pattern!=null && !pattern.verify(content) )		return false;
-
-		// checks constraints over value space
-		FloatValueType value;
-		try
-		{
-			value = (FloatValueType)convertValue(content);
-		}
-		catch( ConvertionException e ) { return false; }
-		
-		
-		if( range!=null   && !range.verify(value) )				return false;
-		if( enumeration!=null && !enumeration.verify(value) )	return false;
-		
-		return true;
-	}
-	
-	public DataTypeErrorDiagnosis diagnose( String content )
-	{
-		// TODO : implement this method
-		return null;
-	}
-	
-	private static boolean isDigitOrPeriod( char ch )
-	{
-		if( '0'<=ch && ch<='9' )	return true;
-		return ch=='.';
-	}
-	
-	public Object convertValue( String lexicalValue )
-		throws ConvertionException
+	public Object convertToValue( String lexicalValue )
 	{// TODO : quick hack. Spec doesn't allow me directly to use FloatValueType.valueOf method
 		
 		/* Incompatibilities of XML Schema's float "xfloat" and Java's float "jfloat"
@@ -67,56 +30,22 @@ public class FloatType extends DataTypeImpl
 		
 		try
 		{
-			if(lexicalValue.equals("NaN"))	return new FloatValueType(FloatValueType.NaN);
-			if(lexicalValue.equals("INF"))	return new FloatValueType(FloatValueType.POSITIVE_INFINITY);
-			if(lexicalValue.equals("-INF"))	return new FloatValueType(FloatValueType.NEGATIVE_INFINITY);
+			if(lexicalValue.equals("NaN"))	return new Float(Float.NaN);
+			if(lexicalValue.equals("INF"))	return new Float(Float.POSITIVE_INFINITY);
+			if(lexicalValue.equals("-INF"))	return new Float(Float.NEGATIVE_INFINITY);
 			
-			if(lexicalValue.length()==0)
-				throw new ConvertionException();
-			if(!isDigitOrPeriod(lexicalValue.charAt(0)))
-				throw new ConvertionException();
-			if(!isDigitOrPeriod(lexicalValue.charAt(lexicalValue.length()-1)))
-				throw new ConvertionException();
+			if(lexicalValue.length()==0
+			|| !isDigitOrPeriod(lexicalValue.charAt(0))
+			|| !isDigitOrPeriod(lexicalValue.charAt(lexicalValue.length()-1)) )
+				return null;
 			
 			// these screening process is necessary due to the wobble of Float.valueOf method
-			return FloatValueType.valueOf(lexicalValue);
+			return Float.valueOf(lexicalValue);
 		}
 		catch( NumberFormatException e )
 		{
-			throw new ConvertionException();
+			return null;
 		}
-	}
-	
-	public DataType derive( String newName, Facets facets )
-		throws BadTypeException
-	{
-		// no facets specified. So no need for derivation
-		if( facets.isEmpty() )		return this;
-
-		return new FloatType( newName,
-			RangeFacet.merge(this,facets),
-			PatternFacet.merge(this,facets),
-			EnumerationFacet.merge(this,this.enumeration,facets) );
-	}
-	
-	private final RangeFacet range;
-	private final PatternFacet pattern;
-	private final EnumerationFacet enumeration;
-	
-	/**
-	 * constructor for derived-type from float by restriction.
-	 * 
-	 * To derive a datatype by restriction from float, call derive method.
-	 * This method is only accessible within this class.
-	 */
-	private FloatType( String typeName, 
-					    RangeFacet range, PatternFacet pattern,
-						EnumerationFacet enumeration )
-	{
-		super( typeName );
-		this.range		= range;
-		this.pattern	= pattern;
-		this.enumeration= enumeration;
 	}
 	
 }

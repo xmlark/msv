@@ -10,10 +10,10 @@ import java.math.BigInteger;
  *
  *<p>
  * This class provides comparision with other DateComponent,
- * with respect to TimeZoneComponent
+ * with TimeZoneComponent in mind.
  *
  *<p>
- * Order relation of YearComponent is partial.
+ * Order relation of DateComponent is partial.
  * 
  * a.compareTo(b) a.equals(b)   relation
  * -------------------------------------

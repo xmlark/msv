@@ -19,7 +19,6 @@
  */
 package com.sun.tranquilo.datatype;
 
-import java.util.Hashtable;
 import com.sun.xml.util.XmlNames;
 
 /**
@@ -27,62 +26,14 @@ import com.sun.xml.util.XmlNames;
  * 
  * See http://www.w3.org/TR/xmlschema-2/#NMTOKEN for the spec
  */
-public class NmtokenType extends StringType
+public class NmtokenType extends TokenType
 {
-	/** singleton access to the plain NMTOKEN type */
-	public static NmtokenType theInstance = new NmtokenType("NMTOKEN");
+	public static final NmtokenType theInstance = new NmtokenType();
+	private NmtokenType() { super("NMTOKEN"); }
 	
-	public boolean verify( String content )
+	public Object convertToObject( String content )
 	{
-		if(!super.verify(content))	return false;
-		
-		return XmlNames.isNmtoken(content);
+		if(XmlNames.isNmtoken(content))		return content;
+		else								return null;
 	}
-	
-	public DataTypeErrorDiagnosis diagnose( String content )
-	{
-		// TODO : implement this method
-		return null;
-	}
-	
-	public DataType derive( String newName, Hashtable facets )
-		throws BadTypeException
-	{
-		// no facets specified. So no need for derivation
-		if( facets.size()==0 )		return this;
-
-		return new NmtokenType(	newName,
-								LengthFacet.merge(this,facets),
-								PatternFacet.merge(this,facets),
-								EnumerationFacet.create(this,facets),
-								WhiteSpaceProcessor.create(facets),
-								this );
-	}
-	
-	/**
-	 * creates a plain NMTOKEN type which is specified in
-	 * http://www.w3.org/TR/xmlschema-2/#NMTOKEN
-	 * 
-	 * This method is only accessible within this class.
-	 * To use a plain NMTOKEN type, use theInstance property instead.
-	 */
-	protected NmtokenType( String typeName )
-	{
-		super( typeName );
-	}
-	
-	/**
-	 * constructor for derived-type from NMTOKEN by restriction.
-	 * 
-	 * To derive a datatype by restriction from NMTOKEN, call derive method.
-	 * This method is only accessible within this class.
-	 */
-	protected NmtokenType( String typeName, 
-					    LengthFacet lengths, PatternFacet pattern,
-						EnumerationFacet enumeration, WhiteSpaceProcessor whiteSpace,
-						DataType baseType )
-	{
-		super( typeName, lengths, pattern, enumeration, whiteSpace, baseType );
-	}
-	
 }

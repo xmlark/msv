@@ -5,37 +5,11 @@ package com.sun.tranquilo.datatype;
  * 
  * See http://www.w3.org/TR/xmlschema-2/#base64Binary for the spec
  */
-public class Base64BinaryType extends BinaryImpl
+public class Base64BinaryType extends BinaryBaseType
 {
-	/** singleton access to the plain base64Binary type */
-	public static Base64BinaryType theInstance =
-		new Base64BinaryType("base64Binary",null,null,null);
+	public static final Base64BinaryType theInstance = new Base64BinaryType();
+	private Base64BinaryType() { super("base64Binary"); }
 	
-	
-	public DataType derive( String newName, Facets facets )
-		throws BadTypeException
-	{
-		// no facets specified. So no need for derivation
-		if( facets.isEmpty() )		return this;
-		
-		return new Base64BinaryType( newName,
-			LengthFacet.merge(lengths,facets),
-			PatternFacet.merge(pattern,facets),
-			EnumerationFacet.merge(this,enumeration,facets) );
-	}
-	
-	/**
-	 * constructor for derived-type from base64Binary by restriction.
-	 * 
-	 * To derive a datatype by restriction from base64Binary, call derive method.
-	 * This method is only accessible within this class.
-	 */
-	private Base64BinaryType( String typeName,
-					    LengthFacet lengths, PatternFacet pattern,
-						EnumerationFacet enumeration )
-	{
-		super( typeName, lengths, pattern, enumeration );
-	}
 	
 	
 // base64 decoder
@@ -60,13 +34,12 @@ public class Base64BinaryType extends BinaryImpl
 		return map;
 	}
 
-	public Object convertValue( String lexicalValue )
-		throws ConvertionException
+	public Object convertToValue( String lexicalValue )
 	{
 		final byte[] buf = lexicalValue.getBytes();
 
 		final int outlen = calcLength(buf);
-		if( outlen==-1 )	throw new ConvertionException();
+		if( outlen==-1 )	return null;
 		final byte[] out = new byte[outlen];
 		int o=0;
 

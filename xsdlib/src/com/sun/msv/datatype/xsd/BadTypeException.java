@@ -60,7 +60,7 @@ public class BadTypeException extends Exception
 	public static final String ERR_INVALID_VALUE_FOR_THIS_TYPE =
 		"EnumerationFacet.InvalidValueForThisType";
 	public final static String ERR_FACET_MUST_BE_NON_NEGATIVE_INTEGER
-		= null; // facet "{0}" must be a non-negative integer value
+		= "BadTypeException.FacetMustBeNonNegativeInteger";
 	public final static String ERR_FACET_MUST_BE_POSITIVE_INTEGER
 		= null; // facet "{0}" must be a positive integer value
 	public final static String ERR_OVERRIDING_FIXED_FACET
@@ -77,4 +77,8 @@ public class BadTypeException extends Exception
 		"RangeFacet.IllegalValueForX";
 	public static final String ERR_DUPLICATE_FACET
 		= null; // facet {0} is specified more than once.
+	public static final String ERR_UNCONSUMED_FACET
+		= null; // unrecognized facet specification {0}
+	public static final String ERR_NOT_APPLICABLE_FACET
+		= null; // facet {0} is not applicable to this datatype
 }

@@ -69,27 +69,34 @@ public class DataTypeFactory
 	private static Map createStaticTypes()
 	{
 		Map m = new java.util.HashMap();
+		throw new UnsupportedOperationException();
+
+		// missing types are noted inline.
 		
 		add( m, StringType.theInstance );
 		add( m, BooleanType.theInstance );
+		add( m, DecimalType.theInstance );
 		add( m, FloatType.theInstance );
 		add( m, DoubleType.theInstance );
-		add( m, DecimalType.theInstance );
-//		add( m, TimeDurationType.theInstance );
-//		add( m, RecurringDurationType.theInstance );
-		add( m, Base64BinaryType.theInstance );
+//		duration
+//		dateTime
+//		time, date, yearMonth, year, monthDay, day, month
 		add( m, HexBinaryType.theInstance );
+		add( m, Base64BinaryType.theInstance );
 		add( m, UriReferenceType.theInstance );
-// ID, IDREF, and ENTITY type are document-dependent.
+//		ID, IDREF
+		add( m, EntityType.theInstance );
 		add( m, QnameType.theInstance );
 		add( m, NormalizedStringType.theInstance );
 		add( m, TokenType.theInstance );
 		add( m, LanguageType.theInstance );
-// list types
+//		IDREFS
+		add( m, new ListType("ENTITIES",EntityType.theInstance) );
 		add( m, NmtokenType.theInstance );
+		add( m, new ListType("NMTOKENS",NmtokenType.theInstance) );
 		add( m, NameType.theInstance );
 		add( m, NcnameType.theInstance );
-// so do NOTATION
+//		NOTATION
 		add( m, IntegerType.theInstance );
 		add( m, NonPositiveIntegerType.theInstance );
 		add( m, NegativeIntegerType.theInstance );
@@ -102,16 +109,6 @@ public class DataTypeFactory
 		add( m, UnsignedIntType.theInstance );
 		add( m, UnsignedShortType.theInstance );
 		add( m, UnsignedByteType.theInstance );
-//		add( m, TimeInstantType.theInstance );
-//		add( m, TimeType.theInstance );
-//		add( m, TimePeriodType.theInstance );
-//		add( m, DateType.theInstance );
-//		add( m, MonthType.theInstance );
-//		add( m, YearType.theInstance );
-//		add( m, CenturyType.theInstance );
-//		add( m, RecurringDateType.theInstance );
-//		add( m, RecurringDayType.theInstance );
-		
 		return m;
 	}
 }

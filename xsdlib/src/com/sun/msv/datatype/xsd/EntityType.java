@@ -26,71 +26,31 @@ package com.sun.tranquilo.datatype;
  */
 public class EntityType extends DataTypeImpl
 {
-	/** singleton access to the plain ENTITY type */
-	public static EntityType theInstance =
-		new EntityType("ENTITY",null,null,null);
+	public static final EntityType theInstance = new EntityType();
+	private EntityType() { super("ENTITY"); }
 	
-	public boolean verify( String content )
+	public final int isFacetApplicable( String facetName )
 	{
-		// performs whitespace pre-processing
-		content = WhiteSpaceProcessor.theCollapse.process(content);
-		
-		// checks additional facets
-		if( pattern!=null && !pattern.verify(content) )		return false;
-		if( lengths!=null && !lengths.verify(UnicodeUtil.countLength(content)))	return false;
-		
-		// ENTITY is a special case that lexical space is exactly the same as value space.
-		// so we don't need to call convertValue method here.
-		if( enumeration!=null && !enumeration.verify(content) )	return false;
-		
+		// TODO : should we allow scale facet, or not?
+		if( facetName.equals(FACET_LENGTH)
+		||	facetName.equals(FACET_MINLENGTH)
+		||	facetName.equals(FACET_MAXLENGTH)
+		||	facetName.equals(FACET_PATTERN)
+		||	facetName.equals(FACET_ENUMERATION) )
+			return APPLICABLE;
+		else
+			return NOT_ALLOWED;
+	}
+	
+	protected boolean checkFormat( String content )
+	{
 		// we have to perform actual check
 		throw new UnsupportedOperationException();
-		
-		// return true;
 	}
-	
-	public DataTypeErrorDiagnosis diagnose( String content )
-	{
-		// TODO : implement this method
-		return null;
-	}
-	
-	public Object convertValue( String lexicalValue )
-	{// for ENTITY, lexical space is value space by itself
-		return lexicalValue;
-	}
-	
-	public DataType derive( String newName, Facets facets )
-		throws BadTypeException
-	{
-		// no facets specified. So no need for derivation
-		if( facets.isEmpty() )		return this;
 
-		return new EntityType( newName,
-			LengthFacet.merge(this.lengths,facets),
-			PatternFacet.merge(this.pattern,facets),
-			EnumerationFacet.merge(this,this.enumeration,facets) );
-	}
-	
-	private final LengthFacet			lengths;
-//	private final RangeFacet			range;
-	private final PatternFacet			pattern;
-	private final EnumerationFacet		enumeration;
-	
-	/**
-	 * constructor for derived-type from ENTITY by restriction.
-	 * 
-	 * To derive a datatype by restriction from ENTITY, call derive method.
-	 * This method is only accessible within this class.
-	 */
-	private EntityType( String typeName, 
-					    LengthFacet lengths, PatternFacet pattern,
-						EnumerationFacet enumeration )
+	public Object convertToValue( String content )
 	{
-		super( typeName );
-		this.lengths	= lengths;
-		this.pattern	= pattern;
-		this.enumeration= enumeration;
+		// we have to perform actual check
+		throw new UnsupportedOperationException();
 	}
-	
 }

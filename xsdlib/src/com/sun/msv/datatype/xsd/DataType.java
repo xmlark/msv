@@ -46,8 +46,8 @@ public interface DataType extends Serializable,Cloneable
 	 *		if 'content' is accepted by this pattern, or 
 	 *		if the derived class doesn't support this operation
 	 */
-	DataTypeErrorDiagnosis diagnose( String content )
-		throws java.lang.UnsupportedOperationException;
+//	DataTypeErrorDiagnosis diagnose( String content )
+//		throws java.lang.UnsupportedOperationException;
 	
 	/**
 	 * gets the name of this datatype
@@ -70,14 +70,25 @@ public interface DataType extends Serializable,Cloneable
 	/**
 	 * converts lexcial value to the corresponding value object of the value space
 	 * 
-	 * @exception	ConvertionException
+	 * @return	null
 	 *		when the given lexical value is not valid lexical value for this type.
 	 */
-	Object convertValue( String lexicalValue )
-		throws ConvertionException;
+	Object convertToValue( String lexicalValue );
 	
 	/**
 	 * @returns true if this type is an atom type
 	 */
 	boolean isAtomType();
+
+	static final int APPLICABLE = 0;
+	static final int FIXED		= -1;
+	static final int NOT_ALLOWED= -2;
+	/** returns if the specified facet is applicable to this datatype.
+	 * 
+	 * @return	APPLICABLE		if the facet is applicable
+	 *			FIXED			if the facet is already fixed (that is,not applicable)
+	 *			NOT_ALLOWED		if the facet is not applicable to this datatype at all.
+	 */
+	public int isFacetApplicable( String facetName );
+
 }

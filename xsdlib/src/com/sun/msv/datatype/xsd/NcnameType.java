@@ -16,10 +16,11 @@
  * PURPOSE, OR NON-INFRINGEMENT. SUN SHALL NOT BE LIABLE FOR ANY DAMAGES
  * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
  * THIS SOFTWARE OR ITS DERIVATIVES.
+ *
+ * $Id$
  */
 package com.sun.tranquilo.datatype;
 
-import java.util.Hashtable;
 import com.sun.xml.util.XmlNames;
 
 /**
@@ -27,62 +28,14 @@ import com.sun.xml.util.XmlNames;
  * 
  * See http://www.w3.org/TR/xmlschema-2/#NCName for the spec
  */
-public class NcnameType extends StringType
+public class NcnameType extends TokenType
 {
-	/** singleton access to the plain NCName type */
-	public static NcnameType theInstance = new NcnameType("NCName");
+	public static final NcnameType theInstance = new NcnameType();
+	private NcnameType() { super("NCName"); }
 	
-	public boolean verify( String content )
+	public Object convertToValue( String content )
 	{
-		if(!super.verify(content))	return false;
-		
-		return XmlNames.isNCNmtoken(content);
+		if(XmlNames.isNCNmtoken(content))	return content;
+		else								return null;
 	}
-	
-	public DataTypeErrorDiagnosis diagnose( String content )
-	{
-		// TODO : implement this method
-		return null;
-	}
-	
-	public DataType derive( String newName, Hashtable facets )
-		throws BadTypeException
-	{
-		// no facets specified. So no need for derivation
-		if( facets.size()==0 )		return this;
-
-		return new NcnameType(	newName,
-								LengthFacet.merge(this,facets),
-								PatternFacet.merge(this,facets),
-								EnumerationFacet.create(this,facets),
-								WhiteSpaceProcessor.create(facets),
-								this );
-	}
-	
-	/**
-	 * creates a plain NCName type which is specified in
-	 * http://www.w3.org/TR/xmlschema-2/#NCName
-	 * 
-	 * This method is only accessible within this class.
-	 * To use a plain NCName type, use theInstance property instead.
-	 */
-	protected NcnameType( String typeName )
-	{
-		super( typeName );
-	}
-	
-	/**
-	 * constructor for derived-type from NCName by restriction.
-	 * 
-	 * To derive a datatype by restriction from NCName, call derive method.
-	 * This method is only accessible within this class.
-	 */
-	protected NcnameType( String typeName, 
-					    LengthFacet lengths, PatternFacet pattern,
-						EnumerationFacet enumeration, WhiteSpaceProcessor whiteSpace,
-						DataType baseType )
-	{
-		super( typeName, lengths, pattern, enumeration, whiteSpace, baseType );
-	}
-	
 }

@@ -19,6 +19,10 @@ public class DateValueType implements Comparable
 		year.timeZone = month.timeZone = day.timeZone = timeZone;
 	}
 	
+	public DateValueType normalize()
+	{
+	}
+	
 	public boolean equals( Object o )
 	{
 		DateValueType rhs = (DateValueType)o;

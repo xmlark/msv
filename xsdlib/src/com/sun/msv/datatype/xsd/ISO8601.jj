@@ -51,7 +51,7 @@ TOKEN :
 	<digits			: (<digit>)+ >
 }
 
-BigDecimal decimal() : { Token t1,t2; }
+BigDecimal decimal() : { Token t1,t2=null; }
 {
 	t1=<digits> [ "." t2=<digits> ]
 	{
@@ -118,11 +118,18 @@ int _NN( int min, int max ) : { Token v; }
 
 	something like "-05:00" or "+09:00"
 */
-void _timeZoneModifier() : {}
+TimeZoneComponent _timeZoneModifier() :
+{
+	int h,m;int sign;
+}
 {
 	"Z"
 |
-	("+"|"-") _NN(0,24)	":"	_NN(0,59)
+	( "+" {sign=1;} | "-" {sign=-1;} )
+	h=_NN(0,24) ":" m=_NN(0,59)
+	{
+		return new TimeZoneComponent( sign*h*m );
+	}
 }
 
 /* time without time zone modifier */
@@ -154,25 +161,38 @@ int _year() : { Token v; }
 }
 
 /* month without time zone modifier */
-void _month() : {}
+int _month() : { int m; }
 {
-	_NN(1,12)
+	m = _NN(1,12)
+	{ return m; }
 }
 
 /* day of month without time zone modifier */
-void _day() : {}
+int _day() : { int d; }
 {
-	_NN(1,31)
+	d = _NN(1,31)
+	{ return d; }
 }
 
 /* date without time zone modifier */
-void _date() : {}
+DateComponent[] _date() :
 {
-	_year()
+	int y,m,d;
+}
+{
+	y=_year()
 	"-"
-	_month()
+	m=_month()
 	"-"
-	_day()				/* day */
+	d=_day()				/* day */
+	
+	{
+		DateComponent[] dcs = new DateComponent[3];
+		dcs[0] = new DateComponent(y);
+		dcs[1] = new DateComponent(m);
+		dcs[2] = new DateComponent(d);
+		return dcs;
+	}
 }
 
 void dateTime() : {}
@@ -187,10 +207,17 @@ void time() : {}
 	[ _timeZoneModifier() ]
 }
 
-void date() : {}
+DateValueType date() :
 {
-	_date()
-	[ _timeZoneModifier() ]
+	DateComponent[] dcs;
+	TimeZoneComponent tz=null;
+}
+{
+	dcs=_date()
+	[ tz=_timeZoneModifier() ]
+	{
+		return new DateValueType( dcs[0], dcs[1], dcs[2], tz );
+	}
 }
 
 void yearMonth() : {}

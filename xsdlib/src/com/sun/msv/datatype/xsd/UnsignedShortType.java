@@ -11,47 +11,25 @@ package com.sun.tranquilo.datatype;
  */
 public class UnsignedShortType extends LongType
 {
-	/** singleton access to the plain unsignedShort type */
-	public static UnsignedShortType theInstance
-		= new UnsignedShortType("unsignedShort",null,null,null,null);
-	
-    /** upper bound value. this is the maximum possible valid value as an unsigned int */
-    private static final int upperBound
-                            = 65535;
-    
-	public Object convertValue( String lexicalValue )
-		throws ConvertionException
-	{
-        Integer v = (Integer)super.convertValue(lexicalValue);
-        if( v.intValue()<0 )            throw new ConvertionException();
-        if( v.intValue()>upperBound )   throw new ConvertionException();
-		return v;
-	}
-	
-	public DataType derive( String newName, Facets facets )
-		throws BadTypeException
-	{
-		// no facets specified. So no need for derivation
-		if( facets.isEmpty() )		return this;
+	public static final UnsignedShortType theInstance = new UnsignedShortType();
+	private UnsignedShortType() { super("unsignedShort"); }
 
-		return new UnsignedShortType( newName,
-			RangeFacet.merge(this,this.range,facets),
-			PrecisionScaleFacet.merge(this.precisionScale,facets),
-			PatternFacet.merge(this.pattern,facets),
-			EnumerationFacet.merge(this,this.enumeration,facets) );
-	}
+    /** upper bound value. this is the maximum possible valid value as an unsigned int */
+    private static final int upperBound = 65535;
 	
-	/**
-	 * constructor for derived-type from unsignedShort by restriction.
-	 * 
-	 * To derive a datatype by restriction from unsignedShort, call derive method.
-	 * This method is only accessible within this class.
-	 */
-	private UnsignedShortType( String typeName, 
-					    RangeFacet range, PrecisionScaleFacet precisionScale, PatternFacet pattern,
-						EnumerationFacet enumeration )
+	public Object convertToValue( String lexicalValue )
 	{
-		super( typeName, range, precisionScale, pattern, enumeration );
+		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
+		try
+		{
+			Integer v = (Integer)super.convertToValue(lexicalValue);
+			if( v.intValue()<0 )            return null;
+			if( v.intValue()>upperBound )   return null;
+			return v;
+		}
+		catch( NumberFormatException e )
+		{
+			return null;
+		}
 	}
-	
 }

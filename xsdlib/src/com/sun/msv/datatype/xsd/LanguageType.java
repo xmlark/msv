@@ -27,15 +27,13 @@ import java.util.Hashtable;
  * 
  * See http://www.w3.org/TR/xmlschema-2/#language for the spec
  */
-public class LanguageType extends StringType
+public class LanguageType extends TokenType
 {
-	/** singleton access to the plain language type */
-	public static LanguageType theInstance = new LanguageType("language");
+	public static final LanguageType theInstance = new LanguageType();
+	private LanguageType() { super("language"); }
 	
-	public boolean verify( String content )
+	public Object convertToValue( String content )
 	{
-		if(!super.verify(content))	return false;
-		
 		/*	RFC1766 defines the following BNF
 		
 			 Language-Tag = Primary-tag *( "-" Subtag )
@@ -55,67 +53,20 @@ public class LanguageType extends StringType
 			{
 				tokenSize++;
 				if( tokenSize==9 )
-					return false;	// maximum 8 characters are allowed.
+					return null;	// maximum 8 characters are allowed.
 			}
 			else
 			if( ch=='-' )
 			{
-				if( tokenSize==0 )	return false;	// at least one alphabet preceeds '-'
+				if( tokenSize==0 )	return null;	// at least one alphabet preceeds '-'
 				tokenSize=0;
 			}
 			else
-				return false;	// invalid characters
+				return null;	// invalid characters
 		}
 		
-		if( tokenSize==0 )	return false;	// this means either string is empty or ends with '-'
+		if( tokenSize==0 )	return null;	// this means either string is empty or ends with '-'
 		
-		return true;
+		return content;
 	}
-	
-	public DataTypeErrorDiagnosis diagnose( String content )
-	{
-		// TODO : implement this method
-		return null;
-	}
-	
-	public DataType derive( String newName, Hashtable facets )
-		throws BadTypeException
-	{
-		// no facets specified. So no need for derivation
-		if( facets.size()==0 )		return this;
-
-		return new LanguageType(	newName,
-								LengthFacet.merge(this,facets),
-								PatternFacet.merge(this,facets),
-								EnumerationFacet.create(this,facets),
-								WhiteSpaceProcessor.create(facets),
-								this );
-	}
-	
-	/**
-	 * creates a plain language type which is specified in
-	 * http://www.w3.org/TR/xmlschema-2/#language
-	 * 
-	 * This method is only accessible within this class.
-	 * To use a plain language type, use theInstance property instead.
-	 */
-	protected LanguageType( String typeName )
-	{
-		super( typeName );
-	}
-	
-	/**
-	 * constructor for derived-type from language by restriction.
-	 * 
-	 * To derive a datatype by restriction from language, call derive method.
-	 * This method is only accessible within this class.
-	 */
-	protected LanguageType( String typeName, 
-					    LengthFacet lengths, PatternFacet pattern,
-						EnumerationFacet enumeration, WhiteSpaceProcessor whiteSpace,
-						DataType baseType )
-	{
-		super( typeName, lengths, pattern, enumeration, whiteSpace, baseType );
-	}
-	
 }

@@ -28,12 +28,13 @@ public abstract class BinaryExp extends Expression {
     }
 
     public boolean equals( Object o ) {
-        if( !this.getClass().equals(o.getClass()) )        return false;
+        if( this.getClass()!=o.getClass() )        return false;
         
         // every existing children are already unified.
         // therefore, == is enough. (don't need to call equals)
-        return ((BinaryExp)o).exp1 == exp1
-            && ((BinaryExp)o).exp2 == exp2;
+        BinaryExp rhs = (BinaryExp)o;
+        return rhs.exp1 == exp1
+            && rhs.exp2 == exp2;
     }
     
     /**

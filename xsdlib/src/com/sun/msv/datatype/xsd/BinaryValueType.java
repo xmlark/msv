@@ -14,13 +14,11 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-class BinaryValueType
-{
+class BinaryValueType {
 	/** raw byte data */
 	public byte[]	rawData;
 	
-	public boolean equals( Object o )
-	{
+	public boolean equals( Object o ) {
 		if( o.getClass()!=BinaryValueType.class )	return false;
 		
 		BinaryValueType rhs = (BinaryValueType)o;
@@ -35,15 +33,13 @@ class BinaryValueType
 		return true;
 	}
 	
-	public int hashCode()
-	{
+	public int hashCode() {
 		if( rawData.length == 0 )	return 293;
 		if( rawData.length == 1 )	return rawData[0];
 		else	return rawData.length * rawData[0] * rawData[1];
 	}
 	
-	public BinaryValueType( byte[] rawData )
-	{
+	public BinaryValueType( byte[] rawData ) {
 		this.rawData = rawData;
 	}
 }

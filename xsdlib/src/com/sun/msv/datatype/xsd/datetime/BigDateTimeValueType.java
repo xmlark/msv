@@ -27,8 +27,8 @@ import com.sun.msv.datatype.Comparator;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class BigDateTimeValueType implements IDateTimeValueType
-{
+public class BigDateTimeValueType implements IDateTimeValueType {
+	
 	/** year value.
 	 * this variable is null if no year is specified.
 	 *
@@ -77,17 +77,15 @@ public class BigDateTimeValueType implements IDateTimeValueType
 	 *  created object shares its date/time value component with the original one,
 	 *  so special care is necessary not to mutate those values.
 	 */
-	public BigDateTimeValueType( BigDateTimeValueType base, TimeZone newTimeZone )
-	{
+	public BigDateTimeValueType( BigDateTimeValueType base, TimeZone newTimeZone ) {
 		this( base.year, base.month, base.day, base.hour, base.minute, base.second, newTimeZone );
 	}
 	
-	public BigDateTimeValueType( BigInteger year, int month, int day, int hour, int minute, BigDecimal second, TimeZone timeZone )
-	{
+	public BigDateTimeValueType( BigInteger year, int month, int day, int hour, int minute, BigDecimal second, TimeZone timeZone ) {
 		this( year, new Integer(month), new Integer(day), new Integer(hour), new Integer(minute), second, timeZone );
 	}
-	public BigDateTimeValueType( BigInteger year, Integer month, Integer day, Integer hour, Integer minute, BigDecimal second, TimeZone timeZone )
-	{
+	
+	public BigDateTimeValueType( BigInteger year, Integer month, Integer day, Integer hour, Integer minute, BigDecimal second, TimeZone timeZone ) {
 		this.year	= year;
 		this.month	= month;
 		this.day	= day;
@@ -101,20 +99,21 @@ public class BigDateTimeValueType implements IDateTimeValueType
 	
 	
 	
-	public BigDateTimeValueType getBigValue() { return this; }
+	public BigDateTimeValueType getBigValue() {
+		return this;
+	}
 
-	public boolean equals( Object o )
-	{ return equals( (IDateTimeValueType)o ); }
+	public boolean equals( Object o ) {
+		return equals( (IDateTimeValueType)o );
+	}
 	
-	public boolean equals( IDateTimeValueType rhs )
-	{
+	public boolean equals( IDateTimeValueType rhs ) {
 		if(!(rhs instanceof BigDateTimeValueType))
 			rhs = rhs.getBigValue();
 		return equals( this, (BigDateTimeValueType)rhs );
 	}
 	
-	public boolean equals( BigDateTimeValueType lhs, BigDateTimeValueType rhs )
-	{
+	public boolean equals( BigDateTimeValueType lhs, BigDateTimeValueType rhs ) {
 		return compare(lhs,rhs)==Comparator.EQUAL;
 	}
 	
@@ -124,8 +123,7 @@ public class BigDateTimeValueType implements IDateTimeValueType
 	 * return value is not intended to be compliant with the canonical representation
 	 * of "dateTime" type.
 	 */
-	public String toString()
-	{
+	public String toString() {
 		StringBuffer r = new StringBuffer();
 		
 		if( year!=null )	r.append(year);
@@ -140,11 +138,9 @@ public class BigDateTimeValueType implements IDateTimeValueType
 		r.append(':');
 		if( second!=null )	r.append(second);
 		
-		if( zone!=null )
-		{
+		if( zone!=null ) {
 			if( zone.minutes==0 )	r.append('Z');
-			else
-			{
+			else {
 				if( zone.minutes<0 )	r.append('-');
 				else					r.append('+');
 				r.append(Math.abs(zone.minutes/60));
@@ -155,8 +151,7 @@ public class BigDateTimeValueType implements IDateTimeValueType
 		return new String(r);
 	}
 	
-	public int hashCode()
-	{
+	public int hashCode() {
 		// to be consistent with equals method, we have to normalize
 		// value before computation.
 		BigDateTimeValueType n = (BigDateTimeValueType)this.normalize();
@@ -165,8 +160,7 @@ public class BigDateTimeValueType implements IDateTimeValueType
 			+  Util.objHashCode(n.zone);
 	}
 	
-	public int compare( IDateTimeValueType o )
-	{
+	public int compare( IDateTimeValueType o ) {
 		if(!(o instanceof BigDateTimeValueType) )
 			o = o.getBigValue();
 		
@@ -180,13 +174,11 @@ public class BigDateTimeValueType implements IDateTimeValueType
 	 * Order-relation between two dateTime is defined in
 	 * http://www.w3.org/TR/xmlschema-2/#dateTime
 	 */
-	protected static int compare( BigDateTimeValueType lhs, BigDateTimeValueType rhs )
-	{
+	protected static int compare( BigDateTimeValueType lhs, BigDateTimeValueType rhs ) {
 		lhs = (BigDateTimeValueType)lhs.normalize();
 		rhs = (BigDateTimeValueType)rhs.normalize();
 		
-		if( (lhs.zone!=null && rhs.zone!=null) || (lhs.zone==null && rhs.zone==null) )
-		{
+		if( (lhs.zone!=null && rhs.zone!=null) || (lhs.zone==null && rhs.zone==null) ) {
 			if(!Util.objEqual(lhs.year,rhs.year))		return Util.objCompare(lhs.year,rhs.year);
 			if(!Util.objEqual(lhs.month,rhs.month))		return Util.objCompare(lhs.month,rhs.month);
 			if(!Util.objEqual(lhs.day,rhs.day))			return Util.objCompare(lhs.day,rhs.day);
@@ -197,8 +189,7 @@ public class BigDateTimeValueType implements IDateTimeValueType
 			return Comparator.EQUAL;
 		}
 		
-		if( lhs.zone==null )
-		{
+		if( lhs.zone==null ) {
 			int r;
 			
 			r = compare( (BigDateTimeValueType)new BigDateTimeValueType(lhs,Util.timeZoneNeg14).normalize(), rhs );
@@ -210,9 +201,7 @@ public class BigDateTimeValueType implements IDateTimeValueType
 				return Comparator.GREATER;	// lhs > rhs
 			
 			return Comparator.UNDECIDABLE;		// lhs <> rhs
-		}
-		else
-		{
+		} else {
 			int r;
 			
 			r = compare( lhs, (BigDateTimeValueType)new BigDateTimeValueType(rhs,Util.timeZonePos14) );
@@ -239,8 +228,7 @@ public class BigDateTimeValueType implements IDateTimeValueType
 	 */
 	private IDateTimeValueType normalizedValue = null;
 	
-	public IDateTimeValueType normalize()
-	{
+	public IDateTimeValueType normalize() {
 		// see if this object is already normalized
 		if( zone==null || zone.minutes==0 )		return this;
 		
@@ -268,34 +256,30 @@ public class BigDateTimeValueType implements IDateTimeValueType
 		return normalizedValue;
 	}
 	
-	private static BigInteger nullAs0( BigInteger o )
-	{
+	private static BigInteger nullAs0( BigInteger o ) {
 		if(o!=null)	return o;
 		else		return BigInteger.ZERO;
 	}
 	
-	private static BigDecimal nullAs0( BigDecimal o )
-	{
+	private static BigDecimal nullAs0( BigDecimal o ) {
 		if(o!=null)	return o;
 		else		return Util.decimal0;
 	}
 	
-	private static BigInteger[] divideAndRemainder( BigInteger x1, BigInteger x2 )
-	{
+	private static BigInteger[] divideAndRemainder( BigInteger x1, BigInteger x2 ) {
 		BigInteger[] r = x1.divideAndRemainder(x2);
-		if(r[1].signum()<0)
-		{// in BigInteger, -2/10 = -2, which is not preferable.
-		// we want -2/10 to be 8, with quodrant of -1.
+		if(r[1].signum()<0) {
+			// in BigInteger, -2/10 = -2, which is not preferable.
+			// we want -2/10 to be 8, with quodrant of -1.
 			r[1] = r[1].add(x2);
 			r[0] = r[0].subtract(BigInteger.ONE);
 		}
 		return r;
 	}
 	
-	public IDateTimeValueType add( ITimeDurationValueType _rhs )
-	{
-		if( _rhs instanceof BigTimeDurationValueType )
-		{// big + big
+	public IDateTimeValueType add( ITimeDurationValueType _rhs ) {
+		if( _rhs instanceof BigTimeDurationValueType ) {
+			// big + big
 			BigTimeDurationValueType rhs = (BigTimeDurationValueType)_rhs;
 
 			BigInteger[] quoAndMod = divideAndRemainder(
@@ -340,29 +324,22 @@ public class BigDateTimeValueType implements IDateTimeValueType
 			}
 			
 			BigInteger oday = rhs.day.add(quoAndMod[0]).add(Util.int2bi(tempDays));
-			while(true)
-			{
+			while(true) {
 				int carry;
-				if( oday.signum()==-1 )	// day<0
-				{
+				if( oday.signum()==-1 )	{ // day<0
 					oday = oday.add(Util.int2bi(Util.maximumDayInMonthFor(oyear,(omonth+11)%12)));
 					carry = -1;
-				}
-				else
-				{
+				} else {
 					BigInteger bmd = Util.int2bi(Util.maximumDayInMonthFor(oyear,omonth));
-					if( oday.compareTo(bmd)>=0 )
-					{
+					if( oday.compareTo(bmd)>=0 ) {
 						oday = oday.subtract(bmd);
 						carry = +1;
-					}
-					else
+					} else
 						break;
 				}
 				
 				omonth += carry;
-				if( omonth<0 )
-				{
+				if( omonth<0 ) {
 					omonth += 12;
 					oyear = oyear.subtract(BigInteger.ONE);
 				}
@@ -379,9 +356,8 @@ public class BigDateTimeValueType implements IDateTimeValueType
 				this.minute!=null? new Integer(ominute):null,
 				this.second!=null? osecond:null,
 				this.zone );
-		}
-		else
-		{// big + small
+		} else {
+			// big + small
 			// TODO : implement this to achive better performance
 			
 			// just for now, convert it to BigTimeDurationValue and then compute the result.

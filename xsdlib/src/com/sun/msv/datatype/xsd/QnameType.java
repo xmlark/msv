@@ -17,18 +17,15 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class QnameType extends ConcreteType implements Discrete
-{
+public class QnameType extends ConcreteType implements Discrete {
 	public static final QnameType theInstance = new QnameType();
 	private QnameType() { super("QName"); }
 
-	private static String getNamespaceURI( String content, ValidationContextProvider context )
-	{
+	private static String getNamespaceURI( String content, ValidationContextProvider context ) {
 		return context.resolveNamespacePrefix( content.substring(0, content.indexOf(':')) );
 	}
 	
-	protected boolean checkFormat( String value, ValidationContextProvider context )
-	{
+	protected boolean checkFormat( String value, ValidationContextProvider context ) {
 		// [6] QName ::= (Prefix ':')? LocalPart
 		// [7] Prefix ::= NCName
 		// [8] LocalPart ::= NCName
@@ -61,9 +58,8 @@ public class QnameType extends ConcreteType implements Discrete
 			if(!XmlNames.isUnqualifiedName(value))	return null;
 			uri = context.resolveNamespacePrefix("");
 			localPart = value;
-		}
-		else
-		{// Prefix exists, check everything
+		} else {
+			// Prefix exists, check everything
 			final int	last = value.lastIndexOf (':');
 			if (last != first)	return null;
 			
@@ -93,8 +89,7 @@ public class QnameType extends ConcreteType implements Discrete
 		else				return prefix+":"+v.localPart;
 	}
 	
-	public final int isFacetApplicable( String facetName )
-	{
+	public final int isFacetApplicable( String facetName ) {
 		if( facetName.equals(FACET_PATTERN)
 		||	facetName.equals(FACET_ENUMERATION)
 		||	facetName.equals(FACET_LENGTH)
@@ -106,8 +101,7 @@ public class QnameType extends ConcreteType implements Discrete
 			return NOT_ALLOWED;
 	}
 	
-	public final int countLength( Object value )
-	{
+	public final int countLength( Object value ) {
 		QnameValueType v = (QnameValueType)value;
 		
 		// the spec does not define what is the unit of length.

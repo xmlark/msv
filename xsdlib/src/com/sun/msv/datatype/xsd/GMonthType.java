@@ -21,8 +21,8 @@ import com.sun.msv.datatype.datetime.BigDateTimeValueType;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class GMonthType extends DateTimeBaseType
-{
+public class GMonthType extends DateTimeBaseType {
+	
 	public static final GMonthType theInstance = new GMonthType();
 	private GMonthType() { super("gMonth"); }
 

@@ -21,8 +21,8 @@ import com.sun.msv.datatype.datetime.BigDateTimeValueType;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class TimeType extends DateTimeBaseType
-{
+public class TimeType extends DateTimeBaseType {
+	
 	public static final TimeType theInstance = new TimeType();
 	private TimeType() { super("time"); }
 

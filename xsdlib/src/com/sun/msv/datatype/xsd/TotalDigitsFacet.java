@@ -16,14 +16,12 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet
-{
+class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 	/** maximum number of total digits. */
 	protected final int		precision;
 
 	public TotalDigitsFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
-		throws BadTypeException
-	{
+		throws BadTypeException {
 		super( typeName, baseType, FACET_TOTALDIGITS, facets );
 		
 		precision = facets.getPositiveInteger(FACET_TOTALDIGITS);
@@ -38,13 +36,11 @@ class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet
 		// consistency with scale is checked in DataTypeImpl.derive method.
 	}
 
-	protected boolean checkLexicalConstraint( String content )
-	{
+	protected boolean checkLexicalConstraint( String content ) {
 		return countPrecision(content)<=precision;
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context)
-	{
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context) {
 		final int cnt = countPrecision(content);
 		if( cnt<=precision )
 			return null;
@@ -54,29 +50,24 @@ class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet
 	}
 	
 	/** counts the number of digits */
-	protected static int countPrecision( String literal )
-	{
+	protected static int countPrecision( String literal ) {
 		final int len = literal.length();
 		boolean skipMode = true;
 
 		int count=0;
 		int trailingZero=0;
 		
-		for( int i=0; i<len; i++ )
-		{
+		for( int i=0; i<len; i++ ) {
 			final char ch = literal.charAt(i);
-			if( skipMode )
-			{// in skip mode, leading zeros are skipped
-				if( '1'<=ch && ch<='9' )
-				{
+			if( skipMode ) {
+				// in skip mode, leading zeros are skipped
+				if( '1'<=ch && ch<='9' ) {
 					count++;
 					skipMode = false;
 				}
 				if( '.'==ch )	// digits after '.' is considered significant.
 					skipMode = false;
-			}
-			else
-			{
+			} else {
 				if( ch=='0' )	trailingZero++;
 				else
 				if( ch=='.' )	;	// do nothing

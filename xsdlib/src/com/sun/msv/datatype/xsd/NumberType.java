@@ -21,16 +21,14 @@ import java.math.BigInteger;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class NumberType extends ConcreteType implements Comparator
-{
+public class NumberType extends ConcreteType implements Comparator {
 	public static final NumberType theInstance = new NumberType();
 	private NumberType() { super("decimal"); }
 	
 	/** constant */
 	private static final BigInteger the10 = new BigInteger("10");
 
-	protected boolean checkFormat( String content, ValidationContextProvider context )
-	{
+	protected boolean checkFormat( String content, ValidationContextProvider context ) {
 		final int len = content.length();
 		int i=0;
 		char ch;
@@ -42,11 +40,9 @@ public class NumberType extends ConcreteType implements Comparator
 		ch = content.charAt(0);
 		if(ch=='-' || ch=='+')	i++;
 		
-		while(i<len)
-		{
+		while(i<len) {
 			ch = content.charAt(i++);
-			if('0'<=ch && ch<='9')
-			{
+			if('0'<=ch && ch<='9') {
 				atLeastOneDigit = true;
 				continue;
 			}
@@ -54,11 +50,10 @@ public class NumberType extends ConcreteType implements Comparator
 			return false;		// other characters are error
 		}
 		
-		while(i<len)
-		{// fractional part
+		while(i<len) {
+			// fractional part
 			ch = content.charAt(i++);
-			if('0'<=ch && ch<='9')
-			{
+			if('0'<=ch && ch<='9') {
 				atLeastOneDigit = true;
 				continue;
 			}
@@ -68,10 +63,8 @@ public class NumberType extends ConcreteType implements Comparator
 		return atLeastOneDigit;	// at least one digit must be present.
 	}
 	
-	public Object convertToValue( String content, ValidationContextProvider context )
-	{
-		try
-		{
+	public Object convertToValue( String content, ValidationContextProvider context ) {
+		try	{
 			// BigDecimal accepts expressions like "1E4",
 			// but XML Schema doesn't.
 			
@@ -93,8 +86,7 @@ public class NumberType extends ConcreteType implements Comparator
 			// BigDecimal treats 0 != 0.0
 			// to workaround this, "normalize" BigDecimal;
 			// that is, trailing zeros in fractional digits are removed.
-			while(r.scale()>0)
-			{
+			while(r.scale()>0) {
 				BigInteger[] q_r = 
 					r.unscaledValue().divideAndRemainder(the10);
 				
@@ -104,9 +96,7 @@ public class NumberType extends ConcreteType implements Comparator
 			}
 			
 			return r;
-		}
-		catch( NumberFormatException e )
-		{
+		} catch( NumberFormatException e ) {
 			return null;
 		}
 	}
@@ -118,8 +108,7 @@ public class NumberType extends ConcreteType implements Comparator
 			throw new IllegalArgumentException();
 	}
 
-	public final int isFacetApplicable( String facetName )
-	{
+	public final int isFacetApplicable( String facetName ) {
 		if( facetName.equals(FACET_TOTALDIGITS)
 		||	facetName.equals(FACET_FRACTIONDIGITS)
 		||	facetName.equals(FACET_PATTERN)
@@ -133,8 +122,7 @@ public class NumberType extends ConcreteType implements Comparator
 			return NOT_ALLOWED;
 	}
 
-	public final int compare( Object o1, Object o2 )
-	{
+	public final int compare( Object o1, Object o2 ) {
 		final int r = ((Comparable)o1).compareTo(o2);
 		if(r<0)	return LESS;
 		if(r>0)	return GREATER;

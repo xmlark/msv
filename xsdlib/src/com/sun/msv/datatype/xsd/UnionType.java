@@ -19,8 +19,7 @@ final public class UnionType extends ConcreteType {
 	 * derives a new datatype from atomic datatypes by union
 	 */
 	public UnionType( String newTypeName, DataTypeImpl[] memberTypes )
-		throws BadTypeException
-	{
+		throws BadTypeException {
 		super(newTypeName);
 		
 		if(memberTypes.length==0)
@@ -39,8 +38,7 @@ final public class UnionType extends ConcreteType {
 	// union type is not an atom type.
 	public final boolean isAtomType() { return false; }
 	
-	public final int isFacetApplicable( String facetName )
-	{
+	public final int isFacetApplicable( String facetName ) {
 		if( facetName.equals(FACET_PATTERN)
 		||	facetName.equals(FACET_ENUMERATION) )
 			return APPLICABLE;
@@ -48,19 +46,16 @@ final public class UnionType extends ConcreteType {
 			return NOT_ALLOWED;
 	}
 	
-	protected final boolean checkFormat( String content, ValidationContextProvider context )
-	{
+	protected final boolean checkFormat( String content, ValidationContextProvider context ) {
 		for( int i=0; i<memberTypes.length; i++ )
 			if( memberTypes[i].checkFormat(content,context) )	return true;
 		
 		return false;
 	}
 	
-	public Object convertToValue( String content, ValidationContextProvider context )
-	{
+	public Object convertToValue( String content, ValidationContextProvider context ) {
 		Object o;
-		for( int i=0; i<memberTypes.length; i++ )
-		{
+		for( int i=0; i<memberTypes.length; i++ ) {
 			o = memberTypes[i].convertToValue(content,context);
 			if(o!=null)		return o;
 		}
@@ -80,8 +75,8 @@ final public class UnionType extends ConcreteType {
 		throw new IllegalArgumentException();
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context)
-	{// what is the appropriate implementation for union?
+	protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context) {
+		// what is the appropriate implementation for union?
 		throw new UnsupportedOperationException();
 	}
 

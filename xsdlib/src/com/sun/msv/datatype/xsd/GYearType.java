@@ -21,18 +21,16 @@ import com.sun.msv.datatype.datetime.BigDateTimeValueType;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class GYearType extends DateTimeBaseType
-{
+public class GYearType extends DateTimeBaseType {
+	
 	public static final GYearType theInstance = new GYearType();
 	private GYearType() { super("gYear"); }
 
-	protected void runParserL( ISO8601Parser p ) throws Exception
-	{
+	protected void runParserL( ISO8601Parser p ) throws Exception {
 		p.yearTypeL();
 	}
 
-	protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception
-	{
+	protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception {
 		return p.yearTypeV();
 	}
 

@@ -16,8 +16,7 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public interface ValidationContextProvider
-{
+public interface ValidationContextProvider {
 	/**
 	 * resolved namespace prefix to namespace URI.
 	 * 

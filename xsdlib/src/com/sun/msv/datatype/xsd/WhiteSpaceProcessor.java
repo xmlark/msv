@@ -14,8 +14,8 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public abstract class WhiteSpaceProcessor
-{
+public abstract class WhiteSpaceProcessor {
+	
 	/** returns whitespace normalized text.
 	 *
 	 * behavior varies on what normalization mode is used.
@@ -30,8 +30,7 @@ public abstract class WhiteSpaceProcessor
 	 * Otherwise returns null.
 	 */
 	protected static WhiteSpaceProcessor get( String name )
-		throws BadTypeException
-	{
+		throws BadTypeException {
 		name = theCollapse.process(name);
 		if( name.equals("preserve") )		return thePreserve;
 		if( name.equals("collapse") )		return theCollapse;
@@ -40,21 +39,17 @@ public abstract class WhiteSpaceProcessor
 		throw new BadTypeException( BadTypeException.ERR_INVALID_WHITESPACE_VALUE, name );
 	}
 	
-	protected static final boolean isWhiteSpace( char ch )
-	{
+	protected static final boolean isWhiteSpace( char ch ) {
 		return ch==0x9 || ch==0xA || ch==0xD || ch==0x20;
 	}
 	
-	public final static WhiteSpaceProcessor thePreserve = new WhiteSpaceProcessor()
-	{
+	public final static WhiteSpaceProcessor thePreserve = new WhiteSpaceProcessor() {
 		public String process( String text )	{ return text; }
 		int tightness() { return 0; }
 	};
 	
-	public final static WhiteSpaceProcessor theReplace = new WhiteSpaceProcessor()
-	{
-		public String process( String text )
-		{
+	public final static WhiteSpaceProcessor theReplace = new WhiteSpaceProcessor() {
+		public String process( String text ) {
 			final int len = text.length();
 			StringBuffer result = new StringBuffer(len);
 			
@@ -69,18 +64,15 @@ public abstract class WhiteSpaceProcessor
 		int tightness() { return 1; }
 	};
 
-	public final static WhiteSpaceProcessor theCollapse= new WhiteSpaceProcessor()
-	{
-		public String process( String text )
-		{
+	public final static WhiteSpaceProcessor theCollapse= new WhiteSpaceProcessor() {
+		public String process( String text ) {
 			char[] chars = text.toCharArray();
 			int len = text.length();
 			StringBuffer result = new StringBuffer(len /**enough size*/ );
 			
 			boolean inStripMode = true;
 			
-			for( int i=0; i<len; i++ )
-			{
+			for( int i=0; i<len; i++ ) {
 				boolean b = WhiteSpaceProcessor.isWhiteSpace(chars[i]);
 				if( inStripMode && b )
 					continue;	// skip this character

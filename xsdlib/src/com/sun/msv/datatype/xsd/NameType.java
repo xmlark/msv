@@ -17,13 +17,11 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class NameType extends TokenType
-{
+public class NameType extends TokenType {
 	public static final NameType theInstance = new NameType();
 	private NameType() { super("Name"); }
 	
-	public Object convertToValue( String content, ValidationContextProvider context )
-	{
+	public Object convertToValue( String content, ValidationContextProvider context ) {
 		if(XmlNames.isName(content))	return content;
 		else							return null;
 	}

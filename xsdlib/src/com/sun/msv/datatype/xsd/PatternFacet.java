@@ -21,10 +21,9 @@ import java.util.Vector;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-final class PatternFacet extends DataTypeWithLexicalConstraintFacet
-{
-	/** actual object that performs regular expression validation.
-	 *
+final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
+	/**
+	 * actual object that performs regular expression validation.
 	 * one of the item has to match
 	 */
 	final private RegularExpression[] exps;
@@ -38,8 +37,7 @@ final class PatternFacet extends DataTypeWithLexicalConstraintFacet
 	 *		There patterns are considered as an 'OR' set.
 	 */
 	public PatternFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
-		throws BadTypeException
-	{
+		throws BadTypeException {
 		super( typeName, baseType, FACET_PATTERN, facets );
 		
 		
@@ -49,13 +47,11 @@ final class PatternFacet extends DataTypeWithLexicalConstraintFacet
 		Vector regExps = facets.getVector(FACET_PATTERN);
 		
 		exps = new RegularExpression[regExps.size()];
-		try
-		{
+		try {
 			for(int i=0;i<regExps.size();i++)
 				exps[i] = new RegularExpression((String)regExps.elementAt(i),"X");
-		}
-		catch( ParseException pe )
-		{// in case regularExpression is not a correct pattern
+		} catch( ParseException pe ) {
+			// in case regularExpression is not a correct pattern
 			throw new BadTypeException(
 				BadTypeException.ERR_PARSE_ERROR,
 				pe.getMessage() );
@@ -65,8 +61,7 @@ final class PatternFacet extends DataTypeWithLexicalConstraintFacet
 		// ignore it for now.
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context)
-	{
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context) {
 		if( checkLexicalConstraint(content) )	return null;
 		
 		if( exps.length==1 )
@@ -77,8 +72,7 @@ final class PatternFacet extends DataTypeWithLexicalConstraintFacet
 				localize(ERR_PATTERN_MANY) );
 	}
 	
-	protected final boolean checkLexicalConstraint( String literal )
-	{
+	protected final boolean checkLexicalConstraint( String literal ) {
 		// makes sure that at least one of the patterns is satisfied.
 		for( int i=0; i<exps.length; i++ )
 			if(exps[i].matches(literal))

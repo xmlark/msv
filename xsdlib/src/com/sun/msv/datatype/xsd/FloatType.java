@@ -17,13 +17,13 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class FloatType extends FloatingNumberType
-{
+public class FloatType extends FloatingNumberType {
+	
 	public static final FloatType theInstance = new FloatType();
 	private FloatType() { super("float"); }
 	
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
-	{// TODO : quick hack. Spec doesn't allow me directly to use FloatValueType.valueOf method
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
+		// TODO : quick hack. Spec doesn't allow me directly to use FloatValueType.valueOf method
 		
 		/* Incompatibilities of XML Schema's float "xfloat" and Java's float "jfloat"
 		
@@ -40,8 +40,7 @@ public class FloatType extends FloatingNumberType
 			* 
 		*/
 		
-		try
-		{
+		try {
 			if(lexicalValue.equals("NaN"))	return new Float(Float.NaN);
 			if(lexicalValue.equals("INF"))	return new Float(Float.POSITIVE_INFINITY);
 			if(lexicalValue.equals("-INF"))	return new Float(Float.NEGATIVE_INFINITY);
@@ -53,9 +52,7 @@ public class FloatType extends FloatingNumberType
 			
 			// these screening process is necessary due to the wobble of Float.valueOf method
 			return Float.valueOf(lexicalValue);
-		}
-		catch( NumberFormatException e )
-		{
+		} catch( NumberFormatException e ) {
 			return null;
 		}
 	}

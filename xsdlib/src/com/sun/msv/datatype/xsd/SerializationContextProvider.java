@@ -16,8 +16,7 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public interface SerializationContextProvider
-{
+public interface SerializationContextProvider {
 	/**
 	 * get namespace prefix for the given namespace URI.
 	 * 

@@ -19,21 +19,16 @@ import java.math.BigInteger;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class ByteType extends IntegerDerivedType
-{
+public class ByteType extends IntegerDerivedType {
 	public final static ByteType theInstance = new ByteType();
 	private ByteType() { super("byte"); }
 	
-	public Object convertToValue( String content, ValidationContextProvider context )
-	{
+	public Object convertToValue( String content, ValidationContextProvider context ) {
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
-		try
-		{
+		try {
 			content = removeOptionalPlus(content);
 			return new Byte(content);
-		}
-		catch( NumberFormatException e )
-		{
+		} catch( NumberFormatException e ) {
 			return null;
 		}
 	}

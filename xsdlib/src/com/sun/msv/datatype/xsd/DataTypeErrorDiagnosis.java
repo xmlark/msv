@@ -14,8 +14,7 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class DataTypeErrorDiagnosis
-{
+public class DataTypeErrorDiagnosis {
 	/** lexcial representation of data that caused an error */
 	public final String content;
 	
@@ -33,9 +32,7 @@ public class DataTypeErrorDiagnosis
 	
 	public static int UNKNOWN = -1;
 	
-	public DataTypeErrorDiagnosis( DataType type, String content, int column,
-		String msg )
-	{
+	public DataTypeErrorDiagnosis( DataType type, String content, int column, String msg ) {
 		this.content = content;
 		this.type = type;
 		this.column = column;

@@ -14,8 +14,7 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-interface Discrete
-{
+interface Discrete {
 	/** count the number of item in value type.
 	 * 
 	 * Actual semantics of this method varies.

@@ -18,8 +18,9 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class TokenType extends StringType
-{
+public class TokenType extends StringType {
 	public static final TokenType theInstance = new TokenType("token");
-	protected TokenType( String typeName ) { super(typeName,WhiteSpaceProcessor.theCollapse); }
+	protected TokenType( String typeName ) {
+		super(typeName,WhiteSpaceProcessor.theCollapse);
+	}
 }

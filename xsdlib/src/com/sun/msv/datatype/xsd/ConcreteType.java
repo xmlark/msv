@@ -15,41 +15,35 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public abstract class ConcreteType extends DataTypeImpl
-{
-	protected ConcreteType( String typeName, WhiteSpaceProcessor whiteSpace )
-	{
+public abstract class ConcreteType extends DataTypeImpl {
+	protected ConcreteType( String typeName, WhiteSpaceProcessor whiteSpace ) {
 		super( typeName, whiteSpace );
 	}
 	
-	protected ConcreteType( String typeName )
-	{
+	protected ConcreteType( String typeName ) {
 		this( typeName, WhiteSpaceProcessor.theCollapse );
 	}
 	
-	final public ConcreteType getConcreteType()
-	{
+	final public ConcreteType getConcreteType() {
 		return this;
 	}
 
-	public boolean isAtomType()
-	{// all but ListType are atom types.
+	public boolean isAtomType() {
+		// all but ListType are atom types.
 		return true;
 	}
 	
-	public boolean isFinal( int derivationType )
-	{// allow derivation by default.
+	public boolean isFinal( int derivationType ) {
+		// allow derivation by default.
 		return false;
 	}
 	
-	public final String displayName()
-	{
+	public final String displayName() {
 		return getName();
 	}
 
 	// default implementation for concrete type. somewhat shabby.
-	protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context)
-	{
+	protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context) {
 		if(checkFormat(content,context))	return null;
 		
 		return new DataTypeErrorDiagnosis(this,content,-1,

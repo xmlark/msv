@@ -17,22 +17,17 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class LongType extends IntegerDerivedType
-{
+public class LongType extends IntegerDerivedType {
 	public static final LongType theInstance = new LongType();
 	private LongType() { super("long"); }
 	protected LongType( String typeName ) { super(typeName); }
 	
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
-	{
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
-		try
-		{
+		try {
 			lexicalValue = removeOptionalPlus(lexicalValue);
 			return new Long(lexicalValue);
-		}
-		catch( NumberFormatException e )
-		{
+		} catch( NumberFormatException e ) {
 			return null;
 		}
 	}

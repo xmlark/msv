@@ -14,8 +14,7 @@ package com.sun.msv.datatype.datetime;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public interface ITimeDurationValueType
-{
+public interface ITimeDurationValueType {
 	BigTimeDurationValueType getBigValue();
 
 	/** compare two ITimeDurationValueType as defined in

@@ -19,21 +19,19 @@ import java.math.BigInteger;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class TypeIncubator
-{
+public class TypeIncubator {
+	
 	/** storage for non-repeatable facets */
 	private final Map impl = new java.util.HashMap();
 	
 	/** base type */
 	private final DataTypeImpl baseType;
 	
-	private static boolean isRepeatable( String facetName )
-	{
+	private static boolean isRepeatable( String facetName ) {
 		return facetName.equals("enumeration") || facetName.equals("pattern");
 	}
 	
-	public TypeIncubator( DataType baseType )
-	{
+	public TypeIncubator( DataType baseType ) {
 		this.baseType = (DataTypeImpl)baseType;
 		if( baseType==null )
 			throw new IllegalArgumentException();
@@ -47,11 +45,9 @@ public class TypeIncubator
 	 */
 	public void add( String name, String strValue, boolean fixed,
 					 ValidationContextProvider context )
-		throws BadTypeException
-	{
+		throws BadTypeException {
 		// checks applicability of the facet
-		switch( baseType.isFacetApplicable(name) )
-		{
+		switch( baseType.isFacetApplicable(name) ) {
 		case DataType.APPLICABLE:	break;
 		case DataType.FIXED:
 			throw new BadTypeException( BadTypeException.ERR_OVERRIDING_FIXED_FACET, name );
@@ -63,8 +59,7 @@ public class TypeIncubator
 		
 		Object value;
 		
-		if( isValueFacet(name) )
-		{
+		if( isValueFacet(name) ) {
 			value = baseType.convertToValueObject(strValue,context);
 			if(value==null)
 				throw new BadTypeException(
@@ -74,8 +69,7 @@ public class TypeIncubator
 		else
 			value = strValue;
 		
-		if( isRepeatable(name) )
-		{
+		if( isRepeatable(name) ) {
 			FacetInfo fi;
 			if( impl.containsKey(name) )
 				fi = (FacetInfo)impl.get(name);
@@ -87,9 +81,7 @@ public class TypeIncubator
 			// <enumeration value="a" fixed="true" />
 			// <enumeration value="b" fixed="false" />
 			fi.fixed |= fixed;
-		}
-		else
-		{
+		} else {
 			if( impl.containsKey(name) )
 				throw new BadTypeException(
 					BadTypeException.ERR_DUPLICATE_FACET, name );
@@ -118,13 +110,11 @@ public class TypeIncubator
 	 *		has invalid values, ... things like that.
 	 */
 	public DataType derive( String newName )
-		throws BadTypeException
-	{
+		throws BadTypeException {
 		if( baseType.isFinal(DataType.DERIVATION_BY_RESTRICTION) )
 			throw new BadTypeException(BadTypeException.ERR_INVALID_BASE_TYPE, baseType.displayName() );
 		
-		if( isEmpty() )
-		{
+		if( isEmpty() ) {
 			// if no facet is specified, and user wants anonymous type,
 			// then no need to create another object.
 			if( newName==null )	return baseType;
@@ -132,7 +122,6 @@ public class TypeIncubator
 			// using FinalComponent as a wrapper.
 			return new FinalComponent(newName,baseType,0);
 		}
-		
 		
 		DataTypeImpl r = baseType;	// start from current datatype
 		
@@ -254,13 +243,12 @@ public class TypeIncubator
 	 */
 	private static void checkRangeConsistency( DataTypeImpl newType,
 		String facetName1, String facetName2 )
-		throws BadTypeException
-	{
+		throws BadTypeException {
+		
 		DataTypeWithFacet o1 = newType.getFacetObject(facetName1);
 		DataTypeWithFacet o2 = newType.getFacetObject(facetName2);
 			
-		if( o1!=null && o2!=null )
-		{
+		if( o1!=null && o2!=null ) {
 			final int c = ((Comparator)o1.getConcreteType()).compare(
 				((RangeFacet)o1).limitValue, ((RangeFacet)o2).limitValue );
 			if( c==Comparator.GREATER )
@@ -277,8 +265,7 @@ public class TypeIncubator
 	private static BadTypeException reportFacetInconsistency(
 		String newName,
 		DataTypeWithFacet o1, String facetName1,
-		DataTypeWithFacet o2, String facetName2 )
-	{
+		DataTypeWithFacet o2, String facetName2 ) {
 		// analyze the situation further so as to
 		// provide better error messages
 
@@ -308,8 +295,7 @@ public class TypeIncubator
 		throw new IllegalStateException();
 	}
 	
-	private boolean isValueFacet( String facetName )
-	{
+	private boolean isValueFacet( String facetName ) {
 		return facetName.equals(DataType.FACET_ENUMERATION)
 			|| facetName.equals(DataType.FACET_MAXEXCLUSIVE)
 			|| facetName.equals(DataType.FACET_MINEXCLUSIVE)
@@ -323,8 +309,7 @@ public class TypeIncubator
 	 * the behavior is undefined when the specified facetName doesn't exist
 	 * in this map.
 	 */
-	public boolean isFixed( String facetName )
-	{
+	public boolean isFixed( String facetName ) {
 		return ((FacetInfo)impl.get(facetName)).fixed;
 	}
 	
@@ -334,8 +319,7 @@ public class TypeIncubator
 	 * the behavior is undefined when the specified facetName doesn't exist
 	 * in this map.
 	 */
-	public Object getFacet( String facetName )
-	{
+	public Object getFacet( String facetName ) {
 		return ((FacetInfo)impl.get(facetName)).value;
 	}
 	
@@ -345,8 +329,7 @@ public class TypeIncubator
 	 * the behavior is undefined when the specified facetName doesn't exist
 	 * in this map.
 	 */
-	public Vector getVector(String facetName)
-	{
+	public Vector getVector(String facetName) {
 		return (Vector)((FacetInfo)impl.get(facetName)).value;
 	}
 	
@@ -360,24 +343,19 @@ public class TypeIncubator
 	 *		if the parameter cannot be parsed as a positive integer
 	 */
 	public int getPositiveInteger( String facetName )
-		throws BadTypeException
-	{
-		try
-		{
+		throws BadTypeException {
+		try {
 			// TODO : is this implementation correct?
 			int value = Integer.parseInt((String)getFacet(facetName));
 			if( value>0 )	return value;
-		}
-		catch( NumberFormatException e )
-		{// let's try BigInteger to see if the value is actually positive
-			try
-			{
+		} catch( NumberFormatException e ) {
+			// let's try BigInteger to see if the value is actually positive
+			try {
 				// if we can parse it in BigInteger, then treat is as Integer.MAX_VALUE
 				// this will work for most cases, I suppose.
 				if(new BigInteger((String)getFacet(facetName)).signum()>0)
 					return Integer.MAX_VALUE;
-			}
-			catch(NumberFormatException ee) {;}
+			} catch(NumberFormatException ee) {;}
 		}
 		
 		throw new BadTypeException(
@@ -395,16 +373,12 @@ public class TypeIncubator
 	 *		if the parameter cannot be parsed as a non-negative integer
 	 */
 	public int getNonNegativeInteger( String facetName )
-		throws BadTypeException
-	{
-		try
-		{
-			// TODO : is this implementation correct?
+		throws BadTypeException {
+		try {
+			// TODO : is this implementation correct? Can I use Integer.parseInt?
 			int value = Integer.parseInt((String)getFacet(facetName));
 			if( value>=0 )		return value;
-		}
-		catch( NumberFormatException e )
-		{ ; }
+		} catch( NumberFormatException e ) { ; }
 		
 		throw new BadTypeException(
 			BadTypeException.ERR_FACET_MUST_BE_NON_NEGATIVE_INTEGER,
@@ -412,24 +386,20 @@ public class TypeIncubator
 	}
 	
 	/** checks if the specified facet was added to this map  */
-	private boolean contains( String facetName )
-	{
+	private boolean contains( String facetName ) {
 		return impl.containsKey(facetName);
 	}
 	
 	/** returns true if no facet is added */
-	public boolean isEmpty()
-	{
+	public boolean isEmpty() {
 		return impl.isEmpty();
 	}
 	
 	
-	private static class FacetInfo
-	{
+	private static class FacetInfo {
 		public Object value;
 		public boolean fixed;
-		public FacetInfo( Object value, boolean fixed )
-		{
+		public FacetInfo( Object value, boolean fixed ) {
 			this.value = value;
 			this.fixed = fixed;
 		}
@@ -439,16 +409,13 @@ public class TypeIncubator
 	 * 
 	 * this method is for debug use only.
 	 */
-	public void dump( java.io.PrintStream out )
-	{
+	public void dump( java.io.PrintStream out ) {
 		Iterator itr = impl.keySet().iterator();
-		while(itr.hasNext())
-		{
+		while(itr.hasNext()) {
 			String facetName = (String)itr.next();
 			FacetInfo fi = (FacetInfo)impl.get(facetName);
 			
-			if(fi.value instanceof Vector)
-			{
+			if(fi.value instanceof Vector) {
 				out.println( facetName + " :");
 				Vector v = (Vector)fi.value;
 				for( int i=0; i<v.size(); i++ )
@@ -463,12 +430,10 @@ public class TypeIncubator
 	 *
 	 * this method is used to produce error messages
 	 */
-	public String getFacetNames()
-	{
+	public String getFacetNames() {
 		String r="";
 		Iterator itr = impl.keySet().iterator();
-		while(itr.hasNext())
-		{
+		while(itr.hasNext()) {
 			if(r.length()!=0)	r+=", ";
 			r += (String)itr.next();
 		}

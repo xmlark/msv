@@ -17,13 +17,12 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class IntegerType extends IntegerDerivedType
-{
+public class IntegerType extends IntegerDerivedType {
+	
 	public static final IntegerType theInstance = new IntegerType("integer");
 	protected IntegerType(String typeName) { super(typeName); }
 	
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
-	{
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
 		return IntegerValueType.create(lexicalValue);
 	}
 }

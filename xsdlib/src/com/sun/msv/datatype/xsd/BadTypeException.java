@@ -17,32 +17,27 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class BadTypeException extends Exception
-{
-	public BadTypeException(String resourcePropertyName,Object[] args)
-	{
+public class BadTypeException extends Exception {
+	
+	public BadTypeException(String resourcePropertyName,Object[] args) {
 		super( java.text.MessageFormat.format(
 			java.util.ResourceBundle.getBundle("com.sun.msv.datatype.Messages").getString(resourcePropertyName),
 			args ) );
 	}
 
-	public BadTypeException(String resourcePropertyName,Object arg1,Object arg2,Object arg3)
-	{
+	public BadTypeException(String resourcePropertyName,Object arg1,Object arg2,Object arg3) {
 		this( resourcePropertyName, new Object[]{arg1,arg2,arg3} );
 	}
 	
-	public BadTypeException(String resourcePropertyName,Object arg1,Object arg2)
-	{
+	public BadTypeException(String resourcePropertyName,Object arg1,Object arg2) {
 		this( resourcePropertyName, new Object[]{arg1,arg2} );
 	}
 	
-	public BadTypeException(String resourcePropertyName,Object arg1)
-	{
+	public BadTypeException(String resourcePropertyName,Object arg1) {
 		this( resourcePropertyName, new Object[]{arg1} );
 	}
 
-	public BadTypeException(String resourcePropertyName)
-	{
+	public BadTypeException(String resourcePropertyName) {
 		this( resourcePropertyName, null );
 	}
 	

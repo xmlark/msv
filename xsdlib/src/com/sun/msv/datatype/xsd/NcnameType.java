@@ -17,13 +17,11 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class NcnameType extends TokenType
-{
+public class NcnameType extends TokenType {
 	public static final NcnameType theInstance = new NcnameType();
 	private NcnameType() { super("NCName"); }
 	
-	public Object convertToValue( String content, ValidationContextProvider context )
-	{
+	public Object convertToValue( String content, ValidationContextProvider context ) {
 		if(XmlNames.isNCName(content))		return content;
 		else								return null;
 	}

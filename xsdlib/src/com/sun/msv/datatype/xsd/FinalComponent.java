@@ -14,8 +14,7 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public final class FinalComponent extends DataTypeImpl
-{
+public final class FinalComponent extends DataTypeImpl {
 	/** immediate base type, which may be a concrete type or DataTypeWithFacet */
 	public final DataTypeImpl baseType;
 	
@@ -23,49 +22,46 @@ public final class FinalComponent extends DataTypeImpl
 	
 	public boolean isAtomType() { return baseType.isAtomType(); }
 	
-	public FinalComponent( DataTypeImpl baseType, int finalValue )
-	{
+	public FinalComponent( DataTypeImpl baseType, int finalValue ) {
 		this( baseType.getName(), baseType, finalValue );
 	}
 	
-	public FinalComponent( String newTypeName, DataTypeImpl baseType, int finalValue )
-	{
+	public FinalComponent( String newTypeName, DataTypeImpl baseType, int finalValue ) {
 		super( newTypeName, baseType.whiteSpace );
 		this.baseType = baseType;
 		this.finalValue = finalValue;
 	}
 	
-	public boolean isFinal( int derivationType )
-	{
+	public boolean isFinal( int derivationType ) {
 		if( (finalValue&derivationType) != 0 )	return true;
 		return baseType.isFinal(derivationType);
 	}
 	
-	public ConcreteType getConcreteType()
-	{
+	public ConcreteType getConcreteType() {
 		return baseType.getConcreteType();
 	}
-	public String displayName()
-	{
+	
+	public String displayName() {
 		return baseType.displayName();
 	}
-	public int isFacetApplicable( String facetName )
-	{
+	
+	public int isFacetApplicable( String facetName ) {
 		return baseType.isFacetApplicable(facetName);
 	}
-	public boolean checkFormat( String content, ValidationContextProvider context )
-	{
+	
+	public boolean checkFormat( String content, ValidationContextProvider context ) {
 		return baseType.checkFormat(content,context);
 	}
-	public Object convertToValue( String content, ValidationContextProvider context )
-	{
+	
+	public Object convertToValue( String content, ValidationContextProvider context ) {
 		return baseType.convertToValue(content,context);
 	}
+	
 	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
 		return baseType.convertToLexicalValue(value,context);
 	}
-	public DataTypeErrorDiagnosis diagnoseValue( String content, ValidationContextProvider context )
-	{
+	
+	public DataTypeErrorDiagnosis diagnoseValue( String content, ValidationContextProvider context ) {
 		return baseType.diagnoseValue(content,context);
 	}
 	

@@ -14,13 +14,11 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class MinLengthFacet extends DataTypeWithValueConstraintFacet
-{
+public class MinLengthFacet extends DataTypeWithValueConstraintFacet {
 	public final int minLength;
 	
 	protected MinLengthFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
-		throws BadTypeException
-	{
+		throws BadTypeException {
 		super(typeName,baseType,FACET_MINLENGTH,facets);
 	
 		minLength = facets.getNonNegativeInteger(FACET_MINLENGTH);
@@ -35,15 +33,13 @@ public class MinLengthFacet extends DataTypeWithValueConstraintFacet
 		// consistency with maxLength is checked in DataTypeImpl.derive method.
 	}
 	
-	public Object convertToValue( String literal, ValidationContextProvider context )
-	{
+	public Object convertToValue( String literal, ValidationContextProvider context ) {
 		Object o = baseType.convertToValue(literal,context);
 		if(o==null || ((Discrete)concreteType).countLength(o)<minLength)	return null;
 		return o;
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context)
-	{
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context) {
 		Object o = concreteType.convertToValue(content,context);
 		// base type must have accepted this lexical value, otherwise 
 		// this method is never called.

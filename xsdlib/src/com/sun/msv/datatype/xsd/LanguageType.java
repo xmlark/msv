@@ -20,13 +20,12 @@ import java.util.Hashtable;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class LanguageType extends TokenType
-{
+public class LanguageType extends TokenType {
+	
 	public static final LanguageType theInstance = new LanguageType();
 	private LanguageType() { super("language"); }
 	
-	public Object convertToValue( String content, ValidationContextProvider context )
-	{
+	public Object convertToValue( String content, ValidationContextProvider context ) {
 		/*	RFC1766 defines the following BNF
 		
 			 Language-Tag = Primary-tag *( "-" Subtag )
@@ -40,22 +39,17 @@ public class LanguageType extends TokenType
 		final int len = content.length();
 		int i=0; int tokenSize=0;
 		
-		while( i<len )
-		{
+		while( i<len ) {
 			final char ch = content.charAt(i++);
-			if( ('a'<=ch && ch<='z') || ('A'<=ch && ch<='Z') )
-			{
+			if( ('a'<=ch && ch<='z') || ('A'<=ch && ch<='Z') ) {
 				tokenSize++;
 				if( tokenSize==9 )
 					return null;	// maximum 8 characters are allowed.
-			}
-			else
-			if( ch=='-' )
-			{
+			} else
+			if( ch=='-' ) {
 				if( tokenSize==0 )	return null;	// at least one alphabet preceeds '-'
 				tokenSize=0;
-			}
-			else
+			} else
 				return null;	// invalid characters
 		}
 		

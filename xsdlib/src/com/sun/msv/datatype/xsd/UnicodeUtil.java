@@ -14,8 +14,7 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class UnicodeUtil
-{
+public class UnicodeUtil {
 	/**
 	 * Count the number of "character" in Unicode string.
 	 * 
@@ -27,13 +26,11 @@ public class UnicodeUtil
 	 * allowed in XML spec, the behavior is undefined. However, we can safely
 	 * assume that XML parser performs this check before we receive the value.
 	 */
-	public static int countLength( String str )
-	{
+	public static int countLength( String str ) {
 		final int len = str.length();
 		int count=0;
 		
-		for( int i=0; i<len; i++ )
-		{
+		for( int i=0; i<len; i++ ) {
 			final char ch = str.charAt(i);
 			// skip the first half of surrogate pair
 			// we can safely assume that the last half of surrogate pair follows.

@@ -21,27 +21,22 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class UnsignedShortType extends IntType
-{
+public class UnsignedShortType extends IntType {
 	public static final UnsignedShortType theInstance = new UnsignedShortType();
 	private UnsignedShortType() { super("unsignedShort"); }
 
     /** upper bound value. this is the maximum possible valid value as an unsigned int */
     private static final int upperBound = 65535;
 	
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
-	{
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
-		try
-		{
+		try {
 			Integer v = (Integer)super.convertToValue(lexicalValue,context);
 			if(v==null)						return null;
 			if( v.intValue()<0 )            return null;
 			if( v.intValue()>upperBound )   return null;
 			return v;
-		}
-		catch( NumberFormatException e )
-		{
+		} catch( NumberFormatException e ) {
 			return null;
 		}
 	}

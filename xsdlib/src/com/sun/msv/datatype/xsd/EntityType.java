@@ -17,13 +17,11 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class EntityType extends ConcreteType
-{
+public class EntityType extends ConcreteType {
 	public static final EntityType theInstance = new EntityType();
 	private EntityType() { super("ENTITY"); }
 	
-	public final int isFacetApplicable( String facetName )
-	{
+	public final int isFacetApplicable( String facetName ) {
 		if( facetName.equals(FACET_LENGTH)
 		||	facetName.equals(FACET_MINLENGTH)
 		||	facetName.equals(FACET_MAXLENGTH)
@@ -34,13 +32,11 @@ public class EntityType extends ConcreteType
 			return NOT_ALLOWED;
 	}
 	
-	protected boolean checkFormat( String content, ValidationContextProvider context )
-	{
+	protected boolean checkFormat( String content, ValidationContextProvider context ) {
 		return context.isUnparsedEntity(content);
 	}
 
-	public Object convertToValue( String content, ValidationContextProvider context )
-	{
+	public Object convertToValue( String content, ValidationContextProvider context ) {
 		if(context.isUnparsedEntity(content))	return content;
 		else									return null;
 	}

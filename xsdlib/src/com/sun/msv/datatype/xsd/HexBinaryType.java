@@ -17,8 +17,8 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class HexBinaryType extends BinaryBaseType
-{
+public class HexBinaryType extends BinaryBaseType {
+	
 	public static final HexBinaryType theInstance = new HexBinaryType();
 	private HexBinaryType() { super("hexBinary"); }
 	
@@ -26,16 +26,14 @@ public class HexBinaryType extends BinaryBaseType
 // hex decoder
 //====================================
 	
-	private static int hexToBin( char ch )
-	{
+	private static int hexToBin( char ch ) {
 		if( '0'<=ch && ch<='9' )	return ch-'0';
 		if( 'A'<=ch && ch<='F' )	return ch-'A'+10;
 		if( 'a'<=ch && ch<='f' )	return ch-'a'+10;
 		return -1;
 	}
 
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
-	{
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
 		final int len = lexicalValue.length();
 
 		// "111" is not a valid hex encoding.
@@ -43,8 +41,7 @@ public class HexBinaryType extends BinaryBaseType
 
 		byte[] out = new byte[len/2];
 
-		for( int i=0; i<len; i+=2 )
-		{
+		for( int i=0; i<len; i+=2 ) {
 			int h = hexToBin(lexicalValue.charAt(i  ));
 			int l = hexToBin(lexicalValue.charAt(i+1));
 			if( h==-1 || l==-1 )
@@ -56,8 +53,7 @@ public class HexBinaryType extends BinaryBaseType
 		return new BinaryValueType(out);
 	}
 
-	protected boolean checkFormat( String lexicalValue, ValidationContextProvider context )
-	{
+	protected boolean checkFormat( String lexicalValue, ValidationContextProvider context ) {
 		final int len = lexicalValue.length();
 
 		// "111" is not a valid hex encoding.

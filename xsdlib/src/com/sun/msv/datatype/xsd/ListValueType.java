@@ -25,8 +25,7 @@ public class ListValueType
 	 * Two ListValueType are equal if and only if all the array members
 	 * are equal respectively.
 	 */
-	public boolean equals( Object o )
-	{
+	public boolean equals( Object o ) {
 		ListValueType rhs = (ListValueType)o;
 		final int len = values.length;
 		if( len!=rhs.values.length )	return false;
@@ -36,8 +35,7 @@ public class ListValueType
 		return true;
 	}
 	
-	public int hashCode()
-	{
+	public int hashCode() {
 		int h=1;
 		final int len = values.length;
 		for( int i=0; i<len; i++ )

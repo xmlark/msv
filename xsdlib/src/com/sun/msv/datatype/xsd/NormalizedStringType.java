@@ -17,8 +17,9 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class NormalizedStringType extends StringType
-{
+public class NormalizedStringType extends StringType {
 	public static final NormalizedStringType theInstance = new NormalizedStringType("normalizedString");
-	protected NormalizedStringType(String typeName) { super(typeName, WhiteSpaceProcessor.theReplace); }
+	protected NormalizedStringType(String typeName) {
+		super(typeName, WhiteSpaceProcessor.theReplace);
+	}
 }

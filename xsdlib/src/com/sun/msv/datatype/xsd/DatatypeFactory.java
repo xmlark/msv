@@ -25,8 +25,8 @@ import java.util.Collection;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class DataTypeFactory
-{
+public class DataTypeFactory {
+	
 	/** a map that contains all built in types */
 	private static final Map builtinType = createStaticTypes();
 	
@@ -54,8 +54,7 @@ public class DataTypeFactory
 	 *		For example, when you try to derive a type from non-atom type.
 	 */
 	public static DataType deriveByList( String newTypeName, DataType itemType )
-		throws BadTypeException
-	{
+		throws BadTypeException {
 		return new ListType(newTypeName,(DataTypeImpl)itemType);
 	}
 	
@@ -75,8 +74,7 @@ public class DataTypeFactory
 	 *		this exception is thrown when the derivation is illegal.
 	 */
 	public static DataType deriveByUnion( String newTypeName, DataType[] memberTypes )
-		throws BadTypeException
-	{
+		throws BadTypeException {
 		DataTypeImpl[] m = new DataTypeImpl[memberTypes.length];
 		for( int i=0; i<memberTypes.length; i++ )
 			m[i] = (DataTypeImpl)memberTypes[i];
@@ -85,8 +83,7 @@ public class DataTypeFactory
 	}
 	
 	public static DataType deriveByUnion( String newTypeName, Collection memberTypes )
-		throws BadTypeException
-	{
+		throws BadTypeException {
 		DataTypeImpl[] m = new DataTypeImpl[memberTypes.size()];
 		int n=0;
 		for( Iterator itr=memberTypes.iterator(); itr.hasNext(); n++ )
@@ -101,13 +98,11 @@ public class DataTypeFactory
 	 * 
 	 * @return null	if DataType is not found
 	 */
-	public static DataType getTypeByName( String dataTypeName )
-	{
+	public static DataType getTypeByName( String dataTypeName ) {
 		return (DataType)builtinType.get(dataTypeName);
 	}
 	
-	private static void add( Map m, DataType type )
-	{
+	private static void add( Map m, DataType type ) {
 		final String name = type.getName();
 		if( name==null )
 			throw new IllegalArgumentException("anonymous type");
@@ -122,10 +117,8 @@ public class DataTypeFactory
 	}
 	
 	/** creates a map that contains all static types */
-	private static Map createStaticTypes()
-	{
-		try
-		{
+	private static Map createStaticTypes() {
+		try {
 			Map m = new java.util.HashMap();
 
 			// missing types are noted inline.
@@ -176,9 +169,8 @@ public class DataTypeFactory
 			add( m, UnsignedByteType.theInstance );
 			add( m, PositiveIntegerType.theInstance );
 			return m;
-		}
-		catch( BadTypeException bte )
-		{// assertion failed
+		} catch( BadTypeException bte )	{
+			// assertion failed
 			throw new IllegalStateException();
 		}
 	}

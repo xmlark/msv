@@ -19,8 +19,8 @@ import com.sun.msv.datatype.Comparator;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class BigTimeDurationValueType implements ITimeDurationValueType
-{
+public class BigTimeDurationValueType implements ITimeDurationValueType {
+	
 	protected BigInteger year;
 	protected BigInteger month;
 	protected BigInteger day;

@@ -14,8 +14,7 @@ package com.sun.msv.datatype.datetime;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public interface IDateTimeValueType
-{
+public interface IDateTimeValueType {
 	BigDateTimeValueType getBigValue();
 	
 	/** returns the result of addition of this object and TimeDuration.

@@ -18,8 +18,7 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public interface Comparator
-{
+public interface Comparator {
 	static final int LESS			= -1;	// lhs < rhs
 	static final int EQUAL			= 0;	// lhs = rhs
 	static final int GREATER		= 1;	// lhs > rhs

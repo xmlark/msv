@@ -17,21 +17,16 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class ShortType extends IntegerDerivedType
-{
+public class ShortType extends IntegerDerivedType {
 	public static final ShortType theInstance = new ShortType("short");
 	protected ShortType(String typeName) { super(typeName); }
 	
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
-	{
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
-		try
-		{
+		try {
 			lexicalValue = removeOptionalPlus(lexicalValue);
 			return new Short(lexicalValue);
-		}
-		catch( NumberFormatException e )
-		{
+		} catch( NumberFormatException e ) {
 			return null;
 		}
 	}

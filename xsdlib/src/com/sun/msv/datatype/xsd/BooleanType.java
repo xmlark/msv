@@ -17,8 +17,7 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class BooleanType extends ConcreteType
-{
+public class BooleanType extends ConcreteType {
 	public static final BooleanType theInstance = new BooleanType();
 	
 	private BooleanType()	{ super("boolean"); }
@@ -46,8 +45,7 @@ public class BooleanType extends ConcreteType
 			throw new IllegalArgumentException();
 	}
 	
-	public int isFacetApplicable( String facetName )
-	{
+	public int isFacetApplicable( String facetName ) {
 		if(facetName.equals("pattern"))		return APPLICABLE;
 		return NOT_ALLOWED;
 	}

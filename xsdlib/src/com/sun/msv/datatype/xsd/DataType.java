@@ -20,8 +20,7 @@ import java.util.Hashtable;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public interface DataType extends Serializable,Cloneable
-{
+public interface DataType extends Serializable,Cloneable {
 	/**
 	 * checks if 'literal' matchs this datatype.
 	 * 

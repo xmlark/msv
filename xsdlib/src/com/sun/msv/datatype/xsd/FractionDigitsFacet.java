@@ -16,14 +16,13 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet
-{
+class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet {
+	
 	/** maximum number of fraction digits */
 	protected final int scale;
 
 	public FractionDigitsFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
-		throws BadTypeException
-	{
+		throws BadTypeException {
 		super( typeName, baseType, FACET_FRACTIONDIGITS, facets );
 		
 		scale = facets.getNonNegativeInteger(FACET_FRACTIONDIGITS);
@@ -38,13 +37,11 @@ class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet
 		// consistency with precision is checked in DataTypeImpl.derive method.
 	}
 
-	protected boolean checkLexicalConstraint( String content )
-	{
+	protected boolean checkLexicalConstraint( String content ) {
 		return countScale(content)<=scale;
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context)
-	{
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context) {
 		final int cnt = countScale(content);
 		if(cnt<=scale)		return null;
 		
@@ -61,24 +58,19 @@ class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet
 	 * "the number of fractional digits" is defined in
 	 * http://www.w3.org/TR/xmlschema-2/#number
 	 */
-	final protected static int countScale( String literal )
-	{
+	final protected static int countScale( String literal ) {
 		final int len = literal.length();
 		boolean skipMode = true;
 
 		int count=0;
 		int trailingZero=0;
 		
-		for( int i=0; i<len; i++ )
-		{
+		for( int i=0; i<len; i++ ) {
 			final char ch = literal.charAt(i);
-			if( skipMode )
-			{
+			if( skipMode ) {
 				if( ch=='.' )
 					skipMode = false;
-			}
-			else
-			{
+			} else {
 				if( ch=='0' )	trailingZero++;
 				else			trailingZero=0;
 				

@@ -19,13 +19,11 @@ import java.util.Hashtable;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class LengthFacet extends DataTypeWithValueConstraintFacet
-{
+public class LengthFacet extends DataTypeWithValueConstraintFacet {
 	public final int length;
 	
 	protected LengthFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
-		throws BadTypeException
-	{
+		throws BadTypeException {
 		super(typeName,baseType,FACET_LENGTH,facets);
 	
 		length = facets.getNonNegativeInteger(FACET_LENGTH);
@@ -40,15 +38,13 @@ public class LengthFacet extends DataTypeWithValueConstraintFacet
 		// consistency with minLength/maxLength is checked in DataTypeImpl.derive method.
 	}
 	
-	public Object convertToValue( String content, ValidationContextProvider context )
-	{
+	public Object convertToValue( String content, ValidationContextProvider context ) {
 		Object o = baseType.convertToValue(content,context);
 		if(o==null || ((Discrete)concreteType).countLength(o)!=length)	return null;
 		return o;
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context)
-	{
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context) {
 		Object o = concreteType.convertToValue(content,context);
 		// base type must have accepted this lexical value, otherwise 
 		// this method is never called.

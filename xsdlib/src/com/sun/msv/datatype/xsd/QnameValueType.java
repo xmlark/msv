@@ -13,30 +13,25 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-class QnameValueType
-{
+class QnameValueType {
 	String namespaceURI;
 	String localPart;
 	
-	public boolean equals( Object o )
-	{
+	public boolean equals( Object o ) {
 		QnameValueType rhs = (QnameValueType)o;
 		
 		return namespaceURI.equals(rhs.namespaceURI) && localPart.equals(rhs.localPart);
 	}
 	
-	public int hashCode()
-	{
+	public int hashCode() {
 		return namespaceURI.hashCode()+localPart.hashCode();
 	}
 	
-	public String toString()
-	{
+	public String toString() {
 		return "{"+namespaceURI+"}:"+localPart;
 	}
 	
-	QnameValueType( String uri, String localPart )
-	{
+	QnameValueType( String uri, String localPart ) {
 		this.namespaceURI	= uri;
 		this.localPart		= localPart;
 	}

@@ -16,8 +16,7 @@ import java.math.BigInteger;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class IntegerValueType implements Comparable
-{
+public class IntegerValueType implements Comparable {
 	/** canonical representation of absolute value of integer
 	 * 
 	 * BNF of canonical representation
@@ -48,14 +47,12 @@ public class IntegerValueType implements Comparable
 	 *		the lexical space of "integer" type specified in
 	 *		XML Schema datatype spec.
 	 */
-	public static IntegerValueType create( String nonCanonicalizedValue )
-	{
+	public static IntegerValueType create( String nonCanonicalizedValue ) {
 		int idx=0; String v="";
 		final int len = nonCanonicalizedValue.length();
 		
 		if(len==0)	return null;
-		switch(nonCanonicalizedValue.charAt(idx))
-		{
+		switch(nonCanonicalizedValue.charAt(idx)) {
 		case '+':
 			idx++;
 			break;	// ignore the sign
@@ -76,14 +73,13 @@ public class IntegerValueType implements Comparable
 		while(idx<len && nonCanonicalizedValue.charAt(idx)=='0')
 			idx++;
 		
-		if( idx==len )
-		{// all the digits are skipped : that means this value is 0
+		if( idx==len ) {
+			// all the digits are skipped : that means this value is 0
 			return new IntegerValueType("0");
 		}
 		
 		// adding digits
-		while( idx<len )
-		{
+		while( idx<len ) {
 			final char ch = nonCanonicalizedValue.charAt(idx++);
 			if( '0'<=ch && ch<='9' )	v += ch;
 			else						return null;	// illegal char
@@ -97,8 +93,7 @@ public class IntegerValueType implements Comparable
 	 *				0	if the values are the same
 	 *				-1	if rhs is bigger than this.
 	 */
-	public int compareTo( Object o )
-	{
+	public int compareTo( Object o ) {
 		IntegerValueType rhs = (IntegerValueType)o;
 
 		boolean lhsIsNegative = value.charAt(0)=='-';
@@ -123,8 +118,7 @@ public class IntegerValueType implements Comparable
 		if( llen < rlen )		return lhsIsNegative?1:-1;
 		
 		// now we have the same length. compare left to right
-		while( llen>0 )
-		{
+		while( llen>0 ) {
 			final char lch = value.charAt(lp++);
 			final char rch = rhs.value.charAt(rp++);
 			
@@ -137,19 +131,21 @@ public class IntegerValueType implements Comparable
 		return 0;	// they are the same value
 	}
 	
-	public boolean equals( Object o )
-	{
+	public boolean equals( Object o ) {
 		if( o instanceof IntegerValueType )
 			return value.equals( ((IntegerValueType)o).value );
 		else
 			return false;
 	}
 	
-	public int hashCode() { return value.hashCode(); }
-	public String toString() { return value; }
+	public int hashCode() {
+		return value.hashCode();
+	}
+	public String toString() {
+		return value;
+	}
 						 
-	public int precision()
-	{
+	public int precision() {
 		// TODO : what is the exact definition of "precision"?
 		// What is the precision of "100"? 1, or 3?
 		final int len = value.length();
@@ -159,30 +155,26 @@ public class IntegerValueType implements Comparable
 	
 	
 	/** returns true if the value if non-positive (less than or equal to zero) */
-	public boolean isNonPositive()
-	{
+	public boolean isNonPositive() {
 		final char ch = value.charAt(0);
 		if( ch=='-' || ch=='0' )	return true;
 		return false;
 	}
     
 	/** returns true if the value if positive (greater than zero) */
-	public boolean isPositive()
-	{
+	public boolean isPositive() {
 		final char ch = value.charAt(0);
 		if( ch=='-' || ch=='0' )	return false;
 		return true;
 	}
     
 	/** returns true if the value if negative (less than zero) */
-	public boolean isNegative()
-	{
+	public boolean isNegative() {
 		return value.charAt(0)=='-';
 	}
     
 	/** returns true if the value if non-negative (greater than or equal to zero) */
-	public boolean isNonNegative()
-	{
+	public boolean isNonNegative() {
 		return value.charAt(0)!='-';
 	}
 	

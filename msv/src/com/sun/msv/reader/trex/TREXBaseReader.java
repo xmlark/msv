@@ -188,7 +188,7 @@ public abstract class TREXBaseReader extends GrammarReader {
 		"TREXGrammarReader.MissingChildNameClass";
 	public static final String ERR_MORE_THAN_ONE_NAMECLASS = // arg:0
 		"TREXGrammarReader.MoreThanOneNameClass";
-	public static final String ERR_UNDECLEARED_PREFIX = // arg:1
+	public static final String ERR_UNDECLARED_PREFIX = // arg:1
 		"TREXGrammarReader.UndeclaredPrefix";
 	public static final String ERR_UNDEFINED_PATTERN = // arg:1
 		"TREXGrammarReader.UndefinedPattern";

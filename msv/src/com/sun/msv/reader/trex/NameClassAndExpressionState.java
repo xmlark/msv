@@ -50,7 +50,7 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
 			final String[] s = reader.splitQName(name);
 			if(s==null)
 			{
-				reader.reportError( TREXBaseReader.ERR_UNDECLEARED_PREFIX, name );
+				reader.reportError( TREXBaseReader.ERR_UNDECLARED_PREFIX, name );
 				// recover by using a dummy name
 				nameClass = new SimpleNameClass( "", name );
 			}

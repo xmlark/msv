@@ -26,6 +26,23 @@ provided as a guide for implementing your own Java classes with the
 Datatypes Library.
 
 ----------------------------------------------------------------------
+CHANGES FROM THE PREVIOUS RELEASE
+----------------------------------------------------------------------
+
+1. The package name is changed to "com.sun.msv.datatype".
+
+2. Sun XML Datatypes Library now relies on the interfaces defined in
+   the "org.relaxng.datatype" package.
+
+3. A new method is added for converting literals into the corresponding
+   Java-friendly objects.
+
+4. Applications can now access the "anatomical structure" of datatypes
+   (e.g., applied facets, derivation tree, etc.)
+
+5. Miscellaneous bug fixes.
+
+----------------------------------------------------------------------
 KNOWN LIMITATIONS
 ----------------------------------------------------------------------
 

@@ -142,7 +142,7 @@ public class FieldMatcher extends PathMatcher {
 			if( parent.children[i]==this )
 				break;
 		
-		owner.reportError( owner.ERR_DOUBLE_MATCH,
+		owner.reportError( null, owner.ERR_DOUBLE_MATCH,
 			new Object[]{
 				parent.selector.idConst.namespaceURI,
 				parent.selector.idConst.localName,

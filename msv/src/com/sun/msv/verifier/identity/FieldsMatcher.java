@@ -72,7 +72,7 @@ public class FieldsMatcher extends MatcherBundle {
 					
 				// if this is the key constraint, it is an error
 				owner.reportError(
-					startTag,
+					startTag, null, 
 					owner.ERR_UNMATCHED_KEY_FIELD,
 					new Object[]{
 						selector.idConst.namespaceURI,
@@ -105,12 +105,12 @@ public class FieldsMatcher extends MatcherBundle {
 		// violates uniqueness constraint.
 		// this set already has this value.
 		owner.reportError(
-			startTag,
+			startTag, null,
 			owner.ERR_NOT_UNIQUE,
 			new Object[]{
 				selector.idConst.namespaceURI, selector.idConst.localName} );
 		owner.reportError(
-			((KeyValue)items[i]).locator,
+			((KeyValue)items[i]).locator, null,
 			owner.ERR_NOT_UNIQUE_DIAG,
 			new Object[]{
 				selector.idConst.namespaceURI, selector.idConst.localName} );

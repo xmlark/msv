@@ -11,6 +11,7 @@ package com.sun.msv.grammar.dtd;
 
 import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.NameClassVisitor;
+import com.sun.msv.grammar.SimpleNameClass;
 
 /**
  * a NameClass that accepts any tag name as long as its local part is specified name.
@@ -25,7 +26,9 @@ public final class LocalNameClass extends NameClass {
     }
     
     public Object visit( NameClassVisitor visitor ) {
-        throw new Error();
+        // use the approximation.
+        // FIXME
+        return new SimpleNameClass("",localName).visit(visitor);
     }
     
     public LocalNameClass( String localName ) {

@@ -102,7 +102,7 @@ public abstract class GrammarReader
 	/**
 	 * calls processName method of NamespaceSupport
 	 */
-	public final String[] splitNamespacePrefix( String qName ) {
+	public final String[] splitQName( String qName ) {
 		return namespaceSupport.processName(qName, new String[3], false );
 	}
 	
@@ -123,7 +123,7 @@ public abstract class GrammarReader
 	 * gets DataType object from type name.
 	 * 
 	 * If undefined type name is specified, this method is responsible
-	 * to report an error, and recovery.
+	 * to report an error, and recover.
 	 * 
 	 * @param typeName
 	 *		For RELAX, this is unqualified type name. For TREX,
@@ -501,9 +501,8 @@ public abstract class GrammarReader
 	public final void reportWarning( String propertyName, Object arg1, Object arg2 )
 	{ reportWarning( propertyName, new Object[]{arg1,arg2}, null ); }
 
-	private Locator[] prepareLocation( Locator[] param )
-	{
-		// if null is given, use start tag of the current state.
+	private Locator[] prepareLocation( Locator[] param ) {
+		// if null is given, use the current location.
 		if( param!=null )	return param;
 		if( locator!=null )		return new Locator[]{locator};
 		else					return new Locator[0];
@@ -543,6 +542,8 @@ public abstract class GrammarReader
 		"GrammarReader.Characters";
 	public static final String ERR_MISSING_ATTRIBUTE = // arg:2
 		"GrammarReader.MissingAttribute";
+	public static final String ERR_BAD_ATTRIBUTE_VALUE = // arg:2
+		"GrammarReader.BadAttributeValue";
 	public static final String ERR_MISSING_ATTRIBUTE_2 = // arg:3
 		"GrammarReader.MissingAttribute.2";
 	public static final String ERR_CONFLICTING_ATTRIBUTES = // arg:2
@@ -551,7 +552,7 @@ public abstract class GrammarReader
 		"GrammarReader.RecursiveInclude";
 	public static final String ERR_UNDEFINED_DATATYPE = // arg:1
 		"GrammarReader.UndefinedDataType";
-	public static final String ERR_DATATYPE_ALREADY_DEFINED =	// arg:0
+	public static final String ERR_DATATYPE_ALREADY_DEFINED =	// arg:1
 		"GrammarReader.DataTypeAlreadyDefined";
 	public static final String ERR_MISSING_CHILD_EXPRESSION =	// arg:none
 		"GrammarReader.Abstract.MissingChildExpression";

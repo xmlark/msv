@@ -95,8 +95,7 @@ import com.sun.msv.util.StringPair;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class CombinedChildContentExpCreator implements ExpressionVisitor
-{
+public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	protected final ExpressionPool	pool;
 	protected final AttributeFeeder	feeder;
 
@@ -110,20 +109,38 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 	private boolean					checkTagName;
 
 	// TODO: do we gain some performance if we stop creating combined child content expression
-	// (for RELAX, c.c.c.p is unnecessary)
+	// (for RELAX, c.c.c.e is unnecessary)
 	
 	// TODO: how many object instanciation can we avoid
 	// if we keep one local reusable copy of OwnerAndContent?
 	
-	public static class ExpressionPair
-	{
+	public static class ExpressionPair {
 		public final Expression		content;
 		public final Expression		continuation;
-		public ExpressionPair( Expression content, Expression continuation )
-		{ this.content=content; this.continuation=continuation; }
+		public ExpressionPair( Expression content, Expression continuation ) {
+			this.content=content;
+			this.continuation=continuation;
+		}
 	}
-	public class OwnerAndContent
-	{
+
+	/*
+		Ideally, these two fields should be return values from onXXX methods.
+		In fact, this class was once made in that way.
+	
+		However, to return two values, we need to create an object to wrap them,
+		and it takes memory and time. 
+		
+		An experiment shows that ExpressionPairs used for that purpose occupies
+		1/4 (in number) of object instanciation of the entire obejcts created in
+		Verifier.startElement method.
+	
+		So now it is rewritten to use this instance fields instead of return values.
+	*/
+	private Expression content;
+	private Expression continuation;
+	
+	
+	public class OwnerAndContent {
 		public final OwnerAndContent next;	// pointer as a linked list.
 		public final ElementExp	owner;			// element of concern
 		public final Expression		content;
@@ -169,12 +186,12 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 		this.tagInfo = info;
 		this.feedAttributes = feedAttributes;
 		this.checkTagName = checkTagName;
-		ExpressionPair result = (ExpressionPair)combinedPattern.visit(this);
-		if( numElements==1 )	return result;
-		else					return new ExpressionPair(result.content,null);
+		combinedPattern.visit(this);
 		
 		// when more than one element of concern is found,
 		// continuation cannot be used.
+		if( numElements!=1 )	continuation = null;
+		return new ExpressionPair( content, continuation );
 	}
 	
 	/** computes a combined child content pattern and (,if possible,) its continuation. */
@@ -248,34 +265,42 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 	 */
 	private boolean foundConcur;
 
-	public Object onConcur( ConcurExp exp )
+	public void onConcur( ConcurExp exp )
 	{
 		foundConcur = true;
-		ExpressionPair p1 = (ExpressionPair)exp.exp1.visit(this);
-		ExpressionPair p2 = (ExpressionPair)exp.exp2.visit(this);
+		exp.exp1.visit(this);
+		Expression content1 = content;
+		Expression continuation1 = continuation;
 		
-		return new ExpressionPair(
-			pool.createConcur(p1.content,p2.content),
-			pool.createConcur(p1.continuation,p2.continuation) );
+		exp.exp2.visit(this);
+		
+		content = pool.createConcur( content, content1 );
+		continuation = pool.createConcur( continuation, continuation1 );
 	}
-	public Object onInterleave( InterleaveExp exp )
+	public void onInterleave( InterleaveExp exp )
 	{
-		ExpressionPair p1 = (ExpressionPair)exp.exp1.visit(this);
-		ExpressionPair p2 = (ExpressionPair)exp.exp2.visit(this);
+		exp.exp1.visit(this);
+		if( content==Expression.nullSet ) {
+			exp.exp2.visit(this);
+			continuation = pool.createInterleave( continuation, exp.exp1 );
+			return;
+		}
 		
-		if(p2.content==Expression.nullSet)
-			return new ExpressionPair( p1.content,
-				pool.createInterleave(p1.continuation,exp.exp2) );
+		Expression content1 = content;
+		Expression continuation1 = continuation;
 		
-		if(p1.content==Expression.nullSet)
-			return new ExpressionPair( p2.content,
-				pool.createInterleave(p2.continuation,exp.exp1) );
-
-		// now the situation is (A,X)^(A,Y).
-		// so the continuation after eating A will be X^Y.
-		return new ExpressionPair(
-			pool.createChoice( p1.content, p2.content ),
-			pool.createInterleave( p1.continuation, p2.continuation ) );
+		exp.exp2.visit(this);
+		
+		if( content==Expression.nullSet ) {
+			content = content1;
+			continuation = pool.createInterleave( continuation1, exp.exp2 );
+			return;
+		}
+		
+		// now the situation is something like (A,X)^(A,Y).
+		// both accepts this token. So continuation becomes meaningless.
+		content = pool.createChoice( content, content1 );
+		continuation = Expression.nullSet;
 	}
 	
 	/**
@@ -293,29 +318,18 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 	 */
 	public final boolean isComplex() { return foundConcur; }
 
-	
-	private static final ExpressionPair nullPair = new ExpressionPair(Expression.nullSet,Expression.nullSet);
 
 	
 	
-	public Object onAttribute( AttributeExp exp )	{ return nullPair; }
-	
-	public Object onChoice( ChoiceExp exp )
-	{
-		ExpressionPair p1 = (ExpressionPair)exp.exp1.visit(this);
-		ExpressionPair p2 = (ExpressionPair)exp.exp2.visit(this);
-		
-		return new ExpressionPair(
-			pool.createChoice(p1.content, p2.content ),
-			pool.createChoice(p1.continuation,p2.continuation));
-	}
-	public Object onElement( ElementExp exp )
+	public void onElement( ElementExp exp )
 	{
 		// TODO: may check result and remove duplicate result
 		
 		// if tag name is invalid, then remove this element from candidate.
-		if(checkTagName && !exp.getNameClass().accepts(tagInfo.namespaceURI,tagInfo.localName))
-			return nullPair;
+		if(checkTagName && !exp.getNameClass().accepts(tagInfo.namespaceURI,tagInfo.localName)) {
+			content = continuation = Expression.nullSet;
+			return;
+		}
 		
 		// check result and see if the same element is already registered.
 		// this will reduce the complexity of the result.
@@ -323,8 +337,13 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 		// (A|B)* C? (A|B)* to implement interleaving of (A|B)* and C.
 		// this check becomes important for cases like this.
 		for( OwnerAndContent o=result; o!=null; o=o.next )
-			if(o.owner==exp)	// the same element is found.
-				return new ExpressionPair(o.content,Expression.epsilon);
+			if(o.owner==exp) {
+				// the same element is found.
+//				return new ExpressionPair(o.content,Expression.epsilon);
+				content = o.content;
+				continuation = Expression.epsilon;
+				return;
+			}
 		
 		// also, feeding and pruning attributes are relatively expensive operation.
 		// so this is the good place to check other redundancy.
@@ -339,8 +358,11 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 				exp.contentModel,
 				tagInfo,
 				exp.ignoreUndeclaredAttributes);
-			if( prunedContentModel==Expression.nullSet )
-				return nullPair;	// this content model didn't accept attributes 
+			if( prunedContentModel==Expression.nullSet ) {
+//				return nullPair;	// this content model didn't accept attributes 
+				content = continuation = Expression.nullSet;
+				return;
+			}
 		}
 		else
 		{
@@ -352,64 +374,72 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 		// create a new result object
 		result = new OwnerAndContent(result,exp,prunedContentModel);
 		
-		return new ExpressionPair(prunedContentModel,Expression.epsilon);	// content model is simply copied. (not recurisively processed)
+//		return new ExpressionPair(prunedContentModel,Expression.epsilon);	// content model is simply copied. (not recurisively processed)
+		content = prunedContentModel;
+		continuation = Expression.epsilon;
 	}
-	public Object onOneOrMore( OneOrMoreExp exp )
-	{
-		ExpressionPair p = (ExpressionPair)exp.exp.visit(this);
-		return new ExpressionPair(
-			p.content,
-			// in this class, we are interested only in the content model of child elements.
-			// therefore, repeatable parts can be simply ignored.
 	
-			// continuation of (AB)+ after A will be B,(AB)*
-			pool.createSequence( p.continuation, pool.createZeroOrMore(exp.exp) )
-		);
-	}
-	public Object onMixed( MixedExp exp )
+	public void onOneOrMore( OneOrMoreExp exp )
 	{
-		ExpressionPair p = (ExpressionPair)exp.exp.visit(this);
-		return new ExpressionPair(
-			p.content,
-		// for the same reason as above, <mixed> part can be also ignorable.
+		exp.exp.visit(this);
+		continuation = pool.createSequence( continuation, pool.createZeroOrMore( exp.exp) );
+	}
+	public void onMixed( MixedExp exp )
+	{
+		exp.exp.visit(this);
+		continuation = pool.createMixed(continuation);
+	}
 	
-			pool.createMixed(p.continuation)
-		);
+	public void onAttribute( AttributeExp exp )	{ content = continuation = Expression.nullSet; }
+	public void onEpsilon()		{ content = continuation = Expression.nullSet; }
+	public void onNullSet()		{ content = continuation = Expression.nullSet; }
+	public void onAnyString()	{ content = continuation = Expression.nullSet; }
+	public void onTypedString( TypedStringExp exp )	{ content = continuation = Expression.nullSet; }
+	public void onRef( ReferenceExp exp ) {
+		exp.exp.visit(this);
 	}
-	public Object onEpsilon()		{ return nullPair; }
-	public Object onNullSet()		{ return nullPair; }
-	public Object onAnyString()		{ return nullPair; }
-	public Object onRef( ReferenceExp exp )
+	public void onChoice( ChoiceExp exp )
 	{
-		return exp.exp.visit(this);
-	}
-	public Object onSequence( SequenceExp exp )
-	{
-		ExpressionPair p1 = (ExpressionPair)exp.exp1.visit(this);
+		exp.exp1.visit(this);
+		Expression content1 = content;
+		Expression continuation1 = continuation;
 		
-		if(exp.exp1.isEpsilonReducible())
-		{
-			ExpressionPair p2 = (ExpressionPair)exp.exp2.visit(this);
-			if( p2.content!=Expression.nullSet )
-			{
-				if(p1.content==Expression.nullSet)		return p2;
-
-				// now, we have candidates in both left and right.
-				// say,
-				// exp = (A,X),(A,Y) and AX can be nullable.
-				// continuation will be (X,A,Y)|Y.
-				return new ExpressionPair( 
-					pool.createChoice( p1.content, p2.content ),
-					
-					pool.createChoice(
-						pool.createSequence(p1.continuation, exp.exp2 ),
-						p2.continuation ) );
-			}
-		}
-
-		return new ExpressionPair( p1.content,
-			pool.createSequence( p1.continuation, exp.exp2 ) );
-			
+		exp.exp2.visit(this);
+		
+		content = pool.createChoice( content, content1 );
+		continuation = pool.createChoice( continuation, continuation1 );
 	}
-	public Object onTypedString( TypedStringExp exp )	{ return nullPair; }
+	public void onSequence( SequenceExp exp )
+	{
+		exp.exp1.visit(this);
+		
+		if(!exp.exp1.isEpsilonReducible()) {
+			continuation = pool.createSequence( continuation, exp.exp2 );
+			return;
+		}
+		
+		Expression content1 = content;
+		Expression continuation1 = continuation;
+		
+		exp.exp2.visit(this);
+		
+		if( content==Expression.nullSet ) {
+			content = content1;
+			continuation = pool.createSequence( continuation1, exp.exp2 );
+			return;
+		}
+		
+		if( content1==Expression.nullSet ) {
+			// exp1 is epsilon reducible but didn't accept this token.
+			// so continuation will be that of exp2.
+			return;
+		}
+		
+		// now, we have candidates in both left and right.
+		// say,
+		// exp = (A,X)?,(A,Y)
+		// continuation will be therefore meaningless
+		content = pool.createChoice( content, content1 );
+		continuation = Expression.nullSet;
+	}
 }

@@ -41,7 +41,7 @@ public class StringToken extends Token {
 	}
 	
 	public StringToken( REDocumentDeclaration docDecl, String literal, IDContextProvider context, DatatypeRef refType ) {
-		this(docDecl.resCalc,literal,context,null);
+		this(docDecl.resCalc,literal,context,refType);
 	}
 	
 	public StringToken( ResidualCalculator resCalc, String literal, IDContextProvider context, DatatypeRef refType ) {

@@ -28,6 +28,7 @@ import java.net.URLConnection;
 import java.util.Hashtable;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * This entity resolver class provides a number of utilities which can help
@@ -238,21 +239,21 @@ public class Resolver implements EntityResolver
      *	is checked for document type and character set encoding.
      */
     static public InputSource createInputSource (URL uri, boolean checkType)
-    throws IOException
-    {
-	URLConnection	conn = uri.openConnection ();
-	InputSource	retval;
+		throws IOException {
 	
-	if (checkType) {
-	    String	contentType = conn.getContentType ();
-	    retval = createInputSource (contentType, conn.getInputStream (),
-		    false, uri.getProtocol ());
-	} else {
-	    retval = new InputSource (
-		    XmlReader.createReader (conn.getInputStream ()));
-	}
-	retval.setSystemId (conn.getURL ().toString ());
-	return retval;
+		URLConnection	conn = uri.openConnection ();
+		InputSource	retval;
+	
+		if (checkType) {
+		    String	contentType = conn.getContentType ();
+		    retval = createInputSource (contentType, conn.getInputStream (),
+			    false, uri.getProtocol ());
+		} else {
+		    retval = new InputSource (
+			    XmlReader.createReader (conn.getInputStream ()));
+		}
+		retval.setSystemId (conn.getURL ().toString ());
+		return retval;
     }
 
 

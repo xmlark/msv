@@ -172,8 +172,6 @@ public abstract class ExpressionAcceptor implements Acceptor
 		}
 		else
 		{// in error recovery mode
-			// TODO: diagnose error
-			
 			// assume everyone accepts this content
 			satisfied = owners;
 		}

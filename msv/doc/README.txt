@@ -1,15 +1,16 @@
 ======================================================================
-              README FILE FOR SUN MULTI-SCHEMA VALIDATOR
-                    Preview Version. 1st May, 2001
+            README FILE FOR SUN MULTI-SCHEMA XML VALIDATOR
+                      Preview Version July, 2001
                  Copyright (c) Sun Microsystems, 2001
 Document written by Kohsuke Kawaguchi (kohsuke.kawaguchi@eng.sun.com)
                                                     $Revision$
 ======================================================================
 
-Sun Multi-Schema Validator is  a Java tool to validate XML documents
-against several kinds of XML schemata. It supports DTD, RELAX Namespace,
-RELAX Core, RELAX NG, TREX, and a subset of W3C XML Schema Part 1. This
-release includes software developed by the Apache Software Foundation [1].
+The Sun Multi-Schema XML Validator is a Java tool to validate XML
+documents against several kinds of XML schemata. It supports DTD,
+RELAX Namespace, RELAX Core, RELAX NG, TREX, and a subset of W3C
+XML Schema Part 1. This release includes software developed by
+the Apache Software Foundation [1].
 
 ----------------------------------------------------------------------
 OVERVIEW
@@ -17,11 +18,11 @@ OVERVIEW
 
 This tool is:
 
-* a command line tool that can read XML documents and validate them
+* A command line tool that can read XML documents and validate them
   against a schema (DTD/RELAX/TREX/W3C). If an error is found,
   error messages are provided.
 
-* a library that can be incorporated into Java applications as a
+* A library that can be incorporated into Java applications as a
   validator.
 
 See commandline.html for details on how to use MSV from the command line.
@@ -78,7 +79,7 @@ REFERENCES
       http://groups.yahoo.com/group/reldeve
 [ 8] RELAX Namespace specification
     The original writen in Japanese
-      http://www.y-adagio.com/public/standards/tr_relax_ns/toc.htm"
+      http://www.y-adagio.com/public/standards/tr_relax_ns/toc.htm
     No translation available.
 [ 9] TREX
       http://www.thaiopensource.com/trex/

@@ -68,12 +68,12 @@ public class RELAXCoreIslandSchemaReader extends RELAXCoreReader
 		else			return new RELAXIslandSchema( m, pendingAnyOtherElements );
 	}
 	
-	public State createDefaultExpressionChildState( State parent,StartTagInfo tag )
+	public State createExpressionChildState( State parent,StartTagInfo tag )
 	{
 		if(! RELAXCoreNamespace.equals(tag.namespaceURI) )	return null;
 
 		if(tag.localName.equals("anyOtherElement"))	return new AnyOtherElementState();
-		return super.createDefaultExpressionChildState(parent,tag);
+		return super.createExpressionChildState(parent,tag);
 	}
 	
 	/** map from StringPair(namespace,label) to ExternalElementExp. */

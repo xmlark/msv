@@ -25,6 +25,7 @@ import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
 import com.sun.msv.grammar.relaxng.datatype.BuiltinDatatypeLibrary;
+import com.sun.msv.grammar.relaxng.datatype.CompatibilityDatatypeLibrary;
 import com.sun.msv.reader.*;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.reader.trex.TREXBaseReader;
@@ -201,10 +202,19 @@ public class RELAXNGReader extends TREXBaseReader {
 		 */
 		public DatatypeLibrary getDatatypeLibrary( String namespaceURI ) throws Exception {
 			// We have the built-in support for XML Schema Part 2.
-			if( namespaceURI.equals(XSDVocabulary.XMLSchemaNamespace) )
+			if( namespaceURI.equals(XSDVocabulary.XMLSchemaNamespace)
+			||  namespaceURI.equals(XSDVocabulary.XMLSchemaNamespace2) ) {
+				if(xsdlib==null)
+					xsdlib = new com.sun.msv.datatype.xsd.ngimpl.DataTypeLibraryImpl();
 				return xsdlib;
-			if( namespaceURI.equals(XSDVocabulary.XMLSchemaNamespace2) )
-				return xsdlib;
+			}
+			
+			// RELAX NG compatibiltiy datatypes library is also supported
+			if( namespaceURI.equals(CompatibilityDatatypeLibrary.namespaceURI) ) {
+				if( compatibilityLib==null )
+					compatibilityLib = new CompatibilityDatatypeLibrary();
+				return compatibilityLib;
+			}
 			
 			// check the property file.
 			String className;
@@ -217,7 +227,8 @@ public class RELAXNGReader extends TREXBaseReader {
 			
 			return (DatatypeLibrary)Class.forName(className).newInstance();
 		}
-		private final DatatypeLibrary xsdlib = new com.sun.msv.datatype.xsd.ngimpl.DataTypeLibraryImpl();
+		private DatatypeLibrary xsdlib;
+		private DatatypeLibrary compatibilityLib;
 	}
 	protected StateFactory getStateFactory() {
 		return (StateFactory)super.sfactory;

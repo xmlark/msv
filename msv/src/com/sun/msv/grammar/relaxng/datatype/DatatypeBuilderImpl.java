@@ -14,7 +14,7 @@ import org.relaxng.datatype.*;
 /**
  * DataTypeBuilder implementation.
  * 
- * There is no paramater for any built-in types.
+ * There is no paramater for any built-in and compatibility types.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

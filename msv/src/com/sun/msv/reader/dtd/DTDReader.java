@@ -18,16 +18,21 @@ import com.sun.msv.datatype.xsd.NormalizedStringType;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.datatype.xsd.IDType;
 import com.sun.msv.datatype.xsd.IDREFType;
+import com.sun.msv.datatype.xsd.ngimpl.DataTypeLibraryImpl;
 import com.sun.msv.reader.Controller;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.scanner.dtd.DTDEventListener;
 import com.sun.msv.scanner.dtd.DTDParser;
 import com.sun.msv.scanner.dtd.InputEntity;
+import com.sun.msv.util.StringPair;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.TREXGrammar;
 import com.sun.msv.grammar.trex.ElementPattern;
 import com.sun.msv.grammar.dtd.*;
+
+import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.DatatypeException;
+import org.relaxng.datatype.DatatypeLibrary;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.Locator;
@@ -86,39 +91,33 @@ public class DTDReader implements DTDEventListener {
 	
 	protected final Controller controller;
 	
-	protected static final Map dtdTypes = createDTDTypes();
-	
-	/**
-	 * creates a map from DTD type name to corresponding
-	 * {@link DataType} object.
-	 */
-	protected static Map createDTDTypes() {
-		try {
-			Map m = new java.util.HashMap();
-		
-			m.put( DTDParser.TYPE_CDATA,	NormalizedStringType.theInstance );
-			m.put( DTDParser.TYPE_ID,		IDType.theInstance );
-			m.put( DTDParser.TYPE_IDREF,	IDREFType.theInstance );
-			m.put( DTDParser.TYPE_IDREFS,	DatatypeFactory.getTypeByName(DTDParser.TYPE_IDREFS) );
-			m.put( DTDParser.TYPE_ENTITY,	EntityType.theInstance );
-			m.put( DTDParser.TYPE_ENTITIES,	DatatypeFactory.getTypeByName(DTDParser.TYPE_ENTITIES) );
-			m.put( DTDParser.TYPE_NMTOKEN,	NmtokenType.theInstance );
-			m.put( DTDParser.TYPE_NMTOKENS,	DatatypeFactory.getTypeByName(DTDParser.TYPE_NMTOKENS) );
+    /**
+     * Used to create Datatype objects. This datatype library
+     * should be able to handle XML Schema datatypes because
+     * those are the names we ask to this library.
+     */
+	private DatatypeLibrary datatypeLibrary = new DataTypeLibraryImpl();
     
-			// use string as a base type of enumeration.
-			// TODO: confirm whitespace handling of string type is appropriate.
-			m.put( DTDParser.TYPE_ENUMERATION, StringType.theInstance );
-		
-			// also use string as the base type of notation.
-			// "NOTATION" type of XML Schema Part 2 validates QName, not Name!
-			// so we can't use our NotationTtpe here.
-			m.put( DTDParser.TYPE_NOTATION, StringType.theInstance );
-		
-			return m;
-		} catch( DatatypeException e ) {
-			// assertion failed. we know these derivations are safe.
-			throw new Error();
-		}
+    public void setDatatypeLibrary( DatatypeLibrary datatypeLibrary ) {
+        this.datatypeLibrary = datatypeLibrary;
+    }
+    
+    /**
+     * Obtains a Datatype object from its name.
+     */
+    public Datatype createDatatype( String name ) {
+        try {
+            if( DTDParser.TYPE_CDATA.equals(name) )
+                return datatypeLibrary.createDatatype("normalizedString");
+            if( DTDParser.TYPE_ENUMERATION.equals(name) )
+                return datatypeLibrary.createDatatype("token");
+            
+            return datatypeLibrary.createDatatype(name);
+        } catch( DatatypeException e ) {
+            // we expect this datatype library to be complete
+            e.printStackTrace();
+            throw new InternalError();
+        }
 	}
 
 	/**
@@ -449,30 +448,25 @@ public class DTDReader implements DTDEventListener {
             throws SAXException {
         
 		// create Datatype that validates attribute value.
-		XSDatatype dt = (XSDatatype)dtdTypes.get(attributeType);
-		if(dt==null)	throw new InternalError(attributeType);
+		Datatype dt = createDatatype(attributeType);
 		
-		try {
-			if(enums!=null) {
-				TypeIncubator incubator = new TypeIncubator(dt);
-				for( int i=0; i<enums.length; i++ )
-					incubator.addFacet( XSDatatype.FACET_ENUMERATION, enums[i], false, null );
-				dt = incubator.derive(null,null);
-			}
-		
-			if( attributeUse == USE_FIXED ) {
-				// in case of #FIXED, derive a datatype with default value as 
-				// an enumeration value.
-				TypeIncubator incubator = new TypeIncubator(dt);
-				incubator.addFacet( XSDatatype.FACET_ENUMERATION, defaultValue, false, null );
-				dt = incubator.derive(null,null);
-			}
-		} catch( DatatypeException e ) {
-			throw new SAXParseException(
-				e.getMessage(), locator, e );
+        StringPair str = new StringPair("",attributeType);
+        
+		if(enums!=null) {
+            Expression exp = Expression.nullSet;
+			for( int i=0; i<enums.length; i++ )
+                exp = grammar.pool.createChoice( exp,
+                    grammar.pool.createValue(dt,str,
+                        dt.createValue(enums[i],null)));
+            return exp;
+		}
+	
+		if( attributeUse == USE_FIXED ) {
+            return grammar.pool.createValue(dt,str,
+                dt.createValue(defaultValue,null));
 		}
         
-        return grammar.pool.createData(dt);
+        return grammar.pool.createData(dt,str);
 	}
 
 	/**

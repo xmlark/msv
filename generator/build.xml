@@ -151,7 +151,8 @@
 		<copy file="../package/msv.jar" tofile="dist/msv.jar" />
 		<copy file="${relaxngDatatype.jar}" tofile="dist/relaxngDatatype.jar" />
 		<copy file="${isorelax.jar}" tofile="dist/isorelax.jar" />
-		<copy file="${xerces.jar}" tofile="dist/xerces.jar" />
+		<copy file="${xerces.jar}" tofile="dist/xercesImpl.jar" />
+		<copy file="${xmlParserAPIs.jar}" tofile="dist/xmlParserAPIs.jar" />
 	</target>
 	
 	

@@ -167,7 +167,8 @@ public class Driver {
 			grammar = loader.parse(grammarName);
 			
 		} catch(SAXParseException spe) {
-//			spe.getException().printStackTrace();
+			if(Debug.debug)
+				spe.getException().printStackTrace();
 			; // this error is already reported.
 		} catch(SAXException se ) {
 			if( se.getException()!=null ) throw se.getException();

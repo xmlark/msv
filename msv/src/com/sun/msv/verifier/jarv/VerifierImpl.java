@@ -104,6 +104,7 @@ class VerifierImpl implements Verifier
 
     public VerifierFilter getVerifierFilter()
 	{
-		return new FilterImpl( getVerifierHandler() );
+		return new FilterImpl( grammar,
+			new VerificationErrorHandlerImpl() );
     }
 }

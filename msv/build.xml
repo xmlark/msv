@@ -7,7 +7,6 @@
 	<property name="documentDir" value="./doc/javadoc"/>
 	<property name="packageDir" value="./package"/>
 	<property name="libDir" value="./lib"/>
-	<property name="javaCClib" value="./ref/javacc/bin/lib" />
 	<property name="cvsRoot" value=":local:/cygdrive/c/Program Files/Development/CVS Repository" />
 	<property name="cvsExportOpt" value="-D now" />	<!-- -r branch -->
 	
@@ -20,7 +19,11 @@
 	<property name="DTDBatchTestDir" value="${commonTestDir}" />
 	<property name="XSDBatchTestDir"
 		value="${testRoot}/xmlschema;${testRoot}/xmlschema/tutorialExamples;${commonTestDir};${testRoot}/xmlschema/identity" />
-
+	
+	<!-- environment dependend -->
+	<property name="javaCClib" value="./ref/javacc/bin/lib" />
+	<property name="JUnitJar" value="c:/winnt/java/classes/junit.jar"/>
+	<property name="AntJar" value="c:/progra~1/development/ant/lib/ant.jar"/>
 
 	
 	<!-- compile Java source files -->
@@ -62,43 +65,129 @@
 	
 	
 	
-	<!--  run all the test suites -->
+	
+	
+<!--
+	PatternSets for the partial test
+	========================================================================
+	
+	The same pattern is used to test both the working copy and the release package.
+-->
+	<!-- all -->
+	<patternset id="tps.all">
+		<include name="**/*Test.class"/>
+		<include name="**/*TestG.class"/>
+	</patternset>
+	
+	<!-- MSV core -->
+	<patternset id="tps.msv">
+		<include name="batch/verifier/*Test.class" />
+		<include name="com/sun/msv/datatype/*Test.class" />
+		<include name="com/sun/msv/util/*Test.class" />
+	</patternset>
+	
+	<!-- generator -->
+	<patternset id="tps.generator">
+		<include name="**/generator/**/*TestG.class" />
+	</patternset>
+	
+	<!--  RELAX converter -->
+	<patternset id="tps.rngconv">
+		<include name="batch/writer/relaxng/**/*Test.class"/>
+	</patternset>
+	
+	<!-- TREX converter -->
+	<patternset id="tps.trexconv">
+		<include name="batch/writer/trex/**/*Test.class"/>
+	</patternset>
+	
+	
+	
+	
+<!--
+	test tasks
+	========================================================================
+-->
+	<!-- run all -->
+	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 	<target name="test">
 		<antcall target="doTest">
-			<param name="testClasses" value="**/*Test.class" />
-			<param name="testClasses" value="**/*TestG.class" />
+			<param name="testPattern" value="tps.all"/>
 		</antcall>
 	</target>
 	
-	<!-- run msv test suites -->
+	
+	<!-- run core msv test                                               -->
+	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 	<target name="test_msv">
 		<antcall target="doTest">
-			<param name="testClasses" value="batch/verifier/*Test.class" />
-		</antcall>
-		<antcall target="doTest">
-			<param name="testClasses" value="com/sun/msv/datatype/*Test.class" />
-		</antcall>
-		<antcall target="doTest">
-			<param name="testClasses" value="com/sun/msv/util/*Test.class" />
+			<param name="testPattern" value="tps.msv"/>
 		</antcall>
 	</target>
-	
-	<!--  run generator test suites -->
-	<target name="test_generator">
-		<antcall target="doTest">
-			<param name="testClasses" value="**/generator/**/*TestG.class" />
-		</antcall>
-	</target>
-	
-	<!--  run writer test suites -->
-	<target name="test_writer">
-		<antcall target="doTest">
-			<param name="testClasses" value="batch/writer/**/*Test.class" />
+	<target name="test_msv_package">
+		<antcall target="doReleaseTest">
+			<param name="testPattern" value="tps.msv" />
+			<param name="testJar" value="./package/msv.jar"/>
 		</antcall>
 	</target>
 	
 	
-		<!-- internal task -->
+	<!-- run generator test                                              -->
+	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	<target name="test_xmlgen">
+		<antcall target="doTest">
+			<param name="testPattern" value="tps.generator" />
+		</antcall>
+	</target>
+	<target name="test_xmlgen_package">
+		<antcall target="doReleaseTest">
+			<param name="testPattern" value="tps.generator" />
+			<param name="testJar" value="./package/xmlgen.jar"/>
+		</antcall>
+	</target>
+	
+	
+	<!-- run RELAX NG converter test                                     -->
+	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	<target name="test_rngconv">
+		<antcall target="doTest">
+			<param name="testPattern" value="tps.rngconv" />
+		</antcall>
+	</target>
+	<target name="test_rngconv_package">
+		<antcall target="doReleaseTest">
+			<param name="testPattern" value="tps.rngconv" />
+			<param name="testJar" value="./package/rngconv.jar"/>
+		</antcall>
+	</target>
+	
+	
+	<!-- run TREX converter test                                         -->
+	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	<target name="test_trexconv">
+		<antcall target="doTest">
+			<param name="testPattern" value="tps.trexconv" />
+		</antcall>
+	</target>
+	<target name="test_trexconv_package">
+		<antcall target="doReleaseTest">
+			<param name="testPattern" value="tps.trexconv" />
+			<param name="testJar" value="./package/trexconv.jar"/>
+		</antcall>
+	</target>
+	
+	
+	
+	
+	<!-- internal test task                                              -->
+	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+		<!--
+			test the current working copy
+			=============================
+			
+			required parameters to call:
+				${testPattern}	ID of the pattern set to be used to filter the test case.
+		-->
 		<target name="doTest">
 			<mkdir dir="./testLog" />
 			<!--
@@ -125,37 +214,88 @@
 			
 				<batchtest todir="./testLog">
 					<fileset dir="${buildDir}">
-						<include name="${testClasses}" />
+						<patternset refid="${testPattern}"/>
 					</fileset>
 				</batchtest>
 			</junit>
 		</target>
-	
-	
-	
-	<!-- generate jar files -->
-	<target name="jars" depends="binary">
-		<tstamp />
 		
-		<!-- standard archive -->
-		<jar	jarfile="${packageDir}/msv.${DSTAMP}.jar"
-				manifest="./META-INF/MANIFEST.MF"
-				compress="false">
-			<fileset dir="${sourceDir}" includes="**/*.properties" />
-			<fileset dir="${buildDir}" includes="**/*.class" />
-			<fileset dir="${libDir}" includes="**/*.class" />
-			<fileset dir="c:/winnt/java/classes" includes="org/apache/**/*, org/xml/**/*, org/w3c/**/*" />
-		</jar>
-	</target>
+		
+		
+		
+		
+		<!--
+			test the release package
+			========================
+			
+			required parameters to call:
+				${testJar}		jar file to be tested. (e.g., msv.jar or xmlgen.jar)
+				${testPattern}	ID of the pattern set to be used to filter the test case.
+		-->
+		<target name="doReleaseTest">
+			
+			<!-- create temporary directory -->
+			<mkdir dir="./temp"/>
+			
+			<!-- extract the contents of the jar file to be tested -->
+			<unjar src="${testJar}" dest="temp" />
+			
+			<!--
+				compile test harnesses into it.
+				It is ok to rely on the working copy at this stage.
+			-->
+			<javac
+				srcdir="${testDir}"
+				destdir="./temp"
+				debug="on"
+				optimize="off"
+				classpath="temp:build"
+				/>
+			
+			<!-- run JUnit -->
+			<mkdir dir="./testLog" />
+			<junit haltonfailure="yes" printsummary="yes" fork="yes"
+				haltonerror="yes">
+				<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
+				<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
+				<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
+				<sysproperty key="XSDBatchTestDir"		value="${XSDBatchTestDir}"/>
+				<sysproperty key="RELAXNGBatchTestDir"	value="${RELAXNGBatchTestDir}"/>
+				
+  				<formatter type="plain" />
+				
+				<classpath>
+					<!-- do not refer to the working copy -->
+					<pathelement location="${testDir}" />
+					<pathelement location="./temp" />
+					<!-- do not let whatever binaries in your classpath interfer with it. -->
+					<pathelement location="${JUnitJar}"/>
+					<pathelement location="${AntJar}"/>
+				<!--<pathelement path="${java.class.path}" />-->
+				</classpath>
+				
+				<batchtest todir="./testLog">
+					<fileset dir="temp">
+						<patternset refid="${testPattern}"/>
+					</fileset>
+				</batchtest>
+			</junit>
+			
+<!--			<delete dir="./temp"/>	-->
+		</target>
 	
-	<!-- generate javadoc documentation -->
+	
+	
+	
+	
+	<!-- generate javadoc documentation from the working copy -->
 	<target name="javadoc">
 		<javadoc	locale="en_US"
 					packagenames="com.sun.msv.*"
 					sourcepath="${sourceDir}"
 					classpath="lib/dispatcher;${java.class.path}"
 					destdir="${documentDir}"
-					windowtitle="Sun Multi Schema Validator"
+					windowtitle="Internal Use Only --- Sun Multi Schema Validator"
 					public="yes"
 					author="yes"
 					>

@@ -23,7 +23,8 @@ public final class LightStack {
 	
 	public void push( Object o ) {
 		try {
-			buf[len++] = o;
+			buf[len] = o;
+			len++;
 		} catch( ArrayIndexOutOfBoundsException e ) {
 			Object[] nbuf = new Object[buf.length*2];
 			System.arraycopy( buf, 0, nbuf, 0, buf.length );

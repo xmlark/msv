@@ -100,44 +100,47 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	
 	
 	protected void verifyText() throws SAXException {
-		if(text.length()!=0) {
-			characterType.types=null;
-			switch( stringCareLevel ) {
-			case Acceptor.STRING_PROHIBITED:
-				// only whitespace is allowed.
-				final int len = text.length();
-				for( int i=0; i<len; i++ ) {
-					final char ch = text.charAt(i);
-					if( ch!=' ' && ch!='\t' && ch!='\r' && ch!='\n' ) {
-						// error
-						onError( null, localizeMessage( ERR_UNEXPECTED_TEXT, null ) );
-						break;// recover by ignoring this token
-					}
-				}
-				break;	
-				
-			case Acceptor.STRING_STRICT:
-				final String txt = new String(text);
-				if(!current.onText( txt, this, null, characterType )) {
+		
+		characterType.types=null;
+		switch( stringCareLevel ) {
+		case Acceptor.STRING_PROHIBITED:
+			// only whitespace is allowed.
+			final int len = text.length();
+			for( int i=0; i<len; i++ ) {
+				final char ch = text.charAt(i);
+				if( ch!=' ' && ch!='\t' && ch!='\r' && ch!='\n' ) {
 					// error
-					// diagnose error, if possible
-					StringRef err = new StringRef();
-					characterType.types=null;
-					current.onText( txt, this, err, characterType );
-					
-					// report an error
-					onError( err, localizeMessage( ERR_UNEXPECTED_TEXT, null ) );
+					onError( null, localizeMessage( ERR_UNEXPECTED_TEXT, null ) );
+					break;// recover by ignoring this token
 				}
-				break;
-				
-			case Acceptor.STRING_IGNORE:
-				// if STRING_IGNORE, no text should be appended.
-			default:
-				throw new Error();	//assertion failed
 			}
+			break;	
+				
+		case Acceptor.STRING_STRICT:
+			final String txt = new String(text);
+			if(!current.onText( txt, this, null, characterType )) {
+				// error
+				// diagnose error, if possible
+				StringRef err = new StringRef();
+				characterType.types=null;
+				current.onText( txt, this, err, characterType );
+					
+				// report an error
+				onError( err, localizeMessage( ERR_UNEXPECTED_TEXT, null ) );
+			}
+			break;
+				
+		case Acceptor.STRING_IGNORE:
+			// if STRING_IGNORE, no text should be appended.
+			if(text.length()!=0)	throw new Error();
+			return;
 			
-			text = new StringBuffer();
+		default:
+			throw new Error();	//assertion failed
 		}
+		
+		if(text.length()!=0)
+			text = new StringBuffer();
 	}
 	
 	public void startElement( String namespaceUri, String localName, String qName, Attributes atts )

@@ -200,7 +200,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 		// process the "abstract" attribute.
 		String abstract_ = startTag.getAttribute("abstract");
 		decl.setAbstract( "true".equals(abstract_)||"1".equals(abstract_) );
-		if( !BooleanType.theInstance.isValid(abstract_,null) )
+		if( abstract_!=null && !BooleanType.theInstance.isValid(abstract_,null) )
 			// recover by assuming false.
 			reader.reportError( XMLSchemaReader.ERR_BAD_ATTRIBUTE_VALUE, "abstract", abstract_ );
 		

@@ -1,4 +1,5 @@
 
+(dt)	'totalDigit' facet is now correctly implemented.
 (dt)	'fractionDigit' facet is now correctly implemented.
 (both)  added a mechanism to controll inclusion
 (RELAX) Tranquilo will issue an error for <anyOtherElement> with

@@ -26,26 +26,21 @@ public class RootIncludedPatternState extends SimpleState implements ExpressionO
 	protected State createChildState( StartTagInfo tag ) {
 		// grammar has to be treated separately so as not to
 		// create unnecessary TREXGrammar object.
-		if(tag.localName.equals("grammar"))
-			return new GrammarState();
+//		if(tag.localName.equals("grammar"))
+//			return new GrammarState();
 		
 		State s = reader.createExpressionChildState(this,tag);
-		if(s!=null) {
-			// other pattern element is specified.
-			// create wrapper grammar
-			final TREXBaseReader reader = (TREXBaseReader)this.reader;
-			reader.grammar = new TREXGrammar( reader.pool, null );
-			simple = true;
-		}
+//		if(s!=null) {
+//			// other pattern element is specified.
+//			// create wrapper grammar
+//			final TREXBaseReader reader = (TREXBaseReader)this.reader;
+//			reader.grammar = new TREXGrammar( reader.pool, null );
+//			simple = true;
+//		}
 		
 		return s;
 	}
 	
-	/**
-	 * a flag that indicates 'grammar' element was not used.
-	 * In that case, this object is responsible to set start pattern.
-	 */
-	private boolean simple = false;
 	
 	/**
 	 * parsed external pattern will be reported to this object.
@@ -58,12 +53,6 @@ public class RootIncludedPatternState extends SimpleState implements ExpressionO
 	}
 		
 	public void onEndChild(Expression exp) {
-		final TREXBaseReader reader = (TREXBaseReader)this.reader;
-
-		if( simple )
-			// set the top-level expression if that is necessary.
-			reader.grammar.start = exp;
-		
 		if( grandParent!=null )
 			// this must be from grammar element. pass it to the IncludePatternState.
 			grandParent.onEndChild(exp);

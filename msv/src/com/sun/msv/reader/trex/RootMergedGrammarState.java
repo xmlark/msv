@@ -28,6 +28,5 @@ public class RootMergedGrammarState extends SimpleState implements ExpressionOwn
 	}
 	
 	public void onEndChild(Expression exp) {
-		// ignore the start pattern of the child grammar.
 	}
 }

@@ -48,21 +48,7 @@ public abstract class RELAXReader extends GrammarReader
 	
 	/** Namespace URI of RELAX Core */
 	public static final String RELAXCoreNamespace = "http://www.xml.gr.jp/xmlns/relaxCore";
-	/** Namespace URI of RELAX Namespace */
-	public static final String RELAXNamespaceNamespace = "http://www.xml.gr.jp/xmlns/relaxNamespace";
 
-	protected boolean isGrammarElement( StartTagInfo tag )
-	{
-		if( !RELAXCoreNamespace.equals(tag.namespaceURI)
-		&&  !RELAXNamespaceNamespace.equals(tag.namespaceURI) )
-			return false;
-		
-		// annotation is ignored at this level.
-		// by returning false, the entire subtree will be simply ignored.
-		if(tag.localName.equals("annotation"))	return false;
-		
-		return true;
-	}
 	
 	
 	public State createDefaultExpressionChildState( StartTagInfo tag )

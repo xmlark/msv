@@ -1,9 +1,12 @@
 package com.sun.tranquilo.datatype.test;
 
+import com.sun.tranquilo.datatype.BadTypeException;
 import com.sun.tranquilo.datatype.Facets;
 
 class TestCase
 {
+	public static final TestCase theEmptyCase = new TestCase();
+	
 	public final Facets	facets;
 	public String	answer;
 	
@@ -13,12 +16,16 @@ class TestCase
 		this.answer = answer;
 	}
 	
+	public TestCase( String answer )
+	{ this( new Facets(),answer ); }
+	
 	/** creates an empty TestCase */
 	public TestCase()
 	{ this( new Facets(), null ); }
 	
 	/** merges another test case into this */
 	public void merge( TestCase rhs, boolean mergeAnd )
+		throws BadTypeException
 	{
 		if( answer==null )
 		{// mine is empty. So copy it from rhs

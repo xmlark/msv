@@ -2,25 +2,21 @@
 <!-- $Id$ -->
 <suite>
 <!-- test case for boolean -->
-<case>
+<case name="test for boolean">
 	<value>true</value>
 	<value>false</value>
 	
 	<answer for="boolean">oo</answer>
 
-	<facets><permutation>
-		<!-- pattern facet test -->
-		<chioce>
+	<facets>
+		<!-- pattern is the only applicable facet -->
+		<combination mode="or">
 			<facet answer="o." name="pattern" value="tr.*" />
 			<facet answer=".o" name="pattern" value="f.*" />
-		</chioce>
+			<facet answer=".." name="pattern" value="f..." />
+		</combination>
 
-		<!-- enumeration facet -->
-		<chioce>
-			<facet answer="o." name="enumeration" value="true" />
-			<facet answer=".o" name="enumeration" value="false" />
-		</chioce>
-	</permutation></facets>
+	</facets>
 	
 	<wrongs>
 		<value>True</value>
@@ -31,7 +27,7 @@
 </case>
 
 <!-- test case for integer and derived types -->
-<case>
+<case name="test for integer and its derived types">
 	<value>-9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999</value>
 	<value>-123104809034590906573845</value>
 	<value>-9223372036854775809</value><!--  MIN_LONG -1 -->
@@ -97,25 +93,25 @@
 	<answer for="unsignedShort"       >..... ..... ....o ooooo  ooooo ooo.. ..... .....</answer>
 	<answer for="unsignedByte"        >..... ..... ....o ooooo  ooo.. ..... ..... .....</answer>
 	
-	<facets><permutation>
+	<facets><combination>
 		<choice>
 			<facet             answer="..... ..... ooooo o.ooo  oooo. ..... ..... ....." name="precision" value="3" />
 			<facet             answer="..... ..... ooooo o.ooo  ooooo ..... ..... ....." name="precision" value="4" />
 			<facet             answer="..... ..ooo ooooo o.ooo  ooooo oooo. ..... ....." name="precision" value="5" />
 			<facet             answer="ooooo ooooo ooooo ooooo  ooooo ooooo ooooo oooo." name="precision" value="400" />
-			<facet             answer="ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo" name="precision" value="99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999</value>
-			<!-- precision can be any positiveInteger -->
+<!-- precision can be any positiveInteger, but no way to support this in Java -->
+			<facet             answer="ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo" name="precision" value="99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999" />
 		</choice>
-		<permutation mode="or">
+		<combination mode="or">
 			<facet             answer="..... ..... ..... ...o.  ....o ..... ..... ....." name="pattern" value="1*" />
-			<facet             answer="..... ..... ooooo o.ooo  ooooo ..... ..... ....." name="pattern" value="...." />
-		</permutation>
-		<permutation mode="or">
+			<facet             answer="..... ..... oo... .....  ....o ..... ..... ....." name="pattern" value="...." />
+		</combination>
+		<combination mode="or">
 			<facet			   answer="..... ..... ....o ooo..  ..... ..... ..... ....." name="enumeration" value="0" />
 			<facet			   answer="..... ..... ..... ....o  ..... ..... ..... ....." name="enumeration" value="2" />
-		</permutation>
+		</combination>
 		<choice>
-			<permutation><!-- min-max pair part.1 -->
+			<combination><!-- min-max pair part.1 -->
 				<choice>
 					<facet	   answer=".oooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo" name="minExclusive" value="-9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999" />
 					<facet	   answer="..ooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo" name="minInclusive" value="-9223372036854775809" />
@@ -130,8 +126,8 @@
 					<facet     answer="ooooo ooooo ooooo ooooo  ooooo ooooo ooooo oooo." name="maxExclusive" value="99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999" />
 					<facet     answer="ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo" name="maxInclusive" value="99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999" />
 				</choice>
-			</permutation>
-			<permutation><!-- min-max pair part.2 -->
+			</combination>
+			<combination><!-- min-max pair part.2 -->
 				<choice>
 					<facet	   answer="..... ..... ....o ooooo  ooooo ooooo ooooo ooooo" name="minInclusive" value="0" />
 					<facet	   answer="..... ..... ..... ...oo  ooooo ooooo ooooo ooooo" name="minExclusive" value="000000000000000000000000000000000000" />
@@ -146,12 +142,11 @@
 					<facet	   answer="ooooo ooooo ooooo ooooo  ooooo ooooo ooooo o...." name="maxInclusive" value="9223372036854775807" />
 					<facet	   answer="ooooo ooooo ooooo ooooo  ooooo ooooo ooooo oooo." name="maxInclusive" value="1844674407370955161618446744073709551616" />
 				</choice>
-			</permutation>
+			</combination>
 		</choice>
-	</permutation></facets>
+	</combination></facets>
 
 	<wrongs>
-		<facet
 		<value>++5</value>
 		<value>+-0</value>
 		<value>0.0</value>
@@ -165,6 +160,7 @@
 </case>
 
 <!-- test case for float and double -->
+<comment>
 <case>
 	<value>-INF</value>
 	<value>-999999999999999999999999999999999999999999999999999999999999999e99999999999999999999999999999999</value> <!-- way beyond the possible range of double, but valid -->
@@ -179,7 +175,7 @@
 	<value>0.</value>
 	<value>+0</value>
 
-	<value>4.94065645841246544E-326</value>	<should be rounded to -0 -->
+	<value>4.94065645841246544E-326</value>	<!-- should be rounded to -0 -->
 	<value>4.94065645841246544E-324</value>	<!-- MIN_DOUBLE -->
 	<value>0.70119923e-45f</value>	<!-- for float, should be rounded to -0 -->
 	<value>0.70119923000000000000000000001e-45f</value>	<!-- for float, should be rounded to MIN_FLOAT -->
@@ -192,15 +188,15 @@
 	<answer for="double"> ooooo ooooo ooooo oo </answer>
 
 <!--
-	<facets><permutation>
-		<permutation mode="or">
+	<facets><combination>
+		<combination mode="or">
 			<facet answer="..... .ooo. ..... .." name="pattern" value="(0|\.|e)+" />
 			<facet answer="..... ..... ..... oo" name="pattern" value="[^0-9]+" />
-		</permutation>
-		<permutation mode="or">
+		</combination>
+		<combination mode="or">
 			<facet answer="..... ooooo ..... .." name="pattern" value="0" />
 			<facet answer="..... 
-	</permutation></facets>
+	</combination></facets>
 -->
 	
 	<wrongs>
@@ -217,3 +213,5 @@
 		<value>0x123</value>
 	</wrongs>
 </case>
+</comment>
+</suite>

@@ -5,43 +5,53 @@ package com.sun.tranquilo.datatype.test;
 
 import org.jdom.*;
 import java.util.List;
+import java.io.PrintStream;
 import com.sun.tranquilo.datatype.*;
 
 public class DataTypeTester
 {
-    public static void main (String args[]) throws Exception
-	{
-		// reads test case file
-		Document doc = new DOMBuilder().build(new FileInputStream("testcase.xml"));
-
-		// perform test for each "case" item
-		Iterator itr = doc.getRootElement().getChildren("case").iterator();
-		while(itr.hasNext())
-			runTestCase( (Element)itr.next() );
-    }
+	/** progress indication will be sent to this object */
+	private final PrintStream out;
 	
-	public static void runTestCase( Element testCase )
+	/** error will be passed to this object */
+	private final ErrorReceiver err;
+
+	public DataTypeTester( PrintStream out, ErrorReceiver err )
 	{
+		this.out = out;
+		this.err = err;
+	}
+	
+	public void run( Element testCase )
+		throws Exception
+	{
+		out.println( testCase.getAttributeValue("name") );
+		
 		String[] values;
 		{// read values
 			List lst = testCase.getChildren("value");
 			values = new String[lst.size()];
-			for( int i=0; i<len; i++ )
+			for( int i=0; i<values.length; i++ )
 				values[i] = ((Element)lst.get(i)).getText();
 		}
 		
 		String[] wrongValues;
 		{// read wrongValues, which is always wrong with any types tested
-			List lst = testCase.getChild("wrongValues").getChildren("value");
+			Element wrongs = testCase.getChild("wrongs");
+			if(wrongs==null)	throw new Exception("no <wrongs>");
+			
+			List lst = wrongs.getChildren("value");
 			wrongValues = new String[lst.size()];
-			for( int i=0; i<len; i++ )
+			for( int i=0; i<wrongValues.length; i++ )
 				wrongValues[i] = ((Element)lst.get(i)).getText();
 		}
 		
-		// creates a test pattern generator, which basically enumerates
+		// parses a test pattern, which basically enumerates
 		// possible test pattern and its expected result
-		TestPatternGenerator pattern =
-			new TestPatternGenerator(testCase.getChild("facets"));
+		Element facetElement = testCase.getChild("facets");
+		TestPattern pattern =
+			TestPatternGenerator.parse(
+				(Element)facetElement.getChildren().get(0));
 		
 		{// perform test for each type specified
 			List lst = testCase.getChildren("answer");
@@ -49,12 +59,12 @@ public class DataTypeTester
 			{
 				Element item = (Element)lst.get(i);
 				
-				pattern.setBaseAnswer(item.getText());
-				pattern.reset();
-				
 				testDataType(
-					DataTypeFactory.get(item.getAttributeValue("for")),
-					values, wrongValues, pattern );
+					DataTypeFactory.getTypeByName(item.getAttributeValue("for")),
+					values, wrongValues,
+					new BaseAnswerWrapper(item.getText(),pattern)
+						// wrap it by intrisic restriction of this datatype
+					);
 			}
 		}
 	}
@@ -79,18 +89,30 @@ public class DataTypeTester
 	 */
 	public void testDataType(
 		DataType baseType,
-		String[] values, String[] wrongs, TestPatternGenerator pattern )
+		String[] values, String[] wrongs, TestPattern pattern )
+		throws Exception
 	{
-		while(pattern.hasMore())
+		out.println("  testing " + baseType.getName() +
+			" (total "+pattern.totalCases()+" patterns)" );
+		
+		long cnt=0;
+		
+		while(true)
 		{
+			if((cnt%500)==0 && cnt!=0 )	out.print("\r"+cnt+"    ");
+			
+			final TestCase testCase = pattern.get();
 			// derive a type with test facets.
-			DataType typeObj = typeObj.derive( pattern.getFacets() );
-			String answer = pattern.getAnswer();
+			final DataType typeObj = baseType.derive("anonymous",  testCase.facets );
+			final String answer = testCase.answer;
+			
+//			if( testCase.facets.isEmpty())	out.println("nofacet");
+//			else	testCase.facets.dump(out);
 			
 			// test each value and see what happens
 			for( int i=0; i<values.length; i++ )
 			{
-				if(typeObj.verify(value[i]))
+				if(typeObj.verify(values[i]))
 				{
 					if(answer.charAt(i)=='o')	continue;	// as predicted
 				}
@@ -99,17 +121,72 @@ public class DataTypeTester
 					if(answer.charAt(i)=='.')	continue;	// as predicted
 				}
 				// dump error messages
-				throw new Exception("unexpected result");
+				if( !err.report( new UnexpectedResultException(
+						typeObj, baseType.getName(),
+						values[i], answer.charAt(i)=='o',
+						testCase ) ) )
+				{
+					out.println("test aborted");
+					return;
+				}
 			}
 			
 			// test each wrong values and makes sure that they are rejected.
 			for( int i=0; i<wrongs.length; i++ )
 				if(typeObj.verify(wrongs[i]))
-					throw new Exception("unexpected result");
+				{
+					if( !err.report( new UnexpectedResultException(
+						typeObj, baseType.getName(),
+						wrongs[i], false, TestCase.theEmptyCase ) ) )
+					{
+						out.println("test aborted");
+						return;
+					}
+				}
+			
+			cnt++;
+			if( !pattern.hasMore() )	break;
 			
 			pattern.next();
 		}
 		
+		out.println();
 		// test done
+		out.println("  " + cnt + " cases tested");
+	}
+	
+	static class BaseAnswerWrapper implements TestPattern
+	{
+		private final TestPattern core;
+		private final String baseAnswer;
+		
+		/** returns the number of test cases to be generated */
+		public long totalCases() { return core.totalCases(); }
+
+		/** restart generating test cases */
+		public void reset() { core.reset(); }
+
+		/** get the current test case */
+		public TestCase get()
+		{
+			// merge two answer in AND mode
+			TestCase tc = new TestCase(baseAnswer);
+			try
+			{
+				tc.merge(core.get(),true);
+			}catch(BadTypeException bte) { throw new IllegalStateException(); } // not possible
+			return tc;
+		}
+
+		/** generate next test case */
+		public void next() { core.next(); }
+
+		public boolean hasMore() { return core.hasMore(); }
+		
+		BaseAnswerWrapper( String baseAnswer, TestPattern base )
+		{
+			this.core = base;
+			this.baseAnswer = TestPatternGenerator.trimAnswer(baseAnswer);
+		}
 	}
 }

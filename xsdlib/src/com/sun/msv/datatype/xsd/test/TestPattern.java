@@ -16,4 +16,3 @@ public interface TestPattern
 	
 	boolean hasMore();
 }
-

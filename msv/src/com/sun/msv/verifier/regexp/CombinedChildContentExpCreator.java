@@ -407,11 +407,10 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	public void onSequence( SequenceExp exp )
 	{
 		exp.exp1.visit(this);
+        continuation = pool.createSequence( continuation, exp.exp2 );
 		
-		if(!exp.exp1.isEpsilonReducible()) {
-			continuation = pool.createSequence( continuation, exp.exp2 );
+		if(!exp.exp1.isEpsilonReducible())
 			return;
-		}
 		
 		Expression content1 = content;
 		Expression continuation1 = continuation;
@@ -420,7 +419,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 		
 		if( content==Expression.nullSet ) {
 			content = content1;
-			continuation = pool.createSequence( continuation1, exp.exp2 );
+			continuation = continuation1;
 			return;
 		}
 		
@@ -433,9 +432,8 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 		// now, we have candidates in both left and right.
 		// say,
 		// exp = (A,X)?,(A,Y)
-		// continuation will be X?,Y
 		content = pool.createChoice( content, content1 );
-		continuation = pool.createSequence(
-			pool.createOptional(continuation1), continuation );
+		continuation = pool.createChoice(
+			continuation1, continuation );
 	}
 }

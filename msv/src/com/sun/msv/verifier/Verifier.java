@@ -152,7 +152,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		sti.reinit(namespaceUri, localName, qName, atts, this );
 
 		// get Acceptor that will be used to validate the contents of this element.
-		Acceptor next = current.createChildAcceptor(sti,null);
+		Acceptor next = getNextAcceptor(sti,null);
 		
 		if( next==null ) {
 			// no child element matchs this one
@@ -161,7 +161,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 
 			// let acceptor recover from this error.
 			StringRef ref = new StringRef();
-			next = current.createChildAcceptor(sti,ref);
+			next = getNextAcceptor(sti,ref);
 			
 			ValidityViolation vv = onError( ref, localizeMessage( ERR_UNEXPECTED_STARTTAG, new Object[]{qName} ) );
 			
@@ -180,6 +180,13 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		if( stringCareLevel==Acceptor.STRING_IGNORE )
 			characterType.types = new Datatype[]{StringType.theInstance};
 		current = next;
+	}
+
+	/**
+	 * gets the acceptor that validates this new element.
+	 */
+	protected Acceptor getNextAcceptor( StartTagInfo sti, StringRef ref ) {
+		return current.createChildAcceptor(sti,ref);
 	}
 	
 	public void endElement( String namespaceUri, String localName, String qName )

@@ -16,6 +16,8 @@
  * PURPOSE, OR NON-INFRINGEMENT. SUN SHALL NOT BE LIABLE FOR ANY DAMAGES
  * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
  * THIS SOFTWARE OR ITS DERIVATIVES.
+ *
+ * $Id$
  */
 package com.sun.tranquilo.datatype;
 
@@ -38,7 +40,8 @@ public class QnameType extends StringType
 	{
 		if(!super.verify(content))	return false;
 		
-		return XmlNames.isQualifiedName(content);
+		return XmlNames.isQualifiedName(
+			WhiteSpaceProcessor.theCollapse.process(content) );
 	}
 	
 	public DataTypeErrorDiagnosis diagnose( String content )
@@ -47,18 +50,16 @@ public class QnameType extends StringType
 		return null;
 	}
 	
-	public DataType derive( String newName, Hashtable facets )
+	public DataType derive( String newName, Facets facets )
 		throws BadTypeException
 	{
 		// no facets specified. So no need for derivation
-		if( facets.size()==0 )		return this;
+		if( facets.isEmpty() )		return this;
 
-		return new QnameType(	newName,
-								LengthFacet.merge(this,facets),
-								PatternFacet.merge(this,facets),
-								EnumerationFacet.create(this,facets),
-								WhiteSpaceProcessor.create(facets),
-								this );
+		return new QnameType( newName,
+			LengthFacet.merge(this.lengths,facets),
+			PatternFacet.merge(this.pattern,facets),
+			EnumerationFacet.merge(this,this.enumeration,facets) );
 	}
 	
 	/**
@@ -81,10 +82,11 @@ public class QnameType extends StringType
 	 */
 	protected QnameType( String typeName, 
 					    LengthFacet lengths, PatternFacet pattern,
-						EnumerationFacet enumeration, WhiteSpaceProcessor whiteSpace,
-						DataType baseType )
+						EnumerationFacet enumeration )
 	{
-		super( typeName, lengths, pattern, enumeration, whiteSpace, baseType );
+		// white space is always "collapse"
+		super( typeName, lengths, pattern, enumeration,
+			WhiteSpaceProcessor.theCollapse, null/* no base type*/ );
 	}
 	
 }

@@ -28,18 +28,27 @@ package com.sun.msv.grammar;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class MixedExp extends UnaryExp {
-	
-	MixedExp( Expression exp )	{ super( exp,HASHCODE_MIXED ); }
-	
-	public Object visit( ExpressionVisitor visitor )				{ return visitor.onMixed(this);	}
-	public Expression visit( ExpressionVisitorExpression visitor )	{ return visitor.onMixed(this); }
-	public boolean visit( ExpressionVisitorBoolean visitor )		{ return visitor.onMixed(this); }
-	public void visit( ExpressionVisitorVoid visitor )				{ visitor.onMixed(this); }
+    MixedExp(Expression exp) {
+        super(exp, HASHCODE_MIXED);
+    }
 
-	protected boolean calcEpsilonReducibility() {
-		return exp.isEpsilonReducible();
-	}
-    
+    public Object visit(ExpressionVisitor visitor) {
+        return visitor.onMixed(this);
+    }
+    public Expression visit(ExpressionVisitorExpression visitor) {
+        return visitor.onMixed(this);
+    }
+    public boolean visit(ExpressionVisitorBoolean visitor) {
+        return visitor.onMixed(this);
+    }
+    public void visit(ExpressionVisitorVoid visitor) {
+        visitor.onMixed(this);
+    }
+
+    protected boolean calcEpsilonReducibility() {
+        return exp.isEpsilonReducible();
+    }
+
     // serialization support
-    private static final long serialVersionUID = 1;    
+    private static final long serialVersionUID = 1;
 }

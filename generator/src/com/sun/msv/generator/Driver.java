@@ -17,6 +17,7 @@ import com.sun.msv.grammar.trex.*;
 import com.sun.msv.grammar.relax.*;
 import com.sun.msv.grammar.*;
 import com.sun.msv.verifier.Verifier;
+import com.sun.msv.verifier.VerificationErrorHandler;
 import com.sun.msv.verifier.util.*;
 import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
@@ -32,7 +33,7 @@ import org.apache.xml.serialize.*;
 public class Driver {
 	
 	protected void usage() {
-		System.out.println(
+		System.err.println(
 			"Sun XMLGenerator\n"+
 			"----------------\n"+
 			"Usage: XMLGenerator <options> <schema> [<output name>]\n"+
@@ -42,12 +43,18 @@ public class Driver {
 			"  -depth <n>: set cut back depth\n"+
 			"  -width <n>: maximum number of times '*'/'+' are repeated\n" +
 			"  -n <n>    : # of files to be generated\n" +
-			"  -encoding <str>: output encoding (Java name)\n"+
-			"  -error <n>/<m>: error ratio. generate n errors per m elemnts (average).\n"+
-			"                  to control error generation, see manual for details.\n"+
-			"  -nocomment: suppress insertion of comments that indicate generated errors.\n"+
+			"  -quiet    : be quiet.\n"+
+			"  -encoding <str>\n"+
+			"      output encoding (Java name)\n"+
 			"  -validate : validate documents before write to output.\n"+
 			"      when generating errors, check that the document is actually invalid.\n"+
+			"  -example <filename>\n"+
+			"      use the given file as an example. tokens found in the example\n"+
+			"      is used to generate documents\n"+
+			"  -error <n>/<m>\n"+
+			"      error ratio. generate n errors per m elemnts (average).\n"+
+			"      to control error generation, see manual for details.\n"+
+			"  -nocomment: suppress insertion of comments that indicate generated errors.\n"+
 			"\n"+
 			"  <output name> must include one '$'. '$' will be replaced by number.\n"+
 			"  e.g., test.$.xml -> test.1.xml test.2.xml test.3.xml ...\n"+
@@ -56,7 +63,7 @@ public class Driver {
 	}
 
 	public static void main( String[] args ) throws Exception {
-		System.exit( new Driver().run(args) );
+		System.exit( new Driver().run(args, System.err) );
 	}
 	
 	protected double getRatio( String s ) {
@@ -67,7 +74,7 @@ public class Driver {
 		double ratio = n/m;
 						
 		if( ratio<=0 || ratio>1 ) {
-			System.out.println("error ratio out of range");
+			System.err.println("error ratio out of range");
 			usage();
 			System.exit(-1);
 		}
@@ -79,12 +86,14 @@ public class Driver {
 	 * 
 	 * @return 0 if it run successfully. Non-zero if any error is encountered.
 	 */
-	public int run( String[] args ) throws Exception {
+	public int run( String[] args, PrintStream out ) throws Exception {
 		String grammarName=null;
 		String outputName=null;
 		String encoding="UTF-8";
 		boolean createError = false;
 		boolean validate = false;
+		boolean debug = false;
+		boolean quiet = false;
 		
 		int number = 1;
 
@@ -107,6 +116,12 @@ public class Driver {
 		//===========================================
 		try {
 			for( int i=0; i<args.length; i++ ) {
+				if( args[i].equalsIgnoreCase("-debug") )
+					debug = true;
+				else
+				if( args[i].equalsIgnoreCase("-quiet") )
+					quiet = true;
+				else
 				if( args[i].equalsIgnoreCase("-ascii") )
 					((DataTypeGeneratorImpl)opt.dtGenerator).asciiOnly = true;
 				else
@@ -233,7 +248,8 @@ public class Driver {
 		
 		Expression topLevel;
 		
-		System.err.println("parsing a grammar");
+		if(!quiet)
+			out.println("parsing a grammar: "+grammarName);
 		
 		
 		// load a schema
@@ -253,8 +269,10 @@ public class Driver {
 		// generate instances
 		//===========================================
 		for( int i=0; i<number; i++ ) {
-			if( number<10 )		System.err.println("generating a document #"+(i+1));
-			else				System.err.print('.');
+			if(quiet) {
+				if(number<=10 )	out.println("generating a document #"+(i+1));
+				else			out.print(">");
+			}
 			
 			org.w3c.dom.Document dom;
 			while(true) {
@@ -267,7 +285,9 @@ public class Driver {
 				DOM2toSAX2 d2s = new DOM2toSAX2();
 				Verifier v = new Verifier(
 					new TREXDocumentDeclaration(grammar),
-					new VerificationErrorHandlerImpl() );
+					debug?
+						(VerificationErrorHandler)new VerificationErrorHandlerImpl():
+						(VerificationErrorHandler)new IgnoreVerificationErrorHandler() );
 				d2s.setContentHandler(v);
 				d2s.traverse(dom);
 				
@@ -295,11 +315,13 @@ public class Driver {
 			DOMDecorator.decorate(dom);
 			
 			// write generated instance.
-			XMLSerializer3 s = new XMLSerializer3( os, new OutputFormat("XML",encoding,true) );
+			XMLSerializer s = new XMLSerializer( os, new OutputFormat("XML",encoding,true) );
 			s.serialize(dom);
 			
 			if( os!=System.out )	os.close();
 		}
+
+		out.println();
 		
 		return 0;
 	}

@@ -207,29 +207,33 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 	}
 	
 	protected String generateUnion(UnionType ut, ContextProvider context ) {
-		return generate( ut.memberTypes[random.nextInt(ut.memberTypes.length)], context );
+		try {
+			return generate( ut.memberTypes[random.nextInt(ut.memberTypes.length)], context );
+		} catch( GenerationException ge ) { return null; }
 	}
 		
 	protected String generateList(DataTypeImpl dti, ContextProvider context) {
-		ListType base = (ListType)dti.getConcreteType();
-		LengthFacet lf = (LengthFacet)dti.getFacetObject(dti.FACET_LENGTH);
-		int n;	// compute # of items into this value.
+		try {
+			ListType base = (ListType)dti.getConcreteType();
+			LengthFacet lf = (LengthFacet)dti.getFacetObject(dti.FACET_LENGTH);
+			int n;	// compute # of items into this value.
 		
-		if(lf!=null) {
-			n = lf.length;
-		} else {
-			MaxLengthFacet xlf = (MaxLengthFacet)dti.getFacetObject(dti.FACET_MAXLENGTH);
-			int max = (xlf!=null)?xlf.maxLength:16;
-			MinLengthFacet nlf = (MinLengthFacet)dti.getFacetObject(dti.FACET_MINLENGTH);
-			int min = (nlf!=null)?nlf.minLength:0;
-			
-			n = random.nextInt(max-min)+min;
-		}
+			if(lf!=null) {
+				n = lf.length;
+			} else {
+				MaxLengthFacet xlf = (MaxLengthFacet)dti.getFacetObject(dti.FACET_MAXLENGTH);
+				int max = (xlf!=null)?xlf.maxLength:16;
+				MinLengthFacet nlf = (MinLengthFacet)dti.getFacetObject(dti.FACET_MINLENGTH);
+				int min = (nlf!=null)?nlf.minLength:0;
+				
+				n = random.nextInt(max-min)+min;
+			}
 		
-		String s="";
-		for( int i=0; i<n; i++ )
-			s += " " + generate(base.itemType,context) + " ";
-		return s;
+			String s="";
+			for( int i=0; i<n; i++ )
+				s += " " + generate(base.itemType,context) + " ";
+			return s;
+		} catch( GenerationException ge ) { return null; }
 	}
 	
 	protected String generateNCName() {

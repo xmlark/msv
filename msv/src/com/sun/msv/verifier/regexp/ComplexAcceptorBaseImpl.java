@@ -24,19 +24,19 @@ import com.sun.msv.verifier.Acceptor;
  */
 public abstract class ComplexAcceptorBaseImpl extends ContentModelAcceptor
 {
-	protected final Expression[]	contents;
-	
-	public ComplexAcceptorBaseImpl(
-		REDocumentDeclaration docDecl, Expression combined, Expression[] contents,
-		boolean ignoreUndeclaredAttributes ) {
-		
-		super( docDecl, combined, ignoreUndeclaredAttributes );
-		this.contents = contents;
-	}
+    protected final Expression[]    contents;
+    
+    public ComplexAcceptorBaseImpl(
+        REDocumentDeclaration docDecl, Expression combined, Expression[] contents,
+        boolean ignoreUndeclaredAttributes ) {
+        
+        super( docDecl, combined, ignoreUndeclaredAttributes );
+        this.contents = contents;
+    }
 
     /** eats string literal */
     public final boolean onText2( String literal, IDContextProvider2 context, StringRef refErr, DatatypeRef refType ) {
-        if(!super.onText2(literal,context,refErr,refType))	return false;
+        if(!super.onText2(literal,context,refErr,refType))    return false;
         
         final StringToken token = new StringToken(docDecl,literal,context);
         final ResidualCalculator res = docDecl.resCalc;
@@ -47,56 +47,56 @@ public abstract class ComplexAcceptorBaseImpl extends ContentModelAcceptor
         
         return true;
     }
-	
-	public final boolean stepForward( Acceptor child, StringRef errRef ) {
-		if(!super.stepForward(child,errRef))	return false;
+    
+    public final boolean stepForward( Acceptor child, StringRef errRef ) {
+        if(!super.stepForward(child,errRef))    return false;
 
-		final ResidualCalculator res = docDecl.resCalc;
-		Token token;
-		
-		if( child instanceof SimpleAcceptor ) {
-			// this is possible although it is very rare.
-			// continuation cannot be used here, because
-			// some contents[i] may reject this owner.
-			ElementExp cowner = ((SimpleAcceptor)child).owner;
-			if( cowner==null )
-				// cowner==null means we are currently recovering from an error.
-				// so use AnyElementToken to make contents[i] happy.
-				token = AnyElementToken.theInstance;
-			else
-				token = new ElementToken( new ElementExp[]{cowner} );
-		} else {
-			if( errRef!=null )
-				// in error recovery mode
-				// pretend that every candidate of child ComplexAcceptor is happy
-				token = new ElementToken( ((ComplexAcceptor)child).owners );
-			else
-				// in normal mode, collect only those satisfied owners.
-				token = new ElementToken( ((ComplexAcceptor)child).getSatisfiedOwners() );
-		}
-		
-		for( int i=0; i<contents.length; i++ )
-			contents[i] = res.calcResidual( contents[i], token );
-		
-		return true;
-	}
-	
-	protected boolean onAttribute( AttributeToken token, StringRef refErr ) {
-		
-		if(!super.onAttribute(token,refErr))	return false;
-		
-		for( int i=0; i<contents.length; i++ )
-			contents[i] = docDecl.attFeeder.feed( contents[i], token, ignoreUndeclaredAttributes );
-		
-		return true;
-	}
-	
-	public boolean onEndAttributes( StartTagInfo sti, StringRef refErr ) {
-		if(!super.onEndAttributes(sti,refErr))	return false;
-		
-		for( int i=0; i<contents.length; i++ )
-			contents[i] = docDecl.attPruner.prune(contents[i]);
-		
-		return true;
-	}
+        final ResidualCalculator res = docDecl.resCalc;
+        Token token;
+        
+        if( child instanceof SimpleAcceptor ) {
+            // this is possible although it is very rare.
+            // continuation cannot be used here, because
+            // some contents[i] may reject this owner.
+            ElementExp cowner = ((SimpleAcceptor)child).owner;
+            if( cowner==null )
+                // cowner==null means we are currently recovering from an error.
+                // so use AnyElementToken to make contents[i] happy.
+                token = AnyElementToken.theInstance;
+            else
+                token = new ElementToken( new ElementExp[]{cowner} );
+        } else {
+            if( errRef!=null )
+                // in error recovery mode
+                // pretend that every candidate of child ComplexAcceptor is happy
+                token = new ElementToken( ((ComplexAcceptor)child).owners );
+            else
+                // in normal mode, collect only those satisfied owners.
+                token = new ElementToken( ((ComplexAcceptor)child).getSatisfiedOwners() );
+        }
+        
+        for( int i=0; i<contents.length; i++ )
+            contents[i] = res.calcResidual( contents[i], token );
+        
+        return true;
+    }
+    
+    protected boolean onAttribute( AttributeToken token, StringRef refErr ) {
+        
+        if(!super.onAttribute(token,refErr))    return false;
+        
+        for( int i=0; i<contents.length; i++ )
+            contents[i] = docDecl.attFeeder.feed( contents[i], token, ignoreUndeclaredAttributes );
+        
+        return true;
+    }
+    
+    public boolean onEndAttributes( StartTagInfo sti, StringRef refErr ) {
+        if(!super.onEndAttributes(sti,refErr))    return false;
+        
+        for( int i=0; i<contents.length; i++ )
+            contents[i] = docDecl.attPruner.prune(contents[i]);
+        
+        return true;
+    }
 }

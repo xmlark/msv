@@ -28,22 +28,22 @@ import com.sun.msv.datatype.xsd.IDType;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class CompatibilityDatatypeLibrary implements DatatypeLibrary {
-	
-	/** namespace URI of the compatibility datatypes library. */
-	public static final String namespaceURI = "http://relaxng.org/ns/compatibility/datatypes/1.0";
-	
-	public Datatype createDatatype( String name ) throws DatatypeException {
-		if( name.equals("ID") )
-			return IDType.theInstance;
-		if( name.equals("IDREF") )
-			return IDREFType.theInstance;
-		if( name.equals("IDREFS") )
-			return DatatypeFactory.getTypeByName("IDREFS");
-		
-		throw new DatatypeException("undefined built-in type:"+name);
-	}
-	
-	public DatatypeBuilder createDatatypeBuilder( String name ) throws DatatypeException {
-		return new DatatypeBuilderImpl( createDatatype(name) );
-	}
+    
+    /** namespace URI of the compatibility datatypes library. */
+    public static final String namespaceURI = "http://relaxng.org/ns/compatibility/datatypes/1.0";
+    
+    public Datatype createDatatype( String name ) throws DatatypeException {
+        if( name.equals("ID") )
+            return IDType.theInstance;
+        if( name.equals("IDREF") )
+            return IDREFType.theInstance;
+        if( name.equals("IDREFS") )
+            return DatatypeFactory.getTypeByName("IDREFS");
+        
+        throw new DatatypeException("undefined built-in type:"+name);
+    }
+    
+    public DatatypeBuilder createDatatypeBuilder( String name ) throws DatatypeException {
+        return new DatatypeBuilderImpl( createDatatype(name) );
+    }
 }

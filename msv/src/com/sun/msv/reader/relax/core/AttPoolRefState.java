@@ -19,19 +19,19 @@ import com.sun.msv.reader.ExpressionWithoutChildState;
  */
 public class AttPoolRefState extends ExpressionWithoutChildState
 {
-	protected Expression makeExpression()
-	{
-		final String role = startTag.getAttribute("role");
-		if( role==null )
-		{
-			reader.reportError( RELAXCoreReader.ERR_MISSING_ATTRIBUTE, "ref", "role" );
-			return Expression.epsilon;
-		}
-		
-		final String namespace = startTag.getAttribute("namespace");
-		
-		final RELAXCoreReader reader = (RELAXCoreReader)this.reader;
-		
-		return reader.resolveAttPoolRef(namespace,role);
-	}
+    protected Expression makeExpression()
+    {
+        final String role = startTag.getAttribute("role");
+        if( role==null )
+        {
+            reader.reportError( RELAXCoreReader.ERR_MISSING_ATTRIBUTE, "ref", "role" );
+            return Expression.epsilon;
+        }
+        
+        final String namespace = startTag.getAttribute("namespace");
+        
+        final RELAXCoreReader reader = (RELAXCoreReader)this.reader;
+        
+        return reader.resolveAttPoolRef(namespace,role);
+    }
 }

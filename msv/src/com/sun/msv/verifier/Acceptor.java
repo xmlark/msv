@@ -136,21 +136,21 @@ public interface Acceptor
      * write this element here.
      * 
      * @param refErr
-     *		if this parameter is non-null, the implementation should
-     *		try to detect the reason of error and recover from it.
-     *		and this object should have the error message as its str field.
+     *        if this parameter is non-null, the implementation should
+     *        try to detect the reason of error and recover from it.
+     *        and this object should have the error message as its str field.
      * 
      * @param sti
-     *		this parameter provides the information about the start tag to the
-     *		acceptor object. Usually attribute information is ignored, but
-     *		sometimes they are used as hints.
+     *        this parameter provides the information about the start tag to the
+     *        acceptor object. Usually attribute information is ignored, but
+     *        sometimes they are used as hints.
      * 
      * @return null
-     *		If refErr is null, return null if the given start tag is not accepted.
-     *		If refErr is non-null, return null only when the recovery is impossible.
+     *        If refErr is null, return null if the given start tag is not accepted.
+     *        If refErr is non-null, return null only when the recovery is impossible.
      */
     Acceptor createChildAcceptor( StartTagInfo sti, StringRef refErr );
-	
+    
     /**
      * processes an attribute.
      * 
@@ -164,22 +164,22 @@ public interface Acceptor
      *  <li>the attribute name was OK, but the value was incorrect.
      * </ol>
      * 
-     * @param	refErr
-     *		In case of an error, this object will receive the localized error
-     *		message. Null is a valid value for this parameter.
-     *		The implementation must provide some kind of message.
+     * @param    refErr
+     *        In case of an error, this object will receive the localized error
+     *        message. Null is a valid value for this parameter.
+     *        The implementation must provide some kind of message.
      * 
-     * @param	refType
-     *		If this parameter is non-null, this object will receive the datatype
-     *		assigned to the attribute value.
-     *	
-     *		<p>
-     *		This feature is optional and therefore the implementation is
-     *		not necessarily	provide this information.
+     * @param    refType
+     *        If this parameter is non-null, this object will receive the datatype
+     *        assigned to the attribute value.
+     *    
+     *        <p>
+     *        This feature is optional and therefore the implementation is
+     *        not necessarily    provide this information.
      * 
      * @return
-     *		<b>false</b> if an error happens and refErr parameter
-     *		was not provided. Otherwise true.
+     *        <b>false</b> if an error happens and refErr parameter
+     *        was not provided. Otherwise true.
      */
     boolean onAttribute2(
         String namespaceURI, String localName, String qName, String value,
@@ -204,43 +204,43 @@ public interface Acceptor
      * An error at this method typically indicates that some required
      * attributes are missing.
      * 
-     * @param	sti
-     *		This information is used to produce the error message if that is
-     *		necessary.
+     * @param    sti
+     *        This information is used to produce the error message if that is
+     *        necessary.
      * 
-     * @param	refErr
-     *		In case of an error, this object will receive the localized error
-     *		message. Null is a valid value for this parameter.
-     *		The implementation must provide some kind of message.
+     * @param    refErr
+     *        In case of an error, this object will receive the localized error
+     *        message. Null is a valid value for this parameter.
+     *        The implementation must provide some kind of message.
      * 
      * @return
-     *		<b>false</b> if an error happens and refErr parameter
-     *		was not provided. Otherwise true.
+     *        <b>false</b> if an error happens and refErr parameter
+     *        was not provided. Otherwise true.
      */
     boolean onEndAttributes( StartTagInfo sti, StringRef refErr );
-	
-	
+    
+    
     /**
      * processes a string literal.
      * 
      * @param context
-     *		an object that provides context information necessary to validate
-     *		some datatypes.
+     *        an object that provides context information necessary to validate
+     *        some datatypes.
      * @param refErr
-     *		if this parameter is non-null, the implementation should
-     *		try to detect the reason of error and recover from it.
-     *		and this object should have the error message as its str field.
+     *        if this parameter is non-null, the implementation should
+     *        try to detect the reason of error and recover from it.
+     *        and this object should have the error message as its str field.
      * @param refType
-     *		if this parameter is non-null and the callee supports
-     *		type-assignment, the callee will assign the DataType object
-     *		to this variable.
-     *		Caller must initialize refType.type to null before calling this method.
-     *		If the callee doesn't support type-assignment or type-assignment
-     *		is impossible for this literal (possibly by ambiguous grammar),
-     *		this variable must kept null.
+     *        if this parameter is non-null and the callee supports
+     *        type-assignment, the callee will assign the DataType object
+     *        to this variable.
+     *        Caller must initialize refType.type to null before calling this method.
+     *        If the callee doesn't support type-assignment or type-assignment
+     *        is impossible for this literal (possibly by ambiguous grammar),
+     *        this variable must kept null.
      * 
      * @return false
-     *		if the literal at this position is not allowed.
+     *        if the literal at this position is not allowed.
      */
     boolean onText2( String literal, IDContextProvider2 context, StringRef refErr, DatatypeRef refType );
     
@@ -248,7 +248,7 @@ public interface Acceptor
      * @deprecated
      */
     boolean onText( String literal, IDContextProvider context, StringRef refErr, DatatypeRef refType );
-	
+    
     /**
      * eats a child element
      * 
@@ -268,12 +268,12 @@ public interface Acceptor
      * as if there was no such error.
      * 
      * @return false
-     *		if an error happens. For example, if the implementation passes
-     *		an acceptor which is NOT a child of this acceptor, then
-     *		the callee can return <b>false</b>.
+     *        if an error happens. For example, if the implementation passes
+     *        an acceptor which is NOT a child of this acceptor, then
+     *        the callee can return <b>false</b>.
      */
     boolean stepForward( Acceptor child, StringRef errRef );
-	
+    
     /**
      * checks if this Acceptor is satisifed.
      * 
@@ -284,8 +284,8 @@ public interface Acceptor
      * is written properly.
      * 
      * @param errRef
-     *		If this value is non-null, implementation can diagnose the error
-     *		and sets the message to the object.
+     *        If this value is non-null, implementation can diagnose the error
+     *        and sets the message to the object.
      */
     boolean isAcceptState( StringRef errRef );
     
@@ -296,9 +296,9 @@ public interface Acceptor
      * return value depends on the implementation.
      * 
      * @return null
-     *		the callee should return null when it doesn't support
-     *		type-assignment feature, or type-assignment is impossible
-     *		for this acceptor (for example by ambiguous grammar).
+     *        the callee should return null when it doesn't support
+     *        type-assignment feature, or type-assignment is impossible
+     *        for this acceptor (for example by ambiguous grammar).
      */
     Object getOwnerType();
     
@@ -348,7 +348,7 @@ public interface Acceptor
      * only once when the acceptor is first created.
      * 
      * @return
-     *		one of the three constant values shown below.
+     *        one of the three constant values shown below.
      */
     int getStringCareLevel();
     
@@ -359,7 +359,7 @@ public interface Acceptor
      * for example, &lt;elementRule&gt; of RELAX doesn't allow
      * characters (except whitespaces) at all.
      */
-    static final int STRING_PROHIBITED	= 0x00;
+    static final int STRING_PROHIBITED    = 0x00;
     /**
      * character literals are allowed, but Acceptor doesn't care
      * its contents and where it is appeared.
@@ -367,14 +367,14 @@ public interface Acceptor
      * The caller doesn't need to call onText for literal.
      * This mode is used for mixed contents.
      */
-    static final int STRING_IGNORE		= 0x01;
+    static final int STRING_IGNORE        = 0x01;
     /**
      * attentive handling of characters is required.
      * 
      * Verifier has to keep track of exact contents of string and
      * it must call onText for string accordingly.
      */
-    static final int STRING_STRICT		= 0x02;
+    static final int STRING_STRICT        = 0x02;
     
     // TODO: possible 4th class, STRING_SLOPPY,
     // which requires stepForward invocation but don't care about its content.

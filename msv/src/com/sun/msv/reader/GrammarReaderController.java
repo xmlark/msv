@@ -18,13 +18,13 @@ import org.xml.sax.Locator;
  * <ol>
  *  <li>receives notification of errors and warnings while parsing a grammar
  *  <li>controls how inclusion of other grammars are processed (through
- *		{@link EntityResolver}.
+ *        {@link EntityResolver}.
  * </ol>
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface GrammarReaderController extends EntityResolver
 {
-	void warning( Locator[] locs, String errorMessage );
-	void error( Locator[] locs, String errorMessage, Exception nestedException );
+    void warning( Locator[] locs, String errorMessage );
+    void error( Locator[] locs, String errorMessage, Exception nestedException );
 }

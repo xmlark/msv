@@ -21,52 +21,52 @@ import org.xml.sax.Locator;
  */
 public interface IVerifier extends VerifierHandler {
 
-	/**
-	 * checks if the document was valid.
-	 * This method may not be called before verification was completed.
-	 */
-	boolean isValid();
-	
-	/**
-	 * returns current element type.
-	 * 
-	 * Actual java type depends on the implementation.
-	 * This method works correctly only when called immediately
-	 * after handling startElement event.
-	 * 
-	 * @return null
-	 *		this method returns null when it doesn't support
-	 *		type-assignment feature, or type-assignment is impossible
-	 *		for the current element (for example due to the ambiguous grammar).
-	 */
-	Object getCurrentElementType();
-	
-	/**
-	 * gets DataType that validated the last characters.
-	 * 
-	 * <p>
-	 * This method works correctly only when called immediately
-	 * after startElement and endElement method. When called, this method
-	 * returns DataType object that validated the last character literals.
-	 * 
-	 * <p>
-	 * For RELAX NG grammar, this method can return an array of length 2 or more.
-	 * This happens when the last character matches &lt;list&gt; pattern.
-	 * In that case, each type corresponds to each token (where tokens are the
-	 * white-space separation of the last characters).
-	 * 
-	 * <p>
-	 * For any other grammar, this method always returns an array of length 1
-	 * (or null, if the type assignment failed).
-	 * 
-	 * <p>
-	 * So when you are using VerifierFilter, you can call this method only
-	 * in your startElement and endElement method.
-	 * 
-	 * @return null
-	 *		if type-assignment was not possible.
-	 */
-	Datatype[] getLastCharacterType();
+    /**
+     * checks if the document was valid.
+     * This method may not be called before verification was completed.
+     */
+    boolean isValid();
+    
+    /**
+     * returns current element type.
+     * 
+     * Actual java type depends on the implementation.
+     * This method works correctly only when called immediately
+     * after handling startElement event.
+     * 
+     * @return null
+     *        this method returns null when it doesn't support
+     *        type-assignment feature, or type-assignment is impossible
+     *        for the current element (for example due to the ambiguous grammar).
+     */
+    Object getCurrentElementType();
+    
+    /**
+     * gets DataType that validated the last characters.
+     * 
+     * <p>
+     * This method works correctly only when called immediately
+     * after startElement and endElement method. When called, this method
+     * returns DataType object that validated the last character literals.
+     * 
+     * <p>
+     * For RELAX NG grammar, this method can return an array of length 2 or more.
+     * This happens when the last character matches &lt;list&gt; pattern.
+     * In that case, each type corresponds to each token (where tokens are the
+     * white-space separation of the last characters).
+     * 
+     * <p>
+     * For any other grammar, this method always returns an array of length 1
+     * (or null, if the type assignment failed).
+     * 
+     * <p>
+     * So when you are using VerifierFilter, you can call this method only
+     * in your startElement and endElement method.
+     * 
+     * @return null
+     *        if type-assignment was not possible.
+     */
+    Datatype[] getLastCharacterType();
 
     /**
      * Turns on/off the panic mode.
@@ -81,7 +81,7 @@ public interface IVerifier extends VerifierHandler {
      */
     void setPanicMode( boolean usePanicMode );
 
-	Locator getLocator();
-	ErrorHandler getErrorHandler();
-	void setErrorHandler( ErrorHandler handler );
+    Locator getLocator();
+    ErrorHandler getErrorHandler();
+    void setErrorHandler( ErrorHandler handler );
 }

@@ -20,31 +20,31 @@ import com.sun.msv.util.StartTagInfo;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class IncludeMergeState extends SimpleState {
-	
-	protected State createChildState( StartTagInfo tag ) {
-		// no child element is allowed by default.
-		return null;
-	}
-	
-	protected void endSelf() {
-		// For RELAX NG, inclusion has to be done at the endSelf method,
-		// not in the startSelf method.
-		final String href = startTag.getAttribute("href");
+    
+    protected State createChildState( StartTagInfo tag ) {
+        // no child element is allowed by default.
+        return null;
+    }
+    
+    protected void endSelf() {
+        // For RELAX NG, inclusion has to be done at the endSelf method,
+        // not in the startSelf method.
+        final String href = startTag.getAttribute("href");
 
-		if(href==null)
-		{// name attribute is required.
-			reader.reportError( TREXBaseReader.ERR_MISSING_ATTRIBUTE,
-				"include","href");
-			// recover by ignoring this include element
-		}
-		else
+        if(href==null)
+        {// name attribute is required.
+            reader.reportError( TREXBaseReader.ERR_MISSING_ATTRIBUTE,
+                "include","href");
+            // recover by ignoring this include element
+        }
+        else
             try {
-			    // parse specified file
-			    reader.switchSource(this,href,new RootMergedGrammarState());
+                // parse specified file
+                reader.switchSource(this,href,new RootMergedGrammarState());
             } catch( AbortException e ) {
                 // recover by ignoring the error
             }
-		
-		super.endSelf();
-	}
+        
+        super.endSelf();
+    }
 }

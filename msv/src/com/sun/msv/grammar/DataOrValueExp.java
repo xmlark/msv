@@ -20,6 +20,6 @@ import com.sun.msv.util.StringPair;
  */
 public interface DataOrValueExp
 {
-	StringPair getName();
-	Datatype getType();
+    StringPair getName();
+    Datatype getType();
 }

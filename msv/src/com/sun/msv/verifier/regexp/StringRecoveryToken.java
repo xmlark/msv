@@ -25,48 +25,48 @@ import com.sun.msv.util.DatatypeRef;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 class StringRecoveryToken extends StringToken {
-	
-	StringRecoveryToken( StringToken base ) {
-		this( base, new java.util.HashSet() );
-	}
-	
-	StringRecoveryToken( StringToken base, Set failedExps ) {
-		super( base.resCalc, base.literal, base.context, null );
-		this.failedExps = failedExps;
-	}
-	
-	/**
-	 * TypedStringExps and ListExps that
-	 * rejected this token are collected into this set.
-	 */
-	final Set failedExps;
-	
-	public boolean match( DataExp exp ) {
-		if( super.match(exp) )
-			return true;
-		
-		// this datatype didn't accept me. so record it for diagnosis.
-		failedExps.add( exp );
-		return true;
-	}
-	
-	public boolean match( ValueExp exp ) {
-		if( super.match(exp) )
-			return true;
-		
-		// this datatype didn't accept me. so record it for diagnosis.
-		failedExps.add( exp );
-		return true;
-	}
-	
-	public boolean match( ListExp exp ) {
-		super.match(exp);
-		return true;
-	}
-		
-	protected StringToken createChildStringToken( String literal, DatatypeRef dtRef ) {
-		return new StringRecoveryToken(
-			new StringToken( resCalc, literal, context, dtRef ) );
-	}
+    
+    StringRecoveryToken( StringToken base ) {
+        this( base, new java.util.HashSet() );
+    }
+    
+    StringRecoveryToken( StringToken base, Set failedExps ) {
+        super( base.resCalc, base.literal, base.context, null );
+        this.failedExps = failedExps;
+    }
+    
+    /**
+     * TypedStringExps and ListExps that
+     * rejected this token are collected into this set.
+     */
+    final Set failedExps;
+    
+    public boolean match( DataExp exp ) {
+        if( super.match(exp) )
+            return true;
+        
+        // this datatype didn't accept me. so record it for diagnosis.
+        failedExps.add( exp );
+        return true;
+    }
+    
+    public boolean match( ValueExp exp ) {
+        if( super.match(exp) )
+            return true;
+        
+        // this datatype didn't accept me. so record it for diagnosis.
+        failedExps.add( exp );
+        return true;
+    }
+    
+    public boolean match( ListExp exp ) {
+        super.match(exp);
+        return true;
+    }
+        
+    protected StringToken createChildStringToken( String literal, DatatypeRef dtRef ) {
+        return new StringRecoveryToken(
+            new StringToken( resCalc, literal, context, dtRef ) );
+    }
 
 }

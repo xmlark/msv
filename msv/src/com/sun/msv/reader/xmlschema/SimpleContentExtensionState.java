@@ -28,32 +28,32 @@ import com.sun.msv.util.StartTagInfo;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class SimpleContentExtensionState extends SequenceState
-	implements AnyAttributeOwner {
-	
-	/** ComplexType object that we are now constructing. */
-	protected ComplexTypeExp parentDecl;
-	
-	protected SimpleContentExtensionState( ComplexTypeExp parentDecl ) {
-		this.parentDecl = parentDecl;
-	}
+    implements AnyAttributeOwner {
+    
+    /** ComplexType object that we are now constructing. */
+    protected ComplexTypeExp parentDecl;
+    
+    protected SimpleContentExtensionState( ComplexTypeExp parentDecl ) {
+        this.parentDecl = parentDecl;
+    }
 
-	public void setAttributeWildcard( AttributeWildcard local ) {
-		parentDecl.wildcard = local;
-	}
-	
-	protected State createChildState( StartTagInfo tag ) {
-		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
-		return reader.createAttributeState(this,tag);
-	}
+    public void setAttributeWildcard( AttributeWildcard local ) {
+        parentDecl.wildcard = local;
+    }
+    
+    protected State createChildState( StartTagInfo tag ) {
+        final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
+        return reader.createAttributeState(this,tag);
+    }
     
     
-	protected Expression initialExpression() {
-		// without this statement,
-		// <extension> without any attribute will be prohibited.
-		return Expression.epsilon;
-	}
-	
-	protected Expression annealExpression( Expression exp ) {
+    protected Expression initialExpression() {
+        // without this statement,
+        // <extension> without any attribute will be prohibited.
+        return Expression.epsilon;
+    }
+    
+    protected Expression annealExpression( Expression exp ) {
         parentDecl.derivationMethod = ComplexTypeExp.EXTENSION;
         return reader.pool.createSequence(
             super.annealExpression(exp),
@@ -64,14 +64,14 @@ public class SimpleContentExtensionState extends SequenceState
      * Gets the expression for the base type.
      */
     private Expression getBody() {
-		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
+        final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
         
-		final String base = startTag.getAttribute("base");
-		if(base==null) {
-			// in extension, base attribute must is mandatory.
-			reader.reportError( XMLSchemaReader.ERR_MISSING_ATTRIBUTE, startTag.localName, "base");
+        final String base = startTag.getAttribute("base");
+        if(base==null) {
+            // in extension, base attribute must is mandatory.
+            reader.reportError( XMLSchemaReader.ERR_MISSING_ATTRIBUTE, startTag.localName, "base");
             return Expression.nullSet;
-		}
+        }
         
         final String[] baseTypeName = reader.splitQName(base);
         if( baseTypeName==null ) {
@@ -81,7 +81,7 @@ public class SimpleContentExtensionState extends SequenceState
         
         // we need a special handling for built-in types
         if(reader.isSchemaNamespace(baseTypeName[0])) {
-			XSDatatype dt = reader.resolveBuiltinDataType(baseTypeName[1]);
+            XSDatatype dt = reader.resolveBuiltinDataType(baseTypeName[1]);
             if(dt!=null) {
                 XSDatatypeExp dtexp = new XSDatatypeExp(dt,reader.pool);
                 parentDecl.simpleBaseType = dtexp;
@@ -97,11 +97,11 @@ public class SimpleContentExtensionState extends SequenceState
         // we don't know whether it's a complex type or a simple type.
         // so back patch it
         final ReferenceExp ref = new ReferenceExp(null);
-		reader.addBackPatchJob( new GrammarReader.BackPatch(){
-			public State getOwnerState() {
+        reader.addBackPatchJob( new GrammarReader.BackPatch(){
+            public State getOwnerState() {
                 return SimpleContentExtensionState.this;
             }
-			public void patch() {
+            public void patch() {
                 SimpleTypeExp sexp = schema.simpleTypes.get(baseTypeName[1]);
                 if(sexp!=null) {
                     // we've found the simple type
@@ -124,5 +124,5 @@ public class SimpleContentExtensionState extends SequenceState
         });
         
         return ref;
-	}
+    }
 }

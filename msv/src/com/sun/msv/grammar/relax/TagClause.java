@@ -21,29 +21,29 @@ import com.sun.msv.grammar.ReferenceExp;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TagClause extends ReferenceExp {
-	/**
-	 * tag name constraint.
-	 * This should be SimpleNameClass. The only exception is for stub module.
-	 */
-	public NameClass nameClass;
-	
-	/** RefContainer-controlled creation. should be created via RefContainer.getOrCreate */
-	protected TagClause( String role )	{ super(role); }
-	
-	/** constructor for inline tag. creatable directly from outside */
-	public TagClause() { super(null); }
-	
-	public Object visit( RELAXExpressionVisitor visitor )
-	{ return visitor.onTag(this); }
+    /**
+     * tag name constraint.
+     * This should be SimpleNameClass. The only exception is for stub module.
+     */
+    public NameClass nameClass;
+    
+    /** RefContainer-controlled creation. should be created via RefContainer.getOrCreate */
+    protected TagClause( String role )    { super(role); }
+    
+    /** constructor for inline tag. creatable directly from outside */
+    public TagClause() { super(null); }
+    
+    public Object visit( RELAXExpressionVisitor visitor )
+    { return visitor.onTag(this); }
 
-	public Expression visit( RELAXExpressionVisitorExpression visitor )
-	{ return visitor.onTag(this); }
-	
-	public boolean visit( RELAXExpressionVisitorBoolean visitor )
-	{ return visitor.onTag(this); }
+    public Expression visit( RELAXExpressionVisitorExpression visitor )
+    { return visitor.onTag(this); }
+    
+    public boolean visit( RELAXExpressionVisitorBoolean visitor )
+    { return visitor.onTag(this); }
 
-	public void visit( RELAXExpressionVisitorVoid visitor )
-	{ visitor.onTag(this); }
+    public void visit( RELAXExpressionVisitorVoid visitor )
+    { visitor.onTag(this); }
 
     
     // serialization support

@@ -16,23 +16,23 @@ package com.sun.msv.reader.trex.ng;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ElementState extends com.sun.msv.reader.trex.ElementState {
-	
-	private boolean previousDirectReference;
-	
-	protected void startSelf() {
-		super.startSelf();
-		
-		// set directReference to false.
-		previousDirectReference = ((RELAXNGReader)reader).directRefernce;
-		((RELAXNGReader)reader).directRefernce = false;
-	}
-	
-	protected void endSelf() {
-		final RELAXNGReader reader = (RELAXNGReader)this.reader;
-		
-		reader.directRefernce = previousDirectReference;
-		super.endSelf();
+    
+    private boolean previousDirectReference;
+    
+    protected void startSelf() {
+        super.startSelf();
+        
+        // set directReference to false.
+        previousDirectReference = ((RELAXNGReader)reader).directRefernce;
+        ((RELAXNGReader)reader).directRefernce = false;
+    }
+    
+    protected void endSelf() {
+        final RELAXNGReader reader = (RELAXNGReader)this.reader;
+        
+        reader.directRefernce = previousDirectReference;
+        super.endSelf();
 
-		reader.restrictionChecker.checkNameClass(nameClass);
-	}
+        reader.restrictionChecker.checkNameClass(nameClass);
+    }
 }

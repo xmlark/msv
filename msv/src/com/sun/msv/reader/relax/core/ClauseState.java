@@ -22,35 +22,35 @@ import com.sun.msv.util.StartTagInfo;
  */
 abstract class ClauseState extends SimpleState implements ExpressionOwner
 {
-	protected State createChildState( StartTagInfo tag ) {
-		if(tag.localName.equals("ref"))			return getReader().getStateFactory().refRole(this,tag);
-		if(tag.localName.equals("attribute"))	return getReader().getStateFactory().attribute(this,tag);
-		
-		return null;	// unrecognized
-	}
-	
-	protected Expression initialExpression()	{ return Expression.epsilon; }
-	
-	protected Expression castExpression( Expression exp, Expression child ) {
-		// attributes and references are combined in one sequence
-		return reader.pool.createSequence(exp,child);
-	}
-	
+    protected State createChildState( StartTagInfo tag ) {
+        if(tag.localName.equals("ref"))            return getReader().getStateFactory().refRole(this,tag);
+        if(tag.localName.equals("attribute"))    return getReader().getStateFactory().attribute(this,tag);
+        
+        return null;    // unrecognized
+    }
+    
+    protected Expression initialExpression()    { return Expression.epsilon; }
+    
+    protected Expression castExpression( Expression exp, Expression child ) {
+        // attributes and references are combined in one sequence
+        return reader.pool.createSequence(exp,child);
+    }
+    
 
-	/** gets reader in type-safe fashion */
-	protected RELAXCoreReader getReader() { return (RELAXCoreReader)reader; }
+    /** gets reader in type-safe fashion */
+    protected RELAXCoreReader getReader() { return (RELAXCoreReader)reader; }
 
 
 
-	/**
-	 * expression object that is being created.
-	 * See {@link castPattern} and {@link annealPattern} methods
-	 * for how will a pattern be created.
-	 */
-	protected Expression exp = initialExpression();
-	
-	/** receives a Pattern object that is contained in this element. */
-	public final void onEndChild( Expression childExpression ) {
-		exp = castExpression( exp, childExpression );
-	}
+    /**
+     * expression object that is being created.
+     * See {@link castPattern} and {@link annealPattern} methods
+     * for how will a pattern be created.
+     */
+    protected Expression exp = initialExpression();
+    
+    /** receives a Pattern object that is contained in this element. */
+    public final void onEndChild( Expression childExpression ) {
+        exp = castExpression( exp, childExpression );
+    }
 }

@@ -23,10 +23,10 @@ package com.sun.msv.grammar.util;
  * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NameClassCollisionChecker extends NameClassComparator {
-			
-	protected void probe( String uri, String local ) {
-		if(nc1.accepts(uri,local) && nc2.accepts(uri,local))
-			// conflict is found.
-			throw eureka;
-	}
+            
+    protected void probe( String uri, String local ) {
+        if(nc1.accepts(uri,local) && nc2.accepts(uri,local))
+            // conflict is found.
+            throw eureka;
+    }
 }

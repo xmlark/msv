@@ -15,6 +15,6 @@ package com.sun.msv.grammar;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface NameClassAndExpression {
-	NameClass getNameClass();
-	Expression getContentModel();
+    NameClass getNameClass();
+    Expression getContentModel();
 }

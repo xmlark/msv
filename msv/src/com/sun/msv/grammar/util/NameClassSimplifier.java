@@ -39,76 +39,76 @@ import com.sun.msv.util.StringPair;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NameClassSimplifier {
-	
-	public static NameClass simplify( NameClass nc ) {
-		final Set possibleNames = PossibleNamesCollector.calc(nc);
-		final String MAGIC = PossibleNamesCollector.MAGIC;
-		
-		Set uris = new java.util.HashSet();
-		
-		Iterator itr = possibleNames.iterator();
-		while( itr.hasNext() ) {
-			StringPair name = (StringPair)itr.next();
-			if( name.localName!=MAGIC ) {
-				// a simple name.
-				if( nc.accepts(name)==nc.accepts( name.namespaceURI, MAGIC ) ) {
-					itr.remove();
-					continue;
-				}
-			} else
-			if( name.namespaceURI!=MAGIC ) {
-				// a ns name
-				if( nc.accepts(name)==nc.accepts(MAGIC,MAGIC) ) {
-					itr.remove();
-					continue;
-				}
-			}
-			
-			// collect the remainig namespace URIs.
-			if( name.namespaceURI!=MAGIC )
-				uris.add(name.namespaceURI);
-		}
-		
-		if( !nc.accepts(MAGIC,MAGIC) )
-			possibleNames.remove( new StringPair(MAGIC,MAGIC) );
-		
-		NameClass result = null;
-		Iterator jtr = uris.iterator();
-		while( jtr.hasNext() ) {
-			final String uri = (String)jtr.next();
-			
-			NameClass local = null;
-			itr = possibleNames.iterator();
-			while( itr.hasNext() ) {
-				final StringPair name = (StringPair)itr.next();
-				
-				if(!name.namespaceURI.equals(uri))		continue;
-				if(name.localName==MAGIC)				continue;
-				
-				if(local==null)	local = new SimpleNameClass(name);
-				else			local = new ChoiceNameClass(local,new SimpleNameClass(name));
-			}
-			if(possibleNames.contains(new StringPair(uri,MAGIC))) {
-				if(local==null)
-					local = new NamespaceNameClass(uri);
-				else
-					local = new DifferenceNameClass(new NamespaceNameClass(uri),local);
-			}
-			
-			if(local!=null) {
-				if(result==null)	result = local;
-				else				result = new ChoiceNameClass(result,local);
-			}
-		}
-		
-		if( nc.accepts(MAGIC,MAGIC) ) {
-			if(result==null)		result = AnyNameClass.theInstance;
-			else					result = new NotNameClass(result);
-		}
-		
-		if( result==null )
-			result = new NotNameClass( AnyNameClass.theInstance );
-		
-		return result;
-	}
+    
+    public static NameClass simplify( NameClass nc ) {
+        final Set possibleNames = PossibleNamesCollector.calc(nc);
+        final String MAGIC = PossibleNamesCollector.MAGIC;
+        
+        Set uris = new java.util.HashSet();
+        
+        Iterator itr = possibleNames.iterator();
+        while( itr.hasNext() ) {
+            StringPair name = (StringPair)itr.next();
+            if( name.localName!=MAGIC ) {
+                // a simple name.
+                if( nc.accepts(name)==nc.accepts( name.namespaceURI, MAGIC ) ) {
+                    itr.remove();
+                    continue;
+                }
+            } else
+            if( name.namespaceURI!=MAGIC ) {
+                // a ns name
+                if( nc.accepts(name)==nc.accepts(MAGIC,MAGIC) ) {
+                    itr.remove();
+                    continue;
+                }
+            }
+            
+            // collect the remainig namespace URIs.
+            if( name.namespaceURI!=MAGIC )
+                uris.add(name.namespaceURI);
+        }
+        
+        if( !nc.accepts(MAGIC,MAGIC) )
+            possibleNames.remove( new StringPair(MAGIC,MAGIC) );
+        
+        NameClass result = null;
+        Iterator jtr = uris.iterator();
+        while( jtr.hasNext() ) {
+            final String uri = (String)jtr.next();
+            
+            NameClass local = null;
+            itr = possibleNames.iterator();
+            while( itr.hasNext() ) {
+                final StringPair name = (StringPair)itr.next();
+                
+                if(!name.namespaceURI.equals(uri))        continue;
+                if(name.localName==MAGIC)                continue;
+                
+                if(local==null)    local = new SimpleNameClass(name);
+                else            local = new ChoiceNameClass(local,new SimpleNameClass(name));
+            }
+            if(possibleNames.contains(new StringPair(uri,MAGIC))) {
+                if(local==null)
+                    local = new NamespaceNameClass(uri);
+                else
+                    local = new DifferenceNameClass(new NamespaceNameClass(uri),local);
+            }
+            
+            if(local!=null) {
+                if(result==null)    result = local;
+                else                result = new ChoiceNameClass(result,local);
+            }
+        }
+        
+        if( nc.accepts(MAGIC,MAGIC) ) {
+            if(result==null)        result = AnyNameClass.theInstance;
+            else                    result = new NotNameClass(result);
+        }
+        
+        if( result==null )
+            result = new NotNameClass( AnyNameClass.theInstance );
+        
+        return result;
+    }
 }

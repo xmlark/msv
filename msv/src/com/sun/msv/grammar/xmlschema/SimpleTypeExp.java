@@ -28,18 +28,18 @@ import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class SimpleTypeExp extends XMLSchemaTypeExp {
-	
-	SimpleTypeExp( String typeName ) {
-		super(typeName);
-	}
+    
+    SimpleTypeExp( String typeName ) {
+        super(typeName);
+    }
     
     public void set( XSDatatypeExp exp ) {
         this.exp = this.type = exp;
     }
-	
-	protected XSDatatypeExp type;
-	/** gets the XSDatatypeExp object that represents this simple type. */
-	public XSDatatypeExp getType() { return type; }
+    
+    protected XSDatatypeExp type;
+    /** gets the XSDatatypeExp object that represents this simple type. */
+    public XSDatatypeExp getType() { return type; }
 
     /**
      * Gets the encapsulated Datatype object.
@@ -49,23 +49,23 @@ public class SimpleTypeExp extends XMLSchemaTypeExp {
     public XSDatatype getDatatype() { return type.getCreatedType(); }
     
     
-	/**
-	 * gets the value of the block constraint.
-	 * SimpleTypeExp always returns 0 because it doesn't
-	 * have the block constraint.
-	 */
-	public int getBlock() { return 0; }
-	
-	/** clone this object. */
-	public RedefinableExp getClone() {
-		SimpleTypeExp exp = new SimpleTypeExp(this.name);
-		exp.redefine(this);
-		return exp;
-	}
-	
-	public void redefine( RedefinableExp _rhs ) {
-		super.redefine(_rhs);
-		
+    /**
+     * gets the value of the block constraint.
+     * SimpleTypeExp always returns 0 because it doesn't
+     * have the block constraint.
+     */
+    public int getBlock() { return 0; }
+    
+    /** clone this object. */
+    public RedefinableExp getClone() {
+        SimpleTypeExp exp = new SimpleTypeExp(this.name);
+        exp.redefine(this);
+        return exp;
+    }
+    
+    public void redefine( RedefinableExp _rhs ) {
+        super.redefine(_rhs);
+        
         SimpleTypeExp rhs = (SimpleTypeExp)_rhs;
         
         if(type==null)
@@ -77,8 +77,8 @@ public class SimpleTypeExp extends XMLSchemaTypeExp {
                 
             type.redefine(rhs.getType());
         }
-	}
-	
+    }
+    
     
     // serialization support
     private static final long serialVersionUID = 1;    

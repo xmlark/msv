@@ -18,7 +18,7 @@ import com.sun.msv.grammar.NameClass;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NameClassAnyNameState extends NameClassWithoutChildState {
-	protected NameClass makeNameClass() {
-		return AnyNameClass.theInstance;
-	}
+    protected NameClass makeNameClass() {
+        return AnyNameClass.theInstance;
+    }
 }

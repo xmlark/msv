@@ -23,57 +23,57 @@ import com.sun.msv.util.StartTagInfo;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RestrictionState extends TypeWithOneChildState implements FacetStateParent {
-	
-    protected final String newTypeUri;
-	protected final String newTypeName;
     
-	protected RestrictionState( String newTypeUri, String newTypeName ) {
+    protected final String newTypeUri;
+    protected final String newTypeName;
+    
+    protected RestrictionState( String newTypeUri, String newTypeName ) {
         this.newTypeUri  = newTypeUri;
-		this.newTypeName = newTypeName;
-	}
-	
-	protected XSTypeIncubator incubator;
-	public final XSTypeIncubator getIncubator() {
-		return incubator;
-	}
+        this.newTypeName = newTypeName;
+    }
+    
+    protected XSTypeIncubator incubator;
+    public final XSTypeIncubator getIncubator() {
+        return incubator;
+    }
 
-	protected XSDatatypeExp annealType( XSDatatypeExp baseType ) throws DatatypeException {
+    protected XSDatatypeExp annealType( XSDatatypeExp baseType ) throws DatatypeException {
         return incubator.derive(newTypeUri,newTypeName);
-	}
-	
-	public void onEndChild( XSDatatypeExp child ) {
-		super.onEndChild(child);
-		createTypeIncubator();
-	}
-	
-	private void createTypeIncubator() {
+    }
+    
+    public void onEndChild( XSDatatypeExp child ) {
+        super.onEndChild(child);
+        createTypeIncubator();
+    }
+    
+    private void createTypeIncubator() {
         incubator = type.createIncubator();
-	}
+    }
 
-	
-	protected void startSelf() {
-		super.startSelf();
-		
-		// if the base attribute is used, try to load it.
-		String base = startTag.getAttribute("base");
-		if(base!=null)
+    
+    protected void startSelf() {
+        super.startSelf();
+        
+        // if the base attribute is used, try to load it.
+        String base = startTag.getAttribute("base");
+        if(base!=null)
             onEndChild( ((XSDatatypeResolver)reader).resolveXSDatatype(base) );
-	}
+    }
 
-	protected State createChildState( StartTagInfo tag ) {
-		// accepts elements from the same namespace only.
-		if( !startTag.namespaceURI.equals(tag.namespaceURI) )	return null;
-		
-		if( tag.localName.equals("annotation") )	return new IgnoreState();
-		if( tag.localName.equals("simpleType") )	return new SimpleTypeState();
-		if( FacetState.facetNames.contains(tag.localName) ) {
-			if( incubator==null ) {
-				reader.reportError( GrammarReader.ERR_MISSING_ATTRIBUTE, "restriction", "base" );
+    protected State createChildState( StartTagInfo tag ) {
+        // accepts elements from the same namespace only.
+        if( !startTag.namespaceURI.equals(tag.namespaceURI) )    return null;
+        
+        if( tag.localName.equals("annotation") )    return new IgnoreState();
+        if( tag.localName.equals("simpleType") )    return new SimpleTypeState();
+        if( FacetState.facetNames.contains(tag.localName) ) {
+            if( incubator==null ) {
+                reader.reportError( GrammarReader.ERR_MISSING_ATTRIBUTE, "restriction", "base" );
                 onEndChild(new XSDatatypeExp(StringType.theInstance,reader.pool));
-			}
-			return new FacetState();
-		}
-		
-		return null;	// unrecognized
-	}
+            }
+            return new FacetState();
+        }
+        
+        return null;    // unrecognized
+    }
 }

@@ -23,44 +23,44 @@ import com.sun.msv.grammar.Grammar;
  */
 public class XMLSchemaGrammar implements Grammar {
 
-	public XMLSchemaGrammar() {
-		this( new ExpressionPool() );
-	}
-	
-	public XMLSchemaGrammar( ExpressionPool pool ) {
-		this.pool = pool;
-	}
-	
-	/** pool object which was used to construct this grammar. */
-	protected final ExpressionPool pool;
-	public final ExpressionPool getPool() {
-		return pool;
-	}
-	
-	public Expression topLevel;
-	public final Expression getTopLevel() {
-		return topLevel;
-	}
+    public XMLSchemaGrammar() {
+        this( new ExpressionPool() );
+    }
+    
+    public XMLSchemaGrammar( ExpressionPool pool ) {
+        this.pool = pool;
+    }
+    
+    /** pool object which was used to construct this grammar. */
+    protected final ExpressionPool pool;
+    public final ExpressionPool getPool() {
+        return pool;
+    }
+    
+    public Expression topLevel;
+    public final Expression getTopLevel() {
+        return topLevel;
+    }
 
-	/** map from namespace URI to loaded XMLSchemaSchema object. */
-	protected final Map schemata = new java.util.HashMap();
-	
-	/** gets XMLSchemaSchema object that has the given target namespace.
-	 * 
-	 * @return null if no schema is associated with that namespace.
-	 */
-	public XMLSchemaSchema getByNamespace( String targetNamesapce ) {
-		return (XMLSchemaSchema)schemata.get(targetNamesapce);
-	}
-	
-	/**
-	 * returns an Iterator that enumerates XMLSchemaSchema objects
-	 * that are defined in this grammar.
-	 */
-	public Iterator iterateSchemas() {
-		return schemata.values().iterator();
-	}
-	
+    /** map from namespace URI to loaded XMLSchemaSchema object. */
+    protected final Map schemata = new java.util.HashMap();
+    
+    /** gets XMLSchemaSchema object that has the given target namespace.
+     * 
+     * @return null if no schema is associated with that namespace.
+     */
+    public XMLSchemaSchema getByNamespace( String targetNamesapce ) {
+        return (XMLSchemaSchema)schemata.get(targetNamesapce);
+    }
+    
+    /**
+     * returns an Iterator that enumerates XMLSchemaSchema objects
+     * that are defined in this grammar.
+     */
+    public Iterator iterateSchemas() {
+        return schemata.values().iterator();
+    }
+    
     
     // serialization support
     private static final long serialVersionUID = 1;    

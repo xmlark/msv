@@ -30,88 +30,88 @@ import com.sun.msv.relaxns.grammar.RELAXGrammar;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class SchemaProviderImpl extends AbstractSchemaProviderImpl {
-	
-	private final RELAXGrammar grammar;
-	private final DeclImpl[] topLevel;
-	/** top-level expression as AGM. */
-	private final Expression topLevelExp;
-	/** shared expression pool. */
-	private final ExpressionPool pool;
-	
-	public IslandVerifier createTopLevelVerifier() {
-		return new TREXIslandVerifier(
-			new RulesAcceptor(
-				new com.sun.msv.verifier.regexp.REDocumentDeclaration(topLevelExp,pool), topLevel ) );
-	}
-	
-	/**
-	 * creates SchemaProvider from generic Grammar (including TREX/RELAX Core)
-	 */
-	public static SchemaProviderImpl fromGrammar( Grammar grammar ) {
-		if( grammar instanceof RELAXGrammar )
-			return new SchemaProviderImpl( (RELAXGrammar)grammar );
-		
-		RELAXGrammar g = new RELAXGrammar(grammar.getPool());
-		g.topLevel = grammar.getTopLevel();
-		
-		return new SchemaProviderImpl( g );
-	}
-	
-	/**
-	 * creates SchemaProvider from existing RELAXGrammar.
-	 * 
-	 * Since bind method is already called by RELAXNSReader,
-	 * the application should not call bind method.
-	 */
-	public SchemaProviderImpl( RELAXGrammar grammar ) {
-		this.grammar = grammar;
-		this.pool = grammar.pool;
-		this.topLevelExp = grammar.topLevel;
-		this.topLevel = new DeclImpl[]{new DeclImpl("##start",grammar.topLevel)};
-		
-		// add all parsed modules into the provider.
-		Iterator itr = grammar.moduleMap.keySet().iterator();
-		while( itr.hasNext() ) {
-			String namespaceURI = (String)itr.next();
-			addSchema(
-				namespaceURI, (IslandSchema)grammar.moduleMap.get(namespaceURI) );
-		}
-	}
+    
+    private final RELAXGrammar grammar;
+    private final DeclImpl[] topLevel;
+    /** top-level expression as AGM. */
+    private final Expression topLevelExp;
+    /** shared expression pool. */
+    private final ExpressionPool pool;
+    
+    public IslandVerifier createTopLevelVerifier() {
+        return new TREXIslandVerifier(
+            new RulesAcceptor(
+                new com.sun.msv.verifier.regexp.REDocumentDeclaration(topLevelExp,pool), topLevel ) );
+    }
+    
+    /**
+     * creates SchemaProvider from generic Grammar (including TREX/RELAX Core)
+     */
+    public static SchemaProviderImpl fromGrammar( Grammar grammar ) {
+        if( grammar instanceof RELAXGrammar )
+            return new SchemaProviderImpl( (RELAXGrammar)grammar );
+        
+        RELAXGrammar g = new RELAXGrammar(grammar.getPool());
+        g.topLevel = grammar.getTopLevel();
+        
+        return new SchemaProviderImpl( g );
+    }
+    
+    /**
+     * creates SchemaProvider from existing RELAXGrammar.
+     * 
+     * Since bind method is already called by RELAXNSReader,
+     * the application should not call bind method.
+     */
+    public SchemaProviderImpl( RELAXGrammar grammar ) {
+        this.grammar = grammar;
+        this.pool = grammar.pool;
+        this.topLevelExp = grammar.topLevel;
+        this.topLevel = new DeclImpl[]{new DeclImpl("##start",grammar.topLevel)};
+        
+        // add all parsed modules into the provider.
+        Iterator itr = grammar.moduleMap.keySet().iterator();
+        while( itr.hasNext() ) {
+            String namespaceURI = (String)itr.next();
+            addSchema(
+                namespaceURI, (IslandSchema)grammar.moduleMap.get(namespaceURI) );
+        }
+    }
 
-	
-	/** binds all IslandSchemata. */
-	public boolean bind( ErrorHandler handler ) {
-		ErrorHandlerFilter filter = new ErrorHandlerFilter(handler);
-		
-		try {
-			Iterator itr = schemata.values().iterator();
-			while( itr.hasNext() )
-				((IslandSchema)itr.next()).bind( this, filter );
-		} catch( SAXException e ) {
-			// bind method may throw SAXException.
-			return false;
-		}
-		
-		return !filter.hadError;
-	}
-	
-	private static class ErrorHandlerFilter implements ErrorHandler {
-		private final ErrorHandler core;
-		boolean hadError = false;
-		
-		ErrorHandlerFilter( ErrorHandler handler ) { this.core=handler; }
-		
-		public void fatalError( SAXParseException spe ) throws SAXException {
-			error(spe);
-		}
-		
-		public void error( SAXParseException spe ) throws SAXException {
-			core.error(spe);
-			hadError = true;
-		}
+    
+    /** binds all IslandSchemata. */
+    public boolean bind( ErrorHandler handler ) {
+        ErrorHandlerFilter filter = new ErrorHandlerFilter(handler);
+        
+        try {
+            Iterator itr = schemata.values().iterator();
+            while( itr.hasNext() )
+                ((IslandSchema)itr.next()).bind( this, filter );
+        } catch( SAXException e ) {
+            // bind method may throw SAXException.
+            return false;
+        }
+        
+        return !filter.hadError;
+    }
+    
+    private static class ErrorHandlerFilter implements ErrorHandler {
+        private final ErrorHandler core;
+        boolean hadError = false;
+        
+        ErrorHandlerFilter( ErrorHandler handler ) { this.core=handler; }
+        
+        public void fatalError( SAXParseException spe ) throws SAXException {
+            error(spe);
+        }
+        
+        public void error( SAXParseException spe ) throws SAXException {
+            core.error(spe);
+            hadError = true;
+        }
 
-		public void warning( SAXParseException spe ) throws SAXException {
-			core.warning(spe);
-		}
-	}
+        public void warning( SAXParseException spe ) throws SAXException {
+            core.warning(spe);
+        }
+    }
 }

@@ -23,10 +23,10 @@ import com.sun.msv.grammar.util.IDContextProviderWrapper;
  */
 public class StartTagInfo {
     
-    public String		namespaceURI;
-    public String		localName;
-    public String		qName;
-    public Attributes	attributes;
+    public String        namespaceURI;
+    public String        localName;
+    public String        qName;
+    public Attributes    attributes;
     /**
      * object that provides additional information which is necessary
      * for validating some datatypes
@@ -37,9 +37,9 @@ public class StartTagInfo {
     
     /** @deprecated */
     public StartTagInfo(
-    	String namespaceURI, String localName, String qName,
-    	Attributes attributes, IDContextProvider context ) {
-    	reinit(namespaceURI,localName,qName,attributes,context);
+        String namespaceURI, String localName, String qName,
+        Attributes attributes, IDContextProvider context ) {
+        reinit(namespaceURI,localName,qName,attributes,context);
     }
     
     public StartTagInfo(
@@ -58,49 +58,49 @@ public class StartTagInfo {
     
     /** re-initialize the object with brand new parameters. */
     public void reinit(
-    	String namespaceURI, String localName, String qName,
-    	Attributes attributes, IDContextProvider2 context ) {
-    	this.namespaceURI	= namespaceURI;
-    	this.localName		= localName;
-    	this.qName			= qName;
-    	this.attributes		= attributes;
-    	this.context		= context;
+        String namespaceURI, String localName, String qName,
+        Attributes attributes, IDContextProvider2 context ) {
+        this.namespaceURI    = namespaceURI;
+        this.localName        = localName;
+        this.qName            = qName;
+        this.attributes        = attributes;
+        this.context        = context;
     }
     
     public final boolean containsAttribute( String attrName ) {
-    	return containsAttribute("",attrName);
+        return containsAttribute("",attrName);
     }
     
     public final boolean containsAttribute( String namespaceURI, String attrName ) {
-    	return attributes.getIndex(namespaceURI,attrName)!=-1;
+        return attributes.getIndex(namespaceURI,attrName)!=-1;
     }
     
     /**
      * gets value of the specified attribute.
      * 
-     * @return null		attribute does not exist.
+     * @return null        attribute does not exist.
      */
     public final String getAttribute( String attrName ) {
-    	return getAttribute("",attrName);
+        return getAttribute("",attrName);
     }
     
     public final String getAttribute( String namespaceURI, String attrName ) {
-    	return attributes.getValue(namespaceURI,attrName);
+        return attributes.getValue(namespaceURI,attrName);
     }
     
     public final String getCollapsedAttribute( String attrName ) {
-    	String s = getAttribute(attrName);
-    	if(s==null)		return null;
-    	return WhiteSpaceProcessor.collapse(s);
+        String s = getAttribute(attrName);
+        if(s==null)        return null;
+        return WhiteSpaceProcessor.collapse(s);
     }
     
     public final String getDefaultedAttribute( String attrName, String defaultValue ) {
-    	return getDefaultedAttribute("",attrName,defaultValue);
+        return getDefaultedAttribute("",attrName,defaultValue);
     }
     
     public final String getDefaultedAttribute( String namespaceURI, String attrName, String defaultValue ) {
-    	String v = getAttribute(namespaceURI,attrName);
-    	if(v!=null)		return v;
-    	else			return defaultValue;
+        String v = getAttribute(namespaceURI,attrName);
+        if(v!=null)        return v;
+        else            return defaultValue;
     }
 }

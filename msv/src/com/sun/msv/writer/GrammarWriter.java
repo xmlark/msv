@@ -20,21 +20,21 @@ import com.sun.msv.grammar.Grammar;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface GrammarWriter {
-	
-	/**
-	 * Sets DocumentHandler. This handler will receive the result of conversion.
-	 */
-	void setDocumentHandler( DocumentHandler handler );
-	
-	/**
-	 * Converts this grammar to the XML representation.
-	 * 
-	 * @exception UnsupportedOperationException
-	 *		if this grammar cannot be serialized.
-	 *		this exception can be thrown on the half way of the conversion.
-	 * 
-	 * @exception SAXException
-	 *		DocumentHandler may throw a SAXException.
-	 */
-	void write( Grammar grammar ) throws UnsupportedOperationException, SAXException;
+    
+    /**
+     * Sets DocumentHandler. This handler will receive the result of conversion.
+     */
+    void setDocumentHandler( DocumentHandler handler );
+    
+    /**
+     * Converts this grammar to the XML representation.
+     * 
+     * @exception UnsupportedOperationException
+     *        if this grammar cannot be serialized.
+     *        this exception can be thrown on the half way of the conversion.
+     * 
+     * @exception SAXException
+     *        DocumentHandler may throw a SAXException.
+     */
+    void write( Grammar grammar ) throws UnsupportedOperationException, SAXException;
 }

@@ -19,10 +19,10 @@ import com.sun.msv.grammar.Expression;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TerminalState extends ExpressionWithoutChildState {
-	
-	private final Expression exp;
-	
-	public TerminalState( Expression exp ) { this.exp = exp; }
-	
-	protected Expression makeExpression() { return exp; }
+    
+    private final Expression exp;
+    
+    public TerminalState( Expression exp ) { this.exp = exp; }
+    
+    protected Expression makeExpression() { return exp; }
 }

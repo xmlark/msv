@@ -21,17 +21,17 @@ import org.xml.sax.SAXException;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class Matcher {
-	
-	protected final IDConstraintChecker owner;
-	Matcher( IDConstraintChecker owner ) {
-		this.owner = owner;
-	}
-	
-	protected abstract void startElement( String namespaceURI, String localName ) throws SAXException;
-	protected abstract void onAttribute( String namespaceURI, String localName, String value, Datatype type ) throws SAXException;
-	protected abstract void endElement( Datatype type ) throws SAXException;
-	
-	protected void characters( char[] buf, int start, int len ) throws SAXException {
-		// do nothing by default.
-	}
+    
+    protected final IDConstraintChecker owner;
+    Matcher( IDConstraintChecker owner ) {
+        this.owner = owner;
+    }
+    
+    protected abstract void startElement( String namespaceURI, String localName ) throws SAXException;
+    protected abstract void onAttribute( String namespaceURI, String localName, String value, Datatype type ) throws SAXException;
+    protected abstract void endElement( Datatype type ) throws SAXException;
+    
+    protected void characters( char[] buf, int start, int len ) throws SAXException {
+        // do nothing by default.
+    }
 }

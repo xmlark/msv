@@ -15,9 +15,9 @@ package com.sun.msv.grammar.xmlschema;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class UniqueConstraint extends IdentityConstraint {
-	public UniqueConstraint( String namespaceURI, String localName, XPath[] selector, Field[] fields ) {
-		super(namespaceURI,localName,selector,fields);
-	}
+    public UniqueConstraint( String namespaceURI, String localName, XPath[] selector, Field[] fields ) {
+        super(namespaceURI,localName,selector,fields);
+    }
     
     // serialization support
     private static final long serialVersionUID = 1;    

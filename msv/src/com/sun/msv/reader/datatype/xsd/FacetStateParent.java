@@ -22,6 +22,6 @@ package com.sun.msv.reader.datatype.xsd;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface FacetStateParent {
-	/** gets an incubator object that the owner holds. */
-	XSTypeIncubator getIncubator();
+    /** gets an incubator object that the owner holds. */
+    XSTypeIncubator getIncubator();
 }

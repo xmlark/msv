@@ -22,30 +22,30 @@ import com.sun.msv.util.StartTagInfo;
  */
 public class InterfaceState extends SimpleState
 {
-	protected State createChildState( StartTagInfo tag )
-	{
-		if(!tag.namespaceURI.equals(RELAXCoreReader.RELAXCoreNamespace))	return null;
-		
-		if(tag.localName.equals("div"))		return new InterfaceState();
-		
-		RELAXModule module = getReader().module;
-		
-		if(tag.localName.equals("export"))
-		{
-			final String label = tag.getAttribute("label");
-			
-			if(label!=null)
-				module.elementRules.getOrCreate(label).exported = true;
-			else
-				reader.reportError(RELAXCoreReader.ERR_MISSING_ATTRIBUTE,
-								   "export", "label" );
-				// recover by ignoring this export
-			
-			return new ChildlessState();
-		}
-		
-		return null;
-	}
+    protected State createChildState( StartTagInfo tag )
+    {
+        if(!tag.namespaceURI.equals(RELAXCoreReader.RELAXCoreNamespace))    return null;
+        
+        if(tag.localName.equals("div"))        return new InterfaceState();
+        
+        RELAXModule module = getReader().module;
+        
+        if(tag.localName.equals("export"))
+        {
+            final String label = tag.getAttribute("label");
+            
+            if(label!=null)
+                module.elementRules.getOrCreate(label).exported = true;
+            else
+                reader.reportError(RELAXCoreReader.ERR_MISSING_ATTRIBUTE,
+                                   "export", "label" );
+                // recover by ignoring this export
+            
+            return new ChildlessState();
+        }
+        
+        return null;
+    }
 
-	protected RELAXCoreReader getReader() { return (RELAXCoreReader)reader; }
+    protected RELAXCoreReader getReader() { return (RELAXCoreReader)reader; }
 }

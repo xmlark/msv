@@ -16,5 +16,5 @@ package com.sun.msv.util;
  */
 public class StringRef
 {
-	public String str;
+    public String str;
 }

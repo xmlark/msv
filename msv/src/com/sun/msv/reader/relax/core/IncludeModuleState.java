@@ -19,19 +19,19 @@ import com.sun.msv.reader.ChildlessState;
  */
 public class IncludeModuleState extends ChildlessState
 {
-	protected void startSelf() {
-		super.startSelf();
-	
-		final String href = startTag.getAttribute("moduleLocation");
+    protected void startSelf() {
+        super.startSelf();
+    
+        final String href = startTag.getAttribute("moduleLocation");
 
-		if(href==null) {
+        if(href==null) {
             // name attribute is required.
-			reader.reportError( RELAXCoreReader.ERR_MISSING_ATTRIBUTE,
-				"include","moduleLocation");
-		} else
+            reader.reportError( RELAXCoreReader.ERR_MISSING_ATTRIBUTE,
+                "include","moduleLocation");
+        } else
             try {
-    			reader.switchSource(this,href,new RootModuleMergeState());
+                reader.switchSource(this,href,new RootModuleMergeState());
             } catch( AbortException e ) {}
-		// recover by ignoring this include element
-	}
+        // recover by ignoring this include element
+    }
 }

@@ -49,7 +49,7 @@ import com.sun.msv.grammar.OtherExp;
  * I appreciate any feedback on this issue.
  * 
  * @author
- * 	Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
+ *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public class OccurrenceExp extends OtherExp {
     public OccurrenceExp(

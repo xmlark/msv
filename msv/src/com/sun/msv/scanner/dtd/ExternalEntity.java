@@ -1,5 +1,5 @@
 /*
- * @(#)ExternalEntity.java	1.3 00/02/24
+ * @(#)ExternalEntity.java    1.3 00/02/24
  * 
  * Copyright (c) 1998-2000 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -27,21 +27,21 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 class ExternalEntity extends EntityDecl
 {
-    String	systemId;	// resolved URI (not relative)
-    String	publicId;	// "-//xyz//....//en"
-    String	notation;
+    String    systemId;    // resolved URI (not relative)
+    String    publicId;    // "-//xyz//....//en"
+    String    notation;
     
     public ExternalEntity (InputEntity in) { }
     
-	public InputSource getInputSource (EntityResolver r)
+    public InputSource getInputSource (EntityResolver r)
                        throws IOException, SAXException {
 
-		InputSource	retval;
-	
-		retval = r.resolveEntity (publicId, systemId);
-		// SAX sez if null is returned, use the URI directly
-		if (retval == null)
-		    retval = Resolver.createInputSource (new URL (systemId), false);
-		return retval;
+        InputSource    retval;
+    
+        retval = r.resolveEntity (publicId, systemId);
+        // SAX sez if null is returned, use the URI directly
+        if (retval == null)
+            retval = Resolver.createInputSource (new URL (systemId), false);
+        return retval;
     }
 }

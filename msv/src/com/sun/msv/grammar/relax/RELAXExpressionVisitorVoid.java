@@ -17,10 +17,10 @@ import com.sun.msv.grammar.ExpressionVisitorVoid;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface RELAXExpressionVisitorVoid extends ExpressionVisitorVoid {
-	
-	// RELAX visitor can ignore onRef callback.
-	void onAttPool( AttPoolClause exp );
-	void onTag( TagClause exp );
-	void onElementRules( ElementRules exp );
-	void onHedgeRules( HedgeRules exp );
+    
+    // RELAX visitor can ignore onRef callback.
+    void onAttPool( AttPoolClause exp );
+    void onTag( TagClause exp );
+    void onElementRules( ElementRules exp );
+    void onHedgeRules( HedgeRules exp );
 }

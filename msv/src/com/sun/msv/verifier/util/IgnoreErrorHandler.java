@@ -19,7 +19,7 @@ import org.xml.sax.SAXParseException;
  */
 public class IgnoreErrorHandler implements ErrorHandler
 {
-	public void fatalError( SAXParseException e ) throws SAXParseException { throw e; }
-	public void error( SAXParseException error ) {}
-	public void warning( SAXParseException warning ) {}
+    public void fatalError( SAXParseException e ) throws SAXParseException { throw e; }
+    public void error( SAXParseException error ) {}
+    public void warning( SAXParseException warning ) {}
 }

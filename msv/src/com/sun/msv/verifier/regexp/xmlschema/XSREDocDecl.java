@@ -36,51 +36,51 @@ import com.sun.msv.verifier.regexp.REDocumentDeclaration;
  */
 public class XSREDocDecl extends REDocumentDeclaration {
 
-	public XSREDocDecl( XMLSchemaGrammar grammar ) {
-		super(grammar);
-		this.grammar = grammar;
-	}
+    public XSREDocDecl( XMLSchemaGrammar grammar ) {
+        super(grammar);
+        this.grammar = grammar;
+    }
 
-	public Acceptor createAcceptor() {
-		// use XSAcceptor instead
-		return new XSAcceptor(this, topLevel, null, Expression.epsilon);
-	}
+    public Acceptor createAcceptor() {
+        // use XSAcceptor instead
+        return new XSAcceptor(this, topLevel, null, Expression.epsilon);
+    }
 
-	CombinedChildContentExpCreator getCCCEC() { return super.cccec; }
-	AttributeFeeder getAttFeeder() { return super.attFeeder; }
-	
-	/**
-	 * the grammar which this VGM is using.
-	 * 
-	 * For one, this object is used to find the complex type definition
-	 * by its name.
-	 */
-	final protected XMLSchemaGrammar grammar;
-	
-	/**
-	 * AttributeExp that matches to "xsi:***" attributes.
-	 */
-	final protected AttributeExp xsiAttExp =
-		new AttributeExp(
-			new NamespaceNameClass(XSAcceptor.XSINamespace),
-			Expression.anyString);
-	
-	public String localizeMessage( String propertyName, Object[] args ) {
-		try {
-			String format = java.util.ResourceBundle.getBundle(
-				"com.sun.msv.verifier.regexp.xmlschema.Messages").getString(propertyName);
-		
-			return java.text.MessageFormat.format(format, args );
-		} catch( Exception e ) {
-			return super.localizeMessage(propertyName,args);
-		}
-	}
-	
-	public static final String ERR_NON_NILLABLE_ELEMENT = // arg:1
-		"XMLSchemaVerifier.NonNillableElement";
-	public static final String ERR_NOT_SUBSTITUTABLE_TYPE = // arg:1
-		"XMLSchemaVerifier.NotSubstitutableType";
-	public static final String ERR_UNDEFINED_TYPE = // arg:1
-		"XMLSchemaVerifier.UndefinedType";
+    CombinedChildContentExpCreator getCCCEC() { return super.cccec; }
+    AttributeFeeder getAttFeeder() { return super.attFeeder; }
+    
+    /**
+     * the grammar which this VGM is using.
+     * 
+     * For one, this object is used to find the complex type definition
+     * by its name.
+     */
+    final protected XMLSchemaGrammar grammar;
+    
+    /**
+     * AttributeExp that matches to "xsi:***" attributes.
+     */
+    final protected AttributeExp xsiAttExp =
+        new AttributeExp(
+            new NamespaceNameClass(XSAcceptor.XSINamespace),
+            Expression.anyString);
+    
+    public String localizeMessage( String propertyName, Object[] args ) {
+        try {
+            String format = java.util.ResourceBundle.getBundle(
+                "com.sun.msv.verifier.regexp.xmlschema.Messages").getString(propertyName);
+        
+            return java.text.MessageFormat.format(format, args );
+        } catch( Exception e ) {
+            return super.localizeMessage(propertyName,args);
+        }
+    }
+    
+    public static final String ERR_NON_NILLABLE_ELEMENT = // arg:1
+        "XMLSchemaVerifier.NonNillableElement";
+    public static final String ERR_NOT_SUBSTITUTABLE_TYPE = // arg:1
+        "XMLSchemaVerifier.NotSubstitutableType";
+    public static final String ERR_UNDEFINED_TYPE = // arg:1
+        "XMLSchemaVerifier.UndefinedType";
 
 }

@@ -53,22 +53,22 @@ public class Controller implements GrammarReaderController,ErrorHandler
         error( new Locator[0], errorMessage, nestedException );
     }
     
-	public void fatalError( SAXParseException spe ) {
-		error(spe);
-	}
-	
-	public void error( SAXParseException spe ) {
-		error( getLocator(spe), spe.getMessage(), spe.getException() );
-	}
-	
-	public void warning( SAXParseException spe ) {
-		warning( getLocator(spe), spe.getMessage() );
-	}
-	
+    public void fatalError( SAXParseException spe ) {
+        error(spe);
+    }
+    
+    public void error( SAXParseException spe ) {
+        error( getLocator(spe), spe.getMessage(), spe.getException() );
+    }
+    
+    public void warning( SAXParseException spe ) {
+        warning( getLocator(spe), spe.getMessage() );
+    }
+    
     public void error( IOException e, Locator source ) {
         error( new Locator[]{source}, e.getMessage(), e );
     }
-	
+    
     public void error( SAXException e, Locator source ) {
         // if a nested exception is a RuntimeException,
         // this shouldn't be handled.
@@ -87,13 +87,13 @@ public class Controller implements GrammarReaderController,ErrorHandler
     
     
     
-	protected Locator[] getLocator( SAXParseException spe ) {
-		LocatorImpl loc = new LocatorImpl();
-		loc.setColumnNumber( spe.getColumnNumber() );
-		loc.setLineNumber( spe.getLineNumber() );
-		loc.setSystemId( spe.getSystemId() );
-		loc.setPublicId( spe.getPublicId() );
-		
-		return new Locator[]{loc};
-	}
+    protected Locator[] getLocator( SAXParseException spe ) {
+        LocatorImpl loc = new LocatorImpl();
+        loc.setColumnNumber( spe.getColumnNumber() );
+        loc.setLineNumber( spe.getLineNumber() );
+        loc.setSystemId( spe.getSystemId() );
+        loc.setPublicId( spe.getPublicId() );
+        
+        return new Locator[]{loc};
+    }
 }

@@ -31,10 +31,10 @@ import com.sun.msv.grammar.ElementExp;
  */
 public final class AnyElementToken extends ElementToken
 {
-	/**
-	 * use this singleton instance instead of creating an object.
-	 */
-	public static final Token theInstance = new AnyElementToken();
-	private AnyElementToken(){ super(null); }
-	public boolean match( ElementExp exp ) { return true; }
+    /**
+     * use this singleton instance instead of creating an object.
+     */
+    public static final Token theInstance = new AnyElementToken();
+    private AnyElementToken(){ super(null); }
+    public boolean match( ElementExp exp ) { return true; }
 }

@@ -19,20 +19,20 @@ import com.sun.msv.util.StringPair;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DataState extends ExpressionWithoutChildState {
-	
-	protected Expression makeExpression() {
-		final String typeName = startTag.getAttribute("type");
-		if( typeName==null ) {
-			// type attribute is required
-			reader.reportError( TREXGrammarReader.ERR_MISSING_ATTRIBUTE,
-				startTag.qName, "type" );
-			
-			// recover from error by assuming anyString.
-			return Expression.anyString;
-		} else {
-			return reader.pool.createData(
-				((TREXGrammarReader)reader).resolveDatatype(typeName),
-				new StringPair("",typeName) );
-		}
-	}
+    
+    protected Expression makeExpression() {
+        final String typeName = startTag.getAttribute("type");
+        if( typeName==null ) {
+            // type attribute is required
+            reader.reportError( TREXGrammarReader.ERR_MISSING_ATTRIBUTE,
+                startTag.qName, "type" );
+            
+            // recover from error by assuming anyString.
+            return Expression.anyString;
+        } else {
+            return reader.pool.createData(
+                ((TREXGrammarReader)reader).resolveDatatype(typeName),
+                new StringPair("",typeName) );
+        }
+    }
 }

@@ -20,29 +20,29 @@ import com.sun.msv.util.StartTagInfo;
  */
 public class GrammarState extends SimpleState
 {
-	/** gets reader in type-safe fashion */
-	protected RELAXNSReader getReader() { return (RELAXNSReader)reader; }
+    /** gets reader in type-safe fashion */
+    protected RELAXNSReader getReader() { return (RELAXNSReader)reader; }
 
-	protected State createChildState( StartTagInfo tag )
-	{
-		if(tag.localName.equals("namespace"))	return new NamespaceState();
-		if(tag.localName.equals("topLevel"))	return new TopLevelState();
-		if(tag.localName.equals("include"))		return new IncludeGrammarState();
-		
-		return null;
-	}
-	
-	protected void startSelf()
-	{
-		super.startSelf();
-		
-		{// check relaxNamespaceVersion
-			final String nsVersion = startTag.getAttribute("relaxNamespaceVersion");
-			if( nsVersion==null )
-				reader.reportWarning( RELAXNSReader.ERR_MISSING_ATTRIBUTE, "module", "relaxNamespaceVersion" );
-			else
-			if(!"1.0".equals(nsVersion))
-				reader.reportWarning( RELAXNSReader.WRN_ILLEGAL_RELAXNAMESPACE_VERSION, nsVersion );
-		}
-	}
+    protected State createChildState( StartTagInfo tag )
+    {
+        if(tag.localName.equals("namespace"))    return new NamespaceState();
+        if(tag.localName.equals("topLevel"))    return new TopLevelState();
+        if(tag.localName.equals("include"))        return new IncludeGrammarState();
+        
+        return null;
+    }
+    
+    protected void startSelf()
+    {
+        super.startSelf();
+        
+        {// check relaxNamespaceVersion
+            final String nsVersion = startTag.getAttribute("relaxNamespaceVersion");
+            if( nsVersion==null )
+                reader.reportWarning( RELAXNSReader.ERR_MISSING_ATTRIBUTE, "module", "relaxNamespaceVersion" );
+            else
+            if(!"1.0".equals(nsVersion))
+                reader.reportWarning( RELAXNSReader.WRN_ILLEGAL_RELAXNAMESPACE_VERSION, nsVersion );
+        }
+    }
 }

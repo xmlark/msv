@@ -29,25 +29,25 @@ import com.sun.msv.grammar.OtherExp;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ExternalAttributeExp extends OtherExp {
-	
-	public ExternalAttributeExp(
-		ExpressionPool pool, String namespaceURI, String role, Locator loc ) {
-		
-		this.source = loc;
-		this.namespaceURI = namespaceURI;
-		this.role = role;
-		this.exp = Expression.epsilon;
-	}
-	
-	/** namespace URI that this object belongs to. */
-	public final String namespaceURI;
-	
-	/** name of the imported AttributesDecl */
-	public final String role;
-	
-	/**
-	 * where did this reference is written in the source file.
-	 * can be set to null (to reduce memory usage) at anytime.
-	 */
-	public transient Locator source;
+    
+    public ExternalAttributeExp(
+        ExpressionPool pool, String namespaceURI, String role, Locator loc ) {
+        
+        this.source = loc;
+        this.namespaceURI = namespaceURI;
+        this.role = role;
+        this.exp = Expression.epsilon;
+    }
+    
+    /** namespace URI that this object belongs to. */
+    public final String namespaceURI;
+    
+    /** name of the imported AttributesDecl */
+    public final String role;
+    
+    /**
+     * where did this reference is written in the source file.
+     * can be set to null (to reduce memory usage) at anytime.
+     */
+    public transient Locator source;
 }

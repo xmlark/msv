@@ -18,10 +18,10 @@ import com.sun.msv.reader.ExpressionWithChildState;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ConcurState extends ExpressionWithChildState {
-	
-	protected Expression castExpression( Expression exp, Expression child ) {
-		// first one.
-		if( exp==null )		return child;
-		return reader.pool.createConcur(exp,child);
-	}
+    
+    protected Expression castExpression( Expression exp, Expression child ) {
+        // first one.
+        if( exp==null )        return child;
+        return reader.pool.createConcur(exp,child);
+    }
 }

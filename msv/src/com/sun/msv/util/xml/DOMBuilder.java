@@ -22,47 +22,47 @@ import org.xml.sax.helpers.DefaultHandler;
  * builds DOM from SAX2 event stream.
  * 
  * @author
- *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ *    <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DOMBuilder extends DefaultHandler {
-	
-	private final Document dom;
-	private Node parent;
-	
-	public DOMBuilder( Document document ) {
-		this.dom = document;
-		parent = dom;
-	}
-	
-	public DOMBuilder() throws ParserConfigurationException {
-		this( DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument() );
-	}
-	
-	/**
-	 * returns DOM. This method should be called after the parsing was completed.
-	 */
-	public Document getDocument() {
-		return dom;
-	}
-	
-	public void startElement( String ns, String local, String qname, Attributes atts ) {
-		Element e = dom.createElementNS( ns, qname );
-		parent.appendChild(e);
-		parent = e;
-		
-		for( int i=0; i<atts.getLength(); i++ )
-			e.setAttributeNS( atts.getURI(i), atts.getQName(i), atts.getValue(i) );
-	}
-	
-	public void endElement( String ns, String local, String qname ) {
-		parent = parent.getParentNode();
-	}
-	
-	public void characters( char[] buf, int start, int len ) {
-		parent.appendChild( dom.createTextNode(new String(buf,start,len)) );
-	}
-	
-	public void ignorableWhitespace( char[] buf, int start, int len ) {
-		parent.appendChild( dom.createTextNode(new String(buf,start,len)) );
-	}
+    
+    private final Document dom;
+    private Node parent;
+    
+    public DOMBuilder( Document document ) {
+        this.dom = document;
+        parent = dom;
+    }
+    
+    public DOMBuilder() throws ParserConfigurationException {
+        this( DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument() );
+    }
+    
+    /**
+     * returns DOM. This method should be called after the parsing was completed.
+     */
+    public Document getDocument() {
+        return dom;
+    }
+    
+    public void startElement( String ns, String local, String qname, Attributes atts ) {
+        Element e = dom.createElementNS( ns, qname );
+        parent.appendChild(e);
+        parent = e;
+        
+        for( int i=0; i<atts.getLength(); i++ )
+            e.setAttributeNS( atts.getURI(i), atts.getQName(i), atts.getValue(i) );
+    }
+    
+    public void endElement( String ns, String local, String qname ) {
+        parent = parent.getParentNode();
+    }
+    
+    public void characters( char[] buf, int start, int len ) {
+        parent.appendChild( dom.createTextNode(new String(buf,start,len)) );
+    }
+    
+    public void ignorableWhitespace( char[] buf, int start, int len ) {
+        parent.appendChild( dom.createTextNode(new String(buf,start,len)) );
+    }
 }

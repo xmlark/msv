@@ -18,7 +18,7 @@ import com.sun.msv.reader.SequenceState;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ZeroOrMoreState extends SequenceState {
-	protected Expression annealExpression( Expression exp ) {
-		return reader.pool.createZeroOrMore(exp);
-	}
+    protected Expression annealExpression( Expression exp ) {
+        return reader.pool.createZeroOrMore(exp);
+    }
 }

@@ -25,28 +25,28 @@ import com.sun.msv.relaxns.grammar.relax.AnyOtherElementExp;
  */
 public class AnyOtherElementState extends ExpressionWithoutChildState
 {
-	protected Expression makeExpression() {
-		// when makeExpression is called, return only a skelton.
-		// later, after the entire grammar is parsed, we'll provide
-		// actual expression.
-		
-		String in = startTag.getAttribute("includeNamespace");
-		String ex = startTag.getAttribute("excludeNamespace");
+    protected Expression makeExpression() {
+        // when makeExpression is called, return only a skelton.
+        // later, after the entire grammar is parsed, we'll provide
+        // actual expression.
+        
+        String in = startTag.getAttribute("includeNamespace");
+        String ex = startTag.getAttribute("excludeNamespace");
 
-		if( in!=null && ex!=null ) {
-			reader.reportError(
-				new Locator[]{this.location},
-				RELAXCoreIslandSchemaReader.ERR_CONFLICTING_ATTRIBUTES,
-				new Object[]{"includeNamespace", "excludeNamespace"} );
-			ex=null;
-		}
-		
-		if( in==null && ex==null )
-			ex="";	// this will correctly implement the semantics.
-		
-		final AnyOtherElementExp exp = new AnyOtherElementExp( this.location, in, ex );
-		((RELAXCoreIslandSchemaReader)reader).pendingAnyOtherElements.add(exp);
-		return exp;
-	}
-	
+        if( in!=null && ex!=null ) {
+            reader.reportError(
+                new Locator[]{this.location},
+                RELAXCoreIslandSchemaReader.ERR_CONFLICTING_ATTRIBUTES,
+                new Object[]{"includeNamespace", "excludeNamespace"} );
+            ex=null;
+        }
+        
+        if( in==null && ex==null )
+            ex="";    // this will correctly implement the semantics.
+        
+        final AnyOtherElementExp exp = new AnyOtherElementExp( this.location, in, ex );
+        ((RELAXCoreIslandSchemaReader)reader).pendingAnyOtherElements.add(exp);
+        return exp;
+    }
+    
 }

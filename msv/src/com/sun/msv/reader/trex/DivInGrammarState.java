@@ -27,25 +27,25 @@ import com.sun.msv.util.StartTagInfo;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DivInGrammarState extends ExpressionState implements ExpressionOwner {
-	
-	protected final TREXBaseReader getReader() { return (TREXBaseReader)reader; }
-	
-	protected Expression makeExpression() {
-		// this method doesn't provide any pattern
-		return null;
-	}
+    
+    protected final TREXBaseReader getReader() { return (TREXBaseReader)reader; }
+    
+    protected Expression makeExpression() {
+        // this method doesn't provide any pattern
+        return null;
+    }
 
-	protected State createChildState( StartTagInfo tag ) {
-		if(tag.localName.equals("start"))	return getReader().sfactory.start(this,tag);
-		if(tag.localName.equals("define"))	return getReader().sfactory.define(this,tag);
-		if(tag.localName.equals("include"))	return getReader().sfactory.includeGrammar(this,tag);
-		// div is available only for RELAX NG.
-		// The default implementation of divInGrammar returns null.
-		if(tag.localName.equals("div"))		return getReader().sfactory.divInGrammar(this,tag);
-		return null;
-	}
-	
-	// DefineState and StartState is implemented by using ExpressionState.
-	// By contract of that interface, this object has to implement ExpressionOwner.
-	public void onEndChild( Expression exp ) {}	// do nothing.
+    protected State createChildState( StartTagInfo tag ) {
+        if(tag.localName.equals("start"))    return getReader().sfactory.start(this,tag);
+        if(tag.localName.equals("define"))    return getReader().sfactory.define(this,tag);
+        if(tag.localName.equals("include"))    return getReader().sfactory.includeGrammar(this,tag);
+        // div is available only for RELAX NG.
+        // The default implementation of divInGrammar returns null.
+        if(tag.localName.equals("div"))        return getReader().sfactory.divInGrammar(this,tag);
+        return null;
+    }
+    
+    // DefineState and StartState is implemented by using ExpressionState.
+    // By contract of that interface, this object has to implement ExpressionOwner.
+    public void onEndChild( Expression exp ) {}    // do nothing.
 }

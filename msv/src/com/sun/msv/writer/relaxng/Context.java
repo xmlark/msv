@@ -5,7 +5,7 @@ import com.sun.msv.writer.XMLWriter;
 
 public interface Context
 {
-	void writeNameClass( NameClass nc );
-	String getTargetNamespace();
-	XMLWriter getWriter();
+    void writeNameClass( NameClass nc );
+    String getTargetNamespace();
+    XMLWriter getWriter();
 }

@@ -19,17 +19,17 @@ import com.sun.msv.util.StartTagInfo;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RootIncludedSchemaState extends SimpleState {
-	
-	protected State topLevelState;
-	
-	public RootIncludedSchemaState( State topLevelState ) {
-		this.topLevelState = topLevelState;
-	}
-	
-	protected State createChildState( StartTagInfo tag ) {
-		if(tag.localName.equals("schema"))
-			return topLevelState;
-		
-		return null;
-	}
+    
+    protected State topLevelState;
+    
+    public RootIncludedSchemaState( State topLevelState ) {
+        this.topLevelState = topLevelState;
+    }
+    
+    protected State createChildState( StartTagInfo tag ) {
+        if(tag.localName.equals("schema"))
+            return topLevelState;
+        
+        return null;
+    }
 }

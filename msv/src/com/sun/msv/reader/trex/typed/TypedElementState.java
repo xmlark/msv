@@ -20,12 +20,12 @@ import com.sun.msv.reader.trex.ElementState;
  */
 public class TypedElementState extends ElementState
 {
-	protected Expression annealExpression( Expression contentModel )
-	{
-		final String label = startTag.getAttribute( TypedTREXGrammarInterceptor.LABEL_NAMESPACE, "label" );
-		if( label==null )
-			return super.annealExpression( contentModel );
-		else
-			return new TypedElementPattern( nameClass, contentModel, label );
-	}
+    protected Expression annealExpression( Expression contentModel )
+    {
+        final String label = startTag.getAttribute( TypedTREXGrammarInterceptor.LABEL_NAMESPACE, "label" );
+        if( label==null )
+            return super.annealExpression( contentModel );
+        else
+            return new TypedElementPattern( nameClass, contentModel, label );
+    }
 }

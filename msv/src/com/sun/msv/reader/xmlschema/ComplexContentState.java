@@ -23,33 +23,33 @@ import com.sun.msv.util.StartTagInfo;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ComplexContentState extends ExpressionWithChildState {
-	
-	/** ComplexType object that we are now constructing. */
-	protected ComplexTypeExp parentDecl;
-	
-	protected ComplexContentState( ComplexTypeExp decl ) {
-		this.parentDecl = decl;
-	}
-	
-	protected State createChildState( StartTagInfo tag ) {
-		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
-		
-		if( super.exp!=null )
-			// we have already parsed restriction/extension.
-			return null;
-		
-		if( tag.localName.equals("restriction") )	return reader.sfactory.complexRst(this,tag,parentDecl);
-		if( tag.localName.equals("extension") )		return reader.sfactory.complexExt(this,tag,parentDecl);
-		
-		return super.createChildState(tag);
-	}
-	
-	protected Expression castExpression( Expression halfCastedExpression, Expression newChildExpression ) {
-		if( halfCastedExpression!=null )
-			// assertion failed.
-			// this situation should be prevented by createChildState method.
-			throw new Error();
-		
-		return newChildExpression;
-	}
+    
+    /** ComplexType object that we are now constructing. */
+    protected ComplexTypeExp parentDecl;
+    
+    protected ComplexContentState( ComplexTypeExp decl ) {
+        this.parentDecl = decl;
+    }
+    
+    protected State createChildState( StartTagInfo tag ) {
+        final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
+        
+        if( super.exp!=null )
+            // we have already parsed restriction/extension.
+            return null;
+        
+        if( tag.localName.equals("restriction") )    return reader.sfactory.complexRst(this,tag,parentDecl);
+        if( tag.localName.equals("extension") )        return reader.sfactory.complexExt(this,tag,parentDecl);
+        
+        return super.createChildState(tag);
+    }
+    
+    protected Expression castExpression( Expression halfCastedExpression, Expression newChildExpression ) {
+        if( halfCastedExpression!=null )
+            // assertion failed.
+            // this situation should be prevented by createChildState method.
+            throw new Error();
+        
+        return newChildExpression;
+    }
 }

@@ -24,36 +24,36 @@ import com.sun.msv.datatype.xsd.XSDatatype;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class EmptyStringType extends BuiltinAtomicType {
-	
-	public static final EmptyStringType theInstance = new EmptyStringType();
-	private EmptyStringType() { super("emptyString"); }
-	
-	
-	final public XSDatatype getBaseType() {
-		return SimpleURType.theInstance;
-	}
-	
-	public int isFacetApplicable( String facetName ) {
-		return NOT_ALLOWED;
-	}
-	
-	public boolean checkFormat( String literal, ValidationContext context ) {
-		return literal.equals("");
-	}
+    
+    public static final EmptyStringType theInstance = new EmptyStringType();
+    private EmptyStringType() { super("emptyString"); }
+    
+    
+    final public XSDatatype getBaseType() {
+        return SimpleURType.theInstance;
+    }
+    
+    public int isFacetApplicable( String facetName ) {
+        return NOT_ALLOWED;
+    }
+    
+    public boolean checkFormat( String literal, ValidationContext context ) {
+        return literal.equals("");
+    }
 
-	public Object _createValue( String lexicalValue, ValidationContext context ) {
-		if( lexicalValue.equals("") )	return lexicalValue;
-		else							return null;
-	}
-	
-	public String convertToLexicalValue( Object o, SerializationContext context ) {
-		if( o.equals("") )	return "";
-		else				throw new IllegalArgumentException();
-	}
-	
-	public Class getJavaObjectType() {
-		return String.class;
-	}
+    public Object _createValue( String lexicalValue, ValidationContext context ) {
+        if( lexicalValue.equals("") )    return lexicalValue;
+        else                            return null;
+    }
+    
+    public String convertToLexicalValue( Object o, SerializationContext context ) {
+        if( o.equals("") )    return "";
+        else                throw new IllegalArgumentException();
+    }
+    
+    public Class getJavaObjectType() {
+        return String.class;
+    }
     
     // serialization support
     private static final long serialVersionUID = 1;    

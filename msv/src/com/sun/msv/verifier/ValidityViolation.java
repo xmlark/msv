@@ -18,24 +18,24 @@ import org.xml.sax.SAXParseException;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ValidityViolation extends SAXParseException {
-	
-	private ErrorInfo errorInfo;
-	
-	/**
-	 * Gets the detailed error information, if any.
-	 * 
-	 * If there is no detailed information available, it returns null.
-	 * Otherwise one of the derived classes of ErrorInfo will be returned.
-	 */
-	public ErrorInfo getErrorInfo() { return errorInfo;	}
-	
-	public ValidityViolation( Locator loc, String msg, ErrorInfo ei ) {
-		super( msg, loc );
-		this.errorInfo = ei;
-	}
+    
+    private ErrorInfo errorInfo;
+    
+    /**
+     * Gets the detailed error information, if any.
+     * 
+     * If there is no detailed information available, it returns null.
+     * Otherwise one of the derived classes of ErrorInfo will be returned.
+     */
+    public ErrorInfo getErrorInfo() { return errorInfo;    }
+    
+    public ValidityViolation( Locator loc, String msg, ErrorInfo ei ) {
+        super( msg, loc );
+        this.errorInfo = ei;
+    }
 /*
-	public ValidityViolation( Locator loc, String msg ) {
-		this( msg, loc, null );
-	}
+    public ValidityViolation( Locator loc, String msg ) {
+        this( msg, loc, null );
+    }
 */
 }

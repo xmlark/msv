@@ -17,10 +17,10 @@ import com.sun.msv.grammar.Expression;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class InterleaveState extends ExpressionWithChildState {
-	
-	protected Expression castExpression( Expression exp, Expression child ) {
-		// first one.
-		if( exp==null )		return child;
-		return reader.pool.createInterleave(exp,child);
-	}
+    
+    protected Expression castExpression( Expression exp, Expression child ) {
+        // first one.
+        if( exp==null )        return child;
+        return reader.pool.createInterleave(exp,child);
+    }
 }

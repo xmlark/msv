@@ -11,7 +11,7 @@ package com.sun.msv.driver.textui;
 
 public class Debug
 {
-	public static boolean debug;
+    public static boolean debug;
     
     static {
         try {

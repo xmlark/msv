@@ -19,30 +19,30 @@ package com.sun.msv.grammar;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class ConcurExp extends BinaryExp {
-	
-	ConcurExp( Expression left, Expression right ) {
-		super(left,right,HASHCODE_CONCUR);
-	}
+    
+    ConcurExp( Expression left, Expression right ) {
+        super(left,right,HASHCODE_CONCUR);
+    }
 
-	public Object visit( ExpressionVisitor visitor ) {
-		return visitor.onConcur(this);
-	}
+    public Object visit( ExpressionVisitor visitor ) {
+        return visitor.onConcur(this);
+    }
 
-	public Expression visit( ExpressionVisitorExpression visitor ) {
-		return visitor.onConcur(this);
-	}
-	
-	public boolean visit( ExpressionVisitorBoolean visitor ) {
-		return visitor.onConcur(this);
-	}
+    public Expression visit( ExpressionVisitorExpression visitor ) {
+        return visitor.onConcur(this);
+    }
+    
+    public boolean visit( ExpressionVisitorBoolean visitor ) {
+        return visitor.onConcur(this);
+    }
 
-	public void visit( ExpressionVisitorVoid visitor ) {
-		visitor.onConcur(this);
-	}
+    public void visit( ExpressionVisitorVoid visitor ) {
+        visitor.onConcur(this);
+    }
 
-	protected boolean calcEpsilonReducibility() {
-		return exp1.isEpsilonReducible() && exp2.isEpsilonReducible();
-	}
+    protected boolean calcEpsilonReducibility() {
+        return exp1.isEpsilonReducible() && exp2.isEpsilonReducible();
+    }
     
     // serialization support
     private static final long serialVersionUID = 1;    

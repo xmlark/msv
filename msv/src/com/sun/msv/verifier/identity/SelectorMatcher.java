@@ -28,46 +28,46 @@ import com.sun.msv.grammar.xmlschema.IdentityConstraint;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class SelectorMatcher extends PathMatcher {
-	
-	protected IdentityConstraint idConst;
+    
+    protected IdentityConstraint idConst;
 
-	SelectorMatcher(
-				IDConstraintChecker owner, IdentityConstraint idConst,
-				String namespaceURI, String localName ) throws SAXException {
-		super(owner, idConst.selectors );
-		this.idConst = idConst;
-		
-		// register this scope as active.
-		owner.pushActiveScope(idConst,this);
-		
-		if(com.sun.msv.driver.textui.Debug.debug) {
-			System.out.println("new id scope is available for {"+idConst.localName+"}");
-		}
+    SelectorMatcher(
+                IDConstraintChecker owner, IdentityConstraint idConst,
+                String namespaceURI, String localName ) throws SAXException {
+        super(owner, idConst.selectors );
+        this.idConst = idConst;
+        
+        // register this scope as active.
+        owner.pushActiveScope(idConst,this);
+        
+        if(com.sun.msv.driver.textui.Debug.debug) {
+            System.out.println("new id scope is available for {"+idConst.localName+"}");
+        }
 
-		super.start(namespaceURI,localName);
-	}
+        super.start(namespaceURI,localName);
+    }
 
-	protected void onRemoved() throws SAXException {
-		super.onRemoved();
-		// this scope is no longer active.
-		owner.popActiveScope(idConst,this);
-	}
+    protected void onRemoved() throws SAXException {
+        super.onRemoved();
+        // this scope is no longer active.
+        owner.popActiveScope(idConst,this);
+    }
 
-	
-	protected void onElementMatched( String namespaceURI, String localName ) throws SAXException {
-		if( com.sun.msv.driver.textui.Debug.debug )
-			System.out.println("find a match for a selector: "+idConst.localName);
-			
-		// this element matches the path.
-		owner.add( new FieldsMatcher(this, namespaceURI,localName) );
-	}
-	
-	protected void onAttributeMatched(
-		String namespaceURI, String localName, String value, Datatype type ) {
-		
-		// assertion failed:
-		// selectors cannot contain attribute steps.
-		throw new Error();
-	}
-	
+    
+    protected void onElementMatched( String namespaceURI, String localName ) throws SAXException {
+        if( com.sun.msv.driver.textui.Debug.debug )
+            System.out.println("find a match for a selector: "+idConst.localName);
+            
+        // this element matches the path.
+        owner.add( new FieldsMatcher(this, namespaceURI,localName) );
+    }
+    
+    protected void onAttributeMatched(
+        String namespaceURI, String localName, String value, Datatype type ) {
+        
+        // assertion failed:
+        // selectors cannot contain attribute steps.
+        throw new Error();
+    }
+    
 }

@@ -22,9 +22,9 @@ import com.sun.msv.util.StartTagInfo;
  */
 public abstract class ExpressionWithoutChildState extends ExpressionState
 {
-	protected final State createChildState(StartTagInfo tag)
-	{
-		// return null to indicate that this element does not accept a child.
-		return null;
-	}
+    protected final State createChildState(StartTagInfo tag)
+    {
+        // return null to indicate that this element does not accept a child.
+        return null;
+    }
 }

@@ -18,16 +18,16 @@ import com.sun.msv.reader.ChildlessState;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class IncludeState extends ChildlessState {
-	
-	protected void startSelf() {
-		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
-		super.startSelf();
+    
+    protected void startSelf() {
+        final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
+        super.startSelf();
         try {
-    		reader.switchSource( this,
-	    		new RootIncludedSchemaState(
-		    		reader.sfactory.schemaIncluded(this,reader.currentSchema.targetNamespace) ) );
+            reader.switchSource( this,
+                new RootIncludedSchemaState(
+                    reader.sfactory.schemaIncluded(this,reader.currentSchema.targetNamespace) ) );
         } catch( AbortException e ) {
             // recover by ignoring the error
         }
-	}
+    }
 }

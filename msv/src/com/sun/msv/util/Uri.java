@@ -126,7 +126,7 @@ public class Uri {
         if (i + 2 >= len)
           return false;
         else if (!isHexDigit(s.charAt(i + 1))
-        	 || !isHexDigit(s.charAt(i + 2)))
+             || !isHexDigit(s.charAt(i + 2)))
           return false;
       }
     return true;
@@ -142,12 +142,12 @@ public class Uri {
       return true;
     int i = s.indexOf(':');
     if (i == 0
-	|| i + 1 == s.length()
-	|| !isAlpha(s.charAt(0)))
+    || i + 1 == s.length()
+    || !isAlpha(s.charAt(0)))
       return false;
     while (--i > 0)
       if (!isSchemeChar(s.charAt(i)))
-	return false;
+    return false;
     return true;
   }
 
@@ -174,7 +174,7 @@ public class Uri {
       case '#':
       case '/':
       case '?':
-	return false;
+    return false;
       }
     }
     return true;

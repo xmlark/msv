@@ -18,5 +18,5 @@ import com.sun.msv.grammar.Expression;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface TypeOwner {
-	void onEndChildType( Expression datatype, String typeName );
+    void onEndChildType( Expression datatype, String typeName );
 }

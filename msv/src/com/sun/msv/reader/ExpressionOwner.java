@@ -20,5 +20,5 @@ import com.sun.msv.grammar.Expression;
  */
 public interface ExpressionOwner
 {
-	void onEndChild( Expression exp );
+    void onEndChild( Expression exp );
 }

@@ -22,10 +22,10 @@ import com.sun.msv.util.StartTagInfo;
  */
 class RootGrammarMergeState extends SimpleState
 {
-	protected State createChildState( StartTagInfo tag ) {
-		if(tag.localName.equals("grammar"))
-			return new GrammarState();
-		
-		return null;
-	}
+    protected State createChildState( StartTagInfo tag ) {
+        if(tag.localName.equals("grammar"))
+            return new GrammarState();
+        
+        return null;
+    }
 }

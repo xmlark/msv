@@ -1,5 +1,5 @@
 /*
- * @(#)InternalEntity.java	1.3 00/02/24
+ * @(#)InternalEntity.java    1.3 00/02/24
  * 
  * Copyright (c) 1998-2000 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -24,9 +24,9 @@ class InternalEntity extends EntityDecl
 {
     InternalEntity (String name, char value [])
     {
-	this.name = name;
-	this.buf = value;
+    this.name = name;
+    this.buf = value;
     }
 
-    char	buf [];
+    char    buf [];
 }

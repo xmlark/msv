@@ -129,7 +129,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 
     // TODO: how many object instanciation can we avoid
     // if we keep one local reusable copy of OwnerAndContent?
-	
+    
     public static class ExpressionPair {
         public final Expression content;
         public final Expression continuation;
@@ -140,17 +140,17 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
     }
 
     /*
-    	Ideally, these two fields should be return values from onXXX methods.
-    	In fact, this class was once made in that way.
+        Ideally, these two fields should be return values from onXXX methods.
+        In fact, this class was once made in that way.
     
-    	However, to return two values, we need to create an object to wrap them,
-    	and it takes memory and time. 
-    	
-    	An experiment shows that ExpressionPairs used for that purpose occupies
-    	1/4 (in number) of object instanciation of the entire obejcts created in
-    	Verifier.startElement method.
+        However, to return two values, we need to create an object to wrap them,
+        and it takes memory and time. 
+        
+        An experiment shows that ExpressionPairs used for that purpose occupies
+        1/4 (in number) of object instanciation of the entire obejcts created in
+        Verifier.startElement method.
     
-    	So now it is rewritten to use this instance fields instead of return values.
+        So now it is rewritten to use this instance fields instead of return values.
     */
     private Expression content;
     private Expression continuation;
@@ -168,10 +168,10 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
      * also unnecessary.
      * 
      * @param feedAttributes
-     *		if this flag is false, Attribute feeding & pruning are skipped and 
-     *		AttributeExps are fully remained in the resulting expression.
+     *        if this flag is false, Attribute feeding & pruning are skipped and 
+     *        AttributeExps are fully remained in the resulting expression.
      * @param checkTagName
-     *		if this flag is false, tag name check is skipped.
+     *        if this flag is false, tag name check is skipped.
      */
     public ExpressionPair get(Expression combinedPattern, StartTagInfo info, boolean checkTagName) {
 
@@ -317,9 +317,9 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
      * class does not guarantee this property.
      * 
      * @return
-     *		true if the combined child content expression is not
-     *			the union of all elements of concern.
-     *		false if otherwise.
+     *        true if the combined child content expression is not
+     *            the union of all elements of concern.
+     *        false if otherwise.
      */
     public final boolean isComplex() {
         return foundConcur;
@@ -371,7 +371,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
         exp.exp.visit(this);
         continuation = pool.createMixed(continuation);
     }
-	
+    
     public void onAttribute( AttributeExp exp ) { content = continuation = Expression.nullSet; }
     public void onEpsilon()                     { content = continuation = Expression.nullSet; }
     public void onNullSet()                     { content = continuation = Expression.nullSet; }

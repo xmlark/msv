@@ -23,29 +23,29 @@ import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
  */
 public class AnyAttributeState extends AnyState {
 
-	protected Expression createExpression( final String namespace, final String process ) {
-		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
-		final XMLSchemaSchema currentSchema = reader.currentSchema;
+    protected Expression createExpression( final String namespace, final String process ) {
+        final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
+        final XMLSchemaSchema currentSchema = reader.currentSchema;
 
-		int mode;
-		
-		if(process.equals("skip"))		mode = AttributeWildcard.SKIP;
-		else
-		if(process.equals("lax"))		mode = AttributeWildcard.LAX;
-		else
-		if(process.equals("strict"))	mode = AttributeWildcard.STRICT;
-		else {
-			reader.reportError( XMLSchemaReader.ERR_BAD_ATTRIBUTE_VALUE, "processContents", process );
-			mode = AttributeWildcard.SKIP;
-		}
-		
-		((AnyAttributeOwner)parentState).setAttributeWildcard(
-			new AttributeWildcard( getNameClass(namespace,currentSchema), mode ) );
-		
-		return Expression.epsilon;
-	}
+        int mode;
+        
+        if(process.equals("skip"))        mode = AttributeWildcard.SKIP;
+        else
+        if(process.equals("lax"))        mode = AttributeWildcard.LAX;
+        else
+        if(process.equals("strict"))    mode = AttributeWildcard.STRICT;
+        else {
+            reader.reportError( XMLSchemaReader.ERR_BAD_ATTRIBUTE_VALUE, "processContents", process );
+            mode = AttributeWildcard.SKIP;
+        }
+        
+        ((AnyAttributeOwner)parentState).setAttributeWildcard(
+            new AttributeWildcard( getNameClass(namespace,currentSchema), mode ) );
+        
+        return Expression.epsilon;
+    }
 
-	protected NameClass getNameClassFrom( ReferenceExp exp ) {
-		return ((AttributeDeclExp)exp).self.nameClass;
-	}
+    protected NameClass getNameClassFrom( ReferenceExp exp ) {
+        return ((AttributeDeclExp)exp).self.nameClass;
+    }
 }

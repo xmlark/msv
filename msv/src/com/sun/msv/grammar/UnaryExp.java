@@ -15,22 +15,22 @@ package com.sun.msv.grammar;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class UnaryExp extends Expression {
-	
-	/** child expression. */
-	public final Expression exp;
-	
-	protected UnaryExp( Expression exp, int hashKey ) {
-		super( hashCode(exp,hashKey) );
-		this.exp = exp;
-	}
+    
+    /** child expression. */
+    public final Expression exp;
+    
+    protected UnaryExp( Expression exp, int hashKey ) {
+        super( hashCode(exp,hashKey) );
+        this.exp = exp;
+    }
 
-	public boolean equals( Object o ) {
-		if( !this.getClass().equals(o.getClass()) )		return false;
-		
-		// every existing children are already unified.
-		// therefore, == is enough. (don't need to call equals)
-		return ((UnaryExp)o).exp == exp;
-	}
+    public boolean equals( Object o ) {
+        if( !this.getClass().equals(o.getClass()) )        return false;
+        
+        // every existing children are already unified.
+        // therefore, == is enough. (don't need to call equals)
+        return ((UnaryExp)o).exp == exp;
+    }
     
     // serialization support
     private static final long serialVersionUID = 1;    

@@ -18,11 +18,11 @@ import com.sun.msv.grammar.SimpleNameClass;
  */
 public final class StringPair implements java.io.Serializable
 {
-	public final String namespaceURI;
-	public final String localName;
-	
-	public StringPair( SimpleNameClass name ) { this(name.namespaceURI, name.localName); }
-	public StringPair( String ns, String ln ) {
+    public final String namespaceURI;
+    public final String localName;
+    
+    public StringPair( SimpleNameClass name ) { this(name.namespaceURI, name.localName); }
+    public StringPair( String ns, String ln ) {
         // assertion check
         if(ns==null)
             throw new InternalError("namespace URI is null");
@@ -32,17 +32,17 @@ public final class StringPair implements java.io.Serializable
         namespaceURI=ns;
         localName=ln;
     }
-	
-	public boolean equals( Object o )
-	{
-		if(!(o instanceof StringPair))	return false;
-		
-		return namespaceURI.equals(((StringPair)o).namespaceURI)
-			&& localName.equals(((StringPair)o).localName);
-	}
-	public int hashCode() { return namespaceURI.hashCode()^localName.hashCode(); }
-	
-	public String toString() {
-		return "{"+namespaceURI+"}"+localName;
-	}
+    
+    public boolean equals( Object o )
+    {
+        if(!(o instanceof StringPair))    return false;
+        
+        return namespaceURI.equals(((StringPair)o).namespaceURI)
+            && localName.equals(((StringPair)o).localName);
+    }
+    public int hashCode() { return namespaceURI.hashCode()^localName.hashCode(); }
+    
+    public String toString() {
+        return "{"+namespaceURI+"}"+localName;
+    }
 }

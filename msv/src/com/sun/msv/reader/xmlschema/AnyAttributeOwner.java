@@ -18,8 +18,8 @@ import com.sun.msv.grammar.xmlschema.AttributeWildcard;
  */
 public interface AnyAttributeOwner
 {
-	/**
-	 * Sets the attribtue wildcard.
-	 */
-	void setAttributeWildcard( AttributeWildcard local );
+    /**
+     * Sets the attribtue wildcard.
+     */
+    void setAttributeWildcard( AttributeWildcard local );
 }

@@ -24,19 +24,19 @@ import com.sun.msv.relaxns.grammar.trex.TREXIslandSchema;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TREXIslandSchemaReader
-	extends XMLFilterImpl
-	implements IslandSchemaReader {
-	
-	private final TREXGrammarReader baseReader;
-	
-	public TREXIslandSchemaReader( TREXGrammarReader baseReader ) {
-		this.baseReader = baseReader;
-		this.setContentHandler(baseReader);
-	}
-	
-	public final IslandSchema getSchema() {
-		TREXGrammar g = baseReader.getResult();
-		if(g==null)		return null;
-		else			return new TREXIslandSchema(g);
-	}
+    extends XMLFilterImpl
+    implements IslandSchemaReader {
+    
+    private final TREXGrammarReader baseReader;
+    
+    public TREXIslandSchemaReader( TREXGrammarReader baseReader ) {
+        this.baseReader = baseReader;
+        this.setContentHandler(baseReader);
+    }
+    
+    public final IslandSchema getSchema() {
+        TREXGrammar g = baseReader.getResult();
+        if(g==null)        return null;
+        else            return new TREXIslandSchema(g);
+    }
 }

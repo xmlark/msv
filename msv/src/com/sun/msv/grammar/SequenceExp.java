@@ -15,17 +15,17 @@ package com.sun.msv.grammar;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class SequenceExp extends BinaryExp {
-	
-	SequenceExp( Expression left, Expression right )	{ super(left,right,HASHCODE_SEQUENCE); }
-	
-	public Object visit( ExpressionVisitor visitor )				{ return visitor.onSequence(this); }
-	public Expression visit( ExpressionVisitorExpression visitor )	{ return visitor.onSequence(this); }
-	public boolean visit( ExpressionVisitorBoolean visitor )		{ return visitor.onSequence(this); }
-	public void visit( ExpressionVisitorVoid visitor )				{ visitor.onSequence(this); }
+    
+    SequenceExp( Expression left, Expression right )    { super(left,right,HASHCODE_SEQUENCE); }
+    
+    public Object visit( ExpressionVisitor visitor )                { return visitor.onSequence(this); }
+    public Expression visit( ExpressionVisitorExpression visitor )    { return visitor.onSequence(this); }
+    public boolean visit( ExpressionVisitorBoolean visitor )        { return visitor.onSequence(this); }
+    public void visit( ExpressionVisitorVoid visitor )                { visitor.onSequence(this); }
 
-	protected boolean calcEpsilonReducibility() {
-		return exp1.isEpsilonReducible() && exp2.isEpsilonReducible();
-	}
+    protected boolean calcEpsilonReducibility() {
+        return exp1.isEpsilonReducible() && exp2.isEpsilonReducible();
+    }
     
     // serialization support
     private static final long serialVersionUID = 1;    

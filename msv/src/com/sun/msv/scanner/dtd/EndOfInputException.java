@@ -1,5 +1,5 @@
 /*
- * @(#)EndOfInputException.java	1.3 00/02/24
+ * @(#)EndOfInputException.java    1.3 00/02/24
  * 
  * Copyright (c) 1998-2000 Sun Microsystems, Inc. All Rights Reserved.
  * 

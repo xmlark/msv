@@ -10,6 +10,6 @@ import org.xml.sax.SAXException;
  * and nested exception is re-thrown.
  */
 public class SAXRuntimeException extends RuntimeException {
-	public final SAXException e;
-	public SAXRuntimeException( SAXException e ) { this.e=e; }
+    public final SAXException e;
+    public SAXRuntimeException( SAXException e ) { this.e=e; }
 }

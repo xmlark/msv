@@ -15,17 +15,17 @@ package com.sun.msv.grammar.xmlschema;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class GroupDeclExp extends RedefinableExp {
-	
-	public GroupDeclExp( String typeLocalName ) {
-		super(typeLocalName);
-	}
-	
-	/** clone this object. */
-	public RedefinableExp getClone() {
-		RedefinableExp exp = new GroupDeclExp(super.name);
-		exp.redefine(this);
-		return exp;
-	}
+    
+    public GroupDeclExp( String typeLocalName ) {
+        super(typeLocalName);
+    }
+    
+    /** clone this object. */
+    public RedefinableExp getClone() {
+        RedefinableExp exp = new GroupDeclExp(super.name);
+        exp.redefine(this);
+        return exp;
+    }
     
     // serialization support
     private static final long serialVersionUID = 1;    

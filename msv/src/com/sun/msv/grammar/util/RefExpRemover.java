@@ -37,16 +37,16 @@ public class RefExpRemover extends ExpressionCloner {
 
     /**
      * @param _recursive
-     *		<p>
-     *		If true, this object behaves destructively. It recursively
-     *		visits all the reachable expressions and removes ReferenceExps.
-     *		In this process, this object changes the content model of 
-     *		ElementExps.
-     *		
-     *		<p>
-     *		If false, this object doesn't visit the content models of child
-     *		elements, therefore, it behaves non-destructively. Nothing in the
-     *		original expression will be touched.
+     *        <p>
+     *        If true, this object behaves destructively. It recursively
+     *        visits all the reachable expressions and removes ReferenceExps.
+     *        In this process, this object changes the content model of 
+     *        ElementExps.
+     *        
+     *        <p>
+     *        If false, this object doesn't visit the content models of child
+     *        elements, therefore, it behaves non-destructively. Nothing in the
+     *        original expression will be touched.
      */
     public RefExpRemover(ExpressionPool pool, boolean _recursive) {
         super(pool);

@@ -23,23 +23,23 @@ import com.sun.msv.verifier.IVerifier;
  */
 class VerifierImpl extends org.iso_relax.verifier.impl.VerifierImpl
 {
-	private final IVerifier verifier;
-	
-	VerifierImpl( IVerifier verifier, XMLReader reader ) throws VerifierConfigurationException {
-		this.verifier = verifier;
-		super.reader	= reader;
-	}
-	
-	// we obtain XMLReader through the constructor.
-	protected void prepareXMLReader() {}
-	
-	
-	public void setErrorHandler( ErrorHandler handler ) {
-		super.setErrorHandler(handler);
-		verifier.setErrorHandler(handler);
-	}
-	
+    private final IVerifier verifier;
+    
+    VerifierImpl( IVerifier verifier, XMLReader reader ) throws VerifierConfigurationException {
+        this.verifier = verifier;
+        super.reader    = reader;
+    }
+    
+    // we obtain XMLReader through the constructor.
+    protected void prepareXMLReader() {}
+    
+    
+    public void setErrorHandler( ErrorHandler handler ) {
+        super.setErrorHandler(handler);
+        verifier.setErrorHandler(handler);
+    }
+    
     public VerifierHandler getVerifierHandler() {
-		return verifier;
+        return verifier;
     }
 }

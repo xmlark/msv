@@ -18,16 +18,16 @@ import com.sun.msv.grammar.ReferenceExp;
  */
 public class StartState extends DefineState {
 
-	protected ReferenceExp getReference() {
-		final RELAXNGReader reader = (RELAXNGReader)this.reader;
-		
-		if( startTag.containsAttribute("name") ) {
-			// since the name attribute is allowed to the certain point,
-			// it is useful to explicitly raise this as an error.
-			reader.reportError( RELAXNGReader.ERR_DISALLOWED_ATTRIBUTE, startTag.qName, "name" );
-			return null;
-		}
-			
-		return reader.getGrammar();
-	}
+    protected ReferenceExp getReference() {
+        final RELAXNGReader reader = (RELAXNGReader)this.reader;
+        
+        if( startTag.containsAttribute("name") ) {
+            // since the name attribute is allowed to the certain point,
+            // it is useful to explicitly raise this as an error.
+            reader.reportError( RELAXNGReader.ERR_DISALLOWED_ATTRIBUTE, startTag.qName, "name" );
+            return null;
+        }
+            
+        return reader.getGrammar();
+    }
 }

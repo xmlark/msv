@@ -25,63 +25,63 @@ import com.sun.msv.verifier.regexp.REDocumentDeclaration;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RulesAcceptor
-	extends com.sun.msv.verifier.regexp.ComplexAcceptorBaseImpl {
-	
-	protected final DeclImpl[]		owners;
-	
-	/** helper function for constructor */
-	private static Expression createCombined( ExpressionPool pool, DeclImpl[] rules ) {
-		Expression exp = Expression.nullSet;
-		for( int i=0; i<rules.length; i++ )
-			exp = pool.createChoice( exp, rules[i].exp );
-		return exp;
-	}
-	
-	/** helper function for constructor */
-	private static Expression[] getContents( DeclImpl[] rules ) {
-		Expression[] r = new Expression[rules.length];
-		for( int i=0; i<rules.length; i++ )
-			r[i] = rules[i].exp;
-		return r;
-	}
-	
-	public RulesAcceptor( REDocumentDeclaration docDecl, DeclImpl[] rules ) {
-		this( docDecl, createCombined(docDecl.pool,rules), getContents(rules), rules );
-	}
-	
-	private RulesAcceptor( REDocumentDeclaration docDecl,
-		Expression combined, Expression[] contentModels, DeclImpl[] owners ) {
-	
-		// RulesAcceptor always has ElementExp as the content model,
-		// and RulesAcceptor by itself will never contain AttributeExps.
-		// so "ignoreUndeclaredAttributes" is meaningless and unused.
-		// therefore, just set false.
-		super( docDecl, combined, contentModels, false );
-		this.owners = owners;
-	}
-	public Acceptor createClone() {
-		Expression[] models = new Expression[contents.length];
-		System.arraycopy(contents,0, models, 0, contents.length );
-		return new RulesAcceptor( docDecl, getExpression(), models, owners );
-	}
-	
-	/**
-	 * collects satisfied ElementDeclImpls.
-	 * 
-	 * @see com.sun.msv.verifier.regexp.trex.ComplexAcceptor#getSatisfiedOwners
-	 */
-	ElementDecl[] getSatisfiedElementDecls() {
-		int cnt=0;
-		for( int i=0; i<owners.length; i++ )
-			if( contents[i].isEpsilonReducible() )
-				cnt++;
-		
-		ElementDecl[] r = new DeclImpl[cnt];
-		cnt=0;
-		for( int i=0; i<owners.length; i++ )
-			if( contents[i].isEpsilonReducible() )
-				r[cnt++] = owners[i];
-		
-		return r;
-	}
+    extends com.sun.msv.verifier.regexp.ComplexAcceptorBaseImpl {
+    
+    protected final DeclImpl[]        owners;
+    
+    /** helper function for constructor */
+    private static Expression createCombined( ExpressionPool pool, DeclImpl[] rules ) {
+        Expression exp = Expression.nullSet;
+        for( int i=0; i<rules.length; i++ )
+            exp = pool.createChoice( exp, rules[i].exp );
+        return exp;
+    }
+    
+    /** helper function for constructor */
+    private static Expression[] getContents( DeclImpl[] rules ) {
+        Expression[] r = new Expression[rules.length];
+        for( int i=0; i<rules.length; i++ )
+            r[i] = rules[i].exp;
+        return r;
+    }
+    
+    public RulesAcceptor( REDocumentDeclaration docDecl, DeclImpl[] rules ) {
+        this( docDecl, createCombined(docDecl.pool,rules), getContents(rules), rules );
+    }
+    
+    private RulesAcceptor( REDocumentDeclaration docDecl,
+        Expression combined, Expression[] contentModels, DeclImpl[] owners ) {
+    
+        // RulesAcceptor always has ElementExp as the content model,
+        // and RulesAcceptor by itself will never contain AttributeExps.
+        // so "ignoreUndeclaredAttributes" is meaningless and unused.
+        // therefore, just set false.
+        super( docDecl, combined, contentModels, false );
+        this.owners = owners;
+    }
+    public Acceptor createClone() {
+        Expression[] models = new Expression[contents.length];
+        System.arraycopy(contents,0, models, 0, contents.length );
+        return new RulesAcceptor( docDecl, getExpression(), models, owners );
+    }
+    
+    /**
+     * collects satisfied ElementDeclImpls.
+     * 
+     * @see com.sun.msv.verifier.regexp.trex.ComplexAcceptor#getSatisfiedOwners
+     */
+    ElementDecl[] getSatisfiedElementDecls() {
+        int cnt=0;
+        for( int i=0; i<owners.length; i++ )
+            if( contents[i].isEpsilonReducible() )
+                cnt++;
+        
+        ElementDecl[] r = new DeclImpl[cnt];
+        cnt=0;
+        for( int i=0; i<owners.length; i++ )
+            if( contents[i].isEpsilonReducible() )
+                r[cnt++] = owners[i];
+        
+        return r;
+    }
 }

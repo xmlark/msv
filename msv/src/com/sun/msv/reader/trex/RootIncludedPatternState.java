@@ -22,39 +22,39 @@ import com.sun.msv.util.StartTagInfo;
  */
 public class RootIncludedPatternState extends SimpleState implements ExpressionOwner {
 
-	protected State createChildState( StartTagInfo tag ) {
-		// grammar has to be treated separately so as not to
-		// create unnecessary TREXGrammar object.
-//		if(tag.localName.equals("grammar"))
-//			return new GrammarState();
-		
-		State s = reader.createExpressionChildState(this,tag);
-//		if(s!=null) {
-//			// other pattern element is specified.
-//			// create wrapper grammar
-//			final TREXBaseReader reader = (TREXBaseReader)this.reader;
-//			reader.grammar = new TREXGrammar( reader.pool, null );
-//			simple = true;
-//		}
-		
-		return s;
-	}
-	
-	
-	/**
-	 * parsed external pattern will be reported to this object.
-	 * This state parses top-level, so parentState is null.
-	 */
-	private final IncludePatternState grandParent;
-	
-	protected RootIncludedPatternState( IncludePatternState grandpa ) {
-		this.grandParent = grandpa;
-	}
-		
-	public void onEndChild(Expression exp) {
-		if( grandParent!=null )
-			// this must be from grammar element. pass it to the IncludePatternState.
-			grandParent.onEndChild(exp);
+    protected State createChildState( StartTagInfo tag ) {
+        // grammar has to be treated separately so as not to
+        // create unnecessary TREXGrammar object.
+//        if(tag.localName.equals("grammar"))
+//            return new GrammarState();
+        
+        State s = reader.createExpressionChildState(this,tag);
+//        if(s!=null) {
+//            // other pattern element is specified.
+//            // create wrapper grammar
+//            final TREXBaseReader reader = (TREXBaseReader)this.reader;
+//            reader.grammar = new TREXGrammar( reader.pool, null );
+//            simple = true;
+//        }
+        
+        return s;
+    }
+    
+    
+    /**
+     * parsed external pattern will be reported to this object.
+     * This state parses top-level, so parentState is null.
+     */
+    private final IncludePatternState grandParent;
+    
+    protected RootIncludedPatternState( IncludePatternState grandpa ) {
+        this.grandParent = grandpa;
+    }
+        
+    public void onEndChild(Expression exp) {
+        if( grandParent!=null )
+            // this must be from grammar element. pass it to the IncludePatternState.
+            grandParent.onEndChild(exp);
 
-	}
+    }
 }

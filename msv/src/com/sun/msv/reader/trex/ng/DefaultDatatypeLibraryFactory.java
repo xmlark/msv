@@ -21,7 +21,7 @@ import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
  * Default implementation of Datatype
  * 
  * @author
- * 	Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
+ *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 class DefaultDatatypeLibraryFactory implements DatatypeLibraryFactory {
 

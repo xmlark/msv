@@ -19,16 +19,16 @@ import com.sun.msv.grammar.SimpleNameClass;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NameClassNameState extends NameClassWithoutChildState {
-	protected final StringBuffer text = new StringBuffer();
-	
-	public void characters( char[] buf, int from, int len ) {
-		text.append(buf,from,len);
-	}
-	public void ignorableWhitespace( char[] buf, int from, int len ) {
-		text.append(buf,from,len);
-	}
+    protected final StringBuffer text = new StringBuffer();
+    
+    public void characters( char[] buf, int from, int len ) {
+        text.append(buf,from,len);
+    }
+    public void ignorableWhitespace( char[] buf, int from, int len ) {
+        text.append(buf,from,len);
+    }
 
-	protected NameClass makeNameClass() {
+    protected NameClass makeNameClass() {
         
         String name = WhiteSpaceProcessor.collapse(new String(text));
         
@@ -41,6 +41,6 @@ public class NameClassNameState extends NameClassWithoutChildState {
         String[] qname 
             = reader.splitQName(name);
         
-		return new SimpleNameClass( qname[0], qname[1] );
-	}
+        return new SimpleNameClass( qname[0], qname[1] );
+    }
 }

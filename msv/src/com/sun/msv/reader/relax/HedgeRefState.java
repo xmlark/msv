@@ -18,6 +18,6 @@ import com.sun.msv.grammar.Expression;
  */
 public class HedgeRefState extends LabelRefState
 {
-	protected final Expression resolve( String namespace, String label )
-	{ return ((RELAXReader)reader).resolveHedgeRef(namespace,label); }
+    protected final Expression resolve( String namespace, String label )
+    { return ((RELAXReader)reader).resolveHedgeRef(namespace,label); }
 }

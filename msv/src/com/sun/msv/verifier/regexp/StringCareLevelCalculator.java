@@ -29,32 +29,32 @@ import com.sun.msv.verifier.Acceptor;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class StringCareLevelCalculator extends ExpressionFinder {
-	
-	protected StringCareLevelCalculator(){}
-	
-	/** singleton instance. */
-	protected static final StringCareLevelCalculator theInstance = new StringCareLevelCalculator();
-	
-	// those expressions which are sensitive about string must return true
-	public boolean onAttribute( AttributeExp exp )		{ return false; }
-	public boolean onElement( ElementExp exp )			{ return false; }
-	public boolean onMixed( MixedExp exp )				{ return true; }
-	public boolean onList( ListExp exp )				{ return true; }
-	public boolean onAnyString()						{ return true; }
-	public boolean onData( DataExp exp )				{ return true; }
-	public boolean onValue( ValueExp exp )				{ return true; }
+    
+    protected StringCareLevelCalculator(){}
+    
+    /** singleton instance. */
+    protected static final StringCareLevelCalculator theInstance = new StringCareLevelCalculator();
+    
+    // those expressions which are sensitive about string must return true
+    public boolean onAttribute( AttributeExp exp )        { return false; }
+    public boolean onElement( ElementExp exp )            { return false; }
+    public boolean onMixed( MixedExp exp )                { return true; }
+    public boolean onList( ListExp exp )                { return true; }
+    public boolean onAnyString()                        { return true; }
+    public boolean onData( DataExp exp )                { return true; }
+    public boolean onValue( ValueExp exp )                { return true; }
 
-	public static int calc( Expression exp )
-	{
-		// if and only if the top-level element is mixed,
-		// it can ignores strings.
-		if( exp instanceof MixedExp )	return Acceptor.STRING_IGNORE;
-		
-		if( exp.visit(theInstance) )
-			// somebody claims that string is necessary.
-			return Acceptor.STRING_STRICT;
-		else
-			// nobody claims that string is necessary.
-			return Acceptor.STRING_PROHIBITED;
-	}
+    public static int calc( Expression exp )
+    {
+        // if and only if the top-level element is mixed,
+        // it can ignores strings.
+        if( exp instanceof MixedExp )    return Acceptor.STRING_IGNORE;
+        
+        if( exp.visit(theInstance) )
+            // somebody claims that string is necessary.
+            return Acceptor.STRING_STRICT;
+        else
+            // nobody claims that string is necessary.
+            return Acceptor.STRING_PROHIBITED;
+    }
 }

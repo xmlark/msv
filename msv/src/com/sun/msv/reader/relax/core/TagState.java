@@ -21,39 +21,39 @@ import com.sun.msv.grammar.relax.TagClause;
  */
 public class TagState extends ClauseState
 {
-	protected void endSelf( )
-	{
-		super.endSelf();
-		
-		final String name = startTag.getAttribute("name");
-		String role = startTag.getAttribute("role");
-		if(role==null)	role=name;	// role defaults to name
-		
-		if(name==null)
-		{
-			reader.reportError(RELAXCoreReader.ERR_MISSING_ATTRIBUTE, "tag","name");
-			return;
-		}
-		
-		TagClause c = getReader().module.tags.getOrCreate(role);
-		
-		if(c.nameClass!=null)
-		{
-			// someone has already initialized this clause.
-			// this happens when more than one tag element declares the same role.
-			reader.reportError(
-				new Locator[]{getReader().getDeclaredLocationOf(c),location},
-				RELAXCoreReader.ERR_MULTIPLE_TAG_DECLARATIONS, new Object[]{role} );
-			// recover from error by ignoring previous tag declaration
-		}
-		
-		c.nameClass = new SimpleNameClass(
-			getReader().module.targetNamespace,
-			name );
-		
-		c.exp = exp;	// exp holds a sequence of AttributeExp
-		getReader().setDeclaredLocationOf(c);	// remember where this tag is declared
-		
-		return;
-	}
+    protected void endSelf( )
+    {
+        super.endSelf();
+        
+        final String name = startTag.getAttribute("name");
+        String role = startTag.getAttribute("role");
+        if(role==null)    role=name;    // role defaults to name
+        
+        if(name==null)
+        {
+            reader.reportError(RELAXCoreReader.ERR_MISSING_ATTRIBUTE, "tag","name");
+            return;
+        }
+        
+        TagClause c = getReader().module.tags.getOrCreate(role);
+        
+        if(c.nameClass!=null)
+        {
+            // someone has already initialized this clause.
+            // this happens when more than one tag element declares the same role.
+            reader.reportError(
+                new Locator[]{getReader().getDeclaredLocationOf(c),location},
+                RELAXCoreReader.ERR_MULTIPLE_TAG_DECLARATIONS, new Object[]{role} );
+            // recover from error by ignoring previous tag declaration
+        }
+        
+        c.nameClass = new SimpleNameClass(
+            getReader().module.targetNamespace,
+            name );
+        
+        c.exp = exp;    // exp holds a sequence of AttributeExp
+        getReader().setDeclaredLocationOf(c);    // remember where this tag is declared
+        
+        return;
+    }
 }

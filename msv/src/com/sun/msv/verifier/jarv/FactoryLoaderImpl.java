@@ -8,7 +8,7 @@ import com.sun.msv.reader.trex.classic.TREXGrammarReader;
 import com.sun.msv.reader.trex.ng.RELAXNGReader;
 import com.sun.msv.reader.xmlschema.XMLSchemaReader;
 import com.sun.msv.relaxns.reader.RELAXNSReader;
-	
+    
 public class FactoryLoaderImpl implements VerifierFactoryLoader {
     public FactoryLoaderImpl() {
     }

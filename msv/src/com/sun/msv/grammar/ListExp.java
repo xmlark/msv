@@ -17,17 +17,17 @@ package com.sun.msv.grammar;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class ListExp extends UnaryExp {
-	
-	ListExp( Expression exp )	{ super( exp,HASHCODE_LIST ); }
-	
-	public Object visit( ExpressionVisitor visitor )				{ return visitor.onList(this);	}
-	public Expression visit( ExpressionVisitorExpression visitor )	{ return visitor.onList(this); }
-	public boolean visit( ExpressionVisitorBoolean visitor )		{ return visitor.onList(this); }
-	public void visit( ExpressionVisitorVoid visitor )				{ visitor.onList(this); }
+    
+    ListExp( Expression exp )    { super( exp,HASHCODE_LIST ); }
+    
+    public Object visit( ExpressionVisitor visitor )                { return visitor.onList(this);    }
+    public Expression visit( ExpressionVisitorExpression visitor )    { return visitor.onList(this); }
+    public boolean visit( ExpressionVisitorBoolean visitor )        { return visitor.onList(this); }
+    public void visit( ExpressionVisitorVoid visitor )                { visitor.onList(this); }
 
-	protected boolean calcEpsilonReducibility() {
-		return exp.isEpsilonReducible();
-	}
+    protected boolean calcEpsilonReducibility() {
+        return exp.isEpsilonReducible();
+    }
     
     // serialization support
     private static final long serialVersionUID = 1;    

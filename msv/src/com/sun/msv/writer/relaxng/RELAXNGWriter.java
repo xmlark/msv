@@ -152,431 +152,431 @@ import com.sun.msv.writer.XMLWriter;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RELAXNGWriter implements GrammarWriter, Context {
-	
-	protected XMLWriter writer = new XMLWriter();
-	public XMLWriter getWriter() { return writer; }
-	
-	public void setDocumentHandler( DocumentHandler handler ) {
-		writer.setDocumentHandler(handler);
-	}
-	
-	public void write( Grammar g ) throws SAXException {
-		// find a namespace URI that can be used as default "ns" attribute.
-		write(g,sniffDefaultNs(g.getTopLevel()));
-	}
-	
-	/**
-	 * generates SAX2 events of the specified grammar.
-	 * 
-	 * @param defaultNs
-	 *		if specified, this namespace URI is used as "ns" attribute
-	 *		of grammar element. Can be null.
-	 * 
-	 * @exception IllegalArgumentException
-	 *		If the given grammar is beyond the expressive power of TREX
-	 *		(e.g., some RELAX NG grammar), then this exception is thrown.
-	 */
-	public void write( Grammar g, String _defaultNs ) throws SAXException {
-		
-		this.defaultNs = _defaultNs;
-		this.grammar = g;
-		
-		// collect all reachable ElementExps and ReferenceExps.
-		final Set nodes = new HashSet();
-		// ElementExps and ReferenceExps who are referenced more than once.
-		final Set heads = new HashSet();
-		
-		g.getTopLevel().visit( new ExpressionWalker(){
-			// ExpressionWalker class traverses expressions in depth-first order.
-			// So this invokation traverses the all reachable expressions from
-			// the top level expression.
-			
-			// Whenever visiting elements and RefExps, they are memorized
-			// to identify head of islands.
-			public void onElement( ElementExp exp ) {
-				if(nodes.contains(exp)) {
-					heads.add(exp);
-					return;	// prevent infinite recursion.
-				}
-				nodes.add(exp);
-				super.onElement(exp);
-			}
-			public void onRef( ReferenceExp exp ) {
-				if(nodes.contains(exp)) {
-					heads.add(exp);
-					return;	// prevent infinite recursion.
-				}
-				nodes.add(exp);
-				super.onRef(exp);
-			}
-		});
-		
-		// now heads contain all expressions that work as heads of islands.
-		
-		
-		// create (name->RefExp) map while resolving name conflicts
-		// 
-		Map name2exp = new HashMap();
-		{
-			int cnt=0;	// use to name anonymous RefExp.
-		
-			Iterator itr = heads.iterator();
-			while( itr.hasNext() ) {
-				Expression exp = (Expression)itr.next();
-				if( exp instanceof ReferenceExp ) {
-					ReferenceExp rexp = (ReferenceExp)exp;
-					if( rexp.name == null ) {
-						// generate unique name
-						while( name2exp.containsKey("anonymous"+cnt) )
-							cnt++;
-						name2exp.put( "anonymous"+cnt, exp );
-					} else
-					if( name2exp.containsKey(rexp.name) ) {
-						// name conflict. try to add suffix.
-						int i = 2;
-						while( name2exp.containsKey(rexp.name+i) )
-							i++;
-						name2exp.put( rexp.name+i, exp );
-					} else {
-						// name of this RefExp can be directly used without modification.
-						name2exp.put( rexp.name, exp );
-					}
-				}
-				else
-				if( exp instanceof ElementExp ) {
-					ElementExp eexp = (ElementExp)exp;
-					NameClass nc = eexp.getNameClass();
-					
-					if( nc instanceof SimpleNameClass
-					 && !name2exp.containsKey( ((SimpleNameClass)nc).localName ) )
-						name2exp.put( ((SimpleNameClass)nc).localName, exp );
-					else {
-						// generate unique name
-						while( name2exp.containsKey("element"+cnt) )
-							cnt++;
-						name2exp.put( "element"+cnt, exp );
-					}
-				} else
-					throw new Error();	// assertion failed.
-					// it must be ElementExp or ReferenceExp.
-			}
-		}
-		
-		// then reverse name2ref to ref2name
-		exp2name = new HashMap();
-		{
-			Iterator itr = name2exp.keySet().iterator();
-			while( itr.hasNext() ) {
-				String name = (String)itr.next();
-				exp2name.put( name2exp.get(name), name );
-			}
-		}
-		
-		nameClassWriter = createNameClassWriter();		
+    
+    protected XMLWriter writer = new XMLWriter();
+    public XMLWriter getWriter() { return writer; }
+    
+    public void setDocumentHandler( DocumentHandler handler ) {
+        writer.setDocumentHandler(handler);
+    }
+    
+    public void write( Grammar g ) throws SAXException {
+        // find a namespace URI that can be used as default "ns" attribute.
+        write(g,sniffDefaultNs(g.getTopLevel()));
+    }
+    
+    /**
+     * generates SAX2 events of the specified grammar.
+     * 
+     * @param defaultNs
+     *        if specified, this namespace URI is used as "ns" attribute
+     *        of grammar element. Can be null.
+     * 
+     * @exception IllegalArgumentException
+     *        If the given grammar is beyond the expressive power of TREX
+     *        (e.g., some RELAX NG grammar), then this exception is thrown.
+     */
+    public void write( Grammar g, String _defaultNs ) throws SAXException {
+        
+        this.defaultNs = _defaultNs;
+        this.grammar = g;
+        
+        // collect all reachable ElementExps and ReferenceExps.
+        final Set nodes = new HashSet();
+        // ElementExps and ReferenceExps who are referenced more than once.
+        final Set heads = new HashSet();
+        
+        g.getTopLevel().visit( new ExpressionWalker(){
+            // ExpressionWalker class traverses expressions in depth-first order.
+            // So this invokation traverses the all reachable expressions from
+            // the top level expression.
+            
+            // Whenever visiting elements and RefExps, they are memorized
+            // to identify head of islands.
+            public void onElement( ElementExp exp ) {
+                if(nodes.contains(exp)) {
+                    heads.add(exp);
+                    return;    // prevent infinite recursion.
+                }
+                nodes.add(exp);
+                super.onElement(exp);
+            }
+            public void onRef( ReferenceExp exp ) {
+                if(nodes.contains(exp)) {
+                    heads.add(exp);
+                    return;    // prevent infinite recursion.
+                }
+                nodes.add(exp);
+                super.onRef(exp);
+            }
+        });
+        
+        // now heads contain all expressions that work as heads of islands.
+        
+        
+        // create (name->RefExp) map while resolving name conflicts
+        // 
+        Map name2exp = new HashMap();
+        {
+            int cnt=0;    // use to name anonymous RefExp.
+        
+            Iterator itr = heads.iterator();
+            while( itr.hasNext() ) {
+                Expression exp = (Expression)itr.next();
+                if( exp instanceof ReferenceExp ) {
+                    ReferenceExp rexp = (ReferenceExp)exp;
+                    if( rexp.name == null ) {
+                        // generate unique name
+                        while( name2exp.containsKey("anonymous"+cnt) )
+                            cnt++;
+                        name2exp.put( "anonymous"+cnt, exp );
+                    } else
+                    if( name2exp.containsKey(rexp.name) ) {
+                        // name conflict. try to add suffix.
+                        int i = 2;
+                        while( name2exp.containsKey(rexp.name+i) )
+                            i++;
+                        name2exp.put( rexp.name+i, exp );
+                    } else {
+                        // name of this RefExp can be directly used without modification.
+                        name2exp.put( rexp.name, exp );
+                    }
+                }
+                else
+                if( exp instanceof ElementExp ) {
+                    ElementExp eexp = (ElementExp)exp;
+                    NameClass nc = eexp.getNameClass();
+                    
+                    if( nc instanceof SimpleNameClass
+                     && !name2exp.containsKey( ((SimpleNameClass)nc).localName ) )
+                        name2exp.put( ((SimpleNameClass)nc).localName, exp );
+                    else {
+                        // generate unique name
+                        while( name2exp.containsKey("element"+cnt) )
+                            cnt++;
+                        name2exp.put( "element"+cnt, exp );
+                    }
+                } else
+                    throw new Error();    // assertion failed.
+                    // it must be ElementExp or ReferenceExp.
+            }
+        }
+        
+        // then reverse name2ref to ref2name
+        exp2name = new HashMap();
+        {
+            Iterator itr = name2exp.keySet().iterator();
+            while( itr.hasNext() ) {
+                String name = (String)itr.next();
+                exp2name.put( name2exp.get(name), name );
+            }
+        }
+        
+        nameClassWriter = createNameClassWriter();        
  
-		// generates SAX events
-		try {
-			final DocumentHandler handler = writer.getDocumentHandler();
-			handler.setDocumentLocator( new LocatorImpl() );
-			handler.startDocument();
+        // generates SAX events
+        try {
+            final DocumentHandler handler = writer.getDocumentHandler();
+            handler.setDocumentLocator( new LocatorImpl() );
+            handler.startDocument();
 
-			// to work around the bug of current serializer,
-			// report xmlns declarations as attributes.
-			
-			if( defaultNs!=null )
-				writer.start("grammar",new String[]{
-					"ns",defaultNs,
-					"xmlns",RELAXNGReader.RELAXNGNamespace,
-					"datatypeLibrary", XSDVocabulary.XMLSchemaNamespace });
-			else
-				writer.start("grammar", new String[]{
-					"xmlns",RELAXNGReader.RELAXNGNamespace,
-					"datatypeLibrary", XSDVocabulary.XMLSchemaNamespace });
-			
-			
-			{// write start pattern.
-				writer.start("start");
-				writeIsland( g.getTopLevel() );
-				writer.end("start");
-			}
-			
-			// write all named expressions
-			Iterator itr = exp2name.keySet().iterator();
-			while( itr.hasNext() ) {
-				Expression exp = (Expression)itr.next();
-				String name = (String)exp2name.get(exp);
-				if( exp instanceof ReferenceExp )
-					exp = ((ReferenceExp)exp).exp;
-				writer.start("define",new String[]{"name",name});
-				writeIsland( exp );
-				writer.end("define");
-			}
-			
-			writer.end("grammar");
-			handler.endDocument();
-		} catch( SAXRuntimeException sw ) {
-			throw sw.e;
-		}
-	}
-	
-	/**
-	 * writes a bunch of expression into one tree.
-	 */
-	protected void writeIsland( Expression exp ) {
-		// pattern writer will traverse the island and generates XML representation.
-		if( exp instanceof ElementExp )
-			patternWriter.writeElement( (ElementExp)exp );
-		else
-			patternWriter.visitUnary(exp);
-	}
-	
-	
-	/** Grammar object which we are writing. */
-	protected Grammar grammar;
-	
-	/**
-	 * map from ReferenceExp/ElementExp to its unique name.
-	 * "unique name" is used to write/reference this ReferenceExp.
-	 * ReferenceExps who are not in this list can be directly written into XML.
-	 */
-	protected Map exp2name;
-	
-	
-	/**
-	 * sniffs namespace URI that can be used as default 'ns' attribute
-	 * from expression.
-	 * 
-	 * find an element or attribute, then use its namespace URI.
-	 */
-	protected String sniffDefaultNs( Expression exp ) {
-		return (String)exp.visit( new ExpressionVisitor(){
-			public Object onElement( ElementExp exp ) {
-				return sniff(exp.getNameClass());
-			}
-			public Object onAttribute( AttributeExp exp ) {
-				return sniff(exp.nameClass);
-			}
-			protected String sniff(NameClass nc) {
-				if( nc instanceof SimpleNameClass )
-					return ((SimpleNameClass)nc).namespaceURI;
-				else
-					return null;
-			}
-			public Object onChoice( ChoiceExp exp ) {
-				return onBinExp(exp);
-			}
-			public Object onSequence( SequenceExp exp ) {
-				return onBinExp(exp);
-			}
-			public Object onInterleave( InterleaveExp exp ) {
-				return onBinExp(exp);
-			}
-			public Object onConcur( ConcurExp exp ) {
-				return onBinExp(exp);
-			}
-			public Object onBinExp( BinaryExp exp ) {
-				Object o = exp.exp1.visit(this);
-				if(o==null)	o = exp.exp2.visit(this);
-				return o;
-			}
-			public Object onMixed( MixedExp exp ) {
-				return exp.exp.visit(this);
-			}
-			public Object onOneOrMore( OneOrMoreExp exp ) {
-				return exp.exp.visit(this);
-			}
-			public Object onRef( ReferenceExp exp ) {
-				return exp.exp.visit(this);
-			}
-			public Object onOther( OtherExp exp ) {
-				return exp.exp.visit(this);
-			}
-			public Object onNullSet() {
-				return null;
-			}
-			public Object onEpsilon() {
-				return null;
-			}
-			public Object onAnyString() {
-				return null;
-			}
-			public Object onData( DataExp exp ) {
-				return null;
-			}
-			public Object onValue( ValueExp exp ) {
-				return null;
-			}
-			public Object onList( ListExp exp ) {
-				return null;
-			}
-		});
-	}
-	
-	
-	/**
-	 * namespace URI currently implied through "ns" attribute propagation.
-	 */
-	protected String defaultNs;
-	public String getTargetNamespace() { return defaultNs; }
-	
+            // to work around the bug of current serializer,
+            // report xmlns declarations as attributes.
+            
+            if( defaultNs!=null )
+                writer.start("grammar",new String[]{
+                    "ns",defaultNs,
+                    "xmlns",RELAXNGReader.RELAXNGNamespace,
+                    "datatypeLibrary", XSDVocabulary.XMLSchemaNamespace });
+            else
+                writer.start("grammar", new String[]{
+                    "xmlns",RELAXNGReader.RELAXNGNamespace,
+                    "datatypeLibrary", XSDVocabulary.XMLSchemaNamespace });
+            
+            
+            {// write start pattern.
+                writer.start("start");
+                writeIsland( g.getTopLevel() );
+                writer.end("start");
+            }
+            
+            // write all named expressions
+            Iterator itr = exp2name.keySet().iterator();
+            while( itr.hasNext() ) {
+                Expression exp = (Expression)itr.next();
+                String name = (String)exp2name.get(exp);
+                if( exp instanceof ReferenceExp )
+                    exp = ((ReferenceExp)exp).exp;
+                writer.start("define",new String[]{"name",name});
+                writeIsland( exp );
+                writer.end("define");
+            }
+            
+            writer.end("grammar");
+            handler.endDocument();
+        } catch( SAXRuntimeException sw ) {
+            throw sw.e;
+        }
+    }
+    
+    /**
+     * writes a bunch of expression into one tree.
+     */
+    protected void writeIsland( Expression exp ) {
+        // pattern writer will traverse the island and generates XML representation.
+        if( exp instanceof ElementExp )
+            patternWriter.writeElement( (ElementExp)exp );
+        else
+            patternWriter.visitUnary(exp);
+    }
+    
+    
+    /** Grammar object which we are writing. */
+    protected Grammar grammar;
+    
+    /**
+     * map from ReferenceExp/ElementExp to its unique name.
+     * "unique name" is used to write/reference this ReferenceExp.
+     * ReferenceExps who are not in this list can be directly written into XML.
+     */
+    protected Map exp2name;
+    
+    
+    /**
+     * sniffs namespace URI that can be used as default 'ns' attribute
+     * from expression.
+     * 
+     * find an element or attribute, then use its namespace URI.
+     */
+    protected String sniffDefaultNs( Expression exp ) {
+        return (String)exp.visit( new ExpressionVisitor(){
+            public Object onElement( ElementExp exp ) {
+                return sniff(exp.getNameClass());
+            }
+            public Object onAttribute( AttributeExp exp ) {
+                return sniff(exp.nameClass);
+            }
+            protected String sniff(NameClass nc) {
+                if( nc instanceof SimpleNameClass )
+                    return ((SimpleNameClass)nc).namespaceURI;
+                else
+                    return null;
+            }
+            public Object onChoice( ChoiceExp exp ) {
+                return onBinExp(exp);
+            }
+            public Object onSequence( SequenceExp exp ) {
+                return onBinExp(exp);
+            }
+            public Object onInterleave( InterleaveExp exp ) {
+                return onBinExp(exp);
+            }
+            public Object onConcur( ConcurExp exp ) {
+                return onBinExp(exp);
+            }
+            public Object onBinExp( BinaryExp exp ) {
+                Object o = exp.exp1.visit(this);
+                if(o==null)    o = exp.exp2.visit(this);
+                return o;
+            }
+            public Object onMixed( MixedExp exp ) {
+                return exp.exp.visit(this);
+            }
+            public Object onOneOrMore( OneOrMoreExp exp ) {
+                return exp.exp.visit(this);
+            }
+            public Object onRef( ReferenceExp exp ) {
+                return exp.exp.visit(this);
+            }
+            public Object onOther( OtherExp exp ) {
+                return exp.exp.visit(this);
+            }
+            public Object onNullSet() {
+                return null;
+            }
+            public Object onEpsilon() {
+                return null;
+            }
+            public Object onAnyString() {
+                return null;
+            }
+            public Object onData( DataExp exp ) {
+                return null;
+            }
+            public Object onValue( ValueExp exp ) {
+                return null;
+            }
+            public Object onList( ListExp exp ) {
+                return null;
+            }
+        });
+    }
+    
+    
+    /**
+     * namespace URI currently implied through "ns" attribute propagation.
+     */
+    protected String defaultNs;
+    public String getTargetNamespace() { return defaultNs; }
+    
 
-	
-	public void writeNameClass( NameClass src ) {
-		final String MAGIC = PossibleNamesCollector.MAGIC;
-		Set names = PossibleNamesCollector.calc(src);
-		
-		// convert a name class to the canonical form.
-		StringPair[] values = (StringPair[])names.toArray(new StringPair[names.size()]);
+    
+    public void writeNameClass( NameClass src ) {
+        final String MAGIC = PossibleNamesCollector.MAGIC;
+        Set names = PossibleNamesCollector.calc(src);
+        
+        // convert a name class to the canonical form.
+        StringPair[] values = (StringPair[])names.toArray(new StringPair[names.size()]);
 
-		Set uriset = new HashSet();
-		for( int i=0; i<values.length; i++ )
-			uriset.add( values[i].namespaceURI );
-		
-		NameClass r = null;
-		String[] uris = (String[])uriset.toArray(new String[uriset.size()]);
-		for( int i=0; i<uris.length; i++ ) {
-			if( uris[i]==MAGIC )	continue;
-			
-			NameClass tmp = null;
-			
-			for( int j=0; j<values.length; j++ ) {
-				if( !values[j].namespaceURI.equals(uris[i]) )	continue;
-				if( values[j].localName==MAGIC )				continue;
-				
-				if( src.accepts(values[j])!=src.accepts(uris[i],MAGIC) ) {
-					if(tmp==null)	tmp = new SimpleNameClass(values[j]);
-					else			tmp = new ChoiceNameClass( tmp, new SimpleNameClass(values[j]) );
-				}
-			}
-			
-			if( src.accepts(uris[i],MAGIC)!=src.accepts(MAGIC,MAGIC) ) {
-				if(tmp==null)
-					tmp = new NamespaceNameClass(uris[i]);
-				else
-					tmp = new DifferenceNameClass( new NamespaceNameClass(uris[i]), tmp );
-			}
-			
-			if(r==null)		r = tmp;
-			else			r = new ChoiceNameClass(r,tmp);
-		}
-		
-		if( src.accepts(MAGIC,MAGIC) ) {
-			if( r==null )
-				r = AnyNameClass.theInstance;
-			else
-				r = new DifferenceNameClass( AnyNameClass.theInstance, r );
-		} else {
-			if(r==null) {
-				// this name class accepts nothing.
-				// by adding notAllowed to the content model, this element
-				// will match nothing.
-				writer.element("anyName");
-				writer.element("notAllowed");
-				return;
-			}
-		}
-		
-		r.visit(nameClassWriter);
-		
-	}
-	
-	protected NameClassVisitor nameClassWriter;
-	protected NameClassVisitor createNameClassWriter() {
-		return new NameClassWriter(this);
-	}
-	
-	protected SmartPatternWriter patternWriter = new SmartPatternWriter(this);
-	
-	/**
-	 * PatternWriter that performs some optimization for human eyes.
-	 */
-	class SmartPatternWriter extends PatternWriter {
-	
-		SmartPatternWriter( Context context ) { super(context); }
-		
-		public void onOther( OtherExp exp ) {
-			exp.exp.visit(this);	// ignore otherexp
-		}
-		public void onRef( ReferenceExp exp ) {
-			String uniqueName = (String)exp2name.get(exp);
-			if( uniqueName!=null )
-				this.writer.element("ref", new String[]{"name",uniqueName});
-			else
-				// this expression will not be written as a named pattern.
-				exp.exp.visit(this);
-		}
-	
-		public void onElement( ElementExp exp ) {
-			String uniqueName = (String)exp2name.get(exp);
-			if( uniqueName!=null ) {
-				// this element will be written as a named pattern
-				this.writer.element("ref", new String[]{"name",uniqueName} );
-				return;
-			} else
-				writeElement(exp);
-		}
-	
-		public void onAttribute( AttributeExp exp ) {
-			if( exp.nameClass instanceof SimpleNameClass
-			&&  ((SimpleNameClass)exp.nameClass).namespaceURI.equals("") ) {
-				// we can use name attribute.
-				this.writer.start("attribute", new String[]{"name",
-					((SimpleNameClass)exp.nameClass).localName} );
-			}
-			else {
-				this.writer.start("attribute");
-				context.writeNameClass(exp.nameClass);
-			}
-			if( exp.exp != Expression.anyString )
-				// we can omit <anyString/> in the attribute.
-				visitUnary(exp.exp);
-			this.writer.end("attribute");
-		}
+        Set uriset = new HashSet();
+        for( int i=0; i<values.length; i++ )
+            uriset.add( values[i].namespaceURI );
+        
+        NameClass r = null;
+        String[] uris = (String[])uriset.toArray(new String[uriset.size()]);
+        for( int i=0; i<uris.length; i++ ) {
+            if( uris[i]==MAGIC )    continue;
+            
+            NameClass tmp = null;
+            
+            for( int j=0; j<values.length; j++ ) {
+                if( !values[j].namespaceURI.equals(uris[i]) )    continue;
+                if( values[j].localName==MAGIC )                continue;
+                
+                if( src.accepts(values[j])!=src.accepts(uris[i],MAGIC) ) {
+                    if(tmp==null)    tmp = new SimpleNameClass(values[j]);
+                    else            tmp = new ChoiceNameClass( tmp, new SimpleNameClass(values[j]) );
+                }
+            }
+            
+            if( src.accepts(uris[i],MAGIC)!=src.accepts(MAGIC,MAGIC) ) {
+                if(tmp==null)
+                    tmp = new NamespaceNameClass(uris[i]);
+                else
+                    tmp = new DifferenceNameClass( new NamespaceNameClass(uris[i]), tmp );
+            }
+            
+            if(r==null)        r = tmp;
+            else            r = new ChoiceNameClass(r,tmp);
+        }
+        
+        if( src.accepts(MAGIC,MAGIC) ) {
+            if( r==null )
+                r = AnyNameClass.theInstance;
+            else
+                r = new DifferenceNameClass( AnyNameClass.theInstance, r );
+        } else {
+            if(r==null) {
+                // this name class accepts nothing.
+                // by adding notAllowed to the content model, this element
+                // will match nothing.
+                writer.element("anyName");
+                writer.element("notAllowed");
+                return;
+            }
+        }
+        
+        r.visit(nameClassWriter);
+        
+    }
+    
+    protected NameClassVisitor nameClassWriter;
+    protected NameClassVisitor createNameClassWriter() {
+        return new NameClassWriter(this);
+    }
+    
+    protected SmartPatternWriter patternWriter = new SmartPatternWriter(this);
+    
+    /**
+     * PatternWriter that performs some optimization for human eyes.
+     */
+    class SmartPatternWriter extends PatternWriter {
+    
+        SmartPatternWriter( Context context ) { super(context); }
+        
+        public void onOther( OtherExp exp ) {
+            exp.exp.visit(this);    // ignore otherexp
+        }
+        public void onRef( ReferenceExp exp ) {
+            String uniqueName = (String)exp2name.get(exp);
+            if( uniqueName!=null )
+                this.writer.element("ref", new String[]{"name",uniqueName});
+            else
+                // this expression will not be written as a named pattern.
+                exp.exp.visit(this);
+        }
+    
+        public void onElement( ElementExp exp ) {
+            String uniqueName = (String)exp2name.get(exp);
+            if( uniqueName!=null ) {
+                // this element will be written as a named pattern
+                this.writer.element("ref", new String[]{"name",uniqueName} );
+                return;
+            } else
+                writeElement(exp);
+        }
+    
+        public void onAttribute( AttributeExp exp ) {
+            if( exp.nameClass instanceof SimpleNameClass
+            &&  ((SimpleNameClass)exp.nameClass).namespaceURI.equals("") ) {
+                // we can use name attribute.
+                this.writer.start("attribute", new String[]{"name",
+                    ((SimpleNameClass)exp.nameClass).localName} );
+            }
+            else {
+                this.writer.start("attribute");
+                context.writeNameClass(exp.nameClass);
+            }
+            if( exp.exp != Expression.anyString )
+                // we can omit <anyString/> in the attribute.
+                visitUnary(exp.exp);
+            this.writer.end("attribute");
+        }
 
-		protected void writeElement( ElementExp exp ) {
-			NameClass nc = exp.getNameClass();
-			if( nc instanceof SimpleNameClass
-			&&  ((SimpleNameClass)nc).namespaceURI.equals(defaultNs) )
-				// we can use name attribute to simplify output.
-				this.writer.start("element",new String[]{"name",
-					((SimpleNameClass)nc).localName} );
-			else {
-				this.writer.start("element");
-				writeNameClass(exp.getNameClass());
-			}
-			visitUnary(simplify(exp.contentModel));
-			this.writer.end("element");
-		}
-	
-		/**
-		 * remove unnecessary ReferenceExp from content model.
-		 * this will sometimes makes content model smaller.
-		 */
-		public Expression simplify( Expression exp ) {
-			return exp.visit( new ExpressionCloner(grammar.getPool()){
-				public Expression onRef( ReferenceExp exp ) {
-					if( exp2name.containsKey(exp) )
-						// this ReferenceExp will be written as a named pattern.
-						return exp;
-					else
-						// bind contents
-						return exp.exp.visit(this);
-				}
-				public Expression onOther( OtherExp exp ) {
-					return exp.exp.visit(this);
-				}
-				public Expression onElement( ElementExp exp ) {
-					return exp;
-				}
-				public Expression onAttribute( AttributeExp exp ) {
-					return exp;
-				}
-			});
-		}
-	};
-	
-	
-	
-	
-	
+        protected void writeElement( ElementExp exp ) {
+            NameClass nc = exp.getNameClass();
+            if( nc instanceof SimpleNameClass
+            &&  ((SimpleNameClass)nc).namespaceURI.equals(defaultNs) )
+                // we can use name attribute to simplify output.
+                this.writer.start("element",new String[]{"name",
+                    ((SimpleNameClass)nc).localName} );
+            else {
+                this.writer.start("element");
+                writeNameClass(exp.getNameClass());
+            }
+            visitUnary(simplify(exp.contentModel));
+            this.writer.end("element");
+        }
+    
+        /**
+         * remove unnecessary ReferenceExp from content model.
+         * this will sometimes makes content model smaller.
+         */
+        public Expression simplify( Expression exp ) {
+            return exp.visit( new ExpressionCloner(grammar.getPool()){
+                public Expression onRef( ReferenceExp exp ) {
+                    if( exp2name.containsKey(exp) )
+                        // this ReferenceExp will be written as a named pattern.
+                        return exp;
+                    else
+                        // bind contents
+                        return exp.exp.visit(this);
+                }
+                public Expression onOther( OtherExp exp ) {
+                    return exp.exp.visit(this);
+                }
+                public Expression onElement( ElementExp exp ) {
+                    return exp;
+                }
+                public Expression onAttribute( AttributeExp exp ) {
+                    return exp;
+                }
+            });
+        }
+    };
+    
+    
+    
+    
+    
 }

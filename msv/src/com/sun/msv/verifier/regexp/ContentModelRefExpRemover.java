@@ -23,10 +23,10 @@ import com.sun.msv.grammar.ReferenceExp;
  * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ContentModelRefExpRemover {
-	
-//	public static Expression remove( Expression exp, ExpressionPool pool ) {
-//		return exp.getExpandedExp(pool);
-//	}
+    
+//    public static Expression remove( Expression exp, ExpressionPool pool ) {
+//        return exp.getExpandedExp(pool);
+//    }
     
 
     // the class that does the actual job.

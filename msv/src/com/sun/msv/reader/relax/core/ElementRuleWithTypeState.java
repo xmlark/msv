@@ -24,36 +24,36 @@ import com.sun.msv.util.StartTagInfo;
  */
 public class ElementRuleWithTypeState extends ElementRuleBaseState implements FacetStateParent
 {
-	protected XSTypeIncubator incubator;
-	
-	public XSTypeIncubator getIncubator()	{ return incubator; }
-	
-	protected void startSelf() {
-		super.startSelf();
+    protected XSTypeIncubator incubator;
+    
+    public XSTypeIncubator getIncubator()    { return incubator; }
+    
+    protected void startSelf() {
+        super.startSelf();
 
         final RELAXCoreReader reader = (RELAXCoreReader)this.reader;
         
-		// existance of type attribute has already checked before
-		// this state is created.
-		incubator = reader.resolveXSDatatype(startTag.getAttribute("type"))
+        // existance of type attribute has already checked before
+        // this state is created.
+        incubator = reader.resolveXSDatatype(startTag.getAttribute("type"))
             .createIncubator();
-	}
-	
-	protected Expression getContentModel() {
-		try {
-			return incubator.derive(null,null);
-		} catch( DatatypeException e ) {
-			// derivation failed
-			reader.reportError( e, RELAXCoreReader.ERR_BAD_TYPE, e.getMessage() );
-			// recover by using harmless expression. anything will do.
-			return Expression.anyString;
-		}
-	}
-	
-	protected State createChildState( StartTagInfo tag ) {
-		State next = getReader().createFacetState(this,tag);
-		if(next!=null)		return next;			// facets
-		
-		return super.createChildState(tag);			// or delegate to the base class
-	}
+    }
+    
+    protected Expression getContentModel() {
+        try {
+            return incubator.derive(null,null);
+        } catch( DatatypeException e ) {
+            // derivation failed
+            reader.reportError( e, RELAXCoreReader.ERR_BAD_TYPE, e.getMessage() );
+            // recover by using harmless expression. anything will do.
+            return Expression.anyString;
+        }
+    }
+    
+    protected State createChildState( StartTagInfo tag ) {
+        State next = getReader().createFacetState(this,tag);
+        if(next!=null)        return next;            // facets
+        
+        return super.createChildState(tag);            // or delegate to the base class
+    }
 }

@@ -15,8 +15,8 @@ package com.sun.msv.util;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DatatypeRef {
-	/**
-	 * if the size of the array is zero, then that means this token is ignored.
-	 */
-	public org.relaxng.datatype.Datatype[] types = null;
+    /**
+     * if the size of the array is zero, then that means this token is ignored.
+     */
+    public org.relaxng.datatype.Datatype[] types = null;
 }

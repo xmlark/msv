@@ -18,8 +18,8 @@ import com.sun.msv.grammar.NameClass;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NameClassDifferenceState extends NameClassWithChildState {
-	protected NameClass castNameClass( NameClass halfCasted, NameClass newChild ) {
-		if( halfCasted==null )	return newChild;	// first item
-		else return new DifferenceNameClass( halfCasted, newChild );
-	}
+    protected NameClass castNameClass( NameClass halfCasted, NameClass newChild ) {
+        if( halfCasted==null )    return newChild;    // first item
+        else return new DifferenceNameClass( halfCasted, newChild );
+    }
 }

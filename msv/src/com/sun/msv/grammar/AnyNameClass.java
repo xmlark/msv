@@ -15,20 +15,20 @@ package com.sun.msv.grammar;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class AnyNameClass extends NameClass {
-	
-	/** AnyNameClass accpets any name, as its name suggests. */
-	public boolean accepts( String namespaceURI, String localName ) {
-		return true;
-	}
-	
-	public Object visit( NameClassVisitor visitor ) { return visitor.onAnyName(this); }
-	
-	/** singleton instance */
-	public static final NameClass theInstance = new AnyNameClass();
-	
-	private AnyNameClass() {}
-	
-	public String toString()	{ return "*:*"; }
+    
+    /** AnyNameClass accpets any name, as its name suggests. */
+    public boolean accepts( String namespaceURI, String localName ) {
+        return true;
+    }
+    
+    public Object visit( NameClassVisitor visitor ) { return visitor.onAnyName(this); }
+    
+    /** singleton instance */
+    public static final NameClass theInstance = new AnyNameClass();
+    
+    private AnyNameClass() {}
+    
+    public String toString()    { return "*:*"; }
     
     // serialization support
     private static final long serialVersionUID = 1;    

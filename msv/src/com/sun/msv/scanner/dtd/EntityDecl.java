@@ -1,5 +1,5 @@
 /*
- * @(#)EntityDecl.java	1.3 00/02/24
+ * @(#)EntityDecl.java    1.3 00/02/24
  * 
  * Copyright (c) 1998-2000 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -27,8 +27,8 @@ package com.sun.msv.scanner.dtd;
  * @version 1.3 00/02/24
  */
 class EntityDecl {
-    String	name;		// <!ENTITY name ... >
+    String    name;        // <!ENTITY name ... >
 
-    boolean	isFromInternalSubset;
-    boolean	isPE;
+    boolean    isFromInternalSubset;
+    boolean    isPE;
 }

@@ -200,10 +200,10 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
             writer.end("value");
             return;
         }
-    		
-    	throw new UnsupportedOperationException( exp.dt.getClass().getName() );
+            
+        throw new UnsupportedOperationException( exp.dt.getClass().getName() );
     }
-    	
+        
     public void onData(DataExp exp) {
         Datatype dt = exp.dt;
 
@@ -222,8 +222,8 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
         // unknown datatype
         writer.element("data-unknown", new String[] { "class", dt.getClass().getName()});
     }
-		
-		
+        
+        
     /**
      * serializes the given datatype.
      * 
@@ -347,7 +347,7 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
         writer.characters(value);
         writer.end("param");
     }
-		
+        
     /**
      * returns true if the specified type is a pre-defined XSD type
      * without any facet.
@@ -361,7 +361,7 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
                 || x instanceof com.sun.msv.grammar.relax.EmptyStringType
                 || x instanceof com.sun.msv.grammar.relax.NoneType);
     }
-		
+        
     /**
      * serializes a union type.
      * this method is called by serializeDataType method.
@@ -375,7 +375,7 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
 
         writer.end("choice");
     }
-		
+        
     /**
      * serializes a list type.
      * this method is called by serializeDataType method.

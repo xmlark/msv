@@ -23,28 +23,28 @@ import com.sun.msv.util.StringPair;
  */
 public class StringState extends ExpressionWithoutChildState
 {
-	protected final StringBuffer text = new StringBuffer();
-	
-	public void characters( char[] buf, int from, int len ) {
-		text.append(buf,from,len);
-	}
-	
-	public void ignorableWhitespace( char[] buf, int from, int len ) {
-		text.append(buf,from,len);
-	}
-	
-	protected Expression makeExpression() {
-		if("preserve".equals(startTag.getAttribute("whiteSpace")))
-			return reader.pool.createValue(
-				StringType.theInstance,
-				new StringPair("","string"),
-				text.toString() );
-		else
-			return reader.pool.createValue(
-				TokenType.theInstance,
-				new StringPair("","token"),
-				WhiteSpaceProcessor.collapse(text.toString()) );
-		
-		// masquerade RELAX NG built-in datatypes
-	}
+    protected final StringBuffer text = new StringBuffer();
+    
+    public void characters( char[] buf, int from, int len ) {
+        text.append(buf,from,len);
+    }
+    
+    public void ignorableWhitespace( char[] buf, int from, int len ) {
+        text.append(buf,from,len);
+    }
+    
+    protected Expression makeExpression() {
+        if("preserve".equals(startTag.getAttribute("whiteSpace")))
+            return reader.pool.createValue(
+                StringType.theInstance,
+                new StringPair("","string"),
+                text.toString() );
+        else
+            return reader.pool.createValue(
+                TokenType.theInstance,
+                new StringPair("","token"),
+                WhiteSpaceProcessor.collapse(text.toString()) );
+        
+        // masquerade RELAX NG built-in datatypes
+    }
 }

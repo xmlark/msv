@@ -22,7 +22,7 @@ import com.sun.msv.reader.xmlschema.XMLSchemaReader;
  */
 public class XSFactoryImpl extends FactoryImpl {
 
-	protected Grammar parse( InputSource is, GrammarReaderController controller ) {
-		return XMLSchemaReader.parse(is,factory,controller);
-	}
+    protected Grammar parse( InputSource is, GrammarReaderController controller ) {
+        return XMLSchemaReader.parse(is,factory,controller);
+    }
 }

@@ -32,39 +32,39 @@ public class UnionState extends TypeState implements XSTypeOwner {
         this.newTypeUri  = newTypeUri;
         this.newTypeName = newTypeName;
     }
-	
-	private final ArrayList memberTypes = new ArrayList();
-												  
-	protected State createChildState( StartTagInfo tag ) {
-		// accepts elements from the same namespace only.
-		if( !startTag.namespaceURI.equals(tag.namespaceURI) )	return null;
-		
-		if( tag.localName.equals("annotation") )	return new IgnoreState();
-		if( tag.localName.equals("simpleType") )	return new SimpleTypeState();
-		
-		return null;	// unrecognized
-	}
-	
-	protected void startSelf() {
-		super.startSelf();
-		
-		// if memberTypes attribute is used, load it.
-		String memberTypes = startTag.getAttribute("memberTypes");
-		if(memberTypes!=null) {
-			StringTokenizer tokens = new StringTokenizer(memberTypes);
-			while( tokens.hasMoreTokens() )
-	            onEndChild( ((XSDatatypeResolver)reader)
-                    .resolveXSDatatype(tokens.nextToken()) );
-		}
-	}
-	
-	public void onEndChild( XSDatatypeExp type ) {
-		memberTypes.add(type);
-	}
     
-	
-	protected final XSDatatypeExp makeType() throws DatatypeException {
+    private final ArrayList memberTypes = new ArrayList();
+                                                  
+    protected State createChildState( StartTagInfo tag ) {
+        // accepts elements from the same namespace only.
+        if( !startTag.namespaceURI.equals(tag.namespaceURI) )    return null;
+        
+        if( tag.localName.equals("annotation") )    return new IgnoreState();
+        if( tag.localName.equals("simpleType") )    return new SimpleTypeState();
+        
+        return null;    // unrecognized
+    }
+    
+    protected void startSelf() {
+        super.startSelf();
+        
+        // if memberTypes attribute is used, load it.
+        String memberTypes = startTag.getAttribute("memberTypes");
+        if(memberTypes!=null) {
+            StringTokenizer tokens = new StringTokenizer(memberTypes);
+            while( tokens.hasMoreTokens() )
+                onEndChild( ((XSDatatypeResolver)reader)
+                    .resolveXSDatatype(tokens.nextToken()) );
+        }
+    }
+    
+    public void onEndChild( XSDatatypeExp type ) {
+        memberTypes.add(type);
+    }
+    
+    
+    protected final XSDatatypeExp makeType() throws DatatypeException {
         return XSDatatypeExp.makeUnion( newTypeUri, newTypeName, memberTypes, reader );
-	}
+    }
 
 }

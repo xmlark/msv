@@ -21,26 +21,26 @@ import com.sun.msv.util.StartTagInfo;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 class RootModuleState extends SimpleState {
-	protected final String expectedNamespace;
-	
-	RootModuleState( String expectedNamespace ) {
-		this.expectedNamespace = expectedNamespace;
-	}
-	
-	protected State createChildState( StartTagInfo tag ) {
-		if(tag.namespaceURI.equals(RELAXCoreReader.RELAXCoreNamespace)
-		&& tag.localName.equals("module"))
-			return new ModuleState(expectedNamespace);
-		
-		return null;
-	}
-	
-	// module wrap-up.
-	protected void endSelf() {
-		
-		final RELAXCoreReader reader = (RELAXCoreReader)this.reader;
-		reader.wrapUp();
-		
-		super.endSelf();
-	}
+    protected final String expectedNamespace;
+    
+    RootModuleState( String expectedNamespace ) {
+        this.expectedNamespace = expectedNamespace;
+    }
+    
+    protected State createChildState( StartTagInfo tag ) {
+        if(tag.namespaceURI.equals(RELAXCoreReader.RELAXCoreNamespace)
+        && tag.localName.equals("module"))
+            return new ModuleState(expectedNamespace);
+        
+        return null;
+    }
+    
+    // module wrap-up.
+    protected void endSelf() {
+        
+        final RELAXCoreReader reader = (RELAXCoreReader)this.reader;
+        reader.wrapUp();
+        
+        super.endSelf();
+    }
 }

@@ -27,12 +27,12 @@ import com.sun.msv.grammar.relax.RELAXModule;
  */
 public class ModuleState extends ModuleMergeState
 {
-	protected ModuleState(String expectedNamespace) { super(expectedNamespace); }
+    protected ModuleState(String expectedNamespace) { super(expectedNamespace); }
 
-	protected void startSelf()
-	{
-		super.startSelf();
-		// switch current module to new one.
-		getReader().module = new RELAXModule(reader.pool,targetNamespace);
-	}
+    protected void startSelf()
+    {
+        super.startSelf();
+        // switch current module to new one.
+        getReader().module = new RELAXModule(reader.pool,targetNamespace);
+    }
 }

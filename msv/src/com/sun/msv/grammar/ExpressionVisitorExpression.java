@@ -15,21 +15,21 @@ package com.sun.msv.grammar;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface ExpressionVisitorExpression {
-	
-	Expression onAttribute( AttributeExp exp );
-	Expression onChoice( ChoiceExp exp );
-	Expression onElement( ElementExp exp );
-	Expression onOneOrMore( OneOrMoreExp exp );
-	Expression onMixed( MixedExp exp );
-	Expression onList( ListExp exp );
-	Expression onRef( ReferenceExp exp );
-	Expression onOther( OtherExp exp );
-	Expression onEpsilon();
-	Expression onNullSet();
-	Expression onAnyString();
-	Expression onSequence( SequenceExp exp );
-	Expression onData( DataExp exp );
-	Expression onValue( ValueExp exp );
-	Expression onConcur( ConcurExp p );
-	Expression onInterleave( InterleaveExp p );
+    
+    Expression onAttribute( AttributeExp exp );
+    Expression onChoice( ChoiceExp exp );
+    Expression onElement( ElementExp exp );
+    Expression onOneOrMore( OneOrMoreExp exp );
+    Expression onMixed( MixedExp exp );
+    Expression onList( ListExp exp );
+    Expression onRef( ReferenceExp exp );
+    Expression onOther( OtherExp exp );
+    Expression onEpsilon();
+    Expression onNullSet();
+    Expression onAnyString();
+    Expression onSequence( SequenceExp exp );
+    Expression onData( DataExp exp );
+    Expression onValue( ValueExp exp );
+    Expression onConcur( ConcurExp p );
+    Expression onInterleave( InterleaveExp p );
 }

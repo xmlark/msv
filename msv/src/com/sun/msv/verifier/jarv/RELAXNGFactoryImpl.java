@@ -27,19 +27,19 @@ import com.sun.msv.reader.trex.ng.RELAXNGReader;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RELAXNGFactoryImpl extends FactoryImpl {
-	
+    
     private DatatypeLibraryFactory datatypeLibraryFactory = null;
     
     private static final String PROP_NAME = "datatypeLibraryFactory";
     
-	protected Grammar parse( InputSource is, GrammarReaderController controller ) {
+    protected Grammar parse( InputSource is, GrammarReaderController controller ) {
         RELAXNGReader reader = new RELAXNGReader(controller,factory);
         if( datatypeLibraryFactory!=null )
             reader.setDatatypeLibraryFactory(datatypeLibraryFactory);
         reader.parse(is);
         
         return reader.getResult();
-	}
+    }
     
     public Object getProperty(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
         if( name.equals(PROP_NAME) )

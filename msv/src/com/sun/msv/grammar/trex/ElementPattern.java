@@ -19,13 +19,13 @@ import com.sun.msv.grammar.NameClass;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ElementPattern extends ElementExp {
-	public final NameClass nameClass;
-	public final NameClass getNameClass() { return nameClass; }
-	
-	public ElementPattern( NameClass nameClass, Expression contentModel ) {
-		super(contentModel,false);
-		this.nameClass = nameClass;
-	}
+    public final NameClass nameClass;
+    public final NameClass getNameClass() { return nameClass; }
+    
+    public ElementPattern( NameClass nameClass, Expression contentModel ) {
+        super(contentModel,false);
+        this.nameClass = nameClass;
+    }
     
     // serialization support
     private static final long serialVersionUID = 1;    

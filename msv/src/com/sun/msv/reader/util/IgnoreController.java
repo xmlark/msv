@@ -23,7 +23,7 @@ import com.sun.msv.reader.GrammarReaderController;
  */
 public class IgnoreController implements GrammarReaderController
 {
-	public void warning( Locator[] locs, String errorMessage ) {}
-	public void error( Locator[] locs, String errorMessage, Exception nestedException ) {}
-	public InputSource resolveEntity( String p, String s ) { return null; }
+    public void warning( Locator[] locs, String errorMessage ) {}
+    public void error( Locator[] locs, String errorMessage, Exception nestedException ) {}
+    public InputSource resolveEntity( String p, String s ) { return null; }
 }

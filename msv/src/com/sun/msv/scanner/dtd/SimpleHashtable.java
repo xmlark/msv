@@ -1,5 +1,5 @@
 /*
- * @(#)SimpleHashtable.java	1.3 00/02/24
+ * @(#)SimpleHashtable.java    1.3 00/02/24
  * 
  * Copyright (c) 1998-2000 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -30,21 +30,21 @@ import java.util.Enumeration;
  * This class implements a special purpose hashtable.  It works like a
  * normal <code>java.util.Hashtable</code> except that: <OL>
  *
- *	<LI> Keys to "get" are strings which are known to be interned,
- *	so that "==" is used instead of "String.equals".  (Interning
- *	could be document-relative instead of global.)
+ *    <LI> Keys to "get" are strings which are known to be interned,
+ *    so that "==" is used instead of "String.equals".  (Interning
+ *    could be document-relative instead of global.)
  *
- *	<LI> It's not synchronized, since it's to be used only by
- *	one thread at a time.
+ *    <LI> It's not synchronized, since it's to be used only by
+ *    one thread at a time.
  *
- *	<LI> The keys () enumerator allocates no memory, with live
- *	updates to the data disallowed.
+ *    <LI> The keys () enumerator allocates no memory, with live
+ *    updates to the data disallowed.
  *
- *	<LI> It's got fewer bells and whistles:  fixed threshold and
- *	load factor, no JDK 1.2 collection support, only keys can be
- *	enumerated, things can't be removed, simpler inheritance; more.
+ *    <LI> It's got fewer bells and whistles:  fixed threshold and
+ *    load factor, no JDK 1.2 collection support, only keys can be
+ *    enumerated, things can't be removed, simpler inheritance; more.
  *
- *	</OL>
+ *    </OL>
  *
  * <P> The overall result is that it's less expensive to use these in
  * performance-critical locations, in terms both of CPU and memory,
@@ -57,16 +57,16 @@ import java.util.Enumeration;
 final class SimpleHashtable implements Enumeration
 {
     // entries ...
-    private Entry		table[];
+    private Entry        table[];
 
     // currently enumerated key
-    private Entry		current = null;
-    private int			currentBucket = 0;
+    private Entry        current = null;
+    private int            currentBucket = 0;
 
-    private int			count;
-    private int			threshold;
+    private int            count;
+    private int            threshold;
 
-    private static final float	loadFactor = 0.75f;
+    private static final float    loadFactor = 0.75f;
 
 
     /**
@@ -76,31 +76,31 @@ final class SimpleHashtable implements Enumeration
      * @param      initialCapacity   the initial capacity of the hashtable.
      */
     public SimpleHashtable(int initialCapacity) {
-	if (initialCapacity < 0)
-	    throw new IllegalArgumentException("Illegal Capacity: "+
+    if (initialCapacity < 0)
+        throw new IllegalArgumentException("Illegal Capacity: "+
                                                initialCapacity);
         if (initialCapacity==0)
             initialCapacity = 1;
-	table = new Entry[initialCapacity];
-	threshold = (int)(initialCapacity * loadFactor);
+    table = new Entry[initialCapacity];
+    threshold = (int)(initialCapacity * loadFactor);
     }
 
     /**
      * Constructs a new, empty hashtable with a default capacity.
      */
     public SimpleHashtable() {
-	this(11);
+    this(11);
     }
 
     /**
      */
     public void clear ()
     {
-	count = 0;
-	currentBucket = 0;
-	current = null;
-	for (int i = 0; i < table.length; i++)
-	    table [i] = null;
+    count = 0;
+    currentBucket = 0;
+    current = null;
+    for (int i = 0; i < table.length; i++)
+        table [i] = null;
     }
 
     /**
@@ -109,7 +109,7 @@ final class SimpleHashtable implements Enumeration
      * @return  the number of keys in this hashtable.
      */
     public int size() {
-	return count;
+    return count;
     }
 
     /**
@@ -119,9 +119,9 @@ final class SimpleHashtable implements Enumeration
      * @see     Enumeration
      */
     public Enumeration keys() {
-	currentBucket = 0;
-	current = null;
-	return this;
+    currentBucket = 0;
+    current = null;
+    return this;
     }
 
     /**
@@ -130,14 +130,14 @@ final class SimpleHashtable implements Enumeration
      */
     public boolean hasMoreElements ()
     {
-	if (current != null)
-	    return true;
-	while (currentBucket < table.length) {
-	    current = table [currentBucket++];
-	    if (current != null)
-		return true;
-	}
-	return false;
+    if (current != null)
+        return true;
+    while (currentBucket < table.length) {
+        current = table [currentBucket++];
+        if (current != null)
+        return true;
+    }
+    return false;
     }
 
     /**
@@ -146,13 +146,13 @@ final class SimpleHashtable implements Enumeration
      */
     public Object nextElement ()
     {
-	Object retval;
+    Object retval;
 
-	if (current == null)
-	    throw new IllegalStateException ();
-	retval = current.key;
-	current = current.next;
-	return retval;
+    if (current == null)
+        throw new IllegalStateException ();
+    retval = current.key;
+    current = current.next;
+    return retval;
     }
 
 
@@ -160,14 +160,14 @@ final class SimpleHashtable implements Enumeration
      * Returns the value to which the specified key is mapped in this hashtable.
      */
     public Object get (String key) {
-	Entry tab[] = table;
-	int hash = key.hashCode();
-	int index = (hash & 0x7FFFFFFF) % tab.length;
-	for (Entry e = tab[index] ; e != null ; e = e.next) {
-	    if ((e.hash == hash) && (e.key == key))
-		return e.value;
-	}
-	return null;
+    Entry tab[] = table;
+    int hash = key.hashCode();
+    int index = (hash & 0x7FFFFFFF) % tab.length;
+    for (Entry e = tab[index] ; e != null ; e = e.next) {
+        if ((e.hash == hash) && (e.key == key))
+        return e.value;
+    }
+    return null;
     }
 
     /**
@@ -175,14 +175,14 @@ final class SimpleHashtable implements Enumeration
      * hashtable ... the key isn't necessarily interned, though.
      */
     public Object getNonInterned (String key) {
-	Entry tab[] = table;
-	int hash = key.hashCode();
-	int index = (hash & 0x7FFFFFFF) % tab.length;
-	for (Entry e = tab[index] ; e != null ; e = e.next) {
-	    if ((e.hash == hash) && e.key.equals(key))
-		return e.value;
-	}
-	return null;
+    Entry tab[] = table;
+    int hash = key.hashCode();
+    int index = (hash & 0x7FFFFFFF) % tab.length;
+    for (Entry e = tab[index] ; e != null ; e = e.next) {
+        if ((e.hash == hash) && e.key.equals(key))
+        return e.value;
+    }
+    return null;
     }
 
     /**
@@ -193,32 +193,32 @@ final class SimpleHashtable implements Enumeration
      * and load factor. 
      */
     private void rehash() {
-	int oldCapacity = table.length;
-	Entry oldMap[] = table;
+    int oldCapacity = table.length;
+    Entry oldMap[] = table;
 
-	int newCapacity = oldCapacity * 2 + 1;
-	Entry newMap[] = new Entry[newCapacity];
+    int newCapacity = oldCapacity * 2 + 1;
+    Entry newMap[] = new Entry[newCapacity];
 
-	threshold = (int)(newCapacity * loadFactor);
-	table = newMap;
+    threshold = (int)(newCapacity * loadFactor);
+    table = newMap;
 
-	/*
-	System.out.println("rehash old=" + oldCapacity
-		+ ", new=" + newCapacity
-		+ ", thresh=" + threshold
-		+ ", count=" + count);
-	*/
+    /*
+    System.out.println("rehash old=" + oldCapacity
+        + ", new=" + newCapacity
+        + ", thresh=" + threshold
+        + ", count=" + count);
+    */
 
-	for (int i = oldCapacity ; i-- > 0 ;) {
-	    for (Entry old = oldMap[i] ; old != null ; ) {
-		Entry e = old;
-		old = old.next;
+    for (int i = oldCapacity ; i-- > 0 ;) {
+        for (Entry old = oldMap[i] ; old != null ; ) {
+        Entry e = old;
+        old = old.next;
 
-		int index = (e.hash & 0x7FFFFFFF) % newCapacity;
-		e.next = newMap[index];
-		newMap[index] = e;
-	    }
-	}
+        int index = (e.hash & 0x7FFFFFFF) % newCapacity;
+        e.next = newMap[index];
+        newMap[index] = e;
+        }
+    }
     }
 
     /**
@@ -230,37 +230,37 @@ final class SimpleHashtable implements Enumeration
      * with a key that is equal to the original key. 
      */
     public Object put(Object key, Object value) {
-	// Make sure the value is not null
-	if (value == null) {
-	    throw new NullPointerException();
-	}
+    // Make sure the value is not null
+    if (value == null) {
+        throw new NullPointerException();
+    }
 
-	// Makes sure the key is not already in the hashtable.
-	Entry tab[] = table;
-	int hash = key.hashCode();
-	int index = (hash & 0x7FFFFFFF) % tab.length;
-	for (Entry e = tab[index] ; e != null ; e = e.next) {
-	    // if ((e.hash == hash) && e.key.equals(key)) {
-	    if ((e.hash == hash) && (e.key == key)) {
-		Object old = e.value;
-		e.value = value;
-		return old;
-	    }
-	}
+    // Makes sure the key is not already in the hashtable.
+    Entry tab[] = table;
+    int hash = key.hashCode();
+    int index = (hash & 0x7FFFFFFF) % tab.length;
+    for (Entry e = tab[index] ; e != null ; e = e.next) {
+        // if ((e.hash == hash) && e.key.equals(key)) {
+        if ((e.hash == hash) && (e.key == key)) {
+        Object old = e.value;
+        e.value = value;
+        return old;
+        }
+    }
 
-	if (count >= threshold) {
-	    // Rehash the table if the threshold is exceeded
-	    rehash();
+    if (count >= threshold) {
+        // Rehash the table if the threshold is exceeded
+        rehash();
 
             tab = table;
             index = (hash & 0x7FFFFFFF) % tab.length;
-	} 
+    } 
 
-	// Creates the new entry.
-	Entry e = new Entry(hash, key, value, tab[index]);
-	tab[index] = e;
-	count++;
-	return null;
+    // Creates the new entry.
+    Entry e = new Entry(hash, key, value, tab[index]);
+    tab[index] = e;
+    count++;
+    return null;
     }
 
 
@@ -268,16 +268,16 @@ final class SimpleHashtable implements Enumeration
      * Hashtable collision list.
      */
     private static class Entry {
-	int	hash;
-	Object	key;
-	Object	value;
-	Entry	next;
+    int    hash;
+    Object    key;
+    Object    value;
+    Entry    next;
 
-	protected Entry(int hash, Object key, Object value, Entry next) {
-	    this.hash = hash;
-	    this.key = key;
-	    this.value = value;
-	    this.next = next;
-	}
+    protected Entry(int hash, Object key, Object value, Entry next) {
+        this.hash = hash;
+        this.key = key;
+        this.value = value;
+        this.next = next;
+    }
     }
 }

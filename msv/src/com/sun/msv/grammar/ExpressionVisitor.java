@@ -28,21 +28,21 @@ package com.sun.msv.grammar;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface ExpressionVisitor {
-	
-	Object onAttribute( AttributeExp exp );
-	Object onChoice( ChoiceExp exp );
-	Object onElement( ElementExp exp );
-	Object onOneOrMore( OneOrMoreExp exp );
-	Object onMixed( MixedExp exp );
-	Object onList( ListExp exp );
-	Object onRef( ReferenceExp exp );
-	Object onOther( OtherExp exp );
-	Object onEpsilon();
-	Object onNullSet();
-	Object onAnyString();
-	Object onSequence( SequenceExp exp );
-	Object onData( DataExp exp );
-	Object onValue( ValueExp exp );
-	Object onConcur( ConcurExp p );
-	Object onInterleave( InterleaveExp p );
+    
+    Object onAttribute( AttributeExp exp );
+    Object onChoice( ChoiceExp exp );
+    Object onElement( ElementExp exp );
+    Object onOneOrMore( OneOrMoreExp exp );
+    Object onMixed( MixedExp exp );
+    Object onList( ListExp exp );
+    Object onRef( ReferenceExp exp );
+    Object onOther( OtherExp exp );
+    Object onEpsilon();
+    Object onNullSet();
+    Object onAnyString();
+    Object onSequence( SequenceExp exp );
+    Object onData( DataExp exp );
+    Object onValue( ValueExp exp );
+    Object onConcur( ConcurExp p );
+    Object onInterleave( InterleaveExp p );
 }

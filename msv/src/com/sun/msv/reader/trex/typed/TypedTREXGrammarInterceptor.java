@@ -20,10 +20,10 @@ import com.sun.msv.util.StartTagInfo;
  */
 public class TypedTREXGrammarInterceptor extends TREXGrammarReader.StateFactory
 {
-	public final static String LABEL_NAMESPACE =
-		"http://www.sun.com/xml/msv/trex-type";
-	
-	public State element( State parent, StartTagInfo tag ) {
-		return new TypedElementState();
-	}
+    public final static String LABEL_NAMESPACE =
+        "http://www.sun.com/xml/msv/trex-type";
+    
+    public State element( State parent, StartTagInfo tag ) {
+        return new TypedElementState();
+    }
 }

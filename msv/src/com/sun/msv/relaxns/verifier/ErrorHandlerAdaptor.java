@@ -21,19 +21,19 @@ import org.xml.sax.SAXParseException;
  */
 public class ErrorHandlerAdaptor implements ErrorHandler
 {
-	private final Dispatcher core;
-	
-	public ErrorHandlerAdaptor( Dispatcher core ) {
-		this.core = core;
-	}
-	
-	public void fatalError( SAXParseException error ) throws SAXException {
-		core.getErrorHandler().fatalError( error );
-	}
-	public void error( SAXParseException error ) throws SAXException {
-		core.getErrorHandler().error( error );
-	}
-	public void warning( SAXParseException error ) throws SAXException {
-		core.getErrorHandler().warning( error );
-	}
+    private final Dispatcher core;
+    
+    public ErrorHandlerAdaptor( Dispatcher core ) {
+        this.core = core;
+    }
+    
+    public void fatalError( SAXParseException error ) throws SAXException {
+        core.getErrorHandler().fatalError( error );
+    }
+    public void error( SAXParseException error ) throws SAXException {
+        core.getErrorHandler().error( error );
+    }
+    public void warning( SAXParseException error ) throws SAXException {
+        core.getErrorHandler().warning( error );
+    }
 }

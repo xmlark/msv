@@ -21,33 +21,33 @@ import com.sun.msv.reader.GrammarReader;
  */
 abstract class TypeWithOneChildState extends TypeState implements XSTypeOwner
 {
-	protected XSDatatypeExp type;
+    protected XSDatatypeExp type;
 
-	/** receives a Pattern object that is contained in this element. */
-	public void onEndChild( XSDatatypeExp child ) {
-		if( type!=null )
-			reader.reportError( GrammarReader.ERR_MORE_THAN_ONE_CHILD_TYPE );
-			// recover by ignoring this child
-		else
-			type = child;
-	}
+    /** receives a Pattern object that is contained in this element. */
+    public void onEndChild( XSDatatypeExp child ) {
+        if( type!=null )
+            reader.reportError( GrammarReader.ERR_MORE_THAN_ONE_CHILD_TYPE );
+            // recover by ignoring this child
+        else
+            type = child;
+    }
     
-	
-	protected final XSDatatypeExp makeType() throws DatatypeException {
-		if( type==null ) {
-			reader.reportError( GrammarReader.ERR_MISSING_CHILD_TYPE );
+    
+    protected final XSDatatypeExp makeType() throws DatatypeException {
+        if( type==null ) {
+            reader.reportError( GrammarReader.ERR_MISSING_CHILD_TYPE );
             // recover by supplying a dummy DataType
-			return new XSDatatypeExp( StringType.theInstance, reader.pool );
-		}
-		return annealType(type);
-	}
+            return new XSDatatypeExp( StringType.theInstance, reader.pool );
+        }
+        return annealType(type);
+    }
 
-	/**
-	 * performs final wrap-up and returns a fully created DataType object
-	 * that represents this element.
-	 */
-	protected XSDatatypeExp annealType( XSDatatypeExp dt ) throws DatatypeException {
-		// default implementation do nothing.
-		return dt;
-	}
+    /**
+     * performs final wrap-up and returns a fully created DataType object
+     * that represents this element.
+     */
+    protected XSDatatypeExp annealType( XSDatatypeExp dt ) throws DatatypeException {
+        // default implementation do nothing.
+        return dt;
+    }
 }

@@ -43,231 +43,231 @@ import com.sun.msv.util.StringPair;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ExpressionPool implements java.io.Serializable {
-	
-	public final Expression createAttribute( NameClass nameClass ) {
-		return unify(new AttributeExp(nameClass,Expression.anyString));
-	}
-	public final Expression createAttribute( NameClass nameClass, Expression content ) {
-		if(content==Expression.nullSet)		return content;
-		return unify(new AttributeExp(nameClass,content));
-	}
-	
-	public final Expression createEpsilon() { return Expression.epsilon; }
-	public final Expression createNullSet() { return Expression.nullSet; }
-	public final Expression createAnyString() { return Expression.anyString; }
-	
-	public final Expression createChoice( Expression left, Expression right ) {
-		if( left==Expression.nullSet )		return right;
-		if( right==Expression.nullSet )		return left;
-		
-		if( left==Expression.epsilon && right.isEpsilonReducible() )	return right;
-		if( right==Expression.epsilon && left.isEpsilonReducible() )	return left;
-		
-		// TODO: should we re-order choice in a consistent manner?
-		
-		// associative operators are grouped to the left
-		if( right instanceof ChoiceExp ) {
-			final ChoiceExp c = (ChoiceExp)right;
-			return createChoice( createChoice(left,c.exp1), c.exp2 );
-		}
+    
+    public final Expression createAttribute( NameClass nameClass ) {
+        return unify(new AttributeExp(nameClass,Expression.anyString));
+    }
+    public final Expression createAttribute( NameClass nameClass, Expression content ) {
+        if(content==Expression.nullSet)        return content;
+        return unify(new AttributeExp(nameClass,content));
+    }
+    
+    public final Expression createEpsilon() { return Expression.epsilon; }
+    public final Expression createNullSet() { return Expression.nullSet; }
+    public final Expression createAnyString() { return Expression.anyString; }
+    
+    public final Expression createChoice( Expression left, Expression right ) {
+        if( left==Expression.nullSet )        return right;
+        if( right==Expression.nullSet )        return left;
+        
+        if( left==Expression.epsilon && right.isEpsilonReducible() )    return right;
+        if( right==Expression.epsilon && left.isEpsilonReducible() )    return left;
+        
+        // TODO: should we re-order choice in a consistent manner?
+        
+        // associative operators are grouped to the left
+        if( right instanceof ChoiceExp ) {
+            final ChoiceExp c = (ChoiceExp)right;
+            return createChoice( createChoice(left,c.exp1), c.exp2 );
+        }
 
-		// eliminate duplicate choice items by checking that the right
-		// is already included in the left.
-		Expression next = left;
+        // eliminate duplicate choice items by checking that the right
+        // is already included in the left.
+        Expression next = left;
 
-		while( true ) {
-			if( next==right )	return left;	// left is already in the choice
-			if(!(next instanceof ChoiceExp))	break;
-				
-			ChoiceExp cp = (ChoiceExp)next;
-			if( cp.exp2==right )	return left;
-			next = cp.exp1;
-		}
+        while( true ) {
+            if( next==right )    return left;    // left is already in the choice
+            if(!(next instanceof ChoiceExp))    break;
+                
+            ChoiceExp cp = (ChoiceExp)next;
+            if( cp.exp2==right )    return left;
+            next = cp.exp1;
+        }
 
-		// special (optimized) unification.
-		// this will prevent unnecessary ChoiceExp instanciation.
-		Expression o = expTable.get(
-				Expression.hashCode(left,right,Expression.HASHCODE_CHOICE),
-				left, right, ChoiceExp.class );
-		if(o==null)
-			// different thread may possibly be doing the same thing at the same time.
-			// so we have to call unify method, too synchronize update.
-			return unify( new ChoiceExp(left,right) );
-		else
-			return o;
-	}
-	
-	public final Expression createOneOrMore( Expression child ) {
-		if( child == Expression.epsilon
-		||  child == Expression.anyString
-		||  child == Expression.nullSet
-		||  child instanceof OneOrMoreExp )
-			return child;
-		
-		return unify(new OneOrMoreExp(child));
-	}
-	
-	public final Expression createZeroOrMore( Expression child ) {
-		return createOptional(createOneOrMore(child));
-	}
-	
-	public final Expression createOptional( Expression child ) {
-		// optimization will be done in createChoice method.
-		return createChoice(child,Expression.epsilon);
-	}
-	
-	public final Expression createData( XSDatatype dt ) {
+        // special (optimized) unification.
+        // this will prevent unnecessary ChoiceExp instanciation.
+        Expression o = expTable.get(
+                Expression.hashCode(left,right,Expression.HASHCODE_CHOICE),
+                left, right, ChoiceExp.class );
+        if(o==null)
+            // different thread may possibly be doing the same thing at the same time.
+            // so we have to call unify method, too synchronize update.
+            return unify( new ChoiceExp(left,right) );
+        else
+            return o;
+    }
+    
+    public final Expression createOneOrMore( Expression child ) {
+        if( child == Expression.epsilon
+        ||  child == Expression.anyString
+        ||  child == Expression.nullSet
+        ||  child instanceof OneOrMoreExp )
+            return child;
+        
+        return unify(new OneOrMoreExp(child));
+    }
+    
+    public final Expression createZeroOrMore( Expression child ) {
+        return createOptional(createOneOrMore(child));
+    }
+    
+    public final Expression createOptional( Expression child ) {
+        // optimization will be done in createChoice method.
+        return createChoice(child,Expression.epsilon);
+    }
+    
+    public final Expression createData( XSDatatype dt ) {
         String ns = dt.getNamespaceUri();
         if(ns==null)    ns="\u0000";    // use something that doesn't collide with others.
-		return createData( dt, new StringPair(ns,dt.displayName()) );
-	}
-	
-	public final Expression createData( Datatype dt, StringPair typeName ) {
-		return createData( dt, typeName, Expression.nullSet );
-	}
-	
-	public final Expression createData( Datatype dt, StringPair typeName, Expression except ) {
-		return unify( new DataExp(dt,typeName,except) );
-	}
-	
-	public final Expression createValue( XSDatatype dt, Object value ) {
-		return createValue( dt, new StringPair("",dt.displayName()), value );
-	}
-	
-	public final Expression createValue( Datatype dt, StringPair typeName, Object value ) {
-		return unify( new ValueExp(dt,typeName,value) );
-	}
-	
-	public final Expression createList( Expression exp ) {
+        return createData( dt, new StringPair(ns,dt.displayName()) );
+    }
+    
+    public final Expression createData( Datatype dt, StringPair typeName ) {
+        return createData( dt, typeName, Expression.nullSet );
+    }
+    
+    public final Expression createData( Datatype dt, StringPair typeName, Expression except ) {
+        return unify( new DataExp(dt,typeName,except) );
+    }
+    
+    public final Expression createValue( XSDatatype dt, Object value ) {
+        return createValue( dt, new StringPair("",dt.displayName()), value );
+    }
+    
+    public final Expression createValue( Datatype dt, StringPair typeName, Object value ) {
+        return unify( new ValueExp(dt,typeName,value) );
+    }
+    
+    public final Expression createList( Expression exp ) {
         if(exp==Expression.nullSet) return exp;
-		return unify( new ListExp(exp) );
-	}
-	
-	public final Expression createMixed( Expression body ) {
-		if( body==Expression.nullSet )		return Expression.nullSet;
-		if( body==Expression.epsilon )		return Expression.anyString;
-		
-		return unify( new MixedExp(body) );
-	}
-	
-	public final Expression createSequence( Expression left, Expression right ) {
-		if( left ==Expression.nullSet
-		||	right==Expression.nullSet )	return Expression.nullSet;
-		if( left ==Expression.epsilon )	return right;
-		if( right==Expression.epsilon )	return left;
-		
-		// associative operators are grouped to the left
-		if( right instanceof SequenceExp ) {
-			final SequenceExp s = (SequenceExp)right;
-			return createSequence( createSequence(left,s.exp1), s.exp2 );
-		}
-		
-		// special (optimized) unification.
-		Expression o = expTable.get(
-				Expression.hashCode(left,right,Expression.HASHCODE_SEQUENCE),
-				left, right, SequenceExp.class );
-		if(o==null)
-			return unify( new SequenceExp(left,right) );
-		else
-			return o;
-	}
+        return unify( new ListExp(exp) );
+    }
+    
+    public final Expression createMixed( Expression body ) {
+        if( body==Expression.nullSet )        return Expression.nullSet;
+        if( body==Expression.epsilon )        return Expression.anyString;
+        
+        return unify( new MixedExp(body) );
+    }
+    
+    public final Expression createSequence( Expression left, Expression right ) {
+        if( left ==Expression.nullSet
+        ||    right==Expression.nullSet )    return Expression.nullSet;
+        if( left ==Expression.epsilon )    return right;
+        if( right==Expression.epsilon )    return left;
+        
+        // associative operators are grouped to the left
+        if( right instanceof SequenceExp ) {
+            final SequenceExp s = (SequenceExp)right;
+            return createSequence( createSequence(left,s.exp1), s.exp2 );
+        }
+        
+        // special (optimized) unification.
+        Expression o = expTable.get(
+                Expression.hashCode(left,right,Expression.HASHCODE_SEQUENCE),
+                left, right, SequenceExp.class );
+        if(o==null)
+            return unify( new SequenceExp(left,right) );
+        else
+            return o;
+    }
 
-	public final Expression createConcur( Expression left, Expression right ) {
-		if( left==Expression.nullSet || right==Expression.nullSet )	return Expression.nullSet;
-		if( left==Expression.epsilon ) {
-			if( right.isEpsilonReducible() )	return Expression.epsilon;
-			else								return Expression.nullSet;
-		}
-		if( right==Expression.epsilon ) {
-			if( left.isEpsilonReducible() )		return Expression.epsilon;
-			else								return Expression.nullSet;
-		}
-		
-		// associative operators are grouped to the left
-		if( right instanceof ConcurExp ) {
-			final ConcurExp c = (ConcurExp)right;
-			return createConcur( createConcur(left, c.exp1), c.exp2 );
-		}
-		
-		return unify(new ConcurExp(left,right));
-	}
-	
-	public final Expression createInterleave( Expression left, Expression right ) {
-		if( left == Expression.epsilon )	return right;
-		if( right== Expression.epsilon )	return left;
-		if( left == Expression.nullSet
-		||  right== Expression.nullSet )	return Expression.nullSet;
-		
-		// associative operators are grouped to the left
-		if( right instanceof InterleaveExp ) {
-			final InterleaveExp i = (InterleaveExp)right;
-			return createInterleave( createInterleave(left, i.exp1), i.exp2 );
-		}
-		
-		return unify(new InterleaveExp(left,right));
-	}
-	
-	
-	/** hash table that contains all expressions currently known to this table. */
-	private final ClosedHash expTable;
-	
-	/**
-	 * creates new expression pool as a child pool of the given parent pool.
-	 * 
-	 * <P>
-	 * Every expression memorized in the parent pool can be retrieved, but update
-	 * operations are only performed upon the child pool.
-	 * In this way, the parent pool can be shared among the multiple threads without
-	 * interfering performance.
-	 * 
-	 * <P>
-	 * Furthermore, you can throw away a child pool after a certain time period to
-	 * prevent it from eating up memory.
-	 */
-	public ExpressionPool( ExpressionPool parent )	{ expTable = new ClosedHash(parent.expTable); }
-	public ExpressionPool()							{ expTable = new ClosedHash(); }
-	
-	
-	
-	/**
-	 * unifies expressions.
-	 * 
-	 * If the equivalent expression is already registered in the table,
-	 * destroy newly created one (so that no two objects represents
-	 * same expression structure).
-	 * 
-	 * If it's not registered, then register it and return it.
-	 */
-	protected final Expression unify( Expression exp ) {
-		// call of get method need not be synchronized.
-		// the implementation guarantee that simulatenous calls to get & put
-		// will work correctly.
-		Object o = expTable.get(exp);
-		
-		if(o==null) {
-			// expression may not be registered. So try it again with lock
-			synchronized(expTable) {
-				o = expTable.get(exp);
-				if(o==null) {
-					// this check prevents two same expressions to be added simultaneously.
-					// expression is not registered.
-					expTable.put( exp );
-					return exp;
-				}
-			}
-		}
-		
-		// expression is already registered.
-		return (Expression)o;
-	}
+    public final Expression createConcur( Expression left, Expression right ) {
+        if( left==Expression.nullSet || right==Expression.nullSet )    return Expression.nullSet;
+        if( left==Expression.epsilon ) {
+            if( right.isEpsilonReducible() )    return Expression.epsilon;
+            else                                return Expression.nullSet;
+        }
+        if( right==Expression.epsilon ) {
+            if( left.isEpsilonReducible() )        return Expression.epsilon;
+            else                                return Expression.nullSet;
+        }
+        
+        // associative operators are grouped to the left
+        if( right instanceof ConcurExp ) {
+            final ConcurExp c = (ConcurExp)right;
+            return createConcur( createConcur(left, c.exp1), c.exp2 );
+        }
+        
+        return unify(new ConcurExp(left,right));
+    }
+    
+    public final Expression createInterleave( Expression left, Expression right ) {
+        if( left == Expression.epsilon )    return right;
+        if( right== Expression.epsilon )    return left;
+        if( left == Expression.nullSet
+        ||  right== Expression.nullSet )    return Expression.nullSet;
+        
+        // associative operators are grouped to the left
+        if( right instanceof InterleaveExp ) {
+            final InterleaveExp i = (InterleaveExp)right;
+            return createInterleave( createInterleave(left, i.exp1), i.exp2 );
+        }
+        
+        return unify(new InterleaveExp(left,right));
+    }
+    
+    
+    /** hash table that contains all expressions currently known to this table. */
+    private final ClosedHash expTable;
+    
+    /**
+     * creates new expression pool as a child pool of the given parent pool.
+     * 
+     * <P>
+     * Every expression memorized in the parent pool can be retrieved, but update
+     * operations are only performed upon the child pool.
+     * In this way, the parent pool can be shared among the multiple threads without
+     * interfering performance.
+     * 
+     * <P>
+     * Furthermore, you can throw away a child pool after a certain time period to
+     * prevent it from eating up memory.
+     */
+    public ExpressionPool( ExpressionPool parent )    { expTable = new ClosedHash(parent.expTable); }
+    public ExpressionPool()                            { expTable = new ClosedHash(); }
+    
+    
+    
+    /**
+     * unifies expressions.
+     * 
+     * If the equivalent expression is already registered in the table,
+     * destroy newly created one (so that no two objects represents
+     * same expression structure).
+     * 
+     * If it's not registered, then register it and return it.
+     */
+    protected final Expression unify( Expression exp ) {
+        // call of get method need not be synchronized.
+        // the implementation guarantee that simulatenous calls to get & put
+        // will work correctly.
+        Object o = expTable.get(exp);
+        
+        if(o==null) {
+            // expression may not be registered. So try it again with lock
+            synchronized(expTable) {
+                o = expTable.get(exp);
+                if(o==null) {
+                    // this check prevents two same expressions to be added simultaneously.
+                    // expression is not registered.
+                    expTable.put( exp );
+                    return exp;
+                }
+            }
+        }
+        
+        // expression is already registered.
+        return (Expression)o;
+    }
 
 
-	/**
-	 * expression cache by closed hash.
-	 * 
-	 * Special care has to be taken wrt threading.
-	 * This implementation allows get and put method to be called simulatenously.
-	 */
+    /**
+     * expression cache by closed hash.
+     * 
+     * Special care has to be taken wrt threading.
+     * This implementation allows get and put method to be called simulatenously.
+     */
     public final static class ClosedHash implements java.io.Serializable {
         /** The hash table data. */
         private Expression table[];

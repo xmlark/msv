@@ -19,8 +19,8 @@ import com.sun.msv.reader.SequenceState;
  */
 public class MixedState extends SequenceState
 {
-	protected Expression annealExpression( Expression exp )
-	{
-		return reader.pool.createMixed(exp);
-	}
+    protected Expression annealExpression( Expression exp )
+    {
+        return reader.pool.createMixed(exp);
+    }
 }

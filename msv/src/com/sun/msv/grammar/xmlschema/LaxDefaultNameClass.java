@@ -41,66 +41,66 @@ import com.sun.msv.util.StringPair;
  * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class LaxDefaultNameClass extends NameClass {
-	
-	/**
-	 * @param base
-	 *		this name class accepts a name if
-	 *		<ol>
-	 *		 <li>it's in the 'base" name class and
-	 *		 <li>it's not one of those excluded names
-	 */
-	public LaxDefaultNameClass( NameClass _base ) {
-		this.base = _base;
-		names.add( new StringPair(NAMESPACE_WILDCARD,LOCALNAME_WILDCARD) );
-	}
-	
-	private NameClass base;
-	
-	public Object visit( NameClassVisitor visitor ) {
-		// create equivalent name class and let visitor visit it.
-		if( equivalentNameClass==null ) {
-			NameClass nc = base;
-			StringPair[] items = (StringPair[])names.toArray(new StringPair[0]);
-			for( int i=0; i<items.length; i++ ) {
-				if( items[i].namespaceURI==NAMESPACE_WILDCARD
-				 || items[i].localName==LOCALNAME_WILDCARD )
-					continue;
-				
-				nc = new DifferenceNameClass(nc,
-					new SimpleNameClass(items[i]));
-			}
-			equivalentNameClass = nc;
-		}
-		
-		return equivalentNameClass.visit(visitor);
-	}
-	
-	/**
-	 * equivalent name class by conventional primitives.
-	 * Initially null, and created on demand.
-	 */
-	protected NameClass equivalentNameClass;
-	
-	public boolean accepts( String namespaceURI, String localName ) {
-		return base.accepts(namespaceURI,localName) &&
-				!names.contains( new StringPair(namespaceURI,localName) );
-	}
-	
-	/**
-	 * set of {@link StringPair}s.
-	 * each item represents one name.
-	 * it also contains WILDCARD as entry.
-	 */
-	private final Set names = new java.util.HashSet();
-	
-	/**
-	 * add a name so that this name will be rejected by the accepts method.
-	 */
-	public void addName( String namespaceURI, String localName ) {
-		names.add( new StringPair(namespaceURI,localName) );
-		names.add( new StringPair(namespaceURI,LOCALNAME_WILDCARD) );
-		names.add( new StringPair(NAMESPACE_WILDCARD,localName) );
-	}
+    
+    /**
+     * @param base
+     *        this name class accepts a name if
+     *        <ol>
+     *         <li>it's in the 'base" name class and
+     *         <li>it's not one of those excluded names
+     */
+    public LaxDefaultNameClass( NameClass _base ) {
+        this.base = _base;
+        names.add( new StringPair(NAMESPACE_WILDCARD,LOCALNAME_WILDCARD) );
+    }
+    
+    private NameClass base;
+    
+    public Object visit( NameClassVisitor visitor ) {
+        // create equivalent name class and let visitor visit it.
+        if( equivalentNameClass==null ) {
+            NameClass nc = base;
+            StringPair[] items = (StringPair[])names.toArray(new StringPair[0]);
+            for( int i=0; i<items.length; i++ ) {
+                if( items[i].namespaceURI==NAMESPACE_WILDCARD
+                 || items[i].localName==LOCALNAME_WILDCARD )
+                    continue;
+                
+                nc = new DifferenceNameClass(nc,
+                    new SimpleNameClass(items[i]));
+            }
+            equivalentNameClass = nc;
+        }
+        
+        return equivalentNameClass.visit(visitor);
+    }
+    
+    /**
+     * equivalent name class by conventional primitives.
+     * Initially null, and created on demand.
+     */
+    protected NameClass equivalentNameClass;
+    
+    public boolean accepts( String namespaceURI, String localName ) {
+        return base.accepts(namespaceURI,localName) &&
+                !names.contains( new StringPair(namespaceURI,localName) );
+    }
+    
+    /**
+     * set of {@link StringPair}s.
+     * each item represents one name.
+     * it also contains WILDCARD as entry.
+     */
+    private final Set names = new java.util.HashSet();
+    
+    /**
+     * add a name so that this name will be rejected by the accepts method.
+     */
+    public void addName( String namespaceURI, String localName ) {
+        names.add( new StringPair(namespaceURI,localName) );
+        names.add( new StringPair(namespaceURI,LOCALNAME_WILDCARD) );
+        names.add( new StringPair(NAMESPACE_WILDCARD,localName) );
+    }
     
     // serialization support
     private static final long serialVersionUID = 1;    

@@ -20,30 +20,30 @@ import com.sun.msv.grammar.NameClass;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ElementRule extends ElementExp {
-	
-	/** constraints over start tag of the element */
-	public final TagClause clause;
-	
-	/** Attribute-free content model */
-	public final Expression attributeFreeContentModel;
-	
-	protected ElementRules parent;
+    
+    /** constraints over start tag of the element */
+    public final TagClause clause;
+    
+    /** Attribute-free content model */
+    public final Expression attributeFreeContentModel;
+    
+    protected ElementRules parent;
 
-	/** gets the parent ElementRules object.
-	 * 
-	 * when this object is used as a named, no-inline elementRule,
-	 * this variable holds a reference to the parent ElementRules object.
-	 * otherwise, null
-	 */
-	public ElementRules getParent() { return parent; }
-	
-	public final NameClass getNameClass()	{ return clause.nameClass; }
-	
-	public ElementRule( ExpressionPool pool, TagClause clause, Expression contentModel ) {
-		super( pool.createSequence(clause,contentModel), true );
-		this.clause = clause;
-		this.attributeFreeContentModel = contentModel;
-	}
+    /** gets the parent ElementRules object.
+     * 
+     * when this object is used as a named, no-inline elementRule,
+     * this variable holds a reference to the parent ElementRules object.
+     * otherwise, null
+     */
+    public ElementRules getParent() { return parent; }
+    
+    public final NameClass getNameClass()    { return clause.nameClass; }
+    
+    public ElementRule( ExpressionPool pool, TagClause clause, Expression contentModel ) {
+        super( pool.createSequence(clause,contentModel), true );
+        this.clause = clause;
+        this.attributeFreeContentModel = contentModel;
+    }
     
     // serialization support
     private static final long serialVersionUID = 1;    

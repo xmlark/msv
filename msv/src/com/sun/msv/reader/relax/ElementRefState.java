@@ -18,6 +18,6 @@ import com.sun.msv.grammar.Expression;
  */
 public class ElementRefState extends LabelRefState
 {
-	protected final Expression resolve( String namespace, String label )
-	{ return ((RELAXReader)reader).resolveElementRef(namespace,label); }
+    protected final Expression resolve( String namespace, String label )
+    { return ((RELAXReader)reader).resolveElementRef(namespace,label); }
 }

@@ -36,87 +36,87 @@ import org.xml.sax.SAXException;
  */
 class DocumentBuilderImpl extends DocumentBuilder
 {
-	/**
-	 * Wrapped DocumentBuilder that does everything else.
-	 */
-	private final DocumentBuilder core;
+    /**
+     * Wrapped DocumentBuilder that does everything else.
+     */
+    private final DocumentBuilder core;
 
-	/**
-	 * The validation will be performed using this verifier.
-	 */
-	private final Verifier verifier;
-	
-	DocumentBuilderImpl( DocumentBuilder _core, Schema _schema ) throws ParserConfigurationException {
-		this.core = _core;
-		try {
-			verifier = _schema.newVerifier();
-		} catch( Exception e ) {
-			// this will not happen with our implementation of JARV.
-			throw new ParserConfigurationException(e.toString());
-		}
-		// set an error handler to throw an exception in case of error.
-		verifier.setErrorHandler( com.sun.msv.verifier.util.ErrorHandlerImpl.theInstance );
-	}
-	
-	
-	public DOMImplementation getDOMImplementation() {
-		return core.getDOMImplementation();
-	}
-	
-	public boolean isNamespaceAware() {
-		return core.isNamespaceAware();
-	}
-	
-	public boolean isValidating() {
-		return true;
-	}
-	
-	public Document newDocument() {
-		return core.newDocument();
-	}
-	
-	public Document parse( InputSource is ) throws SAXException, IOException {
-		return verify(core.parse(is));
-	}
-	
-	public Document parse( File f ) throws SAXException, IOException {
-		return verify(core.parse(f));
-	}
-	
-	public Document parse( InputStream is ) throws SAXException, IOException {
-		return verify(core.parse(is));
-	}
-	
-	public Document parse( InputStream is, String systemId ) throws SAXException, IOException {
-		return verify(core.parse(is,systemId));
-	}
-	
-	public Document parse( String url ) throws SAXException, IOException {
-		return verify(core.parse(url));
-	}
-	
-	public void setEntityResolver( EntityResolver resolver ) {
-		verifier.setEntityResolver(resolver);
-		core.setEntityResolver(resolver);
-	}
-	
-	public void setErrorHandler( ErrorHandler handler ) {
-		verifier.setErrorHandler(handler);
-		core.setErrorHandler(handler);
-	}
-	
-	
-	
-	
-	/**
-	 * Validates a given DOM and returns it if it is valid. Otherwise throw an exception.
-	 */
-	private Document verify( Document dom ) throws SAXException, IOException {
-		if(verifier.verify(dom))
-			return dom;	// the document is valid
-		
-		// this is strange because if any error happens, the error handler
-		// will throw an exception.
-		throw new SAXException("the document is invalid");
-	}
+    /**
+     * The validation will be performed using this verifier.
+     */
+    private final Verifier verifier;
+    
+    DocumentBuilderImpl( DocumentBuilder _core, Schema _schema ) throws ParserConfigurationException {
+        this.core = _core;
+        try {
+            verifier = _schema.newVerifier();
+        } catch( Exception e ) {
+            // this will not happen with our implementation of JARV.
+            throw new ParserConfigurationException(e.toString());
+        }
+        // set an error handler to throw an exception in case of error.
+        verifier.setErrorHandler( com.sun.msv.verifier.util.ErrorHandlerImpl.theInstance );
+    }
+    
+    
+    public DOMImplementation getDOMImplementation() {
+        return core.getDOMImplementation();
+    }
+    
+    public boolean isNamespaceAware() {
+        return core.isNamespaceAware();
+    }
+    
+    public boolean isValidating() {
+        return true;
+    }
+    
+    public Document newDocument() {
+        return core.newDocument();
+    }
+    
+    public Document parse( InputSource is ) throws SAXException, IOException {
+        return verify(core.parse(is));
+    }
+    
+    public Document parse( File f ) throws SAXException, IOException {
+        return verify(core.parse(f));
+    }
+    
+    public Document parse( InputStream is ) throws SAXException, IOException {
+        return verify(core.parse(is));
+    }
+    
+    public Document parse( InputStream is, String systemId ) throws SAXException, IOException {
+        return verify(core.parse(is,systemId));
+    }
+    
+    public Document parse( String url ) throws SAXException, IOException {
+        return verify(core.parse(url));
+    }
+    
+    public void setEntityResolver( EntityResolver resolver ) {
+        verifier.setEntityResolver(resolver);
+        core.setEntityResolver(resolver);
+    }
+    
+    public void setErrorHandler( ErrorHandler handler ) {
+        verifier.setErrorHandler(handler);
+        core.setErrorHandler(handler);
+    }
+    
+    
+    
+    
+    /**
+     * Validates a given DOM and returns it if it is valid. Otherwise throw an exception.
+     */
+    private Document verify( Document dom ) throws SAXException, IOException {
+        if(verifier.verify(dom))
+            return dom;    // the document is valid
+        
+        // this is strange because if any error happens, the error handler
+        // will throw an exception.
+        throw new SAXException("the document is invalid");
+    }
 }

@@ -20,30 +20,30 @@ import com.sun.msv.grammar.ReferenceExp;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DeclImpl
-	implements	org.iso_relax.dispatcher.ElementDecl,
-				org.iso_relax.dispatcher.AttributesDecl,
-				java.io.Serializable {
-	/** "meat" of this Rule. */
-	public final Expression exp;
-	
-	/** name of this rule */
-	protected final String name;
-	
-	public DeclImpl( ReferenceExp exp ) {
-		this( exp.name, exp.exp );
-	}
-	public DeclImpl( String name, Expression exp ) {
-		this.exp=exp;
-		this.name=name;
-	}
-	
-	public String getName() { return name; }
-	
-	public boolean getFeature( String feature ) throws SAXNotRecognizedException {
-		throw new SAXNotRecognizedException(feature);
-	}
-	
-	public Object getProperty( String property ) throws SAXNotRecognizedException {
-		throw new SAXNotRecognizedException(property);
-	}
+    implements    org.iso_relax.dispatcher.ElementDecl,
+                org.iso_relax.dispatcher.AttributesDecl,
+                java.io.Serializable {
+    /** "meat" of this Rule. */
+    public final Expression exp;
+    
+    /** name of this rule */
+    protected final String name;
+    
+    public DeclImpl( ReferenceExp exp ) {
+        this( exp.name, exp.exp );
+    }
+    public DeclImpl( String name, Expression exp ) {
+        this.exp=exp;
+        this.name=name;
+    }
+    
+    public String getName() { return name; }
+    
+    public boolean getFeature( String feature ) throws SAXNotRecognizedException {
+        throw new SAXNotRecognizedException(feature);
+    }
+    
+    public Object getProperty( String property ) throws SAXNotRecognizedException {
+        throw new SAXNotRecognizedException(property);
+    }
 }

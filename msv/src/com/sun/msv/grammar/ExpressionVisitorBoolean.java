@@ -15,21 +15,21 @@ package com.sun.msv.grammar;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface ExpressionVisitorBoolean {
-	
-	boolean onAttribute( AttributeExp exp );
-	boolean onChoice( ChoiceExp exp );
-	boolean onElement( ElementExp exp );
-	boolean onOneOrMore( OneOrMoreExp exp );
-	boolean onMixed( MixedExp exp );
-	boolean onList( ListExp exp );
-	boolean onRef( ReferenceExp exp );
-	boolean onOther( OtherExp exp );
-	boolean onEpsilon();
-	boolean onNullSet();
-	boolean onAnyString();
-	boolean onSequence( SequenceExp exp );
-	boolean onData( DataExp exp );
-	boolean onValue( ValueExp exp );
-	boolean onConcur( ConcurExp p );
-	boolean onInterleave( InterleaveExp p );
+    
+    boolean onAttribute( AttributeExp exp );
+    boolean onChoice( ChoiceExp exp );
+    boolean onElement( ElementExp exp );
+    boolean onOneOrMore( OneOrMoreExp exp );
+    boolean onMixed( MixedExp exp );
+    boolean onList( ListExp exp );
+    boolean onRef( ReferenceExp exp );
+    boolean onOther( OtherExp exp );
+    boolean onEpsilon();
+    boolean onNullSet();
+    boolean onAnyString();
+    boolean onSequence( SequenceExp exp );
+    boolean onData( DataExp exp );
+    boolean onValue( ValueExp exp );
+    boolean onConcur( ConcurExp p );
+    boolean onInterleave( InterleaveExp p );
 }

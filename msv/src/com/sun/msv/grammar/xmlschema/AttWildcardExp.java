@@ -15,11 +15,11 @@ package com.sun.msv.grammar.xmlschema;
  * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface AttWildcardExp {
-	/**
-	 * Gets the attribute wildcard property of this schema component.
-	 * 
-	 * @return
-	 *		If the value is absent, null is returned.
-	 */
-	AttributeWildcard getAttributeWildcard();
+    /**
+     * Gets the attribute wildcard property of this schema component.
+     * 
+     * @return
+     *        If the value is absent, null is returned.
+     */
+    AttributeWildcard getAttributeWildcard();
 }

@@ -28,34 +28,34 @@ import com.sun.msv.verifier.IVerifier;
  */
 public class SchemaImpl implements Schema
 {
-	protected final Grammar grammar;
-	protected final SAXParserFactory factory;
-	
-	protected SchemaImpl( Grammar grammar, SAXParserFactory factory,
+    protected final Grammar grammar;
+    protected final SAXParserFactory factory;
+    
+    protected SchemaImpl( Grammar grammar, SAXParserFactory factory,
         boolean _usePanicMode ) {
         
-		this.grammar = grammar;
-		this.factory = factory;
+        this.grammar = grammar;
+        this.factory = factory;
         this.usePanicMode = _usePanicMode;
-	}
-	
-	public Verifier newVerifier() throws VerifierConfigurationException {
+    }
+    
+    public Verifier newVerifier() throws VerifierConfigurationException {
         IVerifier core = FactoryImpl.createVerifier(grammar);
         core.setPanicMode(usePanicMode);
-		return new VerifierImpl( core, createXMLReader() );
-	}
-	
-	private synchronized XMLReader createXMLReader() throws VerifierConfigurationException {
-		// SAXParserFactory is not thread-safe. Thus we need to
-		// synchronize this method.
-		try {
-			return factory.newSAXParser().getXMLReader();
-		} catch( SAXException e ) {
-			throw new VerifierConfigurationException(e);
-		} catch( ParserConfigurationException e ) {
-			throw new VerifierConfigurationException(e);
-		}
-	}
+        return new VerifierImpl( core, createXMLReader() );
+    }
+    
+    private synchronized XMLReader createXMLReader() throws VerifierConfigurationException {
+        // SAXParserFactory is not thread-safe. Thus we need to
+        // synchronize this method.
+        try {
+            return factory.newSAXParser().getXMLReader();
+        } catch( SAXException e ) {
+            throw new VerifierConfigurationException(e);
+        } catch( ParserConfigurationException e ) {
+            throw new VerifierConfigurationException(e);
+        }
+    }
     
     private boolean usePanicMode;
 }

@@ -17,21 +17,21 @@ package com.sun.msv.grammar.xmlschema;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class XMLSchemaTypeExp extends RedefinableExp {
-	
-	XMLSchemaTypeExp( String typeLocalName ) {
-		super(typeLocalName);
-	}
-	
-	/**
-	 * gets the value of the block constraint.
-	 */
-	public abstract int getBlock();
+    
+    XMLSchemaTypeExp( String typeLocalName ) {
+        super(typeLocalName);
+    }
+    
+    /**
+     * gets the value of the block constraint.
+     */
+    public abstract int getBlock();
 
-	
-	// actual values for these constants must keep in line with those values
-	// defined in the ElementDeclExp.
-	public static final int RESTRICTION	= 0x1;
-	public static final int EXTENSION	= 0x2;
+    
+    // actual values for these constants must keep in line with those values
+    // defined in the ElementDeclExp.
+    public static final int RESTRICTION    = 0x1;
+    public static final int EXTENSION    = 0x2;
     
     // serialization support
     private static final long serialVersionUID = 1;    

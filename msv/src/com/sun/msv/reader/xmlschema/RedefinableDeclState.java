@@ -81,57 +81,57 @@ import com.sun.msv.reader.ExpressionWithChildState;
  */
 public abstract class RedefinableDeclState extends ExpressionWithChildState {
 
-	protected boolean isGlobal() {
-		return parentState instanceof GlobalDeclState;
-	}
+    protected boolean isGlobal() {
+        return parentState instanceof GlobalDeclState;
+    }
     /**
      * Returns true if this declaration is a redefinition of an
      * existing declaration.
      */
-	protected boolean isRedefine() {
-		return parentState instanceof RedefineState;
-	}
+    protected boolean isRedefine() {
+        return parentState instanceof RedefineState;
+    }
 
-	/**
-	 * keeps a reference to previous declaration.
-	 * 
-	 * this field is used only when in redefine mode. Derived class should use
-	 * this declaration instead of getting one from ReferenceContainer through
-	 * XMLSchemaSchema.
-	 */
-	protected RedefinableExp oldDecl;
-	
-	/** gets appropriate ReferenceContainer to store this declaration. */
-	protected abstract ReferenceContainer getContainer();
-	
-	protected void startSelf() {
-		super.startSelf();
-		
-		if( isRedefine() ) {
-			final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
-			
-			String name = startTag.getAttribute("name");
-			if( name==null )
-				// ignore this error just for now.
-				// this error will be reported in annealExpression method.
-				return;
-			
-			oldDecl = (RedefinableExp)getContainer()._get(name);
-			if(oldDecl==null) {
-				reader.reportError( XMLSchemaReader.ERR_REDEFINE_UNDEFINED, name );
-				// recover by creating a dummy object.
-				oldDecl = (RedefinableExp)getContainer()._getOrCreate(name);
-				return;
-			}
-			
-			getContainer().redefine( name, oldDecl.getClone() );
-		}
-	}
-	
-	protected void endSelf() {
-		if( oldDecl!=null )
-			getContainer().redefine( oldDecl.name, oldDecl );
-		
-		super.endSelf();
-	}
+    /**
+     * keeps a reference to previous declaration.
+     * 
+     * this field is used only when in redefine mode. Derived class should use
+     * this declaration instead of getting one from ReferenceContainer through
+     * XMLSchemaSchema.
+     */
+    protected RedefinableExp oldDecl;
+    
+    /** gets appropriate ReferenceContainer to store this declaration. */
+    protected abstract ReferenceContainer getContainer();
+    
+    protected void startSelf() {
+        super.startSelf();
+        
+        if( isRedefine() ) {
+            final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
+            
+            String name = startTag.getAttribute("name");
+            if( name==null )
+                // ignore this error just for now.
+                // this error will be reported in annealExpression method.
+                return;
+            
+            oldDecl = (RedefinableExp)getContainer()._get(name);
+            if(oldDecl==null) {
+                reader.reportError( XMLSchemaReader.ERR_REDEFINE_UNDEFINED, name );
+                // recover by creating a dummy object.
+                oldDecl = (RedefinableExp)getContainer()._getOrCreate(name);
+                return;
+            }
+            
+            getContainer().redefine( name, oldDecl.getClone() );
+        }
+    }
+    
+    protected void endSelf() {
+        if( oldDecl!=null )
+            getContainer().redefine( oldDecl.name, oldDecl );
+        
+        super.endSelf();
+    }
 }

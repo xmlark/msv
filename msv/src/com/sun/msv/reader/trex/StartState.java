@@ -19,20 +19,20 @@ import com.sun.msv.reader.SequenceState;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class StartState extends SequenceState {
-	
-	protected final TREXBaseReader getReader() { return (TREXBaseReader)reader; }
-	
-	protected Expression annealExpression( Expression exp ) {
-		final String name = startTag.getAttribute("name");
-		
-		if(name!=null) {
-			// name attribute is optional.
-			ReferenceExp ref = getReader().grammar.namedPatterns.getOrCreate(name);
-			ref.exp = exp;
-			exp = ref;
-		}
-		
-		getReader().grammar.exp = exp;
-		return null;	// return value is meaningless.
-	}
+    
+    protected final TREXBaseReader getReader() { return (TREXBaseReader)reader; }
+    
+    protected Expression annealExpression( Expression exp ) {
+        final String name = startTag.getAttribute("name");
+        
+        if(name!=null) {
+            // name attribute is optional.
+            ReferenceExp ref = getReader().grammar.namedPatterns.getOrCreate(name);
+            ref.exp = exp;
+            exp = ref;
+        }
+        
+        getReader().grammar.exp = exp;
+        return null;    // return value is meaningless.
+    }
 }

@@ -16,12 +16,12 @@ package com.sun.msv.grammar.xmlschema;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class Field implements java.io.Serializable {
-	
-	/**
-	 * XPath that characterizes this field.
-	 * 'A|B' is represented by using two FieldPath objects.
-	 */
-	public XPath[]	paths;
+    
+    /**
+     * XPath that characterizes this field.
+     * 'A|B' is represented by using two FieldPath objects.
+     */
+    public XPath[]    paths;
     
     // serialization support
     private static final long serialVersionUID = 1;    

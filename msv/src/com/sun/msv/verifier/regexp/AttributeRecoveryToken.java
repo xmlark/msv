@@ -20,26 +20,26 @@ import com.sun.msv.grammar.Expression;
  */
 final class AttributeRecoveryToken extends AttributeToken
 {
-	AttributeRecoveryToken( REDocumentDeclaration docDecl,
-		String namespaceURI, String localName, String qName, StringToken value ) {
-		
-		super( docDecl, namespaceURI, localName, qName, value );
-	}
-	
-	private Expression failedExp = Expression.nullSet;
-	
-	public boolean match( AttributeExp exp ) {
-		
-		// Attribute name must meet the constraint of NameClass
-		if(!exp.nameClass.accepts(namespaceURI,localName))	return false;
-		
-		// content model of the attribute must consume the value
-		if(!docDecl.resCalc.calcResidual(exp.exp, value).isEpsilonReducible())
-			failedExp = docDecl.pool.createChoice( failedExp, exp.exp );
-		
-		// accept AttributeExp regardless of its content restriction
-		return true;
-	}
+    AttributeRecoveryToken( REDocumentDeclaration docDecl,
+        String namespaceURI, String localName, String qName, StringToken value ) {
+        
+        super( docDecl, namespaceURI, localName, qName, value );
+    }
+    
+    private Expression failedExp = Expression.nullSet;
+    
+    public boolean match( AttributeExp exp ) {
+        
+        // Attribute name must meet the constraint of NameClass
+        if(!exp.nameClass.accepts(namespaceURI,localName))    return false;
+        
+        // content model of the attribute must consume the value
+        if(!docDecl.resCalc.calcResidual(exp.exp, value).isEpsilonReducible())
+            failedExp = docDecl.pool.createChoice( failedExp, exp.exp );
+        
+        // accept AttributeExp regardless of its content restriction
+        return true;
+    }
 
-	Expression getFailedExp() { return failedExp; }
+    Expression getFailedExp() { return failedExp; }
 }

@@ -22,16 +22,16 @@ package com.sun.msv.verifier;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface DocumentDeclaration {
-	
-	/**
-	 * creates a new Acceptor that will validate the document element.
-	 * 
-	 * In RELAX, this concept is equivalent to &lt;topLevel&gt;
-	 * In TREX, this concept is equivalent to &lt;start&gt;
-	 * 
-	 * @return
-	 *		The implementation cannot return null.
-	 *		Apparently, it is impossible to fail in this early stage.
-	 */
-	Acceptor createAcceptor();
+    
+    /**
+     * creates a new Acceptor that will validate the document element.
+     * 
+     * In RELAX, this concept is equivalent to &lt;topLevel&gt;
+     * In TREX, this concept is equivalent to &lt;start&gt;
+     * 
+     * @return
+     *        The implementation cannot return null.
+     *        Apparently, it is impossible to fail in this early stage.
+     */
+    Acceptor createAcceptor();
 }

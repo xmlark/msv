@@ -1,5 +1,5 @@
 /*
- * @(#)XmlNames.java	1.1 00/08/05
+ * @(#)XmlNames.java    1.1 00/08/05
  * 
  * Copyright (c) 1998 Sun Microsystems, Inc. All Rights Reserved.
  * 
@@ -40,16 +40,16 @@ public class XmlNames
      */
     public static boolean isName (String value)
     {
-	if (value == null)
-	    return false;
+    if (value == null)
+        return false;
 
-	char c = value.charAt (0);
-	if (!XmlChars.isLetter (c) && c != '_' && c != ':')
-	    return false;
-	for (int i = 1; i < value.length (); i++)
-	    if (!XmlChars.isNameChar (value.charAt (i)))
-		return false;
-	return true;
+    char c = value.charAt (0);
+    if (!XmlChars.isLetter (c) && c != '_' && c != ':')
+        return false;
+    for (int i = 1; i < value.length (); i++)
+        if (!XmlChars.isNameChar (value.charAt (i)))
+        return false;
+    return true;
     }
 
     /**
@@ -62,16 +62,16 @@ public class XmlNames
      */
     public static boolean isUnqualifiedName (String value)
     {
-	if (value == null || value.length() == 0)
-	    return false;
+    if (value == null || value.length() == 0)
+        return false;
 
-	char c = value.charAt (0);
-	if (!XmlChars.isLetter (c) && c != '_')
-	    return false;
-	for (int i = 1; i < value.length (); i++)
-	    if (!XmlChars.isNCNameChar (value.charAt (i)))
-		return false;
-	return true;
+    char c = value.charAt (0);
+    if (!XmlChars.isLetter (c) && c != '_')
+        return false;
+    for (int i = 1; i < value.length (); i++)
+        if (!XmlChars.isNCNameChar (value.charAt (i)))
+        return false;
+    return true;
     }
 
     /**
@@ -87,14 +87,14 @@ public class XmlNames
      */
     public static boolean isQualifiedName (String value)
     {
-	if (value == null)
-	    return false;
+    if (value == null)
+        return false;
 
         // [6] QName ::= (Prefix ':')? LocalPart
         // [7] Prefix ::= NCName
         // [8] LocalPart ::= NCName
 
-	int	first = value.indexOf (':');
+    int    first = value.indexOf (':');
 
         // no Prefix, only check LocalPart
         if (first <= 0)
@@ -102,12 +102,12 @@ public class XmlNames
 
         // Prefix exists, check everything
 
-	int	last = value.lastIndexOf (':');
-	if (last != first)
-	    return false;
-	
-	return isUnqualifiedName (value.substring (0, first))
-		&& isUnqualifiedName (value.substring (first + 1));
+    int    last = value.lastIndexOf (':');
+    if (last != first)
+        return false;
+    
+    return isUnqualifiedName (value.substring (0, first))
+        && isUnqualifiedName (value.substring (first + 1));
     }
 
     /**
@@ -121,12 +121,12 @@ public class XmlNames
      */
     public static boolean isNmtoken (String token)
     {
-	int	length = token.length ();
+    int    length = token.length ();
 
-	for (int i = 0; i < length; i++)
-	    if (!XmlChars.isNameChar (token.charAt (i)))
-		return false;
-	return true;
+    for (int i = 0; i < length; i++)
+        if (!XmlChars.isNameChar (token.charAt (i)))
+        return false;
+    return true;
     }
 
 
@@ -142,6 +142,6 @@ public class XmlNames
      */
     public static boolean isNCNmtoken (String token)
     {
-	return isNmtoken (token) && token.indexOf (':') < 0;
+    return isNmtoken (token) && token.indexOf (':') < 0;
     }
 }

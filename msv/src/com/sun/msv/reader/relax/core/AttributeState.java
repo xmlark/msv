@@ -26,50 +26,50 @@ import com.sun.msv.util.StartTagInfo;
  */
 public class AttributeState extends ExpressionState implements FacetStateParent
 {
-	protected XSTypeIncubator incubator;
-	
-	public XSTypeIncubator getIncubator() { return incubator; }
-	
-	protected void startSelf() {
-		super.startSelf();
+    protected XSTypeIncubator incubator;
+    
+    public XSTypeIncubator getIncubator() { return incubator; }
+    
+    protected void startSelf() {
+        super.startSelf();
         
         final RELAXCoreReader reader = (RELAXCoreReader)this.reader;
         
-		String type		= startTag.getAttribute("type");
-		if(type==null)	type="string";
+        String type        = startTag.getAttribute("type");
+        if(type==null)    type="string";
         incubator = reader.resolveXSDatatype(type).createIncubator();
-	}
-	
-	protected Expression makeExpression() {
-		try	{
-			final String name		= startTag.getAttribute("name");
-			final String required	= startTag.getAttribute("required");
-			
-			if( name==null ) {
-				reader.reportError( RELAXCoreReader.ERR_MISSING_ATTRIBUTE, "attribute","name" );
-				// recover by ignoring this attribute.
-				// since attributes are combined by sequence, so epsilon is appropriate.
-				return Expression.epsilon;
-			}
-			
-			Expression exp = reader.pool.createAttribute(
-				new SimpleNameClass("",name),
-				incubator.derive(null,null) );
-			
-			// unless required attribute is specified, it is considered optional
-			if(! "true".equals(required) )
-				exp = reader.pool.createOptional(exp);
-			
-			return exp;
-		} catch( DatatypeException e ) {
-			// derivation failed
-			reader.reportError( e, RELAXCoreReader.ERR_BAD_TYPE, e.getMessage() );
-			// recover by using harmless expression. anything will do.
-			return Expression.anyString;
-		}
-	}
-	
-	protected State createChildState( StartTagInfo tag ) {
-		return ((RELAXCoreReader)reader).createFacetState(this,tag);	// facets
-	}
+    }
+    
+    protected Expression makeExpression() {
+        try    {
+            final String name        = startTag.getAttribute("name");
+            final String required    = startTag.getAttribute("required");
+            
+            if( name==null ) {
+                reader.reportError( RELAXCoreReader.ERR_MISSING_ATTRIBUTE, "attribute","name" );
+                // recover by ignoring this attribute.
+                // since attributes are combined by sequence, so epsilon is appropriate.
+                return Expression.epsilon;
+            }
+            
+            Expression exp = reader.pool.createAttribute(
+                new SimpleNameClass("",name),
+                incubator.derive(null,null) );
+            
+            // unless required attribute is specified, it is considered optional
+            if(! "true".equals(required) )
+                exp = reader.pool.createOptional(exp);
+            
+            return exp;
+        } catch( DatatypeException e ) {
+            // derivation failed
+            reader.reportError( e, RELAXCoreReader.ERR_BAD_TYPE, e.getMessage() );
+            // recover by using harmless expression. anything will do.
+            return Expression.anyString;
+        }
+    }
+    
+    protected State createChildState( StartTagInfo tag ) {
+        return ((RELAXCoreReader)reader).createFacetState(this,tag);    // facets
+    }
 }

@@ -22,15 +22,15 @@ import com.sun.msv.util.StartTagInfo;
  */
 class RootModuleMergeState extends SimpleState
 {
-	protected State createChildState( StartTagInfo tag )
-	{
-		if(tag.namespaceURI.equals(RELAXCoreReader.RELAXCoreNamespace)
-		&& tag.localName.equals("module"))
-			return new ModuleMergeState(
-				((RELAXCoreReader)reader).module.targetNamespace );
-			// included module must have the same target namespace
-			// or it must be a chameleon module.
-		
-		return null;
-	}
+    protected State createChildState( StartTagInfo tag )
+    {
+        if(tag.namespaceURI.equals(RELAXCoreReader.RELAXCoreNamespace)
+        && tag.localName.equals("module"))
+            return new ModuleMergeState(
+                ((RELAXCoreReader)reader).module.targetNamespace );
+            // included module must have the same target namespace
+            // or it must be a chameleon module.
+        
+        return null;
+    }
 }

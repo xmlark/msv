@@ -65,69 +65,69 @@ import com.sun.msv.grammar.ElementExp;
  * </pre>
  * 
  * @see
- *		TypeDetector
+ *        TypeDetector
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface TypedContentHandler {
-	
-	/**
-	 * receives notification of the start of a document.
-	 * 
-	 * @param context
-	 *		This ValidationContext object is effective through the entire document.
-	 */
-	void startDocument( ValidationContext context ) throws SAXException;
-	
-	/**
-	 * receives notification of the end of a document.
-	 */
-	void endDocument() throws SAXException;
-	
-	/**
-	 * receives notification of a string.
-	 * 
-	 * @param literal
-	 *		the contents.
-	 * @param type
-	 *		assigned type. The validator assigns this type for this literal.
-	 */
-	void characterChunk( String literal, Datatype type ) throws SAXException;
-	
-	/**
-	 * receives notification of the start of an element.
-	 * 
-	 * If this element has attributes, the start/endAttribute methods are
-	 * called after this method.
-	 */
-	void startElement( String namespaceURI, String localName, String qName ) throws SAXException;
-	
-	/**
-	 * receives notification of the end of an element.
-	 * 
-	 * @param type
-	 *		the type of this element.
-	 */
-	void endElement( String namespaceURI, String localName, String qName, ElementExp type ) throws SAXException;
+    
+    /**
+     * receives notification of the start of a document.
+     * 
+     * @param context
+     *        This ValidationContext object is effective through the entire document.
+     */
+    void startDocument( ValidationContext context ) throws SAXException;
+    
+    /**
+     * receives notification of the end of a document.
+     */
+    void endDocument() throws SAXException;
+    
+    /**
+     * receives notification of a string.
+     * 
+     * @param literal
+     *        the contents.
+     * @param type
+     *        assigned type. The validator assigns this type for this literal.
+     */
+    void characterChunk( String literal, Datatype type ) throws SAXException;
+    
+    /**
+     * receives notification of the start of an element.
+     * 
+     * If this element has attributes, the start/endAttribute methods are
+     * called after this method.
+     */
+    void startElement( String namespaceURI, String localName, String qName ) throws SAXException;
+    
+    /**
+     * receives notification of the end of an element.
+     * 
+     * @param type
+     *        the type of this element.
+     */
+    void endElement( String namespaceURI, String localName, String qName, ElementExp type ) throws SAXException;
 
-	/**
-	 * receives notification of the start of an attribute.
-	 * 
-	 * the value of the attribute is reported through the characterChunk method.
-	 */
-	void startAttribute( String namespaceURI, String localName, String qName ) throws SAXException;
-	
-	/**
-	 * receives notification of the end of an attribute.
-	 * 
-	 * @param type
-	 *		assigned type.
-	 */
-	void endAttribute( String namespaceURI, String localName, String qName, AttributeExp type ) throws SAXException;
+    /**
+     * receives notification of the start of an attribute.
+     * 
+     * the value of the attribute is reported through the characterChunk method.
+     */
+    void startAttribute( String namespaceURI, String localName, String qName ) throws SAXException;
+    
+    /**
+     * receives notification of the end of an attribute.
+     * 
+     * @param type
+     *        assigned type.
+     */
+    void endAttribute( String namespaceURI, String localName, String qName, AttributeExp type ) throws SAXException;
 
-	/**
-	 * this method is called after the start/endAttribute method are called
-	 * for all attributes.
-	 */
-	void endAttributePart() throws SAXException;
+    /**
+     * this method is called after the start/endAttribute method are called
+     * for all attributes.
+     */
+    void endAttributePart() throws SAXException;
 }

@@ -37,29 +37,29 @@ import com.sun.msv.reader.GrammarReader;
  * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 class LazyTypeIncubator implements XSTypeIncubator { // package local
-	
-	public LazyTypeIncubator( XSDatatypeExp base, GrammarReader reader ) {
-		this.baseType = base;
+    
+    public LazyTypeIncubator( XSDatatypeExp base, GrammarReader reader ) {
+        this.baseType = base;
         this.reader = reader;
-	}
-	
-	/** base object. */
-	private final XSDatatypeExp baseType;
-	
+    }
+    
+    /** base object. */
+    private final XSDatatypeExp baseType;
+    
     private final GrammarReader reader;
     
-	/**
-	 * applied facets.
-	 * Order between facets are possibly significant.
-	 */
-	private final List facets = new java.util.LinkedList();
-	
-	public void addFacet( String name, String strValue, boolean fixed,
-					 ValidationContext context ) {
-		facets.add( new Facet(name,strValue,fixed,context) );
-	}
+    /**
+     * applied facets.
+     * Order between facets are possibly significant.
+     */
+    private final List facets = new java.util.LinkedList();
+    
+    public void addFacet( String name, String strValue, boolean fixed,
+                     ValidationContext context ) {
+        facets.add( new Facet(name,strValue,fixed,context) );
+    }
 
-	public XSDatatypeExp derive( final String nsUri, final String localName ) throws DatatypeException {
+    public XSDatatypeExp derive( final String nsUri, final String localName ) throws DatatypeException {
         
         // facets might be further added, so remember the size of the facet.
         final int facetSize = facets.size();
@@ -72,24 +72,24 @@ class LazyTypeIncubator implements XSTypeIncubator { // package local
                 
                 TypeIncubator ti = new TypeIncubator( baseType.getType(context) );
                 
-		        Iterator itr = facets.iterator();
-		        for( int i=0; i<facetSize; i++ ) {
-		        	Facet f = (Facet)itr.next();
-		        	ti.addFacet( f.name, f.value, f.fixed, f.context );
-		        }
-		        return ti.derive(nsUri,localName);
+                Iterator itr = facets.iterator();
+                for( int i=0; i<facetSize; i++ ) {
+                    Facet f = (Facet)itr.next();
+                    ti.addFacet( f.name, f.value, f.fixed, f.context );
+                }
+                return ti.derive(nsUri,localName);
             }
         });
-	}
-	
-	/** store the information about one added facet. */
-	private class Facet {
-		String name;
-		String value;
-		boolean fixed;
-		ValidationContext context;
-		public Facet( String name, String value, boolean fixed, ValidationContext context ) {
-			this.name=name; this.value=value; this.fixed=fixed; this.context=context;
-		}
-	}
+    }
+    
+    /** store the information about one added facet. */
+    private class Facet {
+        String name;
+        String value;
+        boolean fixed;
+        ValidationContext context;
+        public Facet( String name, String value, boolean fixed, ValidationContext context ) {
+            this.name=name; this.value=value; this.fixed=fixed; this.context=context;
+        }
+    }
 }

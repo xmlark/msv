@@ -21,38 +21,38 @@ import com.sun.msv.util.StartTagInfo;
  */
 public class ElementRuleWithHedgeState extends ElementRuleBaseState implements ExpressionOwner
 {
-	protected Expression contentModel = null;
-	
-	public void onEndChild( Expression exp )
-	{// this method is called after child expression is found and parsed
-		if( contentModel!=null )
-			reader.reportError( RELAXCoreReader.ERR_MORE_THAN_ONE_CHILD_EXPRESSION );
-			// recover by ignoring previous expression
-		
-		contentModel = exp;
-	}
-	
-	protected Expression getContentModel() {
-		if( contentModel==null ) {
-			reader.reportError( RELAXCoreReader.ERR_MISSING_CHILD_EXPRESSION );
-			// recover by assuming a harmless content model
-			return Expression.epsilon;	// anything will do.
-		}
-		
-		return contentModel;
-	}
-	
-	protected State createChildState( StartTagInfo tag )
-	{
-		if( !tag.namespaceURI.equals(RELAXCoreReader.RELAXCoreNamespace) )	return null;
-		
-		State next;
-		
-		// particles
-		next = reader.createExpressionChildState(this,tag);
-		if(next!=null)		return next;
-		
-		// or delegate to the base class
-		return super.createChildState(tag);
-	}
+    protected Expression contentModel = null;
+    
+    public void onEndChild( Expression exp )
+    {// this method is called after child expression is found and parsed
+        if( contentModel!=null )
+            reader.reportError( RELAXCoreReader.ERR_MORE_THAN_ONE_CHILD_EXPRESSION );
+            // recover by ignoring previous expression
+        
+        contentModel = exp;
+    }
+    
+    protected Expression getContentModel() {
+        if( contentModel==null ) {
+            reader.reportError( RELAXCoreReader.ERR_MISSING_CHILD_EXPRESSION );
+            // recover by assuming a harmless content model
+            return Expression.epsilon;    // anything will do.
+        }
+        
+        return contentModel;
+    }
+    
+    protected State createChildState( StartTagInfo tag )
+    {
+        if( !tag.namespaceURI.equals(RELAXCoreReader.RELAXCoreNamespace) )    return null;
+        
+        State next;
+        
+        // particles
+        next = reader.createExpressionChildState(this,tag);
+        if(next!=null)        return next;
+        
+        // or delegate to the base class
+        return super.createChildState(tag);
+    }
 }

@@ -21,12 +21,12 @@ import com.sun.msv.util.StartTagInfo;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RootMergedGrammarState extends SimpleState implements ExpressionOwner {
-	protected State createChildState( StartTagInfo tag ) {
-		// expects "grammar" element only, and creates MergeGrammarState
-		if( tag.localName.equals("grammar") )	return new DivInGrammarState();
-		return null;
-	}
-	
-	public void onEndChild(Expression exp) {
-	}
+    protected State createChildState( StartTagInfo tag ) {
+        // expects "grammar" element only, and creates MergeGrammarState
+        if( tag.localName.equals("grammar") )    return new DivInGrammarState();
+        return null;
+    }
+    
+    public void onEndChild(Expression exp) {
+    }
 }

@@ -22,34 +22,34 @@ import com.sun.msv.util.StartTagInfo;
  */
 public class TopLevelState extends HedgeRuleBaseState
 {
-	protected void endSelf( Expression contentModel ) {
-		((RELAXNSReader)reader).grammar.topLevel = contentModel;
-	}
+    protected void endSelf( Expression contentModel ) {
+        ((RELAXNSReader)reader).grammar.topLevel = contentModel;
+    }
 
-	protected State createChildState( StartTagInfo tag )
-	{
-		// user tends to forget to specify RELAX Core namespace for
-		// topLevel elements. see if this is the case
-		if( tag.namespaceURI.equals(RELAXNSReader.RELAXNamespaceNamespace))
-		{// bingo.
-			reader.reportError( RELAXNSReader.ERR_TOPLEVEL_PARTICLE_MUST_BE_RELAX_CORE );
-			// return null so that user will also receive "malplaced element" error.
-			return null;
-		}
-		
-		return super.createChildState(tag);
-	}
+    protected State createChildState( StartTagInfo tag )
+    {
+        // user tends to forget to specify RELAX Core namespace for
+        // topLevel elements. see if this is the case
+        if( tag.namespaceURI.equals(RELAXNSReader.RELAXNamespaceNamespace))
+        {// bingo.
+            reader.reportError( RELAXNSReader.ERR_TOPLEVEL_PARTICLE_MUST_BE_RELAX_CORE );
+            // return null so that user will also receive "malplaced element" error.
+            return null;
+        }
+        
+        return super.createChildState(tag);
+    }
 
-	protected boolean isGrammarElement( StartTagInfo tag ) {
-		// children of <topLevel> must be RELAXCore.
-		if( tag.namespaceURI.equals(RELAXCoreReader.RELAXCoreNamespace) )
-			return true;
-		
-		// for better error message, allow RELAX Namespace elements.
-		// this error is handled at createChildState method.
-		if( tag.namespaceURI.equals(RELAXNSReader.RELAXNamespaceNamespace) )
-			return true;
-		
-		return false;
-	}
+    protected boolean isGrammarElement( StartTagInfo tag ) {
+        // children of <topLevel> must be RELAXCore.
+        if( tag.namespaceURI.equals(RELAXCoreReader.RELAXCoreNamespace) )
+            return true;
+        
+        // for better error message, allow RELAX Namespace elements.
+        // this error is handled at createChildState method.
+        if( tag.namespaceURI.equals(RELAXNSReader.RELAXNamespaceNamespace) )
+            return true;
+        
+        return false;
+    }
 }

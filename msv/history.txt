@@ -1,0 +1,17 @@
+
+(RELAX) ID/IDREF types are implemented
+(RELAX) signals an error when two <attribute> declarations have the
+        same target attribute name.
+(both)  signals an error when namespace-unaware ParserFactory is given.
+
+2000/03/09 release
+------------------
+
+(both)  done a lot of optimization that makes validation faster
+(RELAX) support <anyOtherElement>.
+(RELAX) add check for those exported hedgeRules which directly or indirectly
+        refer labels of the other namespaces.
+(both)  better error recovery for unexpected character literals.
+(RELAX) detects an error when unexported elementRules/hedgeRules are
+        referenced from the other namespaces.
+(RELAX) implements RELAX semantics of ignoring undeclared attributes.

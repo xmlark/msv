@@ -56,7 +56,7 @@ public class Driver {
 	}
 
 	public static void main( String[] args ) throws Exception {
-		new Driver().run(args);
+		System.exit( new Driver().run(args) );
 	}
 	
 	protected double getRatio( String s ) {
@@ -74,7 +74,12 @@ public class Driver {
 		return ratio;
 	}
 	
-	protected void run( String[] args ) throws Exception {
+	/**
+	 * runs command line tool.
+	 * 
+	 * @return 0 if it run successfully. Non-zero if any error is encountered.
+	 */
+	public int run( String[] args ) throws Exception {
 		String grammarName=null;
 		String outputName=null;
 		String encoding="UTF-8";
@@ -185,14 +190,14 @@ public class Driver {
 					else {
 						System.err.println("unrecognized option :" + args[i]);
 						usage();
-						return;
+						return -1;
 					}
 				}
 				else {
 					if( args[i].charAt(0)=='-' ) {
 						System.err.println("unrecognized option :" + args[i]);
 						usage();
-						return;
+						return -1;
 					}
 					
 					if( grammarName==null )	grammarName = args[i];
@@ -201,18 +206,18 @@ public class Driver {
 					else {
 						System.err.println("too many parameters");
 						usage();
-						return;
+						return -1;
 					}
 				}
 			}
 		} catch(Exception e) {
 			usage();
-			return;
+			return -1;
 		}
 		
 		if( grammarName==null ) {
 			usage();
-			return;
+			return -1;
 		}
 		
 		
@@ -295,6 +300,8 @@ public class Driver {
 			
 			if( os!=System.out )	os.close();
 		}
+		
+		return 0;
 	}
 	
 	private static InputSource getInputSource( String fileOrURL ) {

@@ -6,15 +6,9 @@ import com.sun.tranquilo.grammar.SimpleNameClass;
 import com.sun.tranquilo.grammar.xmlschema.ComplexTypeExp;
 import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.ExpressionWithChildState;
+import org.xml.sax.Locator;
 
-public class ComplexTypeDeclState extends ExpressionWithChildState {
-
-	protected final boolean isGlobal;
-	
-	protected ComplexTypeDeclState( boolean isGlobal ) {
-		this.isGlobal = isGlobal;
-	}
+public class ComplexTypeDeclState extends RedefinableDeclState {
 	
 	protected ComplexTypeExp decl;
 	
@@ -25,12 +19,22 @@ public class ComplexTypeDeclState extends ExpressionWithChildState {
 		
 		String name = startTag.getAttribute("name");
 		if( name==null ) {
-			if( isGlobal )
+			if( isGlobal() )
 				reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "complexType", "name" );
 			decl = new ComplexTypeExp( reader.currentSchema, null );
 		} else {
-			decl = reader.currentSchema.complexTypes.getOrCreate(name);
-			reader.setDeclaredLocationOf(decl);
+			if( isRedefine() )
+				// in redefine mode, use temporary object.
+				// parsed complexType will be copied into the original one.
+				decl = new ComplexTypeExp( reader.currentSchema, name );
+			else {
+				decl = reader.currentSchema.complexTypes.getOrCreate(name);
+				if( decl.self!=null )
+					reader.reportError( 
+						new Locator[]{this.location,reader.getDeclaredLocationOf(decl)},
+						reader.ERR_DUPLICATE_COMPLEXTYPE_DEFINITION,
+						new Object[]{name} );
+			}
 		}
 	}
 	
@@ -96,6 +100,14 @@ public class ComplexTypeDeclState extends ExpressionWithChildState {
 
 		decl.self.exp = contentType;
 
-		return decl;
+		if( isRedefine() ) {
+			// copy new definition back into the original definition.
+			oldDecl.redefine(decl);
+			reader.setDeclaredLocationOf(oldDecl);
+			return oldDecl;
+		} else {
+			reader.setDeclaredLocationOf(decl);
+			return decl;
+		}
 	}
 }

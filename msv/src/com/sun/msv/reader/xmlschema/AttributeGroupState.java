@@ -5,18 +5,12 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.xmlschema.AttributeGroupExp;
 import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.ExpressionWithChildState;
+import org.xml.sax.Locator;
 
 /**
  * parses &lt;attributeGroup /&gt; element
  */
-public class AttributeGroupState extends ExpressionWithChildState {
-
-	protected final boolean isGlobal;
-	
-	protected AttributeGroupState( boolean isGlobal ) {
-		this.isGlobal = isGlobal;
-	}
+public class AttributeGroupState extends RedefinableDeclState {
 	
 	protected State createChildState( StartTagInfo tag ) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
@@ -54,7 +48,7 @@ public class AttributeGroupState extends ExpressionWithChildState {
 	protected Expression annealExpression(Expression contentType) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		
-		if( !isGlobal )		return contentType;
+		if( !isGlobal() )		return contentType;
 		
 		// if this is a global declaration register it.
 		String name = startTag.getAttribute("name");
@@ -64,7 +58,17 @@ public class AttributeGroupState extends ExpressionWithChildState {
 			// recover by returning something meaningless.
 			// the parent state will ignore this.
 		}
-		AttributeGroupExp exp = reader.currentSchema.attributeGroups.getOrCreate(name);
+		AttributeGroupExp exp;
+		if( isRedefine() )
+			exp = (AttributeGroupExp)super.oldDecl;
+		else {
+			exp = reader.currentSchema.attributeGroups.getOrCreate(name);
+			if( exp.exp!=null )
+				reader.reportError( 
+					new Locator[]{this.location,reader.getDeclaredLocationOf(exp)},
+					reader.ERR_DUPLICATE_ATTRIBUTE_GROUP_DEFINITION,
+					new Object[]{name} );
+		}
 		reader.setDeclaredLocationOf(exp);
 		exp.exp = contentType;
 		return exp;

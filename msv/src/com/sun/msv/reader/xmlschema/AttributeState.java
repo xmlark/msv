@@ -11,17 +11,12 @@ import com.sun.tranquilo.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.reader.State;
 import com.sun.tranquilo.reader.ExpressionWithChildState;
+import org.xml.sax.Locator;
 
 /**
  * used to parse &lt;attribute &gt; element.
  */
 public class AttributeState extends ExpressionWithChildState {
-
-	protected final boolean isGlobal;
-	
-	protected AttributeState( boolean isGlobal ) {
-		this.isGlobal = isGlobal;
-	}
 	
 	protected State createChildState( StartTagInfo tag ) {
 		if( tag.localName.equals("simpleType") )
@@ -73,7 +68,7 @@ public class AttributeState extends ExpressionWithChildState {
 		// TODO: form attribute is prohibited in several occasions.
 		String targetNamespace;
 		
-		if( isGlobal )	targetNamespace = reader.currentSchema.targetNamespace;
+		if( isGlobal() )	targetNamespace = reader.currentSchema.targetNamespace;
 		else
 			// in local attribute declaration,
 			// targetNamespace is affected by @form and schema's @attributeFormDefault.
@@ -97,9 +92,15 @@ public class AttributeState extends ExpressionWithChildState {
 			new SimpleNameClass( targetNamespace, name ),
 			contentType );
 		
-		if( isGlobal ) {
+		if( isGlobal() ) {
+			
 			// register this expression as a global attribtue declaration.
 			AttributeDeclExp decl = reader.currentSchema.attributeDecls.getOrCreate(name);
+			if(decl.exp!=null)
+				reader.reportError( 
+					new Locator[]{this.location,reader.getDeclaredLocationOf(decl)},
+					reader.ERR_DUPLICATE_ATTRIBUTE_DEFINITION,
+					new Object[]{name} );
 			reader.setDeclaredLocationOf(decl);
 			decl.exp = exp;
 			
@@ -122,5 +123,9 @@ public class AttributeState extends ExpressionWithChildState {
 		}
 		
 		return exp;
+	}
+
+	protected boolean isGlobal() {
+		return parentState instanceof GlobalDeclState;
 	}
 }

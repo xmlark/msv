@@ -30,10 +30,11 @@ import com.sun.tranquilo.grammar.trex.ElementPattern;
  * <code>restrictions</code> field contains choices of selfWType of those
  * types which are derived by restriction from this type.
  */
-public class ComplexTypeExp extends ReferenceExp {
+public class ComplexTypeExp extends RedefinableExp {
 	
 	public ComplexTypeExp( XMLSchemaSchema schema, String localName ) {
 		super(localName);
+		this.parent = schema;
 		this.self = new ReferenceExp( localName + ":self" );
 		this.extensions = new ReferenceExp( localName + ":extensions" );
 		this.extensions.exp = Expression.nullSet;
@@ -63,7 +64,7 @@ public class ComplexTypeExp extends ReferenceExp {
 	}
 	
 	/** derives a QName type that only accepts this type name. */
-	private DataType getQNameType( final String namespaceURI, final String localName ) {
+	private static DataType getQNameType( final String namespaceURI, final String localName ) {
 		try {
 			TypeIncubator ti = new TypeIncubator( QnameType.theInstance );
 			ti.add( "enumeration", "foo:"+localName, true,
@@ -90,4 +91,28 @@ public class ComplexTypeExp extends ReferenceExp {
 	public final ReferenceExp restrictions;
 	
 	public final Expression selfWType;
+	
+	/** parent XMLSchemaSchema object to which this object belongs. */
+	public final XMLSchemaSchema parent;
+	
+		
+	/** clone this object. */
+	public RedefinableExp getClone() {
+		ComplexTypeExp exp = new ComplexTypeExp(parent,super.name);
+		exp.redefine(this);
+		return exp;
+	}
+
+	public void redefine( RedefinableExp _rhs ) {
+		super.redefine(_rhs);
+		
+		ComplexTypeExp rhs = (ComplexTypeExp)_rhs;
+		self.exp = rhs.self.exp;
+		extensions.exp = rhs.extensions.exp;
+		restrictions.exp = rhs.restrictions.exp;
+		if( this.parent != rhs.parent )
+			// those two must share the parent.
+			throw new IllegalArgumentException();
+	}
+
 }

@@ -12,7 +12,6 @@ import com.sun.tranquilo.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.reader.State;
 import com.sun.tranquilo.reader.IgnoreState;
-import com.sun.tranquilo.reader.ExpressionWithChildState;
 
 /**
  * used to parse &lt;element &gt; element without ref attribute.
@@ -20,13 +19,7 @@ import com.sun.tranquilo.reader.ExpressionWithChildState;
  * this state uses ExpressionWithChildState to collect content model
  * of this element declaration.
  */
-public class ElementDeclState extends ExpressionWithChildState {
-
-	protected final boolean isGlobal;
-	
-	protected ElementDeclState( boolean isGlobal ) {
-		this.isGlobal = isGlobal;
-	}
+public class ElementDeclState extends DelclarationState {
 
 	protected State createChildState( StartTagInfo tag ) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
@@ -111,9 +104,10 @@ public class ElementDeclState extends ExpressionWithChildState {
 			return Expression.nullSet;
 		}
 		
-		// TODO: form attribute is prohibited at toplevel.
 		String targetNamespace;
-		if( isGlobal )	targetNamespace = reader.currentSchema.targetNamespace;
+		if( isGlobal() )
+			// TODO: form attribute is prohibited at toplevel.
+			targetNamespace = reader.currentSchema.targetNamespace;
 		else
 			// in local attribute declaration,
 			// targetNamespace is affected by @form and schema's @attributeFormDefault.
@@ -172,9 +166,10 @@ public class ElementDeclState extends ExpressionWithChildState {
 			new SimpleNameClass(targetNamespace,name), contentType );
 		
 		
-		if( !isGlobal )
+		if( !isGlobal() )
 			// minOccurs/maxOccurs is processed through interception
 			return exp;
+		
 		
 		// register this as global element declaration
 		ElementDeclExp decl = reader.currentSchema.elementDecls.getOrCreate(name);

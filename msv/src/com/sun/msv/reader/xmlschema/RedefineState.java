@@ -30,4 +30,31 @@ public class RedefineState extends GlobalDeclState {
 		reader.doDuplicateDefinitionCheck = prevDuplicateCheck;
 		super.endSelf();
 	}
+	
+	
+	public void onEndChild( DataType type ) {
+		// handle redefinition of simpleType.
+		
+		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
+		final String typeName = type.getName();
+		
+		if( typeName==null ) {
+			// top-level simpleType must define a named type
+			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "simpleType", "name" );
+			return;	// recover by ignoring this declaration
+		}
+		
+		// memorize this type.
+		SimpleTypeExp exp = reader.currentSchema.simpleTypes.get(typeName);
+		if(exp==null ) {
+			reader.reportError( reader.ERR_REDEFINE_UNDEFINED, typeName );
+			return;
+			// recover by ignoring this declaration
+		}
+		
+		// overwrite
+		exp.setType(type,reader.pool);
+		reader.setDeclaredLocationOf(exp);
+	}
+
 }

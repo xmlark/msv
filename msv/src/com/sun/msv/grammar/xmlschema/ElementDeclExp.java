@@ -1,9 +1,9 @@
 package com.sun.tranquilo.grammar.xmlschema;
 
-import com.sun.tranquilo.grammar.ReferenceExp;
 import com.sun.tranquilo.grammar.ElementExp;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.NameClass;
+import com.sun.tranquilo.grammar.ReferenceExp;
 
 /**
  * Element declaration.

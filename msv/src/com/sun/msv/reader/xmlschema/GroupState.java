@@ -5,17 +5,11 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.ReferenceContainer;
 import com.sun.tranquilo.grammar.xmlschema.GroupDeclExp;
 import com.sun.tranquilo.grammar.xmlschema.XMLSchemaSchema;
+import com.sun.tranquilo.grammar.xmlschema.XMLSchemaExp;
 import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.ExpressionWithChildState;
 
-public class GroupState extends ExpressionWithChildState {
-
-	protected final boolean isGlobal;
-	
-	protected GroupState( boolean isGlobal ) {
-		this.isGlobal = isGlobal;
-	}
+public class GroupState extends RedefinableDeclState {
 	
 	protected State createChildState( StartTagInfo tag ) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
@@ -51,10 +45,11 @@ public class GroupState extends ExpressionWithChildState {
 		return newChildExpression;	// the first one.
 	}
 	
+	
 	protected Expression annealExpression(Expression contentType) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		
-		if( !isGlobal )		return contentType;
+		if( !isGlobal() )		return contentType;
 		
 		
 		// this <group> element is global.
@@ -72,7 +67,17 @@ public class GroupState extends ExpressionWithChildState {
 			return Expression.nullSet;
 		}
 		
-		GroupDeclExp decl = reader.currentSchema.groupDecls.getOrCreate(name);
+		GroupDeclExp decl;
+		if( isRedefine() )
+			decl = (GroupDeclExp)super.oldDecl;
+		else {
+			decl = reader.currentSchema.groupDecls.getOrCreate(name);
+			if( decl.exp!=null )
+				reader.reportError( 
+					new Locator[]{this.location,reader.getDeclaredLocationOf(decl)},
+					reader.ERR_DUPLICATE_GROUP_DEFINITION,
+					new Object[]{name} );
+		}
 		reader.setDeclaredLocationOf(decl);
 		decl.exp = contentType;
 

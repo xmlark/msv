@@ -135,11 +135,11 @@ public class XMLSchemaReader extends GrammarReader
 		protected State all					(State parent,StartTagInfo tag)	{ return new AllState(); }
 		protected State choice				(State parent,StartTagInfo tag)	{ return new ChoiceState(); }
 		protected State sequence			(State parent,StartTagInfo tag)	{ return new SequenceState(); }
-		protected State group				(State parent,StartTagInfo tag)	{ return new GroupState(isGlobal(parent)); }
-		protected State complexTypeDecl		(State parent,StartTagInfo tag)	{ return new ComplexTypeDeclState(isGlobal(parent)); }
-		protected State attribute			(State parent,StartTagInfo tag)	{ return new AttributeState(isGlobal(parent)); }
-		protected State attributeGroup		(State parent,StartTagInfo tag)	{ return new AttributeGroupState(isGlobal(parent)); }
-		protected State elementDecl			(State parent,StartTagInfo tag)	{ return new ElementDeclState(isGlobal(parent)); }
+		protected State group				(State parent,StartTagInfo tag)	{ return new GroupState(); }
+		protected State complexTypeDecl		(State parent,StartTagInfo tag)	{ return new ComplexTypeDeclState(); }
+		protected State attribute			(State parent,StartTagInfo tag)	{ return new AttributeState(); }
+		protected State attributeGroup		(State parent,StartTagInfo tag)	{ return new AttributeGroupState(); }
+		protected State elementDecl			(State parent,StartTagInfo tag)	{ return new ElementDeclState(); }
 		protected State elementRef			(State parent,StartTagInfo tag)	{ return new ElementRefState(); }
 		protected State any					(State parent,StartTagInfo tag)	{ return new AnyElementState(); }
 		protected State anyAttribute		(State parent,StartTagInfo tag)	{ return new AnyAttributeState(); }
@@ -160,10 +160,6 @@ public class XMLSchemaReader extends GrammarReader
 		protected State simpleRst			(State parent,StartTagInfo tag)	{ return new SimpleContentBodyState(false); }
 		// simpleContent/extension
 		protected State simpleExt			(State parent,StartTagInfo tag)	{ return new SimpleContentBodyState(true); }
-		
-		protected boolean isGlobal(State parent) {
-			return parent instanceof GlobalDeclState;
-		}
 	}
 	
 	public final StateFactory sfactory;
@@ -582,4 +578,12 @@ public class XMLSchemaReader extends GrammarReader
 		"XMLSchemaReader.Warning.ObsoletedNamespace";
 	public static final String ERR_UNDEFINED_OR_FORWARD_REFERENCED_TYPE = //arg:1
 		"XMLSchemaReader.UndefinedOrForwardReferencedType";
+	public static final String ERR_REDEFINE_UNDEFINED = // arg:1
+		"XMLSchemaReader.RedefineUndefined";
+	public static final String ERR_DUPLICATE_ATTRIBUTE_DEFINITION = // arg:1
+		null;
+	public static final String ERR_DUPLICATE_COMPLEXTYPE_DEFINITION = // arg:1
+		null;
+	public static final String ERR_DUPLICATE_ATTRIBUTE_GROUP_DEFINITION = // arg:1
+		null;
 }

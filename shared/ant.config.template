@@ -19,34 +19,29 @@ cvsExportOpt = \
 
 
 # JavaCC is available at http://www.webgain.com/products/java_cc/
-javaCClib = \
-	c:/program files/development/javacc/bin/lib
+javaCClib = ../shared/lib/JavaCC.zip
 
 
 #
 # JUnit and Ant are maintained at Apache Jakarta Project.
 # (http://jakarta.apache.org/)
 #
-junit.jar = \
-	c:/winnt/java/classes/junit.jar
-ant.jar = \
-	c:/progra~1/development/ant/lib/ant.jar
+junit.jar = ../shared/lib/junit.jar
+ant.jar = ../shared/lib/ant.jar
 
 #
 # RELAX NG Datatype interface can be obtained from
 # "RELAX NG SourceForge project"
 # (http://relaxng.sourceforge.net/)
 #
-relaxngDatatype.jar = \
-	../../relaxng/datatype/java/relaxngDatatype.jar
+relaxngDatatype.jar = ../shared/lib/relaxngDatatype.jar
 rngInterfaceSource = \
 	../../relaxng/datatype/java/src
 
 #
 # ISO RELAX project is at http://iso-relax.sourceforge.net/
 #
-isorelax.jar = \
-	c:/winnt/java/classes/isorelax.jar
+isorelax.jar = ../shared/lib/isorelax.jar
 
 #
 # Xerces and Xalan are from Apache XML Project.
@@ -54,8 +49,6 @@ isorelax.jar = \
 xerces.source = \
 	C:/Program Files/Development/Xerces/src
 
-xerces.jar = \
-	c:/winnt/java/classes/xerces.jar
+xerces.jar = ../shared/lib/xerces.jar
 
-xalan.jar = \
-	c:/winnt/java/classes/xalan.jar
+xalan.jar = ../shared/lib/xalan.jar

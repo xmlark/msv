@@ -35,6 +35,8 @@ public class StringToken extends Token {
 	public final DataTypeRef refType;
 	protected boolean saturated = false;
 	
+	private static final DataType[] ignoredType = new DataType[0];
+	
 	public StringToken( REDocumentDeclaration docDecl, String literal, IDContextProvider context ) {
 		this(docDecl,literal,context,null);
 	}
@@ -45,6 +47,8 @@ public class StringToken extends Token {
 		this.context = context;
 		this.refType = refType;
 		this.ignorable = literal.trim().length()==0;
+		
+		if( ignorable )	refType.types = ignoredType;
 	}
 	
 	/** TypedStringExp can consume this token if its datatype can accept this string */

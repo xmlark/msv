@@ -104,7 +104,7 @@
 		<copy	todir="release">
 			<fileset dir="doc/tranquilo" includes="**/*.*" />
 		</copy>
-				
+		
 		<!-- compile files again -->
 		<mkdir	dir="temp" />
 		<javac	srcdir="${sourceDir}"
@@ -118,6 +118,9 @@
 		<mkdir dir="xerces" />
 		<unjar src="c:\winnt\java\classes\xerces.jar" dest="xerces" />
 		
+		<!-- create a time stamp file -->
+		<echo file="temp/version.properties">version=${DSTAMP}</echo>
+		
 		<!-- creates binary jar -->
 		<jar	jarfile="release/tranquilo.jar"
 				manifest="./META-INF/MANIFEST.MF"
@@ -127,7 +130,7 @@
 			<fileset dir="temp" />
 			<fileset dir="xerces" includes="org/apache/xerces/**/*.*" />
 <!--			<fileset dir="c:\winnt\java\classes" includes="org/apache/xerces/utils/regex/*.*" />	-->
-			<fileset dir="c:\winnt\java\classes" includes="org/xml/sax/**/*.class" />
+			<fileset dir="c:\winnt\java\classes" includes="org/xml/sax/**/*.class org/w3c/dom/**/*.class" />
 		</jar>
 		
 		<delete dir="temp" />

@@ -38,7 +38,7 @@ public class AnyAttributeState extends AnyState {
 		}
 		
 		// "lax"/"strict" has to be back-patched later.
-		final ReferenceExp exp = new ReferenceExp("anyAttribute("+process+":"+namespace+")");
+		final ReferenceExp anyAttExp = new ReferenceExp("anyAttribute("+process+":"+namespace+")");
 		reader.addBackPatchJob( new XMLSchemaReader.BackPatch(){
 			public State getOwnerState() { return AnyAttributeState.this; }
 			public void patch() {
@@ -46,11 +46,11 @@ public class AnyAttributeState extends AnyState {
 				if( !process.equals("lax")
 				&&  !process.equals("strict") )  {
 					reader.reportError( reader.ERR_BAD_ATTRIBUTE_VALUE, "processContents", process );
-					exp.exp = Expression.nullSet;
+					anyAttExp.exp = Expression.nullSet;
 					return;
 				}
 				
-				exp.exp = Expression.nullSet;
+				anyAttExp.exp = Expression.epsilon;
 				NameClass nc = getNameClass(namespace);
 				Iterator itr = reader.grammar.schemata.values().iterator();
 				while( itr.hasNext() ) {
@@ -63,9 +63,9 @@ public class AnyAttributeState extends AnyState {
 						// gather global attributes.
 						ReferenceExp[] atts = schema.attributeDecls.getAll();
 						for( int i=0; i<atts.length; i++ )
-							exp.exp = reader.pool.createSequence(
+							anyAttExp.exp = reader.pool.createSequence(
 								reader.pool.createOptional(atts[i]),
-								exp.exp );
+								anyAttExp.exp );
 					}
 				}
 				
@@ -81,16 +81,16 @@ public class AnyAttributeState extends AnyState {
 						}
 					});
 				
-				exp.exp = reader.pool.createSequence(
+				anyAttExp.exp = reader.pool.createSequence(
 					reader.pool.createZeroOrMore(
 						reader.pool.createAttribute( laxNc )
 					),
-					exp.exp );
+					anyAttExp.exp );
 			}
 		});
 		
-		exp.exp = Expression.nullSet;	// dummy for a while.
+		anyAttExp.exp = Expression.nullSet;	// dummy for a while.
 		
-		return exp;
+		return anyAttExp;
 	}
 }

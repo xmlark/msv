@@ -35,8 +35,9 @@ public class DOM2toSAX2 {
 			Attr a = (Attr)atts.item(i);
 			if(a.getNamespaceURI().equals(XMLNS_URI))	continue;
 			
-			String value = a.getValue();
+            String value = a.getValue();
 			if(value==null)	value="";
+            
 			sa.addAttribute( a.getNamespaceURI(), a.getLocalName(), a.getName(),
 				"CDATA", value );
 		}

@@ -1,5 +1,5 @@
 @set BASEPATH=c:\kohsuke\sun\msv
-@set CLASSPATH=%CLASSPATH%;%BASEPATH%\msv\src
+@set CLASSPATH=%CLASSPATH%;%BASEPATH%\msv\bin
 @set CLASSPATH=%CLASSPATH%;%BASEPATH%\testharness\bin
 @set CLASSPATH=%CLASSPATH%;%BASEPATH%\xsdlib\bin
 @set CLASSPATH=%CLASSPATH%;%BASEPATH%\xsdlib\src

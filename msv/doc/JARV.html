@@ -35,6 +35,7 @@ Written by <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
       <li><a href="#failfast">Fail-fast Design</a>
       <li><a href="#shortcut">Creating Verifier directly from VerifierFactory</a>
       <li><a href="#thread">Thread Affinity</a>
+      <li><a href="#dtddetect">Schema Language Auto Detection</a>
     </ol>
   <li><a href="#examples">Examples</a>
     <ol>
@@ -332,6 +333,30 @@ The <code>Verifier</code> interface is again not thread-safe. Each thread needs 
 </p><p>
 The thread affinity of JARV is designed after that of TrAX API (<code>javax.transform</code> package). Familiarity with TrAX will help you understand JARV better.</p>
 
+
+
+
+<a name="dtddetect">
+<h3>Schema Language Auto Detection</h3>
+<p>
+	<code>com.sun.msv.verifier.jarv.TheFactoryImpl</code> automatically detects the schema language from the schema file. However, there is one important limitation. Currently, the detection of XML DTDs is based on the file extension. Specifically, if the schema name has ".dtd" extension, it is treated as XML DTD and otherwise it is treated as other schema languages.
+</p><p>
+	This causes a problem when you are passing <code>InputStream</code> as the parameter to the <code>compileSchema</code> method. Since <code>InputStream</code>s do not have names, they are always treated as non-DTD schemas.
+</p><p>
+	To avoid this problem, wrap it by an <code>InputSource</code> and call the <code>setSystemId</code> method to set the system id. The following example shows how to do that:
+</p>
+<pre>
+InputSource is = new InputSource(
+  MyClass.class.getResourceAsStream("abc.dtd") );
+is.setSystemId("abc.dtd");
+
+verifierFactory.compileSchema(is);
+</pre>
+<p>
+	This ugly limitation came from the difficulty in correctly detecting XML DTDs, which are written in non-XML syntax, from other schema languages, which are written in XML syntax.
+</p><p>
+	Any input on this restriction is very welcome.
+</p>
 
 
 

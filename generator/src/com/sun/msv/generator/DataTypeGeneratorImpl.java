@@ -134,7 +134,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator
 					ch = (char)random.nextInt(128);
 				else
 					ch = (char)random.nextInt(Character.MAX_VALUE);
-			}while( !XmlChars.isChar(ch) );
+			}while( !XmlChars.isChar(ch) || Character.isISOControl(ch) );
 			r += ch;
 		}
 		return r;

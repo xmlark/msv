@@ -24,6 +24,7 @@ public class AttributePruner extends ExpressionCloner
 	
 	public Expression onAttribute( AttributeExp exp )	{ return Expression.nullSet; }
 	public Expression onRef( ReferenceExp exp )			{ return exp.exp.visit(this); }
+	public Expression onElement( ElementExp exp )		{ return exp; }
 	
 	public final Expression prune( Expression exp )
 	{

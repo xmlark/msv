@@ -30,11 +30,7 @@ import com.sun.msv.util.DataTypeRef;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class Verifier implements
-	ContentHandler,
-	DTDHandler,
-	IDContextProvider,
-	IVerifier {
+public class Verifier extends AbstractVerifier implements IVerifier {
 	
 	protected Acceptor current;
 	
@@ -56,10 +52,6 @@ public class Verifier implements
 	/** characters that were read (but not processed)  */
 	private StringBuffer text = new StringBuffer();
 	
-	/** document Locator that is given by XML reader */
-	private Locator locator;
-	public final Locator getLocator() { return locator; }
-	
 	/** error handler */
 	protected VerificationErrorHandler errorHandler;
 	public final VerificationErrorHandler getVErrorHandler() { return errorHandler; }
@@ -69,11 +61,6 @@ public class Verifier implements
 	
 	/** this flag will be set to true after endDocument method is called. */
 	private boolean isFinished;
-	
-	/** this set remembers every ID token encountered in this document */
-	private final Map ids = new java.util.HashMap();
-	/** this map remembers every IDREF token encountered in this document */
-	private final Map idrefs = new java.util.HashMap();
 	
 	/** an object used to store start tag information.
 	 * the same object is reused. */
@@ -266,22 +253,11 @@ public class Verifier implements
 			// white space is allowed even if the current mode is STRING_PROHIBITED.
 			text.append(buf,start,len);
 	}
-	public void setDocumentLocator( Locator loc ) {
-		this.locator = loc;
-	}
-	public void skippedEntity(String p) {}
-	public void processingInstruction(String name,String data) {}
-	
-	public void startPrefixMapping( String prefix, String uri ) {
-		namespaceSupport.declarePrefix( prefix, uri );
-	}
-	public void endPrefixMapping( String prefix )	{}
 	
 	protected void init() {
+		super.init();
 		hadError=false;
 		isFinished=false;
-		ids.clear();
-		idrefs.clear();
 	}
 	
 	public void startDocument() {
@@ -325,46 +301,6 @@ public class Verifier implements
 		isFinished=true;
 	}
 
-	public void notationDecl( String name, String publicId, String systemId ) {}
-	public void unparsedEntityDecl( String name, String publicId, String systemId, String notationName ) {
-		// store name of unparsed entities to implement ValidationContextProvider
-		unparsedEntities.add(name);
-	}
-									
-	
-	/**
-	 * namespace prefix to namespace URI resolver.
-	 * 
-	 * this object memorizes mapping information.
-	 */
-	protected final NamespaceSupport namespaceSupport = new NamespaceSupport();
-
-	/** unparsed entities found in the document */
-	private final Set unparsedEntities = new java.util.HashSet();
-	
-	// methods of ValidationContextProvider
-	public String resolveNamespacePrefix( String prefix ) {
-		return namespaceSupport.getURI(prefix);
-	}
-	public boolean isUnparsedEntity( String entityName ) {
-		return unparsedEntities.contains(entityName);
-	}
-	
-	public void onIDREF( String symbolSpace, Object token )	{
-		Set tokens = (Set)idrefs.get(symbolSpace);
-		if(tokens==null)	idrefs.put(symbolSpace,tokens = new java.util.HashSet());
-		tokens.add(token);
-	}
-	public boolean onID( String symbolSpace, Object token ) {
-		Set tokens = (Set)ids.get(symbolSpace);
-		if(tokens==null)	ids.put(symbolSpace,tokens = new java.util.HashSet());
-		
-		if( tokens.contains(token) )	return false;	// not unique.
-		tokens.add(token);
-		return true;	// they are unique, at least now.
-	}
-
-	
 	public static String localizeMessage( String propertyName, Object[] args ) {
 		String format = java.util.ResourceBundle.getBundle(
 			"com.sun.msv.verifier.Messages").getString(propertyName);

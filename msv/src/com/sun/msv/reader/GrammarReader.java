@@ -357,6 +357,11 @@ public abstract class GrammarReader
 	 */
 	public void switchSource( State sourceState, String url, State newState ) {
 		
+		if( url.indexOf('#')>=0 )
+			// this href contains the fragment identifier.
+			// we cannot handle them properly.
+			reportError( ERR_FRAGMENT_IDENTIFIER, url );
+		
 		final InputSource source = resolveLocation(sourceState,url);
 		if(source==null)		return;	// recover by ignoring this.
 		
@@ -730,6 +735,8 @@ public abstract class GrammarReader
 		"GrammarReader.ConflictingAttribute";
 	public static final String ERR_RECURSIVE_INCLUDE = // arg:1
 		"GrammarReader.RecursiveInclude";
+	public static final String ERR_FRAGMENT_IDENTIFIER = // arg:1
+		"GrammarReader.FragmentIdentifier";
 	public static final String ERR_UNDEFINED_DATATYPE = // arg:1
 		"GrammarReader.UndefinedDataType";
 	public static final String ERR_DATATYPE_ALREADY_DEFINED =	// arg:1

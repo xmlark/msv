@@ -37,6 +37,10 @@ public final class SimpleNameClass extends NameClass {
 		this.localName		= localName;
 	}
 	
+	public StringPair toStringPair() {
+		return new StringPair(namespaceURI,localName);
+	}
+	
 	public String toString() {
 		if( namespaceURI.length()==0 )	return localName;
 		else							return /*namespaceURI+":"+*/localName;

@@ -11,8 +11,14 @@ import javax.xml.parsers.*;
 import java.util.Iterator;
 import java.io.*;
 import org.apache.xerces.parsers.SAXParser;
+import org.xml.sax.InputSource;
 import junit.framework.*;
 import com.sun.tranquilo.verifier.*;
+import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.tranquilo.reader.GrammarReaderController;
+import com.sun.tranquilo.reader.dtd.DTDReader;
+import com.sun.tranquilo.reader.util.GrammarLoader;
+import com.sun.tranquilo.grammar.Grammar;
 
 /**
  * integration test: reads and verifies a lot.
@@ -39,19 +45,27 @@ public class BatchVerifyTester
 //		new org.apache.crimson.jaxp.SAXParserFactoryImpl();
 
 	
-	/** test target: "relax" or "trex" */
+	/** test target: "relax", "trex", or "dtd" */
 	protected final String target;
 	/** test directory  */
 	protected final String dir;
 	protected final File testDir;
-	/** schema file extension ".rlx" or ".trex" */
+	/** schema file extension ".rlx", ".trex", or ".dtd" */
 	protected final String ext;
 	
-	public BatchVerifyTester( String target, String dir, String ext )
+	public static interface Loader {
+		TREXDocumentDeclaration load(
+			InputSource source, GrammarReaderController controller, SAXParserFactory factory )
+			throws Exception;
+	}
+	protected final Loader loader;
+	
+	public BatchVerifyTester( String target, String dir, String ext, Loader loader )
 	{
 		this.target = target;
 		this.dir = dir;
 		this.ext = ext;
+		this.loader = loader;
 		
 		testDir = new File(dir);
 		
@@ -60,26 +74,40 @@ public class BatchVerifyTester
 	}
 	
 	
-	public static void main( String[] av ) throws Exception
-	{
-		if( av.length<2 )
-		{
-			System.out.println("usage BatchVerifyTester (relax|trex) <test case directory>");
+	public static void main( String[] av ) throws Exception {
+		
+		if( av.length<2 ) {
+			System.out.println("usage BatchVerifyTester (relax|trex|dtd) <test case directory>");
 			return;
 		}
 		
-		// run the test
-		junit.textui.TestRunner.run( 
-			new BatchVerifyTester( av[0], av[1], av[0].equals("relax")?".rlx":".trex" ).suite() );
+		if( av[0].equals("relax") ) {
+			junit.textui.TestRunner.run(
+				new BatchVerifyTester( av[0], av[1], ".rlx", new RELAXBatchTest.Loader()).suite());
+			return;
+		}
+		
+		if( av[0].equals("trex") ) {
+			junit.textui.TestRunner.run(
+				new BatchVerifyTester( av[0], av[1], ".trex", new TREXBatchTest.Loader()).suite());
+			return;
+		}
+		
+		if( av[0].equals("dtd") ) {
+			junit.textui.TestRunner.run(
+				new BatchVerifyTester( av[0], av[1], ".dtd", new DTDBatchTest.Loader()).suite() );
+			return;
+		}
+		
+		System.out.println("unrecognized language type: "+av[0] );
+		return;
 	}
 	
 	/** gets a TestSuite that loads and verifies all test instances in the test directory. */
-	public TestSuite suite()
-	{		
+	public TestSuite suite() {		
 		// enumerate all schema
 		String[] schemas = testDir.list( new FilenameFilter(){
-			public boolean accept( File dir, String name )
-			{
+			public boolean accept( File dir, String name ) {
 				return name.endsWith(ext);
 			}
 		} );
@@ -92,8 +120,7 @@ public class BatchVerifyTester
 	}
 
 
-	public static void report( ValidityViolation vv )
-	{
+	public static void report( ValidityViolation vv ) {
 		System.out.println(
 			vv.locator.getLineNumber()+":"+vv.locator.getColumnNumber()+
 			"  " + vv.getMessage());

@@ -15,6 +15,7 @@ import com.sun.tranquilo.verifier.util.VerificationErrorHandlerImpl;
 import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
 import com.sun.tranquilo.reader.util.GrammarLoader;
 import com.sun.tranquilo.reader.util.IgnoreController;
+import com.sun.tranquilo.reader.dtd.DTDReader;
 import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.grammar.relax.*;
 import com.sun.tranquilo.grammar.*;
@@ -24,10 +25,9 @@ import com.sun.tranquilo.grammar.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class SchemaSuite extends TestCase
-{
-	SchemaSuite( BatchVerifyTester parent, String schemaFileName )
-	{
+class SchemaSuite extends TestCase {
+	
+	SchemaSuite( BatchVerifyTester parent, String schemaFileName ) {
 		super("testLoadSchema("+schemaFileName+")");
 		this.parent = parent;
 		this.schemaFileName = schemaFileName;
@@ -36,8 +36,8 @@ class SchemaSuite extends TestCase
 	protected final BatchVerifyTester parent;
 	protected final String schemaFileName;
 		
-	public TestSuite suite()
-	{
+	public TestSuite suite() {
+		
 		TestSuite suite = new TestSuite();
 		suite.addTest(this);	// this object itself will load schema as a test.
 			
@@ -45,8 +45,7 @@ class SchemaSuite extends TestCase
 
 		// gets test instances.			
 		String[] lst = parent.testDir.list( new FilenameFilter (){ 
-			public boolean accept( File dir, String name )
-			{
+			public boolean accept( File dir, String name ) {
 				return name.startsWith(prefix) && name.endsWith(".xml");
 			}
 		} );
@@ -61,21 +60,28 @@ class SchemaSuite extends TestCase
 	/** set by testLoadSchema method */
 	protected TREXDocumentDeclaration docDecl;
 		
-	protected void runTest() throws Exception
-	{
+	protected void runTest() throws Exception {
+		
 		final String pathName = parent.dir + "\\" + schemaFileName;
 		InputSource is = new InputSource(pathName);
 		is.setSystemId(pathName);
 			
 		// load grammar
 		if( pathName.endsWith(".e"+parent.ext) ) {
-			docDecl = GrammarLoader.loadVGM( is,
-				new IgnoreController(), parent.factory );
+			docDecl = parent.loader.load( is, new IgnoreController(), parent.factory );
+//			if( parent.target.equals("dtd")) {
+//				docDecl = GrammarLoader.loadVGM( is,
+//					new IgnoreController(), parent.factory );
+//			} else {
+//				docDecl = new TREXDocumentDeclaration(
+//					DTDReader.parse(is) );
+//			}
 			if( docDecl!=null )
 				fail("unexpected result");
 		} else {
-			docDecl = GrammarLoader.loadVGM( is,
-				new ThrowErrorController(), parent.factory );
+//			docDecl = GrammarLoader.loadVGM( is,
+//				new ThrowErrorController(), parent.factory );
+			docDecl = parent.loader.load( is, new ThrowErrorController(), parent.factory );
 			if( docDecl==null )
 				fail("unexpected result");	// unexpected result
 		}

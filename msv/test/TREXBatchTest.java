@@ -9,6 +9,11 @@
  */
 import junit.framework.*;
 import java.util.StringTokenizer;
+import javax.xml.parsers.SAXParserFactory;
+import com.sun.tranquilo.reader.GrammarReaderController;
+import com.sun.tranquilo.reader.util.GrammarLoader;
+import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
+import org.xml.sax.InputSource;
 
 /**
  * tests the entire RELAX test suite by using BatchVerifyTester.
@@ -19,6 +24,12 @@ import java.util.StringTokenizer;
  */
 public class TREXBatchTest
 {
+	public static class Loader implements BatchVerifyTester.Loader {
+		public TREXDocumentDeclaration load( InputSource is, GrammarReaderController controller, SAXParserFactory factory ) throws Exception {
+			return GrammarLoader.loadVGM(is,controller,factory);
+		}
+	}
+	
 	public static TestSuite suite()
 	{
 		StringTokenizer tokens = new StringTokenizer( System.getProperty("TREXBatchTestDir"), ";" );
@@ -26,7 +37,7 @@ public class TREXBatchTest
 		TestSuite s = new TestSuite();
 		while( tokens.hasMoreTokens() )
 			s.addTest(
-				new BatchVerifyTester("trex", tokens.nextToken(), ".trex").suite() );
+				new BatchVerifyTester("trex", tokens.nextToken(), ".trex", new Loader() ).suite() );
 		
 		return s;
 	}

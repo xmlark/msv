@@ -180,16 +180,13 @@ public class LateBindDatatype implements XSDatatype {
 	
 	
 	
-	
 // no method works
 	
 	public Object createJavaObject( String value, ValidationContext context ) {
 		throw new Error();
 	}
 	public String displayName() {
-		// this method is called by ExpressionPool#createTypedString method,
-		// so we cannot throw Error
-		return "";
+		throw new Error();
 	}
 	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		throw new Error();

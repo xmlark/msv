@@ -21,7 +21,12 @@ import org.relaxng.datatype.ValidationContext;
  */
 public class UnsignedByteType extends ShortType {
 	public static final UnsignedByteType theInstance = new UnsignedByteType();
-	private UnsignedByteType() { super("unsignedByte"); }
+	private UnsignedByteType() {
+        super("unsignedByte",createRangeFacet(
+            UnsignedShortType.theInstance,
+            null,
+            new Short((short)255)));
+    }
 
     /** upper bound value. this is the maximum possible valid value as an unsigned int */
     private static final short upperBound = 255;

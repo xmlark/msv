@@ -53,7 +53,7 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
 	 */
 	public PatternFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws DatatypeException {
-		super( nsUri, typeName, baseType, FACET_PATTERN, facets );
+		super( nsUri, typeName, baseType, FACET_PATTERN, facets.isFixed(FACET_PATTERN) );
 		
 		
 		// TODO : am I supposed to implement my own regexp validator?

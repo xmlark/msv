@@ -18,12 +18,12 @@ import org.relaxng.datatype.ValidationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class RangeFacet extends DataTypeWithValueConstraintFacet {
-	public final Object limitValue;
+	public final Number limitValue;
 
-	protected RangeFacet( String nsUri, String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets )
-		throws DatatypeException {
-		super(nsUri,typeName,baseType,facetName,facets);
-		limitValue = facets.getFacet(facetName);
+    protected RangeFacet( String nsUri, String typeName, XSDatatypeImpl baseType, String facetName, Number limit, boolean _isFixed )
+        throws DatatypeException {
+		super(nsUri,typeName,baseType,facetName,_isFixed);
+		limitValue = limit;
 	}
 	
 	public final Object _createValue( String literal, ValidationContext context ) {

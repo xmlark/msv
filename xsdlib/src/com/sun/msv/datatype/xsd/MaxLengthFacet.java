@@ -19,13 +19,20 @@ import org.relaxng.datatype.ValidationContext;
  */
 public class MaxLengthFacet extends DataTypeWithValueConstraintFacet
 {
-	public final int maxLength;
-	
-	protected MaxLengthFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
-		throws DatatypeException {
-		super(nsUri,typeName,baseType,FACET_MAXLENGTH,facets);
-	
-		maxLength = facets.getNonNegativeInteger(FACET_MAXLENGTH);
+    public final int maxLength;
+
+    protected MaxLengthFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
+        throws DatatypeException {
+        this(nsUri,typeName,baseType,
+            facets.getNonNegativeInteger(FACET_MAXLENGTH),
+            facets.isFixed(FACET_MAXLENGTH));
+    }
+
+    protected MaxLengthFacet( String nsUri, String typeName, XSDatatypeImpl baseType, int _maxLength, boolean _isFixed )
+        throws DatatypeException {
+        super(nsUri,typeName,baseType,FACET_MAXLENGTH,_isFixed);
+
+        this.maxLength = _maxLength;
 
 		// loosened facet check
 		DataTypeWithFacet o = baseType.getFacetObject(FACET_MAXLENGTH);

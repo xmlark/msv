@@ -21,8 +21,16 @@ public class WhiteSpaceFacet extends DataTypeWithFacet {
 	
 	WhiteSpaceFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws DatatypeException {
-		super(nsUri,typeName, baseType, FACET_WHITESPACE, facets,
-			WhiteSpaceProcessor.get( (String)facets.getFacet(FACET_WHITESPACE)) );
+		
+        this(nsUri,typeName, baseType,
+            WhiteSpaceProcessor.get( (String)facets.getFacet(FACET_WHITESPACE)),
+            facets.isFixed(FACET_WHITESPACE) );
+    }
+        
+    WhiteSpaceFacet( String nsUri, String typeName, XSDatatypeImpl baseType,
+        WhiteSpaceProcessor proc, boolean _isFixed ) throws DatatypeException {
+            
+        super(nsUri,typeName, baseType, FACET_WHITESPACE, _isFixed,proc);
 		
 		// loosened facet check
 		if( baseType.whiteSpace.tightness() > this.whiteSpace.tightness() ) {

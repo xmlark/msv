@@ -20,8 +20,14 @@ import org.relaxng.datatype.ValidationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ShortType extends IntegerDerivedType {
-	public static final ShortType theInstance = new ShortType("short");
-	protected ShortType(String typeName) { super(typeName); }
+	public static final ShortType theInstance =
+        new ShortType("short",createRangeFacet(IntType.theInstance,
+            new Integer(Short.MIN_VALUE),
+            new Integer(Short.MAX_VALUE)));
+	
+    protected ShortType(String typeName,XSDatatypeImpl baseFacets) {
+        super(typeName,baseFacets);
+    }
 	
 	public XSDatatype getBaseType() {
 		return IntType.theInstance;

@@ -25,7 +25,12 @@ import org.relaxng.datatype.ValidationContext;
  */
 public class UnsignedShortType extends IntType {
 	public static final UnsignedShortType theInstance = new UnsignedShortType();
-	private UnsignedShortType() { super("unsignedShort"); }
+	private UnsignedShortType() {
+        super("unsignedShort",createRangeFacet(
+            UnsignedIntType.theInstance,
+            null,
+            new Integer(65535)));
+    }
 	
 	public XSDatatype getBaseType() {
 		return UnsignedIntType.theInstance;

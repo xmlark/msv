@@ -21,7 +21,12 @@ import org.relaxng.datatype.ValidationContext;
  */
 public class NonPositiveIntegerType extends IntegerType {
 	public static final NonPositiveIntegerType theInstance = new NonPositiveIntegerType();
-	private NonPositiveIntegerType() { super("nonPositiveInteger"); }
+	private NonPositiveIntegerType() {
+        super("nonPositiveInteger",createRangeFacet(
+            IntegerType.theInstance,
+            null,
+            IntegerValueType.create("0")));
+    }
 	
 	final public XSDatatype getBaseType() {
 		return IntegerType.theInstance;

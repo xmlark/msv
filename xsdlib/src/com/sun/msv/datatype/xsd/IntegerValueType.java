@@ -16,7 +16,7 @@ import java.math.BigInteger;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class IntegerValueType implements Comparable, java.io.Serializable {
+public class IntegerValueType extends Number implements Comparable, java.io.Serializable {
 	/** canonical representation of absolute value of integer
 	 * 
 	 * BNF of canonical representation
@@ -182,6 +182,23 @@ public class IntegerValueType implements Comparable, java.io.Serializable {
 	public BigInteger toBigInteger() {
 		return new BigInteger(value);
 	}
+    
+    public double doubleValue() {
+        return toBigInteger().doubleValue();
+    }
+
+    public float floatValue() {
+        return (float)doubleValue();
+    }
+
+    public int intValue() {
+        return toBigInteger().intValue();
+    }
+
+    public long longValue() {
+        return toBigInteger().longValue();
+    }
+
 
     // serialization support
     private static final long serialVersionUID = 1;    

@@ -23,11 +23,11 @@ public class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 	/** maximum number of total digits. */
 	public final int		precision;
 
-	public TotalDigitsFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
-		throws DatatypeException {
-		super( nsUri, typeName, baseType, FACET_TOTALDIGITS, facets );
+    public TotalDigitsFacet( String nsUri, String typeName, XSDatatypeImpl baseType, int _precision, boolean _isFixed )
+        throws DatatypeException {
+		super( nsUri, typeName, baseType, FACET_TOTALDIGITS, _isFixed );
 		
-		precision = facets.getPositiveInteger(FACET_TOTALDIGITS);
+		precision = _precision;
 		
 		// loosened facet check
 		DataTypeWithFacet o = baseType.getFacetObject(FACET_TOTALDIGITS);

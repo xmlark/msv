@@ -26,7 +26,12 @@ import org.relaxng.datatype.ValidationContext;
 public class UnsignedIntType extends LongType {
 	
 	public static final UnsignedIntType theInstance = new UnsignedIntType();
-	private UnsignedIntType() { super("unsignedInt"); }
+	private UnsignedIntType() {
+        super("unsignedInt",createRangeFacet(
+            UnsignedLongType.theInstance,
+            null,
+            new Long(4294967295L)));
+    }
 	
 	final public XSDatatype getBaseType() {
 		return UnsignedLongType.theInstance;

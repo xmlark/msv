@@ -24,7 +24,12 @@ import org.relaxng.datatype.ValidationContext;
  */
 public class NegativeIntegerType extends IntegerType {
 	public static final NegativeIntegerType theInstance = new NegativeIntegerType();
-	private NegativeIntegerType() { super("negativeInteger"); }
+	private NegativeIntegerType() {
+        super("negativeInteger",createRangeFacet(
+            NonPositiveIntegerType.theInstance,
+            null,
+            IntegerValueType.create("-1")));
+    }
 	
 	final public XSDatatype getBaseType() {
 		return NonPositiveIntegerType.theInstance;

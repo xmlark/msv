@@ -22,7 +22,12 @@ import org.relaxng.datatype.ValidationContext;
 public class PositiveIntegerType extends IntegerType {
 	
 	public static final PositiveIntegerType theInstance = new PositiveIntegerType();
-	private PositiveIntegerType() { super("positiveInteger"); }
+	private PositiveIntegerType() {
+        super("positiveInteger",createRangeFacet(
+            NonNegativeIntegerType.theInstance,
+            IntegerValueType.create("1"),
+            null));
+    }
 	
 	final public XSDatatype getBaseType() {
 		return NonNegativeIntegerType.theInstance;

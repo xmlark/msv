@@ -97,7 +97,9 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 	 *		if no such facet object exists.
 	 */
 	public DataTypeWithFacet getFacetObject( String facetName ) {
-		return null;
+        XSDatatype dt = getBaseType();
+        if(dt!=null)    return dt.getFacetObject(facetName);
+		else              return null;
 	}
 
     public String[] getApplicableFacetNames() {

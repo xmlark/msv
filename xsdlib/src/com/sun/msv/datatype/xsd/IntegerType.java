@@ -11,6 +11,7 @@ package com.sun.msv.datatype.xsd;
 
 import java.math.BigInteger;
 
+import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -23,9 +24,25 @@ import org.relaxng.datatype.ValidationContext;
  */
 public class IntegerType extends IntegerDerivedType {
 	
-	public static final IntegerType theInstance = new IntegerType("integer");
-	protected IntegerType(String typeName) { super(typeName); }
+    /** Singleton instance. */
+	public static final IntegerType theInstance;
+    
+    static {
+        try {
+            theInstance = new IntegerType("integer",
+                new FractionDigitsFacet(null,null,NumberType.theInstance,0,true) );
+        } catch( DatatypeException e ) {
+            throw new InternalError();  // assertion failure
+        }
+    }
+
 	
+    
+    protected IntegerType(String typeName,XSDatatypeImpl baseFacets) {
+        super(typeName,baseFacets);
+    }
+    
+    
 	public XSDatatype getBaseType() {
 		return NumberType.theInstance;
 	}
@@ -55,7 +72,9 @@ public class IntegerType extends IntegerDerivedType {
 	public Class getJavaObjectType() {
 		return BigInteger.class;
 	}
+    
 
+    
     // serialization support
     private static final long serialVersionUID = 1;    
 }

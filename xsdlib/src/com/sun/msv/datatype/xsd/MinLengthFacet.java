@@ -20,11 +20,18 @@ import org.relaxng.datatype.ValidationContext;
 public class MinLengthFacet extends DataTypeWithValueConstraintFacet {
 	public final int minLength;
 	
-	protected MinLengthFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
+    protected MinLengthFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
+        throws DatatypeException {
+        this(nsUri,typeName,baseType,
+            facets.getNonNegativeInteger(FACET_MINLENGTH),
+            facets.isFixed(FACET_MINLENGTH));
+    }
+    
+	protected MinLengthFacet( String nsUri, String typeName, XSDatatypeImpl baseType, int _minLength, boolean _isFixed )
 		throws DatatypeException {
-		super(nsUri,typeName,baseType,FACET_MINLENGTH,facets);
+		super(nsUri,typeName,baseType,FACET_MINLENGTH,_isFixed);
 	
-		minLength = facets.getNonNegativeInteger(FACET_MINLENGTH);
+		this.minLength = _minLength;
 		
 		// loosened facet check
 		DataTypeWithFacet o = baseType.getFacetObject(FACET_MINLENGTH);

@@ -205,17 +205,29 @@ public class TypeIncubator {
 					exclusiveFacetPairs[i][1] ) );
 		
 		if( contains(XSDatatypeImpl.FACET_TOTALDIGITS) )
-			r = new TotalDigitsFacet	( newNameUri,newLocalName, r, this );
+			r = new TotalDigitsFacet	( newNameUri,newLocalName, r,
+                getPositiveInteger(XSDatatype.FACET_TOTALDIGITS),
+                isFixed(XSDatatype.FACET_TOTALDIGITS) );
 		if( contains(XSDatatypeImpl.FACET_FRACTIONDIGITS) )
-			r = new FractionDigitsFacet ( newNameUri,newLocalName, r, this );
+			r = new FractionDigitsFacet ( newNameUri,newLocalName, r,
+                getPositiveInteger(XSDatatype.FACET_FRACTIONDIGITS),
+                isFixed(XSDatatype.FACET_FRACTIONDIGITS) );
 		if( contains(XSDatatypeImpl.FACET_MININCLUSIVE) )
-			r = new MinInclusiveFacet	( newNameUri,newLocalName, r, this );
+			r = new MinInclusiveFacet	( newNameUri,newLocalName, r, (Number)
+                getFacet(XSDatatype.FACET_MININCLUSIVE),
+                isFixed (XSDatatype.FACET_MININCLUSIVE) );
 		if( contains(XSDatatypeImpl.FACET_MAXINCLUSIVE) )
-			r = new MaxInclusiveFacet	( newNameUri,newLocalName, r, this );
+            r = new MaxInclusiveFacet   ( newNameUri,newLocalName, r, (Number)
+                getFacet(XSDatatype.FACET_MAXINCLUSIVE),
+                isFixed (XSDatatype.FACET_MAXINCLUSIVE) );
 		if( contains(XSDatatypeImpl.FACET_MINEXCLUSIVE) )
-			r = new MinExclusiveFacet	( newNameUri,newLocalName, r, this );
+            r = new MinExclusiveFacet   ( newNameUri,newLocalName, r, (Number)
+                getFacet(XSDatatype.FACET_MINEXCLUSIVE),
+                isFixed (XSDatatype.FACET_MINEXCLUSIVE) );
 		if( contains(XSDatatypeImpl.FACET_MAXEXCLUSIVE) )
-			r = new MaxExclusiveFacet	( newNameUri,newLocalName, r, this );
+            r = new MaxExclusiveFacet   ( newNameUri,newLocalName, r, (Number)
+                getFacet(XSDatatype.FACET_MAXEXCLUSIVE),
+                isFixed (XSDatatype.FACET_MAXEXCLUSIVE) );
 		if( contains(XSDatatypeImpl.FACET_LENGTH) )
 			r = new LengthFacet		( newNameUri,newLocalName, r, this );
 		if( contains(XSDatatypeImpl.FACET_MINLENGTH) )
@@ -227,7 +239,9 @@ public class TypeIncubator {
 		if( contains(XSDatatypeImpl.FACET_PATTERN) )
 			r = new PatternFacet		( newNameUri,newLocalName, r, this );
 		if( contains(XSDatatypeImpl.FACET_ENUMERATION) )
-			r = new EnumerationFacet	( newNameUri,newLocalName, r, this );
+			r = new EnumerationFacet	( newNameUri,newLocalName, r,
+                getVector(XSDatatype.FACET_ENUMERATION),
+                isFixed  (XSDatatype.FACET_ENUMERATION) );
 		
 					
 		// additional facet consistency check

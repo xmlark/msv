@@ -87,6 +87,7 @@ public class CommandLineTester
 				if( cmd.equals("test") )
 				{
 					String value = tokens.nextToken();
+                    
 					// a type can be derived by derive method.
 					// the new type contains all facets that were added.
 					XSDatatype dt = incubator.derive("anonymous");

@@ -17,10 +17,10 @@ import org.relaxng.datatype.DatatypeException;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class MinExclusiveFacet extends RangeFacet {
-	protected MinExclusiveFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
-		throws DatatypeException {
-		super( nsUri, typeName, baseType, FACET_MINEXCLUSIVE, facets );
-	}
+    protected MinExclusiveFacet( String nsUri, String typeName, XSDatatypeImpl baseType, Number limit, boolean _isFixed )
+        throws DatatypeException {
+        super( nsUri, typeName, baseType, FACET_MINEXCLUSIVE, limit, _isFixed );
+    }
 	
 	protected final boolean rangeCheck( int r ) {
 		return r==Comparator.LESS;

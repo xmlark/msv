@@ -9,6 +9,7 @@
  */
 package com.sun.msv.datatype.xsd;
 
+import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 
 import com.sun.msv.datatype.SerializationContext;
@@ -19,9 +20,13 @@ import com.sun.msv.datatype.SerializationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class IntegerDerivedType extends BuiltinAtomicType implements Comparator {
+
+    private final XSDatatypeImpl baseFacets;
+    
 	
-	protected IntegerDerivedType( String typeName ) {
+	protected IntegerDerivedType( String typeName, XSDatatypeImpl _baseFacets ) {
 		super(typeName);
+        this.baseFacets = _baseFacets;
 	}
 	
 	public final int isFacetApplicable( String facetName ) {
@@ -41,6 +46,10 @@ abstract class IntegerDerivedType extends BuiltinAtomicType implements Comparato
             
 	   return NOT_ALLOWED;
 	}
+
+    public DataTypeWithFacet getFacetObject(String facetName) {
+        return baseFacets.getFacetObject(facetName);
+    }
 	
 	protected final boolean checkFormat( String content, ValidationContext context ) {
 		// integer-derived types always checks lexical format by trying to convert it to value object
@@ -78,4 +87,18 @@ abstract class IntegerDerivedType extends BuiltinAtomicType implements Comparato
 		
 		throw new NumberFormatException();
 	}
+    
+    /** Apply a range facet. */
+    protected static XSDatatypeImpl createRangeFacet( XSDatatypeImpl baseType, Number min, Number max ) {
+         try {
+             XSDatatypeImpl r = baseType;
+             if( min!=null )
+                r = new MinInclusiveFacet(null,null,r,min,false);
+             if( max!=null )
+                r = new MaxInclusiveFacet(null,null,r,max,false);
+             return r;
+         } catch( DatatypeException e ) {
+             throw new InternalError(); // impossible
+         }
+    }
 }

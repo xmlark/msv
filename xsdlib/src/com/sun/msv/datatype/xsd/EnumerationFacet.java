@@ -9,6 +9,7 @@
  */
 package com.sun.msv.datatype.xsd;
 
+import java.util.Collection;
 import java.util.Set;
 
 import org.relaxng.datatype.DatatypeException;
@@ -20,10 +21,10 @@ import org.relaxng.datatype.ValidationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class EnumerationFacet extends DataTypeWithValueConstraintFacet {
-	protected EnumerationFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
+	protected EnumerationFacet( String nsUri, String typeName, XSDatatypeImpl baseType, Collection _values, boolean _isFixed )
 		throws DatatypeException {
-		super(nsUri,typeName,baseType,FACET_ENUMERATION,facets);
-		values = new java.util.HashSet( facets.getVector(FACET_ENUMERATION) );
+		super(nsUri,typeName,baseType,FACET_ENUMERATION,_isFixed);
+		values = new java.util.HashSet( _values );
 	}
 	
 	/** set of valid values */

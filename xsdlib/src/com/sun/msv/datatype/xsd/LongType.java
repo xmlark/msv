@@ -21,8 +21,14 @@ import org.relaxng.datatype.ValidationContext;
  */
 public class LongType extends IntegerDerivedType {
 	public static final LongType theInstance = new LongType();
-	private LongType() { super("long"); }
-	protected LongType( String typeName ) { super(typeName); }
+	private LongType() {
+        super("long",createRangeFacet( IntegerType.theInstance,
+            IntegerValueType.create("-9223372036854775808"),
+            IntegerValueType.create("9223372036854775807")));
+    }
+	protected LongType( String typeName, XSDatatypeImpl baseFacets ) {
+        super(typeName,baseFacets);
+    }
 	
 	public XSDatatype getBaseType() {
 		return IntegerType.theInstance;

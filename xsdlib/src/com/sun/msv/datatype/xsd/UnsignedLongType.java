@@ -21,7 +21,12 @@ import org.relaxng.datatype.ValidationContext;
  */
 public class UnsignedLongType extends IntegerType {
 	public static final UnsignedLongType theInstance = new UnsignedLongType();
-	private UnsignedLongType() { super("unsignedLong"); }
+	private UnsignedLongType() {
+        super("unsignedLong",createRangeFacet(
+            NonNegativeIntegerType.theInstance,
+            null,
+            IntegerValueType.create("18446744073709551615")));
+    }
 	
 	final public XSDatatype getBaseType() {
 		return NonNegativeIntegerType.theInstance;

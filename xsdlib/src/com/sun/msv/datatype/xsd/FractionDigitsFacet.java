@@ -24,11 +24,11 @@ public class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 	/** maximum number of fraction digits */
 	public final int scale;
 
-	public FractionDigitsFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
-		throws DatatypeException {
-		super( nsUri, typeName, baseType, FACET_FRACTIONDIGITS, facets );
+    public FractionDigitsFacet( String nsUri, String typeName, XSDatatypeImpl baseType, int _scale, boolean _isFixed )
+        throws DatatypeException {
+		super( nsUri, typeName, baseType, FACET_FRACTIONDIGITS, _isFixed );
 		
-		scale = facets.getNonNegativeInteger(FACET_FRACTIONDIGITS);
+		scale = _scale;
 		
 		// loosened facet check
 		DataTypeWithFacet o = baseType.getFacetObject(FACET_FRACTIONDIGITS);

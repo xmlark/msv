@@ -25,9 +25,16 @@ public class LengthFacet extends DataTypeWithValueConstraintFacet {
 	
 	protected LengthFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws DatatypeException {
-		super(nsUri,typeName,baseType,FACET_LENGTH,facets);
+        this(nsUri,typeName,baseType,
+            facets.getNonNegativeInteger(FACET_LENGTH),
+            facets.isFixed(FACET_LENGTH));
+    }
+                
+    protected LengthFacet( String nsUri, String typeName, XSDatatypeImpl baseType, int _length, boolean _isFixed )
+        throws DatatypeException {
+		super(nsUri,typeName,baseType,FACET_LENGTH,_isFixed);
 	
-		length = facets.getNonNegativeInteger(FACET_LENGTH);
+		length = _length;
 		
 		// loosened facet check
 		DataTypeWithFacet o = baseType.getFacetObject(FACET_LENGTH);

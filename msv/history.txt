@@ -1,4 +1,15 @@
 
+(both)  fixed a bug that a named type is not properly derived by restriction
+        when no facet is specified.
+(both)  fixed an inconvenience of error recovery logic.
+(both)  fixed a bug in error recovery from bad attribute value error.
+        improved error message of bad attribute value error in case of
+        "none" type.
+(both)  added version message.
+
+2000/03/29 release
+------------------
+(both)  documents added
 (both)  command line Verifier now detects type ofschema automatically.
 (both)  switched default parser back to Xerces-J, due to the bug of Crimson
         in SAXParserFactory.setFeature method.

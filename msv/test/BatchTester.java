@@ -23,8 +23,6 @@ import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.trex.TREXPatternPool;
 
 /**
- * integration test: reads and verifies a lot.
- * 
  * Test schemata/instances are expected to follow a naming convention.
  * 
  * <ol>

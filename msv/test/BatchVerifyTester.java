@@ -21,20 +21,7 @@ import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.grammar.Grammar;
 
 /**
- * integration test: reads and verifies a lot.
- * 
- * Test schemata/instances are expected to follow a naming convention.
- * 
- * <ol>
- *  <li>legal schema must have "*.rlx" or "*.trex"
- *  <li>invalid schema must have "*.e.rlx" or "*.e.trex"
- *  <li>valid test document must have "*.vNN.xml".
- *      these documents are validated against "*.rlx" or "*.trex".
- *  <li>invalid test document must have "*.nNN.xml".
- * </ol>
- * 
- * Files that follow this naming convention are all tested. If any unexpected
- * result is found, main method returns non-0 exit code.
+ * validates instances by schemata.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

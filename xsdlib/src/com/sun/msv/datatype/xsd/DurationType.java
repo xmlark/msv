@@ -23,7 +23,7 @@ import org.relaxng.datatype.ValidationContext;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class DurationType extends ConcreteType implements Comparator {
+public final class DurationType extends BuiltinAtomicType implements Comparator {
 	
 	public static final DurationType theInstance = new DurationType();
 	private DurationType() { super("duration"); }

@@ -20,7 +20,7 @@ import com.sun.msv.datatype.SerializationContext;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class QnameType extends ConcreteType implements Discrete {
+public class QnameType extends BuiltinAtomicType implements Discrete {
 	public static final QnameType theInstance = new QnameType();
 	private QnameType() { super("QName"); }
 	

@@ -46,6 +46,13 @@ final public class UnionType extends ConcreteType {
 	final public XSDatatype getBaseType() {
 		return SimpleURType.theInstance;
 	}
+    
+	
+	public final String displayName() {
+		String name = getName();
+        if(name!=null)      return name;
+        else                return "union";
+	}
 
 	/**
 	 * The union type is context-dependent if one of the member types is so.

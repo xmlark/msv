@@ -20,7 +20,7 @@ import com.sun.msv.datatype.SerializationContext;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class BooleanType extends ConcreteType {
+public class BooleanType extends BuiltinAtomicType {
 	public static final BooleanType theInstance = new BooleanType();
 	
 	private BooleanType()	{ super("boolean"); }

@@ -14,8 +14,7 @@ import org.relaxng.datatype.DatatypeException;
 import com.sun.msv.datatype.SerializationContext;
 
 /**
- * base class for those types which can be used by itself
- * (int,uriReference,string, etc) .
+ * base class for types that union/list/atomic.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
@@ -32,19 +31,10 @@ public abstract class ConcreteType extends XSDatatypeImpl {
 	final public ConcreteType getConcreteType() {
 		return this;
 	}
-
-	// as a default implementation, this method returns VARIETY_ATOMIC.
-	public int getVariety() {
-		return VARIETY_ATOMIC;
-	}
 	
 	public boolean isFinal( int derivationType ) {
 		// allow derivation by default.
 		return false;
-	}
-	
-	public final String displayName() {
-		return getName();
 	}
 	
 	protected Object readResolve() throws java.io.ObjectStreamException {

@@ -174,13 +174,13 @@ public class DatatypeFactory {
 				add( builtinType, IDREFType.theInstance );
 			else
 			if( dataTypeName.equals("IDREFS") )
-				add( builtinType, createOneOrMoreList("IDREFS",IDREFType.theInstance) );
+				add( builtinType, createBuiltinList("IDREFS",IDREFType.theInstance) );
 			else
 			if( dataTypeName.equals("ENTITIES") )
-				add( builtinType, createOneOrMoreList("ENTITIES",EntityType.theInstance) );
+				add( builtinType, createBuiltinList("ENTITIES",EntityType.theInstance) );
 			else
 			if( dataTypeName.equals("NMTOKENS") )
-				add( builtinType, createOneOrMoreList("NMTOKENS",NmtokenType.theInstance) );
+				add( builtinType, createBuiltinList("NMTOKENS",NmtokenType.theInstance) );
 			else
 			if( dataTypeName.equals("NOTATION") )
 				add( builtinType, new StringType("NOTATION", WhiteSpaceProcessor.theCollapse) );
@@ -199,6 +199,9 @@ public class DatatypeFactory {
 			else
 			if( dataTypeName.equals("unsignedByte") )
 				add( builtinType, UnsignedByteType.theInstance );
+            else
+            if( dataTypeName.equals("anySimpleType") )
+                add( builtinType, SimpleURType.theInstance );
 		} catch( DatatypeException dte )	{
 			// assertion failed
 			throw new Error();
@@ -210,10 +213,21 @@ public class DatatypeFactory {
 		throw new DatatypeException("undefined type name:"+dataTypeName);
 	}
 	
-	private static XSDatatypeImpl createOneOrMoreList( String name, XSDatatypeImpl item ) throws DatatypeException {
+	private static XSDatatypeImpl createBuiltinList( String name, XSDatatypeImpl item ) throws DatatypeException {
 		TypeIncubator ti = new TypeIncubator(new ListType(null,item));
 		ti.addFacet("minLength","1",false,null);
-		return ti.derive(name);
+        // wrap it by a proxy object so that
+        // these objects will work as singleton.
+        return new Proxy(name,ti.derive(null)) {
+            private Object readResolve() {
+                try {
+                    return DatatypeFactory.getTypeByName(getName());
+                } catch( DatatypeException e ) {
+                    e.printStackTrace();
+                    throw new InternalError(e.getMessage());
+                }
+            }
+        };
 	}
 	
 	/**

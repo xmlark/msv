@@ -17,7 +17,7 @@ import com.sun.msv.datatype.SerializationContext;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-abstract class BinaryBaseType extends ConcreteType implements Discrete {
+abstract class BinaryBaseType extends BuiltinAtomicType implements Discrete {
 	BinaryBaseType( String typeName ) { super(typeName); }
 	
 	final public int isFacetApplicable( String facetName ) {

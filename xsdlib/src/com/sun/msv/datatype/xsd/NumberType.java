@@ -23,7 +23,7 @@ import com.sun.msv.datatype.SerializationContext;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class NumberType extends ConcreteType implements Comparator {
+public class NumberType extends BuiltinAtomicType implements Comparator {
 	public static final NumberType theInstance = new NumberType();
 	private NumberType() { super("decimal"); }
 	

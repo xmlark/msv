@@ -17,7 +17,7 @@ import com.sun.msv.datatype.SerializationContext;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-abstract class IntegerDerivedType extends ConcreteType implements Comparator {
+abstract class IntegerDerivedType extends BuiltinAtomicType implements Comparator {
 	
 	protected IntegerDerivedType( String typeName ) {
 		super(typeName);

@@ -15,7 +15,7 @@ import org.relaxng.datatype.ValidationContext;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-abstract class FloatingNumberType extends ConcreteType implements Comparator {
+abstract class FloatingNumberType extends BuiltinAtomicType implements Comparator {
 	protected FloatingNumberType( String typeName ) { super(typeName); }
 	
 	final protected boolean checkFormat( String lexicalValue, ValidationContext context ) {

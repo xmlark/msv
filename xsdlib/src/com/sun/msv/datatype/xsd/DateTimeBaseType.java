@@ -26,7 +26,7 @@ import java.util.SimpleTimeZone;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-abstract class DateTimeBaseType extends ConcreteType implements Comparator {
+abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator {
 	
 	protected DateTimeBaseType(String typeName) {
 		super(typeName);

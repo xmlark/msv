@@ -20,7 +20,7 @@ import com.sun.msv.datatype.SerializationContext;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class SimpleURType extends ConcreteType {
+public class SimpleURType extends BuiltinAtomicType {
 	
 	public static final SimpleURType theInstance = new SimpleURType();
 	

@@ -20,7 +20,7 @@ import com.sun.msv.datatype.SerializationContext;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class EntityType extends ConcreteType {
+public class EntityType extends BuiltinAtomicType {
 	public static final EntityType theInstance = new EntityType();
 	private EntityType() { super("ENTITY"); }
 	

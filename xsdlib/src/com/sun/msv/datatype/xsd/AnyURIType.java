@@ -22,7 +22,7 @@ import org.relaxng.datatype.ValidationContext;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class AnyURIType extends ConcreteType implements Discrete {
+public class AnyURIType extends BuiltinAtomicType implements Discrete {
 	
 	public static final AnyURIType theInstance = new AnyURIType();
 	private AnyURIType() {

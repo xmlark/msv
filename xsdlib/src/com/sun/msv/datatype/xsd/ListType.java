@@ -39,6 +39,13 @@ public final class ListType extends ConcreteType implements Discrete {
 	/** atomic base type */
 	final public XSDatatypeImpl itemType;
 
+	
+	public final String displayName() {
+		String name = getName();
+        if(name!=null)      return name;
+        else                return itemType.displayName()+"-list";
+	}
+    
 	/**
 	 * Variety of the ListType is VARIETY_LIST. So this method always
 	 * returns VARIETY_LIST.
@@ -46,7 +53,7 @@ public final class ListType extends ConcreteType implements Discrete {
 	public final int getVariety() {
 		return VARIETY_LIST;
 	}
-	
+    
 	final public XSDatatype getBaseType() {
 		return SimpleURType.theInstance;
 	}

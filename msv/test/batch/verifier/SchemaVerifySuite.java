@@ -51,7 +51,12 @@ class SchemaVerifySuite extends batch.SchemaSuite {
 			
 		// load grammar
 		if( pathName.endsWith(".e"+parent.ext) ) {
-			Grammar g = parent.loader.load( is, new IgnoreController(), parent.factory );
+			Grammar g = null;
+			try {
+				g = parent.loader.load( is, new ThrowErrorController(), parent.factory );
+			} catch( Error e ) {
+				System.out.println("schema:"+e.getMessage());
+			}
 			if( g!=null )
 				fail("unexpected result");
 		} else {

@@ -28,7 +28,7 @@ import com.sun.msv.grammar.Grammar;
 public class BatchVerifyTester extends BatchTester
 {
 	public static void main( String[] av ) throws Exception {
-		new BatchVerifyTester().main(av);
+		new BatchVerifyTester().run(av);
 	}
 	
 	/** gets a TestSuite that loads and verifies all test instances in the test directory. */

@@ -10,21 +10,17 @@
 package com.sun.msv.verifier;
 
 import org.xml.sax.Locator;
+import org.xml.sax.SAXParseException;
 
 /**
  * contains information about where and how validity violation was happened.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ValidityViolation extends org.xml.sax.SAXException
+public class ValidityViolation extends SAXParseException
 {
-	/** source of the error/warning */
-	public final Locator locator;
-	
 	/** constructor for this package */
-	public ValidityViolation( Locator loc, String msg )
-	{
-		super(msg);
-		this.locator = loc;
+	public ValidityViolation( Locator loc, String msg ) {
+		super( msg, loc );
 	}
 }

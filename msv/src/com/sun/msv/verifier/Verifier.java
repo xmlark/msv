@@ -55,8 +55,10 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	
 	/** error handler */
 	protected VerificationErrorHandler errorHandler;
-	public final VerificationErrorHandler getVErrorHandler() { return errorHandler; }
-	
+	public final VerificationErrorHandler getVerificationErrorHandler() { return errorHandler; }
+	public final void setVerificationErrorHandler( VerificationErrorHandler handler ) {
+		this.errorHandler = handler;
+	}
 	/** this flag will be set to true if an error is found */
 	protected boolean hadError;
 	

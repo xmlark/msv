@@ -53,8 +53,11 @@ public class VerifierFilter extends XMLFilterImpl implements IVerifier {
 	public final Locator getLocator() {
 		return verifier.getLocator();
 	}
-	public final VerificationErrorHandler getVErrorHandler() {
-		return verifier.getVErrorHandler();
+	public final VerificationErrorHandler getVerificationErrorHandler() {
+		return verifier.getVerificationErrorHandler();
+	}
+	public final void setVerificationErrorHandler( VerificationErrorHandler handler ) {
+		verifier.setVerificationErrorHandler(handler);
 	}
 
 	

@@ -11,13 +11,14 @@ package com.sun.msv.verifier;
 
 import org.relaxng.datatype.Datatype;
 import org.xml.sax.Locator;
+import org.iso_relax.verifier.VerifierHandler;
 
 /**
  * Interface of verifier.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface IVerifier extends org.xml.sax.ContentHandler {
+public interface IVerifier extends VerifierHandler {
 
 	/**
 	 * checks if the document was valid.
@@ -68,5 +69,6 @@ public interface IVerifier extends org.xml.sax.ContentHandler {
 
 
 	Locator getLocator();
-	VerificationErrorHandler getVErrorHandler();
+	VerificationErrorHandler getVerificationErrorHandler();
+	void setVerificationErrorHandler( VerificationErrorHandler handler );
 }

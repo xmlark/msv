@@ -10,7 +10,6 @@
 package com.sun.msv.verifier.jarv;
 
 import org.iso_relax.verifier.*;
-import org.iso_relax.verifier.impl.VerifierImpl;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.EntityResolver;
@@ -31,11 +30,11 @@ import jp.gr.xml.relax.sax.DOMSAXProducer;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class VerifierImpl extends VerifierImpl
+class VerifierImpl extends org.iso_relax.verifier.impl.VerifierImpl
 {
 	private final IVerifier verifier;
 	
-	VerifierImpl( IVerifier verifier, XMLReader reader ) {
+	VerifierImpl( IVerifier verifier, XMLReader reader ) throws VerifierConfigurationException {
 		this.verifier = verifier;
 		super.reader	= reader;
 	}

@@ -87,7 +87,19 @@ public class RELAXCoreReader extends RELAXReader
 		if(hadError)	return null;
 		else			return module;
 	}
-	
+
+	protected boolean isGrammarElement( StartTagInfo tag )
+	{
+		if( !RELAXCoreNamespace.equals(tag.namespaceURI) )
+			return false;
+		
+		// annotation is ignored at this level.
+		// by returning false, the entire subtree will be simply ignored.
+		if(tag.localName.equals("annotation"))	return false;
+		
+		return true;
+	}
+
 	
 	/**
 	 * map from type name of Candidate Recommendation to the current type.

@@ -1,7 +1,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "unsignedLong" and unsignedLong-derived types
+ * "unsignedLong" and unsignedLong-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#unsignedLong for the spec
  */

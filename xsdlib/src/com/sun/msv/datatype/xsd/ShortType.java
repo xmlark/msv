@@ -1,7 +1,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "short" and short-derived types
+ * "short" and short-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#short for the spec
  */

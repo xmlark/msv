@@ -1,7 +1,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "base64Binary" and base64Binary-derived types
+ * "base64Binary" and base64Binary-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#base64Binary for the spec
  */

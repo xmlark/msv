@@ -20,7 +20,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "string" and string-derived types
+ * "string" and string-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#string for the spec
  */

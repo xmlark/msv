@@ -4,13 +4,12 @@ public class MinLengthFacet extends DataTypeWithValueConstraintFacet
 {
 	protected final int minLength;
 	
-	protected MinLengthFacet( String typeName, DataTypeImpl baseType, Facets facets )
+	protected MinLengthFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException
 	{
 		super(typeName,baseType,FACET_MINLENGTH,facets);
 	
 		minLength = facets.getNonNegativeInteger(FACET_MINLENGTH);
-		facets.consume(FACET_MINLENGTH);
 		
 		// loosened facet check
 		DataTypeWithFacet o = baseType.getFacetObject(FACET_MINLENGTH);

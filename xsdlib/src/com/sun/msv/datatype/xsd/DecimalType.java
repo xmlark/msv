@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
- * "decimal" and decimal-derived types
+ * "decimal" and decimal-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#decimal for the spec
  */

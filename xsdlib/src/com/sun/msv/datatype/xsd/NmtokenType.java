@@ -22,16 +22,16 @@ package com.sun.tranquilo.datatype;
 import com.sun.xml.util.XmlNames;
 
 /**
- * "NMTOKEN" and string-derived types
+ * "NMTOKEN" and string-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#NMTOKEN for the spec
  */
 public class NmtokenType extends TokenType
 {
-	public static final NmtokenType theInstance = new NmtokenType();
-	private NmtokenType() { super("NMTOKEN"); }
+	public static final NmtokenType theInstance = new NmtokenType("NMTOKEN");
+	protected NmtokenType(String typeName) { super(typeName); }
 	
-	public Object convertToObject( String content, ValidationContextProvider context )
+	public Object convertToValue( String content, ValidationContextProvider context )
 	{
 		if(XmlNames.isNmtoken(content))		return content;
 		else								return null;

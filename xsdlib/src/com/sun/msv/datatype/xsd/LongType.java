@@ -1,7 +1,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "long" and long-derived types
+ * "long" and long-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#long for the spec
  */

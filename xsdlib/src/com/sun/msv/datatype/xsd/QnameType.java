@@ -24,7 +24,7 @@ package com.sun.tranquilo.datatype;
 import com.sun.xml.util.XmlNames;
 
 /**
- * "QName" and string-derived types
+ * "QName" and string-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#QName for the spec
  */

@@ -24,7 +24,7 @@ import java.lang.Cloneable;
 import java.util.Hashtable;
 
 /**
- * Publicly accesible interface of XSD Datatype
+ * Publicly accesible interface of XSD Datatype.
  *
  * Application should only rely on this interface.
  */
@@ -69,27 +69,6 @@ public interface DataType extends Serializable,Cloneable
 	 * As a result, name of the datatype cannot be used as an identifier.
 	 */
 	String getName();
-	
-	/**
-	 * derives a new datatype from this datatype, by adding more facets
-	 * 
-	 * It is completely legal to use null as the newTypeName paratmer,
-	 * which means deriving anonymous datatype.
-	 *
-	 * @param facets
-	 *		these facets are added to new datatype.
-	 * @param context
-	 *		in case of deriving a type from QName, the implementation needs to
-	 *		resolve prefixs to namespace URIs. Therefore, the caller must
-	 *		supply a ValidationContextProvider.
-	 *
-	 * @exception BadTypeException
-	 *		BadTypeException is thrown if derivation is somehow invalid.
-	 *		For example, not applicable facets are applied, or enumeration
-	 *		has invalid values, ... things like that.
-	 */
-	DataType derive( String newTypeName, Facets facets, ValidationContextProvider context )
-		throws BadTypeException;
 	
 	
 	/**

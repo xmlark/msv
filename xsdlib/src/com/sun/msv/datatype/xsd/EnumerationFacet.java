@@ -4,40 +4,19 @@ import java.util.Set;
 import java.util.Vector;
 
 /**
- * "enumeration" facets validator
+ * "enumeration" facets validator.
  */
 public class EnumerationFacet extends DataTypeWithValueConstraintFacet
 {
-	protected EnumerationFacet( String typeName, DataTypeImpl baseType, Facets facets, ValidationContextProvider context )
+	protected EnumerationFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException
 	{
 		super(typeName,baseType,FACET_ENUMERATION,facets);
-		
-		// converts all lexical values into the value of value space.
-		Vector lexValues = (Vector)facets.getVector(FACET_ENUMERATION);
-		int len = lexValues.size();
-		
-		for( int i=0; i<len; i++ )
-		{
-			// loosened enumeration value will be detected in this process.
-			
-			final String val = (String)lexValues.elementAt(i);
-			Object o = baseType.convertToValueObject(val,context);
-			if(o==null)
-			{
-				throw new BadTypeException(
-					BadTypeException.ERR_INVALID_VALUE_FOR_THIS_TYPE,
-					val, baseType.getName() );
-			}
-			
-			values.add(o);
-		}
-		
-		facets.consume(FACET_ENUMERATION);
+		values = new java.util.HashSet( facets.getVector(FACET_ENUMERATION) );
 	}
 	
 	/** set of valid values */
-	private final Set values = new java.util.HashSet();
+	private final Set values;
 
 	public Object convertToValue( String literal, ValidationContextProvider context )
 	{
@@ -49,7 +28,27 @@ public class EnumerationFacet extends DataTypeWithValueConstraintFacet
 	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context)
 	{
 		if( convertToValue(content,context)!=null )	return null;
+		
+		// TODO: guess which item the user was trying to specify
+		
+		if( values.size()<=4 )
+		{// if choices are small in number, include them into error messages.
+			Object[] members = values.toArray();
+			String r="";
 			
+			if( members[0] instanceof String
+			||  members[0] instanceof Number )
+			{// this will cover 80% of the use case.
+				r += "\""+members[0].toString()+"\"";
+				for( int i=1; i<members.length; i++ )
+					r+= "/\""+members[i].toString()+"\"";
+				
+				r = "("+r+")";	// oh, don't tell me I should use StringBuffer.
+				
+				return new DataTypeErrorDiagnosis(this, content, -1,
+					DataTypeErrorDiagnosis.ERR_ENUMERATION_WITH_ARG, r );
+			}
+		}
 		return new DataTypeErrorDiagnosis(this, content, -1,
 			DataTypeErrorDiagnosis.ERR_ENUMERATION );
 	}

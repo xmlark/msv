@@ -26,7 +26,7 @@ public abstract class WhiteSpaceProcessor
 		throw new BadTypeException( BadTypeException.ERR_INVALID_WHITESPACE_VALUE, name );
 	}
 	
-	private static final boolean isWhiteSpace( char ch )
+	protected static final boolean isWhiteSpace( char ch )
 	{
 		return ch==0x9 || ch==0xA || ch==0xD || ch==0x20;
 	}
@@ -45,7 +45,7 @@ public abstract class WhiteSpaceProcessor
 			StringBuffer result = new StringBuffer(len);
 			
 			for( int i=0; i<len; i++ )
-				if( this.isWhiteSpace(text.charAt(i)) )
+				if( super.isWhiteSpace(text.charAt(i)) )
 					result.append(' ');
 				else
 					result.append(text.charAt(i));
@@ -67,10 +67,10 @@ public abstract class WhiteSpaceProcessor
 			
 			for( int i=0; i<len; i++ )
 			{
-				if( inStripMode && this.isWhiteSpace(chars[i]) )
+				if( inStripMode && WhiteSpaceProcessor.isWhiteSpace(chars[i]) )
 					continue;	// skip this character
 				
-				inStripMode = this.isWhiteSpace(chars[i]);
+				inStripMode = WhiteSpaceProcessor.isWhiteSpace(chars[i]);
 				if( inStripMode )	result.append(' ');
 				else				result.append(chars[i]);
 			}

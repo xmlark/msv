@@ -2,11 +2,11 @@ package com.sun.tranquilo.datatype;
 
 public class WhiteSpaceFacet extends DataTypeWithFacet
 {
-	WhiteSpaceFacet( String typeName, DataTypeImpl baseType, Facets facets )
+	WhiteSpaceFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException
 	{
 		super(typeName, baseType, FACET_WHITESPACE, facets,
-			WhiteSpaceProcessor.get(facets.getFacet(FACET_WHITESPACE)) );
+			WhiteSpaceProcessor.get( (String)facets.getFacet(FACET_WHITESPACE)) );
 		
 		// loosened facet check
 		if( baseType.whiteSpace.tightness() > this.whiteSpace.tightness() )
@@ -21,8 +21,6 @@ public class WhiteSpaceFacet extends DataTypeWithFacet
 		}
 		
 		// consistency with minLength/maxLength is checked in DataTypeImpl.derive method.
-		
-		facets.consume(FACET_WHITESPACE);
 	}
 	
 	protected boolean checkFormat( String content, ValidationContextProvider context )

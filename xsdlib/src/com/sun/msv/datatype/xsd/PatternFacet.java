@@ -45,7 +45,7 @@ final class PatternFacet extends DataTypeWithLexicalConstraintFacet
 	 *		(see http://www.w3.org/TR/xmlschema-2/#dt-regex )
 	 *		There patterns are considered as an 'OR' set.
 	 */
-	public PatternFacet( String typeName, DataTypeImpl baseType, Facets facets )
+	public PatternFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException
 	{
 		super( typeName, baseType, FACET_PATTERN, facets );
@@ -68,8 +68,6 @@ final class PatternFacet extends DataTypeWithLexicalConstraintFacet
 				BadTypeException.ERR_PARSE_ERROR,
 				pe.getMessage() );
 		}
-		
-		facets.consume(FACET_PATTERN);
 		
 		// loosened facet check is almost impossible for pattern facet.
 		// ignore it for now.

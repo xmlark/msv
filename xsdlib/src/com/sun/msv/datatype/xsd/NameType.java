@@ -22,7 +22,7 @@ package com.sun.tranquilo.datatype;
 import com.sun.xml.util.XmlNames;
 
 /**
- * "Name" and string-derived types
+ * "Name" and string-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#Name for the spec
  */

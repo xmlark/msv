@@ -3,7 +3,7 @@ package com.sun.tranquilo.datatype;
 abstract class DataTypeWithValueConstraintFacet extends DataTypeWithFacet
 {
 	DataTypeWithValueConstraintFacet(
-		String typeName, DataTypeImpl baseType, String facetName, Facets facets )
+		String typeName, DataTypeImpl baseType, String facetName, TypeIncubator facets )
 		throws BadTypeException
 	{
 		super( typeName, baseType, facetName, facets );

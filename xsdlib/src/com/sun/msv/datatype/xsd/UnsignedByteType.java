@@ -1,7 +1,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "unsignedByte" and unsignedByte-derived types
+ * "unsignedByte" and unsignedByte-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#unsignedByte for the spec
  */

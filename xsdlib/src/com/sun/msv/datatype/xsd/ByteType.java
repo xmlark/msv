@@ -3,7 +3,7 @@ package com.sun.tranquilo.datatype;
 import java.math.BigInteger;
 
 /**
- * "byte" and byte-derived types
+ * "byte" and byte-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#byte for the spec
  */

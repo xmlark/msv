@@ -20,7 +20,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "normalizedString" and string-derived types
+ * "normalizedString" and string-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#normalizedString for the spec
  */

@@ -20,7 +20,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * Exception
+ * signals bad type definition.
  *
  * This exception is thrown when there is an error
  * regarding type definition (mainly derivation).
@@ -88,8 +88,8 @@ public class BadTypeException extends Exception
 		"RangeFacet.IllegalValueForX";
 	public static final String ERR_DUPLICATE_FACET
 		= null; // facet {0} is specified more than once.
-	public static final String ERR_UNCONSUMED_FACET
-		= null; // unrecognized facet specification {0}
+//	public static final String ERR_UNCONSUMED_FACET
+//		= null; // unrecognized facet specification {0}
 	public static final String ERR_NOT_APPLICABLE_FACET
 		= null; // facet {0} is not applicable to this datatype
 	public static final String ERR_EMPTY_UNION

@@ -3,7 +3,7 @@ package com.sun.tranquilo.datatype;
 /**
  * base class for those types which can be used by itself (int,uriReference,string, etc) .
  */
-abstract class ConcreteType extends DataTypeImpl
+public abstract class ConcreteType extends DataTypeImpl
 {
 	protected ConcreteType( String typeName, WhiteSpaceProcessor whiteSpace )
 	{

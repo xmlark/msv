@@ -1,7 +1,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "negativeInteger" and negativeInteger-derived types
+ * "negativeInteger" and negativeInteger-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#negativeInteger for the spec
  * 

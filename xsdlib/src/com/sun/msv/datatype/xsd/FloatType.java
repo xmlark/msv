@@ -1,7 +1,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "float" and float-derived types
+ * "float" and float-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#float for the spec
  */

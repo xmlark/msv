@@ -24,7 +24,7 @@ package com.sun.tranquilo.datatype;
 import com.sun.xml.util.XmlNames;
 
 /**
- * "NCName" and string-derived types
+ * "NCName" and string-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#NCName for the spec
  */

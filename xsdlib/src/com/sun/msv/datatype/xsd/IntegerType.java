@@ -1,7 +1,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "integer" and integer-derived types
+ * "integer" and integer-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#integer for the spec
  */

@@ -1,7 +1,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * Value object of "integer" type
+ * Value object of "integer" type.
  */
 public class IntegerValueType implements Comparable
 {

@@ -21,14 +21,14 @@ abstract class DataTypeWithFacet extends DataTypeImpl
 	private final boolean needValueCheckFlag;
 	
 	/** constructor for facets other than WhiteSpaceFacet */
-	DataTypeWithFacet( String typeName, DataTypeImpl baseType, String facetName, Facets facets )
+	DataTypeWithFacet( String typeName, DataTypeImpl baseType, String facetName, TypeIncubator facets )
 		throws BadTypeException
 	{
 		this( typeName, baseType, facetName, facets, baseType.whiteSpace );
 	}
 	
 	/** constructor for WhiteSpaceFacet */
-	DataTypeWithFacet( String typeName, DataTypeImpl baseType, String facetName, Facets facets, WhiteSpaceProcessor whiteSpace )
+	DataTypeWithFacet( String typeName, DataTypeImpl baseType, String facetName, TypeIncubator facets, WhiteSpaceProcessor whiteSpace )
 		throws BadTypeException
 	{
 		super(typeName, whiteSpace);

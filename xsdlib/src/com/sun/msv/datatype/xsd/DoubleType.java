@@ -1,7 +1,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "double" and double-derived types
+ * "double" and double-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#double for the spec
  */

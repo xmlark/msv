@@ -5,7 +5,7 @@ import com.sun.tranquilo.datatype.datetime.ITimeDurationValueType;
 import java.io.ByteArrayInputStream;
 
 /**
- * "dateTime" and dateTime-derived types
+ * "dateTime" and dateTime-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#duration for the spec
  */

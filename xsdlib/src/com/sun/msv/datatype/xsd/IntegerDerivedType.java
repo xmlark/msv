@@ -1,7 +1,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * base class for types derived from integer
+ * base class for types derived from integer.
  */
 abstract class IntegerDerivedType extends ConcreteType implements Comparator
 {

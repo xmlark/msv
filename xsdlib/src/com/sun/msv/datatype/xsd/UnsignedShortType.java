@@ -1,7 +1,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "unsignedShort" and unsignedShort-derived types
+ * "unsignedShort" and unsignedShort-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#unsignedShort for the spec
  *

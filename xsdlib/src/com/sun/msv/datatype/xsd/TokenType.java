@@ -21,7 +21,7 @@ package com.sun.tranquilo.datatype;
 
 
 /**
- * "token" and string-derived types
+ * "token" and string-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#token for the spec
  */

@@ -4,13 +4,12 @@ public class MaxLengthFacet extends DataTypeWithValueConstraintFacet
 {
 	protected final int maxLength;
 	
-	protected MaxLengthFacet( String typeName, DataTypeImpl baseType, Facets facets )
+	protected MaxLengthFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException
 	{
 		super(typeName,baseType,FACET_MAXLENGTH,facets);
 	
 		maxLength = facets.getNonNegativeInteger(FACET_MAXLENGTH);
-		facets.consume(FACET_MAXLENGTH);
 
 		// loosened facet check
 		DataTypeWithFacet o = baseType.getFacetObject(FACET_MAXLENGTH);

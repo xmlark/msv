@@ -1,7 +1,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "hexBinary" and hexBinary-derived types
+ * "hexBinary" and hexBinary-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#hexBinary for the spec
  */

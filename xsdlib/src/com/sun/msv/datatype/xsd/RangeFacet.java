@@ -7,18 +7,11 @@ abstract class RangeFacet extends DataTypeWithValueConstraintFacet
 {
 	protected final Object limitValue;
 
-	protected RangeFacet( String typeName, DataTypeImpl baseType, String facetName, Facets facets )
+	protected RangeFacet( String typeName, DataTypeImpl baseType, String facetName, TypeIncubator facets )
 		throws BadTypeException
 	{
 		super(typeName,baseType,facetName,facets);
-		
-		limitValue = baseType.convertToValueObject( facets.getFacet(facetName), null );
-		if( limitValue==null )
-			throw new BadTypeException(
-				BadTypeException.ERR_INAPPROPRIATE_VALUE_FOR_X,
-				facets.getFacet(facetName), facetName );
-			
-		facets.consume(facetName);
+		limitValue = facets.getFacet(facetName);
 	}
 	
 	public final Object convertToValue( String literal, ValidationContextProvider context )

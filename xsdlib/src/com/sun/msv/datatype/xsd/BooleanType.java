@@ -20,7 +20,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "boolean" and boolean-derived types
+ * "boolean" and boolean-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#boolean for the spec
  */

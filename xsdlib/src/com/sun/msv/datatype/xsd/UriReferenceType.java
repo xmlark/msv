@@ -22,7 +22,7 @@ package com.sun.tranquilo.datatype;
 import java.io.ByteArrayInputStream;
 
 /**
- * "uriReference" and uriReference-derived types
+ * "uriReference" and uriReference-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#uriReference for the spec
  */
@@ -53,7 +53,7 @@ public class UriReferenceType extends ConcreteType
 			// By using UTF-8, non ascii characters will have bit image of 1XXXXXXX.
 			// thus these characters will be rejected by the parser as an error.
 			final UriReferenceParser parser =
-				new UriReferenceParser( new ByteArrayInputStream( content.getBytes("UTF-8") ) );
+				new UriReferenceParser( new ByteArrayInputStream( content.getBytes("UTF8") ) );
 			parser.start();
 		}
 		catch( Exception e )
@@ -64,6 +64,7 @@ public class UriReferenceType extends ConcreteType
 		return content;
 	}
 	
+
 	public final int isFacetApplicable( String facetName )
 	{
 		if( facetName.equals(FACET_LENGTH)

@@ -1,7 +1,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "nonNegativeInteger" and nonNegativeInteger-derived types
+ * "nonNegativeInteger" and nonNegativeInteger-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger for the spec
  */

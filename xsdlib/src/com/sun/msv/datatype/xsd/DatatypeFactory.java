@@ -20,9 +20,11 @@
 package com.sun.tranquilo.datatype;
 
 import java.util.Map;
+import java.util.Iterator;
+import java.util.Collection;
 
 /**
- * DataType object factory
+ * DataType object factory.
  *
  * <p>
  * Applications use this class to get a reference to built-in DataType object.
@@ -73,7 +75,23 @@ public class DataTypeFactory
 	public static DataType deriveByUnion( String newTypeName, DataType[] memberTypes )
 		throws BadTypeException
 	{
-		return new UnionType(newTypeName,(DataTypeImpl[])memberTypes);
+		DataTypeImpl[] m = new DataTypeImpl[memberTypes.length];
+		for( int i=0; i<memberTypes.length; i++ )
+			m[i] = (DataTypeImpl)memberTypes[i];
+		
+		return deriveByUnion(newTypeName,m);
+	}
+	
+	public static DataType deriveByUnion( String newTypeName, Collection memberTypes )
+		throws BadTypeException
+	{
+		DataTypeImpl[] m = new DataTypeImpl[memberTypes.size()];
+		int n=0;
+		for( Iterator itr=memberTypes.iterator(); itr.hasNext(); n++ )
+		for( int i=0; i<m.length; i++ )
+			m[n] = (DataTypeImpl)itr.next();
+		
+		return new UnionType(newTypeName,m);
 	}
 	
 	/**

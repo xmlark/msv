@@ -12,8 +12,8 @@ final class ListType extends ConcreteType implements Discrete
 	{
 		super(newTypeName);
 		
-		// derivation by list is only applicable to AtomType
-		if(!itemType.isAtomType())
+		// derivation by list is not applicable to ListType
+		if(itemType.getConcreteType() instanceof ListType)
 			throw new BadTypeException( BadTypeException.ERR_INVALID_ITEMTYPE );
 		
 		this.itemType = itemType;
@@ -43,7 +43,7 @@ final class ListType extends ConcreteType implements Discrete
 		StringTokenizer tokens = new StringTokenizer(content);
 		
 		while( tokens.hasMoreTokens() )
-			if(!itemType.checkFormat(tokens.nextToken(),context))	return false;
+			if(!itemType.verify(tokens.nextToken(),context))	return false;
 		
 		return true;
 	}

@@ -10,14 +10,12 @@ class ScaleFacet extends DataTypeWithLexicalConstraintFacet
 	/** maximum number of fraction digits */
 	protected final int scale;
 
-	public ScaleFacet( String typeName, DataTypeImpl baseType, Facets facets )
+	public ScaleFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException
 	{
 		super( typeName, baseType, FACET_SCALE, facets );
 		
 		scale = facets.getNonNegativeInteger(FACET_SCALE);
-		
-		facets.consume( FACET_SCALE );
 		
 		// loosened facet check
 		DataTypeWithFacet o = baseType.getFacetObject(FACET_SCALE);

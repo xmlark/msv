@@ -20,7 +20,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * diagnostic information of datatype validation errror
+ * diagnostic information of datatype validation errror.
  */
 public class DataTypeErrorDiagnosis
 {
@@ -84,6 +84,8 @@ public class DataTypeErrorDiagnosis
 		"DataTypeErrorDiagnosis.TooMuchScale";
 	public static final String ERR_ENUMERATION =
 		"DataTypeErrorDiagnosis.Enumeration";
+	public static final String ERR_ENUMERATION_WITH_ARG =
+		"DataTypeErrorDiagnosis.Enumeration.Arg";
 	public static final String ERR_OUT_OF_RANGE =
 		"DataTypeErrorDiagnosis.OutOfRange";
 	public static final String ERR_LENGTH =

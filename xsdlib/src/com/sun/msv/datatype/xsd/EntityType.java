@@ -20,7 +20,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "ENTITY" and ENTITY-derived types
+ * "ENTITY" and ENTITY-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#ENTITY for the spec
  */

@@ -1,7 +1,7 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * "unsignedInt" and unsignedInt-derived types
+ * "unsignedInt" and unsignedInt-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#unsignedInt for the spec
  *

@@ -2,7 +2,7 @@ package com.sun.tranquilo.datatype;
 
 public class MinInclusiveFacet extends RangeFacet
 {
-	protected MinInclusiveFacet( String typeName, DataTypeImpl baseType, Facets facets )
+	protected MinInclusiveFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException
 	{
 		super( typeName, baseType, FACET_MININCLUSIVE, facets );

@@ -10,14 +10,12 @@ class PrecisionFacet extends DataTypeWithLexicalConstraintFacet
 	/** maximum number of total digits. */
 	protected final int		precision;
 
-	public PrecisionFacet( String typeName, DataTypeImpl baseType, Facets facets )
+	public PrecisionFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException
 	{
 		super( typeName, baseType, FACET_PRECISION, facets );
 		
 		precision = facets.getPositiveInteger(FACET_PRECISION);
-		
-		facets.consume( FACET_PRECISION );
 		
 		// loosened facet check
 		DataTypeWithFacet o = baseType.getFacetObject(FACET_PRECISION);

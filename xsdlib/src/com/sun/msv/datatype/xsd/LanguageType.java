@@ -23,7 +23,7 @@ import java.util.Hashtable;
 
 
 /**
- * "language" and string-derived types
+ * "language" and string-derived types.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#language for the spec
  */

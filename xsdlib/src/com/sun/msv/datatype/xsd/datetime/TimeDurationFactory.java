@@ -12,18 +12,26 @@ public class TimeDurationFactory
 		
 		BigDecimal second;
 		
-		if(!(year   instanceof BigInteger))	year  = new BigInteger(year.  toString());
-		if(!(month  instanceof BigInteger))	month = new BigInteger(month. toString());
-		if(!(day    instanceof BigInteger))	day   = new BigInteger(day.   toString());
-		if(!(hour   instanceof BigInteger)) hour  = new BigInteger(hour.  toString());
-		if(!(minute instanceof BigInteger)) minute= new BigInteger(minute.toString());
+		if( mSecond==null )	second=null;
+		else
 		if( mSecond instanceof BigInteger )
 			second = ((BigDecimal)mSecond).movePointLeft(3);
 		else
 			second = new BigDecimal(mSecond.toString()).movePointLeft(3);
 		
 		return new BigTimeDurationValueType(
-			(BigInteger)year, (BigInteger)month, (BigInteger)day,
-			(BigInteger)hour, (BigInteger)minute, second );
+			convertToBigInteger(year),
+			convertToBigInteger(month),
+			convertToBigInteger(day),
+			convertToBigInteger(hour),
+			convertToBigInteger(minute),
+			second );
+	}
+	
+	private static BigInteger convertToBigInteger( Number n )
+	{
+		if(n==null)						return null;
+		if(n instanceof BigInteger)		return (BigInteger)n;
+		else							return new BigInteger(n.toString());
 	}
 }

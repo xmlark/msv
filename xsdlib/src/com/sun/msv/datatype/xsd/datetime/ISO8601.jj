@@ -415,6 +415,10 @@ IDateTimeValueType yearTypeV() : {}
 void monthDayTypeL() : {}
 {
 	"-" "-" month() "-" day() [ timeZoneModifierL() ]	<EOF>
+	{
+		if( dd.intValue() >= Util.maximumDayInMonthFor( 4, mm.intValue() ) )
+			throw new ParseException();	// something like 32nd,Jan
+	}
 }
 
 IDateTimeValueType monthDayTypeV() : {}

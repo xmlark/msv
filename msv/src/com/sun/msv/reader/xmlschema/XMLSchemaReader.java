@@ -145,10 +145,10 @@ public class XMLSchemaReader extends GrammarReader {
 	 * optional xsi:schemaLocation or xsi:noNamespaceSchemaLocation.
 	 */
 	public final Expression xsiSchemaLocationExp;
-
+	
 	public final static String XMLSchemaSchemaLocationAttributes = 
 		"____internal_XML_schema_SchemaLocation_attributes";
-		
+	
 	/**
 	 * expression that matches to "ur-type" when used as a complex type.
 	 */

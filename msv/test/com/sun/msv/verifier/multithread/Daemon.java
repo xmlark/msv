@@ -16,7 +16,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.XMLReader;
 
-import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.verifier.ValidityViolation;
@@ -94,7 +93,7 @@ public class Daemon implements Runnable
         {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setNamespaceAware(true);
-            ExpressionPool localPool = new ExpressionPool(grammar.getPool());
+//            ExpressionPool localPool = new ExpressionPool(grammar.getPool());
 //            ExpressionPool localPool = new ExpressionPool();
             
             while(true)

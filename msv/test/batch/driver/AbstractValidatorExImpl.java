@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.xml.resolver.tools.CatalogResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
@@ -17,7 +18,6 @@ import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.verifier.IVerifier;
 import com.sun.msv.verifier.Verifier;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import com.sun.resolver.tools.CatalogResolver;
 
 abstract class AbstractValidatorExImpl implements IValidatorEx
 {

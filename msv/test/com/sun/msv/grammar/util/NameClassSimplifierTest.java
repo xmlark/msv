@@ -4,7 +4,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.ChoiceNameClass;
 import com.sun.msv.grammar.DifferenceNameClass;
 import com.sun.msv.grammar.NameClass;
@@ -26,10 +25,10 @@ public class NameClassSimplifierTest extends TestCase {
     
     public void testSimplifier1() throws Exception {
         assertSame(
-            AnyNameClass.theInstance,
+            NameClass.ALL,
             NameClassSimplifier.simplify(
                 new ChoiceNameClass(
-                    AnyNameClass.theInstance,
+                    NameClass.ALL,
                     new DifferenceNameClass(
                         new NamespaceNameClass("abc"),
                         new SimpleNameClass("abc","def")))));
@@ -39,7 +38,7 @@ public class NameClassSimplifierTest extends TestCase {
         NameClass nc = NameClassSimplifier.simplify(
             new DifferenceNameClass(
                 new ChoiceNameClass(
-                    AnyNameClass.theInstance,
+                    NameClass.ALL,
                     new NamespaceNameClass("abc")
                 ),
                 new SimpleNameClass("abc","def")));
@@ -55,7 +54,7 @@ public class NameClassSimplifierTest extends TestCase {
     public void testSimplifier3() throws Exception {
         NameClass nc = NameClassSimplifier.simplify(
             new DifferenceNameClass(
-                AnyNameClass.theInstance,
+                 NameClass.ALL,
                 new DifferenceNameClass(
                     new NamespaceNameClass("abc"),
                     new SimpleNameClass("abc","def"))));

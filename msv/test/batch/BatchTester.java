@@ -15,6 +15,8 @@ import java.util.Vector;
 
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.xml.resolver.tools.CatalogResolver;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import batch.driver.DTDValidator;
@@ -23,8 +25,6 @@ import batch.driver.IValidatorEx;
 import batch.driver.IValidatorImplForRNG;
 import batch.driver.IValidatorImplForXS;
 import batch.model.TestReader;
-
-import com.sun.resolver.tools.CatalogResolver;
 
 /**
  * Test schemata/instances are expected to follow a naming convention.

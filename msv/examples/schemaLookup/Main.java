@@ -11,11 +11,10 @@ package schemaLookup;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.xml.resolver.tools.CatalogResolver;
 import org.iso_relax.verifier.Schema;
 import org.iso_relax.verifier.Verifier;
 import org.w3c.dom.Document;
@@ -26,7 +25,6 @@ import com.sun.msv.grammar.Grammar;
 import com.sun.msv.reader.xmlschema.MultiSchemaReader;
 import com.sun.msv.reader.xmlschema.XMLSchemaReader;
 import com.sun.msv.verifier.jarv.SchemaImpl;
-import com.sun.resolver.tools.CatalogResolver;
 
 /**
  * 
@@ -35,8 +33,6 @@ import com.sun.resolver.tools.CatalogResolver;
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public class Main {
-    private final Set ns = new HashSet();
-    
     public static void main( String[] args ) throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);

@@ -193,7 +193,6 @@ public class ElementDeclState extends ExpressionWithChildState {
 		exp.identityConstraints.addAll(idcs);
 		
 		// process the nillable attribute.
-		boolean isNillable = false;
 		String nillable = startTag.getAttribute("nillable");
 		if( nillable!=null )
             decl.isNillable = nillable.equals("true") || nillable.equals("1");

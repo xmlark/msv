@@ -519,13 +519,6 @@ public class RELAXNGReader extends TREXBaseReader {
 				
 		}
 		
-		if( d.getIndex("ns")!=-1 ) {
-			// check the correctness of the ns attribute
-			// schema-for-schema will check whether the ns attribute is anyURI or not.
-			String ns = d.getValue("ns");
-//			if( !Util.isAbsoluteURI(ns) )
-//				reportError( ERR_NOT_ABSOLUTE_URI, ns );
-		}
 		// if nothing specified, datatype library stays the same.
 		super.startElement(a,b,c,d);
 	}

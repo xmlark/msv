@@ -154,7 +154,6 @@ public abstract class GrammarReader
 	public PrefixResolver prefixResolver = basePrefixResolver;
 
 	public void startPrefixMapping( String prefix, String uri ) throws SAXException {
-		final PrefixResolver previous = prefixResolver;
 		prefixResolver = new ChainPrefixResolver(prefix,uri);
 		super.startPrefixMapping(prefix,uri);
 	}

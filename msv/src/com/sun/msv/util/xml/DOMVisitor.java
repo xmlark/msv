@@ -29,7 +29,7 @@ public abstract class DOMVisitor
 	public void visit( Element e ) {
 		NodeList lst = e.getChildNodes();
 		int len = lst.getLength();
-		for( int i=0; i<lst.getLength(); i++ ) {
+		for( int i=0; i<len; i++ ) {
 			Node n = lst.item(i);
 			if( n.getNodeType() == Node.ELEMENT_NODE )
 				visit( (Element)n );

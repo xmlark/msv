@@ -187,7 +187,7 @@ public class SimpleContentRestrictionState extends SequenceState
         
 		base = startTag.getAttribute("base");
 		if(base==null) {
-			// in extension, base attribute must is mandatory.
+			// in extension, base attribute is mandatory.
 			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, startTag.localName, "base");
             return;
 		}
@@ -207,9 +207,12 @@ public class SimpleContentRestrictionState extends SequenceState
 		parentDecl.derivationMethod = parentDecl.RESTRICTION;
 		
         try {
+            XSDatatypeExp p = getIncubator().derive(null,null);
+            if(parentDecl.name.equals("ClosedEnum_NoID"))
+                throw new InternalError();
     		exp = reader.pool.createSequence(
         		 super.annealExpression(exp),
-    		    getIncubator().derive(null,null) );
+    		     p );
         } catch( DatatypeException e ) {
         	// derivation failed
         	reader.reportError( e, reader.ERR_BAD_TYPE, e.getMessage() );

@@ -33,6 +33,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.Uri;
 
@@ -663,14 +664,26 @@ public abstract class GrammarReader
 	}
 	
 	private final Vector backPatchJobs = new Vector();
+    private final Vector delayedBackPatchJobs = new Vector();
 	public final void addBackPatchJob( BackPatch job ) {
 		backPatchJobs.add(job);
 	}
+    public final void addBackPatchJob( XSDatatypeExp job ) {
+        // UGLY. DatatypeExp patching needs to run after
+        // other back patch jobs, so we use two sets.
+        delayedBackPatchJobs.add(job);
+    }
     
     /** Performs all back-patchings. */
     public final void runBackPatchJob() {
 		Locator oldLoc = locator;
-		Iterator itr = backPatchJobs.iterator();
+        runBackPatchJob(backPatchJobs);
+        runBackPatchJob(delayedBackPatchJobs);
+        locator = oldLoc;
+    }
+    
+    private final void runBackPatchJob( Vector vec ) {
+		Iterator itr = vec.iterator();
 		while( itr.hasNext() ) {
 			BackPatch job = ((BackPatch)itr.next());
 			// so that errors reported in the patch job will have 
@@ -678,7 +691,6 @@ public abstract class GrammarReader
 			locator = job.getOwnerState().getLocation();
 			job.patch();
 		}
-		locator = oldLoc;
     }
 	
 	

@@ -21,8 +21,11 @@ import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringPair;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.ExpressionWithChildState;
+import com.sun.msv.reader.datatype.TypeOwner;
 import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 import com.sun.msv.reader.datatype.xsd.XSTypeIncubator;
+import com.sun.msv.reader.datatype.xsd.XSTypeOwner;
+
 import org.xml.sax.Locator;
 import org.relaxng.datatype.DatatypeException;
 
@@ -32,7 +35,7 @@ import org.relaxng.datatype.DatatypeException;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class AttributeState extends ExpressionWithChildState {
+public class AttributeState extends ExpressionWithChildState implements XSTypeOwner {
 	
 	protected State createChildState( StartTagInfo tag ) {
 		if( tag.localName.equals("simpleType") )
@@ -191,6 +194,16 @@ public class AttributeState extends ExpressionWithChildState {
 		
 		return exp;
 	}
+
+    public String getTargetNamespaceUri() {
+        final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
+        return reader.currentSchema.targetNamespace;
+    }
+    
+    public void onEndChild( XSDatatypeExp type ) {
+        super.onEndChild(type);
+    }
+
 
 	protected boolean isGlobal() {
 		return parentState instanceof GlobalDeclState;

@@ -1,3 +1,15 @@
+
+- Fixed a bug reported by Danny Vint regarding multiple derivation chain
+  of complex types with simple content.
+
+- Fixed the incorrect handling of relative URIs. Now relative URI
+  references are properly handled for all schema languages. Thanks to
+  Damian Gajda <zwierzem@ngo.pl> for pointing out this problem.
+
+- Fixed a bug in TypeDetector so that an error in an attribute is reported
+  after the startAttribute event is fired. Thanks to
+  Damian Gajda <zwierzem@ngo.pl> for this patch.
+
 From Nov,2001 version to Apr,2001 version
 -----------------------------------------
 

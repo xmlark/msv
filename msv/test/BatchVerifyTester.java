@@ -77,7 +77,7 @@ public class BatchVerifyTester
 	public static void main( String[] av ) throws Exception {
 		
 		if( av.length<2 ) {
-			System.out.println("usage BatchVerifyTester (relax|trex|dtd) <test case directory>");
+			System.out.println("usage BatchVerifyTester (relax|trex|xsd|dtd) <test case directory>");
 			return;
 		}
 		
@@ -90,6 +90,12 @@ public class BatchVerifyTester
 		if( av[0].equals("trex") ) {
 			junit.textui.TestRunner.run(
 				new BatchVerifyTester( av[0], av[1], ".trex", new TREXBatchTest.Loader()).suite());
+			return;
+		}
+		
+		if( av[0].equals("xsd") ) {
+			junit.textui.TestRunner.run(
+				new BatchVerifyTester( av[0], av[1], ".xsd", new XSDBatchTest.Loader()).suite() );
 			return;
 		}
 		

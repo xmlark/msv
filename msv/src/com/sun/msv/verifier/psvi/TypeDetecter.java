@@ -27,7 +27,8 @@ import com.sun.msv.verifier.regexp.SimpleAcceptor;
 import com.sun.msv.verifier.regexp.ComplexAcceptor;
 
 /**
- * assign types to the incoming SAX2 events and reports them to the application handler.
+ * assign types to the incoming SAX2 events and reports them to
+ * the application handler through TypedContentHandler.
  * 
  * This class "augment" infoset by adding type information. The application can
  * receive augmented infoset by implementing TypedContentHandler.
@@ -75,6 +76,10 @@ public class TypeDetecter extends AbstractVerifier {
 		setContentHandler(handler);
 	}
 	
+	/**
+	 * sets the TypedContentHandler which will received the type-augmented
+	 * infoset.
+	 */
 	public void setContentHandler( TypedContentHandler handler ) {
 		this.handler = handler;
 	}

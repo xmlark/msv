@@ -18,6 +18,54 @@ import org.xml.sax.SAXException;
 /**
  * Receives notification of the typed content of the document.
  * 
+ * <p>
+ * This interface can be considered as the SAX ContentHandler plus type-information.
+ * It is intended to help applications to interpret the incoming document.
+ * 
+ * <p>
+ * Consider a following RELAX NG pattern and instance:
+ * 
+ * <PRE><XMP>
+ * <element name="root">
+ *   <optional>
+ *     <attribute name="foo">
+ *       <choice>
+ *         <data type="boolean"/>
+ *         <data type="date"/>
+ *       </choice>
+ *     </attribute>
+ *   </optional>
+ *   <element name="child">
+ *     <list><zeroOrMore>
+ *       <data type="NMTOKEN"/>
+ *     </zeroOrMore></list>
+ *   </element>
+ * </element>
+ * 
+ * <root foo="true">
+ *   <child> A B </child>
+ * </root>
+ * </XMP></PRE>
+ * 
+ * Events are reported in the following order:
+ * <pre>
+ * startDocument()
+ *  startElement(root)
+ *   startAttribute(foo)
+ *    characterChunk("true", com.sun.msv.datatype.xsd.BooleanType)
+ *   endAttribute(foo)
+ *   endAttributePart()
+ *   startElement(child)
+ *    characterChunk("A", com.sun.msv.datatype.xsd.NMTOKENType)
+ *    characterChunk("B", com.sun.msv.datatype.xsd.NMTOKENType)
+ *   endElement(child, MSV's internal object that represents the child element)
+ *  endElement(root, MSV's internal object that represents the root element)
+ * endDocument()
+ * </pre>
+ * 
+ * @see
+ *		TypeDetecter
+ * 
  * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface TypedContentHandler {
@@ -41,7 +89,7 @@ public interface TypedContentHandler {
 	 * @param literal
 	 *		the contents.
 	 * @param type
-	 *		assigned type.
+	 *		assigned type. The validator assigns this type for this literal.
 	 */
 	void characterChunk( String literal, Datatype type ) throws SAXException;
 	
@@ -57,7 +105,7 @@ public interface TypedContentHandler {
 	 * receives notification of the end of an element.
 	 * 
 	 * @param type
-	 *		assigned type.
+	 *		the type of this element.
 	 */
 	void endElement( String namespaceURI, String localName, String qName, ElementExp type ) throws SAXException;
 

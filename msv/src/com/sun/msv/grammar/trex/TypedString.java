@@ -47,9 +47,15 @@ public class TypedString implements DataType
 	
 	public DataTypeErrorDiagnosis diagnose( String content, ValidationContextProvider context )
 	{
-		// TODO: implement this
-		throw new UnsupportedOperationException();
+		if( convertToValueObject(content,context)!=null )	return null;
+		
+		return new DataTypeErrorDiagnosis(
+			this, content,-1,
+			Localizer.localize(DIAG_TYPED_STRING,value) );
 	}
 	
 	public String getName() { return "TREX built-in string"; }
+	
+	public static final String DIAG_TYPED_STRING =
+		"TypedString.Diagnosis";
 }

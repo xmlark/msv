@@ -9,7 +9,12 @@
 	<property name="cvsRoot" value=":local:/cygdrive/c/Program Files/Development/CVS Repository" />
 	<property name="JUnitJar" value="c:/winnt/java/classes/junit.jar"/>
 	<property name="AntJar" value="c:/progra~1/development/ant/lib/ant.jar"/>
-	<property name="msvJar" value="../tranquilo/package/msv.light.jar"/>
+	<property name="msvJar" value="../tranquilo/package/msv.jar"/>
+	<property name="xsdlibJar" value="../tranquilo/package/xsdlib.jar"/>
+	<property name="xalanJar" value="c:/winnt/java/classes/xalan.jar"/>
+	<property name="xercesJar" value="c:/winnt/java/classes/xerces.jar"/>
+	<property name="isorelaxJar" value="c:/winnt/java/classes/isorelax.jar"/>
+	<property name="relaxngDatatypeJar" value="../relaxng/datatype/java/relaxngDatatype.jar"/>
 	
 	<!-- create a distribution package -->
 	<target name="release">
@@ -48,40 +53,26 @@
 		
 		<!-- compile files -->
 		<mkdir	dir="temp" />
-		<javac	srcdir="${stageName}/src"
-				destdir="temp"
-				classpath="${msvJar}">
+		<javac	srcdir="${stageName}/src" destdir="temp">
+			<classpath path="${msvJar}"/>
+			<classpath path="${xsdlibJar}"/>
 			<include name="**/*.java" />
 		</javac>
 		
 		<!-- create a time stamp file -->
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
-
-		<!-- creates light-weight jar -->
-		<jar	jarfile="${stageName}/tahiti.light.jar"
-				manifest="./MANIFEST.MF"
-				compress="false">
-			<fileset dir="temp" />
-			<!-- resource files -->
-			<fileset dir="${stageName}/src" includes="**/*.properties" />
-		</jar>
-		
-		<!-- unzip related jars -->
-		<unzip src="c:/winnt/java/classes/xalan.jar" dest="temp"/>
-		<unzip src="${msvJar}" dest="temp"/>
-		<!-- remove meta files contained in those jars -->
-		<delete dir="temp/META-INF"/>
 		
 		<!-- creates binary jar -->
 		<jar	jarfile="${stageName}/tahiti.jar"
 				manifest="./MANIFEST.MF"
 				compress="false">
+			
 			<fileset dir="temp" />
 			<!-- resource files -->
 			<fileset dir="${stageName}/src" includes="**/*.properties" />
 		</jar>
 		<delete dir="temp" />
-
+		
 		
 		<!-- copy jar file to package dir -->
 		<mkdir dir="./package"/>
@@ -90,6 +81,14 @@
 		
 		<!-- remove source codes -->
 		<delete dir="${stageName}/src"/>
+		
+		<!-- copy relevant jars -->
+		<copy todir="${stageName}" file="${msvJar}" />
+		<copy todir="${stageName}" file="${xsdlibJar}" />
+		<copy todir="${stageName}" file="${xalanJar}" />
+		<copy todir="${stageName}" file="${xercesJar}" />
+		<copy todir="${stageName}" file="${isorelaxJar}" />
+		<copy todir="${stageName}" file="${relaxngDatatypeJar}" />
 		
 		<!-- creates distribution package -->
 		<zip	zipfile="./package/tahiti.${DSTAMP}.zip"

@@ -1,21 +1,11 @@
 /*
- * Tranquilo : RELAX Verifier           written by Kohsuke Kawaguchi
- *                                           k-kawa@bigfoot.com
+ * @(#)$Id$
  *
- * Copyright 2000 Sun Microsystems, Inc. All Rights Reserved.
- *
- * This software is the confidential and proprietary information of Sun
- * Microsystems, Inc. ("Confidential Information").  You shall not
- * disclose such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered into
- * with Sun.
- *
- * SUN MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
- * THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- * PURPOSE, OR NON-INFRINGEMENT. SUN SHALL NOT BE LIABLE FOR ANY DAMAGES
- * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
- * THIS SOFTWARE OR ITS DERIVATIVES.
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
  */
 package com.sun.tranquilo.datatype;
 
@@ -27,7 +17,11 @@ import java.util.Collection;
  * DataType object factory.
  *
  * <p>
- * Applications use this class to get a reference to built-in DataType object.
+ * Applications should use this class to get and derive DataType objects.
+ * All methods are static.
+ * 
+ * <p>
+ * Derivation by restriction should be done by using {@link TypeIncubator}.
  *
  */
 public class DataTypeFactory
@@ -35,6 +29,7 @@ public class DataTypeFactory
 	/** a map that contains all built in types */
 	private static final Map builtinType = createStaticTypes();
 	
+	private DataTypeFactory(){}
 	
 	/**
 	 * derives a new type by list.
@@ -42,11 +37,16 @@ public class DataTypeFactory
 	 * See http://www.w3.org/TR/xmlschema-2#derivation-by-list for
 	 * what "derivation by list" means.
 	 *
+	 * @return
+	 *		always return non-null value. If error occurs,
+	 *		then an exception will be thrown.
+	 * 
 	 * @param newTypeName
 	 *		name of the new type. it can be set to null for indicating an anonymous type.
 	 * @param itemType
-	 *		Type of the list item. It must be an atom type. You cannot use
-	 *		your own DataType implementation here.
+	 *		Type of the list item. It must be an atom type which is implemented
+	 *		in this package or derived from types implemented in this package.
+	 *		You cannot use your own DataType implementation here.
 	 *
 	 * @exception BadTypeException
 	 *		this exception is thrown when the derivation is illegal.
@@ -65,7 +65,8 @@ public class DataTypeFactory
 	 * what "derivation by union" means.
 	 * 
 	 * @param newTypeName
-	 *		name of the new type. it can be set to null for indicating an anonymous type.
+	 *		name of the new type. it can be set to null to
+	 *		indicate an anonymous type.
 	 * @param memberTypes
 	 *		Types of the union member. It can be any type that implements DataType.
 	 *
@@ -95,7 +96,7 @@ public class DataTypeFactory
 	}
 	
 	/**
-	 * obtain a built-in DataType object from its name
+	 * obtain a built-in DataType object by its name
 	 * 
 	 * @return null	if DataType is not found
 	 */

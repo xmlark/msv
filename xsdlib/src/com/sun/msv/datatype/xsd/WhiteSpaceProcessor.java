@@ -1,5 +1,17 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.tranquilo.datatype;
 
+/**
+ * processes white space normalization
+ */
 public abstract class WhiteSpaceProcessor
 {
 	/** returns whitespace normalized text.
@@ -61,16 +73,17 @@ public abstract class WhiteSpaceProcessor
 		{
 			char[] chars = text.toCharArray();
 			int len = text.length();
-			StringBuffer result = new StringBuffer(len/2 /**rough estimation*/ );
+			StringBuffer result = new StringBuffer(len /**enough size*/ );
 			
 			boolean inStripMode = true;
 			
 			for( int i=0; i<len; i++ )
 			{
-				if( inStripMode && WhiteSpaceProcessor.isWhiteSpace(chars[i]) )
+				boolean b = WhiteSpaceProcessor.isWhiteSpace(chars[i]);
+				if( inStripMode && b )
 					continue;	// skip this character
 				
-				inStripMode = WhiteSpaceProcessor.isWhiteSpace(chars[i]);
+				inStripMode = b;
 				if( inStripMode )	result.append(' ');
 				else				result.append(chars[i]);
 			}
@@ -78,12 +91,10 @@ public abstract class WhiteSpaceProcessor
 			// remove trailing whitespaces
 			len = result.length();
 			if( len>0 && result.charAt(len-1)==' ' )
-				len--;
+				result.setLength(len-1);
 			// whitespaces are already collapsed,
 			// so all we have to do is to remove the last one character
 			// if it's a whitespace.
-			
-			result.setLength(len);
 			
 			return result.toString();
 		}

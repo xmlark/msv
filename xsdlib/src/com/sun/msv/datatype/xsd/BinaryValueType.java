@@ -1,6 +1,18 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.tranquilo.datatype;
 
-public class BinaryValueType
+/**
+ * value type of "base64Binary" and "hexBinary" type.
+ */
+class BinaryValueType
 {
 	/** raw byte data */
 	public byte[]	rawData;

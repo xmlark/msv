@@ -1,7 +1,16 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.tranquilo.datatype;
 
 /**
- * "unsignedByte" and unsignedByte-derived types.
+ * "unsignedByte" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#unsignedByte for the spec
  */

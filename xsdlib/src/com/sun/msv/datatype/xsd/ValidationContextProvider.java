@@ -1,3 +1,12 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.tranquilo.datatype;
 
 /**
@@ -12,13 +21,15 @@ public interface ValidationContextProvider
 	 * 
 	 * this method is used for validating QName. 
 	 *
-	 * if the specified prefix is not declared,
-	 * the implementation must return null.
-	 * 
 	 * If prefix is "" (empty string), it indicates
 	 * unprefixed value. The implementation
 	 * should resolved it as if you see an unprefixed
-	 * element, rather than unprefix attribute
+	 * element, rather than unprefix attribute.
+	 * 
+	 * @return
+	 *		namespace URI of this prefix.
+	 *		If the specified prefix is not declared,
+	 *		the implementation must return null.
 	 */
 	String resolveNamespacePrefix( String prefix );
 	

@@ -1,21 +1,11 @@
 /*
- * Tranquilo : RELAX Verifier           written by Kohsuke Kawaguchi
- *                                           k-kawa@bigfoot.com
+ * @(#)$Id$
  *
- * Copyright 2000 Sun Microsystems, Inc. All Rights Reserved.
- *
- * This software is the confidential and proprietary information of Sun
- * Microsystems, Inc. ("Confidential Information").  You shall not
- * disclose such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered into
- * with Sun.
- *
- * SUN MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
- * THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- * PURPOSE, OR NON-INFRINGEMENT. SUN SHALL NOT BE LIABLE FOR ANY DAMAGES
- * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
- * THIS SOFTWARE OR ITS DERIVATIVES.
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
  */
 package com.sun.tranquilo.datatype;
 
@@ -26,12 +16,12 @@ import java.util.Hashtable;
 /**
  * Publicly accesible interface of XSD Datatype.
  *
- * Application should only rely on this interface.
+ * Application should use this interface to interact with datatype objects.
  */
 public interface DataType extends Serializable,Cloneable
 {
 	/**
-	 * checks if 'literal' matchs this datatype
+	 * checks if 'literal' matchs this datatype.
 	 * 
 	 * @param literal
 	 *		the lexical representation to be verified
@@ -40,13 +30,13 @@ public interface DataType extends Serializable,Cloneable
 	 *		necessary to verify given literal.
 	 * 
 	 * @return
-	 *		true if 'literal' can is a member of this datatype
+	 *		true if 'literal' is a member of this datatype;
 	 *		false if it's not a member of this datatype.
 	 */
 	boolean verify( String literal, ValidationContextProvider context );
 	
 	/**
-	 * diagnoses the reason of error
+	 * diagnoses the reason of error.
 	 * 
 	 * Application can call this method to provide detailed error message to users.
 	 * This method is kept separate from verify method to achieve higher performance
@@ -57,16 +47,17 @@ public interface DataType extends Serializable,Cloneable
 	 *		if 'content' is accepted by this pattern.
 	 * 
 	 * @exception UnsupportedOperationException
-	 *		if diagnosys is not supported by the implementation.
+	 *		if diagnosis is not supported by the implementation.
 	 */
 	DataTypeErrorDiagnosis diagnose( String content, ValidationContextProvider context )
 		throws UnsupportedOperationException;
 	
 	/**
-	 * gets the name of this datatype
+	 * gets the name of this datatype.
 	 * 
-	 * Unnamed datatypes (e.g., derived types) must return null.
-	 * As a result, name of the datatype cannot be used as an identifier.
+	 * Anonymous datatypes must return null.
+	 * As a result, result of this method cannot be used as
+	 * an unique identifier of type, nor a display name.
 	 */
 	String getName();
 	
@@ -81,20 +72,36 @@ public interface DataType extends Serializable,Cloneable
 	Object convertToValueObject( String lexicalValue, ValidationContextProvider context );
 	
 	/**
-	 * checks if this type is an atom type. List and union are not atom types. 
+	 * checks if this type is an atom type.
+	 * 
+	 * List, union, and types derived from them are not atom types.
+	 * Other types are atom types.
 	 *
 	 * @returns true if this type is an atom type
 	 */
 	boolean isAtomType();
 
+	/**
+	 * indicates the specified facet is applicable to this type.
+	 * One of the possible return value from isFacetApplicable method.
+	 */
 	static final int APPLICABLE = 0;
+	/**
+	 * indicates the specified facet is fixed in this type and
+	 * therefore not appliable.
+	 * One of the possible return value from isFacetApplicable method.
+	 */
 	static final int FIXED		= -1;
+	/**
+	 * indicates the specified facet is not appliable to this type by definition.
+	 * One of the possible return value from isFacetApplicable method.
+	 */
 	static final int NOT_ALLOWED= -2;
 	/**
 	 * returns if the specified facet is applicable to this datatype.
 	 * 
-	 * @return	APPLICABLE		if the facet is applicable
-	 *			FIXED			if the facet is already fixed (that is,not applicable)
+	 * @return	APPLICABLE		if the facet is applicable;
+	 *			FIXED			if the facet is already fixed (that is,not applicable);
 	 *			NOT_ALLOWED		if the facet is not applicable to this datatype at all.
 	 *							this value is also returned for unknown facets.
 	 */

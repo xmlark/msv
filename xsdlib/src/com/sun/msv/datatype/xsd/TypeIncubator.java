@@ -1,3 +1,12 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.tranquilo.datatype;
 
 import java.util.Map;
@@ -6,7 +15,7 @@ import java.util.Iterator;
 import java.math.BigInteger;
 
 /**
- * 
+ * derives a new type by adding facets.
  *
  */
 public class TypeIncubator

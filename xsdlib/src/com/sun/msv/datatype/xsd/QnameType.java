@@ -1,30 +1,18 @@
 /*
- * Tranquilo : RELAX Verifier           written by Kohsuke Kawaguchi
- *                                           k-kawa@bigfoot.com
+ * @(#)$Id$
  *
- * Copyright 2000 Sun Microsystems, Inc. All Rights Reserved.
- *
- * This software is the confidential and proprietary information of Sun
- * Microsystems, Inc. ("Confidential Information").  You shall not
- * disclose such Confidential Information and shall use it only in
- * accordance with the terms of the license agreement you entered into
- * with Sun.
- *
- * SUN MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
- * THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- * PURPOSE, OR NON-INFRINGEMENT. SUN SHALL NOT BE LIABLE FOR ANY DAMAGES
- * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
- * THIS SOFTWARE OR ITS DERIVATIVES.
- *
- * $Id$
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
  */
 package com.sun.tranquilo.datatype;
 
 import com.sun.xml.util.XmlNames;
 
 /**
- * "QName" and string-derived types.
+ * "QName" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#QName for the spec
  */

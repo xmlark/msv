@@ -1,9 +1,18 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.tranquilo.datatype;
 
 import java.math.BigInteger;
 
 /**
- * "byte" and byte-derived types.
+ * "byte" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#byte for the spec
  */

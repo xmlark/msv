@@ -179,6 +179,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 						if(systemId.equals("xml.xsd"))
 							return new InputSource(XMLSchemaReader.class.getResourceAsStream(
 								"xml.xsd"));
+                        System.out.println("unexpected system ID: "+systemId);
 						return null;
 					}
 				});

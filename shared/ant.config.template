@@ -4,18 +4,26 @@
 # (e.g., ****/msv/xsdlib or ****/msv/relames, etc.)
 #
 
-cvsRoot = \
-	:local:c:/Program Files/Development/CVS Repository
+cvsRoot = :pserver:userid@jse.east:/jse
 
-# otherwise "-r branch"
-cvsExportOpt = \
-	-D now
+#
+# This option is added to extract contents when building
+# the "release" package.
+#
+# For example, one can specify "-r branchname" to create
+# a release package for an old version.
+#
+cvsExportOpt = -D now
 
-	
+
+
 
 #
 # Third party libraries
 #
+#
+# Usually you don't need to modify those values
+# 
 
 
 # JavaCC is available at http://www.webgain.com/products/java_cc/
@@ -35,8 +43,6 @@ ant.jar = ../shared/lib/ant.jar
 # (http://relaxng.sourceforge.net/)
 #
 relaxngDatatype.jar = ../shared/lib/relaxngDatatype.jar
-rngInterfaceSource = \
-	../../relaxng/datatype/java/src
 
 #
 # ISO RELAX project is at http://iso-relax.sourceforge.net/
@@ -46,9 +52,11 @@ isorelax.jar = ../shared/lib/isorelax.jar
 #
 # Xerces and Xalan are from Apache XML Project.
 #
-xerces.source = \
-	C:/Program Files/Development/Xerces/src
-
 xerces.jar = ../shared/lib/xerces.jar
 
 xalan.jar = ../shared/lib/xalan.jar
+
+#
+# Regular expression library taken from Xerces
+#
+regexplib.src = ../shared/regexp

@@ -13,9 +13,30 @@ package com.sun.msv.grammar;
  * Base class for application-specific AGM annotation.
  * 
  * <p>
- * This expression should be treated as do-nothing expression for those
- * who don't understand the application-specific semantics.
- * Application can derive this class and use it for annotating AGM.
+ * This primitive has no meaning to MSV. For example, the following expression
+ * <pre>
+ * Expression exp = new OtherExp( pool.createSequence(a,b) );
+ * </pre>
+ * is treated as if MSV sees the following, OtherExp-less expression:
+ * <pre>
+ * Expression exp = pool.createSequence(a,b);
+ * </pre>
+ * 
+ * <p>
+ * By using this "transparency", application can implement derived classes
+ * of <code>OtherExp</code> and add application-specific information to AGM.
+ * 
+ * <p>
+ * For example, you can implement <code>AnnotationInfoExp</code> class that derives
+ * <code>OtherExp</code> and introduces "documentation" field.
+ * Then you'll write a customized <code>XMLSchemaReader</code> that
+ * parses &lt;annotation&gt; tag and mix <code>AnnotationInfoExp</code> into an AGM.
+ * Your application can then examine it and do some useful things.
+ * 
+ * <p>
+ * Those application-specific information added through OtherExp are completely
+ * ignored by MSV. So the annotated AGM can still be used just like anormal AGM.
+ * 
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

@@ -343,7 +343,7 @@ public class XMLSchemaReader extends GrammarReader
 			
 			switch(minOccursValue) {
 			case 0:
-				exp = Expession.epsilon;
+				exp = Expression.epsilon;
 				break;
 			case 1:
 				break;

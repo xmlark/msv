@@ -63,7 +63,7 @@ public class TRELAXNGReader extends RELAXNGReader {
 	private final Map primitiveItems = new java.util.HashMap();
 	
 	protected Expression interceptExpression( ExpressionState state, Expression exp ) {
-		// if an error was found, stop further processing.
+		// if an error was found, stop processing.
 		if( hadError )	return exp;
 		
 		
@@ -94,18 +94,29 @@ public class TRELAXNGReader extends RELAXNGReader {
 			// insert an ClassItem if this is the <element> tag.
 			// some of those temporarily added ClassItems will be removed
 			// in the final wrap up.
-			if( exp instanceof ElementExp ) {
+			if( tag.localName.equals("element") ) {
+//			if( exp instanceof ElementExp ) {
+				ElementExp eexp = (ElementExp)exp;
 				ClassItem t = new ClassItem( decideName(state,exp,"class") );
 				t.isTemporary = true;	// this flag indicates that this class item is a temporary one.
-				t.exp = exp;
-				return t;
+				
+				// add a ClassItem between the ElementExp and the content model.
+				t.exp = eexp.contentModel;
+				eexp.contentModel = t;
+				return eexp;
+			} else {
+				// if this element has the t:name attribute, store that
+				// information by using a ReferenceExp. This information
+				// might be useful to various annotators.
+//				String name = tag.getAttribute(TahitiNamespace,"name");
+//				if(name!=null)	exp = new ReferenceExp( name, exp );
 			}
 			
 			return exp;	// the "role" attribute is not present.
 		}
 		
 		
-		ReferenceExp roleExp;
+		OtherExp roleExp;
 		
 		if( role.equals("none") ) {
 			// do nothing. this will prevent automatic ClassItem insertion.
@@ -131,14 +142,21 @@ public class TRELAXNGReader extends RELAXNGReader {
 			The following code is a quick hack to prevent this situation by removing
 			temporary ClassItem if it is the immediate child of the user-defined class.
 			 */
-			if( (exp instanceof ClassItem) && ((ClassItem)exp).isTemporary )
+/* TODO:
+	we have to think in much broader view.
+	This could be done as a part of temporary class item removal.
+	Otherwise, we have to implement this mechanism to every reader.
+	
+	Also, this particular situation would interact with the combine attribute.
+*/			
+/*			if( (exp instanceof ClassItem) && ((ClassItem)exp).isTemporary )
 				exp = ((ClassItem)exp).exp;
 			if( exp.getClass()==ReferenceExp.class ) {
 				ReferenceExp rexp = (ReferenceExp)exp;
 				if( (rexp.exp instanceof ClassItem) && ((ClassItem)rexp.exp).isTemporary )
 					rexp.exp = ((ClassItem)rexp.exp).exp;
 			}
-			
+*/			
 			roleExp = new ClassItem(decideName(state,exp,role));
 		} else
 		if( role.equals("field") ) {

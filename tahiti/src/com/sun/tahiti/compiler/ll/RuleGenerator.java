@@ -190,6 +190,13 @@ public class RuleGenerator
 				}
 			}
 			
+			public void onOther( OtherExp exp ) {
+				if(visit(exp)) {
+					addRule( exp, new Expression[]{exp.exp} );
+					exp.exp.visit(this);
+				}
+			}
+			
 			/**
 			 * this method returns true if the specified expression
 			 * is not visited before.

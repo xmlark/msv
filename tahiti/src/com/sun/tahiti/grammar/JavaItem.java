@@ -9,15 +9,17 @@
  */
 package com.sun.tahiti.grammar;
 
-import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.OtherExp;
 
 /**
  * the base class of all special ReferenceExps
  * that are used to annotate data-binding information
  * to AGM.
  */
-public class JavaItem extends ReferenceExp {
+public class JavaItem extends OtherExp {
 	public JavaItem( String name ) {
-		super(name);
+		this.name = name;
 	}
+	
+	public String name;
 }

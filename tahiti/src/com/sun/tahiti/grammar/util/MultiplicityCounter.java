@@ -123,6 +123,12 @@ public abstract class MultiplicityCounter implements ExpressionVisitor
 		if(m!=null) return m;
 		return exp.exp.visit(this);
 	}
+
+	public Object onOther( OtherExp exp ) {
+		Multiplicity m = isChild(exp);
+		if(m!=null) return m;
+		return exp.exp.visit(this);
+	}
 	
 // assertions. these method may never be called.
 	public Object onConcur( ConcurExp exp ) { throw new Error(); }

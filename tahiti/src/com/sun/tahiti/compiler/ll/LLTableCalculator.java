@@ -103,6 +103,10 @@ public class LLTableCalculator
 					recordFollows(exp);
 					exp.exp.visit(this);
 				}
+				public void onOther( OtherExp exp ) {
+					recordFollows(exp);
+					exp.exp.visit(this);
+				}
 				public void onChoice( ChoiceExp exp ) {
 					recordFollows(exp);
 					Set _s = new java.util.HashSet(s);
@@ -238,6 +242,9 @@ public class LLTableCalculator
 		final Set r = new java.util.HashSet();
 		exp.visit(new ExpressionVisitorVoid(){
 			public void onRef( ReferenceExp exp ) {
+				exp.exp.visit(this);
+			}
+			public void onOther( OtherExp exp ) {
 				exp.exp.visit(this);
 			}
 			public void onChoice( ChoiceExp exp ) {

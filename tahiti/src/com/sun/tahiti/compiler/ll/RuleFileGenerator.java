@@ -118,37 +118,37 @@ public class RuleFileGenerator implements Symbolizer {
 						super.onTypedString(exp);
 					}
 				}
-				public void onRef( ReferenceExp exp ) {
+				public void onOther( OtherExp exp ) {
 					if(exp instanceof ClassItem) {
 						if(!classes.containsKey(exp)) {
 							classes.put(exp,computeName((ClassItem)exp,classes));
-							super.onRef(exp);
+							super.onOther(exp);
 						}
 						return;
 					}
 					if(exp instanceof PrimitiveItem) {
 						if(!primitives.containsKey(exp)) {
 							primitives.put(exp,computeName((PrimitiveItem)exp,primitives));
-							super.onRef(exp);
+							super.onOther(exp);
 						}
 						return;
 					}
 					if(exp instanceof FieldItem) {
 						if(!fields.containsKey(exp)) {
 							fields.put(exp,computeName((FieldItem)exp,fields));
-							super.onRef(exp);
+							super.onOther(exp);
 						}
 						return;
 					}
 					if(exp instanceof IgnoreItem) {
 						if(!ignores.containsKey(exp)) {
 							ignores.put(exp,computeName((IgnoreItem)exp,ignores));
-							super.onRef(exp);
+							super.onOther(exp);
 						}
 						return;
 					}
 					
-					super.onRef(exp);
+					super.onOther(exp);
 				}
 			});
 			
@@ -294,13 +294,23 @@ public class RuleFileGenerator implements Symbolizer {
 				out.end("elementSymbol");
 			}
 			
-			// serialize top-level expression
-			out.start("topLevel",new String[]{"id",getId(grammar.getTopLevel())});
-			out.start("content");
-			grammar.getTopLevel().visit(eser.serializer);
-			out.end("content");
-				LLTableCalculator.calc( grammar.getTopLevel(), rules, grammar.getPool(),this ).write(out,this);
-			out.end("topLevel");
+			if( elements.containsKey(grammar.getTopLevel()) ) {
+				// if the top-level expression is element symbol,
+				// then we don't need the root grammar.
+				out.start("topLevel");
+				out.start("content");
+				eser.serialize(grammar.getTopLevel());
+				out.end("content");
+				out.end("topLevel");
+			} else {
+				// serialize top-level expression
+				out.start("topLevel",new String[]{"id",getId(grammar.getTopLevel())});
+				out.start("content");
+				grammar.getTopLevel().visit(eser.serializer);
+				out.end("content");
+					LLTableCalculator.calc( grammar.getTopLevel(), rules, grammar.getPool(),this ).write(out,this);
+				out.end("topLevel");
+			}
 			
 			out.end("grammar");
 			outHandler.endDocument();

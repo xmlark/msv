@@ -38,6 +38,15 @@ public class NotAllowedRemover extends ExpressionCloner {
 		return exp;
 	}
 	
+	public Expression onOther( OtherExp exp ) {
+		Expression body = exp.exp.visit(this);
+		if(body==Expression.nullSet)
+			return Expression.nullSet;
+		
+		assert( exp.exp==body );	// otherwise it should be untouched.
+		return exp;
+	}
+	
 	/**
 	 * this set keeps the visited ElementExps/AttributeExps, to prevent
 	 * infinite recursion.

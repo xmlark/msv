@@ -110,7 +110,7 @@ public class Driver
 		TREXGrammar g;
 		{// parse grammar
 			TRELAXNGReader reader = new TRELAXNGReader( new com.sun.msv.driver.textui.DebugController(false,false), f );
-			reader.parse(args[0]);
+			reader.parse(grammar);
 			g = reader.getResult();
 			if(g==null) {
 				System.err.println("bailing out");

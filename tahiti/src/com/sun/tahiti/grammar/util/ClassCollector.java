@@ -10,6 +10,7 @@
 package com.sun.tahiti.grammar.util;
 
 import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.OtherExp;
 import com.sun.msv.grammar.util.ExpressionWalker;
 import com.sun.tahiti.grammar.*;
 import java.util.Set;
@@ -20,17 +21,21 @@ import java.util.Set;
  */
 public class ClassCollector extends ExpressionWalker {
 	
-	/** set of all visited ReferenceExps. used to prevent infinite recursion. */
-	private final Set visitedRefs = new java.util.HashSet();
-	
 	/** set of ClassItems. */
 	public final Set classItems = new java.util.HashSet();
 	
 	/** set of InterfaceItems. */
 	public final Set interfaceItems = new java.util.HashSet();
 	
+	/** set of all visited Expressions. used to prevent infinite recursion. */
+	private final Set visitedExps = new java.util.HashSet();
+	
 	public void onRef( ReferenceExp exp ) {
-		if( !visitedRefs.add(exp) )	return;
+		if(!visitedExps.add(exp))	return;
+		super.onRef(exp);
+	}
+	public void onOther( OtherExp exp ) {
+		if( !visitedExps.add(exp) )	return;
 		
 		if( exp instanceof ClassItem )
 			onClassItem((ClassItem)exp);
@@ -39,7 +44,7 @@ public class ClassCollector extends ExpressionWalker {
 			onInterfaceItem((InterfaceItem)exp);
 			
 		// visit its children.
-		super.onRef(exp);
+		super.onOther(exp);
 	}
 	
 	private void onClassItem( ClassItem item ) {

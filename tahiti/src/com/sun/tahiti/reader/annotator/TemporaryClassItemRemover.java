@@ -60,6 +60,12 @@ class TemporaryClassItemRemover extends ExpressionCloner {
 		if( !visitedExps.add(exp) )
 			// this exp is already processed. this check will prevent infinite recursion.
 			return exp;
+		// update the definition and return self.
+		exp.exp = exp.exp.visit(this);
+		return exp;
+	}
+	
+	public Expression onOther( OtherExp exp ) {
 		
 		if( exp instanceof ClassItem ) {
 			ClassItem ci = (ClassItem)exp;
@@ -87,6 +93,9 @@ class TemporaryClassItemRemover extends ExpressionCloner {
 						if(visitedExps.add(exp))	super.onAttribute(exp);
 					}
 					public void onRef( ReferenceExp exp ) {
+						if(visitedExps.add(exp))	super.onRef(exp);
+					}
+					public void onOther( OtherExp exp ) {
 						if(!visitedExps.add(exp))	return;
 						if(exp instanceof JavaItem) {
 							if(exp instanceof PrimitiveItem) {
@@ -99,7 +108,7 @@ class TemporaryClassItemRemover extends ExpressionCloner {
 							else
 								throw new TooComplex();
 						}
-						super.onRef(exp);
+						super.onOther(exp);
 					}
 				};
 				try {

@@ -87,9 +87,16 @@ class ExpressionSerializer {
 			}
 		}
 
-		// TODO: ReferenceExps are unnecessary.
+		// TODO: ReferenceExps/OtherExps are unnecessary.
 		// we should be able to ignore them.
 		public void onRef( ReferenceExp exp ) {
+			if(onExpr(exp)) {
+				exp.exp.visit(this);
+				assignId(exp);
+			}
+		}
+		
+		public void onOther( OtherExp exp ) {
 			if(onExpr(exp)) {
 				exp.exp.visit(this);
 				assignId(exp);
@@ -191,6 +198,10 @@ class ExpressionSerializer {
 			serialize(exp.exp);
 		}
 	
+		public void onOther( OtherExp exp ) {
+			serialize(exp.exp);
+		}
+	
 		public void onEpsilon() {
 			out.element("epsilon");
 		}
@@ -208,28 +219,27 @@ class ExpressionSerializer {
 			serialize(exp.exp2);
 			out.end(name);
 		}
-		
-		/**
-		 * serializes an Expression. If the specified "exp" is shared,
-		 * this method writes a reference.
-		 */
-		public void serialize( Expression exp ) {
-			if(exp instanceof ElementExp) {
-				out.element("element",
-					new String[]{"symbolRef",symbolizer.getId(exp)});
-			} else
-			if(exp instanceof AttributeExp) {
-				out.element("attribute",
-					new String[]{"symbolRef",symbolizer.getId(exp)});
-			} else
-			if(sharedExps.contains(exp)) {
-				// if this expression is shared, spit the reference.
-				out.element("ref",
-					new String[]{"particle","o"+((Integer)expr2id.get(exp)).toString()});
-			} else {
-				// otherwise perform recursion.
-				exp.visit(this);
-			}
-		}
 	};
+	/**
+	 * serializes an Expression. If the specified "exp" is shared,
+	 * this method writes a reference.
+	 */
+	public void serialize( Expression exp ) {
+		if(exp instanceof ElementExp) {
+			out.element("element",
+				new String[]{"symbolRef",symbolizer.getId(exp)});
+		} else
+		if(exp instanceof AttributeExp) {
+			out.element("attribute",
+				new String[]{"symbolRef",symbolizer.getId(exp)});
+		} else
+		if(sharedExps.contains(exp)) {
+			// if this expression is shared, spit the reference.
+			out.element("ref",
+				new String[]{"particle","o"+((Integer)expr2id.get(exp)).toString()});
+		} else {
+			// otherwise perform recursion.
+			exp.visit(serializer);
+		}
+	}
 }

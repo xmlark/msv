@@ -73,29 +73,40 @@ public class SuperClassBodyRemover extends ExpressionWalker {
 	}
 	
 	public void onRef( ReferenceExp exp ) {
+		if(visitedRefs.add(exp))
+			super.onRef(exp);	// recurse children if this is the first visit.
+	}
+	
+	public void onOther( OtherExp exp ) {
 		if( exp instanceof SuperClassItem ) {
 			exp.exp = exp.exp.visit(remover);
 		}
-		if( visitedRefs.add(exp) )
-			super.onRef(exp);	// recurse children if this is the first visit.
+		if(visitedRefs.add(exp))
+			super.onOther(exp);
 	}
 	
 	private ExpressionCloner remover;
 
 	private SuperClassBodyRemover( ExpressionPool pool ) {
 		remover = new ExpressionCloner(pool){
+			
 			public Expression onRef( ReferenceExp exp ) {
+				return exp.exp.visit(this);
+			}
+			
+			public Expression onOther( OtherExp exp ) {
 				if( exp instanceof ClassItem ) {
 					// this is the definition of this super class item.
 					// remove it.
 					return exp.exp;
 				}
+				
 				// it must not be a JavaItem.
 				// this check should have already been done by the RelationNormalizer
 				if( exp instanceof JavaItem )
 					throw new Error("internal error");
 				
-				// other normal ReferenceExp.
+				// other unknown exps
 				return exp.exp.visit(this);
 			}
 			

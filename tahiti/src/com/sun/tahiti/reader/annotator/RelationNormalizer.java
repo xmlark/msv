@@ -268,11 +268,14 @@ class RelationNormalizer {
 			return exp;
 		}
 		
+		public Expression onRef( ReferenceExp exp ) {
+			return exp.exp.visit(this);
+		}
 		
 	// Java items
 	//=======================================
 		
-		public Expression onRef( ReferenceExp exp ) {
+		public Expression onOther( OtherExp exp ) {
 			
 			// if it's not a java item,
 			// simply recurse its contents.
@@ -384,7 +387,7 @@ class RelationNormalizer {
 			return exp;
 		}
 		
-		private Multiplicity getJavaItemMultiplicity( ReferenceExp item ) {
+		private Multiplicity getJavaItemMultiplicity( OtherExp item ) {
 			if( item instanceof IgnoreItem )	return Multiplicity.zero;
 			else								return Multiplicity.one;
 		}
@@ -409,8 +412,9 @@ class RelationNormalizer {
 				// it must be an internal error.
 				throw new Error("internal error: use of primitive-* relation.");
 			
-			if(( isField(parent) || isInterface(parent) )
-			&& ( isSuperClass(child) || isField(child) )) {
+			if(( isField(parent) && ( isSuperClass(child) || isField(child)) )
+				|| ( isInterface(parent) && ( isSuperClass(child) || isField(child) || isPrimitive(child) ) ) ) {
+				// I-S, I-F, F-S, F-F, F-P relationship.
 				// TODO: diagnose better
 				reader.reportError(
 					new Locator[]{

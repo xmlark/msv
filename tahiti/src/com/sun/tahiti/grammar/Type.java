@@ -10,7 +10,6 @@
 package com.sun.tahiti.grammar;
 
 import java.util.Set;
-import com.sun.msv.grammar.ReferenceExp;
 
 /**
  * Type. Several types are generated, and several types are built-in (such as String.)

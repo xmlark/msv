@@ -10,7 +10,6 @@
 package com.sun.tahiti.grammar;
 
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.ReferenceExp;
 
 public class ClassItem extends TypeItem {
 	

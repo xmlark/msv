@@ -76,6 +76,23 @@ class FieldItemAnnotation
 		private int iota = 0;
 		
 		public Expression onRef( ReferenceExp exp ) {
+			Expression r = (Expression)annotatedRefs.get(exp);
+			if(r!=null)		return r;	// this ReferenceExp has already visited and annotated. reuse it.
+
+			// store the name information
+			boolean pushed = false;
+			if(exp.name!=null) {
+				names.push(exp.name);
+				pushed = true;
+			}
+			r = exp.exp.visit(this);
+			annotatedRefs.put(exp,r);	// store the annotated result.
+			
+			if(pushed)	names.pop();
+			return r;
+		}
+		
+		public Expression onOther( OtherExp exp ) {
 			// expands C-C,C-P,C-I relationship.
 			if( exp instanceof PrimitiveItem
 			||  exp instanceof InterfaceItem
@@ -90,23 +107,7 @@ class FieldItemAnnotation
 			||	exp instanceof FieldItem )
 				return exp;
 			
-			// otherwise this is a normal ReferenceExp
-			assert(!(exp instanceof JavaItem));
-			
-			Expression r = (Expression)annotatedRefs.get(exp);
-			if(r!=null)		return r;	// this ReferenceExp has already visited and annotated. reuse it.
-			
-			// store the name information
-			boolean pushed = false;
-			if(exp.name!=null) {
-				names.push(exp.name);
-				pushed = true;
-			}
-			r = exp.exp.visit(this);
-			annotatedRefs.put(exp,r);	// store the annotated result.
-			
-			if(pushed)	names.pop();
-			return r;
+			return exp.exp.visit(this);
 		}
 
 		public Expression onAttribute( AttributeExp exp ) {
@@ -165,6 +166,8 @@ class FieldItemAnnotation
 			boolean[] fieldlessBranch = new boolean[b.length];
 			int numLiveBranch = 0;
 			
+			boolean bBranchWithField = false;
+			
 			for( int i=0; i<b.length; i++ ) {
 				final boolean[] hasChildFieldItem = new boolean[1];
 				
@@ -198,6 +201,8 @@ class FieldItemAnnotation
 					continue;
 				}
 				
+				bBranchWithField = true;
+				
 				// this branch has a FieldItem. perform recursion.
 				b[i] = b[i].visit(this);
 			}
@@ -210,27 +215,51 @@ class FieldItemAnnotation
 				for( int i=0; i<b.length; i++ )
 					if( fieldlessBranch[i] || complexBranch[i] )
 						b[i] = b[i].visit(this);
+				
+				Expression r = Expression.nullSet;
+				for( int i=b.length-1; i>=0; i-- )
+					r = pool.createChoice( b[i], r );
+			
+				return r;
+				
 			} else {
 				String fieldName = decideName();
+				
+				/*
+				if we don't have any branch with FieldItem, then we just need
+				one FieldItem to cover the entire branches.
+				
+				TODO: actually this would be done better. Even if there are 
+				branches with FieldItems, one created FieldItem can cover all
+				FieldItem-less branches, and then that FieldItem and other
+				branches can be combined.
+				*/
 				
 				for( int i=0; i<b.length; i++ ) {
 					if( fieldlessBranch[i] )
 						// do not perform recursion because we've added FieldItem.
-						b[i] = new FieldItem( fieldName, b[i] );
+						if( bBranchWithField )
+							b[i] = new FieldItem( fieldName, b[i] );
+					else
 					if( complexBranch[i] ) {
 						// insert a new class item here.
 						String className = owner.getTypeName()+"Subordinate"+(++iota);
 						
-						b[i] = new FieldItem( fieldName,
-							new ClassItem( className, b[i].visit(this) ) );
+						b[i] = new ClassItem( className, b[i].visit(this) );
+						if( bBranchWithField )
+							b[i] = new FieldItem( fieldName, b[i] );
+						
 					}
 				}
-			}
 			
-			Expression r = Expression.nullSet;
-			for( int i=b.length-1; i>=0; i-- )
-				r = pool.createChoice( b[i], r );
-			return r;
+				Expression r = Expression.nullSet;
+				for( int i=b.length-1; i>=0; i-- )
+					r = pool.createChoice( b[i], r );
+
+				if( !bBranchWithField )
+					r = new FieldItem( fieldName, r );
+				return r;
+			}
 		}
 	
 		
@@ -258,10 +287,10 @@ class FieldItemAnnotation
 			try {
 				// see if "exp" contains FieldItem.
 				exp.exp.visit( new ExpressionWalker(){
-					public void onRef( ReferenceExp exp ) {
+					public void onOther( OtherExp exp ) {
 						if(exp instanceof FieldItem)	throw eureka;
 						if(exp instanceof JavaItem)		return;
-						super.onRef(exp);
+						super.onOther(exp);
 					}
 				});
 			} catch(RuntimeException e) {

@@ -335,14 +335,24 @@ public class ]]></xsl:text>
 		<xsl:call-template name="CRLF"/>
 	
 	<!-- root parser table -->
-		<xsl:text>			final LLParserTable rootTable = new Table_</xsl:text>
-		<xsl:value-of select="topLevel/@id"/>
-		<xsl:text>();</xsl:text>
-		<xsl:call-template name="CRLF"/>
-		<xsl:text>			final Object rootSymbol = </xsl:text>
-		<xsl:value-of select="topLevel/@id"/>
-		<xsl:text>;</xsl:text>
-		<xsl:call-template name="CRLF"/>
+		<xsl:choose>
+			<xsl:when test="topLevel/@id">
+				<xsl:text>			final LLParserTable rootTable = new Table_</xsl:text>
+				<xsl:value-of select="topLevel/@id"/>
+				<xsl:text>();</xsl:text>
+				<xsl:call-template name="CRLF"/>
+				<xsl:text>			final Object rootSymbol = </xsl:text>
+				<xsl:value-of select="topLevel/@id"/>
+				<xsl:text>;</xsl:text>
+				<xsl:call-template name="CRLF"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text>			final LLParserTable rootTable = null;</xsl:text>
+				<xsl:call-template name="CRLF"/>
+				<xsl:text>			final Object rootSymbol = null;</xsl:text>
+				<xsl:call-template name="CRLF"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	
 	<!-- footer -->
 		<xsl:text><![CDATA[

@@ -23,7 +23,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 
 /**
- * serializes a simple marshaller into XML representation.
+ * serializes all marshallers in the grammar into one XML representation.
  */
 public class MarshallerSerializer {
 	

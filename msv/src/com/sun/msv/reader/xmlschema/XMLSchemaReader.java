@@ -173,10 +173,10 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 				XSFactoryImpl factory = new XSFactoryImpl();
 				factory.setEntityResolver( new EntityResolver() {
 					public InputSource resolveEntity( String publicId, String systemId ) {
-						if(systemId.equals("datatypes.xsd"))
+						if(systemId.endsWith("datatypes.xsd"))
 							return new InputSource(XMLSchemaReader.class.getResourceAsStream(
 								"datatypes.xsd"));
-						if(systemId.equals("xml.xsd"))
+						if(systemId.endsWith("xml.xsd"))
 							return new InputSource(XMLSchemaReader.class.getResourceAsStream(
 								"xml.xsd"));
                         System.out.println("unexpected system ID: "+systemId);

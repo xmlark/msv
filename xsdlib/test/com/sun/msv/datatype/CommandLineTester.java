@@ -40,6 +40,9 @@ public class CommandLineTester
 		System.out.println("XML Schema Part 2 command line tool");
 		
 		final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+		
+		// TypeIncubator is used to "incubate" a type by adding facets.
+		// constructor accepts the base type instance.
 		TypeIncubator incubator = new TypeIncubator(StringType.theInstance);
 		
 		while(true)
@@ -55,9 +58,11 @@ public class CommandLineTester
 				if( cmd.equals("base") )
 				{
 					String typeName = tokens.nextToken();
+					
+					// to obtain a type by name, call this method.
 					DataType dt = DataTypeFactory.getTypeByName(typeName);
 					if(dt==null)
-					{
+					{// if the name is not recognized, null is returned.
 						System.out.println("no such type");
 						continue;
 					}
@@ -68,19 +73,37 @@ public class CommandLineTester
 				{
 					String facetName = tokens.nextToken();
 					String facetValue = tokens.nextToken();
+					// to add a facet, call add method.
+					// you MUST supply a valid ValidationContextProvider,
+					// although this example omits one.
 					incubator.add( facetName, facetValue, false, null );
 					continue;
 				}
 				if( cmd.equals("test") )
 				{
 					String value = tokens.nextToken();
+					// a type can be derived by derive method.
+					// the new type contains all facets that were added.
 					DataType dt = incubator.derive("anonymous");
+					
+					// check validity.
 					if( dt.verify(value,null) )
+						// verify method returns true if the value is valid.
 						System.out.println("valid value");
 					else
-					{
-						DataTypeErrorDiagnosis diag = dt.diagnose(value,null);
-						System.out.println("invalid: "+diag.message );
+					{// it returns false otherwise,
+						// call diagnose method to see what is wrong.
+						try
+						{
+							DataTypeErrorDiagnosis diag = dt.diagnose(value,null);
+							System.out.println("invalid: "+diag.message );
+						}
+						catch( UnsupportedOperationException uoe )
+						{
+							// datatype object may not support diagnosis.
+							// in that case, UnsupportedOperationException is thrown.
+							System.out.println("invalid: no diagnosys available");
+						}
 					}
 					continue;
 				}
@@ -90,11 +113,13 @@ public class CommandLineTester
 				help();
 			}
 			catch( BadTypeException bte )
-			{
+			{// this exception happens in cases like:
+				// 1. unapplicable facet is added ("minInclusive" for string, etc.)
+				// 2. 
 				System.out.println("BadTypeException: " +bte.getMessage() );
 			}
 			catch( java.util.NoSuchElementException nse )
-			{
+			{// error in command line parsing.
 				System.out.println("???");
 				help();
 			}

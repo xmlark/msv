@@ -9,6 +9,7 @@
 	<property name="libDir" value="./lib"/>
 	<property name="javaCClib" value="./ref/javacc/bin/lib" />
 	<property name="cvsRoot" value=":local:/cygdrive/c/Program Files/Development/CVS Repository" />
+	<property name="cvsExportOpt" value="-D now" />	<!-- -r branch -->
 	
 	<!-- test directory where you put your files like "relaxNNN.rlx" -->
 	<property name="testRoot" value="./testCases" />
@@ -187,19 +188,19 @@
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/test/com/sun/msv/datatype/CommandLineTester.java"
-				command="export -d . -D now"
+				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}/src/com/sun/msv/datatype" />
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/src/com/sun/msv/datatype"
-				command="export -d . -D now"
+				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}/src/com/sun/msv/datatype" />
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/src/com/sun/xml"
-				command="export -d . -D now"
+				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}/src/com/sun/xml" />
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/relaxng"
-				command="export -d . -D now"
+				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}/src/" />
 
 		<!-- copy Xerces files into source directory -->
@@ -210,7 +211,7 @@
 		<!-- obtain document files -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/doc/datatype"
-				command="export -d . -D now"
+				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}" />
 				
 		<!-- run javacc -->
@@ -282,18 +283,18 @@
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/src"
-				command="export -d . -D now"
+				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}/src/" />
 
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/relaxng"
-				command="export -d . -D now"
+				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}/src/" />
 		
 		<!-- obtain document files -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/doc/tranquilo"
-				command="export -d . -D now"
+				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}" />
 	
 		<!-- run javacc -->
@@ -395,13 +396,13 @@
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/generator"
-				command="export -d . -D now"
+				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}/src" />
 				
 		<!-- obtain document files -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/doc/generator"
-				command="export -d . -D now"
+				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}" />
 		
 		
@@ -459,6 +460,9 @@
 		</javadoc>
 
 		
+<!-- temporarily, remove source codes -->
+		<delete dir="${stageName}/src" />
+		
 		<!-- creates distribution package -->
 		<zip	zipfile="${packageDir}/xmlgen.${DSTAMP}.zip"
 				basedir="."
@@ -483,13 +487,13 @@
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/rngconverter"
-				command="export -d . -D now"
+				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}/src" />
 				
 		<!-- obtain document files -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/doc/rngconverter"
-				command="export -d . -D now"
+				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}" />
 		
 		
@@ -552,9 +556,9 @@
 
 
 	<!-- TREX converter release -->
-	<target name="rngconverter">
+	<target name="trexconverter">
 		<tstamp />
-		<property name="stageName" value="rngconv-${DSTAMP}"/>
+		<property name="stageName" value="trexconv-${DSTAMP}"/>
 		
 		<delete	dir="${stageName}" />
 		<mkdir	dir="${stageName}" />
@@ -563,13 +567,13 @@
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/trexconverter"
-				command="export -d . -D now"
+				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}/src" />
 				
 		<!-- obtain document files -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/doc/trexconverter"
-				command="export -d . -D now"
+				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}" />
 		
 		

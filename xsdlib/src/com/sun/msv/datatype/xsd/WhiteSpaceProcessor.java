@@ -6,7 +6,7 @@ public abstract class WhiteSpaceProcessor
 	 *
 	 * behavior varies on what normalization mode is used.
 	 */
-	abstract String process( String text );
+	public abstract String process( String text );
 	
 	/** higher return value indicates tigher constraint */
 	abstract int tightness();
@@ -31,13 +31,13 @@ public abstract class WhiteSpaceProcessor
 		return ch==0x9 || ch==0xA || ch==0xD || ch==0x20;
 	}
 	
-	protected final static WhiteSpaceProcessor thePreserve = new WhiteSpaceProcessor()
+	public final static WhiteSpaceProcessor thePreserve = new WhiteSpaceProcessor()
 	{
 		public String process( String text )	{ return text; }
 		int tightness() { return 0; }
 	};
 	
-	protected final static WhiteSpaceProcessor theReplace = new WhiteSpaceProcessor()
+	public final static WhiteSpaceProcessor theReplace = new WhiteSpaceProcessor()
 	{
 		public String process( String text )
 		{
@@ -55,7 +55,7 @@ public abstract class WhiteSpaceProcessor
 		int tightness() { return 1; }
 	};
 
-	protected final static WhiteSpaceProcessor theCollapse= new WhiteSpaceProcessor()
+	public final static WhiteSpaceProcessor theCollapse= new WhiteSpaceProcessor()
 	{
 		public String process( String text )
 		{

@@ -131,21 +131,15 @@ import java.util.Vector;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class RELAXNGWriter implements GrammarWriter {
+public class RELAXNGWriter implements GrammarWriter, Context {
 	
-	/**
-	 * this class is used to wrap SAXException by RuntimeException.
-	 * 
-	 * we can't throw Exception from visitor, so it has to be wrapped
-	 * by RuntimeException. This exception is catched outside of visitor
-	 * and nested exception is re-thrown.
-	 */
-	protected static class SAXWrapper extends RuntimeException {
-		SAXException e;
-		SAXWrapper( SAXException e ) { this.e=e; }
+	protected XMLWriter writer = new XMLWriter();
+	public XMLWriter getWriter() { return writer; }
+	
+	public void setDocumentHandler( DocumentHandler handler ) {
+		writer.setDocumentHandler(handler);
 	}
 	
-
 	public void write( Grammar g ) throws SAXException {
 		// find a namespace URI that can be used as default "ns" attribute.
 		write(g,sniffDefaultNs(g.getTopLevel()));
@@ -162,8 +156,9 @@ public class RELAXNGWriter implements GrammarWriter {
 	 *		If the given grammar is beyond the expressive power of TREX
 	 *		(e.g., some RELAX NG grammar), then this exception is thrown.
 	 */
-	public void write( Grammar g, String defaultNs ) throws SAXException {
+	public void write( Grammar g, String _defaultNs ) throws SAXException {
 		
+		this.defaultNs = _defaultNs;
 		this.grammar = g;
 		
 		// collect all reachable ElementExps and ReferenceExps.
@@ -257,9 +252,11 @@ public class RELAXNGWriter implements GrammarWriter {
 			}
 		}
 		
-		
+		nameClassWriter = createNameClassWriter();		
+ 
 		// generates SAX events
 		try {
+			final DocumentHandler handler = writer.getDocumentHandler();
 			handler.setDocumentLocator( new LocatorImpl() );
 			handler.startDocument();
 //			handler.startPrefixMapping("",TREXGrammarReader.TREXNamespace);
@@ -270,21 +267,20 @@ public class RELAXNGWriter implements GrammarWriter {
 			// report xmlns declarations as attributes.
 			
 			if( defaultNs!=null )
-				start("grammar",new String[]{
+				writer.start("grammar",new String[]{
 					"ns",defaultNs,
 					"xmlns",RELAXNGReader.RELAXNGNamespace,
 					"datatypeLibrary", XSDVocabulary.XMLSchemaNamespace });
 			else
-				start("grammar", new String[]{
+				writer.start("grammar", new String[]{
 					"xmlns",RELAXNGReader.RELAXNGNamespace,
 					"datatypeLibrary", XSDVocabulary.XMLSchemaNamespace });
 			
-			this.defaultNs = defaultNs;
 			
 			{// write start pattern.
-				start("start");
+				writer.start("start");
 				writeIsland( g.getTopLevel() );
-				end("start");
+				writer.end("start");
 			}
 			
 			// write all named expressions
@@ -294,14 +290,14 @@ public class RELAXNGWriter implements GrammarWriter {
 				String name = (String)exp2name.get(exp);
 				if( exp instanceof ReferenceExp )
 					exp = ((ReferenceExp)exp).exp;
-				start("define",new String[]{"name",name});
+				writer.start("define",new String[]{"name",name});
 				writeIsland( exp );
-				end("define");
+				writer.end("define");
 			}
 			
-			end("grammar");
+			writer.end("grammar");
 			handler.endDocument();
-		} catch( SAXWrapper sw ) {
+		} catch( SAXRuntimeException sw ) {
 			throw sw.e;
 		}
 	}
@@ -404,82 +400,11 @@ public class RELAXNGWriter implements GrammarWriter {
 	 * namespace URI currently implied through "ns" attribute propagation.
 	 */
 	protected String defaultNs;
+	public String getTargetNamespace() { return defaultNs; }
 	
-	
-	protected DocumentHandler handler;
-	/** this DocumentHandler will receive XML representation of TREX pattern. */
-	public void setDocumentHandler( DocumentHandler handler ) {
-		this.handler = handler;
-	}
-	
-	
-	
-// primitive write methods
-//-----------------------------------------
-	protected void element( String name ) {
-		element( name, new String[0] );
-	}
-	protected void element( String name, String[] attributes ) {
-		start(name,attributes);
-		end(name);
-	}
-	protected void start( String name ) {
-		start(name, new String[0] );
-	}
-	protected void start( String name, String[] attributes ) {
-		
-		// create attributes.
-		AttributeListImpl as = new AttributeListImpl();
-		for( int i=0; i<attributes.length; i+=2 )
-			as.addAttribute( attributes[i], "", attributes[i+1] );
-		
-		try {
-			handler.startElement( name, as );
-		} catch( SAXException e ) {
-			throw new SAXWrapper(e);
-		}
-	}
-	protected void end( String name ) {
-		try {
-			handler.endElement( name );
-		} catch( SAXException e ) {
-			throw new SAXWrapper(e);
-		}
-	}
-/*
-	protected String[] resolveAttrQName( String name ) {
-		return resolveQName( name, "" );
-	}
-	protected String[] resolveElementQName( String name ) {
-		return resolveQName( name, TREXGrammarReader.TREXNamespace );
-	}
-	protected String[] resolveQName( String qname, String defaultNs ) {
-		int idx = qname.indexOf(':');
-		if(idx<0)
-			return new String[]{defaultNs,qname,qname};
-		
-		String prefix = qname.substring(0,idx);
-		String local = qname.substring(idx+1);
-		
-		if( prefix.equals("xsd") )
-			return new String[]{"http://www.w3.org/2001/XMLSchema",local,qname};
-		if( prefix.equals("trex") )
-			return new String[]{TREXGrammarReader.TREXNamespace,local,qname};
-		
-		throw new Error();	// unsupported prefix name.
-	}
-*/	
-	
-	protected void characters( String str ) {
-		try {
-			handler.characters( str.toCharArray(), 0, str.length() );
-		} catch( SAXException e ) {
-			throw new SAXWrapper(e);
-		}
-	}
 
 	
-	private void writeNameClass( NameClass src ) {
+	public void writeNameClass( NameClass src ) {
 		final String MAGIC = PossibleNamesCollector.MAGIC;
 		Set names = PossibleNamesCollector.calc(src);
 		
@@ -528,8 +453,8 @@ public class RELAXNGWriter implements GrammarWriter {
 				// this name class accepts nothing.
 				// by adding notAllowed to the content model, this element
 				// will match nothing.
-				element("anyName");
-				element("notAllowed");
+				writer.element("anyName");
+				writer.element("notAllowed");
 				return;
 			}
 		}
@@ -538,118 +463,27 @@ public class RELAXNGWriter implements GrammarWriter {
 		
 	}
 	
-	protected NameClassVisitor nameClassWriter = createNameClassWriter();
+	protected NameClassVisitor nameClassWriter;
 	protected NameClassVisitor createNameClassWriter() {
-		return new NameClassWriter();
-	}
-	protected PatternWriter patternWriter = createPatternWriter();
-	protected PatternWriter createPatternWriter() {
-		return new PatternWriter();
+		return new NameClassWriter(this);
 	}
 	
-	
+	protected SmartPatternWriter patternWriter = new SmartPatternWriter(this);
 	
 	/**
-	 * visits NameClass and writes its XML representation.
-	 * 
-	 * this class can only handle canonicalized name class.
+	 * PatternWriter that performs some optimization for human eyes.
 	 */
-	protected class NameClassWriter implements NameClassVisitor {
-		public Object onAnyName(AnyNameClass nc) {
-			element("anyName");
-			return null;
-		}
-		
-		protected void startWithNs( String name, String ns ) {
-			if( ns.equals(defaultNs) )
-				start(name);
-			else
-				start(name, new String[]{"ns",ns});
-		}
-		
-		public Object onSimple( SimpleNameClass nc ) {
-			startWithNs( "name", nc.namespaceURI );
-			characters(nc.localName);
-			end("name");
-			return null;
-		}
-		
-		public Object onNsName( NamespaceNameClass nc ) {
-			startWithNs( "nsName", nc.namespaceURI );
-			end("nsName");
-			return null;
-		}
-		
-		public Object onNot( NotNameClass nc ) {
-			// should not be called.
-			throw new Error();
-		}
-		
-		public Object onChoice( ChoiceNameClass nc ) {
-			start("choice");
-			processChoice(nc);
-			end("choice");
-			return null;
-		}
-			
-		private void processChoice( ChoiceNameClass nc ) {
-			Stack s = new Stack();
-			s.push(nc.nc1);
-			s.push(nc.nc2);
-			
-			while(!s.empty()) {
-				NameClass n = (NameClass)s.pop();
-				if(n instanceof ChoiceNameClass ) {
-					s.push( ((ChoiceNameClass)n).nc1 );
-					s.push( ((ChoiceNameClass)n).nc2 );
-					continue;
-				}
-				
-				n.visit(this);
-			}
-		}
-		
-		public Object onDifference( DifferenceNameClass nc ) {
-			if( nc.nc1 instanceof AnyNameClass ) {
-				start("anyName");
-				start("except");
-				if( nc.nc2 instanceof ChoiceNameClass )
-					processChoice( (ChoiceNameClass)nc.nc2 );
-				else
-					nc.nc2.visit(this);
-				end("except");
-				end("anyName");
-			}
-			else
-			if( nc.nc1 instanceof NamespaceNameClass ) {
-				startWithNs("nsName", ((NamespaceNameClass)nc.nc1).namespaceURI );
-				start("except");
-				if( nc.nc2 instanceof ChoiceNameClass )
-					processChoice( (ChoiceNameClass)nc.nc2 );
-				else
-					nc.nc2.visit(this);
-				end("except");
-				end("nsName");
-			}
-			else
-				throw new Error();
-			
-			return null;
-		}
-	}
+	class SmartPatternWriter extends PatternWriter {
 	
-	
-	/** visits Expression and writes its XML representation. */
-	protected class PatternWriter implements ExpressionVisitorVoid {
+		SmartPatternWriter( Context context ) { super(context); }
 		
 		public void onOther( OtherExp exp ) {
-			exp.exp.visit(this);
+			exp.exp.visit(this);	// ignore otherexp
 		}
-			
 		public void onRef( ReferenceExp exp ) {
 			String uniqueName = (String)exp2name.get(exp);
 			if( uniqueName!=null )
-				element("ref", new String[]{"name",uniqueName});
+				this.writer.element("ref", new String[]{"name",uniqueName});
 			else
 				// this expression will not be written as a named pattern.
 				exp.exp.visit(this);
@@ -659,27 +493,44 @@ public class RELAXNGWriter implements GrammarWriter {
 			String uniqueName = (String)exp2name.get(exp);
 			if( uniqueName!=null ) {
 				// this element will be written as a named pattern
-				element("ref", new String[]{"name",uniqueName} );
+				this.writer.element("ref", new String[]{"name",uniqueName} );
 				return;
 			} else
 				writeElement(exp);
 		}
-			
-		public void writeElement( ElementExp exp ) {
+	
+		public void onAttribute( AttributeExp exp ) {
+			if( exp.nameClass instanceof SimpleNameClass
+			&&  ((SimpleNameClass)exp.nameClass).namespaceURI.equals("") ) {
+				// we can use name attribute.
+				this.writer.start("attribute", new String[]{"name",
+					((SimpleNameClass)exp.nameClass).localName} );
+			}
+			else {
+				this.writer.start("attribute");
+				context.writeNameClass(exp.nameClass);
+			}
+			if( exp.exp != Expression.anyString )
+				// we can omit <anyString/> in the attribute.
+				visitUnary(exp.exp);
+			this.writer.end("attribute");
+		}
+
+		protected void writeElement( ElementExp exp ) {
 			NameClass nc = exp.getNameClass();
 			if( nc instanceof SimpleNameClass
 			&&  ((SimpleNameClass)nc).namespaceURI.equals(defaultNs) )
 				// we can use name attribute to simplify output.
-				start("element",new String[]{"name",
+				this.writer.start("element",new String[]{"name",
 					((SimpleNameClass)nc).localName} );
 			else {
-				start("element");
+				this.writer.start("element");
 				writeNameClass(exp.getNameClass());
 			}
 			visitUnary(simplify(exp.contentModel));
-			end("element");
+			this.writer.end("element");
 		}
-		
+	
 		/**
 		 * remove unnecessary ReferenceExp from content model.
 		 * this will sometimes makes content model smaller.
@@ -705,440 +556,10 @@ public class RELAXNGWriter implements GrammarWriter {
 				}
 			});
 		}
-		
+	};
 	
-		public void onEpsilon() {
-			element("empty");
-		}
 	
-		public void onNullSet() {
-			element("notAllowed");
-		}
 	
-		public void onAnyString() {
-			element("text");
-		}
 	
-		public void onInterleave( InterleaveExp exp ) {
-			visitBinExp("interleave", exp, InterleaveExp.class );
-		}
 	
-		public void onConcur( ConcurExp exp ) {
-			throw new IllegalArgumentException("the grammar includes concur, which is not supported");
-		}
-	
-		public void onList( ListExp exp ) {
-			start("list");
-			visitUnary(exp.exp);
-			end("list");
-		}
-	
-		
-		protected void onOptional( Expression exp ) {
-			if( exp instanceof OneOrMoreExp ) {
-				// (X+)? == X*
-				onZeroOrMore((OneOrMoreExp)exp);
-				return;
-			}
-			start("optional");
-			visitUnary(exp);
-			end("optional");
-		}
-		
-		public void onChoice( ChoiceExp exp ) {
-			// use optional instead of <choice> p <empty/> </choice>
-			if( exp.exp1==Expression.epsilon ) {
-				onOptional(exp.exp2);
-				return;
-			}
-			if( exp.exp2==Expression.epsilon ) {
-				onOptional(exp.exp1);
-				return;
-			}
-			
-			visitBinExp("choice", exp, ChoiceExp.class );
-		}
-	
-		public void onSequence( SequenceExp exp ) {
-			visitBinExp("group", exp, SequenceExp.class );
-		}
-	
-		public void visitBinExp( String elementName, BinaryExp exp, Class type ) {
-			// since AGM is binarized,
-			// <choice> a b c </choice> is represented as
-			// <choice> a <choice> b c </choice></choice>
-			// this method print them as <choice> a b c </choice>
-			start(elementName);
-			Expression[] children = exp.getChildren();
-			for( int i=0; i<children.length; i++ )
-				children[i].visit(this);
-			end(elementName);
-		}
-	
-		public void onMixed( MixedExp exp ) {
-			start("mixed");
-			visitUnary(exp.exp);
-			end("mixed");
-		}
-	
-		public void onOneOrMore( OneOrMoreExp exp ) {
-			start("oneOrMore");
-			visitUnary(exp.exp);
-			end("oneOrMore");
-		}
-	
-		protected void onZeroOrMore( OneOrMoreExp exp ) {
-			// note that this method is not a member of TREXPatternVisitor.
-			start("zeroOrMore");
-			visitUnary(exp.exp);
-			end("zeroOrMore");
-		}
-	
-		public void onAttribute( AttributeExp exp ) {
-			if( exp.nameClass instanceof SimpleNameClass
-			&&  ((SimpleNameClass)exp.nameClass).namespaceURI.equals("") )
-				// we can use name attribute.
-				start("attribute", new String[]{"name",
-					((SimpleNameClass)exp.nameClass).localName} );
-			else {
-				start("attribute");
-				writeNameClass(exp.nameClass);
-			}
-			if( exp.exp != Expression.anyString )
-				// we can omit <anyString/> in the attribute.
-				visitUnary(exp.exp);
-			end("attribute");
-		}
-		
-		/**
-		 * print expression but surpress unnecessary sequence.
-		 */
-		public void visitUnary( Expression exp ) {
-			// TREX treats <zeroOrMore> p q </zeroOrMore>
-			// as <zeroOrMore><group> p q </group></zeroOrMore>
-			// This method tries to exploit this property to
-			// simplify the result.
-			if( exp instanceof SequenceExp ) {
-				SequenceExp seq = (SequenceExp)exp;
-				visitUnary(seq.exp1);
-				seq.exp2.visit(this);
-			}
-			else
-				exp.visit(this);
-		}
-		
-		public void onValue( ValueExp exp ) {
-			if( exp.dt instanceof XSDatatypeImpl ) {
-				XSDatatypeImpl base = (XSDatatypeImpl)exp.dt;
-					
-				final Vector ns = new Vector();
-						
-				String lex = base.convertToLexicalValue( exp.value, 
-				new SerializationContext() {
-					public String getNamespacePrefix( String namespaceURI ) {
-						int cnt = ns.size()/2;
-							ns.add( "xmlns:ns"+cnt );
-							ns.add( namespaceURI );
-						return "ns"+cnt;
-					}
-				});
-					
-				if( base!=TokenType.theInstance ) {
-					// if the type is token, we don't need @type.
-					ns.add("type");
-					ns.add(base.getName());
-				}
-					
-				start("value",(String[])ns.toArray(new String[0]));
-				characters(lex);
-				end("value");
-				return;
-			}
-			
-			throw new UnsupportedOperationException( exp.dt.getClass().getName() );
-		}
-		
-		public void onData( DataExp exp ) {
-			Datatype dt = exp.dt;
-			
-			if( dt instanceof XSDatatypeImpl ) {
-				XSDatatypeImpl dti = (XSDatatypeImpl)dt;
-					
-				if( isPredefinedType(dt) ) {
-					// it's a pre-defined types.
-					element( "data", new String[]{"type",dti.getName()} );
-				} else {
-					serializeDataType(dti);
-				}
-				return;
-			}
-			
-			throw new UnsupportedOperationException( dt.getClass().getName() );
-		}
-		
-		
-		/**
-		 * serializes the given datatype.
-		 * 
-		 * The caller should generate events for &lt;simpleType&gt; element
-		 * if necessary.
-		 */
-		protected void serializeDataType( XSDatatype dt ) {
-			
-			if( dt instanceof UnionType ) {
-				serializeUnionType((UnionType)dt);
-				return;
-			}
-			
-			
-			// store names of the applied facets into this set
-			Set appliedFacets = new HashSet();
-			
-			// store effective facets (those which are not shadowed by another facet).
-			Vector effectiveFacets = new Vector();
-			
-			XSDatatype x = dt;
-			while( x instanceof DataTypeWithFacet || x instanceof FinalComponent ) {
-				
-				if( x instanceof FinalComponent ) {
-					// skip FinalComponent
-					x = ((FinalComponent)x).baseType;
-					continue;
-				}
-				
-				String facetName = ((DataTypeWithFacet)x).facetName;
-				
-				if( facetName.equals(XSDatatypeImpl.FACET_ENUMERATION) ) {
-					// if it contains enumeration, then we will serialize this
-					// by using <value>s.
-					serializeEnumeration( (XSDatatypeImpl)dt, (EnumerationFacet)x );
-					return;
-				}
-				
-				if( facetName.equals(XSDatatypeImpl.FACET_WHITESPACE) ) {
-					throw new UnsupportedOperationException("whiteSpace facet is not supported");
-//					throw new Error("ws"); // ((WhiteSpaceFacet)x).whiteSpace);
-				}
-				
-				// find the same facet twice.
-				// pattern is allowed more than once.
-				if( !appliedFacets.contains(facetName)
-				||  appliedFacets.equals(XSDatatypeImpl.FACET_PATTERN) ) {
-				
-					appliedFacets.add(facetName);
-					effectiveFacets.add(x);
-				}
-				
-				x = ((DataTypeWithFacet)x).baseType;
-			}
-
-			if( x instanceof ListType ) {
-				// the base type is list.
-				serializeListType((XSDatatypeImpl)dt);
-				return;
-			}
-			
-			// it cannot be the union type. Union type cannot be derived by
-			// restriction.
-			
-			// so this must be one of the pre-defined types.
-			if(!(x instanceof ConcreteType ))	throw new Error(x.getClass().getName());
-			
-			if( x instanceof com.sun.msv.grammar.relax.EmptyStringType ) {
-				// empty token will do.
-				start("value");
-				end("value");
-				return;
-			}
-			if( x instanceof com.sun.msv.grammar.relax.NoneType ) {
-				// "none" is equal to <notAllowed/>
-				element("notAllowed");
-				return;
-			}
-			
-			// attributes to be added to this <data> element.
-			Vector dataAtts = new Vector();
-			
-			start("data",new String[]{"type",x.getName()});
-			
-			
-			// serialize effective facets
-			for( int i=effectiveFacets.size()-1; i>=0; i-- ) {
-				DataTypeWithFacet dtf = (DataTypeWithFacet)effectiveFacets.get(i);
-				
-				if( dtf instanceof LengthFacet ) {
-					param("length",
-						Long.toString(((LengthFacet)dtf).length));
-				} else
-				if( dtf instanceof MinLengthFacet ) {
-					param("minLength",
-						Long.toString(((MinLengthFacet)dtf).minLength));
-				} else
-				if( dtf instanceof MaxLengthFacet ) {
-					param("maxLength",
-						Long.toString(((MaxLengthFacet)dtf).maxLength));
-				} else
-				if( dtf instanceof PatternFacet ) {
-					String pattern = "";
-					PatternFacet pf = (PatternFacet)dtf;
-					for( int j=0; j<pf.exps.length; j++ ) {
-						if( pattern.length()!=0 )	pattern += "|";
-						pattern += pf.patterns[j];
-					}
-					param("pattern",pattern);
-				} else
-				if( dtf instanceof TotalDigitsFacet ) {
-					param("totalDigits",
-						Long.toString(((TotalDigitsFacet)dtf).precision));
-				} else
-				if( dtf instanceof FractionDigitsFacet ) {
-					param("fractionDigits",
-						Long.toString(((FractionDigitsFacet)dtf).scale));
-				} else
-				if( dtf instanceof RangeFacet ) {
-					param(dtf.facetName,
-						dtf.convertToLexicalValue(
-							((RangeFacet)dtf).limitValue, null ));
-					// we don't need to pass SerializationContext because it is only
-					// for QName.
-				} else
-				if( dtf instanceof WhiteSpaceFacet ) {
-					;	// do nothing.
-				} else
-					// undefined facet type
-					throw new Error();
-			}
-			
-			end("data");
-		}
-
-		protected void param( String name, String value ) {
-			start("param",new String[]{"name",name});
-			characters(value);
-			end("param");
-		}
-		
-		/**
-		 * returns true if the specified type is a pre-defined XSD type
-		 * without any facet.
-		 */
-		protected boolean isPredefinedType( Datatype x ) {
-			return !(x instanceof DataTypeWithFacet
-				|| x instanceof UnionType
-				|| x instanceof ListType
-				|| x instanceof FinalComponent
-				|| x instanceof com.sun.msv.grammar.relax.EmptyStringType
-				|| x instanceof com.sun.msv.grammar.relax.NoneType);
-		}
-		
-		/**
-		 * serializes a union type.
-		 * this method is called by serializeDataType method.
-		 */
-		protected void serializeUnionType( UnionType dt ) {
-			start("choice");
-			
-			// serialize member types.
-			for( int i=0; i<dt.memberTypes.length; i++ )
-				serializeDataType(dt.memberTypes[i]);
-			
-			end("choice");
-		}
-		
-		/**
-		 * serializes a list type.
-		 * this method is called by serializeDataType method.
-		 */
-		protected void serializeListType( XSDatatypeImpl dt ) {
-			
-			ListType base = (ListType)dt.getConcreteType();
-			
-			if( dt.getFacetObject(dt.FACET_LENGTH)!=null ) {
-				// with the length facet.
-				int len = ((LengthFacet)dt.getFacetObject(dt.FACET_LENGTH)).length;
-				start("list");
-				for( int i=0; i<len; i++ )
-					serializeDataType(base.itemType);
-				end("list");
-				
-				return;
-			}
-			
-			if( dt.getFacetObject(dt.FACET_MAXLENGTH)!=null )
-				throw new UnsupportedOperationException("warning: maxLength facet to list type is not properly converted.");
-
-			MinLengthFacet minLength = (MinLengthFacet)dt.getFacetObject(dt.FACET_MINLENGTH);
-			
-			start("list");
-			if( minLength!=null ) {
-				// list n times
-				for( int i=0; i<minLength.minLength; i++ )
-					serializeDataType(base.itemType);
-			}
-			start("zeroOrMore");
-			serializeDataType(base.itemType);
-			end("zeroOrMore");
-			end("list");
-		}
-
-		/**
-		 * serializes a type with enumeration.
-		 * this method is called by serializeDataType method.
-		 */
-		protected void serializeEnumeration( XSDatatypeImpl dt, EnumerationFacet enums ) {
-			
-			Object[] values = enums.values.toArray();
-			
-			if( values.length>1 )
-				start("choice");
-			
-			for( int i=0; i<values.length; i++ ) {
-				final Vector ns = new Vector();
-						
-				String lex = dt.convertToLexicalValue( values[i],
-					new SerializationContext() {
-						public String getNamespacePrefix( String namespaceURI ) {
-							int cnt = ns.size()/2;
-								ns.add( "xmlns:ns"+cnt );
-								ns.add( namespaceURI );
-							return "ns"+cnt;
-						}
-					} );
-				
-				// make sure that the converted lexical value is allowed by this type.
-				// sometimes, facets that are added later rejects some of
-				// enumeration values.
-				
-				boolean allowed = dt.isValid( lex, 
-					new ValidationContext(){
-						
-						public String resolveNamespacePrefix( String prefix ) {
-							if( !prefix.startsWith("ns") )	return null;
-							int i = Integer.parseInt(prefix.substring(2));
-							return (String)ns.get(i*2+1);
-						}
-						
-						public boolean isUnparsedEntity( String name ) {
-							return true;
-						}
-						public boolean isNotation( String name ) {
-							return true;
-						}
-						public String getBaseUri() { return null; }
-					});
-				
-				ns.add("type");
-				ns.add(dt.getConcreteType().getName() );
-				
-				if( allowed ) {
-					start("value", (String[])ns.toArray(new String[0]) );
-					characters(lex);
-					end("value");
-				}
-			}
-
-			if( values.length>1 )
-				end("choice");
-		}
-	}
 }

@@ -21,12 +21,12 @@ import org.xml.sax.SAXException;
 public interface GrammarWriter {
 	
 	/**
-	 * set DocumentHandler. This handler will receive the result of conversion.
+	 * Sets DocumentHandler. This handler will receive the result of conversion.
 	 */
 	void setDocumentHandler( DocumentHandler handler );
 	
 	/**
-	 * converts this grammar to the XML representation.
+	 * Converts this grammar to the XML representation.
 	 * 
 	 * @exception UnsupportedOperationException
 	 *		if this grammar cannot be serialized.

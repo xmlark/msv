@@ -30,35 +30,7 @@ public class DefineState extends com.sun.msv.reader.trex.DefineState {
 	protected Expression doCombine( ReferenceExp baseExp, Expression newExp, String combine ) {
 		
 		final RELAXNGReader reader = (RELAXNGReader)this.reader;
-		
-		
-		if( combine==null ) {
-			// this is a head declaration
-			if( reader.headRefExps.contains(baseExp) ) {
-				// two head declarations: an error.
-				reader.reportError( reader.ERR_COMBINE_MISSING, baseExp.name );
-				return baseExp.exp;
-			}
-			reader.headRefExps.add(baseExp);
-		}
-		
-		if( combine!=null ) {
-			// check the consistency of the combine method.
-			String prevCombine = (String)reader.combineMethodMap.get(baseExp);
-			
-			if( prevCombine==null )
-				reader.combineMethodMap.put(baseExp,combine);
-			else
-				if( !combine.equals(prevCombine) ) {
-					// different combine method.
-					reader.reportError( new Locator[]{location, reader.getDeclaredLocationOf(baseExp)},
-								reader.ERR_INCONSISTENT_COMBINE, new Object[]{baseExp.name} );
-					return baseExp.exp;
-				}
-		} else {
-			// get the combine method.
-			combine = (String)reader.combineMethodMap.get(baseExp);
-		}
+		RELAXNGReader.RefExpParseInfo info = reader.getRefExpParseInfo(baseExp);
 		
 		if( baseExp.exp!=null ) {
 			// make sure that the previous definition was in a different file.
@@ -71,15 +43,54 @@ public class DefineState extends com.sun.msv.reader.trex.DefineState {
 		}
 		
 		
+		if( combine==null ) {
+			// this is a head declaration
+			if( info.haveHead ) {
+				// two head declarations: an error.
+				reader.reportError( reader.ERR_COMBINE_MISSING, baseExp.name );
+				return baseExp.exp;
+			}
+			info.haveHead = true;
+		} else {
+			// check the consistency of the combine method.
+			
+			if( info.combineMethod==null ) {
+				// If this is the first time @combine is used for this pattern...
+				info.combineMethod = combine.trim();
+				// make sure that the value is ok.
+				if( !info.combineMethod.equals("choice")
+				&&	!info.combineMethod.equals("interleave") )
+					reader.reportError( reader.ERR_BAD_COMBINE, info.combineMethod );
+			} else {
+				if( !info.combineMethod.equals(combine) ) {
+					// different combine method.
+					reader.reportError( new Locator[]{location, reader.getDeclaredLocationOf(baseExp)},
+								reader.ERR_INCONSISTENT_COMBINE, new Object[]{baseExp.name} );
+					return baseExp.exp;
+				}
+			}
+		}
+			
 		if( baseExp.exp==null )	// the first definition
 			return newExp;
-		else
-		if( combine.equals("choice") )
+		
+		if( info.redefinition!=info.notBeingRedefined ) {
+			// ignore the new definition
+			// because this definition is currently being redefined by
+			// the caller.
+			
+			// the original definition was found.
+			info.redefinition = info.originalFound;
+			return baseExp.exp;
+		}
+		
+		if( info.combineMethod.equals("choice") )
 			return reader.pool.createChoice( baseExp.exp, newExp );
-		else
-		if( combine.equals("interleave") )
+		
+		if( info.combineMethod.equals("interleave") )
 			return reader.pool.createInterleave( baseExp.exp, newExp );
-		else
-			return null;
+		
+		// some kind of error.
+		return null;
 	}
 }

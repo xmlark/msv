@@ -9,10 +9,12 @@
  */
 package com.sun.msv.reader.trex.ng;
 
+import java.util.Set;
 import com.sun.msv.reader.ChildlessState;
 import com.sun.msv.reader.ExpressionOwner;
 import com.sun.msv.reader.State;
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -29,5 +31,50 @@ public class IncludeMergeState extends com.sun.msv.reader.trex.IncludeMergeState
 		return null;
 	}
 	
-	public void onEndChild( Expression child ) {}
+	/** set of ReferenceExps which are redefined by this inclusion. */
+	private final Set redefinedPatterns = new java.util.HashSet();
+	
+	// this class has to implement ExpressionOwner because
+	// <define> state requires this interface.
+	public void onEndChild( Expression child ) {
+		// if child <define> element has an error,
+		// then it may not return ReferenceExp.
+		if(!(child instanceof ReferenceExp))	return;
+		
+		redefinedPatterns.add(child);
+	}
+	
+	public void endSelf() {
+		final RELAXNGReader reader = (RELAXNGReader)this.reader;
+		
+		ReferenceExp[] patterns = (ReferenceExp[])redefinedPatterns.toArray(new ReferenceExp[0]);
+		RELAXNGReader.RefExpParseInfo[] old = new RELAXNGReader.RefExpParseInfo[patterns.length];
+		
+		// back-up the current values of RefExpParseInfo,
+		// and reset the values.
+		for( int i=0; i<patterns.length; i++ ) {
+			RELAXNGReader.RefExpParseInfo info = reader.getRefExpParseInfo(patterns[i]);
+			
+			old[i] = new RELAXNGReader.RefExpParseInfo();
+			old[i].set( info );
+			info.haveHead = false;
+			info.combineMethod = null;
+			info.redefinition = info.originalNotFoundYet;
+		}
+		
+		// process inclusion.
+		super.endSelf();
+		
+		// make sure that originals are found.
+		for( int i=0; i<patterns.length; i++ ) {
+			RELAXNGReader.RefExpParseInfo info = reader.getRefExpParseInfo(patterns[i]);
+			
+			if( info.redefinition==info.originalNotFoundYet )
+				// the original definition was not found.
+				reader.reportError( reader.ERR_REDEFINING_UNDEFINED, patterns[i].name );
+
+			// then restore the values.
+			reader.getRefExpParseInfo(patterns[i]).set( old[i] );
+		}
+	}
 }

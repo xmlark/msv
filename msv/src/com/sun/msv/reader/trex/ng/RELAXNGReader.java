@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
 import java.util.Map;
 import java.util.Stack;
 import java.util.Set;
+import java.util.Vector;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.InputSource;
@@ -101,16 +102,66 @@ public class RELAXNGReader extends TREXBaseReader {
 	 * 
 	 * This map is used to ensure that a named pattern is combined in the consistent way.
 	 */
-	protected final Map combineMethodMap = new java.util.HashMap();
+//	protected final Map combineMethodMap = new java.util.HashMap();
 	
 	/**
 	 * a set that contains all ReferenceExps that have their head declarations.
-	 * A head declaration is a define element without the combine attribute.
-	 * It is an error that two head declarations share the same name.
 	 * This set is used to detect this error.
 	 */
-	protected final Set headRefExps = new java.util.HashSet();
-
+//	protected final Set headRefExps = new java.util.HashSet();
+	
+	/**
+	 * patterns being redefined.
+	 */
+//	protected final Vector redefiningPatterns = new Vector();
+	
+	/** map from ReferenceExps to RefExpParseInfos. */
+	private final Map refExpParseInfos = new java.util.HashMap();
+	
+	/** gets RefExpParseInfo object for the specified ReferenceExp. */
+	protected RefExpParseInfo getRefExpParseInfo( ReferenceExp exp ) {
+		RefExpParseInfo r = (RefExpParseInfo)refExpParseInfos.get(exp);
+		if(r==null)
+			refExpParseInfos.put(exp, r = new RefExpParseInfo());
+		return r;
+	}
+	
+	/**
+	 * information necessary to correctly parse pattern definitions.
+	 */
+	protected static class RefExpParseInfo {
+		/**
+		 * this field is set to true once the head declaration is found.
+		 * A head declaration is a define element without the combine attribute.
+		 * It is an error that two head declarations share the same name.
+		 */
+		public boolean haveHead = false;
+		
+		/**
+		 * the combine method which is used to combine this pattern.
+		 * this field is set to null if combine attribute is not yet used.
+		 */
+		public String combineMethod;
+		
+		public static abstract class RedefinitionStatus {}
+		public static RedefinitionStatus notBeingRedefined = new RedefinitionStatus(){};
+		public static RedefinitionStatus originalNotFoundYet = new RedefinitionStatus(){};
+		public static RedefinitionStatus originalFound = new RedefinitionStatus(){};
+		
+		/**
+		 * current redefinition status.
+		 */
+		public RedefinitionStatus redefinition = notBeingRedefined;
+		
+		/**
+		 * copy the contents of rhs into this object.
+		 */
+		public void set( RefExpParseInfo rhs ) {
+			this.haveHead = rhs.haveHead;
+			this.combineMethod = rhs.combineMethod;
+			this.redefinition = rhs.redefinition;
+		}
+	}
 	
 	/** Namespace URI of RELAX NG */
 	public static final String RELAXNGNamespace = "http://relaxng.org/ns/structure/0.9";
@@ -130,7 +181,7 @@ public class RELAXNGReader extends TREXBaseReader {
 		public State value			( State parent, StartTagInfo tag ) { return new ValueState(); }
 		public State list			( State parent, StartTagInfo tag ) { return new ListState(); }
 		public State define			( State parent, StartTagInfo tag ) { return new DefineState(); }
-		public State redefine		( State parent, StartTagInfo tag ) { return new RedefineState(); }
+		public State redefine		( State parent, StartTagInfo tag ) { return new DefineState(); }
 		public State includeGrammar	( State parent, StartTagInfo tag ) { return new IncludeMergeState(); }
 		public State externalRef	( State parent, StartTagInfo tag ) { return new IncludePatternState(); }
 		

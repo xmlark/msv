@@ -15,6 +15,7 @@ import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.trex.TREXPatternPool;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.ReferenceExp;
+import java.util.Map;
 
 /**
  * XML Schema object.
@@ -130,4 +131,16 @@ public class XMLSchemaSchema {
 	/** map from attribute declaration name to AttributeDeclExp object */
 	public final GroupDeclContainer groupDecls = new GroupDeclContainer();
 	
+	
+	final public class IdentityConstraintContainer {
+		private final Map storage = new java.util.HashMap();
+		public IdentityConstraint get( String name ) {
+			return (IdentityConstraint)storage.get(name);
+		}
+		public void add( String name, IdentityConstraint idc ) {
+			storage.put(name,idc);
+		}
+	}
+	/** map from identity constraint name to IdentityConstraint object. */
+	public final IdentityConstraintContainer identityConstraints = new IdentityConstraintContainer();
 }

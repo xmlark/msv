@@ -32,7 +32,8 @@ import com.sun.msv.util.DataTypeRef;
 public class Verifier implements
 	ContentHandler,
 	DTDHandler,
-	IDContextProvider {
+	IDContextProvider,
+	IVerifier {
 	
 	protected Acceptor current;
 	
@@ -56,9 +57,11 @@ public class Verifier implements
 	
 	/** document Locator that is given by XML reader */
 	private Locator locator;
+	public final Locator getLocator() { return locator; }
 	
 	/** error handler */
 	protected VerificationErrorHandler errorHandler;
+	public final VerificationErrorHandler getVErrorHandler() { return errorHandler; }
 	
 	/** this flag will be set to true if an error is found */
 	private boolean hadError;
@@ -75,11 +78,6 @@ public class Verifier implements
 	 * the same object is reused. */
 	private final StartTagInfo sti = new StartTagInfo(null,null,null,null,null);
 	
-	/**
-	 * checks if the document was valid.
-	 * 
-	 * This method may not be called before verification was completed.
-	 */
 	public final boolean isValid() { return !hadError && isFinished; }
 	
 	/** Schema object against which the validation will be done */
@@ -105,21 +103,6 @@ public class Verifier implements
 	
 	/** this field is used to receive type information of character literals. */
 	private final DataTypeRef characterType = new DataTypeRef();
-	/**
-	 * gets DataType that validated the last characters.
-	 * 
-	 * <p>
-	 * This method works correctly only when called immediately
-	 * after startElement and endElement method. When called, this method
-	 * returns DataType object that validated the last character literals.
-	 * 
-	 * <p>
-	 * So when you are using VerifierFilter, you can call this method only
-	 * in your startElement and endElement method.
-	 * 
-	 * @return null
-	 *		if type-assignment was not possible.
-	 */
 	public DataType getLastCharacterType() { return characterType.type; }
 	
 	private void verifyText() throws SAXException {
@@ -266,27 +249,15 @@ public class Verifier implements
 		return vv;
 	}
 	
-	/**
-	 * returns current element type.
-	 * 
-	 * Actual java type depends on the implementation.
-	 * This method works correctly only when called immediately
-	 * after handling startElement event.
-	 * 
-	 * @return null
-	 *		this method returns null when it doesn't support
-	 *		type-assignment feature, or type-assignment is impossible
-	 *		for the current element (for example due to the ambiguous grammar).
-	 */
 	public Object getCurrentElementType() {
 		return current.getOwnerType();
 	}
 	
-	public void characters( char[] buf, int start, int len ) {
+	public void characters( char[] buf, int start, int len ) throws SAXException {
 		if( stringCareLevel!=Acceptor.STRING_IGNORE )
 			text.append(buf,start,len);
 	}
-	public void ignorableWhitespace( char[] buf, int start, int len ) {
+	public void ignorableWhitespace( char[] buf, int start, int len ) throws SAXException {
 		if( stringCareLevel!=Acceptor.STRING_IGNORE
 		&&  stringCareLevel!=Acceptor.STRING_PROHIBITED )
 			// white space is allowed even if the current mode is STRING_PROHIBITED.

@@ -21,6 +21,7 @@ import com.sun.msv.reader.dtd.DTDReader;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
 import com.sun.msv.relaxns.verifier.SchemaProviderImpl;
 import com.sun.msv.verifier.*;
+import com.sun.msv.verifier.identity.IDConstraintChecker;
 import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
 import com.sun.msv.verifier.util.VerificationErrorHandlerImpl;
 import org.iso_relax.dispatcher.Dispatcher;
@@ -126,9 +127,9 @@ public class Driver {
 			// other XML-based grammars: GrammarLoader will detect the language.
 		try {
 			if(dtdAsSchema) {
-				grammar = DTDReader.parse(is,new DebugController(warning),"",new TREXPatternPool());
+				grammar = DTDReader.parse(is,new DebugController(warning,false),"",new TREXPatternPool());
 			} else {
-				grammar = GrammarLoader.loadSchema(is,new DebugController(warning),factory);
+				grammar = GrammarLoader.loadSchema(is,new DebugController(warning,false),factory);
 			}
 		} catch(SAXParseException spe) {
 			; // this error is already reported.
@@ -169,6 +170,10 @@ public class Driver {
 			// use divide&validate framework to validate document
 			verifier = new RELAXNSVerifier( new SchemaProviderImpl((RELAXGrammar)grammar) );
 		else
+		if( grammar instanceof XMLSchemaGrammar )
+			// use verifier+identity constraint checker.
+			verifier = new XMLSchemaVerifier( new TREXDocumentDeclaration(grammar) );
+		else
 			// validate normally by using Verifier.
 			verifier = new SimpleVerifier( new TREXDocumentDeclaration(grammar) );
 		
@@ -177,7 +182,21 @@ public class Driver {
 			final String instName = (String)fileNames.elementAt(i);
 			System.out.println( localize( MSG_VALIDATING, instName) );
 			
-			if(verifier.verify(getInputSource(instName)))
+			boolean result=false;
+			
+			try {
+				result = verifier.verify(
+					factory.newSAXParser().getXMLReader(),
+					getInputSource(instName));
+			} catch( com.sun.msv.verifier.ValidationUnrecoverableException vv ) {
+				System.out.println(localize(MSG_BAILOUT));
+			} catch( SAXParseException se ) {
+				; // error is already reported by ErrorHandler
+			} catch( SAXException e ) {
+				  e.getException().printStackTrace();
+			}
+			
+			if(result)
 				System.out.println(localize(MSG_VALID));
 			else
 				System.out.println(localize(MSG_INVALID));
@@ -258,7 +277,7 @@ public class Driver {
 
 	/** acts as a function closure to validate a document. */
 	private interface DocumentVerifier {
-		boolean verify( InputSource instance ) throws Exception;
+		boolean verify( XMLReader p, InputSource instance ) throws Exception;
 	}
 	
 	/** validates a document by using divide &amp; validate framework. */
@@ -267,24 +286,14 @@ public class Driver {
 		
 		RELAXNSVerifier( SchemaProvider sp ) { this.sp=sp; }
 		
-		public boolean verify( InputSource instance ) throws Exception {
-			XMLReader p = factory.newSAXParser().getXMLReader();
+		public boolean verify( XMLReader p, InputSource instance ) throws Exception {
 			Dispatcher dispatcher = new DispatcherImpl(sp);
 			dispatcher.attachXMLReader(p);
 			ReportErrorHandler errorHandler = new ReportErrorHandler();
 			dispatcher.setErrorHandler( errorHandler );
 			
-			try {
-				p.parse(instance);
-				return !errorHandler.hadError;
-			} catch( com.sun.msv.verifier.ValidationUnrecoverableException vv ) {
-				System.out.println(localize(MSG_BAILOUT));
-			} catch( SAXParseException se ) {
-				; // error is already reported by ErrorHandler
-			} catch( SAXException e ) {
-				  e.getException().printStackTrace();
-			}
-			return false;
+			p.parse(instance);
+			return !errorHandler.hadError;
 		}
 	}
 	
@@ -293,9 +302,7 @@ public class Driver {
 		
 		SimpleVerifier( DocumentDeclaration docDecl ) { this.docDecl = docDecl; }
 
-		public boolean verify( InputSource instance ) throws Exception {
-			XMLReader p = factory.newSAXParser().getXMLReader();
-		
+		public boolean verify( XMLReader p, InputSource instance ) throws Exception {
 			ReportErrorHandler reh = new ReportErrorHandler();
 			Verifier v = new Verifier( docDecl, reh );
 		
@@ -303,21 +310,29 @@ public class Driver {
 			p.setContentHandler(v);
 			p.setErrorHandler(reh);
 		
-			try {
-				p.parse( instance );
-				return v.isValid();
-			} catch( com.sun.msv.verifier.ValidationUnrecoverableException vv ) {
-				System.out.println(localize(MSG_BAILOUT));
-			} catch( SAXParseException se ) {
-				; // error is already reported by ErrorHandler
-			} catch( SAXException e ) {
-				  e.getException().printStackTrace();
-			}
-			
-			return false;
+			p.parse( instance );
+			return v.isValid();
 		}
 	}
 
+	private static class XMLSchemaVerifier implements DocumentVerifier {
+		private final DocumentDeclaration docDecl;
+		
+		XMLSchemaVerifier( DocumentDeclaration docDecl ) { this.docDecl = docDecl; }
+
+		public boolean verify( XMLReader p, InputSource instance ) throws Exception {
+			ReportErrorHandler reh = new ReportErrorHandler();
+			Verifier v = new IDConstraintChecker( docDecl, reh );
+		
+			p.setDTDHandler(v);
+			p.setContentHandler(v);
+			p.setErrorHandler(reh);
+		
+			p.parse( instance );
+			return v.isValid();
+		}
+	}
+	
 	private static InputSource getInputSource( String fileOrURL ) {
 		try {
 			// try it as a file
@@ -361,6 +376,4 @@ public class Driver {
 	public static final String MSG_BAILOUT =			"Driver.BailOut";
 	public static final String MSG_FAILED_TO_IGNORE_EXTERNAL_DTD ="Driver.FailedToIgnoreExternalDTD";
 	public static final String MSG_WARNING_FOUND =		"Driver.WarningFound";
-//	public static final String MSG_SNIFF_SCHEMA =		"Driver.SniffSchema";
-//	public static final String MSG_UNKNOWN_SCHEMA =		"Driver.UnknownSchema";
 }

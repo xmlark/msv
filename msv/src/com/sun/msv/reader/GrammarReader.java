@@ -101,7 +101,8 @@ public abstract class GrammarReader
 	public NamespaceSupport namespaceSupport = new NamespaceSupport();
 	
 	/**
-	 * calls processName method of NamespaceSupport
+	 * calls processName method of NamespaceSupport.
+	 * Therefore this method returns null if it fails to process QName.
 	 */
 	public final String[] splitQName( String qName ) {
 		return namespaceSupport.processName(qName, new String[3], false );
@@ -374,17 +375,11 @@ public abstract class GrammarReader
 	 */
 	private final Map declaredLocations = new java.util.HashMap();
 	
-	public void setDeclaredLocationOf( ReferenceExp exp ) {
-		declaredLocations.put(exp, new LocatorImpl(locator) );
+	public void setDeclaredLocationOf( Object o ) {
+		declaredLocations.put(o, new LocatorImpl(locator) );
 	}
-	public void setDeclaredLocationOf( DataType dt ) {
-		declaredLocations.put(dt, new LocatorImpl(locator) );
-	}
-	public Locator getDeclaredLocationOf( ReferenceExp exp ) {
-		return (Locator)declaredLocations.get(exp);
-	}
-	public Locator getDeclaredLocationOf( DataType dt ) {
-		return (Locator)declaredLocations.get(dt);
+	public Locator getDeclaredLocationOf( Object o ) {
+		return (Locator)declaredLocations.get(o);
 	}
 
 	/**

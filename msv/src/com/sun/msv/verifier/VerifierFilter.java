@@ -9,6 +9,7 @@
  */
 package com.sun.msv.verifier;
 
+import com.sun.msv.datatype.DataType;
 import org.xml.sax.helpers.XMLFilterImpl;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -23,81 +24,89 @@ import org.xml.sax.Locator;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class VerifierFilter extends XMLFilterImpl
-{
-	private final Verifier verifier;
+public class VerifierFilter extends XMLFilterImpl implements IVerifier {
+	
+	private final IVerifier verifier;
 
-	public VerifierFilter( DocumentDeclaration documentDecl, VerificationErrorHandler errorHandler )
-	{
-		verifier = new Verifier(documentDecl,errorHandler);
+	public VerifierFilter( IVerifier verifier ) {
+		this.verifier = verifier;
 	}
 	
-	public boolean isValid() { return verifier.isValid(); }
-
-	public Verifier getVerifier() { return verifier; }
+	public VerifierFilter( DocumentDeclaration documentDecl,
+							VerificationErrorHandler errorHandler ) {
+		this( new Verifier(documentDecl,errorHandler) );
+	}
 	
-    public void setDocumentLocator(Locator locator)
-	{
+	public boolean isValid() {
+		return verifier.isValid();
+	}
+	public Object getCurrentElementType() {
+		return verifier.getCurrentElementType();
+	}
+	public DataType getLastCharacterType() {
+		return verifier.getLastCharacterType();
+	}
+	public final Locator getLocator() {
+		return verifier.getLocator();
+	}
+	public final VerificationErrorHandler getVErrorHandler() {
+		return verifier.getVErrorHandler();
+	}
+
+	
+	public IVerifier getVerifier() { return verifier; }
+	
+    public void setDocumentLocator(Locator locator) {
 		verifier.setDocumentLocator(locator);
 		super.setDocumentLocator(locator);
     }
 
-    public void startDocument() throws SAXException
-	{
+    public void startDocument() throws SAXException {
 		verifier.startDocument();
 		super.startDocument();
     }
 
-    public void endDocument() throws SAXException
-	{
+    public void endDocument() throws SAXException {
 		verifier.endDocument();
 		super.endDocument();
     }
 
-    public void startPrefixMapping( String prefix, String uri ) throws SAXException
-	{
+    public void startPrefixMapping( String prefix, String uri ) throws SAXException {
 		verifier.startPrefixMapping(prefix, uri);
 		super.startPrefixMapping(prefix, uri);
     }
 
-    public void endPrefixMapping(String prefix) throws SAXException
-	{
+    public void endPrefixMapping(String prefix) throws SAXException {
 		verifier.endPrefixMapping(prefix);
 		super.endPrefixMapping(prefix);
     }
 
-    public void startElement( String namespaceURI, String localName, String qName, Attributes atts ) throws SAXException
-	{
+    public void startElement( String namespaceURI, String localName, String qName, Attributes atts ) throws SAXException {
 		verifier.startElement(namespaceURI, localName, qName, atts);
 		super.startElement(namespaceURI, localName, qName, atts);
     }
 
-    public void endElement(	String namespaceURI, String localName, String qName ) throws SAXException
-	{
+    public void endElement(	String namespaceURI, String localName, String qName ) throws SAXException {
 		verifier.endElement(namespaceURI, localName, qName);
 		super.endElement(namespaceURI, localName, qName);
     }
 
-    public void characters( char ch[], int start, int length ) throws SAXException
-	{
+    public void characters( char ch[], int start, int length ) throws SAXException {
 		verifier.characters(ch, start, length);
 		super.characters(ch, start, length);
     }
 
-    public void ignorableWhitespace( char ch[], int start, int length ) throws SAXException
-	{
+    public void ignorableWhitespace( char ch[], int start, int length ) throws SAXException {
 		verifier.ignorableWhitespace(ch, start, length);
 		super.ignorableWhitespace(ch, start, length);
     }
 
-    public void processingInstruction(String target, String data) throws SAXException
-	{
+    public void processingInstruction(String target, String data) throws SAXException {
 		verifier.processingInstruction(target, data);
 		super.processingInstruction(target, data);
     }
 
-    public void skippedEntity(String name) throws SAXException
-	{
+    public void skippedEntity(String name) throws SAXException {
 		verifier.skippedEntity(name);
 		super.skippedEntity(name);
     }

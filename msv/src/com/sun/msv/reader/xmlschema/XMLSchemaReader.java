@@ -53,6 +53,32 @@ import org.xml.sax.InputSource;
  */
 public class XMLSchemaReader extends GrammarReader {
 	
+	/** loads XML Schema */
+	public static XMLSchemaGrammar parse( String grammarURL,
+		SAXParserFactory factory, GrammarReaderController controller ) {
+		
+		XMLSchemaReader reader = new XMLSchemaReader(controller,factory);
+		reader.parse(grammarURL);
+		
+		return reader.getResult();
+	}
+	
+	/** loads XML Schema */
+	public static XMLSchemaGrammar parse( InputSource grammar,
+		SAXParserFactory factory, GrammarReaderController controller ) {
+		
+		XMLSchemaReader reader = new XMLSchemaReader(controller,factory);
+		reader.parse(grammar);
+		
+		return reader.getResult();
+	}
+	
+	public XMLSchemaReader(
+		GrammarReaderController controller,
+		SAXParserFactory parserFactory ) {
+		this( controller, parserFactory, new StateFactory(), new TREXPatternPool() );
+	}
+	
 	public XMLSchemaReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
@@ -75,7 +101,7 @@ public class XMLSchemaReader extends GrammarReader {
 		// because createSequence are right-associative and any attempt to extend
 		// this sequence will end up creating new SequenceExps.
 		// It's also good for writer: it can generate more compact XML representation.
-		ReferenceExp exp = new ReferenceExp("XMLSchema-schemaLocation");
+		ReferenceExp exp = new ReferenceExp( XMLSchemaSchemaLocationAttributes );
 		xsiSchemaLocationExp = exp;
 		exp.exp =
 			pool.createSequence(
@@ -118,7 +144,10 @@ public class XMLSchemaReader extends GrammarReader {
 	 * optional xsi:schemaLocation or xsi:noNamespaceSchemaLocation.
 	 */
 	public final Expression xsiSchemaLocationExp;
-	
+
+	public final static String XMLSchemaSchemaLocationAttributes = 
+		"$$internal$$ - XML schema SchemaLocation attributes";
+		
 	/**
 	 * expression that matches to "ur-type" when used as a complex type.
 	 */
@@ -203,6 +232,10 @@ public class XMLSchemaReader extends GrammarReader {
 		protected State redefine			(State parent,StartTagInfo tag)	{ return new RedefineState(); }
 		protected State notation			(State parent,StartTagInfo tag)	{ return new IgnoreState(); }
 		protected State facets				(State parent,StartTagInfo tag)	{ return new FacetState(); }
+
+		protected State unique				(State parent,StartTagInfo tag)	{ return new IdentityConstraintState(); }
+		protected State key					(State parent,StartTagInfo tag)	{ return new IdentityConstraintState(); }
+		protected State keyref				(State parent,StartTagInfo tag)	{ return new IdentityConstraintState(); }
 		
 		protected State complexContent		(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new ComplexContentState(decl); }
 		// complexContent/restriction
@@ -664,6 +697,16 @@ public class XMLSchemaReader extends GrammarReader {
 		"XMLSchemaReader.DuplicateGroupDefinition";
 	public static final String ERR_DUPLICATE_ELEMENT_DEFINITION = // arg:1
 		"XMLSchemaReader.DuplicateElementDefinition";
+	public static final String ERR_DUPLICATE_IDENTITY_CONSTRAINT_DEFINITION = // arg:1
+		"XMLSchemaReader.DuplicateIdentityConstraintDefinition";
+	public static final String ERR_BAD_XPATH = // arg:1
+		"XMLSchemaReader.BadXPath";
+	public static final String ERR_UNDEFINED_KEY = // arg:1
+		"XMLSchemaReader.UndefinedKey";
+	public static final String ERR_KEY_FIELD_NUMBER_MISMATCH = // arg:2
+		"XMLSchemaReader.KeyFieldNumberMismatch";
+	public static final String ERR_KEYREF_REFERRING_NON_KEY = // arg:1
+		"XMLSchemaReader.KeyrefReferringNonKey";
 	public static final String WRN_IMPLICIT_URTYPE_FOR_ELEMENT = // arg:0
 		"XMLSchemaReader.Warning.ImplicitUrTypeForElement";
 	public static final String WRN_IMPLICIT_URTYPE_FOR_COMPLEXTYPE = // arg:0

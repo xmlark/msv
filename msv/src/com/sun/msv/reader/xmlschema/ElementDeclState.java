@@ -19,12 +19,14 @@ import com.sun.msv.grammar.trex.ElementPattern;
 import com.sun.msv.grammar.xmlschema.ElementDeclExp;
 import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
+import com.sun.msv.grammar.xmlschema.IdentityConstraint;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.ExpressionWithChildState;
 import org.xml.sax.Locator;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * used to parse &lt;element &gt; element without ref attribute.
@@ -45,9 +47,9 @@ public class ElementDeclState extends ExpressionWithChildState {
 			if( tag.localName.equals("complexType") )	return reader.sfactory.complexTypeDecl(this,tag);
 		}
 		// unique/key/keyref are ignored.
-		if( tag.localName.equals("unique") )	return new IgnoreState();
-		if( tag.localName.equals("key") )		return new IgnoreState();
-		if( tag.localName.equals("keyref") )	return new IgnoreState();
+		if( tag.localName.equals("unique") )	return reader.sfactory.unique(this,tag);
+		if( tag.localName.equals("key") )		return reader.sfactory.key(this,tag);
+		if( tag.localName.equals("keyref") )	return reader.sfactory.keyref(this,tag);
 		
 		return null;
 	}
@@ -181,9 +183,11 @@ public class ElementDeclState extends ExpressionWithChildState {
 		// allow xsi:schemaLocation and xsi:noNamespaceSchemaLocation
 		contentType = reader.pool.createSequence( reader.xsiSchemaLocationExp, contentType );
 		
-		ElementPattern exp = new ElementPattern(
+		ElementDeclExp.XSElementExp exp = new ElementDeclExp.XSElementExp(
 			new SimpleNameClass(targetNamespace,name), contentType );
 		
+		// set identity constraints
+		exp.identityConstraints.addAll(idcs);
 		
 		if( !isGlobal() )
 			// minOccurs/maxOccurs is processed through interception
@@ -238,5 +242,15 @@ public class ElementDeclState extends ExpressionWithChildState {
 
 	protected boolean isGlobal() {
 		return parentState instanceof GlobalDeclState;
+	}
+
+	
+	/** identity constraints found in this element. */
+	protected final Vector idcs = new Vector();
+		
+	/** this method is called when an identity constraint declaration is found.
+	 */
+	protected void onIdentityConstraint( IdentityConstraint idc ) {
+		idcs.add(idc);
 	}
 }

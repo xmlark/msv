@@ -11,7 +11,7 @@ package com.sun.msv.verifier;
 
 import java.util.Collection;
 import java.util.List;
-import com.sun.msv.datatype.ValidationContextProvider;
+import com.sun.msv.grammar.IDContextProvider;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
 import com.sun.msv.util.DataTypeRef;
@@ -61,7 +61,7 @@ public interface Acceptor
 	 * @return false
 	 *		if the literal at this position is not allowed.
 	 */
-	boolean stepForward( String literal, ValidationContextProvider context, StringRef refErr, DataTypeRef refType );
+	boolean stepForward( String literal, IDContextProvider context, StringRef refErr, DataTypeRef refType );
 	
 	/** eats a child element
 	 * 

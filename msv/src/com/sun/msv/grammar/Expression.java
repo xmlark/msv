@@ -9,9 +9,6 @@
  */
 package com.sun.msv.grammar;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-
 import com.sun.msv.grammar.util.RefExpRemover;
 
 /**

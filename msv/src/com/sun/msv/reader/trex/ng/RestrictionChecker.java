@@ -12,6 +12,7 @@ package com.sun.msv.reader.trex.ng;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
 import com.sun.msv.grammar.util.NameClassCollisionChecker;
+import com.sun.msv.grammar.util.NameClassSimplifier;
 import org.xml.sax.Locator;
 import java.util.Vector;
 
@@ -492,12 +493,18 @@ public class RestrictionChecker {
 			
 			if(checker.check( newExp.getNameClass(), oldExp.getNameClass() )) {
 				// two attributes/elements collide
+                
+                NameClass intersection = NameClass.intersection(
+                    newExp.getNameClass(), oldExp.getNameClass() );
+                    
+                
 				reader.reportError( 
 					new Locator[]{
 						reader.getDeclaredLocationOf(errorContext),	// the parent element
 						reader.getDeclaredLocationOf(newExp),
 						reader.getDeclaredLocationOf(oldExp)},
-					getErrorMessage(), null );
+					getErrorMessage(),
+                    new Object[]{intersection.toString()} );
 			}
 		}
 		

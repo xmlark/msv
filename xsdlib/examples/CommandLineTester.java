@@ -90,7 +90,7 @@ public class CommandLineTester
                     
 					// a type can be derived by derive method.
 					// the new type contains all facets that were added.
-					XSDatatype dt = incubator.derive("anonymous");
+					XSDatatype dt = incubator.derive("","anonymous");
 					
 					// check validity.
 					if( dt.isValid(value,null) )

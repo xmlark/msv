@@ -101,6 +101,42 @@ public class BigDateTimeValueType implements IDateTimeValueType
 	}
 	
 	
+	/** gets a human-readable representation of this object.
+	 *
+	 * return value is not intended to be compliant with the canonical representation
+	 * of "dateTime" type.
+	 */
+	public String toString()
+	{
+		StringBuffer r = new StringBuffer();
+		
+		if( year!=null )	r.append(year);
+		r.append('-');
+		if( month!=null )	r.append(month.intValue()+1);
+		r.append('-');
+		if( day!=null )		r.append(day.intValue()+1);
+		r.append('T');
+		if( hour!=null )	r.append(hour);
+		r.append(':');
+		if( minute!=null )	r.append(minute);
+		r.append(':');
+		if( second!=null )	r.append(second);
+		
+		if( zone!=null )
+		{
+			if( zone.minutes==0 )	r.append('Z');
+			else
+			{
+				if( zone.minutes<0 )	r.append('-');
+				else					r.append('+');
+				r.append(Math.abs(zone.minutes/60));
+				r.append(Math.abs(zone.minutes%60));
+			}
+		}
+		
+		return new String(r);
+	}
+	
 	public int hashCode()
 	{
 		// to be consistent with equals method, we have to normalize
@@ -317,7 +353,7 @@ public class BigDateTimeValueType implements IDateTimeValueType
 		s.add(o1);
 		System.out.println( s.contains(o2) );
 	}
-*/
+
 	public static void main( String[] args )
 	{
 		Object o1 = new BigDateTimeValueType( new BigInteger("1512"), new Integer(1), new Integer(4), null, null, null, TimeZone.create(-12*60) );
@@ -328,4 +364,6 @@ public class BigDateTimeValueType implements IDateTimeValueType
 		System.out.println(o1.equals(o2));
 		System.out.println(o2.equals(o1));
 	}
+ */
 }
+

@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Grammar;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringPair;
 import com.sun.msv.util.StringRef;
@@ -66,9 +67,12 @@ public class TypeDetecter extends AbstractVerifier {
 	
 	protected TypedContentHandler handler;
 	
+	public TypeDetecter( Grammar grammar ) {
+		this.docDecl = new REDocumentDeclaration(grammar);
+	}
+	
 	public TypeDetecter( REDocumentDeclaration documentDecl ) {
 		this.docDecl = documentDecl;
-		this.handler = handler;
 	}
 	
 	public TypeDetecter( REDocumentDeclaration documentDecl, TypedContentHandler handler ) {

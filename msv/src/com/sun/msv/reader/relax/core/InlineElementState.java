@@ -77,7 +77,7 @@ public class InlineElementState extends ExpressionState implements FacetStatePar
 
 			if( incubator!=null ) {
 				// @type is used
-				if( startTag.getAttribute("type").equals("string") && incubator.isEmpty() ) {
+				if( "string".equals(startTag.getAttribute("type")) && incubator.isEmpty() ) {
 					// we can use cheaper anyString
 					contentModel = Expression.anyString;
 				} else {

@@ -17,6 +17,7 @@ import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.grammar.trex.TypedString;
 import com.sun.msv.grammar.xmlschema.AttributeDeclExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
+import com.sun.msv.grammar.relax.NoneType;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringPair;
 import com.sun.msv.reader.State;
@@ -87,6 +88,7 @@ public class AttributeState extends ExpressionWithChildState {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		final String fixed = startTag.getAttribute("fixed");
 		final String name = startTag.getAttribute("name");
+		final String use = startTag.getAttribute("use");
 
 
 		Expression exp;
@@ -114,7 +116,11 @@ public class AttributeState extends ExpressionWithChildState {
 				contentType = reader.pool.createTypedString(
 					new TypedString(fixed,false),
 					new StringPair("$xsd","fixed") );
-		
+			
+			if( "prohibited".equals(use) )
+				// use='prohibited' is implemented through NoneType
+				contentType = reader.pool.createTypedString( NoneType.theInstance );
+			
 			exp = reader.pool.createAttribute(
 				new SimpleNameClass( targetNamespace, name ),
 				contentType );
@@ -143,12 +149,7 @@ public class AttributeState extends ExpressionWithChildState {
 		} else {
 			// handle @use
 			
-			String use = startTag.getAttribute("use");
-			if( "prohibited".equals(use) )
-				// in case of 'prohibit', the declaraion is simply ignored.
-				return Expression.epsilon;
-		
-			if( "optional".equals(use) || use==null )
+			if( "optional".equals(use) || use==null || "prohibited".equals(use) )
 				exp = reader.pool.createOptional(exp);
 			else
 			if( !"required".equals(use) )

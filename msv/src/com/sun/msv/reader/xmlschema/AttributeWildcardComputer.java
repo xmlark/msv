@@ -1,3 +1,12 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.msv.reader.xmlschema;
 
 import com.sun.msv.grammar.*;
@@ -6,6 +15,47 @@ import com.sun.msv.grammar.util.ExpressionWalker;
 import java.util.Set;
 import java.util.HashSet;
 
+/**
+ * Processes the attribtue wildcard according to the spec.
+ * 
+ * <p>
+ * Since the definition of the attribute wildcard is very adhoc,
+ * it cannot be naturally caputred by our AGM.
+ * 
+ * <p>
+ * Therefore, when we parse a schema, we just parse &lt;anyAttribute> directly.
+ * After all components are loaded, arcane computation is done to correctly
+ * compute the attribute wildcard.
+ * 
+ * <p>
+ * Attribute wildcard will be ultimately converted into an expression, and that
+ * will be attached to the {@link ComplexTypeExp#attWildcard}.
+ * 
+ * <p>
+ * This class also computes the attribute propagation that happens
+ * only when a complex type is derived by restriction.
+ * 
+ * Consider the following fragment:
+ * 
+ * <pre><xmp>
+ * <complexType name="base">
+ *   <attribute name="abc" ... />
+ * </complexType>
+ * 
+ * <complexType name="derived">
+ *   <complexContent>
+ *     <restriction base="base"/>
+ *   </complexContent>
+ * </complexType>
+ * </xmp></pre>
+ * 
+ * <p>
+ * According to the spec, the derived type will have the 'abc' attribute.
+ * By "propagation", we mean this behavior.
+ * 
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class AttributeWildcardComputer extends ExpressionWalker {
 	
 	public AttributeWildcardComputer( XMLSchemaReader _reader ) {
@@ -74,6 +124,8 @@ public class AttributeWildcardComputer extends ExpressionWalker {
 							cexp.wildcard = calcComplexTypeWildcard(
 								cexp.wildcard,
 								cexp.complexBaseType.wildcard );
+						
+						propagateAttributes(cexp);
 					}
 					
 					// create the expression for this complex type.
@@ -137,5 +189,68 @@ public class AttributeWildcardComputer extends ExpressionWalker {
 			// this is my guess.
 			return complete;
 		}
+	}
+	
+	/**
+	 * Computes the propagated attributes.
+	 */
+	private void propagateAttributes( final ComplexTypeExp cexp ) {
+		// propagation will be done only if this type is derived from
+		// another complex type by restriction.
+		if(cexp.derivationMethod!=cexp.RESTRICTION || cexp.complexBaseType==null)
+			return;
+
+		// strangely, this computation does not apply if the base type is
+		// complex ur-type.
+		if( cexp.complexBaseType==reader.complexUrType )
+			return;
+		
+		final Set explicitAtts = new HashSet();
+		
+		// visit the derived type and enumerate explicitly declared attributes in it.
+		cexp.body.visit( new ExpressionWalker() {
+			// stop if we hit an ElementExp.
+			public void onElement( ElementExp exp ) {}
+			public void onAttribute( AttributeExp exp ) {
+				if(!(exp.nameClass instanceof SimpleNameClass))
+					// attribute uses must have a simple name.
+					throw new Error(exp.nameClass.toString());
+				
+				explicitAtts.add( ((SimpleNameClass)exp.nameClass).toStringPair() );
+			}
+		});
+		
+		
+		// visit the base type and enumerate all attributes in it.
+		cexp.complexBaseType.body.visit( new ExpressionWalker() {
+			
+			private boolean isOptional = false;
+			
+			public void onChoice( ChoiceExp exp ) {
+				boolean b = isOptional;
+				isOptional = true;
+				super.onChoice(exp);
+				isOptional = b;
+			}
+			
+			// stop if we hit an ElementExp.
+			public void onElement( ElementExp exp ) {}
+			public void onAttribute( AttributeExp exp ) {
+				// found an attribute
+				if(!(exp.nameClass instanceof SimpleNameClass))
+					throw new Error();	// attribute uses must have a simple name.
+				
+				SimpleNameClass snc = (SimpleNameClass)exp.nameClass;
+				
+				// see if the dervied type has a definition that
+				// overrides this attribute.
+				if( !explicitAtts.contains(snc.toStringPair()) ) {
+					// this attribute is not defined. copy it.
+					cexp.body.exp = reader.pool.createSequence(
+						cexp.body.exp,
+						isOptional?reader.pool.createOptional(exp):exp );
+				}
+			}
+		});
 	}
 }

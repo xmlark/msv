@@ -1,3 +1,12 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.tranquilo.generator;
 
 import com.sun.tranquilo.grammar.*;
@@ -7,7 +16,13 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * removes all ReferenceExp from AGM
+ * removes all ReferenceExp from AGM.
+ * 
+ * when named expression is nullSet, it cannot be used.
+ * by replacing ReferenceExp by its definition, those unavailable expressions
+ * will be properly removed from AGM.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RefExpRemover
 	extends ExpressionCloner

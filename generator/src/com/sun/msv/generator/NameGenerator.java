@@ -1,3 +1,12 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.tranquilo.generator;
 
 import com.sun.tranquilo.grammar.*;
@@ -8,6 +17,11 @@ import java.util.Vector;
 import java.util.Stack;
 import java.util.Random;
 
+/**
+ * generates a namespaceURI/localName pair that satisfies given {@link NameClass}
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class NameGenerator implements TREXNameClassVisitor
 {
 	private final Random random;

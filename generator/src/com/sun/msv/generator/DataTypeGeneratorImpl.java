@@ -1,3 +1,12 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.tranquilo.generator;
 
 import com.sun.tranquilo.datatype.*;
@@ -5,6 +14,14 @@ import java.util.Random;
 import com.sun.xml.util.XmlChars;
 import com.sun.tranquilo.datatype.XmlNames;
 
+/**
+ * default implementation of DataTypeGenerator.
+ * 
+ * You may want to override this class to implement custom generator for
+ * unimplemented datatype or datatype local to your schema.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class DataTypeGeneratorImpl implements DataTypeGenerator
 {
 	private final Random random;

@@ -1,3 +1,12 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.tranquilo.generator;
 
 import com.sun.tranquilo.grammar.*;
@@ -7,6 +16,11 @@ import java.util.Set;
 
 /**
  * removes "none" type of RELAX from AGM.
+ * 
+ * "none" type is harmful for instance generation. This visitor changes
+ * "none" type to nullSet.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NoneTypeRemover
 	extends ExpressionCloner

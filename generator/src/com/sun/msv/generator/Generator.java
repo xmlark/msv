@@ -1,3 +1,12 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.tranquilo.generator;
 
 import org.w3c.dom.*;
@@ -9,6 +18,11 @@ import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.util.StringPair;
 import java.util.*;
 
+/**
+ * generates an XML DOM instance that conforms to the given schema.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class Generator implements TREXPatternVisitorVoid
 {
 	/** generation parameters */

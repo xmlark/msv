@@ -24,6 +24,17 @@ PARSER_END(UriReferenceParser)
 /*
 	a Uniform Resource Identifier (URI) Reference as defined in
 	Section 4 of [RFC 2396], as amended by [RFC 2732]. 
+	
+	RFC2373, which is included by RFC2732, has an error in BNF.
+	This version avoids this error by modifying IPv6address as follows.
+	
+	<#IPv6address	: <hexpart> ( ":" <IPv4address> )? | "::" <IPv4address>  >
+
+	The original was
+
+	<#IPv6address	: <hexpart> ( ":" <IPv4address> )? >
+	
+	But this cannot accept "::13.1.68.3"
 */
 TOKEN :
 {
@@ -39,7 +50,7 @@ TOKEN :
 |
 	<#hex			: <digit> | ["a"-"f","A"-"F"] >
 |
-	<escaped		: "%" <hex> <hex> >
+	<#escaped		: "%" <hex> <hex> >
 |
 	<#mark			: "-" | "_" | "." | "!" | "~" | "*" | "'" | "(" | ")" >
 |
@@ -61,7 +72,7 @@ TOKEN :
 |
 	<#path_segments	: <segment> ( "/" <segment> )* >
 |
-	<#path			: <abs_path> | <opaque_part> >
+	<#path			: (<abs_path> | <opaque_part>)? >
 |
 	<#port			: (<digit>)* >
 |
@@ -75,7 +86,7 @@ TOKEN :
 |
 	<#hexpart		: <hexseq> | <hexseq> "::" (<hexseq>)? | "::" (<hexseq>)? >
 |
-	<#IPv6address	: <hexpart> ( ":" <IPv4address> )? >
+	<#IPv6address	: <hexpart> ( ":" <IPv4address> )? | "::" <IPv4address>  >
 |
 	<#IPv6reference	: "[" <IPv6address> "]" >
 |
@@ -87,7 +98,7 @@ TOKEN :
 |
 	<#host			: <hostname> | <IPv4address> | <IPv6reference> >
 |
-	<#hostport		: <host> [":"] <port> >
+	<#hostport		: <host> (":" <port>)? >
 |
 	<#userinfo		: ( <unreserved> | <escaped> | ";" | ":" | "&" | "=" | "+" | "$" | "," )* >
 |
@@ -117,7 +128,7 @@ TOKEN :
 |
 	<#absoluteURI	: <scheme> ":" ( <hier_part> | <opaque_part> ) >
 |
-	<uriReference	: ( <absoluteURI> | <relativeURI> ) ( "#" <fragment> )? >
+	<uriReference	: ( <absoluteURI> | <relativeURI> )? ( "#" <fragment> )? >
 }
 
 void start() : {}

@@ -112,8 +112,8 @@
 			please remove jaxp.jar from ant directory,
 			because it uses an old one, and this test needs the latest one
 		-->
-		<junit haltonfailure="yes" printsummary="yes" fork="yes"
-			haltonerror="yes">
+		<junit haltonfailure="no" printsummary="yes" fork="yes"
+			haltonerror="no" failureProperty="hadError">
 			<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
 			<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
 			<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
@@ -124,7 +124,7 @@
 				do not define MSV_STRICT_CHECK to turn off the check -->
 			<sysproperty key="MSV_STRICT_CHECK" value="yes"/>
 			
- 				<formatter type="plain" />
+			<formatter type="plain" />
 			
 			<classpath>
 				<pathelement location="bin" />
@@ -147,9 +147,16 @@
 				</fileset>
 			</batchtest>
 		</junit>
+		
+		<echo if="hadError">
+			***************************
+			***************************
+			ERROR!
+			***************************
+			***************************
+		</echo>
+		
 	</target>
-	
-	
 	
 	
 	

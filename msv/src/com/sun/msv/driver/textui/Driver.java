@@ -333,7 +333,7 @@ public class Driver {
 		}
 	}
 	
-	private static InputSource getInputSource( String fileOrURL ) {
+	public static InputSource getInputSource( String fileOrURL ) {
 		try {
 			// try it as a file
 			String path = new File(fileOrURL).getAbsolutePath();

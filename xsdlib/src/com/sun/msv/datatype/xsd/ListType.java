@@ -86,11 +86,11 @@ public final class ListType extends ConcreteType implements Discrete {
 	}
 	
 	public final int isFacetApplicable( String facetName ) {
-		// pattern facet is not appliable
 		if( facetName.equals(FACET_LENGTH)
 		||	facetName.equals(FACET_MINLENGTH)
 		||	facetName.equals(FACET_MAXLENGTH)
-		||	facetName.equals(FACET_ENUMERATION) )
+		||	facetName.equals(FACET_ENUMERATION)
+        ||  facetName.equals(FACET_PATTERN))
 			return APPLICABLE;
 		else
 			return NOT_ALLOWED;

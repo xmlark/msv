@@ -215,11 +215,11 @@ int NN( int min, int max ) : { Token v; }
 
 	something like "-05:00" or "+09:00"
 */
-void timeZoneModifierL() : { int h,m; }
+void timeZoneModifierL() : { int h,m=0; }
 {
 	"Z"
 |
-	("+"|"-") h=NN(0,14) ":" m=NN(0,59)
+	("+"|"-") h=NN(0,14) [":" m=NN(0,59)]
 	{
 		if(h==14 && m!=0)	throw new ParseException();
 	}

@@ -55,9 +55,13 @@
  * <http://www.apache.org/>.
  */
 
-package org.apache.xerces.impl.xpath.regex;
+package com.sun.msv.datatype.xsd.regex;
 
 import java.text.CharacterIterator;
+
+/**
+ * @version REUtil.java,v 1.7 2002/11/20 00:49:47 twl Exp
+ */
 
 public final class REUtil {
     private REUtil() {
@@ -279,12 +283,12 @@ public final class REUtil {
     }
 
     static final int CACHESIZE = 20;
-    static RegularExpression[] regexCache = new RegularExpression[CACHESIZE];
+    static final RegularExpression[] regexCache = new RegularExpression[CACHESIZE];
     /**
      * Creates a RegularExpression instance.
      * This method caches created instances.
      *
-     * @seeq RegularExpression#RegularExpression(java.lang.String, java.lang.String)
+     * @see RegularExpression#RegularExpression(java.lang.String, java.lang.String)
      */
     public static RegularExpression createRegex(String pattern, String options)
         throws ParseException {
@@ -293,13 +297,15 @@ public final class REUtil {
         synchronized (REUtil.regexCache) {
             int i;
             for (i = 0;  i < REUtil.CACHESIZE;  i ++) {
-                re = REUtil.regexCache[i];
-                if (re == null) {
+                RegularExpression cached = REUtil.regexCache[i];
+                if (cached == null) {
                     i = -1;
                     break;
                 }
-                if (re.equals(pattern, intOptions))
+                if (cached.equals(pattern, intOptions)) {
+                    re = cached;
                     break;
+                }
             }
             if (re != null) {
                 if (i != 0) {
@@ -347,6 +353,7 @@ public final class REUtil {
                     if (i > 0)  buffer.append(literal.substring(0, i));
                 }
                 buffer.append((char)'\\');
+                buffer.append((char)ch);
             } else if (buffer != null)
                 buffer.append((char)ch);
         }

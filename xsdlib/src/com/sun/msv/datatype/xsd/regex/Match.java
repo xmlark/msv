@@ -55,7 +55,7 @@
  * <http://www.apache.org/>.
  */
 
-package org.apache.xerces.impl.xpath.regex;
+package com.sun.msv.datatype.xsd.regex;
 
 import java.text.CharacterIterator;
 
@@ -69,6 +69,7 @@ import java.text.CharacterIterator;
  * @see RegularExpression#matches(java.lang.String, int, int, Match)
  * @see RegularExpression#matches(java.lang.String, Match)
  * @author TAMURA Kent &lt;kent@trl.ibm.co.jp&gt;
+ * @version Match.java,v 1.4 2002/08/09 15:18:17 neilg Exp
  */
 public class Match implements Cloneable {
     int[] beginpos = null;

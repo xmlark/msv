@@ -55,11 +55,12 @@
  * <http://www.apache.org/>.
  */
 
-package org.apache.xerces.impl.xpath.regex;
+package com.sun.msv.datatype.xsd.regex;
 
 import java.util.Vector;
 
 /**
+ * @version Op.java,v 1.3 2002/08/09 15:18:17 neilg Exp
  */
 class Op {
     static final int DOT = 0;

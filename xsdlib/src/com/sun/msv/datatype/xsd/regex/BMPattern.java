@@ -55,12 +55,14 @@
  * <http://www.apache.org/>.
  */
 
-package org.apache.xerces.impl.xpath.regex;
+package com.sun.msv.datatype.xsd.regex;
 
 import java.text.CharacterIterator;
 
 /**
  * Boyer-Moore searcher.
+ *
+ * @version BMPattern.java,v 1.3 2002/08/09 15:18:17 neilg Exp
  */
 public class BMPattern {
     char[] pattern;

@@ -55,10 +55,12 @@
  * <http://www.apache.org/>.
  */
 
-package org.apache.xerces.impl.xpath.regex;
+package com.sun.msv.datatype.xsd.regex;
 
 /**
  * This class represents a character class such as [a-z] or a period.
+ *
+ * @version RangeToken.java,v 1.4 2002/08/09 15:18:17 neilg Exp
  */
 final class RangeToken extends Token implements java.io.Serializable {
 
@@ -228,8 +230,6 @@ final class RangeToken extends Token implements java.io.Serializable {
     }
 
     protected void mergeRanges(Token token) {
-        if (token.type != this.type)
-            throw new IllegalArgumentException("Token#mergeRanges(): Mismatched Type: "+token.type);
         RangeToken tok = (RangeToken)token;
         this.sortRanges();
         tok.sortRanges();

@@ -101,7 +101,7 @@ public class LLTableCalculator
 				private Set s = createInitialSet();
 				private Set createInitialSet() {
 					Set s = new java.util.HashSet();
-					s.add(null);
+					s.add(null);	// null is used as "EOF" token.
 					return s;
 				}
 				

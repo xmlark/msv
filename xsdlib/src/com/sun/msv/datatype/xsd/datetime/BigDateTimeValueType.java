@@ -1,3 +1,4 @@
+/* $Id$ */
 package com.sun.tranquilo.datatype.datetime;
 
 import java.math.BigInteger;
@@ -328,7 +329,15 @@ public class BigDateTimeValueType implements IDateTimeValueType
 				omonth %= 12;
 			}
 			
-			return new BigDateTimeValueType( oyear, omonth, oday.intValue(), ohour, ominute, osecond, this.zone );
+			// set those fields blank which are not originally specified.
+			return new BigDateTimeValueType(
+				this.year!=null  ? oyear:null,
+				this.month!=null ? new Integer(omonth):null,
+				this.day!=null   ? new Integer(oday.intValue()):null,
+				this.hour!=null  ? new Integer(ohour):null,
+				this.minute!=null? new Integer(ominute):null,
+				this.second!=null? osecond:null,
+				this.zone );
 		}
 		else
 		{// big + small

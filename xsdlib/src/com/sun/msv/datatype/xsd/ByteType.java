@@ -24,9 +24,4 @@ public class ByteType extends IntegerDerivedType
 			return null;
 		}
 	}
-	
-    public int getScaleForValueObject( Object o )
-    {// TODO : do we consider negative scale?
-        return 0;
-    }
 }

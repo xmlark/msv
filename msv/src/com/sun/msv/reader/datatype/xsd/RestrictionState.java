@@ -49,7 +49,7 @@ public class RestrictionState extends TypeWithOneChildState implements FacetStat
 	protected void startSelf() {
 		super.startSelf();
 		
-		// if base attribute is used, try to load it.
+		// if the base attribute is used, try to load it.
 		String base = startTag.getAttribute("base");
 		if(base!=null) {
 			type = (XSDatatype)reader.resolveDataType(base);

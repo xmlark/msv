@@ -12,6 +12,7 @@ package com.sun.msv.writer.trex;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
 import com.sun.msv.grammar.trex.TypedString;
+import com.sun.msv.grammar.relax.*;
 import com.sun.msv.datatype.SerializationContext;
 import com.sun.msv.datatype.xsd.*;
 import com.sun.msv.reader.trex.classic.TREXGrammarReader;
@@ -761,7 +762,16 @@ public class TREXWriter implements GrammarWriter {
 					end("string");
 					return;
 				}
-			
+				
+				if( dt instanceof NoneType ) {
+					element("notAllowed");
+					return;
+				}
+				if( dt instanceof EmptyStringType ) {
+					element("empty");
+					return;
+				}
+				
 				if( dt instanceof XSDatatypeImpl ) {
 					XSDatatypeImpl dti = (XSDatatypeImpl)dt;
 					

@@ -19,6 +19,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.Locator;
 import org.xml.sax.InputSource;
+import org.xml.sax.helpers.LocatorImpl;
 import java.util.Map;
 import java.util.Iterator;
 
@@ -54,6 +55,8 @@ public class DTDReader implements
 		
 			if( reader.hadError )	return null;
 			else					return reader.module;
+		} catch( SAXParseException e ) {
+			return null;	// this error was already handled by GrammarReaderController
 		} catch( Exception e ) {
 			controller.error( new Locator[0], e.getMessage(), e );
 			return null;
@@ -142,6 +145,9 @@ public class DTDReader implements
 			contentModel = Expression.epsilon;
 			break;
 		case CONTENT_MODEL_MIXED:
+			if( contentModel == Expression.nullSet )
+				// this happens when mixed content model is #PCDATA only.
+				contentModel = Expression.epsilon;
 			contentModel = module.pool.createMixed(
 				module.pool.createZeroOrMore(contentModel));
 			break;
@@ -290,8 +296,8 @@ public class DTDReader implements
 		exp = module.pool.createAttribute( getNameClass(attributeName), exp );
 		
 		// apply attribute use.
-		// unless USE_REQUIRED/USE_FIXED, the attribute is optional.
-		if( attributeUse == USE_IMPLIED || attributeUse == USE_NORMAL )
+		// unless USE_REQUIRED, the attribute is optional.
+		if( attributeUse != USE_REQUIRED )
 			exp = module.pool.createOptional(exp);
 		
 		// append it to attribute list.
@@ -343,19 +349,27 @@ public class DTDReader implements
 			}
 	}
 
+	protected Locator[] getLocation( SAXParseException e ) {
+		LocatorImpl loc = new LocatorImpl();
+		loc.setColumnNumber(e.getColumnNumber());
+		loc.setLineNumber(e.getLineNumber());
+		loc.setSystemId(e.getSystemId());
+		loc.setPublicId(e.getPublicId());
+		return new Locator[]{loc};
+	}
+	
     public void fatalError(SAXParseException e) throws SAXException {
 		hadError = true;
-		controller.error( new Locator[0], e.getMessage(), e );
-        throw e;
+		controller.error( getLocation(e), e.getMessage(), null );
     }
 
     public void error(SAXParseException e) throws SAXException {
 		hadError = true;
-		controller.error( new Locator[0], e.getMessage(), e );
+		controller.error( getLocation(e), e.getMessage(), null );
     }
 
     public void warning(SAXParseException e) throws SAXException {
-		controller.warning( new Locator[0], e.getMessage() );
+		controller.warning( getLocation(e), e.getMessage() );
     }
 	
 // validation context provider methods

@@ -70,7 +70,8 @@ public abstract class DataTypeWithFacet extends XSDatatypeImpl
 	}
 	
 	public final String displayName() {
-		return concreteType.getName()+"-derived";
+        if( getName()!=null )   return getName();
+		else                      return concreteType.getName()+"-derived";
 	}
 	
 	public final int isFacetApplicable( String facetName ) {

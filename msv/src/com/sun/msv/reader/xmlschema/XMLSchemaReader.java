@@ -566,8 +566,11 @@ public class XMLSchemaReader extends GrammarReader {
 		}
 		locator = oldLoc;
 		
+		
+		if( hadError )	return;
+		// undefined expressions may interfare with runaway expression check.
+		
 		// runaway expression check
-		// TODO: this should be done to the entire grammar at once.
 		TREXRunAwayExpressionChecker.check( this, grammar.topLevel );
 		
 	}

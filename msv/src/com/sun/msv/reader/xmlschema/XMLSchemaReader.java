@@ -150,7 +150,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 					pool.createChoice(
 						pool.createAttribute( AnyNameClass.theInstance ),
 						e )));
-		complexUrType = new ComplexTypeExp( xsdSchema, "anyType" );
+		complexUrType = xsdSchema.complexTypes.getOrCreate( "anyType" );
 		complexUrType.body.exp = e.contentModel;
 		complexUrType.complexBaseType = complexUrType;
 		complexUrType.derivationMethod = ComplexTypeExp.RESTRICTION;

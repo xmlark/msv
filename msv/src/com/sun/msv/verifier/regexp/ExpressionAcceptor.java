@@ -588,10 +588,19 @@ public abstract class ExpressionAcceptor implements Acceptor
 		if( constraint instanceof TypedStringExp )
 		{
 			// if only one AttributeExp is specified for this attribute
-			// and if it has a TypedString as its child.
-								
+			// and if it has a TypedString as its child.					
 			// for RELAX, this is the only possible case
-			String dtMsg = getDiagnosisFromTypedString( (TypedStringExp)constraint, sti, attIndex );
+			TypedStringExp tse = (TypedStringExp)constraint;
+			
+			if( tse.dt == com.sun.tranquilo.grammar.relax.NoneType.theInstance )
+			{
+				// if the underlying datatype is "none",
+				// this should be reported as unexpected attribute.
+				return docDecl.localizeMessage(
+							docDecl.DIAG_UNDECLARED_ATTRIBUTE, sti.attributes.getQName(attIndex) );
+			}
+			
+			String dtMsg = getDiagnosisFromTypedString( tse, sti, attIndex );
 			if(dtMsg==null)	return null;
 			
 			return docDecl.localizeMessage(

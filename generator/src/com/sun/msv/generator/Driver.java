@@ -13,8 +13,10 @@ import javax.xml.parsers.*;
 import java.io.*;
 import org.xml.sax.*;
 import java.util.*;
+import java.net.URL;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.grammar.relax.*;
+import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.grammar.*;
 import com.sun.msv.verifier.Verifier;
 import com.sun.msv.verifier.VerificationErrorHandler;
@@ -23,6 +25,7 @@ import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
 import com.sun.msv.driver.textui.DebugController;
 import com.sun.msv.reader.util.GrammarLoader;
+import com.sun.msv.reader.dtd.DTDReader;
 import org.apache.xml.serialize.*;
 
 /**
@@ -38,6 +41,7 @@ public class Driver {
 			"----------------\n"+
 			"Usage: XMLGenerator <options> <schema> [<output name>]\n"+
 			"Options:\n"+
+			"  -dtd      : use a DTD as a schema\n"+
 			"  -ascii    : use US-ASCII characters only\n"+
 			"  -seed <n> : set random seed\n"+
 			"  -depth <n>: set cut back depth\n"+
@@ -96,6 +100,7 @@ public class Driver {
 		boolean validate = true;
 		boolean debug = false;
 		boolean quiet = false;
+		boolean dtdAsSchema = false;
 		
 		int number = 1;
 
@@ -120,6 +125,9 @@ public class Driver {
 			for( int i=0; i<args.length; i++ ) {
 				if( args[i].equalsIgnoreCase("-debug") )	// secret option
 					debug = true;
+				else
+				if( args[i].equalsIgnoreCase("-dtd") )
+					dtdAsSchema = true;
 				else
 				if( args[i].equalsIgnoreCase("-quiet") )
 					quiet = true;
@@ -256,14 +264,32 @@ public class Driver {
 		
 		// load a schema
 		//===========================================
-		Grammar grammar = GrammarLoader.loadSchema(
-				grammarName, new DebugController(false), factory );
+		Grammar grammar;
+		InputSource is = getInputSource(grammarName);
+		
+		if(dtdAsSchema) {
+			grammar = DTDReader.parse(
+				is,
+				new DebugController(false,true),
+				"",
+				new TREXPatternPool());
+		} else {
+			grammar = GrammarLoader.loadSchema(
+				is,
+				new DebugController(false,true),
+				factory);
+		}
 		
 		topLevel = grammar.getTopLevel();
 		
+		// polish up this AGM for instance generation.
 		if( grammar instanceof RELAXGrammar
 		||  grammar instanceof RELAXModule )
 			topLevel = topLevel.visit( new NoneTypeRemover(grammar.getPool()) );
+		
+		if( grammar instanceof XMLSchemaGrammar )
+			topLevel = topLevel.visit( new SchemaLocationRemover(grammar.getPool()) );
+		
 	
 		topLevel = topLevel.visit( new RefExpRemover(grammar.getPool()) );
 		opt.pool = (TREXPatternPool)grammar.getPool();
@@ -338,9 +364,14 @@ public class Driver {
 	private static InputSource getInputSource( String fileOrURL ) {
 		try {
 			// try it as a file
-			InputSource is = new InputSource(new java.io.FileInputStream(fileOrURL));
-			is.setSystemId(new File(fileOrURL).getCanonicalPath());
-			return is;
+			String path = new File(fileOrURL).getAbsolutePath();
+			if (File.separatorChar != '/')
+				path = path.replace(File.separatorChar, '/');
+			if (!path.startsWith("/"))
+				path = "/" + path;
+//			if (!path.endsWith("/") && isDirectory())
+//				path = path + "/";
+			return new InputSource( new URL("file", "", path).toExternalForm() );
 		} catch( Exception e ) {
 			// try it as an URL
 			return new InputSource(fileOrURL);

@@ -106,7 +106,7 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 	
 	public static String localize( String prop, Object[] args ) {
 		return java.text.MessageFormat.format(
-			java.util.ResourceBundle.getBundle("com.sun.msv.datatype.Messages").getString(prop),
+			java.util.ResourceBundle.getBundle("com.sun.msv.datatype.xsd.Messages").getString(prop),
 			args );
 	}
 	

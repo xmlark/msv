@@ -23,7 +23,7 @@ public class BadTypeException extends DatatypeException {
 	
 	public BadTypeException(String resourcePropertyName,Object[] args) {
 		super( java.text.MessageFormat.format(
-			java.util.ResourceBundle.getBundle("com.sun.msv.datatype.Messages").getString(resourcePropertyName),
+			java.util.ResourceBundle.getBundle("com.sun.msv.datatype.xsd.Messages").getString(resourcePropertyName),
 			args ) );
 	}
 

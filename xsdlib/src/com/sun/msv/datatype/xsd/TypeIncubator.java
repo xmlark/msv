@@ -16,7 +16,8 @@ import java.math.BigInteger;
 
 /**
  * derives a new type by adding facets.
- *
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class TypeIncubator
 {

@@ -15,6 +15,8 @@ import com.sun.xml.util.XmlNames;
  * "NCName" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#NCName for the spec
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class NcnameType extends TokenType
 {

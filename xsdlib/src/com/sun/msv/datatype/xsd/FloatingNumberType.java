@@ -10,6 +10,8 @@
 package com.sun.tranquilo.datatype;
 
 /** base class of FloatType and DoubleType
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 abstract class FloatingNumberType extends ConcreteType implements Comparator
 {

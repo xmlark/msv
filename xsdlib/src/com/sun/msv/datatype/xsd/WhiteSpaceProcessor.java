@@ -11,6 +11,8 @@ package com.sun.tranquilo.datatype;
 
 /**
  * processes white space normalization
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public abstract class WhiteSpaceProcessor
 {

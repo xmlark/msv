@@ -11,6 +11,8 @@ package com.sun.tranquilo.datatype;
 
 /**
  * whiteSpace facet validator
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 class WhiteSpaceFacet extends DataTypeWithFacet
 {

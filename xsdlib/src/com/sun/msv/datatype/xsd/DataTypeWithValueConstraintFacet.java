@@ -9,6 +9,11 @@
  */
 package com.sun.tranquilo.datatype;
 
+/**
+ * base class for facets which constrain value space.
+ * 
+ * @author	Kohsuke Kawaguchi
+ */
 abstract class DataTypeWithValueConstraintFacet extends DataTypeWithFacet
 {
 	DataTypeWithValueConstraintFacet(

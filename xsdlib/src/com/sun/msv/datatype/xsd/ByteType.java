@@ -15,6 +15,8 @@ import java.math.BigInteger;
  * "byte" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#byte for the spec
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class ByteType extends IntegerDerivedType
 {

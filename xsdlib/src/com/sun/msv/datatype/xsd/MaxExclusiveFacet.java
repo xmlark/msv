@@ -9,6 +9,11 @@
  */
 package com.sun.tranquilo.datatype;
 
+/**
+ * 'maxExclusive' facet
+ * 
+ * @author	Kohsuke Kawaguchi
+ */
 public class MaxExclusiveFacet extends RangeFacet
 {
 	protected MaxExclusiveFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )

@@ -14,6 +14,8 @@ package com.sun.tranquilo.datatype;
  *
  * Those datatypes which has order relation must implement this interface.
  * RangeFacet uses this interface to do its job.
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public interface Comparator
 {

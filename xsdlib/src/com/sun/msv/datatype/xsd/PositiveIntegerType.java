@@ -13,6 +13,8 @@ package com.sun.tranquilo.datatype;
  * "positiveInteger" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#positiveInteger for the spec
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class PositiveIntegerType extends IntegerType
 {

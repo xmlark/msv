@@ -15,6 +15,8 @@ import com.sun.xml.util.XmlNames;
  * "NMTOKEN" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#NMTOKEN for the spec
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class NmtokenType extends TokenType
 {

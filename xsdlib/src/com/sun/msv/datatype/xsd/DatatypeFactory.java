@@ -22,7 +22,8 @@ import java.util.Collection;
  * 
  * <p>
  * Derivation by restriction should be done by using {@link TypeIncubator}.
- *
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class DataTypeFactory
 {

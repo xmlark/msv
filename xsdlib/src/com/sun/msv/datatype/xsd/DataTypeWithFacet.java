@@ -9,6 +9,11 @@
  */
 package com.sun.tranquilo.datatype;
 
+/**
+ * Base implementation of facet-restricted datatype
+ * 
+ * @author	Kohsuke Kawaguchi
+ */
 abstract class DataTypeWithFacet extends DataTypeImpl
 {
 	/** immediate base type, which may be a concrete type or DataTypeWithFacet */

@@ -12,6 +12,11 @@ package com.sun.tranquilo.datatype.datetime;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 
+/**
+ * utility functions that creates date/time related objects.
+ * 
+ * @author Kohsuke KAWAGUCHI
+ */
 public class DateTimeFactory
 {
 	public static IDateTimeValueType createFromDateTime(

@@ -11,6 +11,8 @@ package com.sun.tranquilo.datatype;
 
 /**
  * base implementation for "hexBinary" and "base64Binary" types.
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 abstract class BinaryBaseType extends ConcreteType implements Discrete
 {

@@ -11,6 +11,8 @@ package com.sun.tranquilo.datatype;
 
 /**
  * base implementaion for DataType interface.
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public abstract class DataTypeImpl implements DataType
 {

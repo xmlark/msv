@@ -9,6 +9,11 @@
  */
 package com.sun.tranquilo.datatype;
 
+/**
+ * 'minInclusive' facet
+ * 
+ * @author	Kohsuke Kawaguchi
+ */
 public class MinInclusiveFacet extends RangeFacet
 {
 	protected MinInclusiveFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )

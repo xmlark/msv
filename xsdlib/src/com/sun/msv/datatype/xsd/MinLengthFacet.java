@@ -9,6 +9,11 @@
  */
 package com.sun.tranquilo.datatype;
 
+/**
+ * 'minLength' facet
+ * 
+ * @author	Kohsuke Kawaguchi
+ */
 public class MinLengthFacet extends DataTypeWithValueConstraintFacet
 {
 	protected final int minLength;

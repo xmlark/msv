@@ -13,6 +13,8 @@ package com.sun.tranquilo.datatype;
  * an interface that must be implemented by caller to
  * provide context information that is necessary to 
  * perform validation of some datatypes.
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public interface ValidationContextProvider
 {

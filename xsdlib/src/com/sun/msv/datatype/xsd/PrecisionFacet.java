@@ -13,6 +13,8 @@ package com.sun.tranquilo.datatype;
  * 'precision' facet.
  *
  * this class holds these facet information and performs validation.
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 class PrecisionFacet extends DataTypeWithLexicalConstraintFacet
 {

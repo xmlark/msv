@@ -9,7 +9,10 @@
  */
 package com.sun.tranquilo.datatype;
 
-
+/** value object of QName.
+ * 
+ * @author Kohsuke KAWAGUCHI
+ */
 class QnameValueType
 {
 	String namespaceURI;
@@ -25,6 +28,11 @@ class QnameValueType
 	public int hashCode()
 	{
 		return namespaceURI.hashCode()+localPart.hashCode();
+	}
+	
+	public String toString()
+	{
+		return "{"+namespaceURI+"}:"+localPart;
 	}
 	
 	QnameValueType( String uri, String localPart )

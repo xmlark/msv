@@ -16,6 +16,8 @@ import com.sun.tranquilo.datatype.datetime.IDateTimeValueType;
  * "day" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#day for the spec
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class DayType extends DateTimeBaseType
 {

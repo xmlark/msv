@@ -11,6 +11,8 @@ package com.sun.tranquilo.datatype;
 
 /**
  * base interface of types to which length-related facets are applicable.
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 interface Discrete
 {

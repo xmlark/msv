@@ -11,6 +11,8 @@ package com.sun.tranquilo.datatype;
 
 /**
  * value type of "base64Binary" and "hexBinary" type.
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 class BinaryValueType
 {

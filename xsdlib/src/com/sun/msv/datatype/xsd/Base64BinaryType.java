@@ -13,6 +13,8 @@ package com.sun.tranquilo.datatype;
  * "base64Binary" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#base64Binary for the spec
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class Base64BinaryType extends BinaryBaseType
 {

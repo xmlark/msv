@@ -13,6 +13,8 @@ package com.sun.tranquilo.datatype;
  * "short" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#short for the spec
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class ShortType extends IntegerDerivedType
 {

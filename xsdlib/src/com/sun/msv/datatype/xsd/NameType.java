@@ -15,6 +15,8 @@ import com.sun.xml.util.XmlNames;
  * "Name" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#Name for the spec
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class NameType extends TokenType
 {

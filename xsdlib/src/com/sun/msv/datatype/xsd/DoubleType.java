@@ -13,6 +13,8 @@ package com.sun.tranquilo.datatype;
  * "double" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#double for the spec
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class DoubleType extends FloatingNumberType
 {

@@ -16,6 +16,8 @@ import com.sun.tranquilo.datatype.datetime.IDateTimeValueType;
  * "month" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#month for the spec
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class MonthType extends DateTimeBaseType
 {

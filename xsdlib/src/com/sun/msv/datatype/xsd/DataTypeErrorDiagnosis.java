@@ -11,6 +11,8 @@ package com.sun.tranquilo.datatype;
 
 /**
  * diagnostic information of datatype validation errror.
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class DataTypeErrorDiagnosis
 {

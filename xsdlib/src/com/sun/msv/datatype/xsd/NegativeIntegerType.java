@@ -16,6 +16,8 @@ package com.sun.tranquilo.datatype;
  * 
  * v.isNegative is certainly faster than compareTo(ZERO).
  * This the sole reason why this class exists at all.
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class NegativeIntegerType extends IntegerType
 {

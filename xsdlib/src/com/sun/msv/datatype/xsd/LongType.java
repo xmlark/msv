@@ -13,6 +13,8 @@ package com.sun.tranquilo.datatype;
  * "long" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#long for the spec
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class LongType extends IntegerDerivedType
 {

@@ -14,6 +14,8 @@ package com.sun.tranquilo.datatype;
  * "token" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#token for the spec
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class TokenType extends StringType
 {

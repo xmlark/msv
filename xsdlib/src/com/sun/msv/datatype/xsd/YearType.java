@@ -16,6 +16,8 @@ import com.sun.tranquilo.datatype.datetime.IDateTimeValueType;
  * "year" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#year for the spec
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class YearType extends DateTimeBaseType
 {

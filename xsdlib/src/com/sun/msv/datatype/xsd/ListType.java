@@ -11,6 +11,11 @@ package com.sun.tranquilo.datatype;
 
 import java.util.StringTokenizer;
 
+/**
+ * List type.
+ * 
+ * @author	Kohsuke Kawaguchi
+ */
 final class ListType extends ConcreteType implements Discrete
 {
 	/**

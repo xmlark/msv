@@ -24,6 +24,8 @@ import com.sun.tranquilo.datatype.Comparator;
  * 
  * To provide methods that can change date/time values, normalize method
  * should be modified too.
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class BigDateTimeValueType implements IDateTimeValueType
 {

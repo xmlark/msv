@@ -16,6 +16,8 @@ import com.sun.tranquilo.datatype.datetime.IDateTimeValueType;
  * "dateTime" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#dateTime for the spec
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class DateTimeType extends DateTimeBaseType
 {

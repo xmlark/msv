@@ -12,6 +12,11 @@ package com.sun.tranquilo.datatype.datetime;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 
+/**
+ * Utility functions to create TimeDurationValueType objects.
+ * 
+ * @author Kohsuke KAWAGUCHI
+ */
 public class TimeDurationFactory
 {
 	public static ITimeDurationValueType create(

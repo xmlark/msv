@@ -13,6 +13,8 @@ package com.sun.tranquilo.datatype;
  * "hexBinary" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#hexBinary for the spec
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class HexBinaryType extends BinaryBaseType
 {

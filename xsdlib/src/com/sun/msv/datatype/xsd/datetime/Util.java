@@ -12,6 +12,11 @@ package com.sun.tranquilo.datatype.datetime;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 
+/**
+ * date/time-related utility functions/variables.
+ * 
+ * @author Kohsuke KAWAGUCHI
+ */
 public class Util
 {
 	// frequently used constants

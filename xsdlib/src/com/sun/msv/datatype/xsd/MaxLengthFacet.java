@@ -9,6 +9,11 @@
  */
 package com.sun.tranquilo.datatype;
 
+/**
+ * 'maxLength' facet
+ * 
+ * @author	Kohsuke Kawaguchi
+ */
 public class MaxLengthFacet extends DataTypeWithValueConstraintFacet
 {
 	protected final int maxLength;

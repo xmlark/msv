@@ -13,6 +13,8 @@ package com.sun.tranquilo.datatype;
  * "unsignedByte" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#unsignedByte for the spec
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class UnsignedByteType extends ShortType
 {

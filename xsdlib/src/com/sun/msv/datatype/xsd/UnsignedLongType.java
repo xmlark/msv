@@ -13,6 +13,8 @@ package com.sun.tranquilo.datatype;
  * "unsignedLong" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#unsignedLong for the spec
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class UnsignedLongType extends IntegerType
 {

@@ -18,6 +18,8 @@ import java.util.Vector;
  * 
  * "pattern" is a constraint facet which is applied against lexical space.
  * See http://www.w3.org/TR/xmlschema-2/#dt-pattern for the spec
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 final class PatternFacet extends DataTypeWithLexicalConstraintFacet
 {

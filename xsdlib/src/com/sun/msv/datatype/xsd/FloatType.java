@@ -13,6 +13,8 @@ package com.sun.tranquilo.datatype;
  * "float" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#float for the spec
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class FloatType extends FloatingNumberType
 {

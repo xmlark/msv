@@ -17,6 +17,8 @@ import java.util.Hashtable;
  * Publicly accesible interface of XSD Datatype.
  *
  * Application should use this interface to interact with datatype objects.
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public interface DataType extends Serializable,Cloneable
 {

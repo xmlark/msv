@@ -9,6 +9,11 @@
  */
 package com.sun.tranquilo.datatype.datetime;
 
+/**
+ * simple time zone component.
+ * 
+ * @author Kohsuke KAWAGUCHI
+ */
 public class TimeZone
 {
 	/** difference from GMT in terms of minutes */

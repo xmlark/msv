@@ -10,6 +10,11 @@
 package com.sun.tranquilo.datatype;
 
 
+/**
+ * value object of ListType.
+ * 
+ * @author	Kohsuke Kawaguchi
+ */
 public class ListValueType
 {
 	public final Object[] values;

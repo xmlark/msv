@@ -13,6 +13,12 @@ import java.math.BigInteger;
 import java.math.BigDecimal;
 import com.sun.tranquilo.datatype.Comparator;
 
+/**
+ * ITimeDurationValueType implementation that can hold all lexically legal
+ * timeDuration value.
+ * 
+ * @author Kohsuke KAWAGUCHI
+ */
 public class BigTimeDurationValueType implements ITimeDurationValueType
 {
 	protected BigInteger year;

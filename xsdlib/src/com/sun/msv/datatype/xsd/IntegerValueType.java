@@ -11,6 +11,8 @@ package com.sun.tranquilo.datatype;
 
 /**
  * Value object of "integer" type.
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class IntegerValueType implements Comparable
 {

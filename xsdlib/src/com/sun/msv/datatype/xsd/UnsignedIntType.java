@@ -17,6 +17,8 @@ package com.sun.tranquilo.datatype;
  * We don't have language support for unsigned datatypes, so things are not so easy.
  * UnsignedIntType uses a LongType as a base implementation, for the convenience and
  * faster performance.
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class UnsignedIntType extends LongType
 {

@@ -16,8 +16,9 @@ import java.io.ByteArrayInputStream;
 
 /**
  * base implementation of dateTime and dateTime-truncated types.
- *
- * this class uses IDateTimeValueType as the value object
+ * this class uses IDateTimeValueType as the value object.
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 abstract class DateTimeBaseType extends ConcreteType implements Comparator
 {

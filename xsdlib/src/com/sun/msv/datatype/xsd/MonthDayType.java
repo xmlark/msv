@@ -16,6 +16,8 @@ import com.sun.tranquilo.datatype.datetime.IDateTimeValueType;
  * "monthDay" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#monthDay for the spec
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class MonthDayType extends DateTimeBaseType
 {

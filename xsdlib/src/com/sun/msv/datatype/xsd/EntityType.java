@@ -13,6 +13,8 @@ package com.sun.tranquilo.datatype;
  * "ENTITY" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#ENTITY for the spec
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class EntityType extends ConcreteType
 {

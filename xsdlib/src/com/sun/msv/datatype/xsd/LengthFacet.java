@@ -16,6 +16,8 @@ import java.util.Hashtable;
  * 
  * this class also detects inconsistent facet setting
  * (for example, minLength=100 and maxLength=0)
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class LengthFacet extends DataTypeWithValueConstraintFacet
 {

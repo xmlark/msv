@@ -13,6 +13,8 @@ package com.sun.tranquilo.datatype;
  * "nonNegativeInteger" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger for the spec
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class NonNegativeIntegerType extends IntegerType
 {

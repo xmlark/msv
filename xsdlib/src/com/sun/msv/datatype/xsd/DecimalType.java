@@ -16,6 +16,8 @@ import java.math.BigInteger;
  * "decimal" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#decimal for the spec
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class DecimalType extends ConcreteType implements Comparator
 {

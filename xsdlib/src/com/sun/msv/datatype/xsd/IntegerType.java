@@ -13,6 +13,8 @@ package com.sun.tranquilo.datatype;
  * "integer" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#integer for the spec
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class IntegerType extends IntegerDerivedType
 {

@@ -11,6 +11,8 @@ package com.sun.tranquilo.datatype;
 
 /**
  * Unicode-related utility functions.
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class UnicodeUtil
 {

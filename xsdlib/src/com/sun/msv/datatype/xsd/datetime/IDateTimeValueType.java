@@ -9,6 +9,11 @@
  */
 package com.sun.tranquilo.datatype.datetime;
 
+/**
+ * Interface as value type of DateTimeType
+ * 
+ * @author Kohsuke KAWAGUCHI
+ */
 public interface IDateTimeValueType
 {
 	BigDateTimeValueType getBigValue();

@@ -13,6 +13,8 @@ package com.sun.tranquilo.datatype;
  * 'scale' facet.
  *
  * this class holds these facet information and performs validation.
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 class ScaleFacet extends DataTypeWithLexicalConstraintFacet
 {

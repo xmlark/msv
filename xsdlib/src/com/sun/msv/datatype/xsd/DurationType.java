@@ -17,6 +17,8 @@ import java.io.ByteArrayInputStream;
  * "duration" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#duration for the spec
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public final class DurationType extends ConcreteType implements Comparator
 {

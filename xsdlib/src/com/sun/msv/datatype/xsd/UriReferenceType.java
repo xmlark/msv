@@ -15,6 +15,8 @@ import java.io.ByteArrayInputStream;
  * "uriReference" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#uriReference for the spec
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class UriReferenceType extends ConcreteType implements Discrete
 {

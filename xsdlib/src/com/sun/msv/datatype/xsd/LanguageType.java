@@ -16,6 +16,8 @@ import java.util.Hashtable;
  * "language" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#language for the spec
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class LanguageType extends TokenType
 {

@@ -15,6 +15,8 @@ import com.sun.xml.util.XmlNames;
  * "QName" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#QName for the spec
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class QnameType extends ConcreteType
 {

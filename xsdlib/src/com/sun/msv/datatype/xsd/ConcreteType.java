@@ -11,6 +11,8 @@ package com.sun.tranquilo.datatype;
 
 /**
  * base class for those types which can be used by itself (int,uriReference,string, etc) .
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public abstract class ConcreteType extends DataTypeImpl
 {

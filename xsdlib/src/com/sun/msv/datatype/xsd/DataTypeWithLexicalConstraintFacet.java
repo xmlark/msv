@@ -9,6 +9,11 @@
  */
 package com.sun.tranquilo.datatype;
 
+/**
+ * base class for facets which constrains lexical space of data
+ * 
+ * @author	Kohsuke Kawaguchi
+ */
 abstract class DataTypeWithLexicalConstraintFacet extends DataTypeWithFacet
 {
 	DataTypeWithLexicalConstraintFacet(

@@ -13,6 +13,8 @@ package com.sun.tranquilo.datatype;
  * "normalizedString" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#normalizedString for the spec
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 public class NormalizedStringType extends StringType
 {

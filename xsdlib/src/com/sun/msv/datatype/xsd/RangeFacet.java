@@ -11,6 +11,8 @@ package com.sun.tranquilo.datatype;
 
 /**
  * Base class of "(max|min)(In|Ex)clusive" facet validator
+ * 
+ * @author Kohsuke KAWAGUCHI
  */
 abstract class RangeFacet extends DataTypeWithValueConstraintFacet
 {

@@ -9,6 +9,11 @@
  */
 package com.sun.tranquilo.datatype;
 
+/**
+ * union type.
+ * 
+ * @author Kohsuke KAWAGUCHI
+ */
 final public class UnionType extends ConcreteType
 {
 	/**

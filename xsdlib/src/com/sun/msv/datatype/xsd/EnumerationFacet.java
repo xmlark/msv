@@ -14,6 +14,8 @@ import java.util.Vector;
 
 /**
  * "enumeration" facets validator.
+ * 
+ * @author	Kohsuke Kawaguchi
  */
 public class EnumerationFacet extends DataTypeWithValueConstraintFacet
 {

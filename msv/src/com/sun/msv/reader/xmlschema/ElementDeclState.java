@@ -201,13 +201,8 @@ public class ElementDeclState extends ExpressionWithChildState {
 		// process the nillable attribute.
 		boolean isNillable = false;
 		String nillable = startTag.getAttribute("nillable");
-		if( nillable!=null ) {
-			if( !nillable.equals("true") )
-				reader.reportError( XMLSchemaReader.ERR_BAD_ATTRIBUTE_VALUE, "nillable", nillable );
-				// recovery by assuming "true".
-			
-			decl.isNillable = true;
-		}
+		if( nillable!=null )
+            decl.isNillable = nillable.equals("true") || nillable.equals("1");
 
 		// process the "abstract" attribute.
 		String abstract_ = startTag.getAttribute("abstract");

@@ -54,25 +54,28 @@ public class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 	protected static int countPrecision( String literal ) {
 		final int len = literal.length();
 		boolean skipMode = true;
-
+        boolean seenDot = false;
+        
 		int count=0;
 		int trailingZero=0;
 		
 		for( int i=0; i<len; i++ ) {
 			final char ch = literal.charAt(i);
+            
+            if(ch=='.') {
+                skipMode = false;// digits after '.' is considered significant.
+                seenDot = true;
+            }
+            
 			if( skipMode ) {
 				// in skip mode, leading zeros are skipped
 				if( '1'<=ch && ch<='9' ) {
 					count++;
 					skipMode = false;
 				}
-				if( '.'==ch )	// digits after '.' is considered significant.
-					skipMode = false;
 			} else {
-				if( ch=='0' )	trailingZero++;
-				else
-				if( ch=='.' )	;	// do nothing
-				else			trailingZero=0;
+				if( seenDot && ch=='0' )    trailingZero++;
+				else			            trailingZero=0;
 				
 				if( '0'<=ch && ch<='9' )
 					count++;

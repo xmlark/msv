@@ -13,8 +13,6 @@ public class GrammarState extends SimpleState
 	{
 		if(!RELAXReader.RELAXNamespaceNamespace.equals(tag.namespaceURI) )	return null;
 
-// TODO: no div for grammar?
-//		if(tag.localName.equals("div"))			return new DivInGrammarState();
 		if(tag.localName.equals("namespace"))	return new NamespaceState();
 		if(tag.localName.equals("topLevel"))	return new TopLevelState();
 		if(tag.localName.equals("include"))		return new IncludeGrammarState();

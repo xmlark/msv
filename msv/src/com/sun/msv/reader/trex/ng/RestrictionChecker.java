@@ -497,7 +497,6 @@ public class RestrictionChecker {
                 NameClass intersection = NameClass.intersection(
                     newExp.getNameClass(), oldExp.getNameClass() );
                     
-                
 				reader.reportError( 
 					new Locator[]{
 						reader.getDeclaredLocationOf(errorContext),	// the parent element

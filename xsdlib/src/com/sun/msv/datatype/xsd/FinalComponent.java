@@ -40,6 +40,10 @@ public final class FinalComponent extends DataTypeImpl
 	{
 		return baseType.getConcreteType();
 	}
+	public String displayName()
+	{
+		return baseType.displayName();
+	}
 	public int isFacetApplicable( String facetName )
 	{
 		return baseType.isFacetApplicable(facetName);

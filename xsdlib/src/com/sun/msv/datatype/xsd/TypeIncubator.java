@@ -67,7 +67,7 @@ public class TypeIncubator
 			if(value==null)
 				throw new BadTypeException(
 					BadTypeException.ERR_INVALID_VALUE_FOR_THIS_TYPE,
-					strValue, baseType.getName() );
+					strValue, baseType.displayName() );
 		}
 		else
 			value = strValue;
@@ -119,7 +119,7 @@ public class TypeIncubator
 		throws BadTypeException
 	{
 		if( baseType.isFinal(DataType.DERIVATION_BY_RESTRICTION) )
-			throw new BadTypeException(BadTypeException.ERR_INVALID_BASE_TYPE, baseType.getName() );
+			throw new BadTypeException(BadTypeException.ERR_INVALID_BASE_TYPE, baseType.displayName() );
 		
 		// if no facet is specified, no need to create another object.
 		if( isEmpty() )	return baseType;
@@ -256,7 +256,7 @@ public class TypeIncubator
 				((RangeFacet)o1).limitValue, ((RangeFacet)o2).limitValue );
 			if( c==Comparator.GREATER )
 				throw reportFacetInconsistency(
-					newType.getName(), o1,facetName1, o2,facetName2 );
+					newType.displayName(), o1,facetName1, o2,facetName2 );
 		}
 	}
 
@@ -286,13 +286,13 @@ public class TypeIncubator
 			// o2 must be specified in somewhere in the derivation chain
 			return new BadTypeException(
 				BadTypeException.ERR_INCONSISTENT_FACETS_2,
-				facetName1,  o2typeName, facetName2 );
+				facetName1,  o2.displayName(), facetName2 );
 		
 		if(o2typeName.equals(newName))
 			// vice versa
 			return new BadTypeException(
 				BadTypeException.ERR_INCONSISTENT_FACETS_2,
-				facetName2,  o1typeName, facetName1 );
+				facetName2,  o1.displayName(), facetName1 );
 		
 		// this is not possible
 		// because facet consistency check is done by every derivation.

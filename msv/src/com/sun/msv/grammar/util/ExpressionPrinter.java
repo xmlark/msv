@@ -124,6 +124,6 @@ public abstract class ExpressionPrinter implements ExpressionVisitor
 	public Object onSequence( SequenceExp exp )	{ return printBinary(exp,","); }
 	public Object onTypedString( TypedStringExp exp )
 	{
-		return "$"+exp.dt.getName();
+		return "$"+exp.dt.displayName();
 	}	
 }

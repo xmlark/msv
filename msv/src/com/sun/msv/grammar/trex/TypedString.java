@@ -54,7 +54,8 @@ public class TypedString implements DataType
 			Localizer.localize(DIAG_TYPED_STRING,value) );
 	}
 	
-	public String getName() { return "TREX built-in string"; }
+	public String getName() { return null; }
+	public String displayName() { return "TREX built-in string"; }
 	
 	public static final String DIAG_TYPED_STRING =
 		"TypedString.Diagnosis";

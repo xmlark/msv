@@ -33,7 +33,7 @@ class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet
 		if(o!=null && ((TotalDigitsFacet)o).precision < this.precision )
 			throw new BadTypeException(
 				BadTypeException.ERR_LOOSENED_FACET,
-				FACET_TOTALDIGITS, o.getName() );
+				FACET_TOTALDIGITS, o.displayName() );
 		
 		// consistency with scale is checked in DataTypeImpl.derive method.
 	}

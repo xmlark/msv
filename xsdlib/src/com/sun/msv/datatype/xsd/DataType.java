@@ -63,6 +63,14 @@ public interface DataType extends Serializable,Cloneable
 	 */
 	String getName();
 	
+	/**
+	 * gets type name suitable for display.
+	 * 
+	 * Non-anonymous datatypes should return the same value as getName() method.
+	 * Anonymous types should return non-null string.
+	 */
+	String displayName();
+	
 	
 	/**
 	 * converts lexcial value to the corresponding value object of the value space.

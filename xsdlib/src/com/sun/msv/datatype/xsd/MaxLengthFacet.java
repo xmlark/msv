@@ -30,7 +30,7 @@ public class MaxLengthFacet extends DataTypeWithValueConstraintFacet
 		if(o!=null && ((MaxLengthFacet)o).maxLength < this.maxLength )
 			throw new BadTypeException(
 				BadTypeException.ERR_LOOSENED_FACET,
-				FACET_MAXLENGTH, o.getName() );
+				FACET_MAXLENGTH, o.displayName() );
 		
 		// consistency with minLength is checked in DataTypeImpl.derive method.
 	}

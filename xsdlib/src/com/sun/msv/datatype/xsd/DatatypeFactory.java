@@ -108,13 +108,17 @@ public class DataTypeFactory
 	
 	private static void add( Map m, DataType type )
 	{
-		if( m.containsKey(type.getName()) )
+		final String name = type.getName();
+		if( name==null )
+			throw new IllegalArgumentException("anonymous type");
+		
+		if( m.containsKey(name) )
 			// this error is considered as an assertion,
 			// since this object doesn't allow external programs to
 			// add types to the object.
 			throw new IllegalArgumentException("multiple definition");
 		
-		m.put( type.getName(), type );
+		m.put( name, type );
 	}
 	
 	/** creates a map that contains all static types */

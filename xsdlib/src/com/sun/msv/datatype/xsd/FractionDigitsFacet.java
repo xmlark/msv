@@ -33,7 +33,7 @@ class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet
 		if(o!=null && ((FractionDigitsFacet)o).scale < this.scale )
 			throw new BadTypeException(
 				BadTypeException.ERR_LOOSENED_FACET,
-				FACET_FRACTIONDIGITS, o.getName() );
+				FACET_FRACTIONDIGITS, o.displayName() );
 		
 		// consistency with precision is checked in DataTypeImpl.derive method.
 	}

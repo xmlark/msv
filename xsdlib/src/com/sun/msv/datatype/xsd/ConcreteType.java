@@ -40,6 +40,11 @@ public abstract class ConcreteType extends DataTypeImpl
 	{// allow derivation by default.
 		return false;
 	}
+	
+	public final String displayName()
+	{
+		return getName();
+	}
 
 	// default implementation for concrete type. somewhat shabby.
 	protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context)

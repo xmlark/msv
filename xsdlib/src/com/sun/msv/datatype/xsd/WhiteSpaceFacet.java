@@ -31,7 +31,7 @@ class WhiteSpaceFacet extends DataTypeWithFacet
 			
 			throw new BadTypeException(
 				BadTypeException.ERR_LOOSENED_FACET,
-				FACET_LENGTH, d.getName() );
+				FACET_WHITESPACE, d.displayName() );
 		}
 		
 		// consistency with minLength/maxLength is checked in DataTypeImpl.derive method.

@@ -64,7 +64,13 @@ abstract class DataTypeWithFacet extends DataTypeImpl
 		}
 	}
 	
-	final public int isFacetApplicable( String facetName )
+	
+	public final String displayName()
+	{
+		return concreteType.getName()+"-derived";
+	}
+	
+	public final int isFacetApplicable( String facetName )
 	{
 		if( this.facetName.equals(facetName) )
 		{

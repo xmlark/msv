@@ -32,7 +32,8 @@ import java.util.Iterator;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public abstract class IslandSchemaImpl implements IslandSchema
+public abstract class IslandSchemaImpl
+			implements IslandSchema, java.io.Serializable
 {
 	/** map from name to DeclImpl. */
 	protected final Map elementDecls = new java.util.HashMap();

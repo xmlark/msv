@@ -162,6 +162,11 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		if( r!=Expression.nullSet ) {
 			// this attribute is properly consumed.
 			expression = r;
+			
+			if(com.sun.msv.driver.textui.Debug.debug)
+				System.out.println("-- residual after :" +
+					com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(r));
+			
 			return true;
 		}
 		

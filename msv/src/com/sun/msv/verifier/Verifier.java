@@ -224,6 +224,9 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	private final DatatypeRef attributeType = new DatatypeRef();
 	
 	protected Datatype[] feedAttribute( Acceptor child, String uri, String localName, String qName, String value ) throws SAXException {
+		if( com.sun.msv.driver.textui.Debug.debug )
+			System.out.println("-- processing attribute: @"+qName);
+		
 		attributeType.types = null;
 		if( !child.onAttribute( uri,localName,qName,value,this,null,attributeType ) ) {
 			// error

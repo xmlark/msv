@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.xml.resolver.tools.CatalogResolver;
 import org.iso_relax.dispatcher.Dispatcher;
 import org.iso_relax.dispatcher.SchemaProvider;
 import org.iso_relax.dispatcher.impl.DispatcherImpl;
@@ -42,7 +43,6 @@ import com.sun.msv.verifier.DocumentDeclaration;
 import com.sun.msv.verifier.Verifier;
 import com.sun.msv.verifier.identity.IDConstraintChecker;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import com.sun.resolver.tools.CatalogResolver;
 
 /**
  * command line Verifier.

@@ -10,6 +10,7 @@
 package com.sun.msv.grammar;
 
 import com.sun.msv.util.StringPair;
+import com.sun.msv.grammar.util.NameClassSimplifier;
 
 /**
  * validator of (namespaceURI,localPart) pair.
@@ -52,5 +53,15 @@ public abstract class NameClass implements java.io.Serializable {
 	public static final String LOCALNAME_WILDCARD = "*";
 	
 	
-	
+	/** Computes the intersection of two name classes. */
+	public static NameClass intersection( NameClass lhs, NameClass rhs ) {
+		return NameClassSimplifier.simplify(
+			new DifferenceNameClass( lhs, new NotNameClass(rhs) ) );
+	}
+
+	/** Computes the union of two name classes. */
+	public static NameClass union( NameClass lhs, NameClass rhs ) {
+		return NameClassSimplifier.simplify(
+			new ChoiceNameClass(lhs,rhs) );
+	}
 }

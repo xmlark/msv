@@ -1,3 +1,12 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.tranquilo.reader.dtd;
 
 import com.sun.tranquilo.datatype.BadTypeException;
@@ -28,6 +37,8 @@ import java.util.Iterator;
 /**
  * constructs {@link RELAXModule} object that exactly matches to
  * the parsed DTD.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DTDReader implements
 	DTDEventListener, IDContextProvider {

@@ -22,6 +22,8 @@ import com.sun.tranquilo.grammar.ReferenceExp;
  * 
  * <code>self</code> field contains an expression that matches
  * only to this element declaration without no substituted element decls.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ElementDeclExp extends ReferenceExp
 {

@@ -14,6 +14,11 @@ import com.sun.tranquilo.reader.State;
 import com.sun.tranquilo.reader.IgnoreState;
 import com.sun.tranquilo.util.StartTagInfo;
 
+/**
+ * used to parse &lt;schema&gt; element of included schema.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class SchemaIncludedState extends GlobalDeclState {
 	
 	/**

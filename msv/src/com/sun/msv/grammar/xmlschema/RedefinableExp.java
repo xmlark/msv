@@ -11,6 +11,11 @@ package com.sun.tranquilo.grammar.xmlschema;
 
 import com.sun.tranquilo.grammar.ReferenceExp;
 
+/**
+ * declaration that can be redefined by using &lt;redefine&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public abstract class RedefinableExp extends ReferenceExp {
 	
 	public RedefinableExp( String typeLocalName ) {

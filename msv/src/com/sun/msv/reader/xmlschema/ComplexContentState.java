@@ -19,6 +19,8 @@ import com.sun.tranquilo.util.StartTagInfo;
  * parses &lt;complexContent&gt; element.
  * 
  * the expression created by this state is used as ComplexTypeExp.self field.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ComplexContentState extends ExpressionWithChildState {
 	

@@ -17,6 +17,11 @@ import com.sun.tranquilo.reader.State;
 import com.sun.tranquilo.reader.SequenceState;
 import com.sun.tranquilo.util.StartTagInfo;
 
+/**
+ * used to parse restriction/extension element as a child of complexContent element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class ComplexContentBodyState extends SequenceState {
 	
 	/** ComplexType object that we are now constructing. */

@@ -11,7 +11,11 @@ package com.sun.tranquilo.reader.xmlschema;
 
 import com.sun.tranquilo.reader.State;
 
-// used also for import.
+/**
+ * RootIncludedSchemaState + final wrap up.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class RootState extends RootIncludedSchemaState {
 	
 	protected RootState( State topLevelState ) {

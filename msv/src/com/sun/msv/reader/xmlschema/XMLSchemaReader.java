@@ -46,6 +46,11 @@ import java.text.MessageFormat;
 import org.xml.sax.Locator;
 import org.xml.sax.InputSource;
 
+/**
+ * parses XML representation of XML Schema and constructs AGM.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class XMLSchemaReader extends GrammarReader {
 	
 	public XMLSchemaReader(

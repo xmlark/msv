@@ -16,6 +16,8 @@ import com.sun.tranquilo.reader.ExpressionWithoutChildState;
 
 /**
  * used to parse &lt;element &gt; element with ref attribute.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ElementRefState extends ExpressionWithoutChildState {
 

@@ -11,6 +11,11 @@ package com.sun.tranquilo.reader.xmlschema;
 
 import com.sun.tranquilo.reader.ChildlessState;
 
+/**
+ * used to parse &lt;import&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class ImportState extends ChildlessState {
 	
 	protected void startSelf() {

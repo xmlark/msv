@@ -25,7 +25,9 @@ import java.util.StringTokenizer;
 import java.util.Iterator;
 
 /**
- * used to parse &lt;any &gt; element.
+ * base implementation of AnyAttributeState and AnyElementState.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class AnyState extends ExpressionWithoutChildState {
 

@@ -13,6 +13,11 @@ import com.sun.tranquilo.reader.SimpleState;
 import com.sun.tranquilo.reader.State;
 import com.sun.tranquilo.util.StartTagInfo;
 
+/**
+ * used to parse root of schema document.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class RootIncludedSchemaState extends SimpleState {
 	
 	protected State topLevelState;

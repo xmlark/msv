@@ -9,6 +9,11 @@
  */
 package com.sun.tranquilo.grammar.xmlschema;
 
+/**
+ * model group declaration.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class GroupDeclExp extends RedefinableExp {
 	
 	public GroupDeclExp( String typeLocalName ) {

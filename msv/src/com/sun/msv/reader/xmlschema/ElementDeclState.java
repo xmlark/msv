@@ -29,6 +29,8 @@ import org.xml.sax.Locator;
  * 
  * this state uses ExpressionWithChildState to collect content model
  * of this element declaration.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ElementDeclState extends ExpressionWithChildState {
 

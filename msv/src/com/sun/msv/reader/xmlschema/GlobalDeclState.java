@@ -18,6 +18,11 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.xmlschema.SimpleTypeExp;
 import com.sun.tranquilo.util.StartTagInfo;
 
+/**
+ * State that parses global declarations.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class GlobalDeclState extends SimpleState
 	implements ExpressionOwner,TypeOwner {
 	

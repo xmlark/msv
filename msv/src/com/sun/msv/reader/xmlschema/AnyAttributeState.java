@@ -19,7 +19,9 @@ import java.util.StringTokenizer;
 import java.util.Iterator;
 
 /**
- * used to parse &lt;any &gt; element.
+ * used to parse &lt;anyAttribute &gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class AnyAttributeState extends AnyState {
 

@@ -15,6 +15,11 @@ import com.sun.tranquilo.reader.State;
 import com.sun.tranquilo.reader.ExpressionWithChildState;
 import com.sun.tranquilo.util.StartTagInfo;
 
+/**
+ * used to parse &lt;simpleContent&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class SimpleContentState extends ExpressionWithChildState {
 	
 	protected State createChildState( StartTagInfo tag ) {

@@ -13,10 +13,14 @@ import com.sun.tranquilo.datatype.DataType;
 import com.sun.tranquilo.grammar.ReferenceExp;
 import com.sun.tranquilo.grammar.ExpressionPool;
 
-/*
-XML Schema allows forward reference to simple types. therefore it must be
-indirectionalized by ReferenceExp.
-*/
+/**
+ * Simple type declaration.
+ * 
+ * XML Schema allows forward reference to simple types. therefore it must be
+ * indirectionalized by ReferenceExp.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class SimpleTypeExp extends RedefinableExp {
 	
 	SimpleTypeExp( String typeLocalName ) {

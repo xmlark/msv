@@ -18,6 +18,11 @@ import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.reader.State;
 import org.xml.sax.Locator;
 
+/**
+ * used to parse &lt;complexType&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class ComplexTypeDeclState extends RedefinableDeclState {
 	
 	protected ComplexTypeExp decl;

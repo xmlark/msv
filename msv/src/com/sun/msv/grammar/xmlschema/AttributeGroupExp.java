@@ -9,6 +9,11 @@
  */
 package com.sun.tranquilo.grammar.xmlschema;
 
+/**
+ * attribute group declaration.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class AttributeGroupExp extends RedefinableExp {
 	
 	public AttributeGroupExp( String typeLocalName ) {

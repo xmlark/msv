@@ -11,6 +11,11 @@ package com.sun.tranquilo.grammar.xmlschema;
 
 import com.sun.tranquilo.grammar.ReferenceExp;
 
+/**
+ * attribute declaration.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class AttributeDeclExp extends ReferenceExp {
 	
 	public AttributeDeclExp( String typeLocalName ) {

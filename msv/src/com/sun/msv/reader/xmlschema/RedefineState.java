@@ -14,6 +14,11 @@ import com.sun.tranquilo.grammar.xmlschema.SimpleTypeExp;
 import com.sun.tranquilo.reader.ChildlessState;
 import com.sun.tranquilo.reader.datatype.xsd.SimpleTypeState;
 
+/**
+ * used to parse &lt;redefine&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class RedefineState extends GlobalDeclState {
 	
 	// TODO: elementDecl/attributeDecl are prohibited in redefine.

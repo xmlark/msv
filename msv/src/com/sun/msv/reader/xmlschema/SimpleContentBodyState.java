@@ -20,6 +20,11 @@ import com.sun.tranquilo.reader.datatype.TypeOwner;
 import com.sun.tranquilo.reader.datatype.xsd.FacetStateParent;
 import com.sun.tranquilo.util.StartTagInfo;
 
+/**
+ * used to parse restriction/extension element as a child of &lt;simpleContent&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class SimpleContentBodyState extends SequenceState
 	implements FacetStateParent,TypeOwner {
 	

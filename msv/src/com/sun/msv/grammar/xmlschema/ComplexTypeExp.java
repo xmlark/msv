@@ -38,6 +38,8 @@ import com.sun.tranquilo.grammar.trex.ElementPattern;
  * 
  * <code>restrictions</code> field contains choices of selfWType of those
  * types which are derived by restriction from this type.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ComplexTypeExp extends RedefinableExp {
 	

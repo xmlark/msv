@@ -19,7 +19,9 @@ import com.sun.tranquilo.reader.State;
 import org.xml.sax.Locator;
 
 /**
- * parses &lt;attributeGroup /&gt; element
+ * parses &lt;attributeGroup /&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class AttributeGroupState extends RedefinableDeclState {
 	

@@ -15,6 +15,11 @@ import com.sun.tranquilo.grammar.ExpressionPool;
 import com.sun.tranquilo.grammar.trex.TREXPatternPool;
 import java.util.Map;
 
+/**
+ * set of XML Schema. This set can be used to validate a document.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class XMLSchemaGrammar implements Grammar {
 
 	public XMLSchemaGrammar() {

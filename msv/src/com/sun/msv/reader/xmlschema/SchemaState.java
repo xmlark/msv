@@ -11,6 +11,11 @@ package com.sun.tranquilo.reader.xmlschema;
 
 import com.sun.tranquilo.grammar.xmlschema.XMLSchemaSchema;
 
+/**
+ * used to parse &lt;schema&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class SchemaState extends SchemaIncludedState {
 
 	protected SchemaState( String expectedTargetNamespace ) {

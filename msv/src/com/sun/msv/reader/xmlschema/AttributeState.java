@@ -24,6 +24,8 @@ import org.xml.sax.Locator;
 
 /**
  * used to parse &lt;attribute &gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class AttributeState extends ExpressionWithChildState {
 	

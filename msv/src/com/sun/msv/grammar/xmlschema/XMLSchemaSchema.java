@@ -16,6 +16,14 @@ import com.sun.tranquilo.grammar.trex.TREXPatternPool;
 import com.sun.tranquilo.grammar.ReferenceContainer;
 import com.sun.tranquilo.grammar.ReferenceExp;
 
+/**
+ * XML Schema object.
+ * 
+ * A set of "schema components" that share the same target namespace.
+ * It contains all global declarations.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class XMLSchemaSchema {
 
 	public static final String XMLSchemaInstanceNamespace =

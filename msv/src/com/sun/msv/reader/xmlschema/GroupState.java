@@ -18,6 +18,11 @@ import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.reader.State;
 import org.xml.sax.Locator;
 
+/**
+ * used to parse &lt;group&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class GroupState extends RedefinableDeclState {
 	
 	protected State createChildState( StartTagInfo tag ) {

@@ -1,6 +1,6 @@
 ======================================================================
             README FILE FOR THE SUN XML DATATYPES LIBRARY
-                     Preview Version.1 April, 2001
+                     Preview Version.2 June, 2001
                  Copyright (c) Sun Microsystems, 2001
 Document written by Kohsuke Kawaguchi (kohsuke.kawaguchi@eng.sun.com)
 ======================================================================

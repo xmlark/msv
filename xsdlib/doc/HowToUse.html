@@ -15,8 +15,8 @@
                   <h1>Using the Sun<small><sup>TM</sup></small> XML Datatypes Library</h1>
                </td>
                <td rowspan="2" align="center" valign="middle" bgcolor="#dddddd">
-                  <p><strong>Preview Version 1<br>
-                      April, 2001</strong></p>
+                  <p><strong>Preview Version 2<br>
+                      June, 2001</strong></p>
                   <p><a href="mailto:kohsuke.kawaguchi@eng.sun.com"><strong>Kohsuke KAWAGUCHI</strong></a></p>
                </td>
                <td rowspan="2" align="right" valign="middle" bgcolor="#FFFFFF" nowrap><small><em>Copyright &copy; 2001</em></small><br>
@@ -61,11 +61,12 @@
    <table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
          <tr>
             <td bgcolor="#eeeeee">
-               <pre>void f( String v ) {
+               <pre>import com.sun.msv.datatype.xsd.XSDatatype;
+void f( String v ) {
   // obtain a type object
-  DataType dt = DataTypeFactory.getTypeByName(&quot;integer&quot;);
+  XSDatatype dt = DatatypeFactory.getTypeByName(&quot;integer&quot;);
   // validates a type
-  if( dt.verify(v,null) )
+  if( dt.isValid(v,null) )
     ; // v is a valid integer
   else
     ; // v is not a valid integer
@@ -75,13 +76,14 @@
       </table>
    <hr>
    <p>Several types are context-dependent. For example, the <code>QName</code> type, which validates something like <code>prefix:localPart</code>, needs to know that the given prefix is properly declared. </p>
-   <p>This information must be supplied to <code>DataType</code> object by the caller. To do this, the caller must provide an object that implements the <code>ValidationContextProvider</code> interface and pass it as the second parameter of the verify method.</p>
+   <p>This information must be supplied to <code>Datatype</code> object by the caller. To do this, the caller must provide an object that implements the <code>ValidationContext</code> interface and pass it as the second parameter of the verify method.</p>
 
 <hr>
    <table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
 	<tr>
 		<td bgcolor="#eeeeee">
-<pre>class MyContextProvider implements ValidationContextProvider
+<pre>import org.relaxng.datatype.ValidationContext;
+class MyContext implements ValidationContext
 {
   String resolveNamespacePrefix( String prefix ) {
     // resolves namespace prefix to namespace URI.
@@ -90,13 +92,14 @@
   boolean isUnparsedEntity( String entityName ) {
     // checks if given name is a valid entity name.
   }
+  ...
 }
 
-void f( String v, MyContextProvider context ) {
+void f( String v, MyContext context ) {
   // obtain a type object
-  DataType dt = DataTypeFactory.getTypeByName(&quot;QName&quot;);
+  XSDatatype dt = DatatypeFactory.getTypeByName(&quot;QName&quot;);
   // validates a type
-  if( dt.verify(v,contest) )
+  if( dt.isValid(v,context) )
     ; // v is a valid QName
   else
     ; // v is not a valid QName
@@ -105,7 +108,7 @@ void f( String v, MyContextProvider context ) {
 </table>
 <hr>
 
-   <p>Although the first example passes null as a <code>ValidationContextProvider</code>, the caller must <em>always</em> provide a valid <code>ValidationContextProvider</code> for the library to work correctly.</p>
+   <p>Although the first example passes null as a <code>ValidationContext</code>, the caller must <em>always</em> provide a valid <code>ValidationContext</code> for the library to work correctly.</p>
 </blockquote>
 
 <hr>
@@ -113,39 +116,39 @@ void f( String v, MyContextProvider context ) {
 
 <h3><em><font color="#0000FF">By List</font></em></h3>
 <blockquote>
-   <p>The following example derives a new type from an existing <code>DataType</code> object by list.</p>
+   <p>The following example derives a new type from an existing <code>XSDatatype</code> object by list.</p>
    
 <hr>
       <table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
          <tr>
             <td bgcolor="#eeeeee">
-               <pre>DataType deriveByList( DataType itemType ) throws BadTypeException {
-  return DataTypeFactory.deriveByList(&quot;myType&quot;,itemType);
+               <pre>XSDatatype deriveByList( XSDatatype itemType ) throws DatatypeException {
+  return DatatypeFactory.deriveByList(&quot;myType&quot;,itemType);
 }</pre>
       </td>
          </tr>
       </table>
       <hr>
 
-   <p>The first parameter specifies the name of the newly created type. Note that these derived types cannot be found through the <code>getTypeByName</code> method of the <code>DataTypeFactory</code> class.</p>
-   <p>When an error is found during derivation, a <code>BadTypeException</code> will be thrown. For example, if you derive a type by list from list type, an exception will be thrown.</p>
+   <p>The first parameter specifies the name of the newly created type. Note that these derived types cannot be found through the <code>getTypeByName</code> method of the <code>DatatypeFactory</code> class.</p>
+   <p>When an error is found during derivation, a <code>org.relaxng.datatype.DatatypeException</code> will be thrown. For example, if you derive a type by list from list type, an exception will be thrown.</p>
 </blockquote>
 <h3><em><font color="#0000FF">By Union</font></em></h3>
 
 <blockquote>
-   <p>The following example derives a new type from existing <code>DataType</code> objects by union.</p>
+   <p>The following example derives a new type from existing <code>XSDatatype</code> objects by union.</p>
       <hr>
    <table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
          <tr>
           <td bgcolor="#eeeeee">
-             <pre>DataType deriveByUnion( DataType[] memberTypes ) throws BadTypeException {
-  return DataTypeFactory.deriveByUnion(&quot;myType&quot;,memberTypes);
+             <pre>XSDatatype deriveByUnion( XSDatatype[] memberTypes ) throws DatatypeException {
+  return DatatypeFactory.deriveByUnion(&quot;myType&quot;,memberTypes);
 }</pre>
       </td>
          </tr>
       </table>
       <hr>
-   <p> The only difference between derivation by list and derivation by union is that the latter accepts more than one base type.</p>
+   <p> The only difference between derivation by list and derivation by union (beside the semantics) is that the latter accepts more than one base type.</p>
 </blockquote>
 
 <h3><em><font color="#0000FF">By Restriction</font></em></h3>
@@ -157,8 +160,8 @@ void f( String v, MyContextProvider context ) {
    <table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
       <tr>
          <td bgcolor="#eeeeee">
-            <pre>DataType f() throws BadTypeException {
-  DataType baseType = DataTypeFactory.getTypeByName(&quot;string&quot;);
+            <pre>XSDatatype f() throws DatatypeException {
+  XSDatatype baseType = DatatypeFactory.getTypeByName(&quot;string&quot;);
 
   // create a type incubator with the base type
   TypeIncubator incubator = new TypeIncubator(baseType);
@@ -168,7 +171,7 @@ void f( String v, MyContextProvider context ) {
   incubator.add( &quot;maxLength&quot;, &quot;20&quot;, false, null );
 
   // derive a new type by those facets
-  DataType derived = incubator.derive(&quot;newTypeName&quot;);
+  XSDatatype derived = incubator.derive(&quot;newTypeName&quot;);
 
   return derived;
 }</pre>
@@ -177,9 +180,9 @@ void f( String v, MyContextProvider context ) {
    </table>
    <hr>
 
-   <p>The third parameter to the add method specifies whether that facet should be &quot;fixed&quot; or not. Once a facet is fixed, a derived class can no longer restrict that facet.</p>
-   <p>The fourth parameter is again <code>ValidationContextProvider</code>, which is sometimes necessary. Although the above example does not supply one, the caller has to supply an object that implements <code>ValidationContextProvider</code>.</p>
-   <p><code>BadTypeException</code> can be thrown when you add a facet, or when you call the derive method.</p>
+   <p>The third parameter to the add method specifies whether that facet should be &quot;fixed&quot; or not. Once a facet is fixed, a derived type can no longer restrict that facet.</p>
+   <p>The fourth parameter is again <code>ValidationContext</code>. Although the above example does not supply one, the caller has to supply an object that implements <code>ValidationContext</code>.</p>
+   <p><code>DatatypeException</code> can be thrown when you add a facet, or when you call the derive method.</p>
 </blockquote>
 
 <hr>
@@ -192,19 +195,15 @@ void f( String v, MyContextProvider context ) {
    <table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
       <tr>
          <td bgcolor="#eeeeee">
-            <pre>void test( DataType dt, String v, ValidationContextProvider context ) {
-  if( dt.verify(v,context) )
+            <pre>void test( XSDatatype dt, String v, ValidationContext context ) {
+  try {
+    dt.checkValid(v,context);
     System.out.println(&quot;valid&quot;);
-  else {
-    try {
-      DataTypeDiagnosis d = dt.diagnose(v,context);
-      // print diagnosis message
+  } catch( DatatypeException e ) {
+    if( d.getMessage()==null )
+      System.out.println(&quot;invalid: diagnosis not supported&quot;);
+    else
       System.out.println(&quot;invalid: &quot;+d.getMessage());
-    }
-    catch( NotSupportedOperationException e ) {
-      // data type may not support diagnosis.
-      System.out.println(&quot;invalid&quot;);
-    }
   }
 }</pre>
          </td>
@@ -212,7 +211,7 @@ void f( String v, MyContextProvider context ) {
    </table>
       <hr>
 
-   <p>In this way, the user gets informative error messages. If the <code>DataType</code> object does not support diagnosis, it throws <code>NotSupportedOperationException</code>. It is the caller's responsibility to handle this exception correctly.</p>
+   <p>In this way, the user gets informative error messages. If the <code>Datatype</code> object does not support diagnosis, the getMessage method returns null. It is the caller's responsibility to handle this situation correctly.</p>
 </blockquote>
 
 <hr>
@@ -222,10 +221,10 @@ void f( String v, MyContextProvider context ) {
       <p>Types <code>float</code> and <code>double</code>: the spec says a lexical value must be mapped to the closest value in the value space. However, This library cannot accept values that are larger than the maximum value for that type or smaller than the minimum value for that type. This should not be a problem for most users.</p>
    </li>
    <li>
-      <p><code>ID</code>, <code>IDREF</code>, and <code>IDREFS</code> types are not implemented. Although uniqueness constraints are removed from Part 2, these types are still intended to be used with uniqueness constraints. These constraints are so special that it is impossible to provide a generic implementation. <code>com.sun.tranquilo.datatype.DataTypeFactory</code> does not recognize these three types.</p>
+      <p><code>ID</code>, <code>IDREF</code>, and <code>IDREFS</code> types are not implemented. Although uniqueness constraints are removed from Part 2, these types are still intended to be used with uniqueness constraints. These constraints are so special that it is impossible to provide a generic implementation. <code>com.sun.tranquilo.datatype.DatatypeFactory</code> does not recognize these three types.</p>
    </li>
    <li>
-      <p><code>NOTATION</code> type is not implemented. <code>com.sun.tranquilo.datatype.DataTypeFactory</code> does not recognize this type.</p>
+      <p><code>NOTATION</code> type is not implemented. <code>com.sun.tranquilo.datatype.DatatypeFactory</code> does not recognize this type.</p>
    </li>
    <li>
       <p><code>length</code>, <code>minLength</code>, and <code>maxLength</code> facets are effectively limited to the value 2147483647. Values above this limit are recognized, but will be treated as this limit. Items larger than this limit will not be validated correctly. This limitation has no practical impact.</p>
@@ -261,11 +260,11 @@ void f( String v, MyContextProvider context ) {
 </ol>
 <hr>
 <h2><a name="misc"></a><font color="#0000FF">Miscellaneous Notes</font></h2>
-<h3><em><font color="#0000FF">DataType Interface</font></em></h3>
+<h3><em><font color="#0000FF">Datatype Interface</font></em></h3>
 
 <blockquote>
-   <p>The <code>DataType</code> interface is <em>not</em> intended to be used as a general interface for datatype vocabularies. This interface is strongly coupled with XSD. Providing a generic interface that can be used by various full-fledged datatype vocabularies is not trivial.</p>
-   <p>In order to overcome this shortcoming in the current release of the Sun XML Datatypes Library, developers wishing to implement their own type that implements <code>DataType</code> should do so by deriving their class from the <code>ConcreteType</code> class.</p>
+   <p>The <code>Datatype</code> interface is <em>not</em> intended to be used as a general interface for datatype vocabularies. This interface is strongly coupled with XSD. Providing a generic interface that can be used by various full-fledged datatype vocabularies is not trivial.</p>
+   <p>In order to overcome this shortcoming in the current release of the Sun XML Datatypes Library, developers wishing to implement their own type that implements <code>Datatype</code> should do so by deriving their class from the <code>ConcreteType</code> class.</p>
 </blockquote>
 </body>
 </html>

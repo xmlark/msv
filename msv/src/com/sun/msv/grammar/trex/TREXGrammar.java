@@ -61,4 +61,5 @@ public class TREXGrammar
 	}
 	
 	public TREXGrammar( TREXPatternPool pool )	{ this(pool,null); }
+	public TREXGrammar() { this(new TREXPatternPool(),null); }
 }

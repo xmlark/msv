@@ -29,7 +29,9 @@ import org.xml.sax.Attributes;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.ResourceBundle;
 import javax.xml.parsers.SAXParserFactory;
+import java.text.MessageFormat;
 
 public class TXMLSchemaReader extends XMLSchemaReader implements TahitiGrammarReader {
 	
@@ -160,4 +162,20 @@ public class TXMLSchemaReader extends XMLSchemaReader implements TahitiGrammarRe
 		defaultPackageName = (String)packageNameStack.pop();
 	}
 
+	
+	protected String localizeMessage( String propertyName, Object[] args ) {
+		String format;
+		try {
+			format = ResourceBundle.getBundle(
+				"com.sun.tahiti.reader.xmlschema.Messages").getString(propertyName);
+		} catch( Exception e ) {
+			try {
+				format = ResourceBundle.getBundle(
+					"com.sun.tahiti.reader.Messages").getString(propertyName);
+			} catch( Exception ee ) {
+				return super.localizeMessage(propertyName,args);
+			}
+		}
+	    return MessageFormat.format(format, args );
+	}
 }

@@ -18,7 +18,9 @@ public class TAnyElementState extends AnyElementState {
 		if( process.equals("skip") ) {
 			// if the skip is specified, probably these elements are unnecessary.
 			// so ignore about them.
-			return new IgnoreItem( body );
+			IgnoreItem ii = new IgnoreItem( body );
+			owner.reader.setDeclaredLocationOf(ii);
+			return ii;
 		}
 		
 		if( process.equals("strict") || process.equals("lax") ) {
@@ -30,7 +32,9 @@ public class TAnyElementState extends AnyElementState {
 				TahitiGrammarReader.TahitiNamespace,"name");
 			if(name==null)	name=defaultFieldName;
 			
-			return new FieldItem(name, body);
+			FieldItem fi = new FieldItem(name, body);
+			owner.reader.setDeclaredLocationOf(fi);
+			return fi;
 		}
 		
 		throw new Error();	// unknown processing mode.

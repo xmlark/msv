@@ -59,9 +59,11 @@ public class TElementDeclState extends ElementDeclState {
 						className = head.getPackageName()+".";
 					className += "I"+head.getBareName();
 					
-					decl.substitutionAffiliation.exp =
+					InterfaceItem ii = 
 						reader.annGrammar.createInterfaceItem( className, 
 							decl.substitutionAffiliation.exp );
+					decl.substitutionAffiliation.exp = ii;
+					reader.setDeclaredLocationOf(ii);
 				}
 			});
 		}
@@ -101,6 +103,7 @@ public class TElementDeclState extends ElementDeclState {
 				// this is the element that we are looking for.
 				// wrap it by a ClassItem.
 				ClassItem item = reader.annGrammar.createClassItem( className, exp );
+				reader.setDeclaredLocationOf(item);
 				reader.addElementClass( decl, item );
 				return item;
 			}

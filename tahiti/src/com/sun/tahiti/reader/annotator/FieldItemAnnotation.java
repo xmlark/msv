@@ -13,6 +13,7 @@ import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
 import com.sun.msv.grammar.trex.ElementPattern;
+import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
 import com.sun.tahiti.grammar.*;
 import com.sun.tahiti.grammar.util.Multiplicity;
 import com.sun.tahiti.grammar.util.MultiplicityCounter;
@@ -83,17 +84,32 @@ class FieldItemAnnotation
 		private int iota = 0;
 		
 		public Expression onRef( ReferenceExp exp ) {
+			
+			// If this ReferenceExp has already visited and annotated. reuse it.
+			// This will prevent annotating the same ChoiceExp, etc again and again.
 			Expression r = (Expression)annotatedRefs.get(exp);
-			if(r!=null)		return r;	// this ReferenceExp has already visited and annotated. reuse it.
+			if(r!=null)			return r;
 
 			// store the name information
 			boolean pushed = false;
-			if(exp.name!=null) {
-				names.push(exp.name);
-				pushed = true;
+			if(exp.name!=null ) {
+				if(!(exp instanceof SimpleTypeExp)) {
+					// typically we don't want to use the type name 
+					// as the field name.
+					names.push(exp.name);
+					pushed = true;
+				}
 			}
 			r = exp.exp.visit(this);
-			annotatedRefs.put(exp,r);	// store the annotated result.
+			
+			if( pushed )
+				// store the annotated result.
+				// if we haven't push the name,
+				// the top of the names stack is the name from ancestors.
+				// in that case, visiting this node next time will
+				// produce a different result.
+				// So we cannot memorize the result.
+				annotatedRefs.put(exp,r);
 			
 //	debug: assertion check
 // since it is now properly annotated,
@@ -371,11 +387,11 @@ class FieldItemAnnotation
 					if( !bBranchWithPrimitive[0] ) {
 						// if there is no branch with a PrimitiveItem,
 						// add an interface item automatically.
-					
+						
 						String intfName = owner.getPackageName();
 						if(intfName==null)	intfName="";
 						else				intfName=intfName+".";
-					
+						
 						intfName += "I"+NameUtil.capitalizeFirst(fieldName);
 						// TODO: name uniqueness check
 					
@@ -450,7 +466,7 @@ class FieldItemAnnotation
 			if( hint!=null && hint instanceof NameClassAndExpression ) {
 				NameClass nc = ((NameClassAndExpression)hint).getNameClass();
 				if( nc instanceof SimpleNameClass )
-					name = ((SimpleNameClass)nc).localName;
+					return NameUtil.xmlNameToJavaName("field",((SimpleNameClass)nc).localName);
 			}
 			
 			if( name==null )

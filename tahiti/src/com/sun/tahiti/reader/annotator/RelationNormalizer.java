@@ -362,26 +362,30 @@ class RelationNormalizer {
 							new Locator[]{
 								reader.getDeclaredLocationOf(exp),
 								reader.getDeclaredLocationOf(sci.definition)},
-							ERR_BAD_SUPERCLASS_BODY_CARDINALITY,
+							ERR_BAD_SUPERCLASS_BODY_MULTIPLICITY,
 							new Object[]{sci.definition.name} );
 					}
 				}
 			}
 
-			if( isInterface(exp) ) {
-				// I-I/I-C multiplicity must be (1,1)
-				InterfaceItem ii = (InterfaceItem)exp;
-				if( !multiplicity.isUnique() ) {
-					reader.reportError(
-						new Locator[]{reader.getDeclaredLocationOf(ii)},
-						ERR_BAD_INTERFACE_CLASS_CARDINALITY,
-						new Object[]{ ii.name } );
-				}
-			}
-			
 			if( isField(exp) ) {
 				// store the multiplicity of this field.
 				((FieldItem)exp).multiplicity = multiplicity;
+			}
+			
+			if( isInterface(exp) ) {
+				// I-I/I-C multiplicity must be (1,1)
+				InterfaceItem ii = (InterfaceItem)exp;
+				if( !multiplicity.isAtMostOnce() ) {
+					reader.reportError(
+						new Locator[]{reader.getDeclaredLocationOf(ii)},
+						ERR_BAD_INTERFACE_CLASS_MULTIPLICITY,
+						new Object[]{ ii.name } );
+				}
+				
+				// InterfaceItem returns the multiplicity of its children.
+				// so don't touch the multiplicity field
+				return exp;
 			}
 			
 			multiplicity = getJavaItemMultiplicity(exp);
@@ -617,10 +621,10 @@ class RelationNormalizer {
 		"Normalizer.MultipleInheritance";	// more than one super class items are found for a class item "{0}".
 	public static final String ERR_MISSING_SUPERCLASS_BODY = // arg:1
 		"Normalizer.MissingSuperClassBody";	// super class item "{0}" doesn't have a child class item.
-	public static final String ERR_BAD_SUPERCLASS_CARDINALITY  = // arg:1
+	public static final String ERR_BAD_SUPERCLASS_MULTIPLICITY  = // arg:1
 		"Normalizer.BadSuperClassMultiplicity";	// class item "{0}" can possibly match its super class several times.
-	public static final String ERR_BAD_SUPERCLASS_BODY_CARDINALITY = // arg:1
+	public static final String ERR_BAD_SUPERCLASS_BODY_MULTIPLICITY = // arg:1
 		"Normalizer.BadSuperClassBodyMultiplicity";	// a super class item can reach this class item "{0}" more than once, or maybe zero.
-	public static final String ERR_BAD_INTERFACE_CLASS_CARDINALITY = // arg:1
+	public static final String ERR_BAD_INTERFACE_CLASS_MULTIPLICITY = // arg:1
 		"Normalizer.BadInterfaceToClassMultiplicity";	// the interface item "{1}" may have repeated children or is epsilon-reducible.
 }

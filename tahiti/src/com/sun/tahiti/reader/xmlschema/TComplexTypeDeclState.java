@@ -22,6 +22,7 @@ public class TComplexTypeDeclState extends ComplexTypeDeclState {
 		
 		// insert a ClassItem.
 		decl.self.exp = reader.annGrammar.createClassItem( reader.computeTypeName(this,"class"), decl.self.exp );
+		reader.setDeclaredLocationOf(decl.self.exp);
 		
 		return body;
 	}

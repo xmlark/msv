@@ -14,12 +14,12 @@ public class TComplexContentBodyState extends ComplexContentBodyState {
 	 * combines the base type content model and this content model
 	 */
 	protected Expression combineToBaseType( ComplexTypeExp baseType, Expression addedExp ) {
-		Expression body = super.combineToBaseType( baseType, addedExp );
-		
-		if( extension )
-			// make this complex type a derived class of the base type.
-			return new SuperClassItem(body);
-		else
-			return body;
+		if( extension ) {
+			SuperClassItem si = new SuperClassItem(baseType.self);
+			reader.setDeclaredLocationOf(si);
+			return reader.pool.createSequence( si, addedExp );
+		} else
+			// what shall we do if it's a restriciton.
+			return addedExp;
 	}
 }

@@ -28,6 +28,7 @@ public class TGroupState extends GroupState {
 		ClassItem cls = reader.annGrammar.createClassItem(
 			reader.computeTypeName(this,"class"), g.exp );
 		cls.isTemporary = true;
+		reader.setDeclaredLocationOf(cls);
 		g.exp = cls;
 		
 		return g;

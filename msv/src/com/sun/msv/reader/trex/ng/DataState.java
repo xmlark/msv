@@ -43,18 +43,19 @@ public class DataState extends ExpressionState {
 		final RELAXNGReader reader = (RELAXNGReader)this.reader;
 		super.startSelf();
 		
-		final String baseType = startTag.getAttribute("type");
-		if( baseType==null ) {
+		final String localName = startTag.getAttribute("type");
+		if( localName==null ) {
 			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "data", "type" );
 		} else {
 			// create a type incubator
 			if( reader.datatypeLib!=null ) {// an error is already reported if lib==null.
+				baseTypeName = new StringPair( reader.datatypeLibURI, localName );
 				 try {
-					typeBuilder = reader.datatypeLib.createDataTypeBuilder(baseType);
+					typeBuilder = reader.datatypeLib.createDataTypeBuilder(localName);
 					if( typeBuilder==null )
-						 reader.reportError( reader.ERR_UNDEFINED_DATATYPE, baseType );
+						 reader.reportError( reader.ERR_UNDEFINED_DATATYPE, localName );
 				 } catch( DataTypeException dte ) {
-					 reader.reportError( reader.ERR_UNDEFINED_DATATYPE_1, baseType, dte.getMessage() );
+					 reader.reportError( reader.ERR_UNDEFINED_DATATYPE_1, localName, dte.getMessage() );
 				 }
 			}
 		}

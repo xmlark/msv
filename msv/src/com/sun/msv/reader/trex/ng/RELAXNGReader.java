@@ -301,20 +301,27 @@ public class RELAXNGReader extends TREXBaseReader {
 	 * So care should be taken not to report the same error again.
 	 */
 	protected DataTypeLibrary datatypeLib = new BuiltinDataTypeLibrary();
+	/** the namespace URI of the currently active datatype library. */
+	protected String datatypeLibURI = RELAXNGNamespace;
+	
 	private final Stack dtLibStack = new Stack();
+	private final Stack dtLibURIStack = new Stack();
 	
 	public void startElement( String a, String b, String c, Attributes d ) throws SAXException {
 		// handle 'datatypeLibrary' attribute propagation
 		dtLibStack.push(datatypeLib);
-		if( d.getIndex("datatypeLibrary")!=-1 )
-			datatypeLib = resolveDataTypeLibrary(d.getValue("datatypeLibrary"));
-		
+		dtLibURIStack.push(datatypeLibURI);
+		if( d.getIndex("datatypeLibrary")!=-1 ) {
+			datatypeLibURI = d.getValue("datatypeLibrary");
+			datatypeLib = resolveDataTypeLibrary(datatypeLibURI);
+		}
 		// if nothing specified, datatype library stays the same.
 		super.startElement(a,b,c,d);
 	}
 	public void endElement( String a, String b, String c ) throws SAXException {
 		super.endElement(a,b,c);
 		datatypeLib = (DataTypeLibrary)dtLibStack.pop();
+		datatypeLibURI = (String)dtLibURIStack.pop();
 	}
 	
 	

@@ -115,8 +115,6 @@
 	************************************************
 -->
 	
-	
-	
 	<!-- generate XSDLib release -->
 	<target name="xsd">
 		<tstamp />
@@ -142,6 +140,11 @@
 				command="export -d . -D now"
 				dest="${stageName}/src/com/sun/xml" />
 
+		<!-- copy Xerces files into source directory -->
+		<copy todir="${stageName}/src">
+			<fileset dir="C:\Program Files\Development\Xerces\src" includes="org/apache/xerces/utils/regex/*.*" />
+		</copy>
+		
 		<!-- obtain document files -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/doc/datatype"
@@ -153,9 +156,6 @@
 			<param name="src" value="${stageName}/src" />
 		</antcall>
 		
-		<copy todir="${stageName}/src">
-			<fileset dir="C:\Program Files\Development\Xerces\src" includes="org/apache/xerces/utils/regex/*.*" />
-		</copy>
 		
 		<!-- compile files -->
 		<mkdir	dir="temp" />
@@ -164,16 +164,16 @@
 			<include name="**/*.java" />
 		</javac>
 		
+		<!-- create a time stamp file -->
+		<echo file="temp/version.properties">version=${DSTAMP}</echo>
+		
 		<!-- creates binary jar -->
 		<jar	jarfile="${stageName}/xsdlib.jar"
 				manifest="./META-INF/XSD.MANIFEST.MF"
 				compress="false">
-			<fileset dir="." includes="temp/**/*.*" />
-			<fileset dir="c:\winnt\java\classes" includes="org/apache/xerces/utils/regex/*.*" />
+			<fileset dir="temp" />
 		</jar>
 		<delete dir="temp" />
-		
-		<!-- copy additional files into src dir. this must be done after compilation -->
 		
 		
 		<!-- creates javadoc -->
@@ -199,23 +199,37 @@
 	
 	
 	<!-- generate Tranquilo release -->
-	<target name="release" depends="javacc">
+	<target name="release">
 		<tstamp />
+		<property name="stageName" value="tranquilo-${DSTAMP}" />
 		
-		<mkdir	dir="release" />
+		<delete	dir="${stageName}" />
+		<mkdir	dir="${stageName}" />
+		<mkdir	dir="${stageName}/src" />
 
-		<!-- copy document files -->
-		<copy	todir="release">
-			<fileset dir="doc/tranquilo" includes="**/*.*" />
-		</copy>
+		<!-- obtain source codes from cvs -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="tranquilo/src"
+				command="export -d . -D now"
+				dest="${stageName}/src/" />
 		
-		<!-- compile files again -->
+		<!-- obtain document files -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="tranquilo/doc/tranquilo"
+				command="export -d . -D now"
+				dest="${stageName}" />
+	
+		<!-- run javacc -->
+		<antcall target="doJavacc">
+			<param name="src" value="${stageName}/src" />
+		</antcall>
+		
+		<!-- compile files -->
 		<mkdir	dir="temp" />
-		<javac	srcdir="${sourceDir}"
+		<javac	srcdir="${stageName}/src"
 				destdir="temp"
 				classpath="${libDir}">
-			<include name="**/tranquilo/**/*.java" />
-			<include name="**/sun/xml/*.java" />
+			<include name="**/*.java" />
 		</javac>
 		
 		<!-- unzip contents from xerces.jar -->
@@ -226,10 +240,10 @@
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
 		
 		<!-- creates binary jar -->
-		<jar	jarfile="release/tranquilo.jar"
+		<jar	jarfile="${stageName}/tranquilo.jar"
 				manifest="./META-INF/MANIFEST.MF"
 				compress="false">
-			<fileset dir="${sourceDir}" includes="**/tranquilo/**/*.properties" />
+			<fileset dir="${stageName}/src" includes="**/tranquilo/**/*.properties" />
 			<fileset dir="${libDir}" includes="javax/xml/parsers/*.class" />
 			<fileset dir="temp" />
 			<fileset dir="xerces" includes="org/apache/xerces/**/*.*" />
@@ -242,12 +256,86 @@
 		
 		
 		<!-- creates javadoc -->
-		<mkdir		dir="release/javadoc" />
+		<mkdir		dir="${stageName}/javadoc" />
 		<javadoc	locale="en_US"
 					packagenames="com.sun.tranquilo.*"
-					sourcepath="${sourceDir}"
-					destdir="release/javadoc"
+					sourcepath="${stageName}/src"
+					destdir="${stageName}/javadoc"
 					windowtitle="Tranquilo Verifier"
+					public="yes"
+					>
+			<!--
+				if you have encountered error around here,
+				please remove all offline="true" and packagelistLoc="...".
+			-->
+			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
+			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
+			<link offline="true" href="http://iso-relax.sourceforge.net/apiDoc/" packagelistLoc="ExternalPackageLists\ISO-RELAX" />
+		</javadoc>
+		
+		<!-- creates distribution package -->
+		<zip	zipfile="${packageDir}/tranquilo.${DSTAMP}.zip"
+				basedir="."
+				includes="${stageName}/**/*.*" />
+		
+		<delete dir="${stageName}" />
+	</target>
+	
+	
+	
+	
+	
+	
+	
+	<!-- generator release -->
+	<target name="generator">
+		<tstamp />
+		<property name="stageName" value="tranqgen-${DSTAMP}"/>
+		
+		<delete	dir="${stageName}" />
+		<mkdir	dir="${stageName}" />
+		<mkdir	dir="${stageName}/src" />
+		
+		<!-- obtain source codes from cvs -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="tranquilo/generator"
+				command="export -d . -D now"
+				dest="${stageName}/src" />
+				
+		<!-- obtain document files -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="tranquilo/doc/generator"
+				command="export -d . -D now"
+				dest="${stageName}" />
+		
+		
+		<!-- compile files -->
+		<mkdir	dir="temp" />
+		<javac	srcdir="${stageName}/src"
+				destdir="temp"
+				classpath="./package/tranquilo.jar">
+			<include name="**/*.java" />
+		</javac>
+		
+		<!-- create a time stamp file -->
+		<echo file="temp/version.properties">version=${DSTAMP}</echo>
+		
+		<!-- creates binary jar -->
+		<jar	jarfile="${stageName}/tranqgen.jar"
+				manifest="./META-INF/Generator.MANIFEST.MF"
+				compress="false">
+			<fileset dir="temp" includes="**/*.*" />
+		</jar>
+		<delete dir="temp" />
+		
+		
+		<!-- creates javadoc -->
+		<mkdir		dir="${stageName}/javadoc" />
+		<javadoc	locale="en_US"
+					packagenames="com.sun.tranquilo.generator.*"
+					sourcepath="${stageName}/src"
+					destdir="${stageName}/javadoc"
+					windowtitle="Tranquilo Generator"
 					public="yes"
 					>
 			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
@@ -255,13 +343,10 @@
 		</javadoc>
 		
 		<!-- creates distribution package -->
-		<zip	zipfile="${packageDir}/tranquilo.${DSTAMP}.zip">
-			<fileset dir="." includes="src/**/tranquilo/**/*.*" />
-			<fileset dir="." includes="src/**/sun/xml/**/*.*" />
-			<fileset dir="C:\Program Files\Development\Xerces" includes="src/org/apache/xerces/utils/regex/*.*" />
-			<fileset dir="release" />
-		</zip>
+		<zip	zipfile="${packageDir}/tranqgen.${DSTAMP}.zip"
+				basedir="."
+				includes="${stageName}/**/*.*" />
 		
-		<delete dir="release" />
+		<delete	dir="${stageName}" />
 	</target>
 </project>

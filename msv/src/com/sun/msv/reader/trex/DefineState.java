@@ -21,8 +21,9 @@ public class DefineState extends SequenceState
 			return Expression.nullSet;
 		}
 		
+		final TREXGrammarReader reader = (TREXGrammarReader)this.reader;
 		final String name = startTag.getAttribute("name");
-		final ReferenceExp ref = ((TREXGrammarReader)reader).grammar.namedPatterns.getOrCreate(name);
+		final ReferenceExp ref = reader.grammar.namedPatterns.getOrCreate(name);
 		final String combine = startTag.getAttribute("combine");
 		
 		if( ref.exp==null )
@@ -35,6 +36,16 @@ public class DefineState extends SequenceState
 		}
 		else
 		{// some pattern is already defined under this name.
+			if( reader.getDeclaredLocationOf(ref).getSystemId().equals(
+					reader.locator.getSystemId() ) )
+			{
+				reader.reportError( reader.ERR_DUPLICATE_DEFINITION, name );
+				// recovery by ignoring this definition
+				return ref;
+			}
+			
+			reader.setDeclaredLocationOf(ref);
+			
 			if( combine==null )
 			{
 				reader.reportError( new Locator[]{location, reader.getDeclaredLocationOf(ref)},

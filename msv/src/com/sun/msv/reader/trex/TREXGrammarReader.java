@@ -276,4 +276,8 @@ public class TREXGrammarReader extends GrammarReader
 		"TREXGrammarReader.Warning.CombineIgnored";
 	public static final String WRN_OBSOLETED_XMLSCHEMA_NAMSPACE =
 		"TREXGrammarReader.Warning.ObsoletedXMLSchemaNamespace";
+	public static final String ERR_DUPLICATE_DEFINITION =
+		"TREXGrammarReader.DuplicateDefinition";
+	public static final String ERR_NONEXISTENT_PARENT_GRAMMAR =
+		"TREXGrammarReader.NonExistentParentGrammar";
 }

@@ -320,16 +320,17 @@ public abstract class GrammarReader
 	/** this map remembers where ReferenceExps are defined,
 	 * and where user defined types are defined.
 	 * 
-	 * some ReferenceExp in RELAX (e.g., ElementRules) can be defined
+	 * some ReferenceExp can be defined
 	 * in more than one location.
-	 * In those cases, all but the first definition are ignored.
+	 * In those cases, the last one is always memorized.
+	 * This behavior is essential to correctly implement
+	 * TREX constraint that no two &lt;define&gt; is allowed in the same file.
 	 */
 	private final Map declaredLocations = new java.util.HashMap();
 	
 	public void setDeclaredLocationOf( ReferenceExp exp )
 	{
-		if( !declaredLocations.containsKey(exp) )
-			declaredLocations.put(exp, new LocatorImpl(locator) );
+		declaredLocations.put(exp, new LocatorImpl(locator) );
 	}
 	public void setDeclaredLocationOf( DataType dt )
 	{

@@ -28,6 +28,10 @@
 				package="relames/doc"
 				command="export -d . -D now"
 				dest="${stageName}" />
+		<fixcrlf	srcdir="${stageName}"
+					cr="remove"
+					eof="remove"
+					includes="*.txt"/>
 		
 		<!-- compile files -->
 		<mkdir	dir="temp" />
@@ -69,6 +73,9 @@
 		<!-- copy jar file to package dir -->
 		<copy file="${stageName}/relames.jar" tofile="./package/relames.jar" />
 		
+		
+		<!-- remove source codes -->
+		<delete dir="${stageName}/src"/>
 		
 		<!-- creates distribution package -->
 		<zip	zipfile="./package/relames.${DSTAMP}.zip"

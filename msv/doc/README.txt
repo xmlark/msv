@@ -7,9 +7,9 @@ Document written by Kohsuke Kawaguchi (kohsuke.kawaguchi@eng.sun.com)
 ======================================================================
 
 Sun's Multi-Schema Validator is  a Java tool to validate XML documents
-against an XML schema. It supports DTD, RELAX Namespace, RELAX Core,
-TREX, and a subset of XML Schema part 1. This product includes
-software developed by the Apache Software Foundation [1].
+against several kinds of XML schemata. It supports DTD, RELAX Namespace,
+RELAX Core, TREX, and a subset of W3C XML Schema Part 1. This release
+includes software developed by the Apache Software Foundation [1].
 
 ----------------------------------------------------------------------
 OVERVIEW
@@ -18,13 +18,13 @@ OVERVIEW
 This tool is:
 
 * a command line tool that can read XML documents and validate them
-  against a schema (DTD/RELAX/TREX/XML Schema). If an error is found,
+  against a schema (DTD/RELAX/TREX/W3C). If an error is found,
   error messages are provided.
 
 * a library that can be incorporated into Java applications as a
   validator.
 
-See commandline.html for details on how to use it from the command line.
+See commandline.html for details on how to use MSV from the command line.
 See developer.html for details on how to use it as a library.
 
 
@@ -37,16 +37,15 @@ This preview version implements:
 1. XML DTD [2]
 
 2. RELAX Core [3], based on the JIS:TR X 0029:2000 [4] specification,
-   and additional enhancements based on discussions held at the
-   mailing list relstdj [5], reluserj [6], and reldeve [7].
+   and enhancements based on discussions held on the mailing list
+   relstdj [5], reluserj [6], and reldeve [7].
 
-3. RELAX Namespace [3], based on the draft 2001-03-11 version [8] and
-   additional enhancements based on discussions held at the same
-   mailing list.
+3. RELAX Namespace [3], based on the draft of 2001-03-11 [8] plus
+   enhancements based on discussions held at the same mailing list.
 
-4. TREX [9], based on the draft [10] (2001-02-13 version) and the 
-  reference implementation [11]. The only datatype vocabulary available is
-  W3C XML Schema Part 2 PR [12].
+4. TREX [9], based on the draft of 2001-02-13 [10] and the 
+   reference implementation [11]. The only datatype vocabulary available
+   is W3C XML Schema Part 2 PR [12].
 
 5. A limited subset of W3C XML Schema Part 1 PR [13].
    See commandline.html for details of limitations.

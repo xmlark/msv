@@ -28,8 +28,8 @@
 </HEAD>
 <BODY>
 <P ALIGN=center STYLE="MARGIN-BOTTOM: 0in">
-  <B>DEVELOPER GUIDE FOR SUN'S MULTI-SCHEMA VALIADTOR<BR>
-  Preview Version.1 April,2001<BR>
+  <B>DEVELOPER'S GUIDE TO SUN'S MULTI-SCHEMA VALIADTOR<BR>
+  Preview Version.1 April, 2001<BR>
   <BR>
   Copyright &copy; Sun Microsystems, 2001</B>
   </P>
@@ -42,7 +42,7 @@
 <P>
   Sun's Mutli-Schema Validator is  a Java tool to validate XML documents against
   XML schemata. It supports RELAX Namespace, RELAX Core, TREX, XML DTD,
-  and a subset of XML Schema Part 1.
+  and a subset of W3C XML Schema Part 1.
 </P>
 
 
@@ -85,29 +85,29 @@
 	</DD>
 	<DT>Grammar reader:</DT>
 	<DD>
-		a component used to parse schemata by using SAX and to construct AGM.
+		a component used to parse schemata by using SAX to construct AGM.
 	</DD>
 	
 	<DT>Verification grammar model (VGM):</DT>
 	<DD>
 		a bridge between AGM and Validator. It works as an abstraction layer between them,
-		thereby makes non automaton based algorithms possible.
+		thereby makeing non-automaton-based algorithms possible.
 	</DD>
 	
 	<DT>Validator:</DT>
 	<DD>
-		a component to validate XML instance with VGM by using SAX.
+		a component to validate an XML instance with VGM by using SAX.
 	</DD>
 	
 	<DT>Datatype validator: </DT>
 	<DD>
-		a component separately available as Sun XML Datatypes Library.
+		a component separately available as the Sun XML Datatypes Library.
 	</DD>
 	
 	<DT>RELAX Namespace ("divide&amp;validate" framework):</DT>
 	<DD>
-		a component that allow multiple schema languages to cooperatively validate
-		one instance. <i>Implementation is likely to change substantially in
+		a component that allows multiple schema languages to cooperatively validate
+		one instance. <i>The mplementation of this component is likely to change substantially in
 		the future.</i>
 	</DD>
 </DL>
@@ -124,10 +124,10 @@
   use "Java API for RELAX Verifiers" (JARV). JARV is an implementation-independent 
   interface set, so you can even switch to a different verifier implementation if 
   you like. For information about JARV,
-  see <a href="http://iso-relax.sourceforge.net/">http://iso-relax.sourceforge.net/</a>
+  see <a href="http://iso-relax.sourceforge.net/">http://iso-relax.sourceforge.net/</a>.
 </P>
 <P>
-  Despite its name, JARV is not limited to RELAX, but it can be used with TREX.
+  Despite its name, JARV is not limited to RELAX; it can be used with TREX.
   The following example illustrates a typical usage of JARV.
 </P>
 <PRE>
@@ -169,7 +169,7 @@ void f( SAXParserFactory pf )
 </PRE>
 <P>
   VerifierFilter validates the document before your ContentHandler receives
-  SAX events. You can call <code>isValid</code> method of VerifierFilter to
+  SAX events. You can call the <code>isValid</code> method of VerifierFilter to
   check the validity of the document.
 </P>
 <P>
@@ -182,11 +182,11 @@ void f( SAXParserFactory pf )
 <H1>Loading Schemata</H1>
 <P>
   If you need finer control, then you may want to control MSV directly
-  instead of using generic JARV interface. this section and following sections
-  will focus on the direct use of MSV.
+  instead of using the generic JARV interface.
+  This section and following sections will focus on the direct use of MSV.
 </P>
 <P>
-  The easiest way to load a grammar is to use loadSchema method of
+  The easiest way to load a grammar is to use the loadSchema method of
   <code>com.sun.msv.reader.util.GrammarLoader</code>.
 </P>
 <PRE>
@@ -205,7 +205,7 @@ Grammar loadGrammar( String schemaFileNameOrURL )
 }
 </PRE>
 <P>
-  GrammarLoaded automatically detects the type of schema (RELAX Core/TREX/RELAX Namespace/XML Schema)
+  GrammarLoaded automatically detects the type of schema (RELAX Core/TREX/RELAX Namespace/W3C)
   and handles it appropriately.
   
   The second 
@@ -237,14 +237,14 @@ TREXGrammar loadTREX( String schemaFileNameOrURL )
 }
 </PRE>
 <P>
-  parse method also accepts several other forms of arguments (e.g., InputSource).
-  If loading fails, parse method returns null. 
+  The parse method also accepts several other forms of arguments (e.g., InputSource).
+  If loading fails, the parse method returns null. 
 </P>
 <P>
-  In this way, you can parse XML representation of the specific language into MSV's AGM.
+  In this way, you can parse the XML representation of the specific language into MSV's AGM.
 </P>
 <P>
-  Since XML DTDs are not written in XML format, They have to be parsed differently.
+  Since XML DTDs are not written in XML format, they have to be parsed differently.
   To parse an XML DTD, do as follows
 </P>
 <PRE>
@@ -256,17 +256,17 @@ Grammar loadDTD( String schemaFileNameOrURL )
 }
 </PRE>
 <P>
-  The first parameter specifies InputSource object from which the DTD is read.
-  The second paramter controlls the parsing behavior.
-  Currently, MSV cannot parse internal DTD subset.
+  The first parameter specifies the InputSource object from which the DTD is read.
+  The second paramter controls the parsing behavior.
+  Currently, MSV cannot parse an internal DTD subset.
 </P>
 
 
 
 <A id="agm" />
-<H1>Playing with  AGM</H1>
+<H1>Playing with AGM</H1>
 <P>
-  AGM is the internal representation of schema used by MSV.
+  AGM is the internal representation of a schema used by MSV.
   It is a binarized regular expression commonly seen in many validating processors.
 </P>
 
@@ -274,49 +274,53 @@ Grammar loadDTD( String schemaFileNameOrURL )
 <H2>Schema Language Dependency</H2>
 <P>AGM consists of four parts.</P>
 <OL>
-  <LI>
-  <DIV><STRONG>Core:</STRONG> common part of TREX and RELAX. e.g., ChoiceExp, 
-  SequenceExp, MixedExp, and more. Also contains several abstract classes 
-  (ReferenceExp and ElementExp)</DIV>
-  <LI>
-  <DIV><STRONG>TREX extension:</STRONG> primitives introduced for 
-  TREX: InterleavePattern and ConcurPattern.</DIV>
-  <LI>
-  <DIV><STRONG>language specific stubs:</STRONG>
-  concrete implementations of abstract classes,
-  and composite expressions of the specific language.</DIV>
+	<LI>
+		<STRONG>Core:</STRONG> common part of TREX and RELAX. e.g., ChoiceExp, 
+		SequenceExp, MixedExp, and more. Also contains several abstract classes 
+		(ReferenceExp and ElementExp).
+	<LI>
+		<STRONG>TREX extension:</STRONG> primitives introduced for 
+		TREX: InterleavePattern and ConcurPattern.
+	<LI>
+		<STRONG>language-specific stubs:</STRONG>
+		concrete implementations of abstract classes
+		and composite expressions of the specific language.
 </OL>
-<P>TREX introduces several language primitives that are not available in 
-other languages. 
-These primitives are placed in TREX extension part. AGMs constructed from TREX 
-grammars may contain those primitives. AGMs from RELAX never contain primitives 
-of TREX extension.</P>
 <P>
-	Also, languages have several differences in their grammar models.
+	TREX introduces several language primitives that are not available in other languages.
+	These primitives are placed in the TREX extension part. AGMs constructed from TREX 
+	grammars may contain those primitives. AGMs from RELAX never contain TREX extension primitives.
+</P>
+<P>
+	You should also note that the AGM is designed to handle differences between schema languages.
 </P>
 <UL>
-  <LI>
-  <DIV>Reference to the other part of the grammar. Most of the schema languages
-  have a mechanism to name declarations and refer to them by name from other locations.
-  TREX has only one mechanism (&lt;ref&gt;&amp;&lt;define&gt;), whereas
-  RELAX has four separate definitions/references 
-  (&lt;tag&gt;/&lt;attPool&gt;/&lt;hedgeRule&gt;/&lt;elementRule&gt; &amp; 
-  &lt;ref&gt;/&lt;hedgeRef&gt;). XML Schema has six distinct mechanism.
-  To absorb the difference, the core part provides abstract ReferenceExp 
-  class, which is used as the base class for any declaration that can be referenced.
-  Language stubs then derive it and provide concrete implementations.</DIV>
-  <LI>
-  <DIV>Constraint of tag name. RELAX constrains tag name by &lt;tag&gt; 
-  declaration, which is in turn referenced by &lt;elementRule&gt; declaration. TREX 
-  constrains tag name by element declaration itself. So RELAX has one more
-  abstraction layer between constraint over element and that over tag 
-  name. To absorb such difference, the core part provides
-  abstract ElementExp class, and stubs provide 
-  concrete implementations respectively.</DIV></LI></UL>
-<P> Generally speaking, you may want to avoid dependency to the stub parts. If 
-your code only depends on the core part and TREX extension, your code 
-shall work with AGMs created from any language. 
-com.sun.msv.verifier.regexp is one of such examples.</P>
+	<LI>
+		Reference to another part of the grammar. Most of the schema languages
+		have a mechanism to name declarations and refer to them by name from other locations.
+		TREX has only one mechanism (&lt;ref&gt;&amp;&lt;define&gt;), whereas
+		RELAX has four separate definitions/references 
+		(&lt;tag&gt;, &lt;attPool&gt;, &lt;hedgeRule&gt;, &lt;elementRule&gt; and 
+		&lt;ref&gt;, and &lt;hedgeRef&gt;).
+		W3C XML Schema has six distinct mechanisms.
+		To handle the difference, the core part provides abstract ReferenceExp 
+		class, which is used as the base class that represents the referencable declaration.
+		Language stubs then derive RefenreceExp and provide concrete implementations.
+	<LI>
+		Constraint of tag name. RELAX constrains tag name by &lt;tag&gt; 
+		declaration, which is in turn referenced by &lt;elementRule&gt; declaration. TREX 
+		constrains tag name by element declaration itself. So RELAX has one more
+		abstraction layer between constraint over element and that over tag 
+		name. To handle such difference, the core part provides
+		abstract ElementExp class, and stubs provide 
+		concrete implementations respectively.
+</UL>
+<P>
+	Generally speaking, you may want to avoid dependency on the stub parts. If 
+	your code only depends on the core part and the TREX extension, your code 
+	will work with AGMs created from any language.
+	<code> com.sun.msv.verifier.regexp </code> is one of such code that works with any AGM.
+</P>
 
 
 <A id="agm_exps" />
@@ -325,20 +329,23 @@ com.sun.msv.verifier.regexp is one of such examples.</P>
   Expression and most of the derived classes are immutable, and they have to be
   created through ExpressionPool.
   Internally, every Expression is memorized by ExpressionPool
-  so that sub expression can be shared and reused.
+  so that sub expressions can be shared and reused.
 </P>
 <P>
   Mixing two expressions created from two different pools is possible, but not recommended.
-  If you are going to use MSV in multithreaded environment, or
-  you are going to use it in a daemon process, see the dedicated sections.
+  If you are going to use MSV in a multithreaded environment, or
+  you are going to use it in a daemon process, see <a href="#thread">"Multithreaded Environment"</a>
+  and <a href="#daemon">"Daemon Process"</a> respectively.
 </P>
 
 
 
 <A id="agm_create" />
 <H2>Creating AGM from scratch</H2>
-<P>RELAXCoreReader/TREXGrammarReader/RELAXNSReader/XMLSchemaReader/DTDReader is just one way to create 
-AGM. Alternatively, you can create AGM from scratch.</P>
+<P>
+	RELAXCoreReader/TREXGrammarReader/RELAXNSReader/XMLSchemaReader/DTDReader is just one way to create 
+	an AGM. Alternatively, you can create it from scratch.
+</P>
 <PRE>
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.grammar.*;
@@ -371,7 +378,7 @@ TREXGrammar create()
 }
 </PRE>
 <P> 
-  AGM created by the above example is equivalent to the following TREX grammar.
+  The AGM created by the above example is equivalent to the following TREX grammar.
 </P>
 <PRE>
 &lt;element name="tagname" ns="http://namespace.uri/"&gt;
@@ -386,17 +393,16 @@ TREXGrammar create()
 &lt;/element&gt;
 </PRE>
 <P>
-  As you see, you have to use ExpressionPool to create a tree of 
-  "Expression". All the primitive operators are 
-  immutable.
+  As you see, you have to use the ExpressionPool to create a tree of 
+  "Expression". All the primitive operators are immutable.
 </P>
 <P>
-  Also, all associative operators like choice,sequence are binarized (they 
+  Also, all associative operators like choice and sequence are binary (they 
   can only have two operands): to create an expression of (A|B|C), create 
-  (A|(B|C)) or ((A|B)|C). For more, see Javadoc of ExpressionPool.
+  (A|(B|C)) or ((A|B)|C). For more, see javadoc of ExpressionPool.
 </P>
 <P>
-  Named expression can be created as follows:
+  A named expression can be created as follows:
 </P>
 <PRE>
 {
@@ -429,7 +435,7 @@ TREXGrammar create()
   </define>
 </grammar>
 </XMP></PRE>
-<P>To create RELAX AGM, use RELAXGrammar and RELAXModule as a start point.</P>
+<P>To create a RELAX AGM, use RELAXGrammar and RELAXModule as a starting point.</P>
 
 
 <A id="agm_access" />
@@ -443,9 +449,10 @@ ExpressionVisitor for details.</P>
 
 <A id="agm_modify" />
 <H2>Manipulating AGM</H2>
-<P>Due to the immutability of AGM, you cannot "modify" AGM. Instead, you
-create modified AGM. To do this, use ExpressionCloner. The following example 
-creates a new AGM that changes ChoiceExp to SequenceExp and SequenceExp to ChoiceExp.</P>
+<P>Due to the immutability of the AGM, you cannot "modify" an AGM. Instead, you
+create a modified AGM. To do this, use ExpressionCloner. The following example 
+creates a new AGM that changes ChoiceExp to SequenceExp and SequenceExp to ChoiceExp.
+</P>
 <PRE>
 class SwitchChoiceAndSequence extends com.sun.msv.grammar.ExpressionCloner {
 
@@ -463,7 +470,7 @@ class SwitchChoiceAndSequence extends com.sun.msv.grammar.ExpressionCloner {
 Expression modifiedExp = originalExp.visit( new SwitchChoiceAndSequence() );
 </PRE>
 <P>
-   See Javadoc of ExpressionCloner for details. For expressions that may contain TREX
+   See javadoc of ExpressionCloner for details. For expressions that may contain TREX
   primitives (interleave and concur), you have to also implement TREXPatternVisitorExpression.
 </P>
 
@@ -476,8 +483,8 @@ Expression modifiedExp = originalExp.visit( new SwitchChoiceAndSequence() );
   For example, it can
 </P>
 <UL>
-  <LI>receive errors and warnings encountered during parsing
-  <LI>prohibit inclusion
+  <LI>receive errors and warnings encountered during the parsing
+  <LI>prohibit inclusions
   <LI>resolve inclusion to a different source.</LI>     
 </UL>
 
@@ -492,8 +499,8 @@ Expression modifiedExp = originalExp.visit( new SwitchChoiceAndSequence() );
 <A id="vgm" />
 <H2>Validation Grammar Model (VGM)</H2>
 <P>
-  To validate documents with AGM, you have to "wrap" AGM in VGM.
-  VGM can be understood as an abstraction of AGM for validator.
+  To validate documents with a AGM, you have to "wrap" it in a VGM.
+  VGM can be understood as an abstraction of AGM for the validator.
 </P>
 <P>
   VGM is a simple model which consists of two interfaces only: Acceptor and DocumentDeclaration.
@@ -501,10 +508,10 @@ Expression modifiedExp = originalExp.visit( new SwitchChoiceAndSequence() );
 </P>
 <P>
   Currently, only one VGM implementation is available, which is placed under
-  <code>com.sun.msv.verifier.regexp</code> package.
+  the <code>com.sun.msv.verifier.regexp</code> package.
 </P>
 <P>
-  The following example creates a RegExp VGM from a Grammar.
+  The following example creates a RegExp VGM from a <code>Grammar</code> object.
   <code>Grammar</code> is an interface implemented by 
   RELAXGrammar, RELAXModule, TREXGrammar, and XMLSchemaGrammar.
 </P>
@@ -530,29 +537,29 @@ DocumentDeclaration createVGM( Expression exp ) {
 <A id="thread" />
 <H2>Multithreaded Environment</H2>
 <P>
-  AGM is thread-safe because it is made immutable.
+  AGM is thread-safe because it is immutable.
   A thread can safely use an AGM parsed by a different thread;
   or two threads can safely share the same AGM.
   ExpressionPool is also thread-safe. Multiple threads can share
   the same pool, which is created by another thread.
 </P>
 <P>
-  On the other hand, VGM is not thread-safe. Each thread has to
-  create its own VGM and use its own. You should never share VGM
+  VGM, on the other hand, is not thread-safe. Each thread has to
+  create its own VGM and use its own. You should never share a VGM
   between threads.
   Verifier is another thread-<b>un</b>safe component. Also, it's not
-  made reentrant so you can only use one object to validate one document at a time.
+  reentrant, so you can only use one object to validate one document at a time.
 </P>
 <P>
-  When a new expression is found, it is memorized to the pool. To do this,
+  When a new expression is found, it is stored to the pool. To do this,
   a thread has to acquire a lock. And the pool is very frequently called
   during validation. So you might think that sharing a pool might cause a
-  performance bottle neck.
+  performance bottleneck.
 </P>
 <P>
   However, a casual experiment shows that this is not always the case.
   Yes, a thread has to acquire a lock to modify the pool, but this update
-  can be done concurrently while other threads reads the pool. And update
+  can be done concurrently while other threads read the pool. And update
   is far less frequent than retrieval.
   So please benchmark by yourself if you need to achieve the optimal performance.
 </P>
@@ -563,7 +570,7 @@ DocumentDeclaration createVGM( Expression exp ) {
 <P>
   Generally, it's a good practice to keep re-using the same ExpressionPool.
   Using the same pool makes it bigger, and
-  bigger pool contains more expressions, which in turn results in faster validation.
+  a bigger pool contains more expressions, which in turn results in faster validation.
 </P>
 <P>
   If you keep using the same ExpressionPool, it gradually expands.
@@ -572,21 +579,22 @@ DocumentDeclaration createVGM( Expression exp ) {
 </P>
 <P>
   Its size will eventually reach a certain limit, and the growth stops there.
-  If your schema is DTD, RELAX, TREX without &lt;interleave&gt;, or XML Schema without &lt;all&gt; then this size limit is mostly moderate,
+  If your schema is DTD, RELAX, TREX without &lt;interleave&gt;, or W3C XML Schema without &lt;all&gt;,
+  then this size limit is mostly moderate,
   so you can keep using the same pool forever.
 </P>
 <P>
-  However, if the grammar is TREX with &lt;interleave&gt; patterns,
-  or XML Schema with &lt;all&gt;s,
-  then this limit could be exponential to the size of the grammar
+  However, if a grammar is TREX with &lt;interleave&gt; patterns,
+  or W3C XML Schema with &lt;all&gt;s,
+  then the upper bound of a pool could be exponential to the size of the grammar
   (especially if interleave/all contains large patterns).
   If this is the case, and your application runs 24/7 as a daemon process,
   then you should occasionally throw away the pool
   to prevent its size from expanding indefinitely.
 </P>
 <P>
-  Note that pool expansion is slow; to make a pool reach an exponential size, you have to parse
-  at least an exponential number of documents, which takes quite a long time.
+  Note that pool expansion is slow; the size of a pool is proportional to the number of validated
+  documents even in the worst case. So usually it takes quite a long time to make a pool explode.
 </P>
 <P>
   To throw away ExpressionPool, simply create a new VGM with a brand-new pool, like this.
@@ -605,9 +613,9 @@ DocumentDeclaration vgm = new TREXDocumentDeclaration( grammar.getTopLevel(), ne
   This information is useful for deciding what to do with the reported element.
 </P>
 <P>
-  To retrieve it, call <code>getCurrentElementType</code> method of Verifier class.
+  To retrieve these information, call the <code>getCurrentElementType</code> method of Verifier class.
   This method returns the correct value only
-  when called immediately after it processed a startElement method.
+  when called immediately after it processed the startElement method.
   If you are using <code>com.sun.msv.verifier.VerifierFilter</code>,
   then you can call this method only in your handler's startElement method.
 </P>
@@ -647,14 +655,13 @@ void startElement( .... )
 <A id="trexext" />
 <H2>TREX extension</H2>
 <P>
-  TREX doesn't have a mechanism to name &lt;element&gt; pattern. Therefore,
-  MSV introduces proprietary extension to TREX that provides this naming mechanism.
+  TREX doesn't have a mechanism to name the &lt;element&gt; pattern. Therefore,
+  MSV introduces a proprietary extension to TREX that provides this naming mechanism.
 </P>
 <P>
-  Annotation is done by adding "label" attribute to &lt;element&gt; pattern.
-  "label" attribute has to be in "<code>http://www.sun.com/xml/msv/trex-type</code>"
-  namespace.
-  These attributes shall be ignored by other TREX validating processors.
+  Annotation is done by adding a "label" attribute to the &lt;element&gt; pattern.
+  The "label" attribute has to be in the "<code>http://www.sun.com/xml/msv/trex-type</code>"
+  namespace. These attributes will be ignored by other TREX validating processors.
 </P>
 <PRE><XMP>
 <grammar xmlns:ext="http://www.sun.com/xml/msv/trex-type">
@@ -670,7 +677,7 @@ void startElement( .... )
 </XMP></PRE>
 
 <P>
-  The following example illustrates how to load this annotated TREX pattern.
+  The following example illustrates how to load an annotated TREX pattern.
 </P>
 <PRE>
 TREXGrammarReader reader = new TREXGrammarReader(

@@ -9,18 +9,18 @@
  */
 package com.sun.msv.verifier.multithread;
 
-import java.util.EmptyStackException;
-import java.util.Stack;
-
-import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.XMLReader;
-
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.verifier.ValidityViolation;
 import com.sun.msv.verifier.Verifier;
+import com.sun.msv.verifier.util.ErrorHandlerImpl;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
+import com.sun.msv.driver.textui.DebugController;
+import org.xml.sax.XMLReader;
+
+import javax.xml.parsers.SAXParserFactory;
+import java.util.EmptyStackException;
+import java.util.Stack;
 
 /**
  * multi-thread tester.
@@ -29,7 +29,7 @@ import com.sun.msv.verifier.regexp.REDocumentDeclaration;
  */
 public class Daemon implements Runnable
 {
-    public static void main( String args[] ) throws Exception
+    public static void main( String[] args ) throws Exception
     {
         new Daemon()._main(args);
     }
@@ -38,7 +38,7 @@ public class Daemon implements Runnable
     /** file names that have to be validated. */
     private final Stack jobs = new Stack();
     
-    private void _main( String args[] ) throws Exception
+    private void _main( String[] args ) throws Exception
     {
         if( args.length!=4 )
         {
@@ -60,7 +60,7 @@ public class Daemon implements Runnable
 
         grammar = GrammarLoader.loadSchema(
                 schemaName,
-                new com.sun.msv.driver.textui.DebugController(false,false),
+                new DebugController(false,false),
                 factory );
         
         
@@ -113,7 +113,7 @@ public class Daemon implements Runnable
                 Verifier v = new Verifier(
                     new REDocumentDeclaration(grammar),
 //                    new REDocumentDeclaration(grammar.getTopLevel(),localPool),
-                    new com.sun.msv.verifier.util.ErrorHandlerImpl() );
+                    new ErrorHandlerImpl() );
                 r.setContentHandler(v);
                 try
                 {
@@ -123,7 +123,7 @@ public class Daemon implements Runnable
                 }
                 catch( ValidityViolation vv )
                 {
-                    System.out.println( name + ":" + fileName + " invalid  " + vv.getMessage() );
+                    System.out.println( name + ':' + fileName + " invalid  " + vv.getMessage() );
                 }
             }
         }

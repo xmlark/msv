@@ -166,16 +166,56 @@ public abstract class WhiteSpaceProcessor implements Serializable {
     };
     
     
+    
+    
     /**
+     * Older version of XSDLib was using an anonymous class. 
      * @deprecated
      */
-    private void backwardCompatibiliyHook() {
-        // for backward compatibility: older version of XSDLib
-        // were using inner classes, and those need to resolve correctly
-        new Preserve() {};
-        new Collapse() {};
-        new Replace() {};
-    }
+    private static final WhiteSpaceProcessor backwardCompatibiliyHook1 =
+        new WhiteSpaceProcessor() {
+            public String process(String text) {
+                throw new UnsupportedOperationException();
+             }
+             int tightness() {
+                 return 0;
+             }
+             public String getName() {
+                 return "preserve";
+             }
+        };
+    /**
+     * Older version of XSDLib was using an anonymous class. 
+     * @deprecated
+     */
+    private static final WhiteSpaceProcessor backwardCompatibiliyHook2 =
+        new WhiteSpaceProcessor() {
+            public String process(String text) {
+                throw new UnsupportedOperationException();
+            }
+            int tightness() {
+                return 2;
+            }
+            public String getName() {
+                return "collapse";
+            }
+        };
+    /**
+     * Older version of XSDLib was using an anonymous class. 
+     * @deprecated
+     */
+    private static final WhiteSpaceProcessor backwardCompatibiliyHook3 =
+        new WhiteSpaceProcessor() {
+            public String process(String text) {
+                throw new UnsupportedOperationException();
+            }
+            int tightness() {
+                return 1;
+            }
+            public String getName() {
+                return "replace";
+            }
+        };
 
     // serialization support
     private static final long serialVersionUID = 1;

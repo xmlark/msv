@@ -325,4 +325,7 @@ public abstract class Expression implements java.io.Serializable {
      * &lt;text/> pattern of RELAX NG.
      */
     public static final Expression anyString = new AnyStringExpression();
+
+
+    private static final long serialVersionUID = -569561418606215601L;
 }

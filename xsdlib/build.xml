@@ -67,8 +67,8 @@
 	<target name="javadoc">
 		<mkdir dir="./javadoc"/>
 		<javadoc	locale="en_US"
-					packagenames="com.sun.msv.*, org.relaxng.*"
-					sourcepath="./src;${rngInterfaceSource}"
+					packagenames="com.sun.msv.*"
+					sourcepath="./src"
 					classpath="${java.class.path}"
 					destdir="./javadoc"
 					windowtitle="XSDLib (private build)"
@@ -82,6 +82,8 @@
 				packagelistLoc="../shared/ExternalPackageLists/XML" />
 			<link offline="true" href="http://iso-relax.sourceforge.net/apiDoc/"
 				packagelistLoc="../shared/ExternalPackageLists/ISO-RELAX" />
+			<link offline="true" href="http://relaxng.sourceforge.net/datatype/java/apiDocs/"
+				packagelistLoc="../shared/ExternalPackageLists/RELAXNG" />
 		</javadoc>
 	</target>
 	
@@ -134,9 +136,9 @@
 				dest="." />
 		
 		
-		<!-- copy Xerces files into source directory -->
+		<!-- copy regexp lib files into the source directory -->
 		<copy todir="${stageName}/src">
-			<fileset dir="${xerces.source}" includes="org/apache/xerces/utils/regex/*.*" />
+			<fileset dir="${regexplib.src}" />
 		</copy>
 		
 		<!-- run javacc -->
@@ -180,15 +182,19 @@
 		<!-- creates javadoc -->
 		<mkdir		dir="${stageName}/javadoc" />
 		<javadoc	locale="en_US"
-					packagenames="com.sun.msv.datatype.*,org.relaxng.datatype.*"
-					sourcepath="${stageName}/src:${rngInterfaceSource}"
+					packagenames="com.sun.msv.*"
+					sourcepath="${stageName}/src"
 					destdir="${stageName}/javadoc"
 					windowtitle="Sun XML Datatypes Library"
 					public="yes"
 					author="yes"
 					>
-			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
-			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
+			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api"
+				packagelistLoc="../shared/ExternalPackageLists/CoreAPI" />
+			<link offline="true" href="http://xml.apache.org/apiDocs/"
+				packagelistLoc="../shared/ExternalPackageLists/XML" />
+			<link offline="true" href="http://relaxng.sourceforge.net/datatype/java/apiDocs/"
+				packagelistLoc="../shared/ExternalPackageLists/RELAXNG" />
 		</javadoc>
 		
 		<!-- copy additional jar files -->

@@ -18,11 +18,7 @@ public class XMLSchemaReaderTest extends TestCase
 	
 	/** tests the existence of all messages */
 	public void testMessages() throws Exception {
-		javax.xml.parsers.SAXParserFactory factory =
-			new org.apache.xerces.jaxp.SAXParserFactoryImpl();
-		factory.setNamespaceAware(true);
-		
-		final XMLSchemaReader reader = new XMLSchemaReader(null,factory);
+		final XMLSchemaReader reader = new XMLSchemaReader(null);
 		
 		Checker checker = new Checker(){
 			public void check( String propertyName ) {

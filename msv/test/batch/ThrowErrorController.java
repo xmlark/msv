@@ -12,6 +12,7 @@ package batch;
 import com.sun.msv.reader.GrammarReaderController;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 
 /**
  * GrammarReaderController implementation that throws an Error
@@ -21,11 +22,14 @@ import org.xml.sax.Locator;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ThrowErrorController implements GrammarReaderController
-{
+public class ThrowErrorController implements GrammarReaderController {
+	
 	public InputSource resolveEntity(String s,String r){return null;}
-	public void error( Locator[] locs, String msg, Exception nested )
-	{
+	public void error( Locator[] locs, String msg, Exception nested ) {
+		if( nested instanceof SAXException ) {
+			if(((SAXException)nested).getException()!=null)
+				((SAXException)nested).getException().printStackTrace();
+		}
 		throw new Error(msg);
 	}
 	public void warning( Locator[] locs, String msg ) {}

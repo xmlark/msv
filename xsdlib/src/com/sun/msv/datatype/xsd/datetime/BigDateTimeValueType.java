@@ -50,7 +50,7 @@ public class BigDateTimeValueType implements IDateTimeValueType {
         return month;
     }
 
-    /** day (always normalized)
+    /** day (always normalized, between 0-30)
      * this variable is null if no year is specified
      */
     private Integer day;
@@ -450,6 +450,9 @@ public class BigDateTimeValueType implements IDateTimeValueType {
             
         return new SimpleTimeZone(zone.minutes * 60 * 1000, "custom");
     }
+    
+    
+    
 
     /*
         public static void main( String[] args )

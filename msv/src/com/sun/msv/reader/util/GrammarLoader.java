@@ -25,6 +25,7 @@ import com.sun.msv.verifier.regexp.xmlschema.XSREDocDecl;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -39,7 +40,7 @@ import java.util.Vector;
  * by automatically detecting the schema language.
  * 
  * <p>
- * The static version of loadVGM/loadSchema methods provides easy-to-use ways to
+ * The static version of loadVGM/loadSchema methods provides simple ways to
  * load a grammar.
  * 
  * <p>
@@ -98,7 +99,57 @@ public class GrammarLoader
 			return new REDocumentDeclaration(g);
 	}
 	
+	
+	/**
+	 * parses the specified schema and returns the result as a VGM.
+	 * 
+	 * This method uses the default SAX parser and throws an exception
+	 * if there is an error in the schema.
+	 * 
+	 * @return
+	 *		non-null valid VGM object.
+	 */
+	public static REDocumentDeclaration loadVGM( String url )
+		throws SAXException, ParserConfigurationException, java.io.IOException {
+		try {
+			return loadVGM(url, new ThrowController(), null );
+		} catch( GrammarLoaderException e ) {
+			throw e.e;
+		}
+	}
+	public static REDocumentDeclaration loadVGM( InputSource source )
+		throws SAXException, ParserConfigurationException, java.io.IOException {
+		try {
+			return loadVGM(source, new ThrowController(), null );
+		} catch( GrammarLoaderException e ) {
+			throw e.e;
+		}
+	}
+	
+	/** wrapper exception so that we can throw it from the GrammarReaderController. */
+	private static class GrammarLoaderException extends RuntimeException {
+		GrammarLoaderException( SAXException e ) {
+			super(e.getMessage());
+			this.e = e;
+		}
+		public final SAXException e;
+	}
+	private static class ThrowController implements GrammarReaderController {
+		public void warning( Locator[] locs, String errorMessage ) {}
+		public void error( Locator[] locs, String errorMessage, Exception nestedException ) {
+			for( int i=0; i<locs.length; i++ )
+				if(locs[i]!=null)
+					throw new GrammarLoaderException(
+						new SAXParseException(errorMessage,locs[i],nestedException));
+			
+			throw new GrammarLoaderException(
+				new SAXException(errorMessage,nestedException));
+		}
+		public InputSource resolveEntity( String p, String s ) { return null; }
+		
+	}
 
+	
 	
 	/**
 	 * parses the specified schema and returns the result as a Grammar object.
@@ -114,7 +165,7 @@ public class GrammarLoader
 		GrammarLoader loader = new GrammarLoader();
 		loader.setController(controller);
 		loader.setSAXParserFactory(factory);
-		return loader.loadSchema(url);
+		return loader.parse(url);
 	}
 	
 	public static Grammar loadSchema( InputSource source,
@@ -125,11 +176,11 @@ public class GrammarLoader
 		GrammarLoader loader = new GrammarLoader();
 		loader.setController(controller);
 		loader.setSAXParserFactory(factory);
-		return loader.loadSchema(source);
+		return loader.parse(source);
 	}
 	
 	/**
-	 * returns RELAXGrammar or TREXGrammar, depending on the language used.
+	 * returns a thread-safe AGM object, depending on the language used.
 	 */
 	public static Grammar loadSchema( String source,
 		GrammarReaderController controller )
@@ -137,7 +188,33 @@ public class GrammarLoader
 	{
 		GrammarLoader loader = new GrammarLoader();
 		loader.setController(controller);
-		return loader.loadSchema(source);
+		return loader.parse(source);
+	}
+
+	/**
+	 * parses the specified schema and returns the result as a Grammar object.
+	 * 
+	 * This method uses the default SAX parser and throws an exception
+	 * if there is an error in the schema.
+	 * 
+	 * @return
+	 *		a non-null valid Grammar.
+	 */
+	public static Grammar loadSchema( String url )
+		throws SAXException, ParserConfigurationException, java.io.IOException {
+		try {
+			return loadSchema(url, new ThrowController(), null );
+		} catch( GrammarLoaderException e ) {
+			throw e.e;
+		}
+	}
+	public static Grammar loadSchema( InputSource source )
+		throws SAXException, ParserConfigurationException, java.io.IOException {
+		try {
+			return loadSchema(source, new ThrowController(), null );
+		} catch( GrammarLoaderException e ) {
+			throw e.e;
+		}
 	}
 	
 
@@ -203,19 +280,19 @@ public class GrammarLoader
 	
 	
 	
-	public Grammar loadSchema( InputSource source )
+	public Grammar parse( InputSource source )
 		throws SAXException, ParserConfigurationException, java.io.IOException {
 		
 		return _loadSchema(source);
 	}
 	
-	public Grammar loadSchema( String url )
+	public Grammar parse( String url )
 		throws SAXException, ParserConfigurationException, java.io.IOException {
 		
 		return _loadSchema(url);
 	}
 	
-	public REDocumentDeclaration loadVGM( String url )
+	public REDocumentDeclaration parseVGM( String url )
 		throws SAXException, ParserConfigurationException, java.io.IOException {
 		
 		Grammar g = _loadSchema(url);
@@ -223,7 +300,7 @@ public class GrammarLoader
 		else			return new REDocumentDeclaration(g);
 	}
 	
-	public REDocumentDeclaration loadVGM( InputSource source )
+	public REDocumentDeclaration parseVGM( InputSource source )
 		throws SAXException, ParserConfigurationException, java.io.IOException {
 		
 		Grammar g = _loadSchema(source);

@@ -28,9 +28,10 @@ public class DeclImpl
 	/** name of this rule */
 	protected final String name;
 	
-	public DeclImpl( ReferenceExp exp ) { this(exp.name,exp.exp); }
-	public DeclImpl( String name, Expression exp )
-	{
+	public DeclImpl( ReferenceExp exp ) {
+		this( exp.name, exp.exp );
+	}
+	public DeclImpl( String name, Expression exp ) {
 		this.exp=exp;
 		this.name=name;
 	}

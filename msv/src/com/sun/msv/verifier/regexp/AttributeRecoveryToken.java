@@ -22,9 +22,9 @@ import com.sun.msv.grammar.ExpressionPool;
 final class AttributeRecoveryToken extends AttributeToken
 {
 	AttributeRecoveryToken( REDocumentDeclaration docDecl,
-		String namespaceURI, String localName, StringToken value ) {
+		String namespaceURI, String localName, String qName, StringToken value ) {
 		
-		super( docDecl, namespaceURI, localName, value );
+		super( docDecl, namespaceURI, localName, qName, value );
 	}
 	
 	private Expression failedExp = Expression.nullSet;

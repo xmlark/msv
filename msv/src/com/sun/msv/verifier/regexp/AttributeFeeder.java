@@ -30,27 +30,6 @@ public class AttributeFeeder implements ExpressionVisitorExpression {
 		this.pool		= docDecl.pool;
 	}
 
-	/** computes a residual without any attribute nodes,
-	 * after feeding all attributes and pruning all unused attributes
-	 */
-	public final Expression feedAll( Expression exp, StartTagInfoEx tagInfo, boolean ignoreUndeclaredAttribute ) {
-//		Object o = exp.verifierTag;
-//		if( o==null )
-//			exp.verifierTag = o = new OptimizationTag();
-		
-//		if( ((OptimizationTag)o).isAttributeFree==null )	marker.mark(exp);
-		
-		// feed attributes and obtain content model without attribute nodes.
-		final int len = tagInfo.attTokens.length;
-		for( int i=0; i<len; i++ ) {
-			exp = feed( exp, tagInfo.attTokens[i], ignoreUndeclaredAttribute );
-			// fails to consume an attribute
-			if(exp==Expression.nullSet)	return Expression.nullSet;
-		}
-		
-		// prune unused attributes
-		return docDecl.attPruner.prune(exp);
-	}
 	
 	public final Expression feed( Expression exp, AttributeToken token, boolean ignoreUndeclaredAttribute ) {
 		this.token = token;

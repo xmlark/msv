@@ -46,10 +46,10 @@ public class REDocumentDeclaration implements DocumentDeclaration
 		attPicker	= new AttributePicker(pool);
 		attPruner	= new AttributePruner(pool);
 		attRemover	= new AttributeRemover(pool);
-		cccec		= new CombinedChildContentExpCreator(pool,attFeeder);
+		cccec		= new CombinedChildContentExpCreator(pool);
 		ecc			= new ElementsOfConcernCollector();
 		
-		startTag	= new StartTagInfoEx(this);
+		attToken	= new AttributeToken(this,null,null,null,null);
 	}
 	
 	
@@ -64,18 +64,23 @@ public class REDocumentDeclaration implements DocumentDeclaration
 	protected final ElementsOfConcernCollector		ecc;
 								  
 	/**
-	 * the StartTagInfoEx object which is used to store the start tag information.
+	 * the AttributeToken object which is re-used 
 	 * 
 	 * <p>
-	 * StartTagInfoEx object is used only during Verifier.startElement method.
+	 * Only one AttributeToken object is used during the
+	 * {@link Acceptor#stepForwardByAttribute} method.
 	 * So instead of creating new object every time the method is called, we can
 	 * kept using one copy.
 	 * 
 	 * <p>
-	 * This object can also hold information about what types are assigned to attributes,
-	 * and what types are assigned to attribute content.
+	 * Note: other parts of the code may never rely on the fact that
+	 * the attribute token is cached and reused.
+	 * 
+	 * <p>
+	 * Note: this field should be accessed <b>ONLY</b> by the
+	 * {@link ExpressionAcceptor#stepForwardByAttribute} method.
 	 */
-	public final StartTagInfoEx					startTag;
+	public final AttributeToken					attToken;
 
 	public Acceptor createAcceptor() {
 		// top-level Acceptor cannot have continuation.

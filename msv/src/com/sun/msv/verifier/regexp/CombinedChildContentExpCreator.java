@@ -11,6 +11,7 @@ package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.*;
 import com.sun.msv.util.StringPair;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * creates "combined child content expression" and gathers "elements of concern"
@@ -97,15 +98,15 @@ import com.sun.msv.util.StringPair;
  */
 public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	protected final ExpressionPool	pool;
-	protected final AttributeFeeder	feeder;
 
 	// these variables are set each time 'get' method is called
-	private StartTagInfoEx			tagInfo;
-	private OwnerAndContent			result;
+	private StartTagInfo			tagInfo;
+	/**
+	 * matched elements. the buffer is usually bigger than {@link #numElements},
+	 * but only first {@link #numElements} items are valid result.
+	 */
+	private ElementExp[]			result = new ElementExp[4];
 	private int						numElements;
-	/** counts number of ElementExps that accepts given tag name. */
-	private int						numTagMatch;
-	private boolean					feedAttributes;
 	private boolean					checkTagName;
 
 	// TODO: do we gain some performance if we stop creating combined child content expression
@@ -140,18 +141,8 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	private Expression continuation;
 	
 	
-	public class OwnerAndContent {
-		public final OwnerAndContent next;	// pointer as a linked list.
-		public final ElementExp	owner;			// element of concern
-		public final Expression		content;
-		
-		private OwnerAndContent( OwnerAndContent next, ElementExp owner, Expression content )
-		{ this.next=next;this.owner=owner;this.content=content; }
-	}
-	
-	protected CombinedChildContentExpCreator( ExpressionPool pool, AttributeFeeder feeder ) {
+	protected CombinedChildContentExpCreator( ExpressionPool pool ) {
 		this.pool = pool;
-		this.feeder = feeder;
 	}
 
 	/**
@@ -168,21 +159,23 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	 * @param checkTagName
 	 *		if this flag is false, tag name check is skipped.
 	 */
-	public ExpressionPair get( Expression combinedPattern, StartTagInfoEx info,
-		boolean feedAttributes, boolean checkTagName ) {
+	public ExpressionPair get( Expression combinedPattern, StartTagInfo info,
+		boolean checkTagName ) {
 		
-		result = null;
+		if( com.sun.msv.driver.textui.Debug.debug )
+			// clear the buffer to make it easier to find a bug.
+			for( int i=0; i<result.length; i++ )
+				result[i] = null;
+		
 		numElements = 0;
-		numTagMatch = 0;
-		return continueGet( combinedPattern, info, feedAttributes, checkTagName );
+		return continueGet( combinedPattern, info, checkTagName );
 	}
 	
-	public final ExpressionPair continueGet( Expression combinedPattern, StartTagInfoEx info,
-		boolean feedAttributes, boolean checkTagName )
+	public final ExpressionPair continueGet( Expression combinedPattern, StartTagInfo info,
+		boolean checkTagName )
 	{
 		foundConcur = false;
 		this.tagInfo = info;
-		this.feedAttributes = feedAttributes;
 		this.checkTagName = checkTagName;
 		combinedPattern.visit(this);
 		
@@ -193,10 +186,10 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	}
 	
 	/** computes a combined child content pattern and (,if possible,) its continuation. */
-	public ExpressionPair get( Expression combinedPattern, StartTagInfoEx info ) {
+	public ExpressionPair get( Expression combinedPattern, StartTagInfo info ) {
 		StringPair sp=null;
 		
-		// cache
+		// check the cache
 		if( combinedPattern.verifierTag!=null ) {
 			OptimizationTag ot = (OptimizationTag)combinedPattern.verifierTag;
 			sp = new StringPair(info.namespaceURI,info.localName);
@@ -205,19 +198,15 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 			if(cache!=null) {
 				// cache hit
 				numElements = 1;
-				result = new OwnerAndContent(
-					null,cache.owner,
-					feeder.feedAll(
-						cache.owner.contentModel,
-						info,
-						cache.owner.ignoreUndeclaredAttributes) );
-				return new ExpressionPair(result.content,cache.continuation);
+				result[0] = cache.owner;
+				return new ExpressionPair(
+					cache.owner.contentModel, cache.continuation );
 			}
 		}
 		
-		ExpressionPair r = (ExpressionPair)get( combinedPattern, info, true, true );
+		ExpressionPair r = (ExpressionPair)get( combinedPattern, info, true );
 		
-		if( numTagMatch==1 && numElements==1 ) {
+		if( numElements==1 ) {
 			// only one element matchs this tag name. cache this result
 			OptimizationTag ot = (OptimizationTag)combinedPattern.verifierTag;
 			if(ot==null)
@@ -226,13 +215,14 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 			if(sp==null)
 				sp = new StringPair(info.namespaceURI,info.localName);
 			
-			ot.transitions.put( sp, new OptimizationTag.OwnerAndCont(result.owner,r.continuation) );
+			ot.transitions.put( sp,
+				new OptimizationTag.OwnerAndCont( result[0], r.continuation ) );
 		}
 		return r;
 	}
 	
 	/**
-	 * obtains elements of concern and their attribute-pruned content models.
+	 * obtains matched elements.
 	 * 
 	 * This method should be called after calling the get method. The result is
 	 * in effect until the next invocation of get method. 
@@ -246,17 +236,17 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	 * <p>
 	 * Apparently this is a bad design, but this design gives us better performance.
 	 */
-	public final OwnerAndContent getElementsOfConcern() {
+	public final ElementExp[] getMatchedElements() {
 		return result;
 	}
 	
-	/** gets the number of elements of concern.
+	/** gets the number of matched elements.
 	 * 
 	 * This method should be called after calling get method. The result is
 	 * in effect until next invocation of get method.
 	 * Apparently this is a bad design, but this design gives us better performance.
 	 */
-	public final int numElementsOfConcern() { return numElements; }
+	public final int numMatchedElements() { return numElements; }
 
 	/**
 	 * a flag that indicates that we have 'concur' element to combine
@@ -338,10 +328,10 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 		// some RELAX grammar may contain something like
 		// (A|B)* C? (A|B)* to implement interleaving of (A|B)* and C.
 		// this check becomes important for cases like this.
-		for( OwnerAndContent o=result; o!=null; o=o.next )
-			if(o.owner==exp) {
+		for( int i=0; i<numElements; i++ )
+			if( result[i]==exp ) {
 				// the same element is found.
-				content = o.content;
+				content = exp.contentModel;
 				continuation = Expression.epsilon;
 				return;
 			}
@@ -350,31 +340,16 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 		// so this is the good place to check other redundancy.
 		
 		
-		Expression prunedContentModel;
-		numTagMatch++;
-		
-		if( feedAttributes )
-		{// feed and prune attributes
-			prunedContentModel = feeder.feedAll(
-				exp.contentModel,
-				tagInfo,
-				exp.ignoreUndeclaredAttributes);
-			if( prunedContentModel==Expression.nullSet ) {
-//				return nullPair;	// this content model didn't accept attributes 
-				content = continuation = Expression.nullSet;
-				return;
-			}
-		} else {
-			prunedContentModel = exp.contentModel;
-		}
-		
-		numElements++;
-		
 		// create a new result object
-		result = new OwnerAndContent(result,exp,prunedContentModel);
+		if( numElements==result.length ) {
+			// expand the buffer if it's full.
+			ElementExp[] buf = new ElementExp[result.length*2];
+			System.arraycopy( result, 0, buf, 0, result.length );
+			result = buf;
+		}
+		result[numElements++] = exp;
 		
-//		return new ExpressionPair(prunedContentModel,Expression.epsilon);	// content model is simply copied. (not recurisively processed)
-		content = prunedContentModel;
+		content = exp.contentModel;
 		continuation = Expression.epsilon;
 	}
 	

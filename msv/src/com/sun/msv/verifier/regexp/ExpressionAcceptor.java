@@ -64,9 +64,20 @@ public abstract class ExpressionAcceptor implements Acceptor {
 	/** this object provides various function objects */
 	protected final REDocumentDeclaration docDecl;
 	
-	public ExpressionAcceptor( REDocumentDeclaration docDecl, Expression exp ) {
+	/**
+	 * If true, this acceptor will ignore all undeclared attributes.
+	 * If false, this acceptor will signal an error for an undeclared attribute.
+	 * 
+	 * <p>
+	 * This flag is used to implement the semantics of RELAX Core, where
+	 * undeclared attributes are allowed.
+	 */
+	protected final boolean ignoreUndeclaredAttributes;
+	
+	public ExpressionAcceptor( REDocumentDeclaration docDecl, Expression exp, boolean ignoreUndeclaredAttributes ) {
 		this.docDecl	= docDecl;
 		this.expression	= exp;
+		this.ignoreUndeclaredAttributes = ignoreUndeclaredAttributes;
 	}
 	
 	
@@ -83,44 +94,149 @@ public abstract class ExpressionAcceptor implements Acceptor {
 	public Acceptor createChildAcceptor( StartTagInfo tag, StringRef errRef ) {
 		final CombinedChildContentExpCreator cccc = docDecl.cccec;
 		
-		// instead of creating a new object, reuse it
-//		final StartTagInfoEx sti = new StartTagInfoEx(tag,docDecl);
-		final StartTagInfoEx sti = docDecl.startTag;
-		sti.reinit(tag);
-		
 		// obtains fully combined child content pattern
-		CombinedChildContentExpCreator.ExpressionPair e = cccc.get(expression,sti);
-		if( e.content==Expression.nullSet ) {
-			// no element declaration is satisfied by this start tag.
-			//	this must be an error of input document.
-			
-			if( errRef==null )
-				// fail immediately to notify the caller that an error is encountered.
-				return null;
-			
-			return recover( sti, errRef );	// recover from error.
-		}
+		CombinedChildContentExpCreator.ExpressionPair e = cccc.get(expression,tag);
+		if( e.content!=Expression.nullSet ) {
+			// successful.
+			if( com.sun.msv.driver.textui.Debug.debug ) {
+				System.out.println("accept start tag <"+ tag.qName+">. combined content pattern is");
+				System.out.println(com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(e.content));
+				
+				if( e.continuation!=null )
+					System.out.println("continuation is:\n"+
+						com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(e.continuation)
+						);
+				else
+					System.out.println("no continuation");
+			}
 		
-		if( com.sun.msv.driver.textui.Debug.debug ) {
-			System.out.println("accept start tag <"+ sti.qName+">. combined content pattern is");
-			System.out.println(com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(e.content));
-			
-			if( e.continuation!=null )
-				System.out.println("continuation is:\n"+
-					com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(e.continuation)
-					);
-			else
-				System.out.println("no continuation");
+			return createAcceptor( e.content, e.continuation,
+				cccc.getMatchedElements(), cccc.numMatchedElements() );
 		}
-		
-		return createAcceptor( e.content, e.continuation, cccc.getElementsOfConcern() );
+		// no element declaration is satisfied by this start tag.
+		//	this must be an error of input document.
+			
+		if( errRef==null )
+			// bail out now to notify the caller that an error was found.
+			return null;
+			
+	
+		// no ElementExp accepts this tag name
+		// (actually, some ElementExp may have possibly accepted this tag name,
+		// but as a result of <concur>, no expression left ).
+					
+		errRef.str = diagnoseBadTagName(tag);
+		if( errRef.str==null )
+			// no detailed error message was prepared.
+			// use some generic one.
+			errRef.str = docDecl.localizeMessage( docDecl.DIAG_BAD_TAGNAME_GENERIC, tag.qName );
+			
+		// prepare child acceptor.
+		return createRecoveryAcceptors();
 	}
 	
 	protected abstract Acceptor createAcceptor(
 		Expression contentModel, Expression continuation/*can be null*/,
-		CombinedChildContentExpCreator.OwnerAndContent primitives );
-										  
+		ElementExp[] primitives, int numPrimitives );
 
+	
+	
+	public final boolean stepForwardByAttribute(
+		String namespaceURI, String localName, String qName, String value,
+		IDContextProvider context, StringRef refErr, DatatypeRef refType ) {
+		
+		// instead of creating a new object each time,
+		// use a cached copy.
+		docDecl.attToken.reinit( namespaceURI,localName,qName,
+				new StringToken(docDecl,value,context,refType) );
+		
+		return stepForwardByAttribute( docDecl.attToken, refErr );
+	}
+	
+	protected boolean stepForwardByAttribute( AttributeToken token, StringRef refErr ) {
+		Expression r = docDecl.attFeeder.feed( this.expression, token, ignoreUndeclaredAttributes );
+		
+		if( r!=Expression.nullSet ) {
+			// this attribute is properly consumed.
+			expression = r;
+			return true;
+		}
+		
+		if( refErr==null ) {
+			// refErr was not provided. bail out now.
+			return false;
+		}
+	
+		//
+		// diagnose the error
+		//
+		
+		// this attribute was not accepted.
+		// its value may be wrong.
+		// try feeding wild card and see if it's accepted.
+		AttributeRecoveryToken rtoken = token.createRecoveryAttToken();
+		r = docDecl.attFeeder.feed( this.expression, rtoken, ignoreUndeclaredAttributes );
+					
+		if( r==Expression.nullSet ) {
+			// even the wild card was rejected.
+			// this means that this attribute
+			// is not specified by the grammar.
+			refErr.str = docDecl.localizeMessage(
+				docDecl.DIAG_UNDECLARED_ATTRIBUTE, token.qName );
+			
+			// recover by using the current expression.
+			// TODO: possibly we can make all attributes optional or something.
+			// (because this might be a caused by the typo.)
+			return true;
+		} else {
+			
+			// wild card was accepted, so the value must be wrong.
+			refErr.str = diagnoseBadAttributeValue( rtoken );
+			if( refErr.str==null ) {
+				// no detailed error message can be provided
+				// so use generic one.
+				refErr.str = docDecl.localizeMessage(
+					docDecl.DIAG_BAD_ATTRIBUTE_VALUE_GENERIC, token.qName );
+			}
+			
+			// now we know the reason.
+			// recover by assuming that the valid value was specified for this attribute.
+			this.expression = r;
+			return true;
+		}
+	}
+	
+
+	public boolean onEndAttributes( StartTagInfo sti, StringRef refErr ) {
+		
+		Expression r = docDecl.attPruner.prune( this.expression );
+		if( r!=Expression.nullSet ) {
+			// there was no error.
+			this.expression = r;
+			return true;
+		}
+		
+		// there was an error.
+		// specifically, some required attributes are missing.
+		
+		if( refErr==null )
+			return false;	// refErr was not provided. bail out.
+		
+		
+		refErr.str = diagnoseMissingAttribute(sti);
+		if( refErr.str==null )
+			// no detailed error message can be provided
+			// so use generic one.
+			refErr.str = docDecl.localizeMessage(
+				docDecl.DIAG_MISSING_ATTRIBUTE_GENERIC,
+				sti.qName );
+			
+		// remove unconsumed attributes
+		this.expression = this.expression.visit( docDecl.attRemover );
+		return true;
+	}
+	
+	
 	
 	
 	protected boolean stepForward( Token token, StringRef errRef ) {
@@ -254,13 +370,13 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		final AttributeRemover ar = docDecl.attRemover;
 		
 		CombinedChildContentExpCreator.ExpressionPair combinedEoC =
-			cccc.get( expression, null, false, false );
+			cccc.get( expression, null, false );
 		
 		// get residual of EoC.
 		Expression eocr = docDecl.resCalc.calcResidual( expression, AnyElementToken.theInstance );
 		
 		CombinedChildContentExpCreator.ExpressionPair combinedEoC_EoCR =
-			cccc.continueGet( eocr, null, false, false );
+			cccc.continueGet( eocr, null, false );
 			// append result to the previous result.
 
 		// alter this.expression for error recovery
@@ -285,129 +401,8 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		// by passing null as elements of concern and
 		// using continuation, we are effectively "generating"
 		// the content model for error recovery.
-		return createAcceptor( contentModel, continuation, null );
+		return createAcceptor( contentModel, continuation, null, 0 );
 	}
-	
-	protected Acceptor recover( StartTagInfoEx sti, StringRef errRef )
-	{
-		final CombinedChildContentExpCreator cccc = docDecl.cccec;
-		
-		final RefExpRemover refRemover = new RefExpRemover(docDecl.pool);
-		
-		// get combined expression before feeding attributes.
-		Expression e = cccc.get(expression,sti,false,true).content.visit(refRemover);
-		
-		if( com.sun.msv.driver.textui.Debug.debug )
-		{
-			System.out.print("content model by tag name only:");
-			System.out.println(com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(e));
-		}
-		
-		if( e==Expression.nullSet )
-		{
-			// no ElementExp accepts this tag name
-			// (actually, some ElementExp may have possibly accepted this tag name,
-			// but as a result of <concur>, no expression left ).
-					
-			// so now we are sure that tag name is wrong, at least.
-			// try creating combined child content pattern without tag name check.
-			e = cccc.get(expression,sti,false,false).content.visit(refRemover);
-			
-			if( e==Expression.nullSet )
-			{
-				// no element is allowed here.
-				errRef.str = docDecl.localizeMessage( docDecl.DIAG_ELEMENT_NOT_ALLOWED, sti.qName );
-				return createRecoveryAcceptors();
-			}
-			
-			errRef.str = diagnoseBadTagName(e,sti,cccc);
-			if( errRef.str==null )
-				// no detailed error message was prepared.
-				// use some generic one.
-				errRef.str = docDecl.localizeMessage( docDecl.DIAG_BAD_TAGNAME_GENERIC, sti.qName );
-			
-			// prepare child acceptor.
-			return createRecoveryAcceptors();
-		}
-		else
-		{
-			// now the situation is
-			//  (1) we have some ElementExp that accepts tag name,
-			//  (2) but attributes were not accepted by them.
-			
-			// Whether <concur> is used or not is very critical
-			// for the quality of error message.
-//			final boolean isComplex = cccc.isComplex();
-			
-			// get the flag that indicates whether these ElementExps ignores
-			// undeclared attributes or not.
-			// Since this value depends on grammar language, all of EoC have the
-			// same value.
-			final boolean ignoreUndeclaredAttributes =
-				cccc.getElementsOfConcern().owner.ignoreUndeclaredAttributes;
-
-			// so let's see what attribute is wrong.
-			for( int i=0; i<sti.attTokens.length; i++ ) {
-				
-				Expression r = docDecl.attFeeder.feed(
-					e, sti.attTokens[i], ignoreUndeclaredAttributes );
-				if( r!=Expression.nullSet ) {
-					e = r;
-					continue;
-				}
-				
-				// this attribute was not accepted.
-				// its value may be wrong.
-				// try feeding wild card and see if it's accepted.
-				AttributeRecoveryToken rtoken = sti.attTokens[i].createRecoveryAttToken();
-				r = docDecl.attFeeder.feed(
-					e, rtoken, ignoreUndeclaredAttributes );
-					
-				if( r==Expression.nullSet )
-				{
-					// even the wild card was rejected.
-					// this means that this attribute
-					// is not specified by the grammar.
-					errRef.str = docDecl.localizeMessage(
-						docDecl.DIAG_UNDECLARED_ATTRIBUTE,
-						sti.attributes.getQName(i) );
-				}
-				else
-				{
-					// wild card was accepted, so the value must be wrong.
-					errRef.str = diagnoseBadAttributeValue( rtoken, sti, i, cccc );
-					if( errRef.str==null )
-					{
-						// no detailed error message can be provided
-						// so use generic one.
-						errRef.str = docDecl.localizeMessage(
-							docDecl.DIAG_BAD_ATTRIBUTE_VALUE_GENERIC,
-							sti.attributes.getQName(i) );
-					}
-				}
-				
-				// now we have found one error for this attribute.
-				// let's prepare recovery acceptor
-				
-				return createRecoveryAcceptors();
-			}
-			
-			// now all attributes that were present were fed successfully.
-			// so there must be required attributes that are missing.
-			if( e==Expression.nullSet )	throw new Error();	// assertion
-			
-			errRef.str = diagnoseMissingAttribute(e,sti,cccc);
-			if( errRef.str==null )
-				// no detailed error message can be provided
-				// so use generic one.
-				errRef.str = docDecl.localizeMessage(
-					docDecl.DIAG_MISSING_ATTRIBUTE_GENERIC,
-					sti.qName );
-			
-			return createRecoveryAcceptors();
-		}
-	}
-	
 	/**
 	 * format list of candidates to one string.
 	 * 
@@ -452,9 +447,9 @@ public abstract class ExpressionAcceptor implements Acceptor {
 	 * @return null
 	 *		if diagnosis failed.
 	 */
-	private final String getDiagnosisFromTypedString( TypedStringExp exp, StartTagInfoEx sti, int index ) {
+	private final String getDiagnosisFromTypedString( TypedStringExp exp, StringToken value ) {
 		try {
-			exp.dt.checkValid(	sti.attributes.getValue(index), sti.context );
+			exp.dt.checkValid(	value.literal, value.context );
 			
 			// it should throw an exception.
 			// but just in case the datatype library has a bug,
@@ -476,9 +471,18 @@ public abstract class ExpressionAcceptor implements Acceptor {
 	 * @return null
 	 *		if diagnosis fails.
 	 */
-	private final String diagnoseBadTagName( Expression exp, StartTagInfoEx sti,
-											 CombinedChildContentExpCreator cccc )
-	{
+	private final String diagnoseBadTagName( StartTagInfo sti ) {
+		final CombinedChildContentExpCreator cccc = docDecl.cccec;
+		
+		
+		// try creating combined child content pattern without tag name check.
+		Expression r = cccc.get(expression,sti,false).content.visit( new RefExpRemover(docDecl.pool) );
+			
+		if( r==Expression.nullSet )
+			// no element is allowed here at all.
+			return docDecl.localizeMessage( docDecl.DIAG_ELEMENT_NOT_ALLOWED, sti.qName );
+		
+		
 		if( cccc.isComplex() ) {
 			// probably <concur> is used.
 			// there is no easy way to tell which what tag name is expected.
@@ -505,15 +509,16 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		
 		final RefExpRemover refRemover = new RefExpRemover(docDecl.pool);
 		
-		CombinedChildContentExpCreator.OwnerAndContent oac;
-		for( oac=cccc.getElementsOfConcern(); oac!=null; oac=oac.next ) {
+		final ElementExp[] eocs = cccc.getMatchedElements();
+		final int len = cccc.numMatchedElements();
+		for( int i=0; i<len; i++ ) {
 			
-			if( oac.owner.contentModel.visit(refRemover)==Expression.nullSet )
+			if( eocs[i].contentModel.visit(refRemover)==Expression.nullSet )
 				// this element is not allowed to appear.
 				continue;
 			
 			// test some typical name class patterns.
-			final NameClass nc = oac.owner.getNameClass();
+			final NameClass nc = eocs[i].getNameClass();
 						
 			if( nc instanceof SimpleNameClass ) {
 				SimpleNameClass snc = (SimpleNameClass)nc;
@@ -582,12 +587,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 	 * @return null
 	 *		if diagnosis fails.
 	 */
-	private final String diagnoseBadAttributeValue( AttributeRecoveryToken rtoken, StartTagInfoEx sti, int attIndex,
-													CombinedChildContentExpCreator cccc )
-	{
-		// if the expression is complex, bail out. 
-		// the chance that we can provide simple error message is remote.
-		if( cccc.isComplex() )		return null;
+	private final String diagnoseBadAttributeValue( AttributeRecoveryToken rtoken ) {
 
 		// if the combined child content expression is not complex,
 		// only binary expressions used are choice and sequence.
@@ -617,15 +617,16 @@ public abstract class ExpressionAcceptor implements Acceptor {
 				// if the underlying datatype is "none",
 				// this should be reported as unexpected attribute.
 				return docDecl.localizeMessage(
-							docDecl.DIAG_UNDECLARED_ATTRIBUTE, sti.attributes.getQName(attIndex) );
+					docDecl.DIAG_UNDECLARED_ATTRIBUTE,
+					rtoken.qName );
 			}
 			
-			String dtMsg = getDiagnosisFromTypedString( tse, sti, attIndex );
+			String dtMsg = getDiagnosisFromTypedString( tse, rtoken.value );
 			if(dtMsg==null)		return null;
 			
 			return docDecl.localizeMessage(
 						docDecl.DIAG_BAD_ATTRIBUTE_VALUE_DATATYPE,
-						sti.attributes.getQName(attIndex), dtMsg );
+						rtoken.qName, dtMsg );
 		}
 		if( constraint instanceof ChoiceExp ) {
 			// choice of <string>s.
@@ -663,7 +664,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 			// at least we have one suggestion.
 			return docDecl.localizeMessage(
 				docDecl.DIAG_BAD_ATTRIBUTE_VALUE_WRAPUP,
-				sti.attributes.getQName(attIndex),
+				rtoken.qName,
 				concatenateMessages( items, more,
 					docDecl.DIAG_BAD_ATTRIBUTE_VALUE_SEPARATOR,
 					docDecl.DIAG_BAD_ATTRIBUTE_VALUE_MORE ) );
@@ -677,22 +678,18 @@ public abstract class ExpressionAcceptor implements Acceptor {
 	/**
 	 * computes diagnosis message for missing attribute
 	 * 
-	 * @param e
-	 *		expression after feeding attributes.
-	 * 
 	 * @return null
 	 *		if diagnosis fails.
 	 */
-	private final String diagnoseMissingAttribute( Expression e, StartTagInfoEx sti, CombinedChildContentExpCreator cccc )
-	{
-		if( cccc.isComplex() )
-			// again if the expression is complex,
-			// hope is remote that we can find required attributes.
-				
-			// TODO: reduce strength by converting concur to choice?
-			return null;
+	private final String diagnoseMissingAttribute( StartTagInfo sti ) {
+//		if( cccc.isComplex() )
+//			// again if the expression is complex,
+//			// hope is remote that we can find required attributes.
+//				
+//			// TODO: reduce strength by converting concur to choice?
+//			return null;
 		
-		e = e.visit(docDecl.attPicker);
+		Expression e = expression.visit(docDecl.attPicker);
 				
 		if( e.isEpsilonReducible() )	throw new Error();	// assertion
 		// if attribute expression is epsilon reducible, then
@@ -839,16 +836,17 @@ public abstract class ExpressionAcceptor implements Acceptor {
 	 */
 	protected String diagnoseUncompletedContent() {
 		final CombinedChildContentExpCreator cccc = docDecl.cccec;
-		cccc.get( expression, null, false, false );
+		cccc.get( expression, null, false );
 		
 		Set s = new java.util.HashSet();	// this set will receive possible tag names.
 		boolean more = false;				// this flag is set to true if there are more
 											// candidate.
 		
-		CombinedChildContentExpCreator.OwnerAndContent oac;
-		for( oac=cccc.getElementsOfConcern(); oac!=null; oac=oac.next ) {
+		final ElementExp[] eocs = cccc.getMatchedElements();
+		final int len = cccc.numMatchedElements();
+		for( int i=0; i<len; i++ ) {
 			// test some typical name class patterns.
-			final NameClass nc = oac.owner.getNameClass();
+			final NameClass nc = eocs[i].getNameClass();
 						
 			if( nc instanceof SimpleNameClass ) {
 				s.add( docDecl.localizeMessage(

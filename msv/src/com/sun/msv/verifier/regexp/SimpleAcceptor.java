@@ -21,8 +21,8 @@ import com.sun.msv.grammar.ElementExp;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class SimpleAcceptor extends ContentModelAcceptor
-{
+public class SimpleAcceptor extends ContentModelAcceptor {
+	
 	/**
 	 * the expression that should be used by the parent acceptor
 	 * once if this acceptor is satisfied.
@@ -50,7 +50,9 @@ public class SimpleAcceptor extends ContentModelAcceptor
 		ElementExp owner,
 		Expression continuation )
 	{
-		super(docDecl,combined);
+		super(docDecl,combined,
+			// ignore undeclared attributes if we are recovering from errors.
+			(owner==null)?true:owner.ignoreUndeclaredAttributes);
 		this.continuation	= continuation;
 		this.owner			= owner;
 	}

@@ -27,14 +27,15 @@ public class AttributePruner extends ExpressionCloner
 	public Expression onOther( OtherExp exp )			{ return exp.exp.visit(this); }
 	public Expression onElement( ElementExp exp )		{ return exp; }
 	
-	public final Expression prune( Expression exp )
-	{
+	public final Expression prune( Expression exp ) {
+		// check the cache first.
 		OptimizationTag ot = (OptimizationTag)exp.verifierTag;
 		if(ot==null)	exp.verifierTag = ot = new OptimizationTag();
 		else
 			if( ot.attributePrunedExpression!=null )
 				return ot.attributePrunedExpression;
 		
+		// cache miss. compute it.
 		Expression r = exp.visit(this);
 		
 		ot.attributePrunedExpression = r;	// cache this result

@@ -14,7 +14,6 @@ import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.verifier.*;
 import com.sun.msv.verifier.regexp.ExpressionAcceptor;
 import com.sun.msv.verifier.regexp.ElementToken;
-import com.sun.msv.verifier.regexp.StartTagInfoEx;
 import com.sun.msv.verifier.regexp.CombinedChildContentExpCreator;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
@@ -30,9 +29,10 @@ import java.util.Iterator;
 public abstract class ContentModelAcceptor extends ExpressionAcceptor {
 	
 	protected ContentModelAcceptor(
-		REDocumentDeclaration docDecl, Expression exp ) {
+		REDocumentDeclaration docDecl, Expression exp,
+		boolean ignoreUndeclaredAttributes ) {
 	
-		super(docDecl,exp);
+		super(docDecl,exp,ignoreUndeclaredAttributes);
 	}
 	
 	public boolean stepForward( Acceptor child, StringRef errRef ) {
@@ -64,16 +64,16 @@ public abstract class ContentModelAcceptor extends ExpressionAcceptor {
 	 */
 	protected Acceptor createAcceptor(
 		Expression combined, Expression continuation,
-		CombinedChildContentExpCreator.OwnerAndContent primitives ) {
+		ElementExp[] primitives, int numPrimitives ) {
 		
-		if( primitives==null || primitives.next==null ) {
+		if( primitives==null || numPrimitives<=1 ) {
 			// primitives==null is possible when recovering from error.
 			
 			// in this special case, combined child pattern and primitive patterns are the same.
 			// therefore we don't need to keep track of primitive patterns.
 			return new SimpleAcceptor(
 				docDecl, combined,
-				(primitives==null)?null:primitives.owner,
+				(primitives==null)?null:primitives[0],
 				continuation );
 		}
 
@@ -83,24 +83,11 @@ public abstract class ContentModelAcceptor extends ExpressionAcceptor {
 		if( com.sun.msv.driver.textui.Debug.debug )
 			System.out.println("ComplexAcceptor is used");
 		
+		// we need a fresh array.
+		ElementExp[] owners = new ElementExp[numPrimitives];
+		System.arraycopy( primitives, 0, owners, 0, numPrimitives );
 		
-		int i=0;
-		for( CombinedChildContentExpCreator.OwnerAndContent o = primitives;
-			 o!=null; o=o.next )	i++;
-		
-		Expression[] contents = new Expression[i];
-		ElementExp[] owners = new ElementExp[i];
-		
-		i=0;
-		for( CombinedChildContentExpCreator.OwnerAndContent o = primitives;
-			 o!=null; o=o.next )
-		{
-			contents[i] = o.content;
-			owners[i] = o.owner;
-			i++;
-		}
-		
-		return new ComplexAcceptor( docDecl, combined, contents, owners );
+		return new ComplexAcceptor( docDecl, combined, owners );
 	}
 	
 	// ContentModelAcceptor does not support type-assignment.

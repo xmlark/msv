@@ -17,7 +17,7 @@ import com.sun.msv.util.StringRef;
 import com.sun.msv.util.DatatypeRef;
 
 /**
- * exposes a low-level validation engine interface.
+ * exposes the low-level validation engine interface.
  * 
  * <p>
  * represents a pseudo-automaton acceptor.
@@ -107,13 +107,40 @@ public interface Acceptor
 	 *		try to detect the reason of error and recover from it.
 	 *		and this object should have the error message as its str field.
 	 * 
+	 * @param sti
+	 *		this parameter provides the information about the start tag to the
+	 *		acceptor object. Usually attribute information is ignored, but
+	 *		sometimes they are used as hints.
+	 * 
 	 * @return null
 	 *		If refErr is null, return null if the given start tag is not accepted.
 	 *		If refErr is non-null, return null only if the recovery is impossible.
 	 */
 	Acceptor createChildAcceptor( StartTagInfo sti, StringRef refErr );
 	
-	/** eats string literal.
+	/**
+	 * eats an attribute.
+	 * 
+	 * @return
+	 *		<b>false</b> if this attribute is not allowed, and refErr parameter
+	 *		was not provided.
+	 */
+	boolean stepForwardByAttribute(
+		String namespaceURI, String localName, String qName, String value,
+		IDContextProvider provider, StringRef refErr, DatatypeRef refType );
+	
+	/**
+	 * notifies the end of attributes.
+	 * 
+	 * @param	sti
+	 *		This information is used to produce the error message if that is
+	 *		necessary.
+	 */
+	boolean onEndAttributes( StartTagInfo sti, StringRef refErr );
+	
+	
+	/**
+	 * eats string literal.
 	 * 
 	 * @param context
 	 *		an object that provides context information necessary to validate

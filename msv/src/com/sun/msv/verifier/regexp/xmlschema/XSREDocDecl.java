@@ -15,7 +15,6 @@ import com.sun.msv.verifier.Acceptor;
 import com.sun.msv.verifier.regexp.AttributeFeeder;
 import com.sun.msv.verifier.regexp.CombinedChildContentExpCreator;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import com.sun.msv.verifier.regexp.StartTagInfoEx;
 import com.sun.msv.verifier.identity.IDConstraintChecker;
 import com.sun.msv.util.StartTagInfo;
 import org.xml.sax.helpers.AttributesImpl;
@@ -58,12 +57,6 @@ public class XSREDocDecl extends REDocumentDeclaration {
 	 * by its name.
 	 */
 	final protected XMLSchemaGrammar grammar;
-	
-	// these variables are used by XSAcceptor.
-	// It should be a local variable of the method of the XSAcceptor,
-	// but they are here for a performance reason.
-	final AttributesImpl atts = new AttributesImpl();
-	final StartTagInfo tag = new StartTagInfo(null,null,null,null,null);
 	
 	
 	

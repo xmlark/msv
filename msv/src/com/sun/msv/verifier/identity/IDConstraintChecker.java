@@ -17,8 +17,8 @@ import com.sun.msv.verifier.VerificationErrorHandler;
 import com.sun.msv.verifier.IVerifier;
 import com.sun.msv.verifier.ValidityViolation;
 import com.sun.msv.verifier.Verifier;
+import com.sun.msv.verifier.Acceptor;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import com.sun.msv.verifier.regexp.StartTagInfoEx;
 import com.sun.msv.verifier.regexp.xmlschema.XSREDocDecl;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ElementExp;
@@ -27,6 +27,7 @@ import com.sun.msv.grammar.xmlschema.IdentityConstraint;
 import com.sun.msv.grammar.xmlschema.KeyRefConstraint;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.grammar.xmlschema.XMLSchemaTypeExp;
+import com.sun.msv.util.StartTagInfo;
 import org.relaxng.datatype.Datatype;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
@@ -67,7 +68,7 @@ public class IDConstraintChecker extends Verifier {
 	
 	
 	
-	public void startDocument() {
+	public void startDocument() throws SAXException {
 		super.startDocument();
 		keyValues.clear();
 	}
@@ -96,19 +97,17 @@ public class IDConstraintChecker extends Verifier {
 			}
 	}
 	
-	public void startElement( String namespaceUri, String localName, String qName,
-								Attributes atts ) throws SAXException {
-		super.startElement(namespaceUri,localName,qName,atts);
+	protected void onNextAcceptorReady( StartTagInfo sti, Acceptor next ) throws SAXException {
 		
 		// call matchers
 		int len = matchers.size();
 		for( int i=0; i<len; i++ ) {
 			Matcher m = (Matcher)matchers.get(i);
-			m.startElement(namespaceUri,localName);
+			m.startElement(sti.namespaceURI,sti.localName);
 		}
 		
 		// introduce newly found identity constraints.
-		Object e = getCurrentElementType();
+		Object e = next.getOwnerType();
 		if( e instanceof ElementDeclExp.XSElementExp ) {
 			ElementDeclExp.XSElementExp exp = (ElementDeclExp.XSElementExp)e;
 			if( exp.identityConstraints!=null ) {
@@ -116,28 +115,23 @@ public class IDConstraintChecker extends Verifier {
 				for( int i=0; i<m; i++ )
 					add( new SelectorMatcher( this,
 							(IdentityConstraint)exp.identityConstraints.get(i),
-							namespaceUri, localName ) );
+							sti.namespaceURI, sti.localName ) );
 			}
 		}
+	}
 
-		// do not use "atts" variable. It contains xsi:*** attributes,
-		// which shouldn't be passed to matchers.
-		len = matchers.size();
-		final StartTagInfoEx sti = ((REDocumentDeclaration)docDecl).startTag;
-		int alen = sti.attributes.getLength();
-
+	protected Datatype[] feedAttribute( Acceptor child, String uri, String localName, String qName, String value ) throws SAXException {
+		Datatype[] result = super.feedAttribute( child, uri, localName, qName, value );
+		
+		final int len = matchers.size();
 		// call matchers for attributes.
 		for( int i=0; i<len; i++ ) {
 			Matcher m = (Matcher)matchers.get(i);
-			for( int j=0; j<alen; j++ ) {
-				m.onAttribute(
-					sti.attributes.getURI(j),
-					sti.attributes.getLocalName(j),
-					sti.attributes.getValue(j),
-					// a hack to obtain the type of the attribute value.
-					sti.getToken(j).value.refType.types[0] );
-			}
+			m.onAttribute( uri, localName, value, 
+				(result==null)?null:result[0] );
 		}
+		
+		return result;
 	}
 
 	

@@ -94,7 +94,8 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	private final DatatypeRef characterType = new DatatypeRef();
 	public Datatype[] getLastCharacterType() { return characterType.types; }
 	
-	private void verifyText() throws SAXException {
+	
+	protected void verifyText() throws SAXException {
 		if(text.length()!=0) {
 			characterType.types=null;
 			switch( stringCareLevel ) {
@@ -154,6 +155,8 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		// get Acceptor that will be used to validate the contents of this element.
 		Acceptor next = current.createChildAcceptor(sti,null);
 		
+		panicLevel = Math.max( panicLevel-1, 0 );
+
 		if( next==null ) {
 			// no child element matchs this one
 			if( com.sun.msv.driver.textui.Debug.debug )
@@ -171,8 +174,26 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 				throw new ValidationUnrecoverableException(vv);
 			}
 		}
-		else
-			panicLevel = Math.max( panicLevel-1, 0 );
+		
+		onNextAcceptorReady(sti,next);
+		
+		// feed attributes
+		final int len = atts.getLength();
+		for( int i=0; i<len; i++ )
+			feedAttribute( next,
+				atts.getURI(i), atts.getLocalName(i), atts.getQName(i), atts.getValue(i) );
+		
+		// call the endAttributes
+		if(!next.onEndAttributes(sti,null)) {
+			// error.
+			if( com.sun.msv.driver.textui.Debug.debug )
+				System.out.println("-- required attributes missing: error recovery");
+			
+			// let the acceptor recover from the error.
+			StringRef ref = new StringRef();
+			next.onEndAttributes(sti,ref);
+			onError( ref, localizeMessage( ERR_MISSING_ATTRIBUTE, new Object[]{qName} ) );
+		}
 		
 		stack.panicLevel = panicLevel;	// back-patching.
 		
@@ -180,6 +201,40 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		if( stringCareLevel==Acceptor.STRING_IGNORE )
 			characterType.types = new Datatype[]{StringType.theInstance};
 		current = next;
+	}
+
+	/**
+	 * this method is called from the startElement method
+	 * after the tag name is processed and the child acceptor is created.
+	 * 
+	 * <p>
+	 * This method is called before the attributes are consumed.
+	 * 
+	 * <p>
+	 * derived class can use this method to do something useful.
+	 */
+	protected void onNextAcceptorReady( StartTagInfo sti, Acceptor nextAcceptor ) throws SAXException {}
+	
+	/**
+	 * the same instance is reused by the feedAttribute method to reduce
+	 * the number of the object creation.
+	 */
+	private final DatatypeRef attributeType = new DatatypeRef();
+	
+	protected Datatype[] feedAttribute( Acceptor child, String uri, String localName, String qName, String value ) throws SAXException {
+		attributeType.types = null;
+		if( !child.stepForwardByAttribute( uri,localName,qName,value,this,null,attributeType ) ) {
+			// error
+			if( com.sun.msv.driver.textui.Debug.debug )
+				System.out.println("-- bad attribute: error recovery");
+			
+			// let the acceptor recover from the error.
+			StringRef ref = new StringRef();
+			child.stepForwardByAttribute( uri,localName,qName,value,this,ref,null );
+			onError( ref, localizeMessage( ERR_UNEXPECTED_ATTRIBUTE, new Object[]{qName} ) );
+		}
+		
+		return attributeType.types;
 	}
 	
 	public void endElement( String namespaceUri, String localName, String qName )
@@ -263,7 +318,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		isFinished=false;
 	}
 	
-	public void startDocument() {
+	public void startDocument() throws SAXException {
 		// reset everything.
 		// since Verifier maybe reused, initialization is better done here
 		// rather than constructor.
@@ -313,6 +368,10 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 
 	public static final String ERR_UNEXPECTED_TEXT = // arg:0
 		"Verifier.Error.UnexpectedText";
+	public static final String ERR_UNEXPECTED_ATTRIBUTE = // arg:1
+		"Verifier.Error.UnexpectedAttribute";
+	public static final String ERR_MISSING_ATTRIBUTE = // arg:1
+		"Verifier.Error.MissingAttribute";
 	public static final String ERR_UNEXPECTED_STARTTAG = // arg:1
 		"Verifier.Error.UnexpectedStartTag";
 	public static final String ERR_UNCOMPLETED_CONTENT = // arg:1

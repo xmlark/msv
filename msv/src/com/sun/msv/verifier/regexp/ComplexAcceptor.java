@@ -25,12 +25,26 @@ public final class ComplexAcceptor extends ComplexAcceptorBaseImpl {
 	 */
 	public final ElementExp[]	owners;
 	
+	private static Expression[] createDefaultContentModels( ElementExp[] owners ) {
+		Expression[] r = new Expression[owners.length];
+		for( int i=0; i<owners.length; i++ )
+			r[i] = owners[i].contentModel;
+		return r;
+	}
+	
+	public ComplexAcceptor( REDocumentDeclaration docDecl,
+			Expression combined, ElementExp[] primitives ) {
+		this( docDecl, combined, createDefaultContentModels(primitives), primitives );
+	}
+	
 	public ComplexAcceptor(
-		REDocumentDeclaration docDecl,
-		Expression combined,
-		Expression[] contentModels, ElementExp[] owners )
-	{
-		super( docDecl, combined, contentModels );
+		REDocumentDeclaration docDecl, Expression combined,
+		Expression[] contentModels,	ElementExp[] owners ) {
+		
+		// since all owners should belong to the same schema language,
+		// ignoreUndeclaredAttributes must be the same.
+		// that's why I'm using owners[0].
+		super( docDecl, combined, contentModels, owners[0].ignoreUndeclaredAttributes );
 		this.owners = owners;
 	}
 

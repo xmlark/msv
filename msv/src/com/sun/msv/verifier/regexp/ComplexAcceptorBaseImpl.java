@@ -20,6 +20,7 @@ import com.sun.msv.verifier.regexp.ElementToken;
 import com.sun.msv.verifier.regexp.ResidualCalculator;
 import com.sun.msv.util.StringRef;
 import com.sun.msv.util.DatatypeRef;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * base implementation of ComplexAcceptor.
@@ -31,8 +32,10 @@ public abstract class ComplexAcceptorBaseImpl extends ContentModelAcceptor
 	protected final Expression[]	contents;
 	
 	public ComplexAcceptorBaseImpl(
-		REDocumentDeclaration docDecl, Expression combined, Expression[] contents ) {
-		super( docDecl, combined );
+		REDocumentDeclaration docDecl, Expression combined, Expression[] contents,
+		boolean ignoreUndeclaredAttributes ) {
+		
+		super( docDecl, combined, ignoreUndeclaredAttributes );
 		this.contents = contents;
 	}
 
@@ -79,6 +82,25 @@ public abstract class ComplexAcceptorBaseImpl extends ContentModelAcceptor
 		
 		for( int i=0; i<contents.length; i++ )
 			contents[i] = res.calcResidual( contents[i], token );
+		
+		return true;
+	}
+	
+	protected boolean stepForwardByAttribute( AttributeToken token, StringRef refErr ) {
+		
+		if(!super.stepForwardByAttribute(token,refErr))	return false;
+		
+		for( int i=0; i<contents.length; i++ )
+			contents[i] = docDecl.attFeeder.feed( contents[i], token, ignoreUndeclaredAttributes );
+		
+		return true;
+	}
+	
+	public boolean onEndAttributes( StartTagInfo sti, StringRef refErr ) {
+		if(!super.onEndAttributes(sti,refErr))	return false;
+		
+		for( int i=0; i<contents.length; i++ )
+			contents[i] = docDecl.attPruner.prune(contents[i]);
 		
 		return true;
 	}

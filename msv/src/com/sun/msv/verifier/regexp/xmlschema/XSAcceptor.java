@@ -54,16 +54,16 @@ public class XSAcceptor extends SimpleAcceptor {
 	 */
 	protected Acceptor createAcceptor(
 		Expression combined, Expression continuation,
-		CombinedChildContentExpCreator.OwnerAndContent primitives ) {
+		ElementExp[] primitives, int numPrimitives ) {
 		
-		if( primitives==null || primitives.next==null ) {
+		if( primitives==null || numPrimitives<=1 ) {
 			// primitives==null is possible when recovering from error.
 			
 			// in this special case, combined child pattern and primitive patterns are the same.
 			// therefore we don't need to keep track of primitive patterns.
 			return new XSAcceptor(
 				(XSREDocDecl)docDecl, combined,
-				(primitives==null)?null:primitives.owner,
+				(primitives==null)?null:primitives[0],
 				continuation );
 		}
 
@@ -77,62 +77,43 @@ public class XSAcceptor extends SimpleAcceptor {
 		// and throw other options away.
 		
 		return new XSAcceptor(
-			(XSREDocDecl)docDecl, primitives.content, primitives.owner,
+			(XSREDocDecl)docDecl, primitives[0].contentModel, primitives[0],
 			null );
 		
 	}
 	
 	
+	protected boolean stepForwardByAttribute( AttributeToken token, StringRef refErr ) {
+		// xsi:*** attribute is ignored.
+		// TODO: maybe we should issue an error for unrecognized xsi:*** attributes.
+		if( token.namespaceURI.equals(XSINamespace) )
+			return true;
+		
+		return super.stepForwardByAttribute( token, refErr );
+	}
+	
 
 	public Acceptor createChildAcceptor( StartTagInfo sti, StringRef refErr ) {
 		
-		
-		{
-			boolean hasXSIAttribute = false;
+		final String type = sti.getAttribute(XSINamespace,"type");
+		final String nil = sti.getAttribute(XSINamespace,"nil");
 			
-			// remove xsi:** attributes and fill an Attributes object
-			// by the rest of the attributes.
-			_docDecl.atts.clear();
-			int len = sti.attributes.getLength();
-			for( int i=0; i<len; i++ ) {
-				if(sti.attributes.getURI(i).equals(XSINamespace)) {
-					hasXSIAttribute = true;
-					continue;	// skip the xsi:*** attribute,
-				}
-				_docDecl.atts.addAttribute(
-					sti.attributes.getURI(i),
-					sti.attributes.getLocalName(i),
-					sti.attributes.getQName(i),
-					sti.attributes.getType(i),
-					sti.attributes.getValue(i) );
-			}
-			if( !hasXSIAttribute ) {
-				// if we don't have any xsi:*** attribute, we don't need to handle it in
-				// a special manner.
-				return super.createChildAcceptor(sti,refErr);
-			}
-			_docDecl.tag.reinit( sti.namespaceURI, sti.localName, sti.qName, _docDecl.atts, sti.context );
-		}
-	
-		
-		// it is important to use docDecl.startTag so that
-		// the result of type-assignment will be left after the validation.
-		// oh, what an ugly hack.
-		docDecl.startTag.reinit(_docDecl.tag);
-		
+		if( type==null && nil==null )
+			// no need for the special handling.
+			return super.createChildAcceptor(sti,refErr);
 		
 	//	
 	// craetes combined child content model.
 	// it should be uniquely computed.
 	//
 		CombinedChildContentExpCreator.ExpressionPair result =
-		_docDecl.getCCCEC().get( getExpression(), docDecl.startTag, false, true );
+		_docDecl.getCCCEC().get( getExpression(), sti, true );
 		
-		switch( _docDecl.getCCCEC().numElementsOfConcern() ) {
+		switch( _docDecl.getCCCEC().numMatchedElements() ) {
 		case 0:
 			// no element matches. The default implementation would properly
 			// handle this situation and recover from this error.
-			return super.createChildAcceptor(_docDecl.tag,refErr);
+			return super.createChildAcceptor(sti,refErr);
 		case 1:
 			break;
 		default:
@@ -140,22 +121,21 @@ public class XSAcceptor extends SimpleAcceptor {
 			// but this maybe because of the error recovery.
 			// abandon XML Schema specific processing and delegate to the
 			// default implementation.
-			return super.createChildAcceptor(_docDecl.tag,refErr);
+			return super.createChildAcceptor(sti,refErr);
 		}
 		
 		// obtain the ElementExp that mathced this start tag.
-		final ElementExp element = _docDecl.getCCCEC().getElementsOfConcern().owner;
+		final ElementExp element = _docDecl.getCCCEC().getMatchedElements()[0];
 		
 		if(!(element instanceof ElementDeclExp.XSElementExp)) {
 			// it's not an element of XML Schema.
 			// we don't need to handle xsi:*** for this element.
-			return super.createChildAcceptor(_docDecl.tag,refErr);
+			return super.createChildAcceptor(sti,refErr);
 		}
 		final ElementDeclExp.XSElementExp xe = (ElementDeclExp.XSElementExp)element;
 		
 		
 		// see if there is a nil attribute
-		String nil = sti.getAttribute(XSINamespace,"nil");
 		if(nil!=null) {
 			if( !xe.parent.isNillable ) {
 				// error
@@ -168,38 +148,32 @@ public class XSAcceptor extends SimpleAcceptor {
 				if( com.sun.msv.driver.textui.Debug.debug )
 					System.out.println("xsi:nil is found");
 				
-				if(_docDecl.atts.getLength()!=0) {
-					// error. there cannot be any other attributes.
-					if(refErr==null)	return null;
-					// TODO: provide error message.
-					// currently, we don't provide an error message for this situation.
-				}
-				return new XSAcceptor( _docDecl,
-					Expression.epsilon, xe, null );
+				// it should only accept empty tag without any attribute.
+				return new XSAcceptor( _docDecl, Expression.epsilon, xe, null );
 			}
 			// TODO: should we issue an error if the value is something strange?
 		}
 		
-		String type = sti.getAttribute(XSINamespace,"type");
 		if(type==null) // there was no xsi:type. Use the default implementation.
-			return super.createChildAcceptor(_docDecl.tag,refErr);
+			return super.createChildAcceptor(sti,refErr);
 		
 		String[] typeName = (String[])QnameType.theInstance.createJavaObject(type,sti.context);
 		if(typeName==null)
-			return onTypeResolutionFailure(type,refErr);
+			return onTypeResolutionFailure(sti,type,refErr);
+		
 		
 		Expression contentModel;
 		
 		if( typeName[0].equals(XMLSchemaNamespace) ) {
 			// special handling is required for built-in datatypes.
 			XSDatatype dt = DatatypeFactory.getTypeByName(typeName[1]);
-			if(dt==null)	return onTypeResolutionFailure(type,refErr);
+			if(dt==null)	return onTypeResolutionFailure(sti,type,refErr);
 			
 			contentModel = _docDecl.grammar.getPool().createTypedString(dt);
 		} else {
 			XMLSchemaSchema schema = _docDecl.grammar.getByNamespace(typeName[0]);
 			if(schema==null)
-				return onTypeResolutionFailure(type,refErr);
+				return onTypeResolutionFailure(sti,type,refErr);
 		
 			final XMLSchemaTypeExp currentType = xe.parent.getTypeDefinition();
 			ComplexTypeExp cexp = schema.complexTypes.get(typeName[1]);
@@ -209,29 +183,20 @@ public class XSAcceptor extends SimpleAcceptor {
 					// this type can substitute the current type.
 					contentModel = cexp;
 				else
-					return onNotSubstitutableType(type,refErr);
+					return onNotSubstitutableType(sti,type,refErr);
 			} else {
 				SimpleTypeExp sexp = schema.simpleTypes.get(typeName[1]);
-				if(sexp==null)	return onTypeResolutionFailure(type,refErr);
+				if(sexp==null)	return onTypeResolutionFailure(sti,type,refErr);
 				
 				if(!(currentType instanceof SimpleTypeExp))
-					return onNotSubstitutableType(type,refErr);
+					return onNotSubstitutableType(sti,type,refErr);
 				
 				SimpleTypeExp curT = (SimpleTypeExp)currentType;
 				if(sexp.getType().isDerivedTypeOf(curT.getType(), !xe.parent.isRestrictionBlocked() ))
 					contentModel = sexp;
 				else
-					return onNotSubstitutableType(type,refErr);
+					return onNotSubstitutableType(sti,type,refErr);
 			}
-		}
-		
-		// now we've found the appropriate content model.
-		// feed the attributes.
-		contentModel = _docDecl.getAttFeeder().feedAll( contentModel, docDecl.startTag, false );
-		if( contentModel==Expression.nullSet ) {
-			// error. Some of the attributes are incorrect.
-			if(refErr==null)	return null;
-			// currently, we are unable to provide a detailed error message for this situation.
 		}
 		
 		return new XSAcceptor( _docDecl, contentModel, xe, null );
@@ -239,18 +204,18 @@ public class XSAcceptor extends SimpleAcceptor {
 
 
 
-	private Acceptor onNotSubstitutableType( String type, StringRef refErr ) {
+	private Acceptor onNotSubstitutableType( StartTagInfo sti, String type, StringRef refErr ) {
 		if(refErr==null)		return null;
 		
 		refErr.str = _docDecl.localizeMessage( _docDecl.ERR_NOT_SUBSTITUTABLE_TYPE, type );
-		return super.createChildAcceptor(_docDecl.tag,refErr);
+		return super.createChildAcceptor(sti,refErr);
 	}
 	
-	private Acceptor onTypeResolutionFailure( String type, StringRef refErr ) {
+	private Acceptor onTypeResolutionFailure( StartTagInfo sti, String type, StringRef refErr ) {
 		if(refErr==null)		return null;
 		
 		refErr.str = _docDecl.localizeMessage( _docDecl.ERR_UNDEFINED_TYPE, type );
-		return super.createChildAcceptor(_docDecl.tag,refErr);
+		return super.createChildAcceptor(sti,refErr);
 	}
 	
 	

@@ -21,9 +21,12 @@ import com.sun.msv.util.StringPair;
 import com.sun.msv.util.StringRef;
 import com.sun.msv.util.DatatypeRef;
 import com.sun.msv.verifier.Acceptor;
-import com.sun.msv.verifier.AbstractVerifier;
+import com.sun.msv.verifier.DocumentDeclaration;
+import com.sun.msv.verifier.ValidityViolation;
+import com.sun.msv.verifier.Verifier;
+import com.sun.msv.verifier.VerificationErrorHandler;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import com.sun.msv.verifier.regexp.AttributeToken;
+//import com.sun.msv.verifier.regexp.AttributeToken;
 import com.sun.msv.verifier.regexp.SimpleAcceptor;
 import com.sun.msv.verifier.regexp.ComplexAcceptor;
 
@@ -36,47 +39,20 @@ import com.sun.msv.verifier.regexp.ComplexAcceptor;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TypeDetector extends AbstractVerifier {
+public class TypeDetector extends Verifier {
 	
-	protected Acceptor current;
-	
-	private static final class Context {
-		final Context	previous;
-		final Acceptor	acceptor;
-		Context( Context prev, Acceptor acc ) {
-			previous=prev; acceptor=acc;
-		}
-	};
-	
-	/** context stack */
-	Context		stack = null;
 	
 	/** characters that were read (but not processed)  */
 	private StringBuffer text = new StringBuffer();
 	
-	/** an object used to store start tag information.
-	 * the same object is reused. */
-	private final StartTagInfo sti = new StartTagInfo(null,null,null,null,null);
-	
-	/**
-	 * Schema object against which the validation will be done.
-	 * One cannot use generic DocumentDeclaration because 
-	 * we need to access the type information.
-	 */
-	protected final REDocumentDeclaration docDecl;
-	
 	protected TypedContentHandler handler;
 	
-	public TypeDetector( Grammar grammar ) {
-		this.docDecl = new REDocumentDeclaration(grammar);
+	public TypeDetector( DocumentDeclaration documentDecl, VerificationErrorHandler errorHandler ) {
+		super(documentDecl,errorHandler);
 	}
 	
-	public TypeDetector( REDocumentDeclaration documentDecl ) {
-		this.docDecl = documentDecl;
-	}
-	
-	public TypeDetector( REDocumentDeclaration documentDecl, TypedContentHandler handler ) {
-		this(documentDecl);
+	public TypeDetector( DocumentDeclaration documentDecl, TypedContentHandler handler, VerificationErrorHandler errorHandler ) {
+		this(documentDecl,errorHandler);
 		setContentHandler(handler);
 	}
 	
@@ -88,10 +64,9 @@ public class TypeDetector extends AbstractVerifier {
 		this.handler = handler;
 	}
 
-	
 	private final DatatypeRef characterType = new DatatypeRef();
 	
-	private void verifyText() throws SAXException {
+	protected void verifyText() throws SAXException {
 		if(text.length()!=0) {
 			final String txt = new String(text);
 			if(!current.stepForward( txt, this, null, characterType )) {
@@ -101,7 +76,8 @@ public class TypeDetector extends AbstractVerifier {
 				current.stepForward( txt, this, err, null );
 					
 				// report an error
-				throw new InvalidDocumentException(err.str);
+				errorHandler.onError( new ValidityViolation(locator,
+					localizeMessage( ERR_UNEXPECTED_TEXT, null ) ) );
 			}
 			
 			// characters are validated. report to the handler.
@@ -132,59 +108,34 @@ public class TypeDetector extends AbstractVerifier {
 		}
 	}
 	
+	
+	protected Datatype[] feedAttribute( Acceptor child, String uri, String localName, String qName, String value ) throws SAXException {
+		Datatype[] result = super.feedAttribute(child,uri,localName,qName,value);
+		
+		handler.startAttribute( uri, localName, qName );	
+		reportCharacterChunks( value, result );	
+		handler.endAttribute( uri, localName, qName,
+			((REDocumentDeclaration)docDecl).attToken.matchedExp );
+		
+		return result;
+	}
+	
 	public void startElement( String namespaceUri, String localName, String qName, Attributes atts )
 		throws SAXException {
 		
-		super.startElement( namespaceUri, localName, qName, atts );
-		verifyText();		// verify PCDATA first.
-		
-
-		// push context
-		stack = new Context( stack, current );
-		
-		sti.reinit(namespaceUri, localName, qName, atts, this );
-
-		// get Acceptor that will be used to validate the contents of this element.
-		Acceptor next = current.createChildAcceptor(sti,null);
-		
-		if( next==null ) {
-			// no child element matchs this one. diagnose if possible.
-			StringRef ref = new StringRef();
-			current.createChildAcceptor(sti,ref);
-			throw new InvalidDocumentException(ref.str);
-		}
-		
 		handler.startElement( namespaceUri, localName, qName );
-		{// report the types of attributes to the handler.
-			int len = atts.getLength();
-			for( int i=0; i<len; i++ ) {
-				AttributeToken token = docDecl.startTag.getToken(i);
-				handler.startAttribute(
-					token.namespaceURI, token.localName, atts.getQName(i) );
-				
-				reportCharacterChunks( token.value.literal, token.value.refType.types );
-				
-				handler.endAttribute(
-					token.namespaceURI, token.localName, atts.getQName(i), token.matchedExp );
-			}
-		}
-		handler.endAttributePart();
 		
-		current = next;
+		super.startElement( namespaceUri, localName, qName, atts );
+		
+		handler.endAttributePart();
 	}
 	
 	public void endElement( String namespaceUri, String localName, String qName )
 		throws SAXException {
 		
-		verifyText();
-
-		if( !current.isAcceptState(null) ) {
-			// error.
-			StringRef errRef = new StringRef();
-			current.isAcceptState(errRef);
-			throw new InvalidDocumentException(errRef.str);
-		}
 		Acceptor child = current;
+		
+		super.endElement(namespaceUri,localName,qName);
 		
 		{// report to the handler
 			ElementExp type;
@@ -201,19 +152,6 @@ public class TypeDetector extends AbstractVerifier {
 			
 			handler.endElement( namespaceUri, localName, qName, type );
 		}
-		
-		// pop context
-		current = stack.acceptor;
-		stack = stack.previous;
-		
-		if(!current.stepForward( child, null )) {
-			// error
-			StringRef ref = new StringRef();
-			current.stepForward( child, ref );
-			throw new InvalidDocumentException(ref.str);
-		}
-		
-		super.endElement( namespaceUri, localName, qName );
 	}
 	
 	public void characters( char[] buf, int start, int len ) throws SAXException {
@@ -224,49 +162,14 @@ public class TypeDetector extends AbstractVerifier {
 	}
 	
 	public void startDocument() throws SAXException {
-		// reset everything.
-		// since Verifier maybe reused, initialization is better done here
-		// rather than constructor.
-		init();
-		// if Verifier is used without "divide&validate", 
-		// this method is called and the initial acceptor
-		// is set by this method.
-		// When Verifier is used in IslandVerifierImpl,
-		// then initial acceptor is set at the constructor
-		// and this method is not called.
-		current = docDecl.createAcceptor();
-		
+		super.startDocument();
 		handler.startDocument(this);
 	}
 	
 	public void endDocument() throws SAXException {
-		// ID/IDREF check
-		Iterator itr = idrefs.keySet().iterator();
-		while( itr.hasNext() ) {
-			StringPair symbolSpace = (StringPair)itr.next();
-			
-			Set refs = (Set)idrefs.get(symbolSpace);
-			Set keys = (Set)ids.get(symbolSpace);
-			
-			if(keys==null || !keys.containsAll(refs)) {
-				throw new InvalidDocumentException("unmatched IDREF");
-			}
-		}
+		super.endDocument();
 		handler.endDocument();
 	}
-
-	/**
-	 * signals that the document is not valid.
-	 * This exception is thrown when the incoming document is not valid 
-	 * according to the grammar.
-	 */
-	public class InvalidDocumentException extends SAXException {
-		public InvalidDocumentException(String msg) {
-			super(msg);
-		}
-		/** returns the source of the error. */
-		Locator getLocation() { return TypeDetector.this.getLocator(); }
-	};
 	
 	/**
 	 * signals that the document is ambiguous.

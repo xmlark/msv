@@ -16,17 +16,15 @@ import com.sun.msv.grammar.ElementExp;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ElementToken extends Token
-{
+public class ElementToken extends Token {
+	
 	final ElementExp[] acceptedPatterns;
 	
-	public ElementToken( ElementExp[] acceptedPatterns )
-	{
+	public ElementToken( ElementExp[] acceptedPatterns ) {
 		this.acceptedPatterns = acceptedPatterns;
 	}
 	
-	boolean match( ElementExp exp )
-	{
+	boolean match( ElementExp exp ) {
 		// since every subpatterns are reused, object identity is enough
 		// to judge the equality of patterns
 		for( int i=0; i<acceptedPatterns.length; i++ )
@@ -34,8 +32,7 @@ public class ElementToken extends Token
 		return false;
 	}
 	
-	public String toString()
-	{
+	public String toString() {
 		String s = "ElementToken";
 		for( int i=0; i<acceptedPatterns.length; i++ )
 			s += "/"+acceptedPatterns[i].getNameClass().toString();

@@ -19,10 +19,11 @@ import com.sun.msv.util.DatatypeRef;
  */
 public class AttributeToken extends Token
 {
-	public final String					namespaceURI;
-	public final String					localName;
-	public final StringToken			value;
-	protected final REDocumentDeclaration	docDecl;
+	public String						namespaceURI;
+	public String						localName;
+	public String						qName;
+	public StringToken					value;
+	protected REDocumentDeclaration		docDecl;
 	
 	/**
 	 * holds a reference to the assigned type.
@@ -45,17 +46,29 @@ public class AttributeToken extends Token
 	 */
 	private boolean saturated = false;
 	
+	AttributeToken( REDocumentDeclaration docDecl ) {
+		this.docDecl = docDecl;
+	}
+	
 	protected AttributeToken( REDocumentDeclaration docDecl,
-			String namespaceURI, String localName, String value, IDContextProvider context ) {
-		this( docDecl, namespaceURI, localName,
+			String namespaceURI, String localName, String qName, String value, IDContextProvider context ) {
+		this( docDecl, namespaceURI, localName, qName,
 			new StringToken(docDecl,value,context,new DatatypeRef()) );
 	}
 	protected AttributeToken( REDocumentDeclaration docDecl,
-			String namespaceURI, String localName, StringToken value ) {
+			String namespaceURI, String localName, String qName, StringToken value ) {
+		this(docDecl);
+		reinit( namespaceURI, localName, qName, value );
+	}
+	
+	void reinit( String namespaceURI, String localName, String qName, StringToken value ) {
 		this.namespaceURI	= namespaceURI;
 		this.localName		= localName;
+		this.qName			= qName;
 		this.value			= value;
-		this.docDecl		= docDecl;
+		
+		matchedExp = null;
+		saturated = false;
 	}
 	
 	/**
@@ -65,7 +78,7 @@ public class AttributeToken extends Token
 	 * used for error recovery.
 	 */
 	final AttributeRecoveryToken createRecoveryAttToken() {
-		return new AttributeRecoveryToken( docDecl, namespaceURI, localName, value );
+		return new AttributeRecoveryToken( docDecl, namespaceURI, localName, qName, value );
 	}
 	
 	boolean match( AttributeExp exp ) {

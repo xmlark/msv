@@ -87,7 +87,6 @@ public class RelmesVerifier implements IVerifier {
                 if( "ID".equals(atts.getType(i)) ) {
                     // since there's no way to achieve this via DOM,
                     // we need to directly talk to the implementation.
-                    System.out.println(super.dom.getClass().getName());
                     try {
                         // Xerces?
                         ((org.apache.xerces.dom.CoreDocumentImpl)super.dom).putIdentifier(

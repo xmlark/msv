@@ -13,7 +13,7 @@ cvsRoot = :pserver:userid@jse.east:/jse
 # For example, one can specify "-r branchname" to create
 # a release package for an old version.
 #
-cvsExportOpt = -D now
+cvsExportOpt = -r HEAD
 
 
 
@@ -67,6 +67,12 @@ regexplib.src = ../shared/regexp
 jdom.jar = ../shared/lib/jdom.jar
 
 #
-# resolver.jar, obtained from http://www.sun.com/software/xml/developers/resolver/
+# resolver.jar, obtained from
+#     http://www.sun.com/software/xml/developers/resolver/
 #
-resolver.jar=../shared/lib/resolver.jar
+resolver.jar = ../shared/lib/resolver.jar
+
+#
+# SAXON. available at http://users.iclway.co.uk/mhkay/saxon/
+#
+saxon.jar = ../shared/lib/saxon.jar

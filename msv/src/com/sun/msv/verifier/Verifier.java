@@ -11,9 +11,10 @@ package com.sun.msv.verifier;
 
 import org.xml.sax.*;
 import org.xml.sax.helpers.NamespaceSupport;
+import org.relaxng.datatype.DataType;
 import java.util.Set;
+import java.util.Map;
 import java.util.Iterator;
-import com.sun.msv.datatype.DataType;
 import com.sun.msv.datatype.StringType;
 import com.sun.msv.grammar.IDContextProvider;
 import com.sun.msv.util.StartTagInfo;
@@ -70,9 +71,9 @@ public class Verifier implements
 	private boolean isFinished;
 	
 	/** this set remembers every ID token encountered in this document */
-	private final Set ids = new java.util.HashSet();
+	private final Map ids = new java.util.HashMap();
 	/** this map remembers every IDREF token encountered in this document */
-	private final Set idrefs = new java.util.HashSet();
+	private final Map idrefs = new java.util.HashMap();
 	
 	/** an object used to store start tag information.
 	 * the same object is reused. */
@@ -297,16 +298,30 @@ public class Verifier implements
 	
 	public void endDocument() throws SAXException {
 		// ID/IDREF check
-		if(!ids.containsAll(idrefs)) {
-			hadError = true;
-			Iterator itr = idrefs.iterator();
-			while( itr.hasNext() ) {
-				String idref = (String)itr.next();
-				if(!ids.contains(idref))
-					errorHandler.onError( new ValidityViolation(
-						locator, localizeMessage( ERR_UNSOLD_IDREF, new Object[]{idref} ) ) );
+		Iterator itr = idrefs.keySet().iterator();
+		while( itr.hasNext() ) {
+			String symbolSpace = (String)itr.next();
+			
+			Set refs = (Set)idrefs.get(symbolSpace);
+			Set keys = (Set)ids.get(symbolSpace);
+			
+			if(keys==null || !keys.containsAll(refs)) {
+				hadError = true;
+				Iterator jtr = refs.iterator();
+				while( jtr.hasNext() ) {
+					Object idref = jtr.next();
+					if(keys==null || !keys.contains(idref)) {
+						if( symbolSpace.length()==0 )
+							errorHandler.onError( new ValidityViolation(
+								locator, localizeMessage( ERR_UNSOLD_IDREF, new Object[]{idref} ) ) );
+						else
+							errorHandler.onError( new ValidityViolation(
+								locator, localizeMessage( ERR_UNSOLD_KEYREF, new Object[]{idref,symbolSpace} ) ) );
+					}
+				}
 			}
 		}
+		
 		isFinished=true;
 	}
 
@@ -335,10 +350,17 @@ public class Verifier implements
 		return unparsedEntities.contains(entityName);
 	}
 	
-	public void onIDREF( String token )	{ idrefs.add(token); }
-	public boolean onID( String token ) {
-		if( ids.contains(token) )	return false;	// not unique.
-		ids.add(token);
+	public void onIDREF( String symbolSpace, Object token )	{
+		Set tokens = (Set)idrefs.get(symbolSpace);
+		if(tokens==null)	idrefs.put(symbolSpace,tokens = new java.util.HashSet());
+		tokens.add(token);
+	}
+	public boolean onID( String symbolSpace, Object token ) {
+		Set tokens = (Set)ids.get(symbolSpace);
+		if(tokens==null)	ids.put(symbolSpace,tokens = new java.util.HashSet());
+		
+		if( tokens.contains(token) )	return false;	// not unique.
+		tokens.add(token);
 		return true;	// they are unique, at least now.
 	}
 
@@ -360,4 +382,6 @@ public class Verifier implements
 		"Verifier.Error.UnexpectedElement";
 	public static final String ERR_UNSOLD_IDREF = // arg:1
 		"Verifier.Error.UnsoldIDREF";
+	public static final String ERR_UNSOLD_KEYREF = // arg:1
+		"Verifier.Error.UnsoldKeyref";
 }

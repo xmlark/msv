@@ -16,6 +16,7 @@ import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.grammar.relax.*;
 import com.sun.tranquilo.grammar.*;
 import com.sun.tranquilo.reader.util.GrammarLoader;
+import com.sun.tranquilo.reader.dtd.DTDReader;
 import com.sun.tranquilo.relaxns.grammar.RELAXGrammar;
 import com.sun.tranquilo.relaxns.verifier.SchemaProviderImpl;
 import com.sun.tranquilo.verifier.*;
@@ -46,6 +47,8 @@ public class Driver
 		boolean warning = false;
 		boolean dtdValidation=false;
 		
+		boolean dtdAsSchema = false;
+		
 		if( args.length==0 )
 		{
 			System.out.println( localize(MSG_USAGE) );
@@ -54,7 +57,9 @@ public class Driver
 		
 		for( int i=0; i<args.length; i++ )
 		{
-			if( args[i].equalsIgnoreCase("-dtd") )				dtdValidation = true;
+			if( args[i].equalsIgnoreCase("-strict") )			dtdValidation = true;
+			else
+			if( args[i].equalsIgnoreCase("-dtd") )				dtdAsSchema = true;
 			else
 			if( args[i].equalsIgnoreCase("-dump") )				dump = true;
 			else
@@ -126,14 +131,19 @@ public class Driver
 		System.out.println( localize(MSG_START_PARSING_GRAMMAR) );
 
 //			Grammar grammar = GrammarLoader.loadSchema(is,new DebugController(warning),factory);
-		Grammar grammar=null;		
-		try {
-			grammar = GrammarLoader.loadSchema(is,new DebugController(warning),factory);
-		} catch(SAXParseException spe) {
-			; // this error is already reported.
-		} catch(SAXException se ) {
-			if( se.getException()!=null ) throw se.getException();
-			throw se;
+		Grammar grammar=null;
+		if(dtdAsSchema) {
+			grammar = DTDReader.parse(is,new DebugController(warning),"",new TREXPatternPool());
+		} else {
+			// other XML-based grammars: GrammarLoader will detect the language.
+			try {
+				grammar = GrammarLoader.loadSchema(is,new DebugController(warning),factory);
+			} catch(SAXParseException spe) {
+				; // this error is already reported.
+			} catch(SAXException se ) {
+				if( se.getException()!=null ) throw se.getException();
+				throw se;
+			}
 		}
 		if( grammar==null ) {
 			System.out.println( localize(ERR_LOAD_GRAMMAR) );
@@ -234,7 +244,7 @@ public class Driver
 		boolean verify( InputSource instance ) throws Exception;
 	}
 	
-	/** validates a document by using divide&amp; validate framework. */
+	/** validates a document by using divide &amp; validate framework. */
 	private static class RELAXNSVerifier implements DocumentVerifier {
 		private final SchemaProvider sp;
 		
@@ -299,13 +309,26 @@ public class Driver
 //			is.setSystemId(new File(fileOrURL).getAbsolutePath());
 			// this has to be getCanonicalPath, otherwise
 			// java cannot resolve relative paths like "c:work.rlx" (in Windows).
-			is.setSystemId(new File(fileOrURL).getCanonicalPath());
+			is.setSystemId( fullPathToURL(new File(fileOrURL).getCanonicalPath()) );
 			return is;
 		}
 		catch( Exception e )
 		{// try it as an URL
 			return new InputSource(fileOrURL);
 		}
+	}
+	
+	private static String fullPathToURL( String fileName ) {
+		// under JDK1.2, use File.toURL
+		StringBuffer buf = new StringBuffer("file://");
+		if( fileName.charAt(0)!=File.separatorChar )	buf.append('/');
+		
+		for( int i=0; i<fileName.length(); i++ ) {
+			char ch = fileName.charAt(i);
+			if( ch==File.separatorChar )	buf.append('/');
+			else							buf.append(ch);
+		}
+		return buf.toString();
 	}
 
 	public static String localize( String propertyName, Object[] args )

@@ -15,6 +15,7 @@ import com.sun.tranquilo.scanner.dtd.DTDParser;
 import com.sun.tranquilo.scanner.dtd.InputEntity;
 import com.sun.tranquilo.grammar.relax.*;
 import com.sun.tranquilo.grammar.*;
+import com.sun.tranquilo.grammar.dtd.*;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.Locator;
@@ -22,6 +23,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.helpers.LocatorImpl;
 import java.util.Map;
 import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * constructs {@link RELAXModule} object that exactly matches to
@@ -101,8 +103,30 @@ public class DTDReader implements
 		}
 	}
 
-	protected NameClass getNameClass( String localName ) {
-		return new SimpleNameClass( module.targetNamespace, localName );
+	/**
+	 * map from prefix to vector of possible namespace URI.
+	 * default namespace (without prefix) is stored by using "" as a key.
+	 */
+//	protected final Map namespaces = new java.util.HashMap();
+	
+	/**
+	 * when this value is in the above vector, that indicates
+	 * we couldn't detect what URIs are going to be used with that prefix.
+	 */
+//	protected static final String ABANDON_URI_SNIFFING = "*";
+	
+	protected NameClass getNameClass( String maybeQName ) {
+		return new LocalNameClass( stripPrefix(maybeQName) );
+	}
+	
+	/**
+	 * returns local part if the given string is colonalized-name.
+	 * otherwise return it without any modification.
+	 */
+	protected String stripPrefix( String maybeQName ) {
+		int idx = maybeQName.indexOf(':');
+		if(idx<0)	return maybeQName;	// it wasn't a qname.
+		return maybeQName.substring(idx+1);
 	}
 	
 	
@@ -255,11 +279,49 @@ public class DTDReader implements
 			// within a model group, operator must be the same.
 			throw new Error();
 	}
-
+/*
+	private Vector getNamespaceVector( String prefix ) {
+		Vector v = (Vector)namespaces.get(prefix);
+		if(v!=null)		return v;
+		v = new Vector();
+		namespaces.put(prefix,v);
+		return v;
+	}
+*/	
+	/**
+	 * this flag is set to true after reporting WRN_ATTEMPT_TO_USE_NAMESPACE.
+	 * this is used to prevent issuing the same warning more than once.
+	 */
+	private boolean reportedXmlnsWarning = false;
+	
 	public void attributeDecl(
 		String elementName, String attributeName, String attributeType,
 		String[] enums, short attributeUse, String defaultValue )
 		throws SAXException {
+		
+		if( attributeName.startsWith("xmlns") ) {
+			// this is namespace declaration
+			
+			if( !reportedXmlnsWarning )
+				controller.warning( new Locator[0],
+					Localizer.localize( WRN_ATTEMPT_TO_USE_NAMESPACE ) );
+			reportedXmlnsWarning = true;
+/*			
+			if( defaultValue==null )
+				// we don't have a default value, so no way to determine URI.
+				defaultValue = ABANDON_URI_SNIFFING;
+			
+			Vector v;
+			if( attributeName.equals("xmlns") )
+				v = getNamespaceVector("");
+			else
+				v = getNamespaceVector( attributeName.substring(6) );
+			
+			v.add( defaultValue );
+*/			
+			// xmlns:* cannot be added to attr constraint expression.
+			return;
+		}
 		
 		Expression attList = (Expression)attributeDecls.get(elementName);
 		if( attList==null )
@@ -445,4 +507,6 @@ public class DTDReader implements
 	
 	public static final String ERR_UNDEFINED_ELEMENT = // arg:1
 		"DTDReader.UndefinedElement";
+	public static final String WRN_ATTEMPT_TO_USE_NAMESPACE = // arg:0
+		"DTDReader.Warning.AttemptToUseNamespace";
 }

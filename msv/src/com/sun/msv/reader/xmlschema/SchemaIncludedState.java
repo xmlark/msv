@@ -140,6 +140,7 @@ public class SchemaIncludedState extends GlobalDeclState {
 		reader.attributeFormDefault = previousAttributeFormDefault;
 		reader.finalDefault = previousFinalDefault;
 		reader.blockDefault = previousBlockDefault;
+        reader.chameleonTargetNamespace = previousChameleonTargetNamespace;
 		
 		super.endSelf();
 	}

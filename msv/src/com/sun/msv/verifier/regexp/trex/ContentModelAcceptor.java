@@ -28,7 +28,7 @@ import java.util.Iterator;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class ContentModelAcceptor extends ExpressionAcceptor
+public class ContentModelAcceptor extends ExpressionAcceptor
 {
 	protected ContentModelAcceptor(
 		TREXDocumentDeclaration docDecl, Expression exp )

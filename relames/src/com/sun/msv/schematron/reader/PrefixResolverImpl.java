@@ -32,4 +32,7 @@ class PrefixResolverImpl implements PrefixResolver
 	public String getNamespaceForPrefix( String prefix, org.w3c.dom.Node n ) {
 		return getNamespaceForPrefix(prefix);
 	}
+	public boolean handleNullPrefixes() {
+		return false;
+	}
 }

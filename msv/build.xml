@@ -500,7 +500,7 @@
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/test/com/sun/msv/verifier/psvi"
 				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}/test/com/sun/msv/verifier/psvi" />
+				dest="${stageName}/src/com/sun/msv/verifier/psvi" />
 	
 		<!-- run javacc -->
 		<antcall target="doJavacc">
@@ -579,7 +579,7 @@
 		<!-- copy sample files -->
 		<copy todir="${stageName}/examples">
 			<fileset dir="${stageName}/src" includes="com/sun/msv/writer/trex/**/*.*" />
-			<fileset dir="${stageName}/test" includes="com/sun/msv/verifier/psvi/**/*.*" />
+			<fileset dir="${stageName}/src" includes="com/sun/msv/verifier/psvi/**/*.*" />
 		</copy>
 <!-- temporarily, remove source codes -->
 		<delete dir="${stageName}/src" />

@@ -56,14 +56,9 @@ public class SelectorMatcher extends MatcherBundle {
 	private void seeIfMatched( Attributes atts ) throws SAXException {
 		boolean signal = false;
 		
-		for( int i=0; i<children.length; i++ ) {
-			if( ((SelectorPathMatcher)children[i]).signalTargetNode ) {
-				signal = true;
-				((SelectorPathMatcher)children[i]).signalTargetNode = false;
-			}
-		}
-		
-		if( signal ) {
+		if( signalTargetNode ) {
+			signalTargetNode = false;
+			
 			if( com.sun.msv.driver.textui.Debug.debug )
 				System.out.println("find a match for a selector: "+idConst.localName);
 			
@@ -78,6 +73,13 @@ public class SelectorMatcher extends MatcherBundle {
 		seeIfMatched(attributes);
 	}
 	
+	/**
+	 * a flag that indicates this element is a target node.
+	 * Sometimes more than one SelectorPathMatchers match the same element.
+	 * Therefore this field is necessary.
+	 */
+	protected boolean signalTargetNode;
+		
 	private class SelectorPathMatcher extends PathMatcher {
 		SelectorPathMatcher( XPath path ) {
 			super( SelectorMatcher.this.owner, path );
@@ -86,13 +88,5 @@ public class SelectorMatcher extends MatcherBundle {
 			// this element is a target node.
 			signalTargetNode = true;
 		}
-	
-		/**
-		 * a flag that indicates this element is a target node.
-		 * Sometimes more than one SelectorPathMatchers match the same element.
-		 * Therefore this field is necessary.
-		 */
-		protected boolean signalTargetNode;
 	}
-	
 }

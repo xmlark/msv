@@ -27,6 +27,7 @@ import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.reader.trex.TREXBaseReader;
 import com.sun.msv.reader.trex.AnyStringState;
 import com.sun.msv.reader.trex.RootState;
+import com.sun.msv.reader.trex.RefState;
 import com.sun.msv.reader.trex.IncludePatternState;
 import com.sun.msv.reader.datatype.DataTypeVocabulary;
 import com.sun.msv.util.StartTagInfo;
@@ -129,6 +130,19 @@ public class RELAXNGReader extends TREXBaseReader {
 		public State redefine		( State parent, StartTagInfo tag ) { return new RedefineState(); }
 		public State includeGrammar	( State parent, StartTagInfo tag ) { return new IncludeMergeState(); }
 		public State externalRef	( State parent, StartTagInfo tag ) { return new IncludePatternState(); }
+		
+		public State ref		( State parent, StartTagInfo tag ) {
+			if( tag.containsAttribute("parent") ) {
+				// this might be a TREX user...
+				// provide an error message.
+				parent.reader.reportError( ERR_DISALLOWED_ATTRIBUTE, "ref", "parent");
+				return new NullSetState();	// recovery
+			}
+			return new RefState(false);	// always local reference
+		}
+		public State parentRef	( State parent, StartTagInfo tag ) {
+			return new RefState(true);	// parent reference
+		}
 
 		/**
 		 * gets DataTypeLibrary object that is specified by the namespace URI.
@@ -156,6 +170,7 @@ public class RELAXNGReader extends TREXBaseReader {
 		if(tag.localName.equals("value"))		return getStateFactory().value(parent,tag);
 		if(tag.localName.equals("list"))		return getStateFactory().list(parent,tag);
 		if(tag.localName.equals("externalRef"))	return getStateFactory().externalRef(parent,tag);
+		if(tag.localName.equals("parentRef"))	return getStateFactory().parentRef(parent,tag);
 		
 		return super.createExpressionChildState(parent,tag);
 	}

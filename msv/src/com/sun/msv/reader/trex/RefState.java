@@ -19,12 +19,18 @@ import com.sun.msv.grammar.trex.TREXGrammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class RefState extends ExpressionWithoutChildState
-{
+public class RefState extends ExpressionWithoutChildState {
+	
+	public RefState( boolean parentRef ) {
+		this.parentRef = parentRef;
+	}
+	
+	protected boolean parentRef;
+	
 	protected Expression makeExpression()
 	{
-		if(!startTag.containsAttribute("name"))
-		{// name attribute is required.
+		if(!startTag.containsAttribute("name")) {
+			// name attribute is required.
 			reader.reportError( TREXBaseReader.ERR_MISSING_ATTRIBUTE,
 				"ref","name");
 			// recover by returning something that can be interpreted as Pattern
@@ -34,13 +40,10 @@ public class RefState extends ExpressionWithoutChildState
 		final String name = startTag.getAttribute("name");
 		TREXGrammar grammar = ((TREXBaseReader)this.reader).grammar;
 		
-		if(startTag.containsAttribute("parent")
-		&& startTag.getAttribute("parent").equals("true") )
-		{
+		if( parentRef ) {
 			grammar = grammar.getParentGrammar();
 			
-			if( grammar==null )
-			{
+			if( grammar==null ) {
 				reader.reportError( TREXBaseReader.ERR_NONEXISTENT_PARENT_GRAMMAR );
 				return Expression.nullSet;
 				// recover by returning something that can be interpreted as Pattern

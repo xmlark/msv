@@ -94,13 +94,15 @@ public abstract class TREXBaseReader extends GrammarReader {
 		public State zeroOrMore	( State parent, StartTagInfo tag ) { return new ZeroOrMoreState(); }
 		public State oneOrMore	( State parent, StartTagInfo tag ) { return new OneOrMoreState(); }
 		public State mixed		( State parent, StartTagInfo tag ) { return new MixedState(); }
-		public State ref		( State parent, StartTagInfo tag ) { return new RefState(); }
 		public State empty		( State parent, StartTagInfo tag ) { return new EmptyState(); }
 		public State notAllowed	( State parent, StartTagInfo tag ) { return new NullSetState(); }
 		public State includeGrammar( State parent, StartTagInfo tag ) { return new IncludeMergeState(); }
 		public State grammar	( State parent, StartTagInfo tag ) { return new GrammarState(); }
 		public State start		( State parent, StartTagInfo tag ) { return new StartState(); }
 		public abstract State define( State parent, StartTagInfo tag );
+		public State ref		( State parent, StartTagInfo tag ) {
+			return new RefState("true".equals(tag.getAttribute("parent")));
+		}
 	}
 	public final StateFactory sfactory;
 	

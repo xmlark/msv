@@ -68,6 +68,10 @@ public abstract class REDocumentDeclaration implements DocumentDeclaration
 		"Diagnosis.BadTagName.Separator";
 	public static final String DIAG_BAD_TAGNAME_MORE =
 		"Diagnosis.BadTagName.More";
+	public static final String DIAG_BAD_TAGNAME_WRONG_NAMESPACE =
+		"Diagnosis.BadTagName.WrongNamespace";
+	public static final String DIAG_BAD_TAGNAME_PROBABLY_WRONG_NAMESPACE =
+		"Diagnosis.BadTagName.ProbablyWrongNamespace";
 	public static final String DIAG_UNDECLARED_ATTRIBUTE =
 		"Diagnosis.UndeclaredAttribute";
 	public static final String DIAG_BAD_ATTRIBUTE_VALUE_GENERIC =
@@ -98,4 +102,5 @@ public abstract class REDocumentDeclaration implements DocumentDeclaration
 		"Diagnosis.StringNotAllowed";
 	public static final String DIAG_BAD_LITERAL_VALUE_WRAPUP =
 		"Diagnosis.BadLiteralValue.WrapUp";
+
 }

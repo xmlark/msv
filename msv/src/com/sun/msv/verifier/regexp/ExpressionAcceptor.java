@@ -464,7 +464,12 @@ public abstract class ExpressionAcceptor implements Acceptor
 						
 		Vector vec = new Vector();
 		boolean more = false;
-							
+
+		// if there is a SimpleNameClass with the same localName
+		// but with a different namespace URI,
+		// this variable will receive that URI.
+		String wrongNamespace = null;
+		
 		CombinedChildContentExpCreator.OwnerAndContent oac;
 		for( oac=cccc.getElementsOfConcern(); oac!=null; oac=oac.next )
 		{
@@ -473,6 +478,15 @@ public abstract class ExpressionAcceptor implements Acceptor
 						
 			if( nc instanceof SimpleNameClass )
 			{
+				SimpleNameClass snc = (SimpleNameClass)nc;
+				
+				if( snc.localName.equals(sti.localName) )
+				{
+					// sometimes, people simply forget to add namespace decl,
+					// or declare the wrong name.
+					wrongNamespace = snc.namespaceURI;
+				}
+				
 				vec.add( docDecl.localizeMessage(
 					docDecl.DIAG_SIMPLE_NAMECLASS, nc.toString() ) );
 				continue;
@@ -501,6 +515,21 @@ public abstract class ExpressionAcceptor implements Acceptor
 		// no candidate was collected. bail out.
 		if( vec.size()==0 )			return null;
 		
+		if( wrongNamespace!=null )
+		{
+			if( vec.size()==1 )
+				// only one candidate.
+				return docDecl.localizeMessage(
+					docDecl.DIAG_BAD_TAGNAME_WRONG_NAMESPACE, sti.localName, wrongNamespace );
+			else
+				// probably wrong namespace,
+				// but show the user that he/she has other choices.
+				return docDecl.localizeMessage(
+					docDecl.DIAG_BAD_TAGNAME_PROBABLY_WRONG_NAMESPACE, sti.localName, wrongNamespace );
+		}
+
+		
+		// there is no clue about user's intention.
 		return docDecl.localizeMessage(
 			docDecl.DIAG_BAD_TAGNAME_WRAPUP, sti.qName,
 			concatenateMessages( vec, more,

@@ -74,12 +74,6 @@ public class BadTypeException extends Exception
 		"LoosenedFacet";
 	public final static String ERR_SCALE_IS_GREATER_THAN_PRECISION =
 		"PrecisionScaleFacet.ScaleIsGraterThanPrecision";
-	public final static String ERR_EXCLUSIVE_FACETS_SPECIFIED =
-		"RangeFacet.ExclusiveFacetsSpecified";
-	public final static String ERR_ILLEGAL_MAX_MIN_ORDER =
-		"RangeFacet.IllegalMaxMinOrder";
-	public final static String ERR_INAPPROPRIATE_VALUE_FOR_X =
-		"RangeFacet.IllegalValueForX";
 	public static final String ERR_DUPLICATE_FACET =
 		"BadTypeException.DuplicateFacet";
 	public static final String ERR_NOT_APPLICABLE_FACET =

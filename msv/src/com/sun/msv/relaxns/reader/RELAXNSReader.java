@@ -16,6 +16,7 @@ import com.sun.msv.reader.relax.RELAXReader;
 import com.sun.msv.reader.*;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.relax.RELAXModule;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.relaxns.grammar.ExternalElementExp;
@@ -77,6 +78,9 @@ public class RELAXNSReader
 	public final RELAXGrammar getResult() {
 		if(hadError)	return null;
 		else			return grammar;
+	}
+	public Grammar getResultAsGrammar() {
+		return getResult();
 	}
 	
 	protected SchemaProvider schemaProvider;

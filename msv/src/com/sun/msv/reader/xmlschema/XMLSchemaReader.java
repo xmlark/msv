@@ -13,6 +13,7 @@ import com.sun.msv.datatype.StringType;
 import com.sun.msv.datatype.BooleanType;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.SimpleNameClass;
@@ -178,6 +179,9 @@ public class XMLSchemaReader extends GrammarReader {
 	public final XMLSchemaGrammar getResult() {
 		if(hadError)	return null;
 		else			return grammar;
+	}
+	public Grammar getResultAsGrammar() {
+		return getResult();
 	}
 	
 	/**

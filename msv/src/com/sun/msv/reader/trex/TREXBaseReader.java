@@ -66,6 +66,9 @@ public abstract class TREXBaseReader extends GrammarReader {
 		if(hadError)	return null;
 		else			return grammar;
 	}
+	public Grammar getResultAsGrammar() {
+		return getResult();
+	}
 	
 	/** stack that stores value of ancestor 'ns' attribute. */
 	private Stack nsStack = new Stack();

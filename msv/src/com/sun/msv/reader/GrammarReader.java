@@ -88,7 +88,15 @@ public abstract class GrammarReader
 		pushState( initialState, null, null );
 	}
 	
-	
+	/**
+	 * gets the parsed AGM.
+	 * 
+	 * Should any error happens, this method returns null.
+	 * 
+	 * derived classes should implement type-safe getGrammar method,
+	 * along with this method.
+	 */
+	public abstract Grammar getResultAsGrammar();
 	
 	
 	

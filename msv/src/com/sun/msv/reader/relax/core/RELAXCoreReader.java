@@ -21,6 +21,7 @@ import com.sun.msv.reader.ExpressionState;
 import com.sun.msv.reader.relax.RELAXReader;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.relax.RELAXModule;
@@ -100,6 +101,9 @@ public class RELAXCoreReader extends RELAXReader {
 	public final RELAXModule getResult() {
 		if(hadError)	return null;
 		else			return module;
+	}
+	public final Grammar getResultAsGrammar() {
+		return getResult();
 	}
 	
 	/**

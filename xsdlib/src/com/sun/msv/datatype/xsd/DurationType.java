@@ -1,29 +1,29 @@
 package com.sun.tranquilo.datatype;
 
 import com.sun.tranquilo.datatype.datetime.ISO8601Parser;
-//import com.sun.tranquilo.datatype.datetime.ParseException;
-import com.sun.tranquilo.datatype.datetime.IDateTimeValueType;
+import com.sun.tranquilo.datatype.datetime.ITimeDurationValueType;
 import java.io.ByteArrayInputStream;
 
 /**
- * base implementation of dateTime and dateTime-truncated types.
- *
- * this class uses IDateTimeValueType as the value object
+ * "dateTime" and dateTime-derived types
+ * 
+ * See http://www.w3.org/TR/xmlschema-2/#duration for the spec
  */
-abstract class DateTimeBaseType extends ConcreteType implements Comparator
+public final class DurationType extends ConcreteType implements Comparator
 {
-	protected DateTimeBaseType(String typeName) { super(typeName); }
-	
+	public static final DurationType theInstance = new DurationType();
+	private DurationType() { super("duration"); }
+
 	private final ISO8601Parser getParser( String content ) throws Exception
 	{
 		return new ISO8601Parser( new ByteArrayInputStream( content.getBytes("UTF-8") ) );
 	}
 	
-	protected final boolean checkFormat( String content )
+	protected boolean checkFormat( String content )
 	{// string derived types should use convertToValue method to check its validity
 		try
 		{
-			runParserL(getParser(content));
+			getParser(content).durationTypeL();
 			return true;
 		}
 		catch( Throwable e )
@@ -32,15 +32,11 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator
 		}
 	}
 	
-	/** invokes the appropriate lexical parse method to check lexical format */
-	abstract protected void runParserL( ISO8601Parser p ) throws Exception;
-
-	
-	public final Object convertToValue( String content )
+	public Object convertToValue( String content )
 	{// for string, lexical space is value space by itself
 		try
 		{
-			return runParserV(getParser(content));
+			return getParser(content).durationTypeV();
 		}
 		catch( Throwable e )
 		{
@@ -48,13 +44,10 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator
 		}
 	}
 	
-	/** invokes the appropriate value creation method to obtain value object */
-	abstract protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception;
-	
-	/** compare two DateTimeValueType */
+	/** compare two TimeDurationValueType */
 	public int compare( Object lhs, Object rhs )
 	{
-		return ((IDateTimeValueType)lhs).compare((IDateTimeValueType)rhs);
+		return ((ITimeDurationValueType)lhs).compare((ITimeDurationValueType)rhs);
 	}
 	
 	public final int isFacetApplicable( String facetName )
@@ -70,3 +63,4 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator
 			return NOT_ALLOWED;
 	}
 }
+

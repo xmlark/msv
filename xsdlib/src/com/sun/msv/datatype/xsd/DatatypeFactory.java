@@ -87,7 +87,7 @@ public class DataTypeFactory
 			add( m, DecimalType.theInstance );
 			add( m, FloatType.theInstance );
 			add( m, DoubleType.theInstance );
-	//		duration
+			add( m, DurationType.theInstance );
 			add( m, DateTimeType.theInstance );
 			add( m, TimeType.theInstance );
 			add( m, DateType.theInstance );

@@ -1,6 +1,6 @@
 package com.sun.tranquilo.datatype.datetime;
 
-interface ITimeDurationValueType
+public interface ITimeDurationValueType
 {
 	BigTimeDurationValueType getBigValue();
 

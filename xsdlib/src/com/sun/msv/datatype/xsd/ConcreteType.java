@@ -33,5 +33,4 @@ abstract class ConcreteType extends DataTypeImpl
 		return new DataTypeErrorDiagnosis(this,content,-1,
 			DataTypeErrorDiagnosis.ERR_INAPPROPRIATE_FOR_TYPE, getName() );
 	}
-
 }

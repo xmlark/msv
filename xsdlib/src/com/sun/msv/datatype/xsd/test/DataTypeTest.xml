@@ -10,7 +10,7 @@
 	<value>&#x10005;&#x10009;</value>
 	
 	<value>$#"</value>
-	<value>日本語</value>	<!-- "the Japanese" in kanji. length 3 -->
+	<value>日本�?/value>	<!-- "the Japanese" in kanji. length 3 -->
 	<value>lame</value>
 	<value>label</value>
 	
@@ -316,7 +316,6 @@
 	<value>0.</value>
 	<value>.0</value>
 	
-	<answer for="decimal"				>ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ooo</answer>
 	<answer for="integer"				>ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ...</answer>
 	<answer for="negativeInteger"		>ooooo ooooo oooo. .....  ..... ..... ..... ..... ...</answer>
 	<answer for="nonPositiveInteger"	>ooooo ooooo ooooo ooo..  ..... ..... ..... ..... ...</answer>
@@ -330,6 +329,7 @@
 	<answer for="unsignedInt"			>..... ..... ....o ooooo  ooooo ooooo oooo. ..... ...</answer>
 	<answer for="unsignedShort"			>..... ..... ....o ooooo  ooooo ooo.. ..... ..... ...</answer>
 	<answer for="unsignedByte"			>..... ..... ....o ooooo  ooo.. ..... ..... ..... ...</answer>
+	<answer for="decimal"				>ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ooo</answer>
 	
 	<facets><combination>
 		<choice>

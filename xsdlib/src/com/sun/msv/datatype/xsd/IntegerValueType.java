@@ -51,6 +51,8 @@ public class IntegerValueType implements Comparable
 			return null;
 		}
 		
+		if(idx==len)	return null;	// just sign only: reject it
+		
 		// skip leading '0'
 		while(idx<len && nonCanonicalizedValue.charAt(idx)=='0')
 			idx++;

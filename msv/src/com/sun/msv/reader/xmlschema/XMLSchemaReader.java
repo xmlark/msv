@@ -413,15 +413,15 @@ public class XMLSchemaReader extends GrammarReader {
 				XSDatatype dt = sexp.getType();
 				
 				if( dt==null ) {
-//	this error is reported by the detectUndefinedOnes method.
-//					reportError( ERR_UNDEFINED_SIMPLE_TYPE, r[2]/*qName*/ );
+					reportError( ERR_UNDEFINED_SIMPLE_TYPE, r[2]/*qName*/ );
 					return StringType.theInstance; // recover
 				}
 				
 				if( dt instanceof LateBindDatatype )
-					return ((LateBindDatatype)dt).getBody(context);
-				else
-					return dt;
+					dt = ((LateBindDatatype)dt).getBody(context);
+			
+				sexp.setType( dt, pool );
+				return dt;
 			}
 		}, getCurrentState() );
 		
@@ -586,6 +586,8 @@ public class XMLSchemaReader extends GrammarReader {
 	protected void wrapUp() {
 		Iterator itr;
 		
+
+		
 		// TODO: undefined grammar check.
 		Expression grammarTopLevel = Expression.nullSet;
 		itr = grammar.schemata.values().iterator();
@@ -606,7 +608,8 @@ public class XMLSchemaReader extends GrammarReader {
 			detectUndefinedOnes( schema.complexTypes,		ERR_UNDEFINED_COMPLEX_TYPE );
 			detectUndefinedOnes( schema.elementDecls,		ERR_UNDEFINED_ELEMENT_DECL );
 			detectUndefinedOnes( schema.groupDecls,			ERR_UNDEFINED_GROUP );
-			detectUndefinedOnes( schema.simpleTypes,		ERR_UNDEFINED_SIMPLE_TYPE );
+// undefined simple types are checked by the back-patch job submitted by the resolveDatatype method.
+//			detectUndefinedOnes( schema.simpleTypes,		ERR_UNDEFINED_SIMPLE_TYPE );
 			
 			// prepare top-level expression.
 			// TODO: make sure this is a correct implementation
@@ -621,10 +624,11 @@ public class XMLSchemaReader extends GrammarReader {
 			// toplevel of the grammar will be choices of toplevels of all modules.
 			grammarTopLevel = pool.createChoice( grammarTopLevel, exp );
 		}
-		
+
+		// some of the back-patching process relies on this grammar.topLevel field.
 		grammar.topLevel = grammarTopLevel;
 
-
+		
 		// perform all back patching.
 		//------------------------------
 		Locator oldLoc = locator;

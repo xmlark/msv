@@ -12,6 +12,7 @@ package com.sun.msv.grammar.xmlschema;
 import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.reader.datatype.xsd.LateBindDatatype;
 
 /**
  * Simple type declaration.
@@ -28,7 +29,10 @@ public class SimpleTypeExp extends RedefinableExp {
 	}
 	
 	public void setType( XSDatatype dt, ExpressionPool pool ) {
-		this.exp = pool.createTypedString(dt);
+		if(!(dt instanceof LateBindDatatype ))
+			// do not create a TypedStringExp for late-bind object.
+			// this will unnecessary "contaminate" the pool.
+			this.exp = pool.createTypedString(dt);
 		this.type = dt;
 	}
 	

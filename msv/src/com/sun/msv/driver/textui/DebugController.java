@@ -31,8 +31,11 @@ public class DebugController implements GrammarReaderController
 		
 		System.out.println(errorMessage);
 		
-		for( int i=0; i<loc.length; i++ )
-			printLocation(loc[i]);
+		if(loc==null || loc.length==0)
+			System.out.println("  location unknown");
+		else
+			for( int i=0; i<loc.length; i++ )
+				printLocation(loc[i]);
 	}
 	
 	public void error( Locator[] loc, String errorMessage, Exception nestedException )
@@ -41,16 +44,21 @@ public class DebugController implements GrammarReaderController
 		{
 			System.out.println("SAXException: " + nestedException.getLocalizedMessage() );
 			SAXException se = (SAXException)nestedException;
-			if(se.getException()!=null)
+			if(se.getException()!=null) {
 				System.out.println("  nested exception: " + se.getException().getLocalizedMessage() );
+				se.getException().printStackTrace(System.out);
+			}
 		}
 		else
 		{
 			System.out.println(errorMessage);
 		}
 		
-		for( int i=0; i<loc.length; i++ )
-			printLocation(loc[i]);
+		if(loc==null || loc.length==0)
+			System.out.println("  location unknown");
+		else
+			for( int i=0; i<loc.length; i++ )
+				printLocation(loc[i]);
 	}
 	
 	private void printLocation( Locator loc )

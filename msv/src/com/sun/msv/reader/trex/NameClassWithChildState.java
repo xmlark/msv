@@ -47,9 +47,8 @@ public abstract class NameClassWithChildState extends NameClassState implements 
 		return annealNameClass(nameClass);
 	}
 	
-	protected State createChildState( StartTagInfo tag )
-	{
-		return TREXGrammarReader.createNameClassChildState(tag);
+	protected State createChildState( StartTagInfo tag ) {
+		return TREXGrammarReader.createNameClassChildState(this,tag);
 	}
 
 		

@@ -53,13 +53,18 @@ import com.sun.tranquilo.util.StartTagInfo;
  */
 public abstract class SimpleState extends State
 {
+	/** checks if this element belongs to the grammar. */
+	protected boolean isGrammarElement( StartTagInfo tag ) {
+		return reader.isGrammarElement(tag);
+	}
+	
 	public void startElement( String namespaceURI, String localName, String qName, Attributes atts )
 	{
 		final StartTagInfo tag = new StartTagInfo(
 			namespaceURI,localName,qName,new AttributesImpl(atts),null);
 		// we have to copy Attributes, otherwise it will be mutated by SAX parser
 			
-		if( reader.isGrammarElement(tag) )
+		if( isGrammarElement(tag) )
 		{
 			// this is a grammar element.
 			// creates appropriate child state for it.

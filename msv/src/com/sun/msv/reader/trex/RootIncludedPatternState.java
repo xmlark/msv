@@ -31,7 +31,7 @@ public class RootIncludedPatternState extends RootState
 		
 	protected State createChildState( StartTagInfo tag )
 	{// pattern elements are also allowed as document element in case of inclusion
-		State next = reader.createExpressionChildState(tag);
+		State next = reader.createExpressionChildState(this,tag);
 		if(next!=null)	return next;
 		
 		return super.createChildState(tag);

@@ -49,7 +49,7 @@ public class ElementRuleWithTypeState extends ElementRuleBaseState implements Fa
 	}
 	
 	protected State createChildState( StartTagInfo tag ) {
-		State next = RELAXCoreReader.createFacetState(tag);
+		State next = getReader().createFacetState(this,tag);
 		if(next!=null)		return next;			// facets
 		
 		return super.createChildState(tag);			// or delegate to the base class

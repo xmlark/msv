@@ -27,25 +27,16 @@ public class DivInModuleState extends SimpleState implements ExpressionOwner, Ty
 	/** gets reader in type-safe fashion */
 	protected RELAXCoreReader getReader() { return (RELAXCoreReader)reader; }
 
-	protected State createChildState( StartTagInfo tag )
-	{
-		if(!RELAXCoreReader.RELAXCoreNamespace.equals(tag.namespaceURI) )	return null;
+	protected State createChildState( StartTagInfo tag ) {
+		if(tag.localName.equals("div"))			return getReader().getStateFactory().divInModule(this,tag);
+		if(tag.localName.equals("hedgeRule"))	return getReader().getStateFactory().hedgeRule(this,tag);
+		if(tag.localName.equals("tag"))			return getReader().getStateFactory().tag(this,tag);
+		if(tag.localName.equals("attPool"))		return getReader().getStateFactory().attPool(this,tag);
+		if(tag.localName.equals("include"))		return getReader().getStateFactory().include(this,tag);
+		if(tag.localName.equals("interface"))	return getReader().getStateFactory().interface_(this,tag);
+		if(tag.localName.equals("elementRule")) return getReader().getStateFactory().elementRule(this,tag);
+		if(tag.localName.equals("simpleType"))	return getReader().getStateFactory().simpleType(this,tag);
 		
-		if(tag.localName.equals("div"))			return new DivInModuleState();
-		if(tag.localName.equals("hedgeRule"))	return new HedgeRuleState();
-		if(tag.localName.equals("tag"))			return new TagState();
-		if(tag.localName.equals("attPool"))		return new AttPoolState();
-		if(tag.localName.equals("include"))		return new IncludeModuleState();
-		if(tag.localName.equals("interface"))	return new InterfaceState();
-		if(tag.localName.equals("elementRule"))
-		{
-			if(tag.containsAttribute("type"))	return new ElementRuleWithTypeState();
-			else								return new ElementRuleWithHedgeState();
-		}
-		if(tag.localName.equals("simpleType"))
-		{
-			return ((RELAXCoreReader)reader).module.userDefinedTypes.createTopLevelReaderState(tag);
-		}
 		return null;
 	}
 	

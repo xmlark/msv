@@ -30,23 +30,19 @@ public class AttributeState extends ExpressionState implements FacetStateParent
 	
 	public TypeIncubator getIncubator() { return incubator; }
 	
-	protected void startSelf()
-	{
+	protected void startSelf() {
 		super.startSelf();
 		String type		= startTag.getAttribute("type");
 		if(type==null)	type="string";
 		incubator = new TypeIncubator( reader.resolveDataType(type) );
 	}
 	
-	protected Expression makeExpression()
-	{
-		try
-		{
+	protected Expression makeExpression() {
+		try	{
 			final String name		= startTag.getAttribute("name");
 			final String required	= startTag.getAttribute("required");
 			
-			if( name==null )
-			{
+			if( name==null ) {
 				reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "attribute","name" );
 				// recover by ignoring this attribute.
 				// since attributes are combined by sequence, so epsilon is appropriate.
@@ -70,17 +66,15 @@ public class AttributeState extends ExpressionState implements FacetStateParent
 				exp = reader.pool.createOptional(exp);
 			
 			return exp;
-		}
-		catch( BadTypeException e )
-		{// derivation failed
+		} catch( BadTypeException e ) {
+			// derivation failed
 			reader.reportError( e, reader.ERR_BAD_TYPE, e.getMessage() );
 			// recover by using harmless expression. anything will do.
 			return Expression.anyString;
 		}
 	}
 	
-	protected State createChildState( StartTagInfo tag )
-	{
-		return RELAXCoreReader.createFacetState(tag);	// facets
+	protected State createChildState( StartTagInfo tag ) {
+		return ((RELAXCoreReader)reader).createFacetState(this,tag);	// facets
 	}
 }

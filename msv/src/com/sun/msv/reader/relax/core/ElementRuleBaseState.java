@@ -87,10 +87,8 @@ abstract class ElementRuleBaseState extends SimpleState
 	
 	protected State createChildState( StartTagInfo tag )
 	{
-//		this check is already performed by the derived class
-//		if( !tag.namespaceURI.equals(RELAXReader.RELAXCoreNamespace) )	return null;
-		
-		if( tag.localName.equals("tag") )	return new InlineTagState();
+		if( tag.localName.equals("tag") )
+			return getReader().getStateFactory().tagInline(this,tag);
 		
 		return null;	// otherwise unknown
 	}

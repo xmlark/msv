@@ -49,7 +49,7 @@ public class ElementRuleWithHedgeState extends ElementRuleBaseState implements E
 		State next;
 		
 		// particles
-		next = reader.createExpressionChildState(tag);
+		next = reader.createExpressionChildState(this,tag);
 		if(next!=null)		return next;
 		
 		// or delegate to the base class

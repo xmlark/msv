@@ -52,8 +52,8 @@ public abstract class HedgeRuleBaseState extends SimpleState implements Expressi
 	protected abstract void endSelf( Expression contentModel );
 
 	
-	protected State createChildState( StartTagInfo tag )
-	{// particles only
-		return reader.createExpressionChildState(tag);
+	protected State createChildState( StartTagInfo tag ) {
+		// particles only
+		return reader.createExpressionChildState(this,tag);
 	}
 }

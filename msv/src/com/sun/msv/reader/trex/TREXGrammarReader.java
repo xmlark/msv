@@ -131,19 +131,12 @@ public class TREXGrammarReader
 	protected String targetNamespace ="";
 	
 	
-//	public void pushState( State newState, StartTagInfo startTag )
-//	{
-//		super.pushState(newState,startTag);
-//	}
-//	public void popState()
-//	{
-//		super.popState();
-//	}
-	protected TREXPatternPool getPool()
-	{ return (TREXPatternPool)super.pool; }
+	protected TREXPatternPool getPool() {
+		return (TREXPatternPool)super.pool;
+	}
 	
 	
-	static NameClassState createNameClassChildState( StartTagInfo tag )
+	static NameClassState createNameClassChildState( State parent, StartTagInfo tag )
 	{
 		if(tag.localName.equals("name"))		return new NameClassNameState();
 		if(tag.localName.equals("anyName"))		return new NameClassAnyNameState();
@@ -173,7 +166,7 @@ public class TREXGrammarReader
 		return namespace;
 	}
 	
-	public State createDefaultExpressionChildState( StartTagInfo tag )
+	public State createDefaultExpressionChildState( State parent, StartTagInfo tag )
 	{
 		if(tag.localName.equals("element"))		return new ElementState();
 		if(tag.localName.equals("attribute"))	return new AttributeState();

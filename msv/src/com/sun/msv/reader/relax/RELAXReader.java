@@ -40,35 +40,47 @@ public abstract class RELAXReader extends GrammarReader
 	public RELAXReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
+		StateFactory stateFactory,
 		ExpressionPool pool,
 		State initialState )
 	{
 		super(controller,parserFactory,pool,initialState);
+		this.sfactory = stateFactory;
 	}
 	
 	/** Namespace URI of RELAX Core */
 	public static final String RELAXCoreNamespace = "http://www.xml.gr.jp/xmlns/relaxCore";
 
 	
+	public static class StateFactory {
+		protected State refLabel(State parent,StartTagInfo tag)	{ return new ElementRefState(); }
+		protected State hedgeRef(State parent,StartTagInfo tag)	{ return new HedgeRefState(); }
+		protected State choice(State parent,StartTagInfo tag)	{ return new ChoiceState(); }
+		protected State none(State parent,StartTagInfo tag)		{ return new NullSetState(); }
+		protected State empty(State parent,StartTagInfo tag)	{ return new EmptyState(); }
+		protected State sequence(State parent,StartTagInfo tag)	{ return new SequenceState(); }
+		
+		protected FacetState facets(State parent,StartTagInfo tag)	{ return new FacetState(); }
+	}
 	
-	public State createDefaultExpressionChildState( StartTagInfo tag )
+	public final StateFactory sfactory;
+	
+	public State createDefaultExpressionChildState( State parent, StartTagInfo tag )
 	{
-		if(! RELAXCoreNamespace.equals(tag.namespaceURI) )	return null;
-
-		if(tag.localName.equals("ref"))				return new ElementRefState();
-		if(tag.localName.equals("hedgeRef"))		return new HedgeRefState();
-		if(tag.localName.equals("choice"))			return new ChoiceState();
-		if(tag.localName.equals("none"))			return new NullSetState();
-		if(tag.localName.equals("empty"))			return new EmptyState();
-		if(tag.localName.equals("sequence"))		return new SequenceState();
+		if(tag.localName.equals("ref"))				return sfactory.refLabel(parent,tag);
+		if(tag.localName.equals("hedgeRef"))		return sfactory.hedgeRef(parent,tag);
+		if(tag.localName.equals("choice"))			return sfactory.choice(parent,tag);
+		if(tag.localName.equals("none"))			return sfactory.none(parent,tag);
+		if(tag.localName.equals("empty"))			return sfactory.empty(parent,tag);
+		if(tag.localName.equals("sequence"))		return sfactory.sequence(parent,tag);
 		return null;		// unknown element. let the default error be thrown.
 	}
 	
-	public static FacetState createFacetState( StartTagInfo tag )
+	public FacetState createFacetState( State parent, StartTagInfo tag )
 	{
 		if(! RELAXCoreNamespace.equals(tag.namespaceURI) )	return null;
 		
-		if( FacetState.facetNames.contains(tag.localName) )	return new FacetState();
+		if( FacetState.facetNames.contains(tag.localName) )	return sfactory.facets(parent,tag);
 		else	return null;
 	}
 

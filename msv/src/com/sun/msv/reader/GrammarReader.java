@@ -420,7 +420,7 @@ public abstract class GrammarReader
 	/**
 	 * creates an appropriate State object for parsing particle/pattern.
 	 */
-	public final State createExpressionChildState( StartTagInfo tag ) {
+	public final State createExpressionChildState( State parent, StartTagInfo tag ) {
 		// try external interceptors first.
 		int len = externalExpressionCreators.size();
 		for( int i=0; i<len; i++ ) {
@@ -429,7 +429,7 @@ public abstract class GrammarReader
 		}
 		
 		// then language default.
-		return createDefaultExpressionChildState(tag);
+		return createDefaultExpressionChildState(parent,tag);
 	}
 
 	/**
@@ -451,7 +451,7 @@ public abstract class GrammarReader
 	 * this method must be implemented by the derived class to create
 	 * language-default expresion state.
 	 */
-	protected abstract State createDefaultExpressionChildState( StartTagInfo tag );
+	protected abstract State createDefaultExpressionChildState( State parent, StartTagInfo tag );
 	
 	
 // SAX events interception

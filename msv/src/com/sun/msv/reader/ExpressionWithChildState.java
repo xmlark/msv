@@ -46,9 +46,8 @@ public abstract class ExpressionWithChildState extends ExpressionState implement
 		return annealExpression(exp);
 	}
 	
-	protected State createChildState( StartTagInfo tag )
-	{
-		return reader.createExpressionChildState(tag);
+	protected State createChildState( StartTagInfo tag ) {
+		return reader.createExpressionChildState(this,tag);
 	}
 
 		

@@ -32,7 +32,7 @@ public class RootState extends SimpleState implements ExpressionOwner
 		if(tag.localName.equals("grammar"))
 			return new GrammarState();
 		
-		State s = reader.createExpressionChildState(tag);
+		State s = reader.createExpressionChildState(this,tag);
 		if(s!=null)
 		{// other pattern element is specified.
 			// create wrapper grammar

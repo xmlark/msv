@@ -71,13 +71,13 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
 	{
 		if( nameClass==null )	// nameClass should be specified before content model.
 		{
-			State nextState = TREXGrammarReader.createNameClassChildState(tag);
+			State nextState = TREXGrammarReader.createNameClassChildState(this,tag);
 			if( nextState!=null )	return nextState;
 			
 			// to provide better error message, analyze the situation further.
 			// users tend to forget to supply nameClass and name attribute.
 			
-			nextState = reader.createExpressionChildState(tag);
+			nextState = reader.createExpressionChildState(this,tag);
 			if( nextState !=null )
 			{
 				// OK. tag is recognized as an content model.
@@ -92,7 +92,7 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
 				return null;
 		}
 		else
-			return reader.createExpressionChildState(tag);
+			return reader.createExpressionChildState(this,tag);
 	}
 	
 	protected void endSelf()

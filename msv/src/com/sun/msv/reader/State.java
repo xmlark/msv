@@ -97,7 +97,7 @@ public abstract class State implements ContentHandler
 	 * 
 	 * This information is avaiable after init method is called.
 	 */
-	protected GrammarReader reader;
+	public GrammarReader reader;
 				
 	/** information of the start tag.
 	 * 

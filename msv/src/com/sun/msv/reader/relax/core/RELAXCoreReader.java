@@ -61,17 +61,32 @@ public class RELAXCoreReader extends RELAXReader
 	public RELAXCoreReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
-		ExpressionPool pool )
-	{
-		super(controller,parserFactory,pool,new RootModuleState(null));
+		ExpressionPool pool ) {
+		this(controller,parserFactory,new StateFactory(),pool,null);
 	}
 
+	/**
+	 * full constructor.
+	 * 
+	 * @param stateFactory
+	 *		this object creates all parsing state object.
+	 *		Parsing behavior can be modified by changing this object.
+	 * @param expectedNamespace
+	 *		expected value of 'targetNamespace' attribute.
+	 *		If this value is null, then the module must have 'targetNamepsace'
+	 *		attribute. If this value is non-null and module doesn't have
+	 *		targetNamespace attribute, then expectedTargetNamespace is used
+	 *		as the module's target namespace (chameleon effect).
+	 *		If expectedNamespace differs from the module's targetNamespace attribute,
+	 *		then an error will be issued.
+	 */
 	public RELAXCoreReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
+		StateFactory stateFactory,
 		ExpressionPool pool, String expectedTargetNamespace )
 	{
-		super(controller,parserFactory,pool,new RootModuleState(expectedTargetNamespace));
+		super(controller,parserFactory,stateFactory,pool,new RootModuleState(expectedTargetNamespace));
 	}
 	
 	/**
@@ -144,16 +159,40 @@ public class RELAXCoreReader extends RELAXReader
 		else
 			return dt;
 	}
+
+	public static class StateFactory extends RELAXReader.StateFactory {
+		protected State mixed(State parent,StartTagInfo tag)		{ return new MixedState(); }
+		protected State element(State parent,StartTagInfo tag)		{ return new InlineElementState(); }
+		protected State attribute(State parent,StartTagInfo tag)	{ return new AttributeState(); }
+		protected State refRole(State parent,StartTagInfo tag)		{ return new AttPoolRefState(); }
+		protected State divInModule(State parent,StartTagInfo tag)	{ return new DivInModuleState(); }
+		protected State hedgeRule(State parent,StartTagInfo tag)	{ return new HedgeRuleState(); }
+		protected State tag(State parent,StartTagInfo tag)			{ return new TagState(); }
+		protected State tagInline(State parent,StartTagInfo tag)	{ return new InlineTagState(); }
+		protected State attPool(State parent,StartTagInfo tag)		{ return new AttPoolState(); }
+		protected State include(State parent,StartTagInfo tag)		{ return new IncludeModuleState(); }
+		protected State interface_(State parent,StartTagInfo tag)	{ return new InterfaceState(); }
+		protected State elementRule(State parent,StartTagInfo tag) {
+			if(tag.containsAttribute("type"))	return new ElementRuleWithTypeState();
+			else								return new ElementRuleWithHedgeState();
+		}
+		protected State simpleType( State parent, StartTagInfo tag) {
+			return ((RELAXCoreReader)parent.reader).module.userDefinedTypes.createTopLevelReaderState(parent.getStartTag());
+		}
+	}
+
+	protected final StateFactory getStateFactory() {
+		return (StateFactory)super.sfactory;
+	}
 	
-	
-	public State createDefaultExpressionChildState( StartTagInfo tag )
+	public State createDefaultExpressionChildState( State parent, StartTagInfo tag )
 	{
 		if(! RELAXCoreNamespace.equals(tag.namespaceURI) )	return null;
 		
-		if(tag.localName.equals("mixed"))			return new MixedState();
-		if(tag.localName.equals("element"))			return new InlineElementState();
+		if(tag.localName.equals("mixed"))			return getStateFactory().mixed(parent,tag);
+		if(tag.localName.equals("element"))			return getStateFactory().element(parent,tag);
 		
-		return super.createDefaultExpressionChildState(tag);
+		return super.createDefaultExpressionChildState(parent,tag);
 	}
 
 	/** returns true if the given state can have "occurs" attribute. */

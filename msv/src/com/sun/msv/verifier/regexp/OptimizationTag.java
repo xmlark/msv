@@ -26,8 +26,11 @@ final class OptimizationTag
 	 * 
 	 * In RELAX, 
 	 *  residual(exp,elem1|elem2) = residual(exp,elem1) | residual(exp,elem2)
+	 * 
+	 * Since it is possible for multiple threads to access the same OptimizationTag
+	 * concurrently, it has to be serialized.
 	 */
-	final Map simpleElementTokenResidual = new java.util.HashMap();
+	final Map simpleElementTokenResidual = new java.util.Hashtable();
 	
 	protected static final class OwnerAndCont
 	{
@@ -37,7 +40,7 @@ final class OptimizationTag
 		{ this.owner=owner; this.continuation=cont; }
 	};
 	/** map from (namespaceURI,tagName) pair to OwnerAndContinuation. */
-	final Map transitions = new java.util.HashMap();
+	final Map transitions = new java.util.Hashtable();
 
 	/** AttributePruner.prune(exp) */
 	Expression attributePrunedExpression;

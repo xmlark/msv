@@ -32,7 +32,7 @@ public class SimpleTypeState extends TypeWithOneChildState
 		if( !startTag.namespaceURI.equals(tag.namespaceURI) )	return null;
 		
 		final String name = startTag.getAttribute("name");
-		String uri = getParent().getTargetNamespaceUri();
+		String uri = getTargetNamespaceUri();
         
 		if( tag.localName.equals("annotation") )	return new IgnoreState();
 		if( tag.localName.equals("restriction") )	return new RestrictionState(uri,name);

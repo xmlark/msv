@@ -36,7 +36,6 @@ abstract class TypeWithOneChildState extends TypeState implements XSTypeOwner
 			type = child;
 	}
     
-    public String getTargetNamespaceUri() { return getParent().getTargetNamespaceUri(); }
 	
 	protected final XSDatatypeExp makeType() throws DatatypeException {
 		if( type==null ) {

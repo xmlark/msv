@@ -32,7 +32,20 @@ import com.sun.msv.util.StartTagInfo;
 abstract class TypeState extends SimpleState
 {
     /** Gets the parent state as TypeOwner. */
-    protected final XSTypeOwner getParent() { return (XSTypeOwner)parentState; }
+    private XSTypeOwner getParent() {
+        if( parentState instanceof XSTypeOwner )
+            return (XSTypeOwner)parentState;
+        else
+            return null;    // parent is allowed not to implement this interface
+    }
+
+    public final String getTargetNamespaceUri() {
+        XSTypeOwner parent = getParent();
+        if(parent!=null)    
+            return getParent().getTargetNamespaceUri();
+        else
+            return ""; // we don't have the notion of the namespace URI in this context
+    }
     
 	public void endSelf() {
 		super.endSelf();

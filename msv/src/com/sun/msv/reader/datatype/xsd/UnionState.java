@@ -64,7 +64,6 @@ public class UnionState extends TypeState implements XSTypeOwner {
 		memberTypes.add(type);
 	}
     
-    public String getTargetNamespaceUri() { return getParent().getTargetNamespaceUri(); }
 	
 	protected final XSDatatypeExp makeType() throws DatatypeException {
         return XSDatatypeExp.makeUnion( newTypeUri, newTypeName, memberTypes, reader );

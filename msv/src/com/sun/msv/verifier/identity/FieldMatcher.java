@@ -125,10 +125,12 @@ public class FieldMatcher extends PathMatcher {
 			return;
 		}
 		
-		if(type==null)
+		if(type==null) {
 			// this is possible only when we are recovering from errors.
 			value = lexical;
-		else
+			if(com.sun.msv.driver.textui.Debug.debug)
+				System.out.println("no type info available");
+		} else
 			value = type.createValue(lexical,owner);
 	}
 	

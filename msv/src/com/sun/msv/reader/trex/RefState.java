@@ -22,7 +22,16 @@ public class RefState extends ExpressionWithoutChildState
 		
 		if(startTag.containsAttribute("parent")
 		&& startTag.getAttribute("parent").equals("true") )
+		{
 			grammar = grammar.getParentGrammar();
+			
+			if( grammar==null )
+			{
+				reader.reportError( TREXGrammarReader.ERR_NONEXISTENT_PARENT_GRAMMAR );
+				return Expression.nullSet;
+				// recover by returning something that can be interpreted as Pattern
+			}
+		}
 		
 		ReferenceExp r = grammar.namedPatterns.getOrCreate(name);
 		reader.backwardReference.memorizeLink(r,false);

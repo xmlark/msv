@@ -86,19 +86,21 @@ public class TRELAXNGReader extends RELAXNGReader {
 		
 		if( role.equals("superClass") ) {
 			roleExp = new SuperClassItem();
+		} else
+		if( role.equals("class") ) {
+			roleExp = new ClassItem(decideName(state,exp,role));
+		} else
+		if( role.equals("field") ) {
+			roleExp = new FieldItem(decideName(state,exp,role));
+		} else
+		if( role.equals("interface") ) {
+			roleExp = new InterfaceItem(decideName(state,exp,role));
+		} else
+		if( role.equals("ignore") ) {
+			roleExp = new IgnoreItem();
 		} else {
-			if( role.equals("class") ) {
-				roleExp = new ClassItem(decideName(state,exp,role));
-			} else
-			if( role.equals("field") ) {
-				roleExp = new FieldItem(decideName(state,exp,role));
-			} else
-			if( role.equals("interface") ) {
-				roleExp = new InterfaceItem(decideName(state,exp,role));
-			} else {
-				reportError( ERR_UNDEFINED_ROLE, role );
-				return exp;
-			}
+			reportError( ERR_UNDEFINED_ROLE, role );
+			return exp;
 		}
 		
 		setDeclaredLocationOf(roleExp);	// memorize where this expression is defined.

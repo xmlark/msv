@@ -61,6 +61,20 @@ public final class LLParser {
 		void action( DatabindableDatatype datatype, String characterContents, ValidationContext context ) throws Exception;
 	}
 	
+	/**
+	 * do-nothing receiver.
+	 * 
+	 * This object is used as an action of IgnoreSymbol.
+	 */
+	public static final Receiver ignoreReceiver = new CharacterReceiver() {
+		public void start() {}
+		public void end() {}
+		// IgnoreSymbol can be expanded to DataPacket. That is, there are rules
+		// like "Ignore1->Dstring". So ignoreReceiver has to implement CharacterReceiver.
+		public void action( DatabindableDatatype datatype, String characterContents, ValidationContext context ) {}
+	};
+	
+	
 	class StackItem {// must be immutable
 		/** previous StackItem. StackItems form a stack by using this field. */
 		public final StackItem previous;

@@ -118,6 +118,25 @@ public class ]]></xsl:text>
 		</xsl:for-each>
 		
 		
+		
+	<!-- ignore symbols -->
+		<xsl:for-each select="ignoreSymbol">
+			<xsl:text>	private static final NonTerminalSymbol </xsl:text>
+				<xsl:value-of select="@id"/>
+			<xsl:text> = new NonTerminalSymbol(){</xsl:text>
+<xsl:text><![CDATA[
+		public LLParser.Receiver createReceiver( final LLParser.Receiver parent ) {
+			return LLParser.ignoreReceiver;
+		}
+		public String toString() { return "]]></xsl:text>
+			<xsl:value-of select="@id"/>
+			<xsl:text>"; }
+	};
+</xsl:text>
+		</xsl:for-each>
+		
+		
+		
 	<!-- class symbols -->
 		<xsl:for-each select="classSymbol">
 			<xsl:text>	private static final NonTerminalSymbol </xsl:text>

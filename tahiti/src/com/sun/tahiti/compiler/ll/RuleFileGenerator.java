@@ -88,6 +88,7 @@ public class RuleFileGenerator implements Symbolizer {
 			final Map classes = new java.util.HashMap();	// ClassItems
 			final Map fields = new java.util.HashMap();		// FieldItems
 			final Map primitives = new java.util.HashMap();	// PrimitiveItems
+			final Map ignores = new java.util.HashMap();	// IgnoreItems
 			
 			grammar.getTopLevel().visit( new ExpressionWalker(){
 				public void onElement( ElementExp exp ) {
@@ -130,6 +131,13 @@ public class RuleFileGenerator implements Symbolizer {
 						}
 						return;
 					}
+					if(exp instanceof IgnoreItem) {
+						if(!ignores.containsKey(exp)) {
+							ignores.put(exp,computeName((IgnoreItem)exp,ignores));
+							super.onRef(exp);
+						}
+						return;
+					}
 					
 					super.onRef(exp);
 				}
@@ -145,6 +153,7 @@ public class RuleFileGenerator implements Symbolizer {
 			copyAll( classes, "C", allNames );
 			copyAll( fields, "N", allNames );
 			copyAll( primitives, "P", allNames );
+			copyAll( ignores, "Ignore", allNames );
 			
 			
 			final ElementExp[] elms = (ElementExp[])elements.keySet().toArray(new ElementExp[0]);
@@ -153,6 +162,7 @@ public class RuleFileGenerator implements Symbolizer {
 			final ClassItem[] cis = (ClassItem[])classes.keySet().toArray(new ClassItem[0]);
 			final FieldItem[] fis = (FieldItem[])fields.keySet().toArray(new FieldItem[0]);
 			final PrimitiveItem[] pis = (PrimitiveItem[])primitives.keySet().toArray(new PrimitiveItem[0]);
+			final IgnoreItem[] iis = (IgnoreItem[])ignores.keySet().toArray(new IgnoreItem[0]);
 			
 			for( int i=0; i<dts.length; i++ ) {
 				out.element( "dataSymbol", new String[]{
@@ -174,13 +184,16 @@ public class RuleFileGenerator implements Symbolizer {
 			for( int i=0; i<fis.length; i++ )
 				out.element( "namedSymbol", new String[]{"id",(String)allNames.get(fis[i])} );
 			
+			for( int i=0; i<iis.length; i++ )
+				out.element( "ignoreSymbol", new String[]{"id",(String)allNames.get(iis[i])} );
+			
 			{// generate intermediate symbols.
 				int cnt=1;
 				for( Iterator itr = rules.keySet().iterator(); itr.hasNext(); ) {
 					Expression symbol = (Expression)itr.next();
 					if(!allNames.containsKey(symbol)) {
-						out.element( "intermediateSymbol", new String[]{"id","i"+cnt});
-						allNames.put( symbol, "i"+cnt );
+						out.element( "intermediateSymbol", new String[]{"id","T"+cnt});
+						allNames.put( symbol, "T"+cnt );
 						cnt++;
 					}
 				}
@@ -370,6 +383,10 @@ public class RuleFileGenerator implements Symbolizer {
 		return getNumberedName( field.name, 2, m );
 	}
 	
+	private static String computeName( IgnoreItem iim, Map m ) {
+		return getNumberedName( "", 1, m );
+	}
+
 	
 	/**
 	 * generates canonical XML representation of the name class.

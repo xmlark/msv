@@ -54,6 +54,8 @@ import org.xml.sax.Locator;
  *   </group>
  * </XMP>
  * 
+ * <p>
+ * It also strips any tahiti declarations found under an IgnoreItem.
  * 
  * 
  * <h2>2nd pass</h2>
@@ -161,9 +163,9 @@ public class RelationNormalizer {
 		
 		public Expression onElement( ElementExp exp ) {
 			/*
-			unfortunately, we will lose any additional information
-			added to this ElementExp.
-			however, we have to create a copy of ElementExp. Otherwise
+			although we will lose any additional information
+			added to this ElementExp,
+			we have to create a copy of ElementExp. Otherwise
 			we cannot correclt process things like:
 			
 			<define name="X">
@@ -181,8 +183,11 @@ public class RelationNormalizer {
 			When processing X->Z, we want to add extra FieldItem.
 			When processing Y->Z, we don't want that.
 			*/
-			return new ElementPattern( exp.getNameClass(),
-				exp.contentModel.visit(this) );
+			Expression body = exp.contentModel.visit(this);
+			
+			if(body==exp.contentModel)	return exp;
+			
+			return new ElementPattern( exp.getNameClass(), body );
 		}
 		
 		public Expression onMixed( MixedExp exp ) {
@@ -267,6 +272,12 @@ public class RelationNormalizer {
 			if(!(exp instanceof JavaItem))
 				return exp.exp.visit(this);
 			
+			// skip any JavaItem if it is in the ignored item.
+			// this will effectively clone the entire descendants of the 
+			// IgnoreItem.
+			if( isIgnore(parentItem) )
+				return exp.exp.visit(this);
+			
 			if( isClass(parentItem)	&& (exp instanceof Type) ) {
 				// class-class, class-interface, or class-primitive relation.
 				// this should be converted to
@@ -313,7 +324,7 @@ public class RelationNormalizer {
 					((FieldItem)parentItem).types.add(exp);
 				
 				if( !visitedClasses.add(exp) ) {
-					multiplicity = Multiplicity.one;
+					multiplicity = getJavaItemMultiplicity(exp);
 					// this one is a java item and already processed.
 					// so there is no need to traverse it again.
 					// to prevent infinite recursion, return immediately.
@@ -374,9 +385,15 @@ public class RelationNormalizer {
 				((FieldItem)exp).multiplicity = multiplicity;
 			}
 			
-			multiplicity = Multiplicity.one;
+			multiplicity = getJavaItemMultiplicity(exp);
 			return exp;
 		}
+		
+		private Multiplicity getJavaItemMultiplicity( ReferenceExp item ) {
+			if( item instanceof IgnoreItem )	return Multiplicity.zero;
+			else								return Multiplicity.one;
+		}
+		
 		
 		/**
 		 * generates a field name suitable to hold a reference for the specified class.
@@ -640,7 +657,9 @@ public class RelationNormalizer {
 	private static boolean isPrimitive( Object exp ) {
 		return exp instanceof PrimitiveItem;
 	}
-
+	private static boolean isIgnore( Object exp ) {
+		return exp instanceof IgnoreItem;
+	}
 
 
 // Normalizer error messages.

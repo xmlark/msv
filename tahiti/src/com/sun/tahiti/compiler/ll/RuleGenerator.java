@@ -228,9 +228,7 @@ public class RuleGenerator
 			if( rs.length==1 ) {
 				
 				// if this rule does not have associated action.
-				if(!(	rs[0].left instanceof ClassItem
-					||	rs[0].left instanceof FieldItem
-					||	rs[0].left instanceof PrimitiveItem)
+				if( isActionlessNonTerminal(rs[0].left)
 				// and A is a pure non-terminal
 				&&  !(rs[0].left instanceof NameClassAndExpression) ) {
 					
@@ -285,11 +283,9 @@ public class RuleGenerator
 						&& !occuredSymbols.contains(right[0])	// and this is the first occurence,
 						
 						// ... and if this rule does not have associated action.
-						&& !(	right[0] instanceof ClassItem
-							||	right[0] instanceof FieldItem
-							||	right[0] instanceof PrimitiveItem
+						&& isActionlessNonTerminal(right[0])
 						// and A is a non-terminal
-							||	right[0] instanceof NameClassAndExpression
+						&& !(	right[0] instanceof NameClassAndExpression
 							||	right[0] instanceof TypedStringExp) )
 							candidates.add(right[j]);
 						else
@@ -411,6 +407,13 @@ public class RuleGenerator
 				// again, since rule.right[i] is rewritten.
 			}
 		}
+	}
+	
+	private static boolean isActionlessNonTerminal( Expression exp ) {
+		return !(  exp instanceof ClassItem
+				|| exp instanceof FieldItem
+				|| exp instanceof PrimitiveItem
+				|| exp instanceof IgnoreItem);
 	}
 	
 	private static void assert( boolean b ) {

@@ -20,7 +20,6 @@ public class DebugController implements GrammarReaderController
 		if( nestedException instanceof SAXException )
 		{
 			System.out.println("SAXException: " + nestedException.getLocalizedMessage() );
-			
 			SAXException se = (SAXException)nestedException;
 			if(se.getException()!=null)
 				System.out.println("  nested exception: " + se.getException().getLocalizedMessage() );

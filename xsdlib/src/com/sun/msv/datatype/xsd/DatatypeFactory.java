@@ -168,10 +168,10 @@ public class DatatypeFactory {
 				add( builtinType, LanguageType.theInstance );
 			else
 			if( dataTypeName.equals("ENTITIES") )
-				add( builtinType, new ListType("ENTITIES",EntityType.theInstance) );
+				add( builtinType, createOneOrMoreList("ENTITIES",EntityType.theInstance) );
 			else
 			if( dataTypeName.equals("NMTOKENS") )
-				add( builtinType, new ListType("NMTOKENS",NmtokenType.theInstance) );
+				add( builtinType, createOneOrMoreList("NMTOKENS",NmtokenType.theInstance) );
 			else
 			if( dataTypeName.equals("NOTATION") )
 				add( builtinType, new StringType("NOTATION", WhiteSpaceProcessor.theCollapse) );
@@ -199,6 +199,12 @@ public class DatatypeFactory {
 		if(dt!=null)		return dt;
 		
 		throw new DatatypeException("undefined type name:"+dataTypeName);
+	}
+	
+	private static XSDatatypeImpl createOneOrMoreList( String name, XSDatatypeImpl item ) throws DatatypeException {
+		TypeIncubator ti = new TypeIncubator(new ListType(null,item));
+		ti.addFacet("minLength","1",false,null);
+		return ti.derive(name);
 	}
 	
 	/**

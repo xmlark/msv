@@ -203,7 +203,7 @@ public abstract class BatchTester {
 		if(property==null)
 			return new TestSuite();	// return an empty test suite.
 		
-		StringTokenizer tokens = new StringTokenizer( property, ";" );
+		StringTokenizer tokens = new StringTokenizer( property, File.pathSeparator );
 
 		// collect test cases
 		TestSuite s = new TestSuite();

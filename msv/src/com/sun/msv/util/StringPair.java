@@ -25,7 +25,7 @@ public final class StringPair implements java.io.Serializable
 	public StringPair( String ns, String ln ) {
         // assertion check
         if(ns==null)        throw new InternalError("namespace URI is null");
-        if(localName==null) throw new InternalError("local name is null");
+        if(ln==null)        throw new InternalError("local name is null");
         
         namespaceURI=ns;
         localName=ln;

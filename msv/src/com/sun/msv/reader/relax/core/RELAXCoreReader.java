@@ -189,7 +189,7 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
             return new XSDatatypeExp( DatatypeFactory.getTypeByName(typeName), pool );
 		} catch( DatatypeException e ) {
             
-			XSDatatype dt = null;
+			XSDatatype dt = getBackwardCompatibleType(typeName);
             
             if(typeName.equals("none"))         dt = NoneType.theInstance;
             if(typeName.equals("emptyString"))  dt = EmptyStringType.theInstance;

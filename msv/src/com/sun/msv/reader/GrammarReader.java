@@ -232,7 +232,59 @@ public abstract class GrammarReader
 	}
 	
 
-	
+
+    
+	/**
+	 * tries to obtain a DataType object by resolving obsolete names.
+	 * this method is useful for backward compatibility purpose.
+	 */
+	public XSDatatype getBackwardCompatibleType( String typeName ) {
+		/*
+			This method is not heavily used.
+			So it is a good idea not to create a reference to the actual instance
+			unless it's absolutely necessary, so that the class loader doesn't load
+			the datatype class easily.
+		
+			If we use a map, it makes the class loader loads all classes. 
+		*/
+		XSDatatype dt = null;
+		
+		if( typeName.equals("uriReference") )
+			dt = com.sun.msv.datatype.xsd.AnyURIType.theInstance;
+		else
+		if( typeName.equals("number") )
+			dt = com.sun.msv.datatype.xsd.NumberType.theInstance;
+		else
+		if( typeName.equals("timeDuration") )
+			dt = com.sun.msv.datatype.xsd.DurationType.theInstance;
+		else
+		if( typeName.equals("CDATA") )
+			dt = com.sun.msv.datatype.xsd.NormalizedStringType.theInstance;
+		else
+		if( typeName.equals("year") )
+			dt = com.sun.msv.datatype.xsd.GYearType.theInstance;
+		else
+		if( typeName.equals("yearMonth") )
+			dt = com.sun.msv.datatype.xsd.GYearMonthType.theInstance;
+		else
+		if( typeName.equals("month") )
+			dt = com.sun.msv.datatype.xsd.GMonthType.theInstance;
+		else
+		if( typeName.equals("monthDay") )
+			dt = com.sun.msv.datatype.xsd.GMonthDayType.theInstance;
+		else
+		if( typeName.equals("day") )
+			dt = com.sun.msv.datatype.xsd.GDayType.theInstance;
+
+		if( dt!=null )
+			reportWarning( WRN_DEPRECATED_TYPENAME, typeName, dt.displayName() );
+		
+		return dt;
+	}
+    
+    
+    
+    
 // parsing and related services
 //======================================================
 	

@@ -1,17 +1,20 @@
 
-(RELAX)	When obsoleted type names like "uriReference" is used, Tranquilo
-		now reports a warning but pretend as if it saw a correct type.
-(both)	"Panic mode" is implemented: Tranquilo suppress excessive
-		error messages.
-(dt)	Updated datatype library to catch up with PR version of XML Schema.
+2000/03/20 release
+------------------
+
+(RELAX) When obsoleted type names like "uriReference" is used, Tranquilo
+        now reports a warning but pretend as if it saw a correct type.
+(both)  "Panic mode" is implemented: Tranquilo suppress excessive
+        error messages.
+(dt)    Updated datatype library to catch up with PR version of XML Schema.
 (both)  Fixed a bug that makes validation a little bit slower
-		and that sometimes interferes with type-assignment.
-(both)	Added "optimistic" type-assignment mechanism for Verifier.
-		This is the equivalent of "RELAXEffortlessHandler" which
-		is implemented in "RELAX Verifier for Java" by Swift,Inc.
-		This mechanism is "optimistic" in the sense that Verifier
-		will report type as long as it can decide it; once if Verifier
-		fails to decide type, it bails out (verification will be continued).
+        and that sometimes interferes with type-assignment.
+(both)  Added "optimistic" type-assignment mechanism for Verifier.
+        This is the equivalent of "RELAXEffortlessHandler" which
+        is implemented in "RELAX Verifier for Java" by Swift,Inc.
+        This mechanism is "optimistic" in the sense that Verifier
+        will report type as long as it can decide it; once if Verifier
+        fails to decide type, it bails out (verification will be continued).
 (both)	Implemented VerifierFilter that acts as XMLFilter.
 (both)  Fixed bugs in integer-derived types and uriReference type.
 (RELAX) Supports "Java API for RELAX Verifier".

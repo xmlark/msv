@@ -2,6 +2,7 @@ package com.sun.tranquilo.datatype.datetime;
 
 import java.math.BigInteger;
 import java.math.BigDecimal;
+import com.sun.tranquilo.datatype.Comparator;
 
 public class BigTimeDurationValueType implements ITimeDurationValueType
 {
@@ -28,23 +29,7 @@ public class BigTimeDurationValueType implements ITimeDurationValueType
 	{ return equals( (ITimeDurationValueType)o ); }
 	public boolean equals( ITimeDurationValueType o )
 	{
-		if(!(o instanceof BigTimeDurationValueType ))
-			o = o.getBigValue();
-		
-		return equals( this, (BigTimeDurationValueType)o );
-	}
-	
-	public boolean equals( BigTimeDurationValueType lhs, BigTimeDurationValueType rhs )
-	{
-		for( int i=0; i<testInstance.length; i++ )
-		{
-			BigDateTimeValueType l = (BigDateTimeValueType)testInstance[i].add(lhs);
-			BigDateTimeValueType r = (BigDateTimeValueType)testInstance[i].add(rhs);
-			
-			if( ! l.equals(r) )		return false;
-		}
-		
-		return true;
+		return compare(o)==Comparator.EQUAL;
 	}
 	
 	private BigInteger nullAsZero(BigInteger o)
@@ -60,18 +45,15 @@ public class BigTimeDurationValueType implements ITimeDurationValueType
 				.add( nullAsZero(minute) ).hashCode();
 	}
 
-	public int compareTo(Object o)
-	{ return compareTo( (ITimeDurationValueType)o ); }
-	
-	public int compareTo( ITimeDurationValueType o )
+	public int compare( ITimeDurationValueType o )
 	{
 		if(!(o instanceof BigTimeDurationValueType) )
 			o = o.getBigValue();
 
-		return compareTo( this, (BigTimeDurationValueType)o );
+		return compare( this, (BigTimeDurationValueType)o );
 	}
 	
-	static private int compareTo( BigTimeDurationValueType lhs, BigTimeDurationValueType rhs )
+	static private int compare( BigTimeDurationValueType lhs, BigTimeDurationValueType rhs )
 	{
 		boolean less=false,greater=false,noDeterminate=false;
 		
@@ -80,7 +62,7 @@ public class BigTimeDurationValueType implements ITimeDurationValueType
 			BigDateTimeValueType l = (BigDateTimeValueType)testInstance[i].add(lhs);
 			BigDateTimeValueType r = (BigDateTimeValueType)testInstance[i].add(rhs);
 			
-			int v = BigDateTimeValueType.compareTo(l,r);
+			int v = BigDateTimeValueType.compare(l,r);
 			
 			if(v<0)						less=true;
 			if(v>0)						greater=true;
@@ -90,11 +72,11 @@ public class BigTimeDurationValueType implements ITimeDurationValueType
 			}
 		}
 		
-		if(noDeterminate)		return 0;	// no determinate
-		if(less && greater)		return 0;	// no determinate
-		if(less)				return -1;	// lhs<rhs
-		if(greater)				return 1;	// lhs>rhs
-		return 0;	// equal
+		if(noDeterminate)		return Comparator.UNDECIDABLE;
+		if(less && greater)		return Comparator.UNDECIDABLE;
+		if(less)				return Comparator.LESS;		// lhs<rhs
+		if(greater)				return Comparator.GREATER;	// lhs>rhs
+		return Comparator.EQUAL;
 	}
 
 	public BigTimeDurationValueType getBigValue() { return this; }

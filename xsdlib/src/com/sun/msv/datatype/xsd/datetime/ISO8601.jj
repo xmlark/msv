@@ -12,6 +12,7 @@ package com.sun.tranquilo.datatype.datetime;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * parses various string that conforms to ISO-8601.
@@ -21,20 +22,7 @@ public class ISO8601Parser
 	public static void main(String args[]) throws Exception
 	{
 		String s = new BufferedReader( new InputStreamReader(System.in) ).readLine();
-		new ISO8601Parser(new ByteArrayInputStream(s.getBytes("UTF-8"))).dateTime();
-	}
-	public static DateValueType parseDate( String lexValue ) throws ConvertionException
-	{
-		try
-		{
-			return new ISO8601Parser(new ByteArrayInputStream(
-				lexValue.getBytes())).date();
-		}
-		catch( Exception e )
-		{
-			// TODO : provide diagnosis?
-			throw new ConvertionException();
-		}
+		new ISO8601Parser(new ByteArrayInputStream(s.getBytes("UTF-8"))).dateTimeTypeV();
 	}
 	
 	Number		yy,mm,dd;			// Integer or BigInteger
@@ -44,7 +32,7 @@ public class ISO8601Parser
 	
 	private static final String[] trail = new String[]{"0000","000","00","0",""};
 	
-	private void reset() { yy=mm=dd=HH=MM=mSecond=zone = null; }
+	private void reset() { yy=mm=dd=HH=MM=mSecond=null; zone=null; }
 }
 
 PARSER_END(ISO8601Parser)
@@ -80,7 +68,7 @@ void secondV() : { int ss; Token t2=null; }
 		
 		if( t2.image.length()<4 )
 		{// integer is enough
-			mSecond = new Intger(ss*1000 + Integer.parseInt(t2.image));
+			mSecond = new Integer(ss*1000 + Integer.parseInt(t2.image));
 			return;
 		}
 		
@@ -109,6 +97,10 @@ ITimeDurationValueType durationTypeV() : { boolean neg=false; }
 		"T" timePartV(neg)
 	)
 	<EOF>
+	{
+		return TimeDurationFactory.create(
+			yy, mm, dd, HH, MM, mSecond );
+	}
 }
 
 void datePartL() : {}
@@ -148,13 +140,13 @@ void timePartV(boolean neg) : {}
 	HH=intDigits(neg) "H"
 }
 
-Object intDigits(boolean neg) : { Token v; }
+Number intDigits(boolean neg) : { Token v; }
 {
 	v=<digits>	// non-negative value only.
 	{
 		try
 		{// try Integer first.
-			int i = Integer(v.image).parseInt();
+			int i = Integer.parseInt(v.image);
 			if(neg)	i=-i;
 			return new Integer(i);
 		}
@@ -163,10 +155,10 @@ Object intDigits(boolean neg) : { Token v; }
 			try
 			{
 				BigInteger bi = new BigInteger(v.image);
-				if(neg)	bi = bi.negative();
+				if(neg)	bi = bi.negate();
 				return bi;
 			}
-			catch( NumberFormatException e )
+			catch( NumberFormatException ee )
 			{
 				throw new ParseException();
 			}
@@ -255,7 +247,7 @@ void timeL() : {}
 	NN(0,24) ":" NN(0,59) ":" secondL()
 }
 /* time without time zone modifier */
-void timeV(DateTimeParam o) : { int h,m;}
+void timeV() : { int h,m;}
 {
 	h=NN(0,23) ":"		/* hour */
 	m=NN(0,59) ":"		/* minute */
@@ -307,10 +299,10 @@ void yearV() : { boolean neg=false; Token v; }
 			{
 				BigInteger bi = new BigInteger(v.image);
 				// TODO : could be optimized by using not()
-				if(neg)		bi = bi.negative().add(BigInteger.ONE);
+				if(neg)		bi = bi.negate().add(BigInteger.ONE);
 				yy = bi;
 			}
-			catch(NumberFormatException e)
+			catch(NumberFormatException ee)
 			{
 				throw new ParseException();
 			}
@@ -337,7 +329,7 @@ void dateL() : { int tail4; }
 {
 	tail4=yearL() "-" month() "-" day()
 	{
-		if( dd.intValue() >= DateTimeFactory.maximumDayInMonth( tail4, mm.intValue() ) )
+		if( dd.intValue() >= Util.maximumDayInMonthFor( tail4, mm.intValue() ) )
 			throw new ParseException();	// something like 32nd,Jan 
 	}
 }
@@ -347,10 +339,10 @@ void dateV() : {}
 	{
 		if(
 			( (yy instanceof BigInteger) &&
-				dd.intValue() >= DateTimeFactory.maximumDayInMonth( (BigInteger)yy, mm.intValue() ) )
+				dd.intValue() >= Util.maximumDayInMonthFor( (BigInteger)yy, mm.intValue() ) )
 		||
 			( (yy instanceof Integer) &&
-				dd.intValue() >= DateTimeFactory.maximumDayInMonth( yy.intValue(), mm.intValue() ) ) )
+				dd.intValue() >= Util.maximumDayInMonthFor( yy.intValue(), mm.intValue() ) ) )
 			throw new ParseException();	// something like 32nd,Jan
 	}
 }
@@ -364,28 +356,31 @@ IDateTimeValueType dateTimeTypeV() : {}
 {
 	dateV()	"T"	timeV() [ timeZoneModifierV() ]
 	
-	{ return DateTimeFactory.createFromDateTime( yy, mm, dd, HH, MM, mSecond, zone ); }
+	{ return DateTimeFactory.createFromDateTime(
+		yy, (Integer)mm, (Integer)dd, (Integer)HH, (Integer)MM, mSecond, zone ); }
 }
 
 IDateTimeValueType timeTypeV() : {}
 {
 	timeV() [ timeZoneModifierV() ]
 	
-	{ return DateTimeFactory.createFromTime( HH, MM, mSecond, zone ); }
+	{ return DateTimeFactory.createFromTime( (Integer)HH, (Integer)MM, mSecond, zone ); }
 }
 
 IDateTimeValueType dateTypeV() : {}
 {
 	dateV() [ timeZoneModifierV() ]
 	
-	{ return DateTimeFactory.createFromDate( yy, mm, dd, zone ); }
+	{ return DateTimeFactory.createFromDate(
+		yy, (Integer)mm, (Integer)dd, zone ); }
 }
 
 IDateTimeValueType yearMonthTypeV() : {}
 {
 	yearV() "-" month() [ timeZoneModifierV() ]
 	
-	{ return DateTimeFactory.createFromDate( yy, mm, null, zone ); }
+	{ return DateTimeFactory.createFromDate(
+		yy, (Integer)mm, null, zone ); }
 }
 
 IDateTimeValueType yearTypeV() : {}
@@ -400,9 +395,10 @@ IDateTimeValueType monthDayTypeV() : {}
 	"--" month() "-" day() [ timeZoneModifierV() ]
 	
 	{
-		if( dd.intValue() >= DateTimeFactory.maximumDayInMonth( 4, mm.intValue() ) )
+		if( dd.intValue() >= Util.maximumDayInMonthFor( 4, mm.intValue() ) )
 			throw new ParseException();	// something like 32nd,Jan
-		return DateTimeFactory.createFromDate( null, mm, dd, zone );
+		return DateTimeFactory.createFromDate(
+			null, (Integer)mm, (Integer)dd, zone );
 	}
 }
 
@@ -410,12 +406,13 @@ IDateTimeValueType dayTypeV() : {}
 {
 	"---" day() [ timeZoneModifierV() ]
 	
-	{ return DateTimeFactory.createFromDate( null, null, dd, zone ); }
+	{ return DateTimeFactory.createFromDate(
+		null, null, (Integer)dd, zone ); }
 }
 
 IDateTimeValueType monthTypeV() : {}
 {
 	"--" month() "--" [ timeZoneModifierV() ]
 	
-	{ return DateTimeFactory.createFromDate( null, mm, null, zone ); }
+	{ return DateTimeFactory.createFromDate( null, (Integer)mm, null, zone ); }
 }

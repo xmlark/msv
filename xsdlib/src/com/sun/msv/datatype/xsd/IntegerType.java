@@ -7,9 +7,8 @@ package com.sun.tranquilo.datatype;
  */
 public class IntegerType extends IntegerDerivedType
 {
-	public static final IntegerType theInstance = new IntegerType();
-	private IntegerType() { super("integer"); }
-//	protected IntegerType(String typeName) { super(typeName); }
+	public static final IntegerType theInstance = new IntegerType("integer");
+	protected IntegerType(String typeName) { super(typeName); }
 	
 	public Object convertToValue( String lexicalValue )
 	{

@@ -68,47 +68,53 @@ public class DataTypeFactory
 	/** creates a map that contains all static types */
 	private static Map createStaticTypes()
 	{
-		Map m = new java.util.HashMap();
-		throw new UnsupportedOperationException();
+		try
+		{
+			Map m = new java.util.HashMap();
 
-		// missing types are noted inline.
-		
-		add( m, StringType.theInstance );
-		add( m, BooleanType.theInstance );
-		add( m, DecimalType.theInstance );
-		add( m, FloatType.theInstance );
-		add( m, DoubleType.theInstance );
-//		duration
-//		dateTime
-//		time, date, yearMonth, year, monthDay, day, month
-		add( m, HexBinaryType.theInstance );
-		add( m, Base64BinaryType.theInstance );
-		add( m, UriReferenceType.theInstance );
-//		ID, IDREF
-		add( m, EntityType.theInstance );
-		add( m, QnameType.theInstance );
-		add( m, NormalizedStringType.theInstance );
-		add( m, TokenType.theInstance );
-		add( m, LanguageType.theInstance );
-//		IDREFS
-		add( m, new ListType("ENTITIES",EntityType.theInstance) );
-		add( m, NmtokenType.theInstance );
-		add( m, new ListType("NMTOKENS",NmtokenType.theInstance) );
-		add( m, NameType.theInstance );
-		add( m, NcnameType.theInstance );
-//		NOTATION
-		add( m, IntegerType.theInstance );
-		add( m, NonPositiveIntegerType.theInstance );
-		add( m, NegativeIntegerType.theInstance );
-		add( m, LongType.theInstance );
-		add( m, IntType.theInstance );
-		add( m, ShortType.theInstance );
-		add( m, ByteType.theInstance );
-		add( m, NonNegativeIntegerType.theInstance );
-		add( m, UnsignedLongType.theInstance );
-		add( m, UnsignedIntType.theInstance );
-		add( m, UnsignedShortType.theInstance );
-		add( m, UnsignedByteType.theInstance );
-		return m;
+			// missing types are noted inline.
+
+			add( m, StringType.theInstance );
+			add( m, BooleanType.theInstance );
+			add( m, DecimalType.theInstance );
+			add( m, FloatType.theInstance );
+			add( m, DoubleType.theInstance );
+	//		duration
+	//		dateTime
+	//		time, date, yearMonth, year, monthDay, day, month
+			add( m, HexBinaryType.theInstance );
+			add( m, Base64BinaryType.theInstance );
+			add( m, UriReferenceType.theInstance );
+	//		ID, IDREF
+			add( m, EntityType.theInstance );
+			add( m, QnameType.theInstance );
+			add( m, NormalizedStringType.theInstance );
+			add( m, TokenType.theInstance );
+			add( m, LanguageType.theInstance );
+	//		IDREFS
+			add( m, new ListType("ENTITIES",EntityType.theInstance) );
+			add( m, NmtokenType.theInstance );
+			add( m, new ListType("NMTOKENS",NmtokenType.theInstance) );
+			add( m, NameType.theInstance );
+			add( m, NcnameType.theInstance );
+	//		NOTATION
+			add( m, IntegerType.theInstance );
+			add( m, NonPositiveIntegerType.theInstance );
+			add( m, NegativeIntegerType.theInstance );
+			add( m, LongType.theInstance );
+			add( m, IntType.theInstance );
+			add( m, ShortType.theInstance );
+			add( m, ByteType.theInstance );
+			add( m, NonNegativeIntegerType.theInstance );
+			add( m, UnsignedLongType.theInstance );
+			add( m, UnsignedIntType.theInstance );
+			add( m, UnsignedShortType.theInstance );
+			add( m, UnsignedByteType.theInstance );
+			return m;
+		}
+		catch( BadTypeException bte )
+		{// assertion failed
+			throw new IllegalStateException();
+		}
 	}
 }

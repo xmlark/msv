@@ -2,6 +2,7 @@ package com.sun.tranquilo.datatype.datetime;
 
 import java.math.BigInteger;
 import java.math.BigDecimal;
+import com.sun.tranquilo.datatype.Comparator;
 
 /**
  * DateTimeValueType object that can hold all lexically valid dateTime value.
@@ -96,7 +97,7 @@ public class BigDateTimeValueType implements IDateTimeValueType
 	
 	public boolean equals( BigDateTimeValueType lhs, BigDateTimeValueType rhs )
 	{
-		return compare(lhs,rhs)==EQUAL;
+		return compare(lhs,rhs)==Comparator.EQUAL;
 	}
 	
 	
@@ -104,7 +105,7 @@ public class BigDateTimeValueType implements IDateTimeValueType
 	{
 		// to be consistent with equals method, we have to normalize
 		// value before computation.
-		BigDateTimeValueType n = this.normalize();
+		BigDateTimeValueType n = (BigDateTimeValueType)this.normalize();
 		return Util.objHashCode(n.year) + Util.objHashCode(n.month) + Util.objHashCode(n.day)
 			+  Util.objHashCode(n.hour) + Util.objHashCode(n.minute) + Util.objHashCode(n.second)
 			+  Util.objHashCode(n.zone);
@@ -132,24 +133,36 @@ public class BigDateTimeValueType implements IDateTimeValueType
 			if(!Util.objEqual(lhs.minute,rhs.minute))	return Util.objCompare(lhs.minute,rhs.minute);
 			if(!Util.objEqual(lhs.second,rhs.second))	return Util.objCompare(lhs.second,rhs.second);
 		
-			return EQUAL;
+			return Comparator.EQUAL;
 		}
 		
 		if( lhs.zone==null )
 		{
-			if( compareTo( (BigDateTimeValueType)new BigDateTimeValueType(lhs,Util.timeZonePos14).normalize(), rhs ) <= 0 )
-				return LESS;	// lhs < rhs
-			if( compareTo( (BigDateTimeValueType)new BigDateTimeValueType(lhs,Util.timeZoneNeg14).normalize(), rhs ) >= 0 )
-				return GREATER;	// lhs > rhs
-			return UNDECIDABLE;		// lhs <> rhs
+			int r;
+			
+			r = compare( (BigDateTimeValueType)new BigDateTimeValueType(lhs,Util.timeZonePos14).normalize(), rhs );
+			if( r==Comparator.EQUAL || r==Comparator.LESS )
+				return Comparator.LESS;	// lhs < rhs
+			
+			r = compare( (BigDateTimeValueType)new BigDateTimeValueType(lhs,Util.timeZoneNeg14).normalize(), rhs );
+			if( r==Comparator.EQUAL || r==Comparator.GREATER )
+				return Comparator.GREATER;	// lhs > rhs
+			
+			return Comparator.UNDECIDABLE;		// lhs <> rhs
 		}
 		else
 		{
-			if( compareTo( lhs, (BigDateTimeValueType)new BigDateTimeValueType(rhs,Util.timeZoneNeg14) ) <= 0 )
-				return LESS;	// lhs < rhs
-			if( compareTo( lhs, (BigDateTimeValueType)new BigDateTimeValueType(rhs,Util.timeZonePos14) ) >= 0 )
-				return GREATER;	// lhs > rhs
-			return UNDECIDABLE;	// lhs <> rhs
+			int r;
+			
+			r = compare( lhs, (BigDateTimeValueType)new BigDateTimeValueType(rhs,Util.timeZoneNeg14) );
+			if( r==Comparator.EQUAL || r==Comparator.LESS )
+				return Comparator.LESS;	// lhs < rhs
+			
+			r = compare( lhs, (BigDateTimeValueType)new BigDateTimeValueType(rhs,Util.timeZonePos14) );
+			if( r==Comparator.EQUAL || r==Comparator.GREATER )
+				return Comparator.GREATER;	// lhs > rhs
+			
+			return Comparator.UNDECIDABLE;	// lhs <> rhs
 		}
 	}
 	
@@ -216,7 +229,7 @@ public class BigDateTimeValueType implements IDateTimeValueType
 			ohour = quoAndMod[1].intValue();
 			
 			int tempDays;
-			int md = maximumDayInMonthFor(oyear,omonth);
+			int md = Util.maximumDayInMonthFor(oyear,omonth);
 			{
 				int dayValue = (this.day!=null)?this.day.intValue():0;
 				if( dayValue<0 )		tempDays=0;
@@ -230,12 +243,12 @@ public class BigDateTimeValueType implements IDateTimeValueType
 				int carry;
 				if( oday.signum()==-1 )	// day<0
 				{
-					oday = oday.add(Util.int2bi(maximumDayInMonthFor(oyear,omonth-1)));
+					oday = oday.add(Util.int2bi(Util.maximumDayInMonthFor(oyear,omonth-1)));
 					carry = -1;
 				}
 				else
 				{
-					BigInteger bmd = Util.int2bi(maximumDayInMonthFor(oyear,omonth));
+					BigInteger bmd = Util.int2bi(Util.maximumDayInMonthFor(oyear,omonth));
 					if( oday.compareTo(bmd)>=0 )
 					{
 						oday = oday.subtract(bmd);

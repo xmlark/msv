@@ -19,5 +19,5 @@ public interface IDateTimeValueType
 	/** compare two DateTimeValueType as defined in
 	 *  com/sun/tranquilo/datatype/Comparator
 	 */
-	int compare( IDateTimeValuType rhs );
+	int compare( IDateTimeValueType rhs );
 }

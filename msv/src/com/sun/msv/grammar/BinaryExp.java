@@ -73,7 +73,7 @@ public abstract class BinaryExp extends Expression {
 	 * (A,B, and C in this example)
 	 */
 	public Iterator children() {
-		Expression[] items = getChildren();
+		final Expression[] items = getChildren();
 		return new Iterator() {
 			private int idx =0;
 			

@@ -21,7 +21,7 @@ import java.util.Set;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class SchemaLocationRemover extends TREXPatternCloner {
+public class SchemaLocationRemover extends ExpressionCloner {
 	
 	/** set of visited ElementExps */
 	private final Set visitedElements = new java.util.HashSet();

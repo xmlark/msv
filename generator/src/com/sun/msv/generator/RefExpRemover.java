@@ -25,9 +25,8 @@ import java.util.Set;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RefExpRemover
-	extends ExpressionCloner
-	implements TREXPatternVisitorExpression
-{
+	extends ExpressionCloner {
+	
 	/** set of visited ElementExps */
 	private final Set visitedElements = new java.util.HashSet();
 	
@@ -56,13 +55,5 @@ public class RefExpRemover
 	public Expression onRef( ReferenceExp exp )
 	{
 		return exp.exp.visit(this);
-	}
-	public Expression onInterleave( InterleavePattern exp )
-	{
-		return ((TREXPatternPool)pool).createInterleave( exp.exp1.visit(this), exp.exp2.visit(this) );
-	}
-	public Expression onConcur( ConcurPattern exp )
-	{
-		return ((TREXPatternPool)pool).createConcur( exp.exp1.visit(this), exp.exp2.visit(this) );
 	}
 }

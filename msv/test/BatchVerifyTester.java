@@ -14,7 +14,7 @@ import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.InputSource;
 import junit.framework.*;
 import com.sun.msv.verifier.*;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.dtd.DTDReader;
 import com.sun.msv.reader.util.GrammarLoader;

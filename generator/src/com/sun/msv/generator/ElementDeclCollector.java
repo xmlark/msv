@@ -10,7 +10,6 @@
 package com.sun.msv.generator;
 
 import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.trex.*;
 import java.util.Set;
 
 /**
@@ -19,7 +18,7 @@ import java.util.Set;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ElementDeclCollector implements TREXPatternVisitorVoid
+public class ElementDeclCollector implements ExpressionVisitorVoid
 {
 	public void onEpsilon() {}
 	public void onAnyString() {}
@@ -34,8 +33,8 @@ public class ElementDeclCollector implements TREXPatternVisitorVoid
 	
 	public void onChoice( ChoiceExp exp )				{ onBinExp(exp); }
 	public void onSequence( SequenceExp exp )			{ onBinExp(exp); }
-	public void onInterleave( InterleavePattern exp )	{ onBinExp(exp); }
-	public void onConcur( ConcurPattern exp )			{ throw new Error("concur is not supported"); }
+	public void onInterleave( InterleaveExp exp )		{ onBinExp(exp); }
+	public void onConcur( ConcurExp exp )				{ throw new Error("concur is not supported"); }
 	public void onMixed( MixedExp exp )					{ exp.exp.visit(this); }
 	public void onOneOrMore( OneOrMoreExp exp )			{ exp.exp.visit(this); }
 	

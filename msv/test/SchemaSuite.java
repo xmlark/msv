@@ -13,7 +13,7 @@ import java.io.*;
 import com.sun.msv.verifier.*;
 import com.sun.msv.verifier.identity.IDConstraintChecker;
 import com.sun.msv.verifier.util.VerificationErrorHandlerImpl;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.reader.util.IgnoreController;
 import com.sun.msv.reader.dtd.DTDReader;
@@ -59,7 +59,7 @@ class SchemaSuite extends TestCase {
 	}
 		
 	/** set by testLoadSchema method */
-	protected TREXDocumentDeclaration docDecl;
+	protected REDocumentDeclaration docDecl;
 		
 	protected void runTest() throws Exception {
 		

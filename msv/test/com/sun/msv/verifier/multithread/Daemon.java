@@ -14,8 +14,7 @@ import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.reader.util.GrammarLoader;
-import com.sun.msv.grammar.trex.TREXPatternPool;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.verifier.Verifier;
 import com.sun.msv.verifier.ValidityViolation;
 import java.util.*;
@@ -94,8 +93,8 @@ public class Daemon implements Runnable
 		{
 			SAXParserFactory factory = new org.apache.xerces.jaxp.SAXParserFactoryImpl();
 			factory.setNamespaceAware(true);
-			TREXPatternPool localPool = new TREXPatternPool(grammar.getPool());
-//			TREXPatternPool localPool = new TREXPatternPool();
+			ExpressionPool localPool = new ExpressionPool(grammar.getPool());
+//			ExpressionPool localPool = new ExpressionPool();
 			
 			while(true)
 			{
@@ -112,8 +111,8 @@ public class Daemon implements Runnable
 				
 				XMLReader r = factory.newSAXParser().getXMLReader();
 				Verifier v = new Verifier(
-					new TREXDocumentDeclaration(grammar),
-//					new TREXDocumentDeclaration(grammar.getTopLevel(),localPool),
+					new REDocumentDeclaration(grammar),
+//					new REDocumentDeclaration(grammar.getTopLevel(),localPool),
 					new com.sun.msv.verifier.util.VerificationErrorHandlerImpl() );
 				r.setContentHandler(v);
 				try

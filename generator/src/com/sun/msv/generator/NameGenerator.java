@@ -10,8 +10,6 @@
 package com.sun.msv.generator;
 
 import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.trex.TREXNameClassVisitor;
-import com.sun.msv.grammar.trex.DifferenceNameClass;
 import com.sun.msv.util.StringPair;
 import java.util.Iterator;
 import java.util.Set;
@@ -41,7 +39,7 @@ class NameGenerator {
 		final Set possibleNames = new java.util.HashSet();
 		
 		// collect possible names
-		nc.visit( new TREXNameClassVisitor(){
+		nc.visit( new NameClassVisitor(){
 			public Object onNsName( NamespaceNameClass nc ) {
 				possibleNames.add( new StringPair(nc.namespaceURI, MAGIC) );
 				return null;

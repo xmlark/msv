@@ -10,15 +10,14 @@
 package com.sun.msv.verifier;
 
 import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.relax.ElementRule;
-import com.sun.msv.grammar.trex.TREXPatternPool;
 import com.sun.msv.grammar.trex.typed.TypedElementPattern;
-import com.sun.msv.reader.relax.core.RELAXCoreReader;
-import com.sun.msv.relaxns.reader.RELAXNSReader;
 import com.sun.msv.reader.trex.typed.TypedTREXGrammarInterceptor;
 import com.sun.msv.reader.trex.TREXGrammarReader;
+import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.verifier.VerifierFilter;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.XMLReader;
 import org.xml.sax.XMLFilter;
@@ -46,7 +45,7 @@ public class TypeReporter extends DefaultHandler
 	{
 		if( args.length!=3 )
 		{
-			System.out.println("Usage: TypeReporter (relaxNS|relaxCore|trex) <schema> <XML instance>\n");
+			System.out.println("Usage: TypeReporter (relaxNS|relaxCore|trex|xsd) <schema> <XML instance>\n");
 			return;
 		}
 		
@@ -57,29 +56,19 @@ public class TypeReporter extends DefaultHandler
 		
 		Grammar grammar;
 		
-		if( args[0].equals("relaxCore") )
-			grammar = RELAXCoreReader.parse(
-					args[1],
-					factory,
-					new com.sun.msv.driver.textui.DebugController(false,false),
-					new TREXPatternPool() );
-		else
-		if( args[0].equals("relaxNS") )
-			grammar = RELAXNSReader.parse(
-					args[1],
-					factory,
-					new com.sun.msv.driver.textui.DebugController(false,false),
-					new TREXPatternPool() );
-		else {
+		if( args[0].equals("trex") ) {
 			TREXGrammarReader reader = new TREXGrammarReader(
 				new com.sun.msv.driver.textui.DebugController(false,false),
 				factory,
 				new TypedTREXGrammarInterceptor(),
-				new TREXPatternPool() );
+				new ExpressionPool() );
 			((XMLFilter)reader).parse(args[1]);
 			grammar = reader.getResult();
+		} else {
+			grammar = GrammarLoader.loadSchema( args[1],
+				new com.sun.msv.driver.textui.DebugController(false,false),
+				factory );
 		}
-		// use TREXPatternPool so that we can verify it like TREX.
 		
 		if( grammar==null )
 		{
@@ -87,7 +76,7 @@ public class TypeReporter extends DefaultHandler
 			return;
 		}
 		
-		filter = new VerifierFilter( new TREXDocumentDeclaration(grammar),
+		filter = new VerifierFilter( new REDocumentDeclaration(grammar),
 			new com.sun.msv.driver.textui.ReportErrorHandler() );
 		
 		filter.setParent(factory.newSAXParser().getXMLReader());

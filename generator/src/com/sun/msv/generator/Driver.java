@@ -21,7 +21,7 @@ import com.sun.msv.grammar.*;
 import com.sun.msv.verifier.Verifier;
 import com.sun.msv.verifier.VerificationErrorHandler;
 import com.sun.msv.verifier.util.*;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
 import com.sun.msv.driver.textui.DebugController;
 import com.sun.msv.reader.util.GrammarLoader;
@@ -277,7 +277,7 @@ public class Driver {
 				is,
 				new DebugController(warning,quiet),
 				"",
-				new TREXPatternPool());
+				new ExpressionPool());
 		} else {
 			grammar = GrammarLoader.loadSchema(
 				is,
@@ -297,7 +297,7 @@ public class Driver {
 		
 	
 		topLevel = topLevel.visit( new RefExpRemover(grammar.getPool()) );
-		opt.pool = (TREXPatternPool)grammar.getPool();
+		opt.pool = grammar.getPool();
 		
 		// generate instances
 		//===========================================
@@ -319,7 +319,7 @@ public class Driver {
 				// check the validity of generated document.
 				DOM2toSAX2 d2s = new DOM2toSAX2();
 				Verifier v = new Verifier(
-					new TREXDocumentDeclaration(grammar),
+					new REDocumentDeclaration(grammar),
 					debug?
 						(VerificationErrorHandler)new VerificationErrorHandlerImpl():
 						(VerificationErrorHandler)new IgnoreVerificationErrorHandler() );

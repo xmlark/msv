@@ -17,10 +17,10 @@ import java.util.StringTokenizer;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class GeneratorTest {
+public class GeneratorTestG {
 	
 	public static void main( String[] args ) {
-		junit.textui.TestRunner.run(new GeneratorTest().suite());
+		junit.textui.TestRunner.run(new GeneratorTestG().suite());
 	}
 	
 	public static TestSuite suite() {

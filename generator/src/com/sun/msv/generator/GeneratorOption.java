@@ -10,7 +10,7 @@
 package com.sun.msv.generator;
 
 import java.util.Random;
-import com.sun.msv.grammar.trex.TREXPatternPool;
+import com.sun.msv.grammar.ExpressionPool;
 
 /**
  * set of options that controls generation behavior.
@@ -36,7 +36,7 @@ public class GeneratorOption
 	public NameGenerator nameGenerator;
 	public DataTypeGenerator dtGenerator;
 	
-	public TREXPatternPool pool;
+	public ExpressionPool pool;
 	
 	/**
 	 * probability of "sequencing error" per # of sequences.
@@ -128,7 +128,7 @@ public class GeneratorOption
 		if( width==null )			width = new Rand.UniformRand( random, 3 );
 		if( nameGenerator==null )	nameGenerator = new NameGenerator(random);
 		if( dtGenerator==null )		dtGenerator = new DataTypeGeneratorImpl();
-		if( pool==null )			pool = new TREXPatternPool();
+		if( pool==null )			pool = new ExpressionPool();
 	}
 	
 	public boolean errorSpecified()

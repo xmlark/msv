@@ -15,12 +15,12 @@ import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.InputSource;
 import junit.framework.*;
 import com.sun.msv.verifier.*;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.dtd.DTDReader;
 import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.grammar.Grammar;
-import com.sun.msv.grammar.trex.TREXPatternPool;
+import com.sun.msv.grammar.ExpressionPool;
 
 /**
  * Test schemata/instances are expected to follow a naming convention.
@@ -54,7 +54,7 @@ public abstract class BatchTester
 	public String ext;
 	
 	public static interface Loader {
-		TREXDocumentDeclaration load(
+		REDocumentDeclaration load(
 			InputSource source, GrammarReaderController controller, SAXParserFactory factory )
 			throws Exception;
 	}
@@ -62,11 +62,11 @@ public abstract class BatchTester
 	
 	/** DTD loader. */
 	public static final Loader dtdLoader = new Loader(){
-		public TREXDocumentDeclaration load( InputSource is, GrammarReaderController controller, SAXParserFactory factory ) throws Exception {
+		public REDocumentDeclaration load( InputSource is, GrammarReaderController controller, SAXParserFactory factory ) throws Exception {
 			is.setSystemId( toURL(is.getSystemId()) );
-			Grammar g = DTDReader.parse(is,controller,"",new TREXPatternPool() );
+			Grammar g = DTDReader.parse(is,controller,"",new ExpressionPool() );
 			if(g==null)		return null;
-			return new TREXDocumentDeclaration(g);
+			return new REDocumentDeclaration(g);
 		}
 		protected String toURL( String path ) throws Exception {
 			path = new File(path).getAbsolutePath();
@@ -81,7 +81,7 @@ public abstract class BatchTester
 	};
 	/** RELAX/TREX/XSD loader. */
 	public static final Loader genericLoader = new Loader(){
-		public TREXDocumentDeclaration load( InputSource is, GrammarReaderController controller, SAXParserFactory factory ) throws Exception {
+		public REDocumentDeclaration load( InputSource is, GrammarReaderController controller, SAXParserFactory factory ) throws Exception {
 			return GrammarLoader.loadVGM(is,controller,factory);
 		}
 	};

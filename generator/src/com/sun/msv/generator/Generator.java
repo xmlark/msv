@@ -14,9 +14,8 @@ import org.xml.sax.ContentHandler;
 import com.sun.msv.datatype.NmtokenType;
 import com.sun.msv.datatype.StringType;
 import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.trex.*;
 import com.sun.msv.util.StringPair;
-import com.sun.msv.grammar.trex.util.TREXPatternPrinter;
+import com.sun.msv.grammar.util.ExpressionPrinter;
 import com.sun.xml.util.XmlChars;
 import java.util.*;
 
@@ -25,11 +24,11 @@ import java.util.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class Generator implements TREXPatternVisitorVoid
+public class Generator implements ExpressionVisitorVoid
 {
 	/** generation parameters */
 	private final GeneratorOption opts;
-	private final TREXPatternPool pool;
+	private final ExpressionPool pool;
 	private final Document domDoc;
 	/** current generated node */
 	private Node node;
@@ -135,8 +134,8 @@ public class Generator implements TREXPatternVisitorVoid
 			if( opts.random.nextDouble() < opts.probSeqError ) {
 				// generate sequencing error
 				noteError("swap sequence to "+
-						  TREXPatternPrinter.printSmallest(exp.exp2)+","+
-						  TREXPatternPrinter.printSmallest(exp.exp1) );
+						  ExpressionPrinter.printSmallest(exp.exp2)+","+
+						  ExpressionPrinter.printSmallest(exp.exp1) );
 				exp.exp2.visit(this);
 				exp.exp1.visit(this);
 				return;
@@ -148,7 +147,7 @@ public class Generator implements TREXPatternVisitorVoid
 		exp.exp2.visit(this);
 	}
 	
-	public void onInterleave( InterleavePattern ip ) {
+	public void onInterleave( InterleaveExp ip ) {
 		// collect children
 		Vector vec = getChildren(ip);
 		
@@ -218,8 +217,8 @@ public class Generator implements TREXPatternVisitorVoid
 				}while(es[i]==Expression.epsilon);
 
 			noteError("greedy choice "+
-					  TREXPatternPrinter.printSmallest(es[0])+ " & "+
-					  TREXPatternPrinter.printSmallest(es[1]));
+					  ExpressionPrinter.printSmallest(es[0])+ " & "+
+					  ExpressionPrinter.printSmallest(es[1]));
 			
 			for( int i=0; i<2; i++ )
 				es[i].visit(this);
@@ -306,14 +305,14 @@ public class Generator implements TREXPatternVisitorVoid
 			// these errors cannot be generated for the document element
 			if( opts.random.nextDouble() < opts.probMissingElemError ) {
 				// missing element error. skip generating this instance.
-				noteError("missing element: "+TREXPatternPrinter.printSmallest(exp) );
+				noteError("missing element: "+ExpressionPrinter.printSmallest(exp) );
 				return;
 			}
 		
 			if( opts.random.nextDouble() < opts.probSlipInElemError ) {
 				// slip-in error. generate random element.
 				ElementExp e = elementDecls[opts.random.nextInt(elementDecls.length)];
-				noteError("slip-in element: "+TREXPatternPrinter.printSmallest(e) );
+				noteError("slip-in element: "+ExpressionPrinter.printSmallest(e) );
 				onElement( e );
 			}
 		}
@@ -343,7 +342,7 @@ public class Generator implements TREXPatternVisitorVoid
 	
 	public void onOneOrMore( OneOrMoreExp exp ) {
 		if( opts.random.nextDouble() < opts.probMissingPlus ) {
-			noteError("missing " + TREXPatternPrinter.printSmallest(exp) );
+			noteError("missing " + ExpressionPrinter.printSmallest(exp) );
 			return;
 		}
 		
@@ -381,7 +380,7 @@ public class Generator implements TREXPatternVisitorVoid
 		node.appendChild( domDoc.createTextNode(value) );
 	}
 	
-	public void onConcur( ConcurPattern exp ) {
+	public void onConcur( ConcurExp exp ) {
 		throw new Error("concur is not supported");
 	}
 	

@@ -13,7 +13,7 @@ import junit.framework.*;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Vector;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 
 /**
  * tests generator with given schema instance.
@@ -39,7 +39,7 @@ class GeneratorSuite extends TestCase {
 	}
 		
 	/** set by testLoadSchema method */
-	protected TREXDocumentDeclaration docDecl;
+	protected REDocumentDeclaration docDecl;
 		
 	/** loads schema and generates test cases by using it. */
 	protected void runTest() throws Exception {

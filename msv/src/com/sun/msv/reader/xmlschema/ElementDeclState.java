@@ -47,7 +47,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 		if( tag.localName.equals("key") )		return new IgnoreState();
 		if( tag.localName.equals("keyref") )	return new IgnoreState();
 		
-		return super.createChildState(tag);
+		return null;
 	}
 
 	protected Expression initialExpression() {

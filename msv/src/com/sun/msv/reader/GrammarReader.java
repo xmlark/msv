@@ -78,7 +78,7 @@ public abstract class GrammarReader
 	/**
 	 * calls processName method of NamespaceSupport
 	 */
-	protected final String[] splitNamespacePrefix( String qName )
+	public final String[] splitNamespacePrefix( String qName )
 	{
 		return namespaceSupport.processName(qName, new String[3], false );
 	}

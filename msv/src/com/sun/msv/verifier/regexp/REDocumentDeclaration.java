@@ -27,6 +27,7 @@ import java.util.Map;
  */
 public class REDocumentDeclaration implements DocumentDeclaration
 {
+	/** start validation from this expression. */
 	protected final Expression topLevel;
 	
 	/** ExpressionPool object that this VGM uses. */
@@ -47,6 +48,8 @@ public class REDocumentDeclaration implements DocumentDeclaration
 		attRemover	= new AttributeRemover(pool);
 		cccec		= new CombinedChildContentExpCreator(pool,attFeeder);
 		ecc			= new ElementsOfConcernCollector();
+		
+		startTag	= new StartTagInfoEx(this);
 	}
 	
 	
@@ -60,7 +63,14 @@ public class REDocumentDeclaration implements DocumentDeclaration
 	protected final AttributeRemover				attRemover;
 	protected final ElementsOfConcernCollector		ecc;
 								  
-	
+	/**
+	 * the StartTagInfoEx object which is used to store the start tag information.
+	 * 
+	 * StartTagInfoEx object is used only during Verifier.startElement method.
+	 * So instead of creating new object every time the method is called, we can
+	 * kept using one copy.
+	 */
+	protected final StartTagInfoEx					startTag;
 
 	public Acceptor createAcceptor()
 	{

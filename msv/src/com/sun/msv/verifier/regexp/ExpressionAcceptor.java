@@ -60,7 +60,11 @@ public abstract class ExpressionAcceptor implements Acceptor
 	public Acceptor createChildAcceptor( StartTagInfo tag, StringRef errRef )
 	{
 		final CombinedChildContentExpCreator cccc = docDecl.cccec;
-		final StartTagInfoEx sti = new StartTagInfoEx(tag,docDecl);
+		
+		// instead of creating a new object, reuse it
+//		final StartTagInfoEx sti = new StartTagInfoEx(tag,docDecl);
+		final StartTagInfoEx sti = docDecl.startTag;
+		sti.reinit(tag);
 		
 		// obtains fully combined child content pattern
 		CombinedChildContentExpCreator.ExpressionPair e = cccc.get(expression,sti);

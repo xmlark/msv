@@ -19,20 +19,32 @@ import com.sun.msv.grammar.ExpressionPool;
  */
 public class StartTagInfoEx extends StartTagInfo
 {
-	public final AttributeToken[] attTokens;
+	public AttributeToken[] attTokens;
+	private final REDocumentDeclaration	owner;
 	
-	public StartTagInfoEx( StartTagInfo base, REDocumentDeclaration docDecl )
-	{
-		super( base.namespaceURI, base.localName, base.qName,
+	public StartTagInfoEx( REDocumentDeclaration docDecl ) {
+		this.owner = docDecl;
+	}
+	
+	/**
+	 * reinitialize the same object with a completely new value.
+	 * 
+	 * Thereby saving time and cost to create a new one.
+	 */
+	public void reinit( StartTagInfo base ) {
+		super.reinit( base.namespaceURI, base.localName, base.qName,
 			   base.attributes, base.context );
-		
+		createAttributes();
+	}
+
+	private void createAttributes() {
 		attTokens = new AttributeToken[attributes.getLength()];
 		for( int i=0; i<attTokens.length; i++ )
 			attTokens[i] = new AttributeToken(
-				docDecl.pool,
+				owner.pool,
 				attributes.getURI(i),
 				attributes.getLocalName(i),
 				attributes.getValue(i),
-				context, docDecl.resCalc );
+				context, owner.resCalc );
 	}
 }

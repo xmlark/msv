@@ -14,7 +14,7 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ChoiceNameClass implements NameClass {
+public class ChoiceNameClass extends NameClass {
 	public final NameClass nc1;
 	public final NameClass nc2;
 	

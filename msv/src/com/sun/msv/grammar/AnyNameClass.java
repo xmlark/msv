@@ -14,7 +14,7 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class AnyNameClass implements NameClass {
+public final class AnyNameClass extends NameClass {
 	
 	public boolean accepts( String namespaceURI, String localName ) {
 		return true;

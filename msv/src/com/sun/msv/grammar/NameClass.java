@@ -9,6 +9,8 @@
  */
 package com.sun.msv.grammar;
 
+import com.sun.msv.util.StringPair;
+
 /**
  * validator of (namespaceURI,localPart) pair.
  * 
@@ -16,7 +18,7 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface NameClass extends java.io.Serializable {
+public abstract class NameClass implements java.io.Serializable {
 	/**
 	 * checks if this name class accepts given namespace:localName pair.
 	 * 
@@ -34,13 +36,21 @@ public interface NameClass extends java.io.Serializable {
 	 *		true if the pair is accepted,
 	 *		false otherwise.
 	 */
-	boolean accepts( String namespaceURI, String localName );
+	public abstract boolean accepts( String namespaceURI, String localName );
+
+	public final boolean accepts( StringPair name ) {
+		return accepts( name.namespaceURI, name.localName );
+	}
 	
 	/**
 	 * visitor pattern support
 	 */
-	Object visit( NameClassVisitor visitor );
+	public abstract Object visit( NameClassVisitor visitor );
 	
+	/** wildcard should be accepted by any name class. */
 	public static final String NAMESPACE_WILDCARD = "*";
 	public static final String LOCALNAME_WILDCARD = "*";
+	
+	
+	
 }

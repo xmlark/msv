@@ -9,12 +9,14 @@
  */
 package com.sun.msv.grammar;
 
+import com.sun.msv.util.StringPair;
+
 /**
  * a NameClass that accepts only one fixed tag name.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class SimpleNameClass implements NameClass {
+public final class SimpleNameClass extends NameClass {
 	public final String	namespaceURI;
 	public final String localName;
 	
@@ -25,6 +27,10 @@ public final class SimpleNameClass implements NameClass {
 	}
 	
 	public Object visit( NameClassVisitor visitor ) { return visitor.onSimple(this); }
+
+	public SimpleNameClass( StringPair name ) {
+		this( name.namespaceURI, name.localName );
+	}
 	
 	public SimpleNameClass( String namespaceURI, String localName ) {
 		this.namespaceURI	= namespaceURI;

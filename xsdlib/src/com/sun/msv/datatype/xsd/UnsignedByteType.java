@@ -25,6 +25,10 @@ public class UnsignedByteType extends ShortType {
 
     /** upper bound value. this is the maximum possible valid value as an unsigned int */
     private static final short upperBound = 255;
+	
+	final public XSDatatype getBaseType() {
+		return UnsignedShortType.theInstance;
+	}
 
 	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough

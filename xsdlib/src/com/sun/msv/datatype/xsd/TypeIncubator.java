@@ -31,10 +31,6 @@ public class TypeIncubator {
 	/** base type */
 	private final XSDatatypeImpl baseType;
 	
-	private static boolean isRepeatable( String facetName ) {
-		return facetName.equals("enumeration") || facetName.equals("pattern");
-	}
-	
 	public TypeIncubator( XSDatatype baseType ) {
 		this.baseType = (XSDatatypeImpl)baseType;
 		if( baseType==null )
@@ -42,7 +38,8 @@ public class TypeIncubator {
 	}
 	
 
-	/** adds a facet to this set.
+	/**
+	 * adds a facet to the type.
 	 *
 	 * @deprecated
 	 *		please use the addFacet method, which is better named.
@@ -52,9 +49,9 @@ public class TypeIncubator {
 		addFacet( name, strValue, fixed, context );
 	}
 	
-	/** adds a facet to this set.
+	/** adds a facet to the type.
 	 *
-	 * @exception	BadTypeException
+	 * @exception	DatatypeException
 	 *		when given facet is already specified
 	 */
 	public void addFacet( String name, String strValue, boolean fixed,
@@ -69,7 +66,7 @@ public class TypeIncubator {
 			throw new DatatypeException( XSDatatypeImpl.localize(
 				XSDatatypeImpl.ERR_NOT_APPLICABLE_FACET, name ) );
 		default:
-			throw new Error();
+			throw new Error();	// assertion failed
 		}
 		
 		Object value;
@@ -117,11 +114,11 @@ public class TypeIncubator {
 	/**
 	 * derives a new datatype from a datatype by facets that were set.
 	 * 
-	 * It is completely legal to use null as the newTypeName paratmer,
-	 * which means deriving anonymous datatype.
+	 * It is completely legal to use null as the newTypeName parameter,
+	 * which means the derivation of an anonymous datatype.
 	 *
-	 * @exception BadTypeException
-	 *		BadTypeException is thrown if derivation is somehow invalid.
+	 * @exception DatatypeException
+	 *		DatatypeException is thrown if derivation is somehow invalid.
 	 *		For example, not applicable facets are applied, or enumeration
 	 *		has invalid values, ... things like that.
 	 */
@@ -134,9 +131,12 @@ public class TypeIncubator {
 		if( isEmpty() ) {
 			// if no facet is specified, and user wants anonymous type,
 			// then no need to create another object.
+			// TODO: for the type-derivation-OK test to work correctly,
+			// maybe we need to wrap this by a FinalComponent.
 			if( newName==null )	return baseType;
 			
-			// using FinalComponent as a wrapper.
+			// using FinalComponent as a wrapper,
+			// so that the new type object can have its own name.
 			return new FinalComponent(newName,baseType,0);
 		}
 		
@@ -311,13 +311,25 @@ public class TypeIncubator {
 		throw new IllegalStateException();
 	}
 	
-	private boolean isValueFacet( String facetName ) {
+	/**
+	 * returns true if the specified facet is a facet that needs value-space-level check.
+	 */
+	private static boolean isValueFacet( String facetName ) {
 		return facetName.equals(XSDatatypeImpl.FACET_ENUMERATION)
 			|| facetName.equals(XSDatatypeImpl.FACET_MAXEXCLUSIVE)
 			|| facetName.equals(XSDatatypeImpl.FACET_MINEXCLUSIVE)
 			|| facetName.equals(XSDatatypeImpl.FACET_MAXINCLUSIVE)
 			|| facetName.equals(XSDatatypeImpl.FACET_MININCLUSIVE);
 	}
+
+	/**
+	 * returns true if the specified facet is a facet which can be set multiple times.
+	 */
+	private static boolean isRepeatable( String facetName ) {
+		return facetName.equals(XSDatatypeImpl.FACET_ENUMERATION)
+			|| facetName.equals(XSDatatypeImpl.FACET_PATTERN);
+	}
+	
 	
 	/**
 	 * returns true if that facet is fixed.
@@ -417,8 +429,8 @@ public class TypeIncubator {
 		}
 	}
 	
-	/** dumps the contents to the given object.
-	 * 
+	/**
+	 * dumps the contents to the given object.
 	 * this method is for debug use only.
 	 */
 	public void dump( java.io.PrintStream out ) {
@@ -438,9 +450,9 @@ public class TypeIncubator {
 		}
 	}
 	
-	/** gets names of the facets in this object
-	 *
-	 * this method is used to produce error messages
+	/**
+	 * gets names of the facets in this object
+	 * this method is used to produce error messages.
 	 */
 	public String getFacetNames() {
 		String r="";

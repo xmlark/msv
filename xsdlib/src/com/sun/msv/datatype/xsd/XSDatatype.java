@@ -24,18 +24,27 @@ import org.relaxng.datatype.ValidationContext;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public interface XSDatatype extends
-	Serializable, DatabindableDatatype {
+public interface XSDatatype extends Serializable, DatabindableDatatype {
 
 	/**
-	 * gets the name of the named type.
+	 * gets the local name of the type.
 	 * If this type is an anonymous type, then this method returns null.
+	 * 
+	 * <p>
+	 * In the terminology of the spec, this method returns
+	 * the <a href="http://www.w3.org/TR/xmlschema-1/#st-name">name</a> property of
+	 * this simple type component. If the name property is
+	 * <a href="http://www.w3.org/TR/xmlschema-1/#key-null">absent</a>,
+	 * this method returns null.
 	 */
-	public String getName();
+	String getName();
 
 	/**
 	 * gets the displayable name of this type.
 	 * This method always return something. It is useful to provide a message to the user.
+	 * 
+	 * <p>
+	 * This method is an ad-hoc method and there is no corresponding property in the spec.
 	 */
 	String displayName();
 	
@@ -71,17 +80,26 @@ public interface XSDatatype extends
 	
 	
 	/**
-	 * checks if this type is an atom type.
+	 * gets the <a href="http://www.w3.org/TR/xmlschema-1/#st-base_type_definition">variety</a>
+	 * of this simple type.
 	 * 
-	 * List, union, and types derived from them are NOT atom types.
-	 * Other types are atom types.
-	 *
-	 * @returns true if this type is an atom type
+	 * @return
+	 *		VARIETY_ATOMIC, VARIETY_LIST, or VARIETY_UNION.
 	 */
-	boolean isAtomType();
+	int getVariety();
+	
+	public static final int VARIETY_ATOMIC	= 1;
+	public static final int VARIETY_LIST	= 2;
+	public static final int VARIETY_UNION	= 3;
+	
 	
 	/**
 	 * checks if this type is declared as final for the specified kind of derivation.
+	 * 
+	 * <p>
+	 * In the terminology of the spec, this method can be used to examine
+	 * the <a href="http://www.w3.org/TR/xmlschema-1/#st-final">final</a> property of
+	 * this component.
 	 * 
 	 * @param derivationType
 	 *		one of pre-defined values (DERIVATION_BY_XXX).
@@ -94,26 +112,28 @@ public interface XSDatatype extends
 
 	/**
 	 * indicates the specified facet is applicable to this type.
-	 * One of the possible return value from isFacetApplicable method.
+	 * One of the possible return value from the isFacetApplicable method.
 	 */
 	static final int APPLICABLE = 0;
 	/**
 	 * indicates the specified facet is fixed in this type and
 	 * therefore not appliable.
-	 * One of the possible return value from isFacetApplicable method.
+	 * One of the possible return value from the isFacetApplicable method.
 	 */
 	static final int FIXED		= -1;
 	/**
 	 * indicates the specified facet is not appliable to this type by definition.
-	 * One of the possible return value from isFacetApplicable method.
+	 * One of the possible return value from the isFacetApplicable method.
 	 */
 	static final int NOT_ALLOWED= -2;
 	/**
 	 * returns if the specified facet is applicable to this datatype.
 	 * 
-	 * @return	APPLICABLE		if the facet is applicable;
-	 *			FIXED			if the facet is already fixed (that is,not applicable);
-	 *			NOT_ALLOWED		if the facet is not applicable to this datatype at all.
+	 * @return
+	 * <dl>
+	 *  <dt>APPLICABLE		<dd>if the facet is applicable
+	 *	<dt>FIXED			<dd>if the facet is already fixed (that is,not applicable)
+	 *	<dt>NOT_ALLOWED		<dd>if the facet is not applicable to this datatype at all.
 	 *							this value is also returned for unknown facets.
 	 */
 	public int isFacetApplicable( String facetName );
@@ -148,13 +168,32 @@ public interface XSDatatype extends
 	public DataTypeWithFacet getFacetObject( String facetName );
 
 	/**
-	 * gets the concrete type object of the restriction chain.
+	 * gets the base type of this type.
 	 * 
-	 * For example, if this type is derived from the "integer" type 
-	 * by restriction, this method returns a datatype object that
-	 * validates bare "integer" type.
+	 * This method returns null if the base type is the simple ur-type.
+	 * 
+	 * <p>
+	 * This method is intended to capture the semantics of the
+	 * <a href="http://www.w3.org/TR/xmlschema-1/#st-base_type_definition">base type definition</a>
+	 * property of the simple type component, but there is an important difference.
+	 * 
+	 * <p>
+	 * Specifically, if you derive a type D from another type B, then
+	 * calling D.getBaseType() does not necessarily return B. Instead,
+	 * it may return an intermediate object (that represents a facet).
+	 * Calling the getBaseType method recursively will eventually return
+	 * B.
 	 */
-	public ConcreteType getConcreteType();
-
-
+	public XSDatatype getBaseType();
+	
+	/**
+	 * tests if this type is a derived type of the specified type.
+	 * 
+	 * <p>
+	 * This method is an implementation of 
+	 * <a href="http://www.w3.org/TR/xmlschema-1/#cos-st-derived-ok">"Type Derivation OK (Simple)"</a>
+	 * of the spec. Therefore use caution if what you want is a casual method
+	 * because this method may cause a lot of unintuitive result.
+	 */
+//	public boolean isDerivedTypeOf( XSDatatype baseType );
 }

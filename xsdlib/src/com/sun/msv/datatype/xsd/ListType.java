@@ -39,9 +39,18 @@ public final class ListType extends ConcreteType implements Discrete {
 	/** atomic base type */
 	final public XSDatatypeImpl itemType;
 
-	// list type is not an atom type.
-	public final boolean isAtomType() { return false; }
-
+	/**
+	 * Variety of the ListType is VARIETY_LIST. So this method always
+	 * returns VARIETY_LIST.
+	 */
+	public final int getVariety() {
+		return VARIETY_LIST;
+	}
+	
+	final public XSDatatype getBaseType() {
+		return SimpleURType.theInstance;
+	}
+	
 	public final boolean isFinal( int derivationType ) {
 		// cannot derive by list from list.
 		if(derivationType==DERIVATION_BY_LIST)	return true;

@@ -32,9 +32,9 @@ public abstract class ConcreteType extends XSDatatypeImpl {
 		return this;
 	}
 
-	public boolean isAtomType() {
-		// all but ListType are atom types.
-		return true;
+	// as a default implementation, this method returns VARIETY_ATOMIC.
+	public int getVariety() {
+		return VARIETY_ATOMIC;
 	}
 	
 	public boolean isFinal( int derivationType ) {

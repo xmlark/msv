@@ -32,6 +32,10 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator {
 		super(typeName);
 	}
 	
+	final public XSDatatype getBaseType() {
+		return SimpleURType.theInstance;
+	}
+	
 	private static final ISO8601Parser getParser( String content ) throws Exception {
 		return new ISO8601Parser( new ByteArrayInputStream( content.getBytes("UTF8") ) );
 	}

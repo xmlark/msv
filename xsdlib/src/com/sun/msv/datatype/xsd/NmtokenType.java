@@ -23,6 +23,10 @@ public class NmtokenType extends TokenType {
 	public static final NmtokenType theInstance = new NmtokenType("NMTOKEN");
 	protected NmtokenType(String typeName) { super(typeName); }
 	
+	final public XSDatatype getBaseType() {
+		return TokenType.theInstance;
+	}
+	
 	public Object convertToValue( String content, ValidationContext context ) {
 		if(XmlNames.isNmtoken(content))		return content;
 		else								return null;

@@ -22,4 +22,8 @@ public class NormalizedStringType extends StringType {
 	protected NormalizedStringType(String typeName) {
 		super(typeName, WhiteSpaceProcessor.theReplace);
 	}
+	
+	public XSDatatype getBaseType() {
+		return StringType.theInstance;
+	}
 }

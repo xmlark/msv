@@ -23,6 +23,10 @@ public class NameType extends TokenType {
 	public static final NameType theInstance = new NameType();
 	private NameType() { super("Name"); }
 	
+	final public XSDatatype getBaseType() {
+		return TokenType.theInstance;
+	}
+	
 	public Object convertToValue( String content, ValidationContext context ) {
 		if(XmlNames.isName(content))	return content;
 		else							return null;

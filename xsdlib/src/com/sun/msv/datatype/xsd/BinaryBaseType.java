@@ -31,6 +31,10 @@ abstract class BinaryBaseType extends ConcreteType implements Discrete {
 			return NOT_ALLOWED;
 	}
 	
+	final public XSDatatype getBaseType() {
+		return SimpleURType.theInstance;
+	}
+	
 	final public int countLength( Object value ) {
 		// for binary types, length is the number of bytes
 		return ((BinaryValueType)value).rawData.length;

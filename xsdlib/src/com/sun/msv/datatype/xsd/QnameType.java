@@ -23,6 +23,10 @@ import com.sun.msv.datatype.SerializationContext;
 public class QnameType extends ConcreteType implements Discrete {
 	public static final QnameType theInstance = new QnameType();
 	private QnameType() { super("QName"); }
+	
+	final public XSDatatype getBaseType() {
+		return SimpleURType.theInstance;
+	}
 
 	private static String getNamespaceURI( String content, ValidationContext context ) {
 		return context.resolveNamespacePrefix( content.substring(0, content.indexOf(':')) );

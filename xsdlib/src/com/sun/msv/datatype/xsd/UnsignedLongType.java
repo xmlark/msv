@@ -22,6 +22,10 @@ import org.relaxng.datatype.ValidationContext;
 public class UnsignedLongType extends IntegerType {
 	public static final UnsignedLongType theInstance = new UnsignedLongType();
 	private UnsignedLongType() { super("unsignedLong"); }
+	
+	final public XSDatatype getBaseType() {
+		return NonNegativeIntegerType.theInstance;
+	}
 
     /** upper bound value. this is the maximum possible valid value as an unsigned long */
     private static final IntegerValueType upperBound

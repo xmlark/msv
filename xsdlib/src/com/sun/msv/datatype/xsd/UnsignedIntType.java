@@ -27,6 +27,10 @@ public class UnsignedIntType extends LongType {
 	
 	public static final UnsignedIntType theInstance = new UnsignedIntType();
 	private UnsignedIntType() { super("unsignedInt"); }
+	
+	final public XSDatatype getBaseType() {
+		return UnsignedLongType.theInstance;
+	}
 
     /** upper bound value. this is the maximum possible valid value as an unsigned int */
     private static final long upperBound = 4294967295L;

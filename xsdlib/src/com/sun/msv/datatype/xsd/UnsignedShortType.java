@@ -26,6 +26,10 @@ import org.relaxng.datatype.ValidationContext;
 public class UnsignedShortType extends IntType {
 	public static final UnsignedShortType theInstance = new UnsignedShortType();
 	private UnsignedShortType() { super("unsignedShort"); }
+	
+	public XSDatatype getBaseType() {
+		return UnsignedIntType.theInstance;
+	}
 
     /** upper bound value. this is the maximum possible valid value as an unsigned int */
     private static final int upperBound = 65535;

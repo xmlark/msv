@@ -23,6 +23,10 @@ public class NonPositiveIntegerType extends IntegerType {
 	public static final NonPositiveIntegerType theInstance = new NonPositiveIntegerType();
 	private NonPositiveIntegerType() { super("nonPositiveInteger"); }
 	
+	final public XSDatatype getBaseType() {
+		return IntegerType.theInstance;
+	}
+	
 	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		Object o = super.convertToValue(lexicalValue,context);
 		if(o==null)		return null;

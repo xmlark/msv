@@ -42,8 +42,18 @@ final public class UnionType extends ConcreteType {
 	/** member types */
 	final public XSDatatypeImpl[] memberTypes;
 
-	// union type is not an atom type.
-	public final boolean isAtomType() { return false; }
+	
+	final public XSDatatype getBaseType() {
+		return SimpleURType.theInstance;
+	}
+
+	/**
+	 * Variety of the UnionType is VARIETY_UNION. So this method always
+	 * returns VARIETY_UNION.
+	 */
+	public final int getVariety() {
+		return VARIETY_UNION;
+	}
 	
 	public final int isFacetApplicable( String facetName ) {
 		if( facetName.equals(FACET_PATTERN)

@@ -29,6 +29,10 @@ public class StringType extends ConcreteType implements Discrete {
 		super(typeName,whiteSpace);
 	}
 	
+	public XSDatatype getBaseType() {
+		return SimpleURType.theInstance;
+	}
+
 	protected final boolean checkFormat( String content, ValidationContext context ) {
 		// string derived types should use convertToValue method to check its validity
 		return convertToValue(content,context)!=null;

@@ -27,6 +27,10 @@ public final class DurationType extends ConcreteType implements Comparator {
 	
 	public static final DurationType theInstance = new DurationType();
 	private DurationType() { super("duration"); }
+	
+	final public XSDatatype getBaseType() {
+		return SimpleURType.theInstance;
+	}
 
 	private final ISO8601Parser getParser( String content ) throws Exception {
 		return new ISO8601Parser( new ByteArrayInputStream( content.getBytes("UTF8") ) );

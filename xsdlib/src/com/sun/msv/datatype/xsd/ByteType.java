@@ -25,6 +25,10 @@ public class ByteType extends IntegerDerivedType {
 	public final static ByteType theInstance = new ByteType();
 	private ByteType() { super("byte"); }
 	
+	final public XSDatatype getBaseType() {
+		return ShortType.theInstance;
+	}
+	
 	public Object convertToValue( String content, ValidationContext context ) {
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		try {

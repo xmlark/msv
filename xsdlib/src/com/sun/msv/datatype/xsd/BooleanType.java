@@ -25,6 +25,10 @@ public class BooleanType extends ConcreteType {
 	
 	private BooleanType()	{ super("boolean"); }
 	
+	final public XSDatatype getBaseType() {
+		return SimpleURType.theInstance;
+	}
+	
 	protected boolean checkFormat( String content, ValidationContext context ) {
 		return "true".equals(content) || "false".equals(content)
 			|| "0".equals(content) || "1".equals(content);

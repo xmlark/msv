@@ -23,6 +23,10 @@ public class NcnameType extends TokenType {
 	public static final NcnameType theInstance = new NcnameType();
 	private NcnameType() { super("NCName"); }
 	
+	final public XSDatatype getBaseType() {
+		return NameType.theInstance;
+	}
+	
 	public Object convertToValue( String content, ValidationContext context ) {
 		if(XmlNames.isNCName(content))		return content;
 		else								return null;

@@ -24,6 +24,10 @@ public class EntityType extends ConcreteType {
 	public static final EntityType theInstance = new EntityType();
 	private EntityType() { super("ENTITY"); }
 	
+	final public XSDatatype getBaseType() {
+		return NcnameType.theInstance;
+	}
+	
 	public final int isFacetApplicable( String facetName ) {
 		if( facetName.equals(FACET_LENGTH)
 		||	facetName.equals(FACET_MINLENGTH)

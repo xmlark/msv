@@ -21,6 +21,8 @@ public abstract class DataTypeWithFacet extends XSDatatypeImpl
 {
 	/** immediate base type, which may be a concrete type or DataTypeWithFacet */
 	public final XSDatatypeImpl baseType;
+	final public XSDatatype getBaseType() { return baseType; }
+		
 	
 	/** base concrete type */
 	protected final ConcreteType concreteType;
@@ -91,8 +93,8 @@ public abstract class DataTypeWithFacet extends XSDatatypeImpl
 		return concreteType;
 	}
 	
-	final public boolean isAtomType() {
-		return concreteType.isAtomType();
+	final public int getVariety() {
+		return concreteType.getVariety();
 	}
 	
 	final public boolean isFinal( int derivationType ) {

@@ -25,6 +25,10 @@ public class DoubleType extends FloatingNumberType {
 	public static final DoubleType theInstance = new DoubleType();
 	private DoubleType() { super("double"); }
 	
+	final public XSDatatype getBaseType() {
+		return SimpleURType.theInstance;
+	}
+	
 	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		// TODO : probably the same problems exist as in the case of float
 		try {

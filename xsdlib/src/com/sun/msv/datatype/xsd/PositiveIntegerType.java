@@ -24,6 +24,10 @@ public class PositiveIntegerType extends IntegerType {
 	public static final PositiveIntegerType theInstance = new PositiveIntegerType();
 	private PositiveIntegerType() { super("positiveInteger"); }
 	
+	final public XSDatatype getBaseType() {
+		return NonNegativeIntegerType.theInstance;
+	}
+	
 	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		Object o = super.convertToValue(lexicalValue,context);
 		if(o==null)		return null;

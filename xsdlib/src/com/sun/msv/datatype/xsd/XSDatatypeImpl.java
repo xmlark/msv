@@ -29,9 +29,6 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 	private final String typeName;
 	public String getName()	{ return typeName; }
 	
-	// the majority is atom type
-	abstract public boolean isAtomType();
-
 	/** this field characterizes how this datatype treats white space. */
 	public final WhiteSpaceProcessor whiteSpace;
 	
@@ -126,6 +123,10 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 	}
 
 
+	
+	protected final boolean isAtomType() { return false; }
+	
+	
 
 	
 	public static String localize( String prop, Object[] args ) {

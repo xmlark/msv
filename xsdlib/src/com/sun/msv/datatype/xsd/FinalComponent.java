@@ -21,10 +21,9 @@ import com.sun.msv.datatype.SerializationContext;
 public final class FinalComponent extends XSDatatypeImpl {
 	/** immediate base type, which may be a concrete type or DataTypeWithFacet */
 	public final XSDatatypeImpl baseType;
+	final public XSDatatype getBaseType() { return baseType; }
 	
 	protected final int finalValue;
-	
-	public boolean isAtomType() { return baseType.isAtomType(); }
 	
 	public FinalComponent( XSDatatypeImpl baseType, int finalValue ) {
 		this( baseType.getName(), baseType, finalValue );
@@ -47,6 +46,10 @@ public final class FinalComponent extends XSDatatypeImpl {
 	
 	public String displayName() {
 		return baseType.displayName();
+	}
+	
+	public int getVariety() {
+		return baseType.getVariety();
 	}
 	
 	public int isFacetApplicable( String facetName ) {

@@ -23,4 +23,8 @@ public class TokenType extends StringType {
 	protected TokenType( String typeName ) {
 		super(typeName,WhiteSpaceProcessor.theCollapse);
 	}
+	
+	public XSDatatype getBaseType() {
+		return NormalizedStringType.theInstance;
+	}
 }

@@ -26,6 +26,10 @@ public class LanguageType extends TokenType {
 	public static final LanguageType theInstance = new LanguageType();
 	private LanguageType() { super("language"); }
 	
+	final public XSDatatype getBaseType() {
+		return TokenType.theInstance;
+	}
+	
 	public Object convertToValue( String content, ValidationContext context ) {
 		/*	RFC1766 defines the following BNF
 		

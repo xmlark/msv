@@ -27,6 +27,10 @@ public class NumberType extends ConcreteType implements Comparator {
 	public static final NumberType theInstance = new NumberType();
 	private NumberType() { super("decimal"); }
 	
+	final public XSDatatype getBaseType() {
+		return SimpleURType.theInstance;
+	}
+	
 	/** constant */
 	private static final BigInteger the10 = new BigInteger("10");
 

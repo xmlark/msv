@@ -25,6 +25,10 @@ public class IntegerType extends IntegerDerivedType {
 	public static final IntegerType theInstance = new IntegerType("integer");
 	protected IntegerType(String typeName) { super(typeName); }
 	
+	public XSDatatype getBaseType() {
+		return NumberType.theInstance;
+	}
+	
 	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		return IntegerValueType.create(lexicalValue);
 	}

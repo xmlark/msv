@@ -25,6 +25,10 @@ public class FloatType extends FloatingNumberType {
 	public static final FloatType theInstance = new FloatType();
 	private FloatType() { super("float"); }
 	
+	final public XSDatatype getBaseType() {
+		return SimpleURType.theInstance;
+	}
+	
 	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		// TODO : quick hack. Spec doesn't allow me directly to use FloatValueType.valueOf method
 		

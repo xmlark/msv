@@ -205,4 +205,7 @@ public class AnyURIType extends ConcreteType implements Discrete {
 	public Class getJavaObjectType() {
 		return String.class;
 	}
+	public XSDatatype getBaseType() {
+		return SimpleURType.theInstance;
+	}
 }

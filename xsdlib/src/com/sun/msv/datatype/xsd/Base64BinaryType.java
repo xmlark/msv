@@ -25,7 +25,6 @@ public class Base64BinaryType extends BinaryBaseType {
 	private Base64BinaryType() { super("base64Binary"); }
 	
 	
-	
 // base64 decoder
 //====================================
 	

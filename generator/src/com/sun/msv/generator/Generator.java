@@ -107,6 +107,8 @@ public class Generator implements TREXPatternVisitorVoid
 	private void noteError( String error )
 	{
 		errorGenerated = true;
+		if( !opts.insertComment )	return;
+		
 		Node com = domDoc.createComment("  "+error+"  ");
 //		Node com = domDoc.createProcessingInstruction("error",error);
 		

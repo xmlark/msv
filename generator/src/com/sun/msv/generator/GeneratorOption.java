@@ -114,6 +114,11 @@ public class GeneratorOption
 	public double probAttrNameTypo = 0;
 	
 	/**
+	 * if set to true, comments are inserted whenever an error is generated.
+	 */
+	public boolean insertComment = true;
+	
+	/**
 	 * fills unspecified parameters by default values.
 	 */
 	public void fillInByDefault()

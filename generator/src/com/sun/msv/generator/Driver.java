@@ -43,8 +43,9 @@ public class Driver
 			"  -width <n>: maximum number of times '*'/'+' are repeated\n" +
 			"  -n <n>    : # of files to be generated\n" +
 			"  -encoding <str>: output encoding (Java name)\n"+
-			"  -error <n>/<m>: error ratio. generate n errors per m elemnts (average)."+
-			"                  to control error generation, see manual for details."+
+			"  -error <n>/<m>: error ratio. generate n errors per m elemnts (average).\n"+
+			"                  to control error generation, see manual for details.\n"+
+			"  -nocomment: suppress insertion of comments that indicate generated errors.\n"+
 			"\n"+
 			"  <output name> must include one '$'. '$' will be replaced by number.\n"+
 			"  e.g., test.$.xml -> test.1.xml test.2.xml test.3.xml ...\n"+
@@ -83,6 +84,11 @@ public class Driver
 			if( args[i].equalsIgnoreCase("-ascii") )
 			{
 				((DataTypeGeneratorImpl)opt.dtGenerator).asciiOnly = true;
+			}
+			else
+			if( args[i].equalsIgnoreCase("-nocomment") )
+			{
+				opt.insertComment = false;
 			}
 			else
 			if( args[i].equalsIgnoreCase("-depth") )

@@ -122,8 +122,13 @@ public class Verifier implements
 					if( ch!=' ' && ch!='\t' && ch!='\r' && ch!='\n' )
 					{// error
 						hadError = true;
-						errorHandler.onError( new ValidityViolation(
-							locator, localizeMessage( ERR_UNEXPECTED_TEXT, null ) ) );
+						
+						if( panicLevel==0 && errorHandler!=null )
+						{
+							errorHandler.onError( new ValidityViolation(
+								locator, localizeMessage( ERR_UNEXPECTED_TEXT, null ) ) );
+							panicLevel = INITIAL_PANIC_LEVEL;
+						}
 						break;// recover by ignoring this token
 					}
 				}
@@ -141,12 +146,16 @@ public class Verifier implements
 					current.stepForward( txt, this, err, characterType );
 					
 					// report an error
-					if( err.str==null )
-						errorHandler.onError( new ValidityViolation(
-							locator, localizeMessage( ERR_UNEXPECTED_TEXT, null ) ) );
-					else
-						errorHandler.onError( new ValidityViolation(
-							locator, err.str ) );
+					if( panicLevel==0 )
+					{
+						if( err.str==null )
+							errorHandler.onError( new ValidityViolation(
+								locator, localizeMessage( ERR_UNEXPECTED_TEXT, null ) ) );
+						else
+							errorHandler.onError( new ValidityViolation(
+								locator, err.str ) );
+						panicLevel = INITIAL_PANIC_LEVEL;
+					}
 				}
 				break;
 				
@@ -201,12 +210,17 @@ public class Verifier implements
 					localizeMessage( ERR_UNEXPECTED_STARTTAG, new Object[]{qName} ) );
 			}
 			
-			if( errorHandler!=null )
+			if( errorHandler!=null && panicLevel==0 )
 				errorHandler.onError(vv);
 			
 			if( errorHandler==null || next==null )
 				throw new ValidationUnrecoverableException(vv);
+			
+			panicLevel = INITIAL_PANIC_LEVEL;
 		}
+		else
+			panicLevel = Math.max( panicLevel-1, 0 );
+		
 		stringCareLevel = next.getStringCareLevel();
 		if( stringCareLevel==Acceptor.STRING_IGNORE )
 			characterType.type = StringType.theInstance;
@@ -222,10 +236,11 @@ public class Verifier implements
 		namespaceSupport.popContext();
 		verifyText();
 
-		if( !current.isAcceptState() )
+		if( !current.isAcceptState() && panicLevel==0 )
 		{
 			// TODO: diagnosis?
 			hadError = true;
+			panicLevel = INITIAL_PANIC_LEVEL;
 			errorHandler.onError( new ValidityViolation(
 				locator,
 				localizeMessage( ERR_UNCOMPLETED_CONTENT,
@@ -257,9 +272,14 @@ public class Verifier implements
 				vv = new ValidityViolation( locator,
 					localizeMessage( ERR_UNCOMPLETED_CONTENT, new Object[]{qName} ) );
 			}
-			if( errorHandler!=null )
+			
+			if( errorHandler!=null && panicLevel==0 )
 				errorHandler.onError(vv);
+			
+			panicLevel = INITIAL_PANIC_LEVEL;
 		}
+		else
+			panicLevel = Math.max( panicLevel-1, 0 );
 	}
 	
 	/**

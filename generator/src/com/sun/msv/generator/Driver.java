@@ -47,6 +47,7 @@ public class Driver {
 			"  -depth <n>: set cut back depth\n"+
 			"  -width <n>: maximum number of times '*'/'+' are repeated\n" +
 			"  -n <n>    : # of files to be generated\n" +
+			"  -warning  : show warnings.\n"+
 			"  -quiet    : be quiet.\n"+
 			"  -encoding <str>\n"+
 			"      output encoding (Java name)\n"+
@@ -100,6 +101,7 @@ public class Driver {
 		boolean validate = true;
 		boolean debug = false;
 		boolean quiet = false;
+		boolean warning = false;
 		boolean dtdAsSchema = false;
 		
 		int number = 1;
@@ -131,6 +133,9 @@ public class Driver {
 				else
 				if( args[i].equalsIgnoreCase("-quiet") )
 					quiet = true;
+				else
+				if( args[i].equalsIgnoreCase("-warning") )
+					warning = true;
 				else
 				if( args[i].equalsIgnoreCase("-ascii") )
 					((DataTypeGeneratorImpl)opt.dtGenerator).asciiOnly = true;
@@ -270,13 +275,13 @@ public class Driver {
 		if(dtdAsSchema) {
 			grammar = DTDReader.parse(
 				is,
-				new DebugController(false,true),
+				new DebugController(warning,quiet),
 				"",
 				new TREXPatternPool());
 		} else {
 			grammar = GrammarLoader.loadSchema(
 				is,
-				new DebugController(false,true),
+				new DebugController(warning,quiet),
 				factory);
 		}
 		

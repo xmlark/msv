@@ -28,7 +28,13 @@ public class DebugController implements GrammarReaderController {
 	private boolean warningReported = false;
 	
 	public DebugController( boolean displayWarning ) {
+		// for backward compatibility. Can be removed later.
+		this( displayWarning, false );
+	}
+	
+	public DebugController( boolean displayWarning, boolean quiet ) {
 		this.displayWarning = displayWarning;
+		this.warningReported = quiet;
 	}
 	
 	public void warning( Locator[] loc, String errorMessage ) {

@@ -34,8 +34,11 @@ public class DOM2toSAX2 {
 		for( int i=0; i<atts.getLength(); i++ ) {
 			Attr a = (Attr)atts.item(i);
 			if(a.getNamespaceURI().equals(XMLNS_URI))	continue;
+			
+			String value = a.getValue();
+			if(value==null)	value="";
 			sa.addAttribute( a.getNamespaceURI(), a.getLocalName(), a.getName(),
-				null, a.getValue() );
+				"CDATA", value );
 		}
 		return sa;
 	}
@@ -83,6 +86,7 @@ public class DOM2toSAX2 {
 	
 	protected void onText( Text t ) throws SAXException {
 		String s = t.getData();
-		handler.characters( s.toCharArray(), 0, s.length() );
+		if(s!=null)
+			handler.characters( s.toCharArray(), 0, s.length() );
 	}
 }

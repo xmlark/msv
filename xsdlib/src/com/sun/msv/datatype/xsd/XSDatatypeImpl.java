@@ -28,13 +28,17 @@ import com.sun.msv.datatype.SerializationContext;
  */
 public abstract class XSDatatypeImpl implements XSDatatype {
 	
+    private final String namespaceUri;
+    public String getNamespaceUri() { return namespaceUri; }
+    
 	private final String typeName;
 	public String getName()	{ return typeName; }
 	
 	/** this field characterizes how this datatype treats white space. */
 	public final WhiteSpaceProcessor whiteSpace;
 	
-	protected XSDatatypeImpl( String typeName, WhiteSpaceProcessor whiteSpace ) {
+	protected XSDatatypeImpl( String uri, String typeName, WhiteSpaceProcessor whiteSpace ) {
+        this.namespaceUri = uri;
 		this.typeName	= typeName;
 		this.whiteSpace	= whiteSpace;
 	}

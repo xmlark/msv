@@ -38,6 +38,7 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
     /** Creates this object from existing XSDatatype. */
     public XSDatatypeExp( XSDatatype dt, ExpressionPool _pool ) {
         super(dt.getName());
+        this.namespaceUri = dt.getNamespaceUri();
         this.dt = dt;
         this.pool = _pool;
         this.ownerState = null;
@@ -46,9 +47,10 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
     }
     
     /** Creates lazily created datatype. */
-    public XSDatatypeExp( String typeName, GrammarReader reader, Renderer _renderer ) {
+    public XSDatatypeExp( String nsUri, String typeName, GrammarReader reader, Renderer _renderer ) {
 //        this(typeName, reader, reader.getCurrentState(), _renderer );
         super(typeName);
+        this.namespaceUri = nsUri;
         this.dt = null;
         this.ownerState = reader.getCurrentState();
         this.renderer = _renderer;
@@ -58,9 +60,16 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
     }
     
     /** Used only for cloning */
-    private XSDatatypeExp( String typeName ) {
-        super(typeName);
+    private XSDatatypeExp( String nsUri, String localName ) {
+        super(localName);
+        this.namespaceUri = nsUri;
     }
+    
+    /**
+     * Namespace URI of this datatype.
+     * Local name is stored in the name field of ReferenceExp.
+     */
+    private final String namespaceUri;
     
     /**
      * Creates an incubator so that the caller can add more facets
@@ -77,8 +86,8 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
             public void addFacet( String name, String value, boolean fixed, ValidationContext context ) throws DatatypeException {
                 core.addFacet(name,value,fixed,context);
             }
-            public XSDatatypeExp derive(String newName) throws DatatypeException {
-                return new XSDatatypeExp( core.derive(newName), pool );
+            public XSDatatypeExp derive(String uri,String localName) throws DatatypeException {
+                return new XSDatatypeExp( core.derive(uri,localName), pool );
             }
         };
     }
@@ -183,7 +192,7 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
     
     /** Gets a clone of this object. */
     public XSDatatypeExp getClone() {
-        XSDatatypeExp t = new XSDatatypeExp(this.name);
+        XSDatatypeExp t = new XSDatatypeExp(this.namespaceUri,this.name);
         t.redefine(this);
         return t;
     }
@@ -215,7 +224,7 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
                 new FinalComponent( (XSDatatypeImpl)dt, finalValue ), pool );
         
         // create datatype lazily
-        return new XSDatatypeExp( this.name, reader, new Renderer() {
+        return new XSDatatypeExp( this.namespaceUri, this.name, reader, new Renderer() {
             public XSDatatype render( RenderingContext context ) throws DatatypeException {
                 return new FinalComponent(
                     (XSDatatypeImpl)getType(context), finalValue );
@@ -225,26 +234,27 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
     
     /** Derives a new type by list. */
     public static XSDatatypeExp makeList(
-        final String typeName, final XSDatatypeExp itemType, GrammarReader reader )
+        final String nsUri, final String typeName,
+        final XSDatatypeExp itemType, GrammarReader reader )
             throws DatatypeException {
         
         if(!itemType.isLateBind())
             // create it normally
             return new XSDatatypeExp(
-                DatatypeFactory.deriveByList(typeName,itemType.dt),
+                DatatypeFactory.deriveByList(nsUri,typeName,itemType.dt),
                 reader.pool );
         
         // create it lazily
-        return new XSDatatypeExp( typeName, reader, new Renderer() {
+        return new XSDatatypeExp( nsUri, typeName, reader, new Renderer() {
             public XSDatatype render( RenderingContext context ) throws DatatypeException {
-                return DatatypeFactory.deriveByList( typeName,
+                return DatatypeFactory.deriveByList( nsUri, typeName,
                     itemType.getType(context) );
             }
         });
     }
     
     /** Derives a new type by union. */
-    public static XSDatatypeExp makeUnion(
+    public static XSDatatypeExp makeUnion( final String typeNameUri,
         final String typeName, final Collection members, GrammarReader reader )
             throws DatatypeException {
         
@@ -257,7 +267,7 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
             
             if( item.isLateBind() ) {
                 // create the union lazily.
-                return new XSDatatypeExp(typeName,reader,
+                return new XSDatatypeExp(typeNameUri,typeName,reader,
                     new Renderer(){
                 		public XSDatatype render( RenderingContext context )
                             throws DatatypeException {
@@ -267,7 +277,7 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
                             while(itr.hasNext())
                                 m[i++] = ((XSDatatypeExp)itr.next()).getType(context);
                             
-                            return DatatypeFactory.deriveByUnion( typeName, m );
+                            return DatatypeFactory.deriveByUnion( typeNameUri, typeName, m );
                         }
                     });
             }
@@ -276,7 +286,7 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
         }
         
         return new XSDatatypeExp(
-            DatatypeFactory.deriveByUnion( typeName, m ),
+            DatatypeFactory.deriveByUnion( typeNameUri, typeName, m ),
             reader.pool );
     }
         

@@ -22,8 +22,8 @@ final public class UnionType extends ConcreteType {
 	/**
 	 * derives a new datatype from atomic datatypes by union
 	 */
-	public UnionType( String newTypeName, XSDatatype[] memberTypes ) throws DatatypeException {
-		super(newTypeName);
+	public UnionType( String nsUri, String newTypeName, XSDatatype[] memberTypes ) throws DatatypeException {
+		super(nsUri,newTypeName);
 
 		if(memberTypes.length==0)
 			throw new DatatypeException(localize(ERR_EMPTY_UNION));

@@ -46,9 +46,9 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
 	 *		(see http://www.w3.org/TR/xmlschema-2/#dt-regex )
 	 *		There patterns are considered as an 'OR' set.
 	 */
-	public PatternFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
+	public PatternFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws DatatypeException {
-		super( typeName, baseType, FACET_PATTERN, facets );
+		super( nsUri, typeName, baseType, FACET_PATTERN, facets );
 		
 		
 		// TODO : am I supposed to implement my own regexp validator?

@@ -57,14 +57,14 @@ class LazyTypeIncubator implements XSTypeIncubator { // package local
 		facets.add( new Facet(name,strValue,fixed,context) );
 	}
 
-	public XSDatatypeExp derive( final String name ) throws DatatypeException {
+	public XSDatatypeExp derive( final String nsUri, final String localName ) throws DatatypeException {
         
         // facets might be further added, so remember the size of the facet.
         final int facetSize = facets.size();
         
         if(facetSize==0)    return baseType;
         
-        return new XSDatatypeExp(name,reader,new XSDatatypeExp.Renderer(){
+        return new XSDatatypeExp(nsUri,localName,reader,new XSDatatypeExp.Renderer(){
             public XSDatatype render( XSDatatypeExp.RenderingContext context )
                     throws DatatypeException {
                 
@@ -75,7 +75,7 @@ class LazyTypeIncubator implements XSTypeIncubator { // package local
 		        	Facet f = (Facet)itr.next();
 		        	ti.addFacet( f.name, f.value, f.fixed, f.context );
 		        }
-		        return ti.derive(name);
+		        return ti.derive(nsUri,localName);
             }
         });
 	}

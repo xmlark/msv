@@ -26,8 +26,11 @@ import org.relaxng.datatype.DatatypeException;
  */
 public class RestrictionState extends TypeWithOneChildState implements FacetStateParent {
 	
+    protected final String newTypeUri;
 	protected final String newTypeName;
-	protected RestrictionState( String newTypeName ) {
+    
+	protected RestrictionState( String newTypeUri, String newTypeName ) {
+        this.newTypeUri  = newTypeUri;
 		this.newTypeName = newTypeName;
 	}
 	
@@ -37,7 +40,7 @@ public class RestrictionState extends TypeWithOneChildState implements FacetStat
 	}
 
 	protected XSDatatypeExp annealType( XSDatatypeExp baseType ) throws DatatypeException {
-        return incubator.derive(newTypeName);
+        return incubator.derive(newTypeUri,newTypeName);
 	}
 	
 	public void onEndChild( XSDatatypeExp child ) {

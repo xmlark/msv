@@ -160,7 +160,7 @@ public class DataTypeTester
 			XSDatatype typeObj=null;
 			try
 			{
-				typeObj = ti.derive("anonymous");
+				typeObj = ti.derive("anonymousURI","anonymousLocal");
 			}
 			catch( DatatypeException bte )
 			{

@@ -42,7 +42,7 @@ public class ElementRuleWithTypeState extends ElementRuleBaseState implements Fa
 	
 	protected Expression getContentModel() {
 		try {
-			return incubator.derive(null);
+			return incubator.derive(null,null);
 		} catch( DatatypeException e ) {
 			// derivation failed
 			reader.reportError( e, reader.ERR_BAD_TYPE, e.getMessage() );

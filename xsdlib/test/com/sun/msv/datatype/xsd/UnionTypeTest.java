@@ -35,7 +35,7 @@ public class UnionTypeTest extends TestCase
 			throws DatatypeException
 	{
 		return (UnionType)DatatypeFactory.deriveByUnion(
-			newName, new XSDatatypeImpl[]{
+			"", newName, new XSDatatypeImpl[]{
 				(XSDatatypeImpl)type1,
 				(XSDatatypeImpl)type2,
 				(XSDatatypeImpl)type3});

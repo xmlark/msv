@@ -150,7 +150,7 @@ public abstract class State implements ContentHandler
 				this.baseURI = reader.locator.getSystemId();
 		}
 		if( base!=null )
-			this.baseURI = reader.combineURL( this.baseURI, base );
+			this.baseURI = reader.combineURI( this.baseURI, base );
 		startSelf();
 	}
 	

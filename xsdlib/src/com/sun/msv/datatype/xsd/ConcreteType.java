@@ -20,12 +20,12 @@ import com.sun.msv.datatype.SerializationContext;
  */
 public abstract class ConcreteType extends XSDatatypeImpl {
 	
-	protected ConcreteType( String typeName, WhiteSpaceProcessor whiteSpace ) {
-		super( typeName, whiteSpace );
+	protected ConcreteType( String nsUri, String typeName, WhiteSpaceProcessor whiteSpace ) {
+		super( nsUri, typeName, whiteSpace );
 	}
 	
-	protected ConcreteType( String typeName ) {
-		this( typeName, WhiteSpaceProcessor.theCollapse );
+	protected ConcreteType( String nsUri, String typeName ) {
+		this( nsUri, typeName, WhiteSpaceProcessor.theCollapse );
 	}
 	
 	final public ConcreteType getConcreteType() {
@@ -44,8 +44,6 @@ public abstract class ConcreteType extends XSDatatypeImpl {
 		throw new DatatypeException(DatatypeException.UNKNOWN,
 			localize(ERR_INAPPROPRIATE_FOR_TYPE, content, getName()) );
 	}
-	
-	
 	
 //
 // DatabindableDatatype implementation

@@ -45,7 +45,12 @@ public interface XSDatatype extends Serializable, DatabindableDatatype {
 	 * this method returns null.
 	 */
 	String getName();
-
+    
+    /**
+     * Gets the namespace URI of this simple type definition.
+     */
+    String getNamespaceUri();
+    
 	/**
 	 * gets the displayable name of this type.
 	 * This method always return something. It is useful to provide a message to the user.
@@ -222,4 +227,8 @@ public interface XSDatatype extends Serializable, DatabindableDatatype {
 	 *		is passed as the set.
 	 */
 	public boolean isDerivedTypeOf( XSDatatype baseType, boolean restrictionAllowed );
+    
+    
+    public static final String XMLSCHEMA_NSURI =
+        "http://www.w3.org/2001/XMLSchema";
 }

@@ -17,9 +17,9 @@ import org.relaxng.datatype.DatatypeException;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class MinInclusiveFacet extends RangeFacet {
-	protected MinInclusiveFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
+	protected MinInclusiveFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws DatatypeException {
-		super( typeName, baseType, FACET_MININCLUSIVE, facets );
+		super( nsUri, typeName, baseType, FACET_MININCLUSIVE, facets );
 	}
 	
 	protected final boolean rangeCheck( int r ) {

@@ -98,8 +98,8 @@ public class XSDatatypeTest extends TestCase
 		assert( UnsignedByteType.theInstance.isDerivedTypeOf(urType,true) );
 		
 		// test the list derivation
-		XSDatatype longList = DatatypeFactory.deriveByList("name", LongType.theInstance );
-		XSDatatype byteList = DatatypeFactory.deriveByList("name", ByteType.theInstance );
+		XSDatatype longList = DatatypeFactory.deriveByList("","name", LongType.theInstance );
+		XSDatatype byteList = DatatypeFactory.deriveByList("","name", ByteType.theInstance );
 		assert( !byteList.isDerivedTypeOf(longList,true) );
 		assert( !longList.isDerivedTypeOf(byteList,true) );
 		assert( byteList.isDerivedTypeOf(urType,true) );
@@ -107,15 +107,15 @@ public class XSDatatypeTest extends TestCase
 		assert( !byteList.isDerivedTypeOf(ByteType.theInstance,true) );
 		
 		// test the union derivation
-		XSDatatype union1 = DatatypeFactory.deriveByUnion("name",
+		XSDatatype union1 = DatatypeFactory.deriveByUnion("","name",
 			new XSDatatype[]{TokenType.theInstance,LongType.theInstance});
-		XSDatatype union2 = DatatypeFactory.deriveByUnion("name",
+		XSDatatype union2 = DatatypeFactory.deriveByUnion("","name",
 			new XSDatatype[]{union1,longList});
 		XSDatatype union3;
 		{
 			TypeIncubator inc = new TypeIncubator(union2);
 			inc.addFacet( "enumeration", "52", false, null );
-			union3 = inc.derive(null);
+			union3 = inc.derive(null,null);
 		}
 		
 		assert( union1.isDerivedTypeOf(urType,true) );

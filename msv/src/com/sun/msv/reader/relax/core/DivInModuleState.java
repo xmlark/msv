@@ -44,7 +44,7 @@ public class DivInModuleState extends SimpleState implements ExpressionOwner, XS
 	
 	// do nothing. declarations register themselves by themselves.
 	public void onEndChild( Expression exp ) {}
-	
+    public String getTargetNamespaceUri() { return ""; }
 	public void onEndChild( XSDatatypeExp type ) {
         // user-defined simple types
 		

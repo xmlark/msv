@@ -24,9 +24,9 @@ import org.relaxng.datatype.ValidationContext;
 public class LengthFacet extends DataTypeWithValueConstraintFacet {
 	public final int length;
 	
-	protected LengthFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
+	protected LengthFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws DatatypeException {
-		super(typeName,baseType,FACET_LENGTH,facets);
+		super(nsUri,typeName,baseType,FACET_LENGTH,facets);
 	
 		length = facets.getNonNegativeInteger(FACET_LENGTH);
 		

@@ -457,7 +457,7 @@ public class DTDReader implements DTDEventListener {
 				TypeIncubator incubator = new TypeIncubator(dt);
 				for( int i=0; i<enums.length; i++ )
 					incubator.addFacet( XSDatatype.FACET_ENUMERATION, enums[i], false, null );
-				dt = incubator.derive(null);
+				dt = incubator.derive(null,null);
 			}
 		
 			if( attributeUse == USE_FIXED ) {
@@ -465,7 +465,7 @@ public class DTDReader implements DTDEventListener {
 				// an enumeration value.
 				TypeIncubator incubator = new TypeIncubator(dt);
 				incubator.addFacet( XSDatatype.FACET_ENUMERATION, defaultValue, false, null );
-				dt = incubator.derive(null);
+				dt = incubator.derive(null,null);
 			}
 		} catch( DatatypeException e ) {
 			throw new SAXParseException(

@@ -20,9 +20,9 @@ import org.relaxng.datatype.ValidationContext;
 public abstract class RangeFacet extends DataTypeWithValueConstraintFacet {
 	public final Object limitValue;
 
-	protected RangeFacet( String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets )
+	protected RangeFacet( String nsUri, String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets )
 		throws DatatypeException {
-		super(typeName,baseType,facetName,facets);
+		super(nsUri,typeName,baseType,facetName,facets);
 		limitValue = facets.getFacet(facetName);
 	}
 	

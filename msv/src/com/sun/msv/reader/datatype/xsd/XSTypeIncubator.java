@@ -23,6 +23,6 @@ public interface XSTypeIncubator
     void addFacet( String name, String value, boolean fixed, ValidationContext context )
          throws DatatypeException;
     
-    XSDatatypeExp derive( String newTypeName )
+    XSDatatypeExp derive( String newTypeNameUri, String newLocalName )
         throws DatatypeException;
 }

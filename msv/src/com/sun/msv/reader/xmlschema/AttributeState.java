@@ -129,7 +129,7 @@ public class AttributeState extends ExpressionWithChildState {
                         XSTypeIncubator inc = baseType.createIncubator();
                         inc.addFacet("enumeration",fixed,false,reader);
                     
-                        contentType = inc.derive(null);
+                        contentType = inc.derive(null,null);
                     } catch( DatatypeException e ) {
                         reader.reportError( e, reader.ERR_BAD_TYPE, e.getMessage() );
                         return Expression.nullSet;

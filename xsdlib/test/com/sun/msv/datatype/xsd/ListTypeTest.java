@@ -32,7 +32,7 @@ public class ListTypeTest extends TestCase
 
 	private ListType createList( String newName, XSDatatype itemType ) throws DatatypeException
 	{
-		return (ListType)DatatypeFactory.deriveByList(newName,itemType);
+		return (ListType)DatatypeFactory.deriveByList("",newName,itemType);
 	}
 	
 	private ListType createList( String newName, String itemType ) throws DatatypeException

@@ -18,5 +18,12 @@ import org.relaxng.datatype.Datatype;
  */
 public interface XSTypeOwner
 {
+    /**
+     * Returns the target namespace URI of newly created simple types.
+     * If the context you are using this package doesn't have the notion
+     * of the target namespace URI, return the empty string.
+     */
+    String getTargetNamespaceUri();
+    
     void onEndChild( XSDatatypeExp data );
 }

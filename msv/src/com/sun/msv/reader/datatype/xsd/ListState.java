@@ -24,13 +24,16 @@ import org.relaxng.datatype.DatatypeException;
  */
 public class ListState extends TypeWithOneChildState
 {
-	protected final String newTypeName;
-	protected ListState( String newTypeName ) {
-		this.newTypeName = newTypeName;
-	}
+    protected final String newTypeUri;
+    protected final String newTypeName;
+    
+    protected ListState( String newTypeUri, String newTypeName ) {
+        this.newTypeUri  = newTypeUri;
+        this.newTypeName = newTypeName;
+    }
 	
 	protected XSDatatypeExp annealType( final XSDatatypeExp itemType ) throws DatatypeException {
-        return XSDatatypeExp.makeList( newTypeName, itemType, reader );
+        return XSDatatypeExp.makeList( newTypeUri, newTypeName, itemType, reader );
     }
 	
 	protected void startSelf() {

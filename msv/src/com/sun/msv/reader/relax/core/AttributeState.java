@@ -55,7 +55,7 @@ public class AttributeState extends ExpressionState implements FacetStateParent
 			
 			Expression exp = reader.pool.createAttribute(
 				new SimpleNameClass("",name),
-				incubator.derive(null) );
+				incubator.derive(null,null) );
 			
 			// unless required attribute is specified, it is considered optional
 			if(! "true".equals(required) )

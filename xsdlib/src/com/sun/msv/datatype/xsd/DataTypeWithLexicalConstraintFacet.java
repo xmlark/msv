@@ -20,9 +20,9 @@ import org.relaxng.datatype.DatatypeException;
 abstract class DataTypeWithLexicalConstraintFacet extends DataTypeWithFacet {
 	
 	DataTypeWithLexicalConstraintFacet(
-		String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets )
+		String nsUri, String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets )
 		throws DatatypeException {
-		super( typeName, baseType, facetName, facets );
+		super( nsUri, typeName, baseType, facetName, facets );
 	}
 	
 	// this class does not perform any lexical check.

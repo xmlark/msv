@@ -23,11 +23,11 @@ public final class FinalComponent extends Proxy {
 	private final int finalValue;
 	
 	public FinalComponent( XSDatatypeImpl baseType, int finalValue ) {
-		this( baseType.getName(), baseType, finalValue );
+		this( baseType.getNamespaceUri(),  baseType.getName(), baseType, finalValue );
 	}
 	
-	public FinalComponent( String newTypeName, XSDatatypeImpl baseType, int finalValue ) {
-		super( newTypeName, baseType );
+	public FinalComponent( String nsUri, String newTypeName, XSDatatypeImpl baseType, int finalValue ) {
+		super( nsUri, newTypeName, baseType );
 		this.finalValue = finalValue;
 	}
 	

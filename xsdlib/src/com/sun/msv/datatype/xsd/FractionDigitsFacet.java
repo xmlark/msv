@@ -24,9 +24,9 @@ public class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 	/** maximum number of fraction digits */
 	public final int scale;
 
-	public FractionDigitsFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
+	public FractionDigitsFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws DatatypeException {
-		super( typeName, baseType, FACET_FRACTIONDIGITS, facets );
+		super( nsUri, typeName, baseType, FACET_FRACTIONDIGITS, facets );
 		
 		scale = facets.getNonNegativeInteger(FACET_FRACTIONDIGITS);
 		

@@ -110,6 +110,10 @@ public class TypeIncubator {
 			new String[]{	XSDatatypeImpl.FACET_MININCLUSIVE, XSDatatypeImpl.FACET_MINEXCLUSIVE }
 		};
 	
+    /** @deprecated */
+    public XSDatatypeImpl derive( String newName ) throws DatatypeException {
+        return derive("",newName);
+    }
 
 	/**
 	 * derives a new datatype from a datatype by facets that were set.
@@ -122,7 +126,7 @@ public class TypeIncubator {
 	 *		For example, not applicable facets are applied, or enumeration
 	 *		has invalid values, ... things like that.
 	 */
-	public XSDatatypeImpl derive( String newName ) throws DatatypeException {
+	public XSDatatypeImpl derive( String newNameUri, String newLocalName ) throws DatatypeException {
 		
 		if( baseType.isFinal(XSDatatype.DERIVATION_BY_RESTRICTION) )
 			throw new DatatypeException( XSDatatypeImpl.localize(
@@ -133,11 +137,11 @@ public class TypeIncubator {
 			// then no need to create another object.
 			// TODO: for the type-derivation-OK test to work correctly,
 			// maybe we need to wrap this by a FinalComponent.
-			if( newName==null )	return baseType;
+			if( newNameUri==null&& newLocalName==null )	return baseType;
 			
 			// using FinalComponent as a wrapper,
 			// so that the new type object can have its own name.
-			return new FinalComponent(newName,baseType,0);
+			return new FinalComponent(newNameUri,newLocalName,baseType,0);
 		}
 		
 		XSDatatypeImpl r = baseType;	// start from current datatype
@@ -190,29 +194,29 @@ public class TypeIncubator {
 					exclusiveFacetPairs[i][1] ) );
 		
 		if( contains(XSDatatypeImpl.FACET_TOTALDIGITS) )
-			r = new TotalDigitsFacet	( newName, r, this );
+			r = new TotalDigitsFacet	( newNameUri,newLocalName, r, this );
 		if( contains(XSDatatypeImpl.FACET_FRACTIONDIGITS) )
-			r = new FractionDigitsFacet	( newName, r, this );
+			r = new FractionDigitsFacet ( newNameUri,newLocalName, r, this );
 		if( contains(XSDatatypeImpl.FACET_MININCLUSIVE) )
-			r = new MinInclusiveFacet	( newName, r, this );
+			r = new MinInclusiveFacet	( newNameUri,newLocalName, r, this );
 		if( contains(XSDatatypeImpl.FACET_MAXINCLUSIVE) )
-			r = new MaxInclusiveFacet	( newName, r, this );
+			r = new MaxInclusiveFacet	( newNameUri,newLocalName, r, this );
 		if( contains(XSDatatypeImpl.FACET_MINEXCLUSIVE) )
-			r = new MinExclusiveFacet	( newName, r, this );
+			r = new MinExclusiveFacet	( newNameUri,newLocalName, r, this );
 		if( contains(XSDatatypeImpl.FACET_MAXEXCLUSIVE) )
-			r = new MaxExclusiveFacet	( newName, r, this );
+			r = new MaxExclusiveFacet	( newNameUri,newLocalName, r, this );
 		if( contains(XSDatatypeImpl.FACET_LENGTH) )
-			r = new LengthFacet			( newName, r, this );
+			r = new LengthFacet		( newNameUri,newLocalName, r, this );
 		if( contains(XSDatatypeImpl.FACET_MINLENGTH) )
-			r = new MinLengthFacet		( newName, r, this );
+			r = new MinLengthFacet		( newNameUri,newLocalName, r, this );
 		if( contains(XSDatatypeImpl.FACET_MAXLENGTH) )
-			r = new MaxLengthFacet		( newName, r, this );
+			r = new MaxLengthFacet		( newNameUri,newLocalName, r, this );
 		if( contains(XSDatatypeImpl.FACET_WHITESPACE) )
-			r = new WhiteSpaceFacet		( newName, r, this );
+			r = new WhiteSpaceFacet	( newNameUri,newLocalName, r, this );
 		if( contains(XSDatatypeImpl.FACET_PATTERN) )
-			r = new PatternFacet		( newName, r, this );
+			r = new PatternFacet		( newNameUri,newLocalName, r, this );
 		if( contains(XSDatatypeImpl.FACET_ENUMERATION) )
-			r = new EnumerationFacet	( newName, r, this );
+			r = new EnumerationFacet	( newNameUri,newLocalName, r, this );
 		
 					
 		// additional facet consistency check
@@ -226,7 +230,7 @@ public class TypeIncubator {
 			if( o1!=null && o2!=null
 			&& ((MaxLengthFacet)o1).maxLength < ((MinLengthFacet)o2).minLength )
 				throw reportFacetInconsistency(
-					newName, o1,XSDatatypeImpl.FACET_MAXLENGTH, o2,XSDatatypeImpl.FACET_MINLENGTH );
+					newLocalName, o1,XSDatatypeImpl.FACET_MAXLENGTH, o2,XSDatatypeImpl.FACET_MINLENGTH );
 			
 			
 			// check that scale <= precision
@@ -236,7 +240,7 @@ public class TypeIncubator {
 			if( o1!=null && o2!=null
 			&& ((FractionDigitsFacet)o1).scale > ((TotalDigitsFacet)o2).precision )
 				throw reportFacetInconsistency(
-					newName, o1,XSDatatypeImpl.FACET_FRACTIONDIGITS, o2,XSDatatypeImpl.FACET_TOTALDIGITS );
+					newLocalName, o1,XSDatatypeImpl.FACET_FRACTIONDIGITS, o2,XSDatatypeImpl.FACET_TOTALDIGITS );
 			
 			// check that minInclusive <= maxInclusive
 			checkRangeConsistency( r, XSDatatypeImpl.FACET_MININCLUSIVE, XSDatatypeImpl.FACET_MAXINCLUSIVE );

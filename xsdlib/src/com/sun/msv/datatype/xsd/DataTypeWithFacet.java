@@ -40,15 +40,15 @@ public abstract class DataTypeWithFacet extends XSDatatypeImpl
 	private final boolean needValueCheckFlag;
 	
 	/** constructor for facets other than WhiteSpaceFacet */
-	DataTypeWithFacet( String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets )
+	DataTypeWithFacet( String nsUri, String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets )
 		throws DatatypeException {
-		this( typeName, baseType, facetName, facets, baseType.whiteSpace );
+		this( nsUri, typeName, baseType, facetName, facets, baseType.whiteSpace );
 	}
 	
 	/** constructor for WhiteSpaceFacet */
-	DataTypeWithFacet( String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets, WhiteSpaceProcessor whiteSpace )
+	DataTypeWithFacet( String nsUri, String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets, WhiteSpaceProcessor whiteSpace )
 		throws DatatypeException {
-		super(typeName, whiteSpace);
+		super(nsUri,typeName, whiteSpace);
 		this.baseType = baseType;
 		this.facetName = facetName;
 		this.isFacetFixed = facets.isFixed(facetName);

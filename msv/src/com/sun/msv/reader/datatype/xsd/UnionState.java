@@ -26,11 +26,14 @@ import org.relaxng.datatype.DatatypeException;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class UnionState extends TypeState implements XSTypeOwner {
-	
-	protected final String newTypeName;
-	protected UnionState( String newTypeName ) {
-		this.newTypeName = newTypeName;
-	}
+
+    protected final String newTypeUri;
+    protected final String newTypeName;
+    
+    protected UnionState( String newTypeUri, String newTypeName ) {
+        this.newTypeUri  = newTypeUri;
+        this.newTypeName = newTypeName;
+    }
 	
 	private final ArrayList memberTypes = new ArrayList();
 												  
@@ -60,9 +63,11 @@ public class UnionState extends TypeState implements XSTypeOwner {
 	public void onEndChild( XSDatatypeExp type ) {
 		memberTypes.add(type);
 	}
+    
+    public String getTargetNamespaceUri() { return getParent().getTargetNamespaceUri(); }
 	
 	protected final XSDatatypeExp makeType() throws DatatypeException {
-        return XSDatatypeExp.makeUnion( newTypeName, memberTypes, reader );
+        return XSDatatypeExp.makeUnion( newTypeUri, newTypeName, memberTypes, reader );
 	}
 
 }

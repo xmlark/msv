@@ -499,7 +499,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
         // therefore, we always need a late-binding datatype,
         // even if the datatype is defined already.
 		
-        return new XSDatatypeExp(r[1],this,new XSDatatypeExp.Renderer(){
+        return new XSDatatypeExp(r[0],r[1],this,new XSDatatypeExp.Renderer(){
             public XSDatatype render( XSDatatypeExp.RenderingContext context ) {
                 if(sexp.getType()!=null)
                     return sexp.getType().getType(context);

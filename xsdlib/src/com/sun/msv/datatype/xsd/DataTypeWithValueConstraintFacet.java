@@ -20,10 +20,10 @@ import org.relaxng.datatype.DatatypeException;
 abstract class DataTypeWithValueConstraintFacet extends DataTypeWithFacet {
 	
 	DataTypeWithValueConstraintFacet(
-		String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets )
+		String nsUri, String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets )
 		throws DatatypeException {
 	
-		super( typeName, baseType, facetName, facets );
+		super( nsUri, typeName, baseType, facetName, facets );
 	}
 	
 	final protected boolean needValueCheck() { return true; }

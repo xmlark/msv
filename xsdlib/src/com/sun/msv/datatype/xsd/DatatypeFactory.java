@@ -40,8 +40,9 @@ public class DatatypeFactory {
 	 *		always return non-null value. If error occurs,
 	 *		then an exception will be thrown.
 	 * 
-	 * @param newTypeName
-	 *		name of the new type. it can be set to null for indicating an anonymous type.
+	 * @param nsUri,newTypeName
+     *      (URI,local) pair as the
+	 *		name of the new type. it can be set to null for an anonymous type.
 	 * @param itemType
 	 *		Type of the list item. It must be an atom type which is implemented
 	 *		in this package or derived from types implemented in this package.
@@ -51,10 +52,18 @@ public class DatatypeFactory {
 	 *		this exception is thrown when the derivation is illegal.
 	 *		For example, when you try to derive a type from non-atom type.
 	 */
-	public static XSDatatype deriveByList( String newTypeName, XSDatatype itemType )
+	public static XSDatatype deriveByList( String nsUri, String newTypeName, XSDatatype itemType )
 		throws DatatypeException {
-		return new ListType(newTypeName,(XSDatatypeImpl)itemType);
+		return new ListType(nsUri,newTypeName,(XSDatatypeImpl)itemType);
 	}
+
+    /**
+     * @deprecated
+     */
+    public static XSDatatype deriveByList( String newTypeName, XSDatatype itemType )
+        throws DatatypeException {
+        return deriveByList("",newTypeName,itemType);
+    }
 	
 	/**
 	 * derives a new type by union.
@@ -71,13 +80,28 @@ public class DatatypeFactory {
 	 * @exception BadTypeException
 	 *		this exception is thrown when the derivation is illegal.
 	 */
-	public static XSDatatype deriveByUnion( String newTypeName, XSDatatype[] memberTypes )
+	public static XSDatatype deriveByUnion( String nsUri, String newTypeName, XSDatatype[] memberTypes )
 		throws DatatypeException {
 		
-		return new UnionType(newTypeName,memberTypes);
+		return new UnionType(nsUri,newTypeName,memberTypes);
 	}
-	
-	public static XSDatatype deriveByUnion( String newTypeName, Collection memberTypes )
+    
+    /**
+     * @deprecated
+     */
+    public static XSDatatype deriveByUnion( String newTypeName, XSDatatype[] memberTypes )
+        throws DatatypeException {
+        
+        return deriveByUnion("",newTypeName,memberTypes);
+    }
+
+    /** @deprecated */	
+    public static XSDatatype deriveByUnion( String newTypeName, Collection memberTypes )
+        throws DatatypeException {
+            
+        return deriveByUnion("",newTypeName,memberTypes);
+    }
+	public static XSDatatype deriveByUnion( String nsUri, String newTypeName, Collection memberTypes )
 		throws DatatypeException {
 		XSDatatypeImpl[] m = new XSDatatypeImpl[memberTypes.size()];
 		int n=0;
@@ -85,7 +109,7 @@ public class DatatypeFactory {
 		for( int i=0; i<m.length; i++ )
 			m[i] = (XSDatatypeImpl)itr.next();
 		
-		return new UnionType(newTypeName,m);
+		return new UnionType(nsUri,newTypeName,m);
 	}
 	
 	
@@ -214,11 +238,11 @@ public class DatatypeFactory {
 	}
 	
 	private static XSDatatypeImpl createBuiltinList( String name, XSDatatypeImpl item ) throws DatatypeException {
-		TypeIncubator ti = new TypeIncubator(new ListType(null,item));
+		TypeIncubator ti = new TypeIncubator(new ListType(null,null,item));
 		ti.addFacet("minLength","1",false,null);
         // wrap it by a proxy object so that
         // these objects will work as singleton.
-        return new Proxy(name,ti.derive(null)) {
+        return new Proxy(XSDatatype.XMLSCHEMA_NSURI,name,ti.derive(null,null)) {
             private Object readResolve() {
                 try {
                     return DatatypeFactory.getTypeByName(getName());

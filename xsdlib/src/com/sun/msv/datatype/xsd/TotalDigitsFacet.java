@@ -23,9 +23,9 @@ public class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 	/** maximum number of total digits. */
 	public final int		precision;
 
-	public TotalDigitsFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
+	public TotalDigitsFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws DatatypeException {
-		super( typeName, baseType, FACET_TOTALDIGITS, facets );
+		super( nsUri, typeName, baseType, FACET_TOTALDIGITS, facets );
 		
 		precision = facets.getPositiveInteger(FACET_TOTALDIGITS);
 		

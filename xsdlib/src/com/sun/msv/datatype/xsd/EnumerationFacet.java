@@ -20,9 +20,9 @@ import org.relaxng.datatype.ValidationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class EnumerationFacet extends DataTypeWithValueConstraintFacet {
-	protected EnumerationFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
+	protected EnumerationFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws DatatypeException {
-		super(typeName,baseType,FACET_ENUMERATION,facets);
+		super(nsUri,typeName,baseType,FACET_ENUMERATION,facets);
 		values = new java.util.HashSet( facets.getVector(FACET_ENUMERATION) );
 	}
 	

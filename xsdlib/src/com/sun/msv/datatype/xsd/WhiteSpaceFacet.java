@@ -20,9 +20,9 @@ import org.relaxng.datatype.ValidationContext;
  */
 public class WhiteSpaceFacet extends DataTypeWithFacet {
 	
-	WhiteSpaceFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
+	WhiteSpaceFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws DatatypeException {
-		super(typeName, baseType, FACET_WHITESPACE, facets,
+		super(nsUri,typeName, baseType, FACET_WHITESPACE, facets,
 			WhiteSpaceProcessor.get( (String)facets.getFacet(FACET_WHITESPACE)) );
 		
 		// loosened facet check

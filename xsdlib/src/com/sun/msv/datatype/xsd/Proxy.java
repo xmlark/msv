@@ -23,8 +23,8 @@ public class Proxy extends XSDatatypeImpl {
 	public final XSDatatypeImpl baseType;
 	final public XSDatatype getBaseType() { return baseType; }
 	
-	public Proxy( String newTypeName, XSDatatypeImpl baseType ) {
-		super( newTypeName, baseType.whiteSpace );
+	public Proxy( String nsUri, String newTypeName, XSDatatypeImpl baseType ) {
+		super( nsUri, newTypeName, baseType.whiteSpace );
 		this.baseType = baseType;
 	}
 	

@@ -38,7 +38,7 @@ public class FinalComponentTest extends TestCase
 		
 		try
 		{
-			inc.derive("test");
+			inc.derive("test","test");
 			fail("should throw Exception here");
 		}
 		catch( DatatypeException bte ) {;}
@@ -48,7 +48,7 @@ public class FinalComponentTest extends TestCase
 	{
 		try
 		{
-			DatatypeFactory.deriveByList( "test",
+			DatatypeFactory.deriveByList("test","test",
 				new FinalComponent(
 					StringType.theInstance,
 					XSDatatype.DERIVATION_BY_LIST )
@@ -62,7 +62,7 @@ public class FinalComponentTest extends TestCase
 	{
 		try
 		{
-			DatatypeFactory.deriveByUnion("intermediate",
+			DatatypeFactory.deriveByUnion("","intermediate",
 			  new XSDatatype[]{
 					new FinalComponent(
 						StringType.theInstance,

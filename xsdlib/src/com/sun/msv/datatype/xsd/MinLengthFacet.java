@@ -20,9 +20,9 @@ import org.relaxng.datatype.ValidationContext;
 public class MinLengthFacet extends DataTypeWithValueConstraintFacet {
 	public final int minLength;
 	
-	protected MinLengthFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
+	protected MinLengthFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws DatatypeException {
-		super(typeName,baseType,FACET_MINLENGTH,facets);
+		super(nsUri,typeName,baseType,FACET_MINLENGTH,facets);
 	
 		minLength = facets.getNonNegativeInteger(FACET_MINLENGTH);
 		

@@ -26,14 +26,15 @@ import java.util.Stack;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.io.IOException;
-import java.net.URL;
-import java.net.MalformedURLException;
+//import java.net.URL;
+//import java.net.MalformedURLException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.util.Uri;
 
 /**
  * base implementation of grammar readers that read grammar from SAX2 stream.
@@ -346,15 +347,15 @@ public abstract class GrammarReader
 	 * @return
 	 *		always return non-null valid object
 	 */
-	public final InputSource resolveLocation( State sourceState, String url )
+	public final InputSource resolveLocation( State sourceState, String uri )
         throws AbortException {
         
         try {
-		    // resolve a relative URL to an absolute one
-		    url = combineURL( sourceState.getBaseURI(), url );
+		    // resolve a relative URI to an absolute one
+		    uri = combineURI( sourceState.getBaseURI(), uri );
 	
-		    InputSource source = controller.resolveEntity(null,url);
-		    if(source==null)	return new InputSource(url);	// default handling
+		    InputSource source = controller.resolveEntity(null,uri);
+		    if(source==null)	return new InputSource(uri);	// default handling
 		    else				return source;
             
         // in case of an error, throw the AbortException
@@ -369,14 +370,17 @@ public abstract class GrammarReader
 	/**
 	 * converts the relative URL to the absolute one by using the specified base URL.
 	 */
-	public final String combineURL( String baseURL, String relativeURL ) {
-		try {
-			return new URL( new URL(baseURL), relativeURL ).toExternalForm();
-		} catch( MalformedURLException e ) {
-			return relativeURL;
-		}
+	public final String combineURI( String baseURI, String relativeURI ) {
+        return Uri.resolve(baseURI,relativeURI);
 	}
-	
+
+    /**
+     * @deprecated use the combineURI method.
+     */
+    public final String combineURL( String baseURI, String relativeURI ) {
+        return Uri.resolve(baseURI,relativeURI);
+    }
+    
 	/**
 	 * Switchs InputSource to the specified URL and
 	 * parses it by the specified state.

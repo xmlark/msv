@@ -74,7 +74,7 @@ public class SimpleContentRestrictionState extends SequenceState
                 if(incubator==null) {
                     // we don't know whether it's a simple type or a complex type.
                     // so use a late binding.
-                    incubator = new XSDatatypeExp(baseTypeName[1],reader,
+                    incubator = new XSDatatypeExp(baseTypeName[0],baseTypeName[1],reader,
                         new BaseContentTypeRenderer()).createIncubator();
                 }
             }
@@ -130,6 +130,11 @@ public class SimpleContentRestrictionState extends SequenceState
     }
 
 
+    public String getTargetNamespaceUri() {
+        final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
+        return reader.currentSchema.targetNamespace;
+    }
+    
 	public void onEndChild( XSDatatypeExp child ) {
 		if( incubator!=null )
 			// assertion failed.
@@ -204,7 +209,7 @@ public class SimpleContentRestrictionState extends SequenceState
         try {
     		exp = reader.pool.createSequence(
         		 super.annealExpression(exp),
-    		    getIncubator().derive(null) );
+    		    getIncubator().derive(null,null) );
         } catch( DatatypeException e ) {
         	// derivation failed
         	reader.reportError( e, reader.ERR_BAD_TYPE, e.getMessage() );

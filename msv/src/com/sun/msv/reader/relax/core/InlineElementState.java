@@ -80,7 +80,7 @@ public class InlineElementState extends ExpressionState implements FacetStatePar
 			Expression contentModel;
 
 			if( incubator!=null ) {
-				contentModel = incubator.derive(null);
+				contentModel = incubator.derive(null,null);
 			} else {
 				// @label is used
 				String label = startTag.getAttribute("label");

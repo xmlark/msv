@@ -31,6 +31,9 @@ import com.sun.msv.util.StartTagInfo;
  */
 abstract class TypeState extends SimpleState
 {
+    /** Gets the parent state as TypeOwner. */
+    protected final XSTypeOwner getParent() { return (XSTypeOwner)parentState; }
+    
 	public void endSelf() {
 		super.endSelf();
 		

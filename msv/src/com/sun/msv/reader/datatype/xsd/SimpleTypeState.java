@@ -32,11 +32,12 @@ public class SimpleTypeState extends TypeWithOneChildState
 		if( !startTag.namespaceURI.equals(tag.namespaceURI) )	return null;
 		
 		final String name = startTag.getAttribute("name");
-		
+		String uri = getParent().getTargetNamespaceUri();
+        
 		if( tag.localName.equals("annotation") )	return new IgnoreState();
-		if( tag.localName.equals("restriction") )	return new RestrictionState(name);
-		if( tag.localName.equals("list") )			return new ListState(name);
-		if( tag.localName.equals("union") )			return new UnionState(name);
+		if( tag.localName.equals("restriction") )	return new RestrictionState(uri,name);
+		if( tag.localName.equals("list") )			return new ListState(uri,name);
+		if( tag.localName.equals("union") )		return new UnionState(uri,name);
 		
 		return null;	// unrecognized
 	}

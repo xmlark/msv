@@ -111,9 +111,15 @@ public class TypeDetector extends Verifier {
 	
 	
 	protected Datatype[] feedAttribute( Acceptor child, String uri, String localName, String qName, String value ) throws SAXException {
+		
+        // thanks to Damian Gajda <zwierzem@ngo.pl> for the patch.
+        // the startAttribute method should be called before the feedAttribute.
+        // 
+        // this makes the error report consistent with the startAttribute event.
+        handler.startAttribute( uri, localName, qName );	
+        
 		Datatype[] result = super.feedAttribute(child,uri,localName,qName,value);
 		
-		handler.startAttribute( uri, localName, qName );	
 		reportCharacterChunks( value, result );	
 		handler.endAttribute( uri, localName, qName,
 			((REDocumentDeclaration)docDecl).attToken.matchedExp );

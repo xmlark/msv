@@ -21,9 +21,9 @@ public class MaxLengthFacet extends DataTypeWithValueConstraintFacet
 {
 	public final int maxLength;
 	
-	protected MaxLengthFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
+	protected MaxLengthFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws DatatypeException {
-		super(typeName,baseType,FACET_MAXLENGTH,facets);
+		super(nsUri,typeName,baseType,FACET_MAXLENGTH,facets);
 	
 		maxLength = facets.getNonNegativeInteger(FACET_MAXLENGTH);
 

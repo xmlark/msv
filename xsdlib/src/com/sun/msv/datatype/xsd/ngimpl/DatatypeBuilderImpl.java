@@ -28,10 +28,10 @@ class DatatypeBuilderImpl implements DatatypeBuilder {
 			// if the pattern facet is specified, we have to
 			// derive a new type so that multiple pattern facets can
 			// work as ANDing.
-			incubator = new TypeIncubator(incubator.derive(null));
+			incubator = new TypeIncubator(incubator.derive(null,null));
 	}
 	
 	public Datatype createDatatype() throws DatatypeException {
-		return incubator.derive(null);
+		return incubator.derive(null,null);
 	}
 }

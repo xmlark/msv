@@ -20,7 +20,7 @@ import org.relaxng.datatype.DatatypeException;
 public abstract class BuiltinAtomicType extends ConcreteType
 {
 	protected BuiltinAtomicType( String typeName, WhiteSpaceProcessor whiteSpace ) {
-		super( typeName, whiteSpace );
+		super( XMLSCHEMA_NSURI, typeName, whiteSpace );
 	}
 	
 	protected BuiltinAtomicType( String typeName ) {

@@ -44,6 +44,11 @@ public class GlobalDeclState extends SimpleState
 		
 		return null;
 	}
+
+    public String getTargetNamespaceUri() {
+        final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
+        return reader.currentSchema.targetNamespace;
+    }
 	
 	// do nothing. declarations register themselves by themselves.
 	public void onEndChild( Expression exp ) {}

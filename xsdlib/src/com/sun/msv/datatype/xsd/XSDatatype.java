@@ -17,9 +17,16 @@ import org.relaxng.datatype.ValidationContext;
 
 /**
  * Publicly accesible interface of W3C XML Schema datatype (simple type).
- *
+ * 
+ * <p>
+ * The most important methods are defined in the
+ * <code>org.relaxng.datatype.Datatype</code> interface.
  * This interface provides additional information which is not covered by
  * {@link org.relaxng.datatype.Datatype} interface.
+ * Also, this interface provides various simple type component properties
+ * which are defined in the spec.
+ * 
+ * <p>
  * Application can use this interface to interact with datatype objects.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>

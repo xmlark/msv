@@ -17,10 +17,11 @@ import org.relaxng.datatype.helpers.StreamingValidatorImpl;
 import com.sun.msv.datatype.SerializationContext;
 
 /**
- * base implementaion for DataType interface.
+ * base implementaion for XSDatatype interface.
  * 
+ * <p>
  * This class should be considered as the implementation-detail, and 
- * applications should not access on this class.
+ * applications should not access this class.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

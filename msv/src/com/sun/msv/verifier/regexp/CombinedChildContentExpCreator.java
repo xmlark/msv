@@ -200,7 +200,8 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 				numElements = 1;
 				result[0] = cache.owner;
 				return new ExpressionPair(
-					cache.owner.contentModel, cache.continuation );
+					ContentModelRefExpRemover.remove(cache.owner.contentModel,pool),
+					cache.continuation );
 			}
 		}
 		
@@ -331,7 +332,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 		for( int i=0; i<numElements; i++ )
 			if( result[i]==exp ) {
 				// the same element is found.
-				content = exp.contentModel;
+				content = ContentModelRefExpRemover.remove(exp.contentModel,pool);
 				continuation = Expression.epsilon;
 				return;
 			}
@@ -349,7 +350,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 		}
 		result[numElements++] = exp;
 		
-		content = exp.contentModel;
+		content = ContentModelRefExpRemover.remove(exp.contentModel,pool);
 		continuation = Expression.epsilon;
 	}
 	

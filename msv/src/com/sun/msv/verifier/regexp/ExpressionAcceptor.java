@@ -13,7 +13,6 @@ import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.TypedString;
 import com.sun.msv.grammar.relaxng.ValueType;
 import com.sun.msv.grammar.IDContextProvider;
-import com.sun.msv.grammar.util.RefExpRemover;
 import com.sun.msv.verifier.*;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
@@ -195,7 +194,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 			// nullSet, thus nothing can be accepted. This is usually
 			// a problem of the schema.
 			
-			if( this.expression.visit( new RefExpRemover(docDecl.pool) )==Expression.nullSet ) {
+			if( this.expression==Expression.nullSet ) {
 				// the content model is equal to the nullSet.
 				refErr.str = docDecl.localizeMessage(
 					docDecl.DIAG_CONTENT_MODEL_IS_NULLSET, null );
@@ -247,7 +246,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 			return false;	// refErr was not provided. bail out.
 		
 
-		if( this.expression.visit( new RefExpRemover(docDecl.pool) )==Expression.nullSet ) {
+		if( this.expression==Expression.nullSet ) {
 			// the content model is equal to the nullSet.
 			refErr.str = docDecl.localizeMessage(
 				docDecl.DIAG_CONTENT_MODEL_IS_NULLSET, null );
@@ -504,7 +503,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		
 		
 		// try creating combined child content pattern without tag name check.
-		Expression r = cccc.get(expression,sti,false).content.visit( new RefExpRemover(docDecl.pool) );
+		Expression r = cccc.get(expression,sti,false).content;
 			
 		if( r==Expression.nullSet )
 			// no element is allowed here at all.
@@ -535,13 +534,12 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		// this variable will receive that URI.
 		String wrongNamespace = null;
 		
-		final RefExpRemover refRemover = new RefExpRemover(docDecl.pool);
-		
 		final ElementExp[] eocs = cccc.getMatchedElements();
 		final int len = cccc.numMatchedElements();
 		for( int i=0; i<len; i++ ) {
 			
-			if( eocs[i].contentModel.visit(refRemover)==Expression.nullSet )
+			if( ContentModelRefExpRemover.remove(eocs[i].contentModel,docDecl.pool)
+				==Expression.nullSet )
 				// this element is not allowed to appear.
 				continue;
 			

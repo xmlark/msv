@@ -10,6 +10,7 @@
 package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.verifier.Acceptor;
 
@@ -25,16 +26,17 @@ public final class ComplexAcceptor extends ComplexAcceptorBaseImpl {
 	 */
 	public final ElementExp[]	owners;
 	
-	private static Expression[] createDefaultContentModels( ElementExp[] owners ) {
+	private static Expression[] createDefaultContentModels( ElementExp[] owners, ExpressionPool pool ) {
 		Expression[] r = new Expression[owners.length];
 		for( int i=0; i<owners.length; i++ )
-			r[i] = owners[i].contentModel;
+			r[i] = ContentModelRefExpRemover.remove(owners[i].contentModel,pool);
 		return r;
 	}
 	
 	public ComplexAcceptor( REDocumentDeclaration docDecl,
 			Expression combined, ElementExp[] primitives ) {
-		this( docDecl, combined, createDefaultContentModels(primitives), primitives );
+		this( docDecl, combined,
+			createDefaultContentModels(primitives,docDecl.pool), primitives );
 	}
 	
 	public ComplexAcceptor(

@@ -62,15 +62,15 @@ public class AttributeFeeder implements ExpressionVisitorExpression {
 		else					return Expression.nullSet;
 	}
 	
-	/**
-	 * checks if the given expression is attribute-free.
-	 * 
-	 * if a expression is attribute free, then the residual must be nullSet.
-	 */
-	protected final boolean isAttributeFree( Expression exp ) {
-		Object o = exp.verifierTag;
-		return o!=null && ((OptimizationTag)o).isAttributeFree==Boolean.TRUE;
-	}
+//	/**
+//	 * checks if the given expression is attribute-free.
+//	 * 
+//	 * if a expression is attribute free, then the residual must be nullSet.
+//	 */
+//	protected final boolean isAttributeFree( Expression exp ) {
+//		Object o = exp.verifierTag;
+//		return o!=null && ((OptimizationTag)o).isAttributeFree==Boolean.TRUE;
+//	}
 	
 	public Expression onChoice( ChoiceExp exp ) {
 //		if( isAttributeFree(exp) )	return Expression.nullSet;

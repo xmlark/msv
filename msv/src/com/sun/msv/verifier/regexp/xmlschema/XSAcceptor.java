@@ -78,7 +78,9 @@ public class XSAcceptor extends SimpleAcceptor {
 		// and throw other options away.
 		
 		return new XSAcceptor(
-			(XSREDocDecl)docDecl, primitives[0].contentModel, primitives[0],
+			(XSREDocDecl)docDecl,
+			ContentModelRefExpRemover.remove(primitives[0].contentModel,docDecl.pool),
+			primitives[0],
 			null );
 		
 	}

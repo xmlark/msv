@@ -15,6 +15,7 @@ import com.sun.msv.verifier.regexp.ExpressionAcceptor;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.util.RefExpRemover;
 import java.util.Map;
 
 /**

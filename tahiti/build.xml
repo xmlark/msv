@@ -40,7 +40,7 @@
 		
 		<!-- compile documents -->
 		<style basedir="${stageName}" destdir="${stageName}" extension=".html"
-				style="tahiti.xsl" includes="*.docbook"/>
+				style="./tahiti.xsl" includes="*.docbook"/>
 		
 		<!-- then remove docbook source -->
 		<delete>
@@ -51,32 +51,67 @@
 		</delete>
 		
 		
-		<!-- compile files -->
+		<!-- compile runtime files -->
 		<mkdir	dir="temp" />
 		<javac	srcdir="${stageName}/src" destdir="temp">
 			<classpath path="${msvJar}"/>
 			<classpath path="${xsdlibJar}"/>
-			<include name="**/*.java" />
+			
+			<include name="com/sun/tahiti/runtime/**/*.java" />
 		</javac>
 		
 		<!-- create a time stamp file -->
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
 		
-		<!-- creates binary jar -->
-		<jar	jarfile="${stageName}/tahiti.jar"
+		<!-- creates runtime jar -->
+		<jar	jarfile="${stageName}/tahiti.runtime.jar"
 				manifest="./MANIFEST.MF"
 				compress="false">
 			
-			<fileset dir="temp" />
+			<fileset dir="temp"/>
 			<!-- resource files -->
-			<fileset dir="${stageName}/src" includes="**/*.properties" />
+			<fileset dir="${stageName}/src">
+				<include name="com/sun/tahiti/runtime/**/*.properties" />
+			</fileset>
+		</jar>
+		
+		<!-- purge the temp directory -->
+		<delete dir="temp" />
+		<mkdir  dir="temp" />
+		
+		
+		<!-- compile tahiti comiler -->
+		<javac	srcdir="${stageName}/src" destdir="temp">
+			<classpath path="${msvJar}"/>
+			<classpath path="${xsdlibJar}"/>
+			
+			<include name="**/*.java"/>
+			<exclude name="com/sun/tahiti/runtime/**/*.java" />
+		</javac>
+		
+		
+		<!-- create a time stamp file -->
+		<echo file="temp/version.properties">version=${DSTAMP}</echo>
+		
+		<!-- create compiler jar -->
+		<jar	jarfile="${stageName}/tahiti.compiler.jar"
+				manifest="./MANIFEST.MF"
+				compress="false">
+			
+			<fileset dir="temp"/>
+			<!-- resource files -->
+			<fileset dir="${stageName}/src">
+				<include name="**/*.properties" />
+				<include name="**/*.xsl" />
+			</fileset>
 		</jar>
 		<delete dir="temp" />
 		
 		
 		<!-- copy jar file to package dir -->
 		<mkdir dir="./package"/>
-		<copy file="${stageName}/tahiti.jar" tofile="./package/tahiti.jar" />
+		<copy file="${stageName}/tahiti.compiler.jar" todir="./package/" />
+		<copy file="${stageName}/tahiti.runtime.jar" todir="./package/" />
 		
 		
 		<!-- remove source codes -->

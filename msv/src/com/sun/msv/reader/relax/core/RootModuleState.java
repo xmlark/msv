@@ -30,15 +30,14 @@ import java.util.Iterator;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class RootModuleState extends SimpleState
-{
+class RootModuleState extends SimpleState {
 	protected final String expectedNamespace;
 	
-	RootModuleState( String expectedNamespace )
-	{ this.expectedNamespace = expectedNamespace; }
+	RootModuleState( String expectedNamespace ) {
+		this.expectedNamespace = expectedNamespace;
+	}
 	
-	protected State createChildState( StartTagInfo tag )
-	{
+	protected State createChildState( StartTagInfo tag ) {
 		if(tag.namespaceURI.equals(RELAXCoreReader.RELAXCoreNamespace)
 		&& tag.localName.equals("module"))
 			return new ModuleState(expectedNamespace);
@@ -47,30 +46,64 @@ class RootModuleState extends SimpleState
 	}
 	
 	// module wrap-up.
-	protected void endSelf()
-	{
+	protected void endSelf() {
 		
 		final RELAXCoreReader reader = (RELAXCoreReader)this.reader;
 		final RELAXModule module = reader.module;
-		
-		// detect label collision.
-		// it is prohibited for elementRule and hedgeRule to share the same label.
-		detectCollision( module.elementRules, module.hedgeRules, reader.ERR_LABEL_COLLISION );
-		// the same restriction applies for tag/attPool
+
+		// combine expressions to their masters.
+		// if no master is found, then create a new AttPool.
+		{
+			ReferenceExp[] combines = reader.combinedAttPools.getAll();
+			for ( int i=0; i<combines.length; i++ ) {
+				
+				AttPoolClause ac = module.attPools.get(combines[i].name);
+				if( ac!=null ) {
+					// ac.exp==null means no master is found but someone
+					// has a reference to this clause.
+					// this is OK.
+					if( ac.exp==null )		ac.exp=Expression.epsilon;
+					ac.exp = reader.pool.createSequence( ac.exp, combines[i].exp );
+					continue;
+				}
+				
+				TagClause tc = module.tags.get(combines[i].name);
+				if( tc!=null && tc.exp!=null ) {
+					// tc.exp==null means no master is found.
+					// In this case, we can't combine us to TagClause.
+					tc.exp = reader.pool.createSequence( tc.exp, combines[i].exp );
+					continue;
+				}
+				
+				// no master is found. Create a new one.
+				ac = module.attPools.getOrCreate(combines[i].name);
+				ac.exp = combines[i].exp;
+			}
+		}
+
+		// role collision check.
 		detectCollision( module.tags, module.attPools, reader.ERR_ROLE_COLLISION );
-					
+		
+		
 		// detect undefined elementRules, hedgeRules, and so on.
 		// dummy definitions are given for undefined ones.
 		reader.detectUndefinedOnes( module.elementRules,reader.ERR_UNDEFINED_ELEMENTRULE );
 		reader.detectUndefinedOnes( module.hedgeRules,	reader.ERR_UNDEFINED_HEDGERULE );
 		reader.detectUndefinedOnes( module.tags,		reader.ERR_UNDEFINED_TAG );
 		reader.detectUndefinedOnes( module.attPools,	reader.ERR_UNDEFINED_ATTPOOL );
-					
+		
+		// label collision detection should be done after
+		// undefined label detection because
+		// sometimes people use <ref label/> for hedgeRule,
+		
+		// detect label collision.
+		// it is prohibited for elementRule and hedgeRule to share the same label.
+		detectCollision( module.elementRules, module.hedgeRules, reader.ERR_LABEL_COLLISION );
+						
 		detectDoubleAttributeConstraints( module );
-					
+						
 		// checks ID abuse
 		IdAbuseChecker.check( reader, module );
-		
 		
 		// supply top-level expression.
 		Expression exp =

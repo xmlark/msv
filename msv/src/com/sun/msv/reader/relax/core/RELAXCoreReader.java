@@ -21,6 +21,8 @@ import com.sun.msv.reader.relax.RELAXReader;
 import com.sun.msv.datatype.DataType;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.ReferenceContainer;
+import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.relax.RELAXModule;
 import com.sun.msv.grammar.relax.NoneType;
 import com.sun.msv.grammar.relax.AttPoolClause;
@@ -35,25 +37,23 @@ import com.sun.msv.util.StartTagInfo;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class RELAXCoreReader extends RELAXReader
-{
+public class RELAXCoreReader extends RELAXReader {
+	
 	/** loads RELAX module */
 	public static RELAXModule parse( String moduleURL,
-		SAXParserFactory factory, GrammarReaderController controller, ExpressionPool pool )
-	{
+		SAXParserFactory factory, GrammarReaderController controller, ExpressionPool pool ) {
+		
 		RELAXCoreReader reader = new RELAXCoreReader(controller,factory,pool);
 		reader.parse(moduleURL);
-		
 		return reader.getResult();
 	}
 
 	/** loads RELAX module */
 	public static RELAXModule parse( InputSource module,
-		SAXParserFactory factory, GrammarReaderController controller, ExpressionPool pool )
-	{
+		SAXParserFactory factory, GrammarReaderController controller, ExpressionPool pool ) {
+		
 		RELAXCoreReader reader = new RELAXCoreReader(controller,factory,pool);
 		reader.parse(module);
-		
 		return reader.getResult();
 	}
 	
@@ -84,8 +84,8 @@ public class RELAXCoreReader extends RELAXReader
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
 		StateFactory stateFactory,
-		ExpressionPool pool, String expectedTargetNamespace )
-	{
+		ExpressionPool pool, String expectedTargetNamespace ) {
+		
 		super(controller,parserFactory,stateFactory,pool,new RootModuleState(expectedTargetNamespace));
 	}
 	
@@ -97,14 +97,23 @@ public class RELAXCoreReader extends RELAXReader
 	protected RELAXModule module;
 
 	/** obtains parsed grammar object only if parsing was successful. */
-	public final RELAXModule getResult()
-	{
+	public final RELAXModule getResult() {
 		if(hadError)	return null;
 		else			return module;
 	}
+	
+	/**
+	 * contains all expressions that are going to be combined.
+	 * ReferenceExp is used to wrap an expression to provide location information.
+	 * (attPool element with combine attribute).
+	 */
+	protected final ReferenceContainer combinedAttPools = new ReferenceContainer(){
+		protected ReferenceExp createReference( String name ) {
+			return new ReferenceExp(name);
+		}
+	};
 
-	protected boolean isGrammarElement( StartTagInfo tag )
-	{
+	protected boolean isGrammarElement( StartTagInfo tag ) {
 		if( !RELAXCoreNamespace.equals(tag.namespaceURI) )
 			return false;
 		
@@ -123,13 +132,11 @@ public class RELAXCoreReader extends RELAXReader
 	 * If undefined type name is specified, this method is responsible
 	 * to report an error, and recovers.
 	 */
-	public DataType resolveDataType( String typeName )
-	{
+	public DataType resolveDataType( String typeName ) {
 		// look up user defined types first
 		DataType dt = (DataType)module.userDefinedTypes.getType(typeName);
 		
-		if(dt==null)
-		{
+		if(dt==null) {
 			dt = getBackwardCompatibleType(typeName);
 			if(dt!=null)	return dt;
 			
@@ -165,10 +172,9 @@ public class RELAXCoreReader extends RELAXReader
 		return (StateFactory)super.sfactory;
 	}
 	
-	public State createExpressionChildState( State parent, StartTagInfo tag )
-	{
-		if(! RELAXCoreNamespace.equals(tag.namespaceURI) )	return null;
+	public State createExpressionChildState( State parent, StartTagInfo tag ) {
 		
+		if(! RELAXCoreNamespace.equals(tag.namespaceURI) )	return null;
 		if(tag.localName.equals("mixed"))			return getStateFactory().mixed(parent,tag);
 		if(tag.localName.equals("element"))			return getStateFactory().element(parent,tag);
 		
@@ -176,17 +182,14 @@ public class RELAXCoreReader extends RELAXReader
 	}
 
 	/** returns true if the given state can have "occurs" attribute. */
-	protected boolean canHaveOccurs( ExpressionState state )
-	{
+	protected boolean canHaveOccurs( ExpressionState state ) {
 		return
 			super.canHaveOccurs(state)
 		||	state instanceof InlineElementState;
 	}
 
-	protected Expression resolveElementRef( String namespace, String label )
-	{
-		if( namespace!=null )
-		{
+	protected Expression resolveElementRef( String namespace, String label ) {
+		if( namespace!=null ) {
 			reportError( ERR_NAMESPACE_NOT_SUPPROTED );
 			return Expression.nullSet;
 		}
@@ -194,10 +197,8 @@ public class RELAXCoreReader extends RELAXReader
 		backwardReference.memorizeLink(exp);
 		return exp;
 	}
-	protected Expression resolveHedgeRef( String namespace, String label )
-	{
-		if( namespace!=null )
-		{
+	protected Expression resolveHedgeRef( String namespace, String label ) {
+		if( namespace!=null ) {
 			reportError( ERR_NAMESPACE_NOT_SUPPROTED );
 			return Expression.nullSet;
 		}
@@ -205,10 +206,9 @@ public class RELAXCoreReader extends RELAXReader
 		backwardReference.memorizeLink(exp);
 		return exp;
 	}
-	protected Expression resolveAttPoolRef( String namespace, String role )
-	{
-		if( namespace!=null )
-		{
+	
+	protected Expression resolveAttPoolRef( String namespace, String role ) {
+		if( namespace!=null ) {
 			reportError( ERR_NAMESPACE_NOT_SUPPROTED );
 			return Expression.nullSet;
 		}
@@ -255,6 +255,8 @@ public class RELAXCoreReader extends RELAXReader
 		= "RELAXReader.IdAbuse";
 	public static final String ERR_ID_ABUSE_1 // arg:1
 		= "RELAXReader.IdAbuse.1";
+	public static final String ERR_REFERENCE_TO_MERGED_ATTPOOL // arg:1
+		= "RELAXReader.ReferenceToMergedAttPool";
 	public static final String WRN_DEPRECATED_TYPENAME = // arg:2
 		"RELAXReader.Warning.DeprecatedTypeName";
 	public static final String WRN_ILLEGAL_RELAXCORE_VERSION	// arg:1

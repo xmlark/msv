@@ -239,6 +239,23 @@ public class Verifier implements
 		}
 	}
 	
+	/**
+	 * returns current element type.
+	 * 
+	 * Actual java type depends on the implementation.
+	 * This method works correctly only when called immediately
+	 * after handling startElement event.
+	 * 
+	 * @return null
+	 *		this method returns null when it doesn't support
+	 *		type-assignment feature, or type-assignment is impossible
+	 *		for the current element (for example due to the ambiguous grammar).
+	 */
+	public Object getCurrentElementType()
+	{
+		return current.getOwnerType();
+	}
+	
 	public void characters( char[] buf, int start, int len )
 	{
 		if( stringCareLevel!=Acceptor.STRING_IGNORE )

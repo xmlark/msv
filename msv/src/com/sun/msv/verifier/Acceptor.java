@@ -54,8 +54,24 @@ public interface Acceptor
 	 */
 	boolean stepForward( Acceptor child, StringRef errRef );
 	
-	/** checks if this Acceptor is satisifed */
+	/** checks if this Acceptor is satisifed.
+	 * 
+	 * Acceptor is said to be satisfied when given sequence of elements/strings
+	 * is accepted by the content model.
+	 */
 	boolean isAcceptState();
+	
+	/** gets the "type" object for which this acceptor is working.
+	 * 
+	 * This method is used for type assignment. Actual Java type of
+	 * return value depends on the implementation.
+	 * 
+	 * @return null
+	 *		the callee should return null when it doesn't support
+	 *		type-assignment feature, or type-assignment is impossible
+	 *		for this acceptor (for example by ambiguous grammar).
+	 */
+	Object getOwnerType();
 	
 	
 	/** gets how this acceptor take care of characters.

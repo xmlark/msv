@@ -88,7 +88,7 @@ public class GrammarLoader
 		TREXPatternPool pool = new TREXPatternPool();
 		RELAXNSReader relaxNs = new RELAXNSReader(controller,factory,pool);
 		RELAXCoreReader relaxCore = new RELAXCoreReader(controller,factory,pool);
-		TREXGrammarReader trex = new TREXGrammarReader(controller,factory,pool);
+		TREXGrammarReader trex = new TREXGrammarReader(controller,factory,new TREXGrammarReader.StateFactory(),pool);
 		
 		XMLReader parser = factory.newSAXParser().getXMLReader();
 		Sniffer sniffer = new Sniffer(relaxNs,relaxCore,trex,parser);

@@ -71,7 +71,7 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
 	{
 		if( nameClass==null )	// nameClass should be specified before content model.
 		{
-			State nextState = TREXGrammarReader.createNameClassChildState(this,tag);
+			State nextState = ((TREXGrammarReader)reader).createNameClassChildState(this,tag);
 			if( nextState!=null )	return nextState;
 			
 			// to provide better error message, analyze the situation further.

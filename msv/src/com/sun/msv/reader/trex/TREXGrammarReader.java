@@ -40,7 +40,7 @@ public class TREXGrammarReader
 	public static TREXGrammar parse( String grammarURL,
 		SAXParserFactory factory, GrammarReaderController controller )
 	{
-		TREXGrammarReader reader = new TREXGrammarReader(controller,factory,new TREXPatternPool());
+		TREXGrammarReader reader = new TREXGrammarReader(controller,factory);
 		reader.parse(grammarURL);
 		
 		return reader.getResult();
@@ -50,18 +50,28 @@ public class TREXGrammarReader
 	public static TREXGrammar parse( InputSource grammar,
 		SAXParserFactory factory, GrammarReaderController controller )
 	{
-		TREXGrammarReader reader = new TREXGrammarReader(controller,factory,new TREXPatternPool());
+		TREXGrammarReader reader = new TREXGrammarReader(controller,factory);
 		reader.parse(grammar);
 		
 		return reader.getResult();
 	}
+
+	/** easy-to-use constructor. */
+	public TREXGrammarReader(
+		GrammarReaderController controller,
+		SAXParserFactory parserFactory) {
+		this(controller,parserFactory,new StateFactory(),new TREXPatternPool());
+	}
 	
+	/** full constructor */
 	public TREXGrammarReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
-		TREXPatternPool pool )
-	{
+		StateFactory stateFactory,
+		TREXPatternPool pool ) {
+		
 		super(controller,parserFactory,pool,new RootState());
+		this.sfactory = stateFactory;
 	}
 	
 	protected String localizeMessage( String propertyName, Object[] args )
@@ -136,14 +146,50 @@ public class TREXGrammarReader
 	}
 	
 	
-	static NameClassState createNameClassChildState( State parent, StartTagInfo tag )
+	/**
+	 * creates various State object, which in turn parses grammar.
+	 * parsing behavior can be customized by implementing custom StateFactory.
+	 */
+	public static class StateFactory {
+		protected State nsName		( State parent, StartTagInfo tag ) { return new NameClassNameState(); }
+		protected State nsAnyName	( State parent, StartTagInfo tag ) { return new NameClassAnyNameState(); }
+		protected State nsNsName	( State parent, StartTagInfo tag ) { return new NameClassNsNameState(); }
+		protected State nsNot		( State parent, StartTagInfo tag ) { return new NameClassNotState(); }
+		protected State nsDifference( State parent, StartTagInfo tag ) { return new NameClassDifferenceState(); }
+		protected State nsChoice	( State parent, StartTagInfo tag ) { return new NameClassChoiceState(); }
+
+		protected State element		( State parent, StartTagInfo tag ) { return new ElementState(); }
+		protected State attribute	( State parent, StartTagInfo tag ) { return new AttributeState(); }
+		protected State group		( State parent, StartTagInfo tag ) { return new SequenceState(); }
+		protected State interleave	( State parent, StartTagInfo tag ) { return new InterleaveState(); }
+		protected State choice		( State parent, StartTagInfo tag ) { return new ChoiceState(); }
+		protected State concur		( State parent, StartTagInfo tag ) { return new ConcurState(); }
+		protected State optional	( State parent, StartTagInfo tag ) { return new OptionalState(); }
+		protected State zeroOrMore	( State parent, StartTagInfo tag ) { return new ZeroOrMoreState(); }
+		protected State oneOrMore	( State parent, StartTagInfo tag ) { return new OneOrMoreState(); }
+		protected State mixed		( State parent, StartTagInfo tag ) { return new MixedState(); }
+		protected State ref			( State parent, StartTagInfo tag ) { return new RefState(); }
+		protected State empty		( State parent, StartTagInfo tag ) { return new EmptyState(); }
+		protected State anyString	( State parent, StartTagInfo tag ) { return new AnyStringState(); }
+		protected State string		( State parent, StartTagInfo tag ) { return new StringState(); }
+		protected State data		( State parent, StartTagInfo tag ) { return new DataState(); }
+		protected State notAllowed	( State parent, StartTagInfo tag ) { return new NullSetState(); }
+		protected State includePattern( State parent, StartTagInfo tag ) { return new IncludePatternState(); }
+		protected State includeGrammar( State parent, StartTagInfo tag ) { return new IncludeMergeState(); }
+		protected State grammar		( State parent, StartTagInfo tag ) { return new GrammarState(); }
+		protected State start		( State parent, StartTagInfo tag ) { return new StartState(); }
+		protected State define		( State parent, StartTagInfo tag ) { return new DefineState(); }
+	}
+	public final StateFactory sfactory;
+	
+	State createNameClassChildState( State parent, StartTagInfo tag )
 	{
-		if(tag.localName.equals("name"))		return new NameClassNameState();
-		if(tag.localName.equals("anyName"))		return new NameClassAnyNameState();
-		if(tag.localName.equals("nsName"))		return new NameClassNsNameState();
-		if(tag.localName.equals("not"))			return new NameClassNotState();
-		if(tag.localName.equals("difference"))	return new NameClassDifferenceState();
-		if(tag.localName.equals("choice"))		return new NameClassChoiceState();
+		if(tag.localName.equals("name"))		return sfactory.nsName(parent,tag);
+		if(tag.localName.equals("anyName"))		return sfactory.nsAnyName(parent,tag);
+		if(tag.localName.equals("nsName"))		return sfactory.nsNsName(parent,tag);
+		if(tag.localName.equals("not"))			return sfactory.nsNot(parent,tag);
+		if(tag.localName.equals("difference"))	return sfactory.nsDifference(parent,tag);
+		if(tag.localName.equals("choice"))		return sfactory.nsChoice(parent,tag);
 		
 		return null;		// unknown element. let the default error be thrown.
 	}
@@ -152,11 +198,10 @@ public class TREXGrammarReader
 	/**
 	 * maps obsoleted XML Schema namespace to the current one.
 	 */
-	private String mapNamespace( String namespace )
-	{
+	private String mapNamespace( String namespace ) {
 		if(namespace.equals("http://www.w3.org/2000/10/XMLSchema")
-		|| namespace.equals("http://www.w3.org/2000/10/XMLSchema-datatypes"))
-		{// namespace of CR version.
+		|| namespace.equals("http://www.w3.org/2000/10/XMLSchema-datatypes")) {
+			// namespace of CR version.
 			if( !issueObsoletedXMLSchemaNamespace )
 				// report warning only once.
 				reportWarning(WRN_OBSOLETED_XMLSCHEMA_NAMSPACE,namespace);
@@ -166,26 +211,26 @@ public class TREXGrammarReader
 		return namespace;
 	}
 	
-	public State createDefaultExpressionChildState( State parent, StartTagInfo tag )
+	public State createExpressionChildState( State parent, StartTagInfo tag )
 	{
-		if(tag.localName.equals("element"))		return new ElementState();
-		if(tag.localName.equals("attribute"))	return new AttributeState();
-		if(tag.localName.equals("group"))		return new SequenceState();
-		if(tag.localName.equals("interleave"))	return new InterleaveState();
-		if(tag.localName.equals("choice"))		return new ChoiceState();
-		if(tag.localName.equals("concur"))		return new ConcurState();
-		if(tag.localName.equals("optional"))	return new OptionalState();
-		if(tag.localName.equals("zeroOrMore"))	return new ZeroOrMoreState();
-		if(tag.localName.equals("oneOrMore"))	return new OneOrMoreState();
-		if(tag.localName.equals("mixed"))		return new MixedState();
-		if(tag.localName.equals("ref"))			return new RefState();
-		if(tag.localName.equals("empty"))		return new EmptyState();
-		if(tag.localName.equals("anyString"))	return new AnyStringState();
-		if(tag.localName.equals("string"))		return new StringState();
-		if(tag.localName.equals("data"))		return new DataState();
-		if(tag.localName.equals("notAllowed"))	return new NullSetState();
-		if(tag.localName.equals("include"))		return new IncludePatternState();
-		if(tag.localName.equals("grammar"))		return new GrammarState();
+		if(tag.localName.equals("element"))		return sfactory.element(parent,tag);
+		if(tag.localName.equals("attribute"))	return sfactory.attribute(parent,tag);
+		if(tag.localName.equals("group"))		return sfactory.group(parent,tag);
+		if(tag.localName.equals("interleave"))	return sfactory.interleave(parent,tag);
+		if(tag.localName.equals("choice"))		return sfactory.choice(parent,tag);
+		if(tag.localName.equals("concur"))		return sfactory.concur(parent,tag);
+		if(tag.localName.equals("optional"))	return sfactory.optional(parent,tag);
+		if(tag.localName.equals("zeroOrMore"))	return sfactory.zeroOrMore(parent,tag);
+		if(tag.localName.equals("oneOrMore"))	return sfactory.oneOrMore(parent,tag);
+		if(tag.localName.equals("mixed"))		return sfactory.mixed(parent,tag);
+		if(tag.localName.equals("ref"))			return sfactory.ref(parent,tag);
+		if(tag.localName.equals("empty"))		return sfactory.empty(parent,tag);
+		if(tag.localName.equals("anyString"))	return sfactory.anyString(parent,tag);
+		if(tag.localName.equals("string"))		return sfactory.string(parent,tag);
+		if(tag.localName.equals("data"))		return sfactory.data(parent,tag);
+		if(tag.localName.equals("notAllowed"))	return sfactory.notAllowed(parent,tag);
+		if(tag.localName.equals("include"))		return sfactory.includePattern(parent,tag);
+		if(tag.localName.equals("grammar"))		return sfactory.grammar(parent,tag);
 
 		final String role = tag.getAttribute(TREXNamespace,"role");
 		if("datatype".equals(role))

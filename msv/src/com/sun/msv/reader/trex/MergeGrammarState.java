@@ -34,9 +34,9 @@ public class MergeGrammarState extends ExpressionState implements ExpressionOwne
 
 	protected State createChildState( StartTagInfo tag )
 	{
-		if(tag.localName.equals("start"))	return new StartState();
-		if(tag.localName.equals("define"))	return new DefineState();
-		if(tag.localName.equals("include"))	return new IncludeMergeState();
+		if(tag.localName.equals("start"))	return getReader().sfactory.start(this,tag);
+		if(tag.localName.equals("define"))	return getReader().sfactory.define(this,tag);
+		if(tag.localName.equals("include"))	return getReader().sfactory.includeGrammar(this,tag);
 		return null;
 	}
 	

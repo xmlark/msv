@@ -51,7 +51,10 @@ public abstract class RELAXReader extends GrammarReader
 	/** Namespace URI of RELAX Core */
 	public static final String RELAXCoreNamespace = "http://www.xml.gr.jp/xmlns/relaxCore";
 
-	
+	/**
+	 * creates various State object, which in turn parses grammar.
+	 * parsing behavior can be customized by implementing custom StateFactory.
+	 */
 	public static class StateFactory {
 		protected State refLabel(State parent,StartTagInfo tag)	{ return new ElementRefState(); }
 		protected State hedgeRef(State parent,StartTagInfo tag)	{ return new HedgeRefState(); }
@@ -65,7 +68,7 @@ public abstract class RELAXReader extends GrammarReader
 	
 	public final StateFactory sfactory;
 	
-	public State createDefaultExpressionChildState( State parent, StartTagInfo tag )
+	public State createExpressionChildState( State parent, StartTagInfo tag )
 	{
 		if(tag.localName.equals("ref"))				return sfactory.refLabel(parent,tag);
 		if(tag.localName.equals("hedgeRef"))		return sfactory.hedgeRef(parent,tag);

@@ -48,7 +48,7 @@ public abstract class NameClassWithChildState extends NameClassState implements 
 	}
 	
 	protected State createChildState( StartTagInfo tag ) {
-		return TREXGrammarReader.createNameClassChildState(this,tag);
+		return ((TREXGrammarReader)reader).createNameClassChildState(this,tag);
 	}
 
 		

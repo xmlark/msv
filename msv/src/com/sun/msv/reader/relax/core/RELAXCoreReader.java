@@ -185,14 +185,14 @@ public class RELAXCoreReader extends RELAXReader
 		return (StateFactory)super.sfactory;
 	}
 	
-	public State createDefaultExpressionChildState( State parent, StartTagInfo tag )
+	public State createExpressionChildState( State parent, StartTagInfo tag )
 	{
 		if(! RELAXCoreNamespace.equals(tag.namespaceURI) )	return null;
 		
 		if(tag.localName.equals("mixed"))			return getStateFactory().mixed(parent,tag);
 		if(tag.localName.equals("element"))			return getStateFactory().element(parent,tag);
 		
-		return super.createDefaultExpressionChildState(parent,tag);
+		return super.createExpressionChildState(parent,tag);
 	}
 
 	/** returns true if the given state can have "occurs" attribute. */

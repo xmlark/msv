@@ -14,7 +14,7 @@ import com.sun.tranquilo.grammar.relax.ElementRule;
 import com.sun.tranquilo.grammar.trex.TREXPatternPool;
 import com.sun.tranquilo.grammar.trex.typed.TypedElementPattern;
 import com.sun.tranquilo.reader.relax.core.RELAXCoreReader;
-import com.sun.tranquilo.reader.relax.namespace.RELAXNSReader;
+import com.sun.tranquilo.relaxns.reader.RELAXNSReader;
 import com.sun.tranquilo.reader.trex.typed.TypedTREXGrammarInterceptor;
 import com.sun.tranquilo.reader.trex.TREXGrammarReader;
 import com.sun.tranquilo.verifier.VerifierFilter;
@@ -73,8 +73,9 @@ public class TypeReporter extends DefaultHandler
 		else {
 			TREXGrammarReader reader = new TREXGrammarReader(
 				new com.sun.tranquilo.driver.textui.DebugController(false),
-				factory, new TREXPatternPool() );
-			reader.addExpressionCreator( new TypedTREXGrammarInterceptor() );
+				factory,
+				new TypedTREXGrammarInterceptor(),
+				new TREXPatternPool() );
 			((XMLFilter)reader).parse(args[1]);
 			grammar = reader.getResult();
 		}

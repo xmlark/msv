@@ -102,8 +102,7 @@ public abstract class GrammarReader
 	/**
 	 * calls processName method of NamespaceSupport
 	 */
-	public final String[] splitNamespacePrefix( String qName )
-	{
+	public final String[] splitNamespacePrefix( String qName ) {
 		return namespaceSupport.processName(qName, new String[3], false );
 	}
 	
@@ -116,8 +115,7 @@ public abstract class GrammarReader
 	 * derived class can perform further wrap-up before it is received by the parent.
 	 * This mechanism is used by RELAXReader to handle occurs attribute.
 	 */
-	protected Expression interceptExpression( ExpressionState state, Expression exp )
-	{
+	protected Expression interceptExpression( ExpressionState state, Expression exp ) {
 		return exp;
 	}
 	
@@ -144,16 +142,14 @@ public abstract class GrammarReader
 	 * 
 	 * It is chained by previousContext field and used as a stack.
 	 */
-	private class InclusionContext
-	{
+	private class InclusionContext {
 		final NamespaceSupport	nsSupport;
 		final Locator			locator;
 		final String			systemId;
 
 		final InclusionContext	previousContext;
 
-		InclusionContext( NamespaceSupport ns, Locator loc, String sysId, InclusionContext prev )
-		{
+		InclusionContext( NamespaceSupport ns, Locator loc, String sysId, InclusionContext prev ) {
 			this.nsSupport = ns;
 			this.locator = loc;
 			this.systemId = sysId;
@@ -164,8 +160,7 @@ public abstract class GrammarReader
 	/** current inclusion context */
 	private InclusionContext pendingIncludes;
 	
-	private void pushInclusionContext( )
-	{
+	private void pushInclusionContext( ) {
 		pendingIncludes = new InclusionContext(
 			namespaceSupport, locator, locator.getSystemId(),
 			pendingIncludes );
@@ -174,8 +169,7 @@ public abstract class GrammarReader
 		locator = null;
 	}
 	
-	private void popInclusionContext()
-	{
+	private void popInclusionContext() {
 		namespaceSupport	= pendingIncludes.nsSupport;
 		locator				= pendingIncludes.locator;
 		
@@ -293,16 +287,19 @@ public abstract class GrammarReader
 	
 	
 	
-	public class BackwardReferenceMap
-	{
+	/**
+	 * memorizes what declarations are referenced from where.
+	 * 
+	 * this information is used to report the source of errors.
+	 */
+	public class BackwardReferenceMap {
 		private final Map impl = new java.util.HashMap();
 														 
-		public void memorizeLink( Object target )
-		{
+		public void memorizeLink( Object target ) {
 			ArrayList list;
 			if( impl.containsKey(target) )	list = (ArrayList)impl.get(target);
-			else
-			{// new target.
+			else {
+				// new target.
 				list = new ArrayList();
 				impl.put(target,list);
 			}
@@ -311,10 +308,8 @@ public abstract class GrammarReader
 		}
 		
 		// TODO: does anyone want to get all of the refer?
-		public Locator[] getReferer( Object target )
-		{
-			if( impl.containsKey(target) )
-			{
+		public Locator[] getReferer( Object target ) {
+			if( impl.containsKey(target) ) {
 				ArrayList lst = (ArrayList)impl.get(target);
 				Locator[] locs = new Locator[lst.size()];
 				lst.toArray(locs);
@@ -344,18 +339,18 @@ public abstract class GrammarReader
 	 */
 	private final Map declaredLocations = new java.util.HashMap();
 	
-	public void setDeclaredLocationOf( ReferenceExp exp )
-	{
+	public void setDeclaredLocationOf( ReferenceExp exp ) {
 		declaredLocations.put(exp, new LocatorImpl(locator) );
 	}
-	public void setDeclaredLocationOf( DataType dt )
-	{
+	public void setDeclaredLocationOf( DataType dt ) {
 		declaredLocations.put(dt, new LocatorImpl(locator) );
 	}
-	public Locator getDeclaredLocationOf( ReferenceExp exp )
-	{ return (Locator)declaredLocations.get(exp); }
-	public Locator getDeclaredLocationOf( DataType dt )
-	{ return (Locator)declaredLocations.get(dt); }
+	public Locator getDeclaredLocationOf( ReferenceExp exp ) {
+		return (Locator)declaredLocations.get(exp);
+	}
+	public Locator getDeclaredLocationOf( DataType dt ) {
+		return (Locator)declaredLocations.get(dt);
+	}
 
 	/**
 	 * detects undefined ReferenceExp and reports it as an error.
@@ -416,42 +411,12 @@ public abstract class GrammarReader
 
 	/** gets current State object. */
 	public final State getCurrentState() { return (State)super.getContentHandler(); }
-	
-	/**
-	 * creates an appropriate State object for parsing particle/pattern.
-	 */
-	public final State createExpressionChildState( State parent, StartTagInfo tag ) {
-		// try external interceptors first.
-		int len = externalExpressionCreators.size();
-		for( int i=0; i<len; i++ ) {
-			State s = ((ExternalExpressionCreator)externalExpressionCreators.get(i)).create(tag);
-			if(s!=null)		return s;
-		}
-		
-		// then language default.
-		return createDefaultExpressionChildState(parent,tag);
-	}
 
-	/**
-	 * the third object can implement this interface to change the state object
-	 * created.
-	 */
-	public static interface ExternalExpressionCreator {
-		State create( StartTagInfo tag );
-	}
-	
-	/** set of ExternalExpressionCreators. */
-	private final ArrayList externalExpressionCreators = new ArrayList();
-	
-	public void addExpressionCreator( ExternalExpressionCreator creator ) {
-		externalExpressionCreators.add(creator);
-	}
-	
 	/**
 	 * this method must be implemented by the derived class to create
 	 * language-default expresion state.
 	 */
-	protected abstract State createDefaultExpressionChildState( State parent, StartTagInfo tag );
+	public abstract State createExpressionChildState( State parent, StartTagInfo tag );
 	
 	
 // SAX events interception

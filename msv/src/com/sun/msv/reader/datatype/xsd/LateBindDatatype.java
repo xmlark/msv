@@ -194,10 +194,16 @@ public class LateBindDatatype implements XSDatatype {
 	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		throw new Error();
 	}
+	public boolean isDerivedTypeOf( XSDatatype b, boolean p ) {
+		throw new Error();
+	}
 	public Class getJavaObjectType() {
 		throw new Error();
 	}
-	public boolean isAtomType() {
+	public XSDatatype getBaseType() {
+		throw new Error();
+	}
+	public int getVariety() {
 		throw new Error();
 	}
 	public boolean isFinal( int derivationType ) {

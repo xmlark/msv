@@ -24,8 +24,7 @@ final public class DummyContextProvider implements ValidationContext, Serializat
 	public static final DummyContextProvider theInstance
 		= new DummyContextProvider();
 	
-	public String resolveNamespacePrefix( String prefix )
-	{
+	public String resolveNamespacePrefix( String prefix ) {
 		if( prefix.equals("foo") )
 			return "http://foo.examples.com";
 		if( prefix.equals("bar") || prefix.equals("baz") )
@@ -54,4 +53,6 @@ final public class DummyContextProvider implements ValidationContext, Serializat
 	public boolean isNotation( String name ) {
 		return name.equals("foo") || name.equals("bar");
 	}
+
+	public String getBaseUri() { return null; }
 }

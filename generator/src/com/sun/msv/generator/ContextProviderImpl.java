@@ -57,6 +57,8 @@ final public class ContextProviderImpl
 		// accept anything.
 		return true;
 	}
+
+	public String getBaseUri() { return null; }
 	
 	public static final String XMLNS_URI = "http://www.w3.org/2000/xmlns/";
 	

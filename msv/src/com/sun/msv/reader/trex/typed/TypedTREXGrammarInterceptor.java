@@ -9,7 +9,7 @@
  */
 package com.sun.msv.reader.trex.typed;
 
-import com.sun.msv.reader.trex.TREXGrammarReader;
+import com.sun.msv.reader.trex.classic.TREXGrammarReader;
 import com.sun.msv.reader.State;
 import com.sun.msv.util.StartTagInfo;
 

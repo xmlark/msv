@@ -14,7 +14,7 @@ W3C XML Schema Datatypes implementation.
 </P>
 
 <A name="javaType">
-<h2>Object types returned by <code>createJavaObject</code> method</h2>
+<h2>Object types returned by the <code>createJavaObject</code> method</h2>
 
 <p>
 	The following W3C XML Schema types return <code>java.lang.String</code>, with no loss of accuracy.
@@ -29,11 +29,14 @@ W3C XML Schema Datatypes implementation.
 <p>
 	For other types:
 </p>
-<center>
-<table border=1>
+<table border=1 style="float:right; margin-left:2em">
+	<tr>
+		<td>XSD type</td>
+		<td>Java type</td>
+	</tr>
 	<tr>
 		<td>string</td>
-		<td rowspan="8">java.lang.String</td>
+		<td rowspan="10">java.lang.String(*5)</td>
 	</tr>
 	<tr>
 		<td>ENTITY</td>
@@ -55,6 +58,12 @@ W3C XML Schema Datatypes implementation.
 	</tr>
 	<tr>
 		<td>NOTATION</td>
+	</tr>
+	<tr>
+		<td>anyURI (*3)</td>
+	</tr>
+	<tr>
+		<td>language (*4)</td>
 	</tr>
 	
 	<tr>
@@ -128,28 +137,76 @@ W3C XML Schema Datatypes implementation.
 	<tr>
 		<td>hexBinary</td>
 	</tr>
-</table></center>
+	<tr>
+		<td>dateTime</td>
+		<td rowspan="8">java.util.Calendar(*2)</td>
+	</tr>
+	<tr>
+		<td>date</td>
+	</tr>
+	<tr>
+		<td>time</td>
+	</tr>
+	<tr>
+		<td>gYear</td>
+	</tr>
+	<tr>
+		<td>gYearMonth</td>
+	</tr>
+	<tr>
+		<td>gMonth</td>
+	</tr>
+	<tr>
+		<td>gMonthDay</td>
+	</tr>
+	<tr>
+		<td>gDay</td>
+	</tr>
+</table>
 
 <p>
-	For types derived by list, the createJavaObject method returns array of <code>java.lang.Object</code>
-	that contains Java values of the item type.<br/>
+	For types derived by list, the createJavaObject method returns <code>java.lang.Object[]</code>
+	that contains Java values of the item type.
 	
-	For types derived by restriction, the method returns the same type as the base type.<br/>
+	For types derived by restriction, the method returns the same type as the base type.
 	
 	For types derived by union, the method returns Java values of one of the member types.
 </p>
 <p>
-	The createJavaObject method currently returns meaningless types for the following W3C XML Schema datatypes.
-	Applications are discouraged to use those types.
+	The createJavaObject method currently returns meaningless types for
+	"duration" datatype.
 </p>
-<blockquote>
-	duration, dateTime, date, time, gYear, gYearMonth, gMonth, gMonthDay, gDay
-</blockquote>
 <dl>
 	<dt>*1</dt>
 	<dd>
 		The first item in the array is the namespace URI. The second (the last) item in the array is
 		the local name.
+	</dd>
+	<dt>*2</dt>
+	<dd>
+		Missing fields are not set. For example, "gYearMonth" type returns
+		a Calendar object whose DAY_OF_MONTH, HOUR_OF_DAY, MINUTE,SECOND, and
+		MILLISECOND fields are not set.
+		If the XML representation does not contain the millisecond part,
+		then <code>MILLISECOND</code> field of the returned Calendar object
+		is not set. This field is set only when the XML representation contains
+		fractional seconds (e.g., "01:02:03.5").
+	</dd>
+	<dt>*3</dt>
+	<dd>
+		The anyURI type does not perform URI escaping. So it returns "%20" for
+		the lexical value "%20".
+	</dd>
+	<dt>*4</dt>
+	<dd>
+		The language type always return a string in the lower case. That is,
+		it returns "en_us" for "EN_US".
+	</dd>
+	<dt>*5</dt>
+	<dd>
+		Strings are white-space normalized according to the value of
+		the whiteSpace facet. For example, " abc " as a Name yields "abc";
+		" abc " as a string yields " abc ".
 	</dd>
 </p>
 </body></html>

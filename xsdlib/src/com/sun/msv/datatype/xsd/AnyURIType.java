@@ -10,8 +10,11 @@
 package com.sun.msv.datatype.xsd;
 
 import com.sun.msv.datatype.SerializationContext;
-import com.sun.msv.datatype.xsd.regex.RegularExpression;
+import com.sun.msv.datatype.xsd.regex.RegExp;
+import com.sun.msv.datatype.xsd.regex.RegExpFactory;
 import org.relaxng.datatype.ValidationContext;
+
+import java.text.ParseException;
 
 /**
  * "anyURI" type.
@@ -122,9 +125,9 @@ public class AnyURIType extends BuiltinAtomicType implements Discrete {
         return new String(escaped);
     }
 
-    final static RegularExpression regexp = createRegExp();
+    final static RegExp regexp = createRegExp();
 
-    static RegularExpression createRegExp() {
+    static RegExp createRegExp() {
         String alpha = "[a-zA-Z]";
         String alphanum = "[0-9a-zA-Z]";
         String hex = "[0-9a-fA-F]";
@@ -168,7 +171,12 @@ public class AnyURIType extends BuiltinAtomicType implements Discrete {
         String relativeURI = "((" + netPath + ")|(" + absPath + ")|(" + relPath + "))(\\?" + query + ")?";
         String absoluteURI = scheme + ":((" + hierPart + ")|(" + opaquePart + "))";
         String uriRef = "(" + absoluteURI + "|" + relativeURI + ")?(#" + fragment + ")?";
-        return new RegularExpression(uriRef, "X");
+        try {
+            return RegExpFactory.createFactory().compile(uriRef);
+        } catch (ParseException e) {
+            // impossible
+            throw new Error();
+        }
     }
 
     public Object _createValue(final String content, ValidationContext context) {

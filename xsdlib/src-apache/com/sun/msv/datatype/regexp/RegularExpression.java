@@ -55,7 +55,7 @@
  * <http://www.apache.org/>.
  */
 
-package com.sun.msv.datatype.xsd.regex;
+package com.sun.msv.datatype.regexp;
 
 import java.text.CharacterIterator;
 
@@ -519,7 +519,7 @@ import java.text.CharacterIterator;
  * @author TAMURA Kent &lt;kent@trl.ibm.co.jp&gt;
  * @version RegularExpression.java,v 1.7 2003/07/15 12:28:25 neeraj Exp
  */
-public class RegularExpression implements java.io.Serializable {
+class RegularExpression implements java.io.Serializable {
     static final boolean DEBUG = false;
 
     /**

@@ -9,14 +9,15 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import com.sun.msv.datatype.xsd.regex.ParseException;
-import com.sun.msv.datatype.xsd.regex.RegularExpression;
+import com.sun.msv.datatype.xsd.regex.RegExp;
+import com.sun.msv.datatype.xsd.regex.RegExpFactory;
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Vector;
+import java.text.ParseException;
 
 /**
  * "pattern" facet validator
@@ -35,9 +36,9 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
      * Don't serialize so that we won't have hard-coded dependency to
      * a particular regexp lib.
      */
-    private transient RegularExpression[] exps;
+    private transient RegExp[] exps;
     
-    public RegularExpression[] getRegExps() { return exps; }
+    public RegExp[] getRegExps() { return exps; }
     
     /**
      * string representations of the above RegularExpressions.
@@ -70,9 +71,10 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
     
     /** Compiles all the regular expressions. */
     private void compileRegExps() throws ParseException {
-        exps = new RegularExpression[patterns.length];
+        exps = new RegExp[patterns.length];
+        RegExpFactory factory = RegExpFactory.createFactory();
         for(int i=0;i<exps.length;i++)
-            exps[i] = new RegularExpression(patterns[i],"X");
+            exps[i] = factory.compile(patterns[i]);
         
         // loosened facet check is almost impossible for pattern facet.
         // ignore it for now.
@@ -106,11 +108,15 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
     
     private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        
-        compileRegExps();
+
+        try {
+            compileRegExps();
+        } catch (ParseException e) {
+            throw new IOException(e.getMessage());
+        }
     }
     
 
     // serialization support
-    private static final long serialVersionUID = 1;    
+    private static final long serialVersionUID = 1;
 }

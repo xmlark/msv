@@ -36,20 +36,6 @@ public abstract class ConcreteType extends XSDatatypeImpl {
 		// allow derivation by default.
 		return false;
 	}
-	
-	protected Object readResolve() throws java.io.ObjectStreamException {
-		// return the sigleton object, if any.
-		String name = getName();
-		if(name!=null) {
-			try {
-				return DatatypeFactory.getTypeByName(name);
-			} catch( DatatypeException e ) {
-				;
-			}
-		}
-		
-		return this;
-	}
 
 	// default implementation for concrete type. somewhat shabby.
 	protected void _checkValid(String content, ValidationContext context) throws DatatypeException {

@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype.xsd;
 
+import org.relaxng.datatype.DatatypeException;
+
 /**
  * base class for atomic built-in types; those types which can be used by itself
  * (int,uriReference,string, etc) .
@@ -32,4 +34,18 @@ public abstract class BuiltinAtomicType extends ConcreteType
         // built-in types always have fixed names.
         return getName();
     }
+	
+	protected Object readResolve() throws java.io.ObjectStreamException {
+		// return the sigleton object, if any.
+		String name = getName();
+		if(name!=null) {
+			try {
+				return DatatypeFactory.getTypeByName(name);
+			} catch( DatatypeException e ) {
+				;
+			}
+		}
+		
+		return this;
+	}
 }

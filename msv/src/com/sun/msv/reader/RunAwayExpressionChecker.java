@@ -137,7 +137,6 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 	}
 
 	public void onRef( ReferenceExp exp ) {
-		
 		enter(exp);
 		if( !testedExps.contains(exp) ) {
 			testedExps.add(exp);

@@ -169,6 +169,8 @@ the document is NOT valid.
 <blockquote>
 <ol>
 	<li><p>Attribute declarations of the form of <code>xmlns:***</code> are ignored. All namespace declarations within the instance document are also ignored.</p></li>
+	<li><p>The detection of XML DTD is based on the file extension. This causes a problem when you are using MSV through JARV or <code>GrammarLoader</code>. For details, see <a href="JARV.html#dtddetect">this</a>.
+	</p></li>
 	<li><p>In general, MSV handles XML namespaces differently from most DTD validators. As a result, MSV may validate documents that other DTD validators reject. When this is the case, MSV always issues a warning.</p></li>
 	<li><p>Strictly speaking, MSV cannot replace XML parser's DTD validation because DTD validation affects lot of other things. For example, DTD validation in XML parser can expand entity references and provides default attribute values; DTD validation by MSV doesn't do those things.
 </ol>
@@ -181,7 +183,15 @@ the document is NOT valid.
 
 <h3>RELAX NG</h3>
 <blockquote>
-<p>This implementation attempts to fully implement the spec (Aug,11,2001 version). W3C XML Schema Part 2 is the only one datatype vocabulary supported. <code>ID</code>,<code>IDREF</code>, and <code>IDREFS</code> types implement the cross-reference semantics.</p>
+<p>This implementation is intended to almost fully implement the spec (Aug,11,2001 version) except the followings:</p>
+<ul>
+	<li><p>fragment identifiers in the <code>href</code> attribute are not treated correctly (section 4.5 of the spec.)</p></li>
+	<li><p>recursive self reference check is performed after <code>notAllowed</code> is expanded. Therefore MSV fails to catch some of the error. (section 4.18 of the spec.)</p></li>
+</ul>
+
+<p>
+	This implementation supports <a href="http://www.oasis-open.org/committees/relax-ng/compatibility-20010907.html">RELAX NG DTD Compatibility Spec (2001/09/07)</a>. MSV implements all three features and all of them conform to level 1 (everything except infoset modification.)
+</p>
 </blockquote>
 
 <h3>RELAX Core</h3>
@@ -198,7 +208,7 @@ the document is NOT valid.
 <h3>W3C XML Schema Part 1</h3>
 <blockquote>
 <ol>
-	<li><p><a href="http://www.w3.org/TR/xmlschema-1/#concepts-schemaConstraints"> "Schema component constraints" and "Schema representation constraints" </a> are not fully enforced. In other words, MSV accepts schemata that are rejected by other conforming processors.</p><p>Unimplemented checks include (but not limited to) <a href="http://www.w3.org/TR/xmlschema-1/#cos-nonambig">"UPA constraint"</a> and <a href="http://www.w3.org/TR/xmlschema-1/#cos-particle-restrict">"Particle Valid Restriction"</a></li>
+	<li><p><a href="http://www.w3.org/TR/xmlschema-1/#concepts-schemaConstraints"> "Schema component constraints" and "Schema representation constraints" </a> are not fully enforced. In other words, MSV may accept schemas that are rejected by other conforming processors.</p><p>Unimplemented checks include (but not limited to) <a href="http://www.w3.org/TR/xmlschema-1/#cos-nonambig">"UPA constraint"</a> and <a href="http://www.w3.org/TR/xmlschema-1/#cos-particle-restrict">"Particle Valid Restriction"</a></li>
 	<li><p><a href="http://www.w3.org/TR/xmlschema-1/#conformance-missing"> "Missing sub-components" </a> are treated as immediate errors. This behavior better serves the majority of users.</p></li>
 	<li><p>Default values are ignored. In fact, no infoset contribution is supported: MSV validates documents, but it doesn't augment them. Post Schema-Validation Infoset (PSVI) is also not supported.</p></li>
 </ol>

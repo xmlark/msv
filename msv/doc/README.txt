@@ -44,17 +44,20 @@ This preview version implements:
 3. RELAX Namespace [3], based on the draft of 2001-03-11 [8] plus
    enhancements based on discussions held at the same mailing list.
 
-4. RELAX NG [14], based on the spec [15], the tutorial [16],
-   and information available at the discussion list [17].
+4. RELAX NG [14], based on the spec [15].
+   See commandline.html for details of limitations.
 
-5. TREX [9], based on the draft of 2001-02-13 [10] and the 
+5. RELAX NG DTD compatibility extension[18].
+   See commandline.html for details of limitations.
+
+6. TREX [9], based on the draft of 2001-02-13 [10] and the 
    reference implementation [11]. The only datatype vocabulary available
    is W3C XML Schema Part 2 PR [12].
 
-6. A limited subset of W3C XML Schema Part 1 PR [13].
+7. A limited subset of W3C XML Schema Part 1 PR [13].
    See commandline.html for details of limitations.
 
-7. W3C XML Schema Part 2 PR [12] as a datatype vocabulary.
+8. W3C XML Schema Part 2 PR [12] as a datatype vocabulary.
 
 For limitations, see commandline.html.
 
@@ -95,11 +98,13 @@ REFERENCES
       http://www.w3.org/TR/2001/PR-xmlschema-1-20010316/
 [14] RELAX NG
       http://www.oasis-open.org/committees/relax-ng/
-[15] RELAX NG Spec (draft)
-      http://www.thaiopensource.com/relaxng/spec.html
+[15] RELAX NG Spec (2001/08/11)
+      http://www.oasis-open.org/committees/relax-ng/spec-20010811.html
 [16] RELAX NG tutorial
       http://www.oasis-open.org/committees/relax-ng/tutorial.html
 [17] RELAX NG discussion list archive
       http://lists.oasis-open.org/archives/relax-ng/
+[18] RELAX NG DTD Compatibility Spec (2001/09/03)
+      http://www.oasis-open.org/committees/relax-ng/compatibility-20010903.html
 ======================================================================
 END OF README

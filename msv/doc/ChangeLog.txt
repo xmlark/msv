@@ -1,0 +1,10 @@
+
+From 2001/09/10 version to the present version
+----------------------------------------------
+
+- RELAX NG DTD compatibility spec is supported.
+  (http://www.oasis-open.org/committees/relax-ng/compatibility-20010907.html)
+
+- Conformance to RELAX NG spec (2001/08/11 version) is improved.
+  MSV is now intended to be almost fully conform to the spec.
+  For details of the limitation, see commandline.html

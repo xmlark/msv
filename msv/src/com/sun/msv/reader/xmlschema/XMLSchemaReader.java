@@ -89,8 +89,7 @@ public class XMLSchemaReader extends GrammarReader
 	protected final XMLSchemaGrammar grammar;
 	protected XMLSchemaSchema currentSchema;
 
-	public final XMLSchemaGrammar getResult()
-	{
+	public final XMLSchemaGrammar getResult() {
 		if(hadError)	return null;
 		else			return grammar;
 	}
@@ -138,7 +137,7 @@ public class XMLSchemaReader extends GrammarReader
 		protected State any					(State parent,StartTagInfo tag)	{ return new AnyElementState(); }
 		protected State anyAttribute		(State parent,StartTagInfo tag)	{ return new AnyAttributeState(); }
 		protected State include				(State parent,StartTagInfo tag)	{ return new IncludeState(); }
-		protected State import_				(State parent,StartTagInfo tag)	{ return null; }
+		protected State import_				(State parent,StartTagInfo tag)	{ return new ImportState(); }
 		protected State redefine			(State parent,StartTagInfo tag)	{ return new RedefineState(); }
 		protected State notation			(State parent,StartTagInfo tag)	{ return new IgnoreState(); }
 		protected State facets				(State parent,StartTagInfo tag)	{ return new FacetState(); }
@@ -156,7 +155,7 @@ public class XMLSchemaReader extends GrammarReader
 		protected State simpleExt			(State parent,StartTagInfo tag)	{ return new SimpleContentBodyState(true); }
 		
 		protected boolean isGlobal(State parent) {
-			return parent instanceof SchemaState;
+			return parent instanceof GlobalDeclState;
 		}
 	}
 	
@@ -344,7 +343,7 @@ public class XMLSchemaReader extends GrammarReader
 			
 			switch(minOccursValue) {
 			case 0:
-				exp = pool.createOptional(exp);
+				exp = Expession.epsilon;
 				break;
 			case 1:
 				break;
@@ -406,26 +405,6 @@ public class XMLSchemaReader extends GrammarReader
 	 */
 	public boolean doDuplicateDefinitionCheck = true;
 	
-// back patching
-//===========================================
-/*
-	several things cannot be done when XMLSchemaReader saw XML representation.
-	(e.g., generating the expression that matches to <any />).
-	
-	those jobs are queued here and processed after the parsing is completed.
-*/
-	
-	public static interface BackPatch {
-		/** do back-patching. */
-		void patch();
-		/** gets State object who has submitted this patch job. */
-		State getOwnerState();
-	}
-	
-	private final Vector backPatchJobs = new Vector();
-	public void addBackPatchJob( BackPatch job ) {
-		backPatchJobs.add(job);
-	}
 	
 	
 	/**
@@ -465,7 +444,8 @@ public class XMLSchemaReader extends GrammarReader
 		}
 		
 		grammar.topLevel = grammarTopLevel;
-		
+
+
 		// perform all back patching.
 		//------------------------------
 		Locator oldLoc = locator;
@@ -485,6 +465,26 @@ public class XMLSchemaReader extends GrammarReader
 		
 	}
 	
+// back patching
+//===========================================
+/*
+	several things cannot be done when XMLSchemaReader saw XML representation.
+	(e.g., generating the expression that matches to <any />).
+	
+	those jobs are queued here and processed after the parsing is completed.
+*/
+	
+	public static interface BackPatch {
+		/** do back-patching. */
+		void patch();
+		/** gets State object who has submitted this patch job. */
+		State getOwnerState();
+	}
+	
+	private final Vector backPatchJobs = new Vector();
+	public void addBackPatchJob( BackPatch job ) {
+		backPatchJobs.add(job);
+	}
 	
 	
 	
@@ -527,4 +527,6 @@ public class XMLSchemaReader extends GrammarReader
 		"XMLSchemaReader.UndefinedElementDecl";
 	public static final String ERR_UNDEFINED_GROUP =
 		"XMLSchemaReader.UndefinedGroup";
+	public static final String WRN_UNSUPPORTED_ANYELEMENT = // arg:1
+		"XMLSchemaReader.UnsupportedAnyElement";
 }

@@ -42,7 +42,7 @@ public class PSVIDump implements TypedContentHandler {
 		
 		// load a schema. GrammarLoader will detect the schema language automatically.
 		Grammar grammar = GrammarLoader.loadSchema(
-				args[1],
+				args[0],
 				// this controller object will receive error messages.
 				new DebugController(false,false),
 				factory );
@@ -65,7 +65,7 @@ public class PSVIDump implements TypedContentHandler {
 		verifier.setContentHandler(new PSVIDump());
 		
 		// finally, parse the document and see what happens!
-		reader.parse(args[2]);
+		reader.parse(args[1]);
 	}
 	
 	
@@ -87,13 +87,13 @@ public class PSVIDump implements TypedContentHandler {
 	public void startElement( String namespaceUri, String localName, String qName ) {
 		printIndent();
 		indent++;
-		System.out.print("<"+qName+">");
+		System.out.println("<"+qName+">");
 	}
 	
 	public void startAttribute( String namespaceUri, String localName, String qName ) {
 		printIndent();
 		indent++;
-		System.out.print("<@"+qName+">");
+		System.out.println("<@"+qName+">");
 	}
 	public void endAttribute( String namespaceUri, String localName, String qName, AttributeExp type ) {
 		indent--;
@@ -128,10 +128,12 @@ public class PSVIDump implements TypedContentHandler {
 			// into Java friendly object. Here, we use the context object
 			// which is passed through the startDocument method.
 			Object javaObject = dt.createJavaObject( literal, context );
-			System.out.println( javaObject.getClass().getName() );
+			// dump the class name for a proof that an object is actually created.
+			System.out.print( javaObject.getClass().getName() );
 		}
 		System.out.print(" : ");
-		System.out.println(literal);
+		System.out.println(literal.trim());
+		// the trim method is called only to make the output cleaner.
 	}
 	
 	public void endElement( String uri, String local, String qName, ElementExp type ) {

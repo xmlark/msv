@@ -20,6 +20,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.LocatorImpl;
 import org.xml.sax.helpers.NamespaceSupport;
 
 import com.sun.msv.grammar.IDContextProvider2;
@@ -43,9 +44,14 @@ import com.sun.msv.verifier.regexp.StringToken;
 public abstract class AbstractVerifier implements
     ContentHandler, DTDHandler, IDContextProvider2 {
     
-    /** document Locator that is given by XML reader */
-    protected Locator locator;
+    /**
+     * Document Locator that is given by XML reader.
+     * Sometimes it doesn't set the locator, so start with a dummy instance.
+     */
+    protected Locator locator = dummyLocator;
     public final Locator getLocator() { return locator; }
+    
+    protected static final Locator dummyLocator = new LocatorImpl();
     
     /**
      * set this flag to true to perform ID/IDREF validation.

@@ -85,7 +85,7 @@ public abstract class GrammarReader
 		if( !parserFactory.isNamespaceAware() )
 			throw new IllegalArgumentException("parser factory must be namespace-aware");
 		this.pool = pool;
-		pushState( initialState, null );
+		pushState( initialState, null, null );
 	}
 	
 	
@@ -275,7 +275,7 @@ public abstract class GrammarReader
 		State currentState = getCurrentState();
 		try {
 			// this state will receive endDocument event.
-			pushState( newState, null );
+			pushState( newState, null, null );
 			_parse( source, currentState.location );
 		} finally {
 			// restore the current state.
@@ -421,10 +421,8 @@ public abstract class GrammarReader
 //============================================================
 	
 	/** pushs the current state into the stack and sets new one */
-	public void pushState( State newState, StartTagInfo startTag )
+	public void pushState( State newState, State parentState, StartTagInfo startTag )
 	{
-		// ASSERT : parser.getContentHandler()==newState.parentState
-		State parentState = getCurrentState();
 		super.setContentHandler(newState);
 		newState.init( this, parentState, startTag );
 		
@@ -449,6 +447,8 @@ public abstract class GrammarReader
 	/**
 	 * this method must be implemented by the derived class to create
 	 * language-default expresion state.
+	 * 
+	 * @return null if the start tag is an error.
 	 */
 	public abstract State createExpressionChildState( State parent, StartTagInfo tag );
 	

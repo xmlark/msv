@@ -72,7 +72,7 @@ public abstract class SimpleState extends State
 			State nextState = createChildState(tag);
 			if(nextState!=null)
 			{
-				reader.pushState(nextState,tag);
+				reader.pushState(nextState,this,tag);
 				return;
 			}
 				
@@ -93,7 +93,7 @@ public abstract class SimpleState extends State
 		}
 		
 		// element of a foreign namespace. skip subtree
-		reader.pushState(new IgnoreState(),tag);
+		reader.pushState(new IgnoreState(),this,tag);
 	}
 	
 	/** creates appropriate child state object for this element */

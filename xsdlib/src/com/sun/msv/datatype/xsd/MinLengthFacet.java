@@ -16,7 +16,7 @@ package com.sun.msv.datatype;
  */
 public class MinLengthFacet extends DataTypeWithValueConstraintFacet
 {
-	protected final int minLength;
+	public final int minLength;
 	
 	protected MinLengthFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException

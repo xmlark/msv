@@ -16,7 +16,7 @@ package com.sun.msv.datatype;
  */
 public class MaxLengthFacet extends DataTypeWithValueConstraintFacet
 {
-	protected final int maxLength;
+	public final int maxLength;
 	
 	protected MaxLengthFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException

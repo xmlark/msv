@@ -18,7 +18,7 @@ import java.util.StringTokenizer;
  * 
  * @author	Kohsuke Kawaguchi
  */
-final class ListType extends ConcreteType implements Discrete {
+public final class ListType extends ConcreteType implements Discrete {
 	
 	/**
 	 * derives a new datatype from atomic datatype by list
@@ -35,7 +35,7 @@ final class ListType extends ConcreteType implements Discrete {
 	}
 	
 	/** atomic base type */
-	final private DataTypeImpl itemType;
+	final public DataTypeImpl itemType;
 
 	// list type is not an atom type.
 	public final boolean isAtomType() { return false; }

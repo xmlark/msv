@@ -34,7 +34,7 @@ final public class UnionType extends ConcreteType {
 	}
 	
 	/** member types */
-	final private DataTypeImpl[] memberTypes;
+	final public DataTypeImpl[] memberTypes;
 
 	// union type is not an atom type.
 	public final boolean isAtomType() { return false; }

@@ -21,7 +21,7 @@ import java.util.Hashtable;
  */
 public class LengthFacet extends DataTypeWithValueConstraintFacet
 {
-	private final int length;
+	public final int length;
 	
 	protected LengthFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException

@@ -101,6 +101,13 @@ public class AttributeState extends ExpressionWithChildState {
 		} else {
 			// TODO: form attribute is prohibited in several occasions.
 			String targetNamespace;
+            
+            // @name is mandatory
+            if( name==null ) {
+                reader.reportError( reader.ERR_MISSING_ATTRIBUTE,
+                    "attribute","name");
+                return Expression.nullSet;
+            }
 		
 			if( isGlobal() )	targetNamespace = reader.currentSchema.targetNamespace;
 			else

@@ -24,6 +24,7 @@ import com.sun.msv.verifier.*;
 import com.sun.msv.verifier.identity.IDConstraintChecker;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.verifier.util.ErrorHandlerImpl;
+import com.sun.resolver.tools.CatalogResolver;
 import org.iso_relax.dispatcher.Dispatcher;
 import org.iso_relax.dispatcher.SchemaProvider;
 import org.iso_relax.dispatcher.impl.DispatcherImpl;
@@ -48,6 +49,7 @@ public class Driver {
 		boolean verbose = false;
 		boolean warning = false;
 		boolean loose=false;
+		EntityResolver entityResolver=null;
 		
 		boolean dtdAsSchema = false;
 		
@@ -74,6 +76,15 @@ public class Driver {
 			if( args[i].equalsIgnoreCase("-verbose") )			verbose = true;
 			else
 			if( args[i].equalsIgnoreCase("-warning") )			warning = true;
+			else
+			if( args[i].equalsIgnoreCase("-catalog") ) {
+				// use Sun's "XML Entity and URI Resolvers" by Norman Walsh
+				// to resolve external entities.
+				// http://www.sun.com/xml/developers/resolver/
+				CatalogResolver cat = new CatalogResolver(true);
+				cat.getCatalog().parseCatalog(args[++i]);
+				entityResolver = cat;
+			}
 			else
 			if( args[i].equalsIgnoreCase("-version") ) {
 				System.out.println("Multi Schema Validator Ver."+
@@ -127,9 +138,9 @@ public class Driver {
 			// other XML-based grammars: GrammarLoader will detect the language.
 		try {
 			if(dtdAsSchema) {
-				grammar = DTDReader.parse(is,new DebugController(warning,false),"",new ExpressionPool());
+				grammar = DTDReader.parse(is,new DebugController(warning,false,entityResolver),"",new ExpressionPool());
 			} else {
-				grammar = GrammarLoader.loadSchema(is,new DebugController(warning,false),factory);
+				grammar = GrammarLoader.loadSchema(is,new DebugController(warning,false,entityResolver),factory);
 			}
 		} catch(SAXParseException spe) {
 			; // this error is already reported.

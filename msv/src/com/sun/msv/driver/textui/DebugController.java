@@ -12,6 +12,7 @@ package com.sun.msv.driver.textui;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.EntityResolver;
 import com.sun.msv.reader.GrammarReaderController;
 import java.io.PrintStream;
 
@@ -28,6 +29,9 @@ public class DebugController implements GrammarReaderController {
 	/** set to true after "there are warnings..." message is once printed. */
 	private boolean warningReported = false;
 	
+	/** entity resolution is delegated to this object. can be null. */
+	public EntityResolver externalEntityResolver;
+	
 	/** messages are sent to this object. */
 	protected PrintStream out;
 	
@@ -39,10 +43,17 @@ public class DebugController implements GrammarReaderController {
 	public DebugController( boolean displayWarning, boolean quiet ) {
 		this( displayWarning, quiet, System.out );
 	}
+	public DebugController( boolean displayWarning, boolean quiet, EntityResolver externalEntityResolver ) {
+		this( displayWarning, quiet, System.out, externalEntityResolver );
+	}
 	public DebugController( boolean displayWarning, boolean quiet, PrintStream outDevice ) {
+		this( displayWarning, quiet, outDevice, null );
+	}
+	public DebugController( boolean displayWarning, boolean quiet, PrintStream outDevice, EntityResolver externalEntityResolver ) {
 		this.out = outDevice;
 		this.displayWarning = displayWarning;
 		this.warningReported = quiet;
+		this.externalEntityResolver = externalEntityResolver;
 	}
 	
 	public void warning( Locator[] loc, String errorMessage ) {
@@ -72,6 +83,10 @@ public class DebugController implements GrammarReaderController {
 			}
 		} else {
 			out.println(errorMessage);
+//			Thread.currentThread().dumpStack();
+//			nestedException.printStackTrace();
+			if(nestedException!=null)
+				System.out.println(nestedException);
 		}
 		
 		if(loc==null || loc.length==0)
@@ -89,6 +104,10 @@ public class DebugController implements GrammarReaderController {
 	}
 
 	public InputSource resolveEntity( String publicId, String systemId ) throws java.io.IOException, SAXException {
+		if(externalEntityResolver!=null) {
+//			System.out.println("using external resolver");
+			return externalEntityResolver.resolveEntity(publicId,systemId);
+		}
 		return null;
 	}
 }

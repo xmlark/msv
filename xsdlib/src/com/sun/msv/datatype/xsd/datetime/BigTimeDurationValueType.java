@@ -40,15 +40,23 @@ public class BigTimeDurationValueType implements ITimeDurationValueType
 				new BigInteger("1903"), 6/*Jul*/, 0/*1st*/, 0,0, new BigDecimal(0), TimeZone.GMT ) };
 																				
 
-	public boolean equals( Object o )
-	{ return equals( (ITimeDurationValueType)o ); }
-	public boolean equals( ITimeDurationValueType o )
-	{
+	public boolean equals( Object o ) {
+		return equals( (ITimeDurationValueType)o );
+	}
+	public boolean equals( ITimeDurationValueType o ) {
 		return compare(o)==Comparator.EQUAL;
 	}
+	public String toString() {
+		return	((year==null||year.signum()<0)?"-":"")+
+				"P"+nullAsZero(year).abs()+"Y"+
+				nullAsZero(month)+"M"+
+				nullAsZero(day)+"DT"+
+				nullAsZero(hour)+"H"+
+				nullAsZero(minute)+"M"+
+				(second==null?"":second.toString())+"S";
+	}
 	
-	private BigInteger nullAsZero(BigInteger o)
-	{
+	private BigInteger nullAsZero(BigInteger o) {
 		if(o==null)	return BigInteger.ZERO;
 		else		return o;
 	}
@@ -56,8 +64,7 @@ public class BigTimeDurationValueType implements ITimeDurationValueType
 	/**
 	 * hash code has to be consistent with equals method.
 	 */
-	public int hashCode()
-	{
+	public int hashCode() {
 		// 400Y = 365D*303 + 366D*97 = 146097D = 3506328 hours
 		// = 210379680 minutes
 		// and no other smaller years have their equivalent days.
@@ -68,20 +75,17 @@ public class BigTimeDurationValueType implements ITimeDurationValueType
 				.add( nullAsZero(minute) ).mod(Util.the210379680).hashCode();
 	}
 
-	public int compare( ITimeDurationValueType o )
-	{
+	public int compare( ITimeDurationValueType o ) {
 		if(!(o instanceof BigTimeDurationValueType) )
 			o = o.getBigValue();
 
 		return compare( this, (BigTimeDurationValueType)o );
 	}
 	
-	static private int compare( BigTimeDurationValueType lhs, BigTimeDurationValueType rhs )
-	{
+	static private int compare( BigTimeDurationValueType lhs, BigTimeDurationValueType rhs ) {
 		boolean less=false,greater=false,noDeterminate=false;
 		
-		for( int i=0; i<testInstance.length; i++ )
-		{
+		for( int i=0; i<testInstance.length; i++ ) {
 			BigDateTimeValueType l = (BigDateTimeValueType)testInstance[i].add(lhs);
 			BigDateTimeValueType r = (BigDateTimeValueType)testInstance[i].add(rhs);
 			
@@ -89,8 +93,7 @@ public class BigTimeDurationValueType implements ITimeDurationValueType
 			
 			if(v<0)						less=true;
 			if(v>0)						greater=true;
-			if(v==0)
-			{
+			if(v==0) {
 				if(!l.equals(r))		noDeterminate=true;
 			}
 		}
@@ -106,8 +109,7 @@ public class BigTimeDurationValueType implements ITimeDurationValueType
 
 	public BigTimeDurationValueType(
 		BigInteger year, BigInteger month, BigInteger day,
-		BigInteger hour, BigInteger minute, BigDecimal second )
-	{
+		BigInteger hour, BigInteger minute, BigDecimal second ) {
 		this.year	= year!=null?year:BigInteger.ZERO;
 		this.month	= month!=null?month:BigInteger.ZERO;
 		this.day	= day!=null?day:BigInteger.ZERO;

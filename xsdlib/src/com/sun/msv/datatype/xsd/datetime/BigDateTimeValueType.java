@@ -35,34 +35,41 @@ public class BigDateTimeValueType implements IDateTimeValueType
 	 * Since there is no year 0, value 0 indicates year -1. -1 indicates -2, and so forth.
 	 */
 	private BigInteger year;
+	public BigInteger getYear() { return year; }
 	
 	/** month (always between 0 and 11)
 	 * this variable is null if no year is specified
 	 */
 	private Integer month;
+	public Integer getMonth() { return month; }
 	
 	/** day (always normalized)
 	 * this variable is null if no year is specified
 	 */
 	private Integer day;
+	public Integer getDay() { return day; }
 	
 	/** hour (always between 0 and 23)
 	 * this variable is null if no year is specified
 	 */
 	private Integer hour;
+	public Integer getHour() { return hour; }
 	
 	/** minute (always between 0 and 59)
 	 * this variable is null if no year is specified
 	 */
 	private Integer minute;
+	public Integer getMinute() { return minute; }
 	
 	/** second (always in [0,60) )
 	 * this variable is null if no year is specified
 	 */
 	private BigDecimal second;
+	public BigDecimal getSecond() { return second; }
 	
 	/** time zone specifier */
 	private TimeZone zone;
+	public TimeZone getTimeZone() { return zone; }
 	
 	/** creates an instance with the specified BigDateTimeValueType,
 	 *  with modified time zone.

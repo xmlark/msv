@@ -220,7 +220,7 @@ void timeZoneModifierL() : { int h,m=0; }
 {
 	"Z"
 |
-	("+"|"-") h=NN(0,14) [":" m=NN(0,59)]
+	("+"|"-") h=NN(0,14) ":" m=NN(0,59)
 	{
 		if(h==14 && m!=0)	throw new ParseException();
 	}
@@ -414,12 +414,12 @@ IDateTimeValueType yearTypeV() : {}
 
 void monthDayTypeL() : {}
 {
-	"--" month() "-" day() [ timeZoneModifierL() ]	<EOF>
+	"-" "-" month() "-" day() [ timeZoneModifierL() ]	<EOF>
 }
 
 IDateTimeValueType monthDayTypeV() : {}
 {
-	"--" month() "-" day() [ timeZoneModifierV() ]	<EOF>
+	"-" "-" month() "-" day() [ timeZoneModifierV() ]	<EOF>
 	
 	{
 		if( dd.intValue() >= Util.maximumDayInMonthFor( 4, mm.intValue() ) )
@@ -431,12 +431,12 @@ IDateTimeValueType monthDayTypeV() : {}
 
 void dayTypeL() : {}
 {
-	"---" day() [ timeZoneModifierL() ]	<EOF>
+	"-" "-" "-" day() [ timeZoneModifierL() ]	<EOF>
 }
 
 IDateTimeValueType dayTypeV() : {}
 {
-	"---" day() [ timeZoneModifierV() ]	<EOF>
+	"-" "-" "-" day() [ timeZoneModifierV() ]	<EOF>
 	
 	{ return DateTimeFactory.createFromDate(
 		null, null, (Integer)dd, zone ); }
@@ -444,12 +444,12 @@ IDateTimeValueType dayTypeV() : {}
 
 void monthTypeL() : {}
 {
-	"--" month() "--" [ timeZoneModifierL() ]	<EOF>
+	"-" "-" month() "-" "-" [ timeZoneModifierL() ]	<EOF>
 }
 
 IDateTimeValueType monthTypeV() : {}
 {
-	"--" month() "--" [ timeZoneModifierV() ]	<EOF>
+	"-" "-" month() "-" "-" [ timeZoneModifierV() ]	<EOF>
 	
 	{ return DateTimeFactory.createFromDate( null, (Integer)mm, null, zone ); }
 }

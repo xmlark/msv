@@ -32,6 +32,7 @@ import com.sun.msv.reader.trex.TREXBaseReader;
 import com.sun.msv.reader.trex.AnyStringState;
 import com.sun.msv.reader.trex.RootState;
 import com.sun.msv.reader.trex.RefState;
+import com.sun.msv.reader.trex.DivInGrammarState;
 import com.sun.msv.reader.trex.IncludePatternState;
 import com.sun.msv.reader.datatype.DataTypeVocabulary;
 import com.sun.msv.util.StartTagInfo;
@@ -184,6 +185,7 @@ public class RELAXNGReader extends TREXBaseReader {
 		public State redefine		( State parent, StartTagInfo tag ) { return new DefineState(); }
 		public State includeGrammar	( State parent, StartTagInfo tag ) { return new IncludeMergeState(); }
 		public State externalRef	( State parent, StartTagInfo tag ) { return new IncludePatternState(); }
+		public State divInGrammar	( State parent, StartTagInfo tag ) { return new DivInGrammarState(); }
 		
 		public State ref		( State parent, StartTagInfo tag ) {
 			if( tag.containsAttribute("parent") ) {

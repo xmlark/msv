@@ -106,6 +106,8 @@ public abstract class TREXBaseReader extends GrammarReader {
 		public State ref		( State parent, StartTagInfo tag ) {
 			return new RefState("true".equals(tag.getAttribute("parent")));
 		}
+		// <div>s in the <grammar> element is not available by default.
+		public State divInGrammar( State parent, StartTagInfo tag ) { return null; }
 	}
 	public final StateFactory sfactory;
 	

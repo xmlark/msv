@@ -23,7 +23,7 @@ import com.sun.msv.reader.ExpressionOwner;
 public class RootMergedGrammarState extends SimpleState implements ExpressionOwner {
 	protected State createChildState( StartTagInfo tag ) {
 		// expects "grammar" element only, and creates MergeGrammarState
-		if( tag.localName.equals("grammar") )	return new MergeGrammarState();
+		if( tag.localName.equals("grammar") )	return new DivInGrammarState();
 		return null;
 	}
 	

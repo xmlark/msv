@@ -26,7 +26,7 @@ import com.sun.msv.grammar.trex.TREXGrammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class GrammarState extends MergeGrammarState {
+public class GrammarState extends DivInGrammarState {
 	protected TREXGrammar previousGrammar;
 	protected TREXGrammar newGrammar;
 	

@@ -9,6 +9,7 @@
  */
 package com.sun.msv.reader.util;
 
+import com.sun.msv.reader.dtd.DTDReader;
 import com.sun.msv.reader.relax.core.RELAXCoreReader;
 import com.sun.msv.reader.trex.classic.TREXGrammarReader;
 import com.sun.msv.reader.trex.ng.comp.RELAXNGCompReader;
@@ -20,6 +21,7 @@ import com.sun.msv.relaxns.reader.RELAXNSReader;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
+import com.sun.msv.util.Util;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.verifier.regexp.xmlschema.XSREDocDecl;
 import javax.xml.parsers.SAXParserFactory;
@@ -321,8 +323,52 @@ public class GrammarLoader
 	}
 	
 	
+	
+	/**
+	 * Checks if the specified name has ".dtd" extension.
+	 */
+	private boolean hasDTDextension( String name ) {
+		if(name==null)		return false;
+		
+		int idx = name.length()-4;
+		if(idx<0)			return false;
+		
+		return name.substring(idx).equalsIgnoreCase(".dtd");
+	}
+	
+	/**
+	 * Actual "meat" of parsing schema.
+	 */
 	private Grammar _loadSchema( Object source )
 			throws SAXException, ParserConfigurationException, java.io.IOException {
+		
+		// perform the auto detection to decide whether
+		// it is XML syntax based schema or DTD.
+		// TODO: implement more serious detection algorithm.
+				
+		// use the file extension to decide language type.
+		// sure this is a sloppy job, but works in practice.
+		// and easy to implement.
+		boolean isDTD = false;
+		if( source instanceof String ) {
+			if( hasDTDextension( (String)source) )
+				isDTD = true;
+		}
+		if( source instanceof InputSource ) {
+			if( hasDTDextension( ((InputSource)source).getSystemId() ) )
+				isDTD = true;
+		}
+		
+		if(isDTD) {
+			// load as DTD
+			if( source instanceof String )
+				source = Util.getInputSource((String)source);
+			return DTDReader.parse((InputSource)source,getController());
+		}
+
+		// otherwise this schema is an XML syntax based schema.
+		
+		
 		
 		final XMLReader parser = getSAXParserFactory().newSAXParser().getXMLReader();
 		/*

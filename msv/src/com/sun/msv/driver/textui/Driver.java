@@ -10,27 +10,26 @@
 package com.sun.msv.driver.textui;
 
 import javax.xml.parsers.*;
-import java.io.File;
 import com.sun.msv.grammar.xmlschema.*;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.grammar.relax.*;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.ExpressionPrinter;
 import com.sun.msv.reader.util.GrammarLoader;
-import com.sun.msv.reader.dtd.DTDReader;
+//import com.sun.msv.reader.dtd.DTDReader;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
 import com.sun.msv.relaxns.verifier.SchemaProviderImpl;
 import com.sun.msv.verifier.*;
 import com.sun.msv.verifier.identity.IDConstraintChecker;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.verifier.util.ErrorHandlerImpl;
+import com.sun.msv.util.Util;
 import com.sun.resolver.tools.CatalogResolver;
 import org.iso_relax.dispatcher.Dispatcher;
 import org.iso_relax.dispatcher.SchemaProvider;
 import org.iso_relax.dispatcher.impl.DispatcherImpl;
 import org.xml.sax.*;
 import java.util.*;
-import java.net.URL;
 
 /**
  * command line Verifier.
@@ -51,8 +50,6 @@ public class Driver {
 		boolean standalone=false;
 		EntityResolver entityResolver=null;
 		
-		boolean dtdAsSchema = false;
-		
 		if( args.length==0 ) {
 			System.out.println( localize(MSG_USAGE) );
 			return;
@@ -63,7 +60,8 @@ public class Driver {
 			else
 			if( args[i].equalsIgnoreCase("-loose") )			standalone = true;	// backward compatible name
 			else
-			if( args[i].equalsIgnoreCase("-dtd") )				dtdAsSchema = true;
+			if( args[i].equalsIgnoreCase("-dtd") )
+				; // this option is ignored.
 			else
 			if( args[i].equalsIgnoreCase("-dump") )				dump = true;
 			else
@@ -148,23 +146,18 @@ public class Driver {
 			}
 		
 		
-		InputSource is = getInputSource(grammarName);
-		
 
 	// parse schema
 	//--------------------
 		final long stime = System.currentTimeMillis();
 		System.out.println( localize(MSG_START_PARSING_GRAMMAR) );
 
-//			Grammar grammar = GrammarLoader.loadSchema(is,new DebugController(warning),factory);
 		Grammar grammar=null;
-			// other XML-based grammars: GrammarLoader will detect the language.
 		try {
-			if(dtdAsSchema) {
-				grammar = DTDReader.parse(is,new DebugController(warning,false,entityResolver),"",new ExpressionPool());
-			} else {
-				grammar = GrammarLoader.loadSchema(is,new DebugController(warning,false,entityResolver),factory);
-			}
+			grammar = GrammarLoader.loadSchema(
+				grammarName,
+				new DebugController(warning,false,entityResolver),
+				factory);
 		} catch(SAXParseException spe) {
 			; // this error is already reported.
 		} catch(SAXException se ) {
@@ -225,7 +218,7 @@ public class Driver {
 				
 				result = verifier.verify(
 					reader,
-					getInputSource(instName));
+					Util.getInputSource(instName));
 			} catch( com.sun.msv.verifier.ValidationUnrecoverableException vv ) {
 				System.out.println(localize(MSG_BAILOUT));
 			} catch( SAXParseException se ) {
@@ -368,23 +361,6 @@ public class Driver {
 		
 			p.parse( instance );
 			return v.isValid();
-		}
-	}
-	
-	public static InputSource getInputSource( String fileOrURL ) {
-		try {
-			// try it as a file
-			String path = new File(fileOrURL).getAbsolutePath();
-			if (File.separatorChar != '/')
-				path = path.replace(File.separatorChar, '/');
-			if (!path.startsWith("/"))
-				path = "/" + path;
-//			if (!path.endsWith("/") && isDirectory())
-//				path = path + "/";
-			return new InputSource( new URL("file", "", path).toExternalForm() );
-		} catch( Exception e ) {
-			// try it as an URL
-			return new InputSource(fileOrURL);
 		}
 	}
 

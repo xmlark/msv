@@ -25,7 +25,7 @@ import com.sun.msv.writer.GrammarWriter;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-abstract class BatchWriterTester extends batch.BatchTester {
+public abstract class BatchWriterTester extends batch.BatchTester {
 	
 	/** gets a TestSuite that loads and verifies all test instances in the test directory. */
 	protected void populateSuite( TestSuite suite, String[] schemas ) {

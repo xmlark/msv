@@ -13,7 +13,7 @@ class TestDriver implements ErrorReceiver
 		try
 		{
 			// reads test case file
-			Document doc = new SAXBuilder().build(
+			Document doc = new SAXBuilder("org.apache.xerces.parsers.SAXParser").build(
 				TestDriver.class.getResourceAsStream("DataTypeTest.xml") );
 
 			DataTypeTester tester = new DataTypeTester(System.out,new TestDriver());

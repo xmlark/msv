@@ -21,7 +21,8 @@ public interface DatabindableDatatype extends org.relaxng.datatype.Datatype {
 	 * <p>
 	 * Note that due to the difference between those Java friendly types
 	 * and actual XML Schema specification, the returned object sometimes
-	 * loses accuracy,
+	 * loses accuracy. For example, the "time" type allows "0.0000000000001 sec"
+	 * which cannot be represented in <code>java.util.Calendar</code> class.
 	 * 
 	 * @return	null
 	 *		when the given lexical value is not a valid lexical value for this type.

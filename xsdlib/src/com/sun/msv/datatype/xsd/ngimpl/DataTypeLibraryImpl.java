@@ -12,6 +12,7 @@ package com.sun.msv.datatype.xsd.ngimpl;
 import com.sun.msv.datatype.xsd.DatatypeFactory;
 import com.sun.msv.datatype.xsd.XSDatatype;
 import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.DatatypeBuilder;
 import org.relaxng.datatype.DatatypeLibrary;
 
@@ -22,13 +23,11 @@ import org.relaxng.datatype.DatatypeLibrary;
  */
 public class DataTypeLibraryImpl implements DatatypeLibrary {
 	
-	public Datatype createDatatype( String typeName ) {
+	public Datatype createDatatype( String typeName ) throws DatatypeException  {
 		return DatatypeFactory.getTypeByName(typeName);
 	}
 	
-	public DatatypeBuilder createDatatypeBuilder( String typeName ) {
-		XSDatatype base = DatatypeFactory.getTypeByName(typeName);
-		if(base==null)	return null;
-		return new DatatypeBuilderImpl(base);
+	public DatatypeBuilder createDatatypeBuilder( String typeName ) throws DatatypeException {
+		return new DatatypeBuilderImpl( DatatypeFactory.getTypeByName(typeName) );
 	}
 }

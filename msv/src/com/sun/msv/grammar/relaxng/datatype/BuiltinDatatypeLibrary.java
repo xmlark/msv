@@ -20,17 +20,15 @@ import org.relaxng.datatype.*;
  */
 public class BuiltinDatatypeLibrary implements DatatypeLibrary {
 	
-	public Datatype createDatatype( String name ) {
+	public Datatype createDatatype( String name ) throws DatatypeException {
 		if( name.equals("string") )
 			return com.sun.msv.datatype.xsd.StringType.theInstance;
 		if( name.equals("token") )
 			return com.sun.msv.datatype.xsd.TokenType.theInstance;
-		return null;
+		throw new DatatypeException("undefined built-in type:"+name);
 	}
 	
-	public DatatypeBuilder createDatatypeBuilder( String name ) {
-		Datatype baseType = createDatatype(name);
-		if(baseType==null)		return null;
-		return new DatatypeBuilderImpl(baseType);
+	public DatatypeBuilder createDatatypeBuilder( String name ) throws DatatypeException {
+		return new DatatypeBuilderImpl( createDatatype(name) );
 	}
 }

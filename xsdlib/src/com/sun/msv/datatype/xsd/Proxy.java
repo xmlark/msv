@@ -18,7 +18,7 @@ import com.sun.msv.datatype.SerializationContext;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class Proxy extends XSDatatypeImpl {
+public class Proxy extends XSDatatypeImpl {
 	/** immediate base type, which may be a concrete type or DataTypeWithFacet */
 	public final XSDatatypeImpl baseType;
 	final public XSDatatype getBaseType() { return baseType; }

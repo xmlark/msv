@@ -12,7 +12,6 @@ package com.sun.msv.grammar.xmlschema;
 import com.sun.msv.datatype.BadTypeException;
 import com.sun.msv.datatype.DataType;
 import com.sun.msv.datatype.TypeIncubator;
-import com.sun.msv.datatype.ValidationContextProvider;
 import com.sun.msv.datatype.QnameType;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.ElementExp;
@@ -20,6 +19,7 @@ import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.grammar.ChoiceNameClass;
 import com.sun.msv.grammar.trex.ElementPattern;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * ComplexType definition.
@@ -83,7 +83,7 @@ public class ComplexTypeExp extends RedefinableExp {
 		try {
 			TypeIncubator ti = new TypeIncubator( QnameType.theInstance );
 			ti.add( "enumeration", "foo:"+localName, true,
-				new ValidationContextProvider() {
+				new ValidationContext() {
 					public String resolveNamespacePrefix( String prefix ) {
 						if( "foo".equals(prefix) )	return namespaceURI;
 						return null;

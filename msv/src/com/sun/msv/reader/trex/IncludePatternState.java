@@ -15,7 +15,7 @@ import com.sun.msv.reader.ExpressionWithoutChildState;
 import com.sun.msv.reader.ExpressionOwner;
 
 /**
- * &lt;include&gt; element in the pattern.
+ * &lt;include&gt; element in the pattern. (&lt;externalRef&gt; of RELAX NG).
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

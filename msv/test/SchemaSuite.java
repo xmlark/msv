@@ -13,7 +13,6 @@ import com.sun.tranquilo.reader.trex.TREXGrammarReader;
 import com.sun.tranquilo.reader.relax.RELAXReader;
 import org.xml.sax.*;
 import java.io.*;
-import com.sun.tranquilo.reader.util.IgnoreController;
 import com.sun.tranquilo.verifier.*;
 import com.sun.tranquilo.verifier.util.VerificationErrorHandlerImpl;
 import com.sun.tranquilo.grammar.trex.*;
@@ -82,7 +81,7 @@ class SchemaSuite extends TestCase
 		TREXGrammarReader.parse(
 			is,
 			parent.factory,
-			new IgnoreController() );
+			new ThrowErrorController() );
 
 		if( g==null )	return null;
 		return new TREXDocumentDeclaration(g);
@@ -95,7 +94,7 @@ class SchemaSuite extends TestCase
 			RELAXReader.parse(
 				is,
 				parent.factory,
-				new IgnoreController(),
+				new ThrowErrorController(),
 				new TREXPatternPool() );
 		// use TREXPatternPool so that we can verify it like TREX.
 		

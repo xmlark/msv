@@ -2,6 +2,20 @@
 <!-- $Id$ -->
 <suite>
 
+<case name="test for anyURI(2)">
+	<value> http://&#x125;.gr.jp/" </value>
+	<value> http://&#x937;.gr.jp/" </value>
+	<value> http://&#x295C3;.gr.jp/" </value>
+	
+	<answer for="anyURI"		>ooo</answer>
+	
+	<facets>
+		<facet answer="ooo"	name="pattern" value=".*" />
+	</facets>
+	
+	<wrongs />
+</case>
+
 <case name="test for dateTime">
 	<value>2001-01-01T00:00:00-14:00</value>
 	<value>2001-01-01T00:00:00-02:00</value>

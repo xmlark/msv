@@ -992,6 +992,4 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 		"XMLSchemaReader.RecursiveSubstitutionGroup";
 	public static final String WRN_IMPLICIT_URTYPE_FOR_ELEMENT = // arg:0
 		"XMLSchemaReader.Warning.ImplicitUrTypeForElement";
-	public static final String WRN_IMPLICIT_URTYPE_FOR_COMPLEXTYPE = // arg:0
-		"XMLSchemaReader.Warning.ImplicitUrTypeForComplexType";
 }

@@ -120,12 +120,8 @@ public class ComplexTypeDeclState extends RedefinableDeclState implements AnyAtt
 	}
 																												   
 	protected Expression defaultExpression() {
-		// if no content model is given, then this complex type is ur-type.
-		// TODO: confirm it.
-		
-		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
-		reader.reportWarning( reader.WRN_IMPLICIT_URTYPE_FOR_COMPLEXTYPE, null );
-		return reader.complexUrType;
+		// if no content model is given, then this complex type is empty
+        return Expression.epsilon;
 	}
 	
 	

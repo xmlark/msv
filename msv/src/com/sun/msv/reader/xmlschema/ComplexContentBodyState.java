@@ -86,17 +86,26 @@ public class ComplexContentBodyState extends SequenceState {
 		
 		reader.backwardReference.memorizeLink(baseType);
 		
-		if( extension ) {
+		if( extension )
 			baseType.extensions.exp = reader.pool.createChoice(
 											baseType.extensions.exp,
 											parentDecl.selfWType );
 			// actual content model will be <baseTypeContentModel>,<AddedContentModel>
-			return reader.pool.createSequence(baseType.self,exp);
-		} else {
+		else
 			baseType.restrictions.exp = reader.pool.createChoice(
 											baseType.restrictions.exp,
 											parentDecl.selfWType );
-			return exp;
-		}
+		
+		return combineToBaseType( baseType, exp );
+	}
+
+	/**
+	 * combines the base type content model and this content model
+	 */
+	protected Expression combineToBaseType( ComplexTypeExp baseType, Expression addedExp ) {
+		if( extension )
+			return reader.pool.createSequence( baseType.self, addedExp );
+		else
+			return addedExp;
 	}
 }

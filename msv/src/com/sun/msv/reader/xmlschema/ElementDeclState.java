@@ -65,6 +65,8 @@ public class ElementDeclState extends ExpressionWithChildState {
 		if( typeQName==null )	return null;
 
 		// TODO: shall I memorize this as a backward reference?
+		// reader.backwardReference.memorizeLink(???);
+		
 		// symbol may not be defined at this moment.
 		// so just return an empty ReferenceExp and back-patch the actual definition later.
 		final ReferenceExp ref = new ReferenceExp("elementType("+typeQName+")");

@@ -38,6 +38,9 @@ public abstract class AnyState extends ExpressionWithoutChildState {
 			startTag.getDefaultedAttribute("processContents","strict") );
 	}
 	
+	/**
+	 * creates AGM that corresponds to the specified parameters.
+	 */
 	protected abstract Expression createExpression( String namespace, String process );
 	
 	/**

@@ -132,7 +132,7 @@ public class XMLSchemaReader extends GrammarReader {
 					pool.createChoice(
 						pool.createAttribute( AnyNameClass.theInstance ),
 						e )));
-		complexUrType = e.contentModel;
+		complexUrType = new ReferenceExp( "$ur-type", e.contentModel );
 		
 		this.grammar = new XMLSchemaGrammar(pool);
 	}
@@ -145,7 +145,7 @@ public class XMLSchemaReader extends GrammarReader {
 	 * content model that matches to
 	 * optional xsi:schemaLocation or xsi:noNamespaceSchemaLocation.
 	 */
-	public final Expression xsiSchemaLocationExp;
+	public final ReferenceExp xsiSchemaLocationExp;
 	
 	public final static String XMLSchemaSchemaLocationAttributes = 
 		"____internal_XML_schema_SchemaLocation_attributes";
@@ -153,7 +153,7 @@ public class XMLSchemaReader extends GrammarReader {
 	/**
 	 * expression that matches to "ur-type" when used as a complex type.
 	 */
-	public final Expression complexUrType;
+	public final ReferenceExp complexUrType;
 	
 	/** value of "attributeFormDefault" attribute. */
 	protected String attributeFormDefault;

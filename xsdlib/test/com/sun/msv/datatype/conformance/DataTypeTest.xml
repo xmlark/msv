@@ -2,6 +2,38 @@
 <!-- $Id$ -->
 <suite>
 
+<!-- sloppy test -->
+<case name="test for base64">
+	<value>ABCX</value>
+	<value>DEFG52==</value>
+	<value>HIJKL1x=</value>
+	<value>AB))((==</value>	<!-- "))((" will be ignored -->
+	<value>52==</value>
+	
+	<answer for="base64Binary"		>ooooo</answer>
+	
+	<facets><choice>
+		<facet answer=			"o...." name="length" value="3" />
+		<facet answer=			".o..." name="length" value="4" />
+		<facet answer=			"...oo" name="length" value="1" />
+	</choice></facets>
+	
+	<wrongs>
+		<!-- wrongs paddings -->
+		<value>=</value>
+		<value>A</value>
+		<value>5=</value>	
+		<value>q==</value>	
+		<value>n===</value>	
+		<value>9x</value>
+		<value>5f=</value>
+		<value>tr===</value>
+		<value>onp</value>
+		<value>1qb==</value>
+	</wrongs>
+</case>
+
+<comment>
 <case name="test for language">
 	<value>en-us</value>
 	<value>En-Us</value>
@@ -538,7 +570,7 @@
 			<facet answer=	"o..o ....... ooo oo." name="pattern" value="-?..[13579].*" />
 			<facet answer=  "oooo o..o... oo. ..o" name="pattern" value=".*[^24680]" />
 		</combination>
-</combination></facets>
+	</combination></facets>
 	
 	<wrongs>
 		<!-- no year 0 -->
@@ -802,5 +834,5 @@
 		<value>0x123</value>
 	</wrongs>
 </case>
-
+</comment>
 </suite>

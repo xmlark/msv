@@ -454,11 +454,20 @@ public class GrammarLoader
 							getController(),getSAXParserFactory(),getPool());
 					}
 				} else
-				if( localName.equals("schema") )
+				if( localName.equals("schema") ) {
 					// assume W3C XML Schema
-					winner = reader[0] = new XMLSchemaReader(
-						getController(), getSAXParserFactory(), getPool() );
-				else
+					if( strictCheck ) {
+						Schema s = XMLSchemaReader.getXmlSchemaForXmlSchema();
+						reader[0] = new XMLSchemaReader(
+							getController(),
+							new SAXParserFactoryImpl(getSAXParserFactory(),s),
+							getPool() );
+						winner = setupPipeline(s);
+					} else {
+						winner = reader[0] = new XMLSchemaReader(
+							getController(),getSAXParserFactory(),getPool());
+					}
+				} else
 				if( RELAXNSReader.RELAXNamespaceNamespace.equals(namespaceURI) )
 					// assume RELAX Namespace
 					winner = reader[0] = new RELAXNSReader(

@@ -14,7 +14,7 @@ package com.sun.msv.util;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class StringPair
+public final class StringPair implements java.io.Serializable
 {
 	public final String namespaceURI;
 	public final String localName;
@@ -25,4 +25,8 @@ public final class StringPair
 			&& localName.equals(((StringPair)o).localName);
 	}
 	public int hashCode() { return namespaceURI.hashCode()^localName.hashCode(); }
+	
+	public String toString() {
+		return "{"+namespaceURI+"}"+localName;
+	}
 }

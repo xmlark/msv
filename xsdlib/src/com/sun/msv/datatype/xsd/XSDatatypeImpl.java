@@ -125,17 +125,22 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 
 
 	
-	public final boolean isDerivedTypeOf( XSDatatype baseType ) {
-		return isDerivedTypeOf(baseType,this);
+	public final boolean isDerivedTypeOf( XSDatatype baseType, boolean restrictionAllowed ) {
+		return isDerivedTypeOf(baseType,this,restrictionAllowed);
 	}
 	
 	/**
 	 * an implementation of 
 	 * <a href="http://www.w3.org/TR/xmlschema-1/#cos-st-derived-ok">"Type Derivation OK (Simple)"</a>
 	 * of the spec.
+	 * 
+	 * @see #isDerivedTypeOf(XSDatatype,boolean)
 	 */
-	public static boolean isDerivedTypeOf( XSDatatype base, XSDatatype derived ) {
-		
+	public static boolean isDerivedTypeOf( XSDatatype base, XSDatatype derived, boolean restrictionAllowed ) {
+
+		if( base==derived )			return true;
+		if( !restrictionAllowed )	return false;
+
 		if( base==SimpleURType.theInstance )	return true;
 		
 		if( base.getVariety()==VARIETY_UNION ) {
@@ -146,7 +151,7 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 				t = t.getBaseType();
 			XSDatatypeImpl[] memberTypes = ((UnionType)t).memberTypes;
 			for( int i=0; i<memberTypes.length; i++ )
-				if( isDerivedTypeOf( memberTypes[i], derived ) )
+				if( isDerivedTypeOf( memberTypes[i], derived, restrictionAllowed ) )
 					return true;
 		}
 		

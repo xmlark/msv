@@ -85,26 +85,26 @@ public class XSDatatypeTest extends TestCase
 		XSDatatype urType = SimpleURType.theInstance;
 		
 		// test reflexivity
-		assert( NonPositiveIntegerType.theInstance.isDerivedTypeOf(NonPositiveIntegerType.theInstance) );
+		assert( NonPositiveIntegerType.theInstance.isDerivedTypeOf(NonPositiveIntegerType.theInstance,true) );
 		
 		// test multi-step derivation
-		assert( ByteType.theInstance.isDerivedTypeOf(NumberType.theInstance) );
-		assert( EntityType.theInstance.isDerivedTypeOf(TokenType.theInstance) );
-		assert( EntityType.theInstance.isDerivedTypeOf(urType) );
+		assert( ByteType.theInstance.isDerivedTypeOf(NumberType.theInstance,true) );
+		assert( EntityType.theInstance.isDerivedTypeOf(TokenType.theInstance,true) );
+		assert( EntityType.theInstance.isDerivedTypeOf(urType,true) );
 		
 		// test the simple ur-type
-		assert( urType.isDerivedTypeOf(urType) );
-		assert( !urType.isDerivedTypeOf(StringType.theInstance) );
-		assert( UnsignedByteType.theInstance.isDerivedTypeOf(urType) );
+		assert( urType.isDerivedTypeOf(urType,true) );
+		assert( !urType.isDerivedTypeOf(StringType.theInstance,true) );
+		assert( UnsignedByteType.theInstance.isDerivedTypeOf(urType,true) );
 		
 		// test the list derivation
 		XSDatatype longList = DatatypeFactory.deriveByList("name", LongType.theInstance );
 		XSDatatype byteList = DatatypeFactory.deriveByList("name", ByteType.theInstance );
-		assert( !byteList.isDerivedTypeOf(longList) );
-		assert( !longList.isDerivedTypeOf(byteList) );
-		assert( byteList.isDerivedTypeOf(urType) );
-		assert( longList.isDerivedTypeOf(urType) );
-		assert( !byteList.isDerivedTypeOf(ByteType.theInstance) );
+		assert( !byteList.isDerivedTypeOf(longList,true) );
+		assert( !longList.isDerivedTypeOf(byteList,true) );
+		assert( byteList.isDerivedTypeOf(urType,true) );
+		assert( longList.isDerivedTypeOf(urType,true) );
+		assert( !byteList.isDerivedTypeOf(ByteType.theInstance,true) );
 		
 		// test the union derivation
 		XSDatatype union1 = DatatypeFactory.deriveByUnion("name",
@@ -118,15 +118,15 @@ public class XSDatatypeTest extends TestCase
 			union3 = inc.derive(null);
 		}
 		
-		assert( union1.isDerivedTypeOf(urType) );
-		assert( ShortType.theInstance.isDerivedTypeOf(union1) );
-		assert( union3.isDerivedTypeOf(urType) );
-		assert( union3.isDerivedTypeOf(union2) );
-		assert( longList.isDerivedTypeOf(union2) );
-		assert( union1.isDerivedTypeOf(union2) );
-		assert( TokenType.theInstance.isDerivedTypeOf(union2) );
-		assert( LongType.theInstance.isDerivedTypeOf(union2) );
+		assert( union1.isDerivedTypeOf(urType,true) );
+		assert( ShortType.theInstance.isDerivedTypeOf(union1,true) );
+		assert( union3.isDerivedTypeOf(urType,true) );
+		assert( union3.isDerivedTypeOf(union2,true) );
+		assert( longList.isDerivedTypeOf(union2,true) );
+		assert( union1.isDerivedTypeOf(union2,true) );
+		assert( TokenType.theInstance.isDerivedTypeOf(union2,true) );
+		assert( LongType.theInstance.isDerivedTypeOf(union2,true) );
 		
-		assert( TokenType.theInstance.isDerivedTypeOf(union3) );
+		assert( TokenType.theInstance.isDerivedTypeOf(union3,true) );
 	}
 }

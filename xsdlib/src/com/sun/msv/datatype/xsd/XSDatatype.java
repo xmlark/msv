@@ -205,6 +205,17 @@ public interface XSDatatype extends Serializable, DatabindableDatatype {
 	 * <p>
 	 * <b>Note to implementors</b> Use the static version of this method defined
 	 * in the XSDatatypeImpl class. You don't need to implement this method from scratch.
+	 * 
+	 * @param	restrictionAllowed
+	 *		This test needs "a subset of {extension,restriction,list,union}
+	 *		(of which only restriction is actually relevant). If this flag is
+	 *		set to true, this method behaves as if the empty set is passed as the set.
+	 *		This is usually what you want if you're simply trying to check the
+	 *		derivation relationship.
+	 * 
+	 *		<p>
+	 *		If this flag is set to false, this method behaves as if {restriction}
+	 *		is passed as the set.
 	 */
-	public boolean isDerivedTypeOf( XSDatatype baseType );
+	public boolean isDerivedTypeOf( XSDatatype baseType, boolean restrictionAllowed );
 }

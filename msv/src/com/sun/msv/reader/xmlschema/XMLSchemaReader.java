@@ -269,8 +269,9 @@ public class XMLSchemaReader extends GrammarReader
 	public DataType resolveBuiltinDataType( String typeLocalName ) {
 		// datatypes of XML Schema part 2
 		DataType dt = builtinTypes.getType(typeLocalName);
+		if( dt==null )  dt = getBackwardCompatibleType(typeLocalName);
 		if( dt!=null )	return dt;
-			
+		
 		reportError( ERR_UNDEFINED_DATATYPE, typeLocalName );
 		return StringType.theInstance;	// recover by assuming string.
 	}
@@ -301,7 +302,7 @@ public class XMLSchemaReader extends GrammarReader
 			return StringType.theInstance;	// recover by assuming string.
 		}
 		
-		if( isSchemaNamespace(typeQName) )
+		if( isSchemaNamespace(r[0]) )
 			return resolveBuiltinDataType(r[1]);
 		
 		DataType dt = getOrCreateSchema(r[0]/*uri*/).simpleTypes.

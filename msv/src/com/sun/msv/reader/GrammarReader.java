@@ -131,6 +131,34 @@ public abstract class GrammarReader
 	 */
 	public abstract DataType resolveDataType( String typeName );
 
+	/**
+	 * map from type name of Candidate Recommendation to the current type.
+	 */
+	private static final Map deprecatedTypes = initDeprecatedTypes();
+	private static Map initDeprecatedTypes() {
+		Map m = new java.util.HashMap();
+		m.put("uriReference",		com.sun.tranquilo.datatype.AnyURIType.theInstance );
+		m.put("number",				com.sun.tranquilo.datatype.NumberType.theInstance );
+		m.put("timeDuration",		com.sun.tranquilo.datatype.DurationType.theInstance );
+		m.put("CDATA",				com.sun.tranquilo.datatype.NormalizedStringType.theInstance );
+		m.put("year",				com.sun.tranquilo.datatype.GYearType.theInstance );
+		m.put("yearMonth",			com.sun.tranquilo.datatype.GYearMonthType.theInstance );
+		m.put("month",				com.sun.tranquilo.datatype.GMonthType.theInstance );
+		m.put("monthDay",			com.sun.tranquilo.datatype.GMonthDayType.theInstance );
+		m.put("day",				com.sun.tranquilo.datatype.GDayType.theInstance );
+		return m;
+	}
+	/**
+	 * tries to obtain a DataType object by resolving obsolete names.
+	 * this method is useful for backward compatibility purpose.
+	 */
+	public DataType getBackwardCompatibleType( String typeName ) {
+		DataType dt = (DataType)deprecatedTypes.get(typeName);
+		if( dt!=null )
+			reportWarning( WRN_DEPRECATED_TYPENAME, typeName, dt.getName() );
+		return dt;
+	}
+	
 
 	
 // parsing and related services
@@ -570,6 +598,8 @@ public abstract class GrammarReader
 		"GrammarReader.Abstract.MissingTopLevel";
 	public static final String WRN_MAYBE_WRONG_NAMESPACE = // arg:1
 		"GrammarReader.Warning.MaybeWrongNamespace";
+	public static final String WRN_DEPRECATED_TYPENAME = // arg:2
+		"GrammarReader.Warning.DeprecatedTypeName";
 	public static final String ERR_BAD_TYPE	=	// arg:1
 		"GrammarReader.BadType";
 }

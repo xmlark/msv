@@ -116,26 +116,6 @@ public class RELAXCoreReader extends RELAXReader
 	}
 
 	
-	/**
-	 * map from type name of Candidate Recommendation to the current type.
-	 */
-	private static final Map deprecatedTypes = initDeprecatedTypes();
-	private static Map initDeprecatedTypes()
-	{
-		Map m = new java.util.HashMap();
-		m.put("uriReference",		com.sun.tranquilo.datatype.AnyURIType.theInstance );
-		m.put("number",				com.sun.tranquilo.datatype.NumberType.theInstance );
-		m.put("timeDuration",		com.sun.tranquilo.datatype.DurationType.theInstance );
-		m.put("CDATA",				com.sun.tranquilo.datatype.NormalizedStringType.theInstance );
-		return m;
-	}
-	public DataType getBackwardCompatibleType( String typeName )
-	{
-		DataType dt = (DataType)deprecatedTypes.get(typeName);
-		if( dt!=null )
-			reportWarning( WRN_DEPRECATED_TYPENAME, typeName, dt.getName() );
-		return dt;
-	}
 	
 	/**
 	 * gets DataType object from type name.

@@ -23,8 +23,8 @@ import java.util.StringTokenizer;
  */
 public class StringToken extends Token {
 	
-	protected final String literal;
-	protected final IDContextProvider context;
+	public final String literal;
+	public final IDContextProvider context;
 	protected final REDocumentDeclaration docDecl;
 	protected final boolean ignorable;
 	

@@ -12,6 +12,7 @@ package com.sun.msv.datatype;
 /**
  * "unsignedInt" type.
  * 
+ * type of the value object is <code>java.lang.Long</code>.
  * See http://www.w3.org/TR/xmlschema-2/#unsignedInt for the spec
  *
  * We don't have language support for unsigned datatypes, so things are not so easy.

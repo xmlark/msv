@@ -68,10 +68,10 @@ final public class UnionType extends ConcreteType {
 		return null;
 	}
 	
-	public String convertToLexicalValue( Object o ) {
+	public String convertToLexicalValue( Object o, SerializationContext context ) {
 		for( int i=0; i<memberTypes.length; i++ ) {
 			try {
-				return memberTypes[i].convertToLexicalValue(o);
+				return memberTypes[i].convertToLexicalValue(o,context);
 			} catch( Exception e ) {
 				;	// ignore
 			}

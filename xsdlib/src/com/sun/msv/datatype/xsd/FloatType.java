@@ -12,6 +12,7 @@ package com.sun.msv.datatype;
 /**
  * "float" type.
  * 
+ * type of the value object is <code>java.lang.Float</code>.
  * See http://www.w3.org/TR/xmlschema-2/#float for the spec
  * 
  * @author	Kohsuke Kawaguchi
@@ -59,7 +60,7 @@ public class FloatType extends FloatingNumberType
 		}
 	}
 	
-	public String convertToLexicalValue( Object value ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if(!(value instanceof Float ))
 			throw new IllegalArgumentException();
 		

@@ -39,7 +39,7 @@ abstract class IntegerDerivedType extends ConcreteType implements Comparator
 		return convertToValue(content,context)!=null;
 	}
 	
-	public String convertToLexicalValue( Object value ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if( value instanceof Number || value instanceof IntegerValueType )
 			return value.toString();
 		else

@@ -12,6 +12,7 @@ package com.sun.msv.datatype;
 /**
  * "boolean" type.
  * 
+ * type of the value object is <code>java.lang.Boolean</code>.
  * See http://www.w3.org/TR/xmlschema-2/#boolean for the spec
  * 
  * @author	Kohsuke Kawaguchi
@@ -36,7 +37,7 @@ public class BooleanType extends ConcreteType
 		return null;
 	}
 
-	public String convertToLexicalValue( Object value ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if( value instanceof Boolean ) {
 			Boolean b = (Boolean)value;
 			if( b.booleanValue()==true )	return "true";

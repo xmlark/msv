@@ -16,7 +16,7 @@ import org.apache.xerces.utils.regex.RegularExpression;
  * "anyURI" type.
  * 
  * See http://www.w3.org/TR/xmlschema-2/#anyURI for the spec.
- * value object of "anyURI" type is escaped URI.
+ * type of the value object is <code>java.lang.String</code>.
  * 
  * @author Kohsuke KAWAGUCHI
  */
@@ -176,7 +176,7 @@ public class AnyURIType extends ConcreteType implements Discrete {
 		return content;
 	}
 	
-	public String convertToLexicalValue( Object value ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if( value instanceof String )
 			return (String)value;
 		else

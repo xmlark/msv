@@ -12,6 +12,7 @@ package com.sun.msv.datatype;
 /**
  * "unsignedLong" type.
  * 
+ * type of the value object is {@link IntegerValueType}.
  * See http://www.w3.org/TR/xmlschema-2/#unsignedLong for the spec
  * 
  * @author Kohsuke KAWAGUCHI

@@ -12,6 +12,7 @@ package com.sun.msv.datatype;
 /**
  * "ENTITY" type.
  * 
+ * type of the value object is <code>java.lang.String</code>.
  * See http://www.w3.org/TR/xmlschema-2/#ENTITY for the spec
  * 
  * @author	Kohsuke Kawaguchi
@@ -44,7 +45,7 @@ public class EntityType extends ConcreteType
 		else									return null;
 	}
 
-	public String convertToLexicalValue( Object value ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if( value instanceof String )
 			return (String)value;
 		else

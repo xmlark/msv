@@ -12,6 +12,7 @@ package com.sun.msv.datatype;
 /**
  * "int" type.
  * 
+ * type of the value object is <code>java.lang.Integer</code>.
  * See http://www.w3.org/TR/xmlschema-2/#int for the spec
  * 
  * @author	Kohsuke Kawaguchi

@@ -16,6 +16,7 @@ import com.sun.msv.datatype.datetime.BigDateTimeValueType;
 /**
  * "gMonthDay" type.
  * 
+ * type of the value object is {@link IDateTimeValueType}.
  * See http://www.w3.org/TR/xmlschema-2/#gMonthDay for the spec
  * 
  * @author Kohsuke KAWAGUCHI
@@ -33,7 +34,7 @@ public class GMonthDayType extends DateTimeBaseType {
 	}
 
 	
-	public String convertToLexicalValue( Object value ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if(!(value instanceof IDateTimeValueType ))
 			throw new IllegalArgumentException();
 		

@@ -16,6 +16,7 @@ import com.sun.msv.datatype.datetime.BigDateTimeValueType;
 /**
  * "dateTime" type.
  * 
+ * type of the value object is {@link IDateTimeValueType}.
  * See http://www.w3.org/TR/xmlschema-2/#dateTime for the spec
  * 
  * @author	Kohsuke Kawaguchi
@@ -35,7 +36,7 @@ public class DateTimeType extends DateTimeBaseType {
 		return p.dateTimeTypeV();
 	}
 	
-	public String convertToLexicalValue( Object value ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if(!(value instanceof IDateTimeValueType))
 			throw new IllegalArgumentException();
 		

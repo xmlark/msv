@@ -12,6 +12,7 @@ package com.sun.msv.datatype;
 /**
  * "hexBinary" type.
  * 
+ * type of the value object is {@link BinaryValueType}.
  * See http://www.w3.org/TR/xmlschema-2/#hexBinary for the spec
  * 
  * @author	Kohsuke Kawaguchi
@@ -69,7 +70,7 @@ public class HexBinaryType extends BinaryBaseType
 		return true;
 	}
 	
-	public String convertToLexicalValue( Object value ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if(!(value instanceof BinaryValueType))
 			throw new IllegalArgumentException();
 		

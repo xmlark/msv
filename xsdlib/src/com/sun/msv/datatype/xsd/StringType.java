@@ -12,6 +12,7 @@ package com.sun.msv.datatype;
 /**
  * "string" type.
  * 
+ * type of the value object is <code>java.lang.String</code>.
  * See http://www.w3.org/TR/xmlschema-2/#string for the spec
  * 
  * @author Kohsuke KAWAGUCHI
@@ -35,7 +36,7 @@ public class StringType extends ConcreteType implements Discrete {
 		return lexicalValue;
 	}
 
-	public String convertToLexicalValue( Object value ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if( value instanceof String )
 			return (String)value;
 		else

@@ -14,6 +14,8 @@ import java.util.StringTokenizer;
 /**
  * List type.
  * 
+ * type of the value object is {@link ListValueType}.
+ * 
  * @author	Kohsuke Kawaguchi
  */
 final class ListType extends ConcreteType implements Discrete {
@@ -85,7 +87,7 @@ final class ListType extends ConcreteType implements Discrete {
 		return ((ListValueType)value).values.length;
 	}
 	
-	public String convertToLexicalValue( Object value ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if(!(value instanceof ListValueType))
 			throw new IllegalArgumentException();
 		
@@ -94,7 +96,7 @@ final class ListType extends ConcreteType implements Discrete {
 		StringBuffer r = new StringBuffer();
 		for( int i=0; i<lv.values.length; i++ ) {
 			if(i!=0)	r.append(' ');
-			r.append( itemType.convertToLexicalValue(lv.values[i]) );
+			r.append( itemType.convertToLexicalValue(lv.values[i],context) );
 		}
 		return r.toString();
 	}

@@ -16,6 +16,7 @@ import java.io.ByteArrayInputStream;
 /**
  * "duration" type.
  * 
+ * type of the value object is {@link ITimeDurationValueType}.
  * See http://www.w3.org/TR/xmlschema-2/#duration for the spec
  * 
  * @author	Kohsuke Kawaguchi
@@ -63,7 +64,7 @@ public final class DurationType extends ConcreteType implements Comparator {
 			return NOT_ALLOWED;
 	}
 	
-	public String convertToLexicalValue( Object value ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if(!(value instanceof ITimeDurationValueType))
 			throw new IllegalArgumentException();
 		

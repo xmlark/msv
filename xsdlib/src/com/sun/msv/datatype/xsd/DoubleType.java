@@ -12,6 +12,7 @@ package com.sun.msv.datatype;
 /**
  * "double" type.
  * 
+ * type of the value object is <code>java.lang.Double</code>.
  * See http://www.w3.org/TR/xmlschema-2/#double for the spec
  * 
  * @author	Kohsuke Kawaguchi
@@ -41,7 +42,7 @@ public class DoubleType extends FloatingNumberType {
 		}
 	}
 	
-	public String convertToLexicalValue( Object value ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if(!(value instanceof Double ))
 			throw new IllegalArgumentException();
 		

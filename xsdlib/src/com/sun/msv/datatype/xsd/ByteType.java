@@ -14,6 +14,7 @@ import java.math.BigInteger;
 /**
  * "byte" type.
  * 
+ * type of the value object is <code>java.lang.Byte</code>.
  * See http://www.w3.org/TR/xmlschema-2/#byte for the spec
  * 
  * @author	Kohsuke Kawaguchi

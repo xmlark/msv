@@ -12,6 +12,7 @@ package com.sun.msv.datatype;
 /**
  * "QName" type.
  * 
+ * type of the value object is {@link QnameValueType}.
  * See http://www.w3.org/TR/xmlschema-2/#QName for the spec.
  * 
  * @author Kohsuke KAWAGUCHI
@@ -81,9 +82,15 @@ public class QnameType extends ConcreteType implements Discrete
 		return new QnameValueType(uri,localPart);
 	}
 	
-	public String convertToLexicalValue( Object o ) {
-		// there is no way to convert QName into a string.
-		throw new UnsupportedOperationException();
+	public String convertToLexicalValue( Object o, SerializationContext context ) {
+		if(!( o instanceof QnameValueType ))
+			throw new UnsupportedOperationException();
+		
+		QnameValueType v = (QnameValueType)o;
+		
+		String prefix = context.getNamespacePrefix(v.namespaceURI);
+		if(prefix==null)	return v.localPart;
+		else				return prefix+":"+v.localPart;
 	}
 	
 	public final int isFacetApplicable( String facetName )

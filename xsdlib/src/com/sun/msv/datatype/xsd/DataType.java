@@ -82,15 +82,24 @@ public interface DataType extends Serializable,Cloneable
 	Object convertToValueObject( String lexicalValue, ValidationContextProvider context );
 	
 	/**
-	 * converts value object into the corresponding value in the lexical space.
+	 * converts value object back to the corresponding value in the lexical space.
 	 * 
-	 * reverse operation of convertToValueObject. The resulting string is not
-	 * necessarily the canonical representation.
+	 * This method does the reverse operation of convertToValueObject.
+	 * The returned string is not necessarily the canonical representation.
+	 * 
+	 * Also note that the implementation may accept invalid values without throwing
+	 * IllegalArgumentException. To make sure that the result is actually a valid
+	 * representation, call the verify method.
+	 * 
+	 * @param context
+	 *		Context information provider that might be used for conversion.
+	 *		Currently, this object is used only for QName, but may be extended
+	 *		in the future.
 	 * 
 	 * @exception IllegalArgumentException
 	 *		if the given object does not belong to the value space of this datatype.
 	 */
-	String convertToLexicalValue( Object valueObject ) throws IllegalArgumentException;
+	String convertToLexicalValue( Object valueObject, SerializationContext context ) throws IllegalArgumentException;
 	
 	/**
 	 * checks if this type is an atom type.

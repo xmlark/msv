@@ -12,6 +12,7 @@ package com.sun.msv.datatype;
 /**
  * "NMTOKEN" type.
  * 
+ * type of the value object is <code>java.lang.String</code>.
  * See http://www.w3.org/TR/xmlschema-2/#NMTOKEN for the spec
  * 
  * @author Kohsuke KAWAGUCHI

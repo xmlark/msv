@@ -15,6 +15,7 @@ import java.math.BigInteger;
 /**
  * "decimal" type.
  * 
+ * type of the value object is <code>java.math.BigDecimal</code>.
  * See http://www.w3.org/TR/xmlschema-2/#decimal for the spec.
  * It was once known as "number" type.
  * 
@@ -110,7 +111,7 @@ public class NumberType extends ConcreteType implements Comparator
 		}
 	}
 	
-	public String convertToLexicalValue( Object o ) {
+	public String convertToLexicalValue( Object o, SerializationContext context ) {
 		if(o instanceof BigDecimal)
 			return o.toString();
 		else

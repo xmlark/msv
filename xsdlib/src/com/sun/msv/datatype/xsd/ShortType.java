@@ -12,6 +12,7 @@ package com.sun.msv.datatype;
 /**
  * "short" type.
  * 
+ * type of the value object is <code>java.lang.Short</code>.
  * See http://www.w3.org/TR/xmlschema-2/#short for the spec
  * 
  * @author Kohsuke KAWAGUCHI

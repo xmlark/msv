@@ -10,6 +10,7 @@
 package com.sun.msv.grammar;
 
 import com.sun.msv.grammar.util.NameClassCollisionChecker;
+import com.sun.msv.grammar.util.NameClassComparator;
 import com.sun.msv.grammar.util.NameClassSimplifier;
 import com.sun.msv.util.StringPair;
 
@@ -43,6 +44,19 @@ public abstract class NameClass implements java.io.Serializable {
 	public final boolean accepts( StringPair name ) {
 		return accepts( name.namespaceURI, name.localName );
 	}
+    
+    /** Returns true if this name class is a superset of another name class. */
+    public final boolean includes( NameClass rhs ) {
+        boolean r = new NameClassComparator() {
+            protected void probe(String uri, String local) {
+                if( !nc1.accepts(uri,local) && nc2.accepts(uri,local) )
+                    throw eureka;   // this is not a super-set!
+            }
+        }.check(this,rhs);
+        
+        return !r;
+    }
+    
 	
 	/**
 	 * visitor pattern support

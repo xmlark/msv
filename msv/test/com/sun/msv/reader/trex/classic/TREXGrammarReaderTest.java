@@ -19,11 +19,7 @@ public class TREXGrammarReaderTest extends TestCase
 	
 	/** tests the existence of all messages */
 	public void testMessages() throws Exception {
-		javax.xml.parsers.SAXParserFactory factory =
-			new org.apache.xerces.jaxp.SAXParserFactoryImpl();
-		factory.setNamespaceAware(true);
-		
-		final TREXGrammarReader reader = new TREXGrammarReader(null,factory);
+		final TREXGrammarReader reader = new TREXGrammarReader(null);
 		
 		Checker checker = new Checker(){
 			public void check( String propertyName ) {

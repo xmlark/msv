@@ -88,6 +88,26 @@
 		<delete dir="xsdrelease" />
 	</target>
 	
+	<target name="test">
+		<mkdir dir="./testLog" />
+		<junit haltonfailure="no" printsummary="no">
+			<formatter type="plain" />
+			
+			<classpath>
+				<pathelement location="${buildDir}" />
+				<pathelement location="${sourceDir}" />
+				<pathelement location="${testDir}" />
+				<pathelement path="${java.class.path}" />
+			</classpath>
+		
+			<batchtest todir="./testLog">
+				<fileset dir="${buildDir}">
+					<include name="**/*Test.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
 	<!-- generate jar files -->
 	<target name="jars" depends="binary">
 		<tstamp />
@@ -105,10 +125,10 @@
 	
 	<!-- generate javadoc documentation -->
 	<target name="javadoc">
-		<javadoc	packagenames="com.sun.tranquilo.*"
+		<javadoc	locale="en_US"
+					packagenames="com.sun.tranquilo.*"
 					sourcepath="${sourceDir}"
 					destdir="${documentDir}"
-					locale="en_US"
 					windowtitle="Tranquilo RELAX/TREX Verifier"
 					public="yes"
 					>

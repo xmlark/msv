@@ -1,6 +1,6 @@
 ======================================================================
             README FILE FOR THE SUN XML DATATYPES LIBRARY
-                     Preview Version.2 June, 2001
+                          Apr, 2002 version
                  Copyright (c) Sun Microsystems, 2001
 Document written by Kohsuke Kawaguchi (kohsuke.kawaguchi@eng.sun.com)
 ======================================================================
@@ -10,7 +10,7 @@ W3C's XML Schema Part 2 (http://www.w3.org/TR/xmlschema-2/), is
 intended for use with applications that incorporate XML Schema Part 2.
 
 This preview version implements the recommendation version
-(http://www.w3.org/TR/2001/PR-xmlschema-2-20010330/) of the W3C XML
+(http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/) of the W3C XML
 Schema Part 2 Datatype.
 
 This product includes software developed by the Apache Software
@@ -29,18 +29,11 @@ Datatypes Library.
 CHANGES FROM THE PREVIOUS RELEASE
 ----------------------------------------------------------------------
 
-1. The package name is changed to "com.sun.msv.datatype".
+1. Fixed a bug to allow the list type to have pattern facets.
 
-2. Sun XML Datatypes Library now relies on the interfaces defined in
-   the "org.relaxng.datatype" package.
+2. Fixed a bug where NCName-derived types incorrectly acceptes ':'
+   (e.g., ID, IDREF)
 
-3. A new method is added for converting literals into the corresponding
-   Java-friendly objects.
-
-4. Applications can now access the "anatomical structure" of datatypes
-   (e.g., applied facets, derivation tree, etc.)
-
-5. Miscellaneous bug fixes.
 
 ----------------------------------------------------------------------
 KNOWN LIMITATIONS
@@ -51,13 +44,6 @@ KNOWN LIMITATIONS
    library cannot accept values that are larger than the maximum value
    for that type or smaller than the minimum value for that type. This
    should not be a problem for most users.
-
-2. "ID," "IDREF," and "IDREFS" types are not implemented. Although
-   uniqueness constraints are removed from Part 2, these types are
-   still intended to be used with uniqueness constraints. These
-   constraints are so special that it is impossible to provide a
-   generic implementation. com.sun.tranquilo.datatype.DataTypeFactory
-   does not recognize these three types.
 
 3. "NOTATION" type validates like the "token" type.
 

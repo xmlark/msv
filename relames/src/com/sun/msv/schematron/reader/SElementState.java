@@ -2,7 +2,7 @@ package com.sun.msv.schematron.reader;
 
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.reader.GrammarReader;
-import com.sun.msv.reader.trex.ElementState;
+import com.sun.msv.reader.trex.ng.ElementState;
 import com.sun.msv.reader.State;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.schematron.grammar.SElementExp;

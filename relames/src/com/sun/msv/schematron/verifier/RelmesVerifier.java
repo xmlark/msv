@@ -17,6 +17,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.helpers.LocatorImpl;
 import org.relaxng.datatype.Datatype;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -202,14 +203,22 @@ public class RelmesVerifier implements IVerifier {
 
 		private void reportError( Node node, SAction action ) throws SAXException {
 			Loc loc = (Loc)locationMap.get(node);
-			if( loc==null && node.getParentNode()!=null ) {
-				reportError( node.getParentNode(), action );
-				return;
+            if( loc==null ) {
+                if( node instanceof Attr ) {
+                    reportError( ((Attr)node).getOwnerElement(), action );
+                    return;
+                }
+                if( node.getParentNode()!=null ) {
+				    reportError( node.getParentNode(), action );
+				    return;
+                }
 			}
 			
 			LocatorImpl src = new LocatorImpl();
-			src.setLineNumber(loc.line);
-			src.setColumnNumber(loc.col);
+            if(loc!=null) {
+			    src.setLineNumber(loc.line);
+			    src.setColumnNumber(loc.col);
+            }
 			src.setSystemId(getLocator().getSystemId());
 			src.setPublicId(getLocator().getPublicId());
 			

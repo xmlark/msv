@@ -1,16 +1,17 @@
 <?xml version="1.0"?>
 
-<project name="tranquilo" basedir="." default="binary">
-	<property name="sourceDir" value="."/>
-	<property name="buildDir" value="."/>
-	<property name="documentDir" value="..\doc"/>
-	<property name="packageDir" value="..\package"/>
+<project name="tranquilo" basedir="." default="jars">
+	<property name="sourceDir" value="./src"/>
+	<property name="buildDir" value="./build"/>
+	<property name="documentDir" value="./doc"/>
+	<property name="packageDir" value="./package"/>
+	<property name="libDir" value="./lib"/>
 	<property name="javaCCbin" value="C:\Progra~1\Development\JavaCC\bin\lib\JavaCC.zip" />
 
 	<target name="javacc">
 		<!-- run javacc for ISO8601Parser -->
 		<java classname="COM.sun.labs.javacc.Main" fork="true">
-			<arg value="-OUTPUT_DIRECTORY=${buildDir}/com/sun/tranquilo/datatype/datetime" />
+			<arg value="-OUTPUT_DIRECTORY=${sourceDir}/com/sun/tranquilo/datatype/datetime" />
 			<arg value="${sourceDir}/com/sun/tranquilo/datatype/datetime/ISO8601.jj" />
 			<classpath>
 				<pathelement location="${javaCCbin}" />
@@ -20,7 +21,7 @@
 
 		<!-- run javacc for UriReference -->
 		<java classname="COM.sun.labs.javacc.Main" fork="true">
-			<arg value="-OUTPUT_DIRECTORY=${buildDir}/com/sun/tranquilo/datatype" />
+			<arg value="-OUTPUT_DIRECTORY=${sourceDir}/com/sun/tranquilo/datatype" />
 			<arg value="${sourceDir}/com/sun/tranquilo/datatype/uriReference.jj" />
 			<classpath>
 				<pathelement location="${javaCCbin}" />
@@ -32,6 +33,35 @@
 	<target name="binary" depends="javacc">
 		
 		<!-- compile Java source files -->
-		<javac srcdir="${sourceDir}" destdir="${buildDir}"/>
+		<javac srcdir="${sourceDir}" destdir="${buildDir}" />
+	</target>
+
+	<!-- generate jar files -->
+	<target name="jars" depends="binary">
+		<tstamp />
+		
+		<!-- standard archive -->
+		<jar	jarfile="${packageDir}/tranquilo.${DSTAMP}.jar"
+				manifest="./META-INF/MANIFEST.MF"
+				compress="false">
+			<fileset dir="${sourceDir}" includes="**/*.properties" />
+			<fileset dir="${buildDir}" includes="**/*.class" />
+			<fileset dir="${libDir}" includes="**/*.class" />
+			<fileset dir="c:/winnt/java/classes" includes="org/apache/**/*, org/xml/**/*, org/w3c/**/*" />
+		</jar>
+	</target>
+	
+	<!-- generate javadoc documentation -->
+	<target name="javadoc">
+		<javadoc	packagenames="com.sun.tranquilo.*"
+					sourcepath="${sourceDir}"
+					destdir="${documentDir}"
+					locale="en_US"
+					windowtitle="Tranquilo RELAX/TREX Verifier"
+					public="yes"
+					>
+			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
+			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
+		</javadoc>
 	</target>
 </project>

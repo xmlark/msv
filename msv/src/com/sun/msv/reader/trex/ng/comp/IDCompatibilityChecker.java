@@ -172,7 +172,7 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 		Iterator itr = elements.iterator();
 		final Vector vec = new Vector();	// IDAttMaps of the competing elements
 		while( itr.hasNext() ) {
-			ElementExp eexp = (ElementExp)itr.next();
+			final ElementExp eexp = (ElementExp)itr.next();
 			
 			// list up all competing elements.
 			vec.clear();
@@ -235,6 +235,7 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 								reportCompError(
 									new Locator[]{
 										reader.getDeclaredLocationOf(exp),
+                                        reader.getDeclaredLocationOf(eexp),
 										reader.getDeclaredLocationOf(iam.sampleDecl)},
 									CERR_COMPETING2,
 									new Object[]{

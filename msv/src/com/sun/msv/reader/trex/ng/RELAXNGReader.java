@@ -247,6 +247,26 @@ public class RELAXNGReader extends TREXBaseReader {
 		|| "http://relaxng.org/ns/structure/0.9".equals(tag.namespaceURI);
 	}
 	
+    /**
+     * DatatypeLibrary factory object.
+     */
+    private DatatypeLibraryFactory datatypeLibraryFactory = new DefaultDatatypeLibraryFactory();
+    
+    /**
+     * Returns the datatypeLibraryFactory.
+     */
+    public DatatypeLibraryFactory getDatatypeLibraryFactory() {
+        return datatypeLibraryFactory;
+    }
+
+    /**
+     * Sets the datatypeLibraryFactory.
+     */
+    public void setDatatypeLibraryFactory(DatatypeLibraryFactory datatypeLibraryFactory) {
+        this.datatypeLibraryFactory = datatypeLibraryFactory;
+    }
+    
+    
 	/**
 	 * creates various State object, which in turn parses grammar.
 	 * parsing behavior can be customized by implementing custom StateFactory.
@@ -274,44 +294,16 @@ public class RELAXNGReader extends TREXBaseReader {
 		public State ref			( State parent, StartTagInfo tag ) { return new RefState(false); }
 		public State parentRef		( State parent, StartTagInfo tag ) { return new RefState(true); }
 
-		/**
-		 * gets DataTypeLibrary object that is specified by the namespace URI.
-		 * 
-		 * If no vocabulary is known to have that namespace URI, then simply
-		 * return null without issuing an error message.
-		 * 
-		 * It is also possible to throw an exception to indicate
-		 * that the resolution was failed.
-		 */
-		public DatatypeLibrary getDatatypeLibrary( String namespaceURI ) throws Exception {
-			
-			if( namespaceURI.equals("") )
-				return BuiltinDatatypeLibrary.theInstance;
-			
-			// We have the built-in support for XML Schema Part 2.
-			if( namespaceURI.equals(XSDVocabulary.XMLSchemaNamespace)
-			||  namespaceURI.equals(XSDVocabulary.XMLSchemaNamespace2) ) {
-				if(xsdlib==null)
-					xsdlib = new com.sun.msv.datatype.xsd.ngimpl.DataTypeLibraryImpl();
-				return xsdlib;
-			}
-			
-			// RELAX NG compatibiltiy datatypes library is also supported
-			if( namespaceURI.equals(CompatibilityDatatypeLibrary.namespaceURI) ) {
-				if( compatibilityLib==null )
-					compatibilityLib = new CompatibilityDatatypeLibrary();
-				return compatibilityLib;
-			}
-			
-			// search the implementation from the classpath
-			if(loader==null)
-				loader = new DatatypeLibraryLoader();
-			
-			return loader.createDatatypeLibrary(namespaceURI);
-		}
-		private DatatypeLibraryFactory loader;
-		private DatatypeLibrary xsdlib;
-		private DatatypeLibrary compatibilityLib;
+        /**
+         * to cause errors if someone is deriving this method.
+         * this method is no longer used.
+         * 
+         * @deprecated
+         */
+        protected final DatatypeLibrary getDatatypeLibrary( String namespaceURI ) throws Exception {
+            // unused
+            throw new UnsupportedOperationException();
+        }
 	}
 	protected StateFactory getStateFactory() {
 		return (StateFactory)super.sfactory;
@@ -357,7 +349,7 @@ public class RELAXNGReader extends TREXBaseReader {
 	 */
 	public DatatypeLibrary resolveDataTypeLibrary( String uri ) {
 		try {
-			DatatypeLibrary lib = getStateFactory().getDatatypeLibrary(uri);
+			DatatypeLibrary lib = datatypeLibraryFactory.createDatatypeLibrary(uri);
 			if(lib!=null)		return lib;
 		
 			// issue an error
@@ -571,4 +563,5 @@ public class RELAXNGReader extends TREXBaseReader {
 		"RELAXNGReader.XmlnsAttribute";
 	public static final String ERR_NAKED_INFINITE_ATTRIBUTE_NAMECLASS = //arg:0
 		"RELAXNGReader.NakedInfiniteAttributeNameClass";
+
 }

@@ -10,24 +10,27 @@
 package com.sun.msv.verifier.jarv;
 
 import java.io.IOException;
+
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import org.iso_relax.verifier.*;
+
+import org.iso_relax.verifier.Schema;
+import org.iso_relax.verifier.VerifierConfigurationException;
+import org.iso_relax.verifier.VerifierFactory;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import org.xml.sax.InputSource;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.Locator;
+
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.verifier.IVerifier;
-import com.sun.msv.verifier.util.ErrorHandlerImpl;
 import com.sun.msv.verifier.identity.IDConstraintChecker;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import com.sun.msv.verifier.regexp.xmlschema.XSREDocDecl;
+import com.sun.msv.verifier.util.ErrorHandlerImpl;
 
 /**
  * base implementation of RELAXFactoryImpl and TREXFactoryImpl
@@ -150,5 +153,4 @@ public abstract class FactoryImpl extends VerifierFactory {
 			else					return resolver.resolveEntity(p,s);
 		}
 	}
-	
 }

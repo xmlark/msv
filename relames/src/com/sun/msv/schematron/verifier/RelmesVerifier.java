@@ -4,7 +4,6 @@ import com.sun.msv.verifier.DocumentDeclaration;
 import com.sun.msv.verifier.IVerifier;
 import com.sun.msv.verifier.Verifier;
 import com.sun.msv.verifier.VerifierFilter;
-import com.sun.msv.verifier.VerificationErrorHandler;
 import com.sun.msv.verifier.ValidityViolation;
 import com.sun.msv.schematron.grammar.SElementExp;
 import com.sun.msv.schematron.grammar.SAction;
@@ -15,6 +14,7 @@ import org.apache.xml.utils.PrefixResolverDefault;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.helpers.LocatorImpl;
 import org.relaxng.datatype.Datatype;
 import org.w3c.dom.Element;
@@ -34,7 +34,7 @@ public class RelmesVerifier implements IVerifier {
 		this.schChecker = new SchematronVerifier();
 		this.core.setContentHandler(schChecker);
 	}
-	public RelmesVerifier( DocumentDeclaration docDecl, VerificationErrorHandler handler )
+	public RelmesVerifier( DocumentDeclaration docDecl, ErrorHandler handler )
 				throws ParserConfigurationException {
 		this(new Verifier(docDecl,handler));
 	}
@@ -120,7 +120,7 @@ public class RelmesVerifier implements IVerifier {
 			try {
 				testNode(super.dom);
 			} catch( TransformerException e ) {
-				getVErrorHandler().onError( new ValidityViolation(
+				getErrorHandler().error( new ValidityViolation(
 					null, "XPath error:"+e.getMessage() ) );
 				schematronValid = false;
 			}
@@ -214,7 +214,7 @@ public class RelmesVerifier implements IVerifier {
 			src.setPublicId(getLocator().getPublicId());
 			
 			schematronValid = false;
-			getVErrorHandler().onError( new ValidityViolation(
+			getErrorHandler().error( new ValidityViolation(
 				src, action.document ));
 		}
 	}
@@ -235,8 +235,11 @@ public class RelmesVerifier implements IVerifier {
 	public final Locator getLocator() {
 		return core.getLocator();
 	}
-	public final VerificationErrorHandler getVErrorHandler() {
-		return core.getVErrorHandler();
+	public final ErrorHandler getErrorHandler() {
+		return core.getErrorHandler();
+	}
+	public final void setErrorHandler( ErrorHandler handler ) {
+		core.setErrorHandler(handler);
 	}
 
 	

@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype.xsd;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Vector;
 
 import org.apache.xerces.impl.xpath.regex.ParseException;
@@ -30,7 +32,9 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
 	 * actual object that performs regular expression validation.
 	 * one of the item has to match
 	 */
-	final public RegularExpression[] exps;
+	private transient RegularExpression[] exps;
+    
+    public RegularExpression[] getRegExps() { return exps; }
 	
 	/**
 	 * string representations of the above RegularExpressions.
@@ -56,19 +60,22 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
 		// at this time, I use Xerces' one.
 		
 		Vector regExps = facets.getVector(FACET_PATTERN);
-		
-		exps = new RegularExpression[regExps.size()];
-		patterns = new String[regExps.size()];
-		try {
-			for(int i=0;i<regExps.size();i++) {
-				exps[i] = new RegularExpression((String)regExps.elementAt(i),"X");
-				patterns[i] = (String)regExps.elementAt(i);
-			}
-		} catch( ParseException pe ) {
-			// in case regularExpression is not a correct pattern
-			throw new DatatypeException( localize( ERR_PARSE_ERROR,
-				pe.getMessage() ) );
-		}
+		patterns = (String[]) regExps.toArray(new String[regExps.size()]);
+        
+        try {
+            compileRegExps();
+        } catch( ParseException pe ) {
+            // in case regularExpression is not a correct pattern
+            throw new DatatypeException( localize( ERR_PARSE_ERROR,
+                pe.getMessage() ) );
+        }
+    }
+    
+    /** Compiles all the regular expressions. */
+    private void compileRegExps() throws ParseException {
+		exps = new RegularExpression[patterns.length];
+		for(int i=0;i<exps.length;i++)
+			exps[i] = new RegularExpression(patterns[i],"X");
 		
 		// loosened facet check is almost impossible for pattern facet.
 		// ignore it for now.
@@ -98,4 +105,12 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
 		// otherwise fail
 		return false;
 	}
+    
+    
+    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        stream.defaultReadObject();
+        
+        compileRegExps();
+    }
+    
 }

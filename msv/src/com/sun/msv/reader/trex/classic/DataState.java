@@ -30,7 +30,7 @@ public class DataState extends ExpressionWithoutChildState {
 			// recover from error by assuming anyString.
 			return Expression.anyString;
 		} else {
-			return reader.pool.createTypedString(
+			return reader.pool.createData(
 				((TREXGrammarReader)reader).resolveDataType(typeName),
 				new StringPair("",typeName) );
 		}

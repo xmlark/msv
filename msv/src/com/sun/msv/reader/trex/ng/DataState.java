@@ -11,7 +11,6 @@ package com.sun.msv.reader.trex.ng;
 
 import com.sun.msv.datatype.ErrorDatatypeLibrary;
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.TypedStringExp;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.ExpressionState;
 import com.sun.msv.reader.ExpressionOwner;
@@ -87,7 +86,7 @@ public class DataState extends ExpressionState implements ExpressionOwner {
 		try {
 			if( except==null )	except=Expression.nullSet;
 			
-			return reader.pool.createTypedString(
+			return reader.pool.createData(
 				typeBuilder.createDatatype(), baseTypeName, except );
 				
 		} catch( DatatypeException dte ) {

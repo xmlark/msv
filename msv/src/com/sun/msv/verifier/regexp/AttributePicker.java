@@ -88,7 +88,10 @@ public class AttributePicker implements ExpressionVisitorExpression
 		return exp.exp.visit(this);
 	}
 	
-	public Expression onTypedString( TypedStringExp exp ) {
+	public Expression onData( DataExp exp ) {
+		return Expression.epsilon;
+	}
+	public Expression onValue( ValueExp exp ) {
 		return Expression.epsilon;
 	}
 

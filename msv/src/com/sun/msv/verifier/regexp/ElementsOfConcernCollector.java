@@ -64,7 +64,8 @@ public class ElementsOfConcernCollector implements ExpressionVisitor
 	public final Object onEpsilon()		{ return null; }
 	public final Object onNullSet()		{ return null; }
 	public final Object onAnyString()	{ return null; }
-	public final Object onTypedString( TypedStringExp exp )	{ return null; }
+	public final Object onData( DataExp exp )	{ return null; }
+	public final Object onValue( ValueExp exp )	{ return null; }
 	public final Object onList( ListExp exp )	{ return null; }
 	
 	public final Object onRef( ReferenceExp exp ) {

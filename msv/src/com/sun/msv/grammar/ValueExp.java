@@ -14,14 +14,18 @@ import org.relaxng.datatype.ValidationContext;
 import com.sun.msv.util.StringPair;
 
 /**
- * Expression that matchs characters of the particular {@link DataType}.
+ * Expression that matchs a particular value of a {@link Datatype}.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class TypedStringExp extends Expression {
+public final class ValueExp extends Expression implements DataOrValueExp {
 	
-	/** datatype object that actually validates text. */
+	/** Datatype object that is used to test the equality. */
 	public final Datatype dt;
+	public Datatype getType() { return dt; }
+
+	/** This expression matches this value only. */
+	public final Object value;
 	
 	/**
 	 * name of this datatype.
@@ -31,18 +35,13 @@ public final class TypedStringExp extends Expression {
 	 * then they are unified even if they have different names.
 	 */
 	public final StringPair name;
+	public StringPair getName() { return name; }
 	
-	/**
-	 * 'except' clause of RELAX NG.
-	 * If a token matches this pattern, then it should be rejected.
-	 */
-	public final Expression except;
-	
-	protected TypedStringExp( Datatype dt, StringPair typeName, Expression except ) {
-		super(hashCode(dt,except,HASHCODE_TYPED_STRING));
+	protected ValueExp( Datatype dt, StringPair typeName, Object value ) {
+		super(hashCode(dt,HASHCODE_VALUE));
 		this.dt=dt;
 		this.name = typeName;
-		this.except = except;
+		this.value = value;
 	}
 	
 	public boolean equals( Object o ) {
@@ -53,16 +52,17 @@ public final class TypedStringExp extends Expression {
 		// strict equals method.
 		if(o.getClass()!=this.getClass())	return false;
 		
-		TypedStringExp rhs = (TypedStringExp)o;
+		ValueExp rhs = (ValueExp)o;
 		
-		if( this.except != rhs.except )		return false;
-		return rhs.dt.equals(dt);
+		if(!rhs.dt.equals(dt))				return false;
+		
+		return dt.sameValue(value,rhs.value);
 	}
 	
-	public Object visit( ExpressionVisitor visitor )				{ return visitor.onTypedString(this); }
-	public Expression visit( ExpressionVisitorExpression visitor )	{ return visitor.onTypedString(this); }
-	public boolean visit( ExpressionVisitorBoolean visitor )		{ return visitor.onTypedString(this); }
-	public void visit( ExpressionVisitorVoid visitor )				{ visitor.onTypedString(this); }
+	public Object visit( ExpressionVisitor visitor )				{ return visitor.onValue(this); }
+	public Expression visit( ExpressionVisitorExpression visitor )	{ return visitor.onValue(this); }
+	public boolean visit( ExpressionVisitorBoolean visitor )		{ return visitor.onValue(this); }
+	public void visit( ExpressionVisitorVoid visitor )				{ visitor.onValue(this); }
 
 	protected boolean calcEpsilonReducibility() {
 		return false;

@@ -439,7 +439,7 @@ public class DTDReader implements DTDEventListener {
 		
 		// add it to the list.
 		attList.put( attributeName,
-			new AttModel(grammar.pool.createTypedString(dt), attributeUse==USE_REQUIRED ) );
+			new AttModel(grammar.pool.createData(dt), attributeUse==USE_REQUIRED ) );
 	}
 
     public void endDTD() throws SAXException {

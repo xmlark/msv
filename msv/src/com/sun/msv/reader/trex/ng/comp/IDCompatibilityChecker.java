@@ -93,16 +93,16 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 			
 			public void onAttribute( AttributeExp exp ) {
 				
-				if(!(exp.exp instanceof TypedStringExp)) {
+				if(!(exp.exp instanceof DataOrValueExp)) {
 					// otherwise visit the content model normally
 					// so that we can find any invalid use of ID/IDREF types.
 					exp.exp.visit(this);
 					return;
 				}
 				
-				TypedStringExp texp = (TypedStringExp)exp.exp;
+				DataOrValueExp texp = (DataOrValueExp)exp.exp;
 							
-				if(texp.dt.getIdType()==Datatype.ID_TYPE_NULL) {
+				if(texp.getType().getIdType()==Datatype.ID_TYPE_NULL) {
 					// if this type is not ID/IDREF type, then it's OK
 					return;
 				}
@@ -111,7 +111,9 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 					reportCompError(
 						new Locator[]{reader.getDeclaredLocationOf(exp)},
 						CERR_ID_TYPE_WITH_NON_SIMPLE_ATTNAME,
-						new Object[]{texp.name.localName,getSemanticsStr(texp.dt.getIdType())} );
+						new Object[]{
+							texp.getName().localName,
+							getSemanticsStr(texp.getType().getIdType())} );
 					return;
 				}
 					
@@ -123,7 +125,9 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 							reader.getDeclaredLocationOf(exp),
 							reader.getDeclaredLocationOf(curElm)},
 						CERR_ID_TYPE_WITH_NON_SIMPLE_ELEMENTNAME,
-						new Object[]{texp.name.localName,getSemanticsStr(texp.dt.getIdType())} );
+						new Object[]{
+							texp.getName().localName,
+							getSemanticsStr(texp.getType().getIdType())} );
 					return;
 				}
 					
@@ -134,18 +138,22 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 				// store that this attribute is used for ID/IDREF.
 				if(curAtts==null)
 					curAtts = new IDAttMap(curElm);
-				curAtts.idatts.put(attName,texp.name);
+				curAtts.idatts.put(attName,texp.getName());
 							
 			}
 			
-			public void onTypedString( TypedStringExp exp ) {
-				if(exp.dt.getIdType()!=Datatype.ID_TYPE_NULL) {
+			public void onData( DataExp exp )	{ checkIdType(exp); }
+			public void onValue( ValueExp exp ) { checkIdType(exp); }
+			private void checkIdType( DataOrValueExp exp ) {
+				if(exp.getType().getIdType()!=Datatype.ID_TYPE_NULL) {
 					// ID/IDREF type in all other locations are subject to
 					// a compatibility error.
 					reportCompError(
 						new Locator[]{reader.getDeclaredLocationOf(exp)},
 						CERR_MALPLACED_ID_TYPE,
-						new Object[]{exp.name.localName,getSemanticsStr(exp.dt.getIdType())});
+						new Object[]{
+							exp.getName().localName,
+							getSemanticsStr(exp.getType().getIdType())});
 				}
 			}
 		});
@@ -185,9 +193,9 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 					return;	// do not recurse child elements.
 				}
 				public void onAttribute( AttributeExp exp ) {
-					if(exp.exp instanceof TypedStringExp) {
-						TypedStringExp texp = (TypedStringExp)exp.exp;
-						if(texp.dt.getIdType()!=Datatype.ID_TYPE_NULL) {
+					if(exp.exp instanceof DataOrValueExp) {
+						DataOrValueExp texp = (DataOrValueExp)exp.exp;
+						if(texp.getType().getIdType()!=Datatype.ID_TYPE_NULL) {
 							// if the schema is OK with the 1st pass check
 							// and if this element contains the ID type, then
 							// this element must be simple-named.
@@ -199,15 +207,15 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 							SimpleNameClass attName = (SimpleNameClass)exp.nameClass;
 							
 							IDAttMap iam = (IDAttMap)vec.get(0);
-							if(!texp.name.equals(iam.idatts.get(new StringPair(attName))))
+							if(!texp.getName().equals(iam.idatts.get(new StringPair(attName))))
 								reportCompError(
 									new Locator[]{
 										reader.getDeclaredLocationOf(exp),
 										reader.getDeclaredLocationOf(iam.sampleDecl)},
 									CERR_COMPETING,
 									new Object[]{
-										texp.name.localName,
-										getSemanticsStr(texp.dt.getIdType())
+										texp.getName().localName,
+										getSemanticsStr(texp.getType().getIdType())
 									}
 									);
 							

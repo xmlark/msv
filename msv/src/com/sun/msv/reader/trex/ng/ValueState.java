@@ -10,7 +10,6 @@
 package com.sun.msv.reader.trex.ng;
 
 import com.sun.msv.reader.ExpressionWithoutChildState;
-import com.sun.msv.grammar.relaxng.ValueType;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.util.StringPair;
 import org.relaxng.datatype.Datatype;
@@ -55,7 +54,6 @@ public class ValueState extends ExpressionWithoutChildState {
 			return Expression.nullSet;	// recover by returning something.
 		}
 		
-		return reader.pool.createTypedString(
-			new ValueType( type, value ), typeFullName );
+		return reader.pool.createValue( type, typeFullName, value );
 	}
 }

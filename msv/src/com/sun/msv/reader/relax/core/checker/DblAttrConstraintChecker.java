@@ -81,7 +81,8 @@ public class DblAttrConstraintChecker implements RELAXExpressionVisitorVoid
 	public void onMixed( MixedExp exp )				{ exp.exp.visit(this); }
 	public void onNullSet()							{;}
 	public void onAnyString()						{;}
-	public void onTypedString( TypedStringExp exp )	{;}
+	public void onData( DataExp exp )				{;}
+	public void onValue( ValueExp exp )				{;}
 	public void onTag( TagClause exp )				{ exp.exp.visit(this); }
 	public void onElementRules( ElementRules exp )	{ exp.exp.visit(this); }
 	public void onHedgeRules( HedgeRules exp )		{ exp.exp.visit(this); }

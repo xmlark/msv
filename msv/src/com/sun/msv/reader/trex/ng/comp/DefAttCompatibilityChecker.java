@@ -309,13 +309,14 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
 	 * If so, it reports an error and throws an Abort exception.
 	 */
 	private ExpressionWalker contextDependentTypeChecker = new ExpressionWalker(){
-		public void onTypedString( TypedStringExp exp ) {
-			
-			if(exp.dt.isContextDependent()) {
+		public void onData( DataExp exp )	{ check(exp.dt,exp.name); }
+		public void onValue( ValueExp exp ) { check(exp.dt,exp.name); }
+		private void check( Datatype dt, StringPair name ) {
+			if(dt.isContextDependent()) {
 				reportCompError(
 					null,
 					CERR_DEFVALUE_CONTEXT_DEPENDENT_TYPE,
-					new Object[]{exp.name.localName});
+					new Object[]{name.localName});
 				throw new Abort();
 			}
 		}

@@ -13,8 +13,6 @@ import org.relaxng.datatype.*;
 import org.relaxng.datatype.Datatype;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
-import com.sun.msv.grammar.trex.TypedString;
-import com.sun.msv.grammar.relaxng.ValueType;
 import com.sun.msv.grammar.util.PossibleNamesCollector;
 import com.sun.msv.datatype.SerializationContext;
 import com.sun.msv.datatype.xsd.*;
@@ -65,7 +63,7 @@ import java.util.Vector;
  *   </define>
  * </grammar>
  * </xmp></pre>
- * <img src="../trex/doc-files/simpleAGM.gif" />
+ * <img src="doc-files/simpleAGM.gif" />
  * 
  * <p>
  *   Note that
@@ -89,7 +87,7 @@ import java.util.Vector;
  *   and most importantly it doesn't contain any cycles in it. Member of an island
  *   can be always reached from its head.
  * </p>
- * <img src="../trex/doc-files/island.gif"/>
+ * <img src="doc-files/island.gif"/>
  * <p>
  *   TREXWriter will make every {@link ElementExp} and
  *   {@link ReferenceExp} a head of their own island. So each of them
@@ -99,7 +97,7 @@ import java.util.Vector;
  *   Several islands can form a cycle, but one island can never have a cycle in it.
  *   This is because there is always at least one ElementExp in any cycle.
  * </p>
- * <img src="../trex/doc-files/island_before.gif" />
+ * <img src="doc-files/island_before.gif" />
  * <p>
  *   Note that since expressions are shared, one expression can be
  *   a member of several islands (although this isn't depicted in the above figure.)
@@ -113,7 +111,7 @@ import java.util.Vector;
  *   In other words, any island who is only referenced at most once is merged
  *   into its referer. This step makes the output more compact.
  * </p>
- * <img src="../trex/doc-files/island_merged.gif" />
+ * <img src="doc-files/island_merged.gif" />
  * <p>
  *   Next, TREXWriter assigns a name to each island. It tries to use the name of
  *   the head expression. If a head is anonymous ReferenceExp (ReferenceExp whose
@@ -389,7 +387,10 @@ public class RELAXNGWriter implements GrammarWriter {
 			public Object onAnyString() {
 				return null;
 			}
-			public Object onTypedString( TypedStringExp exp ) {
+			public Object onData( DataExp exp ) {
+				return null;
+			}
+			public Object onValue( ValueExp exp ) {
 				return null;
 			}
 			public Object onList( ListExp exp ) {
@@ -826,51 +827,39 @@ public class RELAXNGWriter implements GrammarWriter {
 				exp.visit(this);
 		}
 		
-		public void onTypedString( TypedStringExp exp ) {
-			Datatype dt = exp.dt;
-			if( dt instanceof TypedString ) {
-				TypedString ts = (TypedString)dt;
-				if( ts.preserveWhiteSpace )
-					start("value",new String[]{"type","string"});
-				else
-					start("value");
+		public void onValue( ValueExp exp ) {
+			if( exp.dt instanceof XSDatatypeImpl ) {
+				XSDatatypeImpl base = (XSDatatypeImpl)exp.dt;
 					
-				characters( ts.value );
+				final Vector ns = new Vector();
+						
+				String lex = base.convertToLexicalValue( exp.value, 
+				new SerializationContext() {
+					public String getNamespacePrefix( String namespaceURI ) {
+						int cnt = ns.size()/2;
+							ns.add( "xmlns:ns"+cnt );
+							ns.add( namespaceURI );
+						return "ns"+cnt;
+					}
+				});
 					
+				if( base!=TokenType.theInstance ) {
+					// if the type is token, we don't need @type.
+					ns.add("type");
+					ns.add(base.getName());
+				}
+					
+				start("value",(String[])ns.toArray(new String[0]));
+				characters(lex);
 				end("value");
 				return;
 			}
 			
-			if( dt instanceof ValueType ) {
-				ValueType vt = (ValueType)dt;
-				
-				if( vt.baseType instanceof XSDatatypeImpl ) {
-					XSDatatypeImpl base = (XSDatatypeImpl)vt.baseType;
-					
-					final Vector ns = new Vector();
-						
-					String lex = base.convertToLexicalValue( vt.value, 
-					new SerializationContext() {
-						public String getNamespacePrefix( String namespaceURI ) {
-							int cnt = ns.size()/2;
-								ns.add( "xmlns:ns"+cnt );
-								ns.add( namespaceURI );
-							return "ns"+cnt;
-						}
-					});
-					
-					if( base!=TokenType.theInstance ) {
-						// if the type is token, we don't need @type.
-						ns.add("type");
-						ns.add(base.getName());
-					}
-					
-					start("value",(String[])ns.toArray(new String[0]));
-					characters(lex);
-					end("value");
-					return;
-				}
-			}
+			throw new UnsupportedOperationException( exp.dt.getClass().getName() );
+		}
+		
+		public void onData( DataExp exp ) {
+			Datatype dt = exp.dt;
 			
 			if( dt instanceof XSDatatypeImpl ) {
 				XSDatatypeImpl dti = (XSDatatypeImpl)dt;

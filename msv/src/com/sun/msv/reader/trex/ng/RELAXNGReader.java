@@ -265,10 +265,11 @@ public class RELAXNGReader extends TREXBaseReader {
 		public State externalRef	( State parent, StartTagInfo tag ) { return new IncludePatternState(); }
 		public State divInGrammar	( State parent, StartTagInfo tag ) { return new DivInGrammarState(); }
 		public State dataExcept		( State parent, StartTagInfo tag ) { return new ChoiceState(); }
+		public State attribute		( State parent, StartTagInfo tag ) { return new AttributeState(); }
 		public State element		( State parent, StartTagInfo tag ) { return new ElementState(); }
 		public State grammar		( State parent, StartTagInfo tag ) { return new GrammarState(); }
-		public State ref		( State parent, StartTagInfo tag )		{ return new RefState(false); }
-		public State parentRef	( State parent, StartTagInfo tag )		{ return new RefState(true); }
+		public State ref			( State parent, StartTagInfo tag ) { return new RefState(false); }
+		public State parentRef		( State parent, StartTagInfo tag ) { return new RefState(true); }
 
 		/**
 		 * gets DataTypeLibrary object that is specified by the namespace URI.
@@ -552,4 +553,9 @@ public class RELAXNGReader extends TREXBaseReader {
 		"RELAXNGReader.MultipleExcept";
 	public static final String ERR_NOT_ABSOLUTE_URI = // arg:1
 		"RELAXNGReader.NotAbsoluteURI";
+	public static final String ERR_INFOSET_URI_ATTRIBUTE = // arg:0
+		"RELAXNGReader.InfosetUriAttribute";
+	public static final String ERR_XMLNS_ATTRIBUTE = // arg:0
+		"RELAXNGReader.XmlnsAttribute";
+		
 }

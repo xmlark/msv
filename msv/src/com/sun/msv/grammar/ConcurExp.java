@@ -12,8 +12,9 @@ package com.sun.msv.grammar;
 /**
  * &lt;concur&gt; pattern of TREX.
  * 
- * No of the other language needs this expression.
- * So application can deny processing this expression if neceesary.
+ * None of the other language needs this expression.
+ * So application can deny processing this expression if neceesary,
+ * without hampering the multi-schema-ness.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

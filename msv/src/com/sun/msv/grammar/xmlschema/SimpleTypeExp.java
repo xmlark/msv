@@ -39,7 +39,7 @@ public class SimpleTypeExp extends XMLSchemaTypeExp {
 		if(!(dt instanceof LateBindDatatype ))
 			// do not create a TypedStringExp for late-bind object.
 			// this will unnecessary "contaminate" the pool.
-			this.exp = pool.createTypedString(dt);
+			this.exp = pool.createData(dt);
 		this.type = dt;
 	}
 	

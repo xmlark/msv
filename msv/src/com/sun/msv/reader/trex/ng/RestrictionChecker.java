@@ -67,7 +67,12 @@ public class RestrictionChecker {
 	
 	/** Object that checks conflicting elements in interleave. */
 	private DuplicateElementsChecker elemDupChecker;
-		
+	
+	/** A flag that indicates whether &lt;text/> was found or not.
+	 * 
+	 * This flag is used to detect &lt;text/> in both operands of &lt;interleave/>
+	 */
+	private boolean hasText;
 /*
 	
 	content model checker
@@ -90,6 +95,7 @@ public class RestrictionChecker {
 			final Expression oldContext = errorContext;
 			final DuplicateAttributesChecker oldADC = attDupChecker;
 			final DuplicateElementsChecker oldEDC = elemDupChecker;
+			final boolean oldHasText = hasText;
 			
 			errorContext = exp;
 			attDupChecker = new DuplicateAttributesChecker();
@@ -103,6 +109,7 @@ public class RestrictionChecker {
 			errorContext = oldContext;
 			attDupChecker = oldADC;
 			elemDupChecker = oldEDC;
+			hasText = oldHasText;
 		}
 		public void onAttribute( AttributeExp exp ) {
 			if( !visitedExps.add(exp) )		return;
@@ -110,18 +117,21 @@ public class RestrictionChecker {
 			// check duplicate attributes
 			attDupChecker.add(exp);
 			
-			Expression oldContext = errorContext;
+			final Expression oldContext = errorContext;
+			final boolean oldHasText = hasText;
+			
 			errorContext = exp;
 			
 			exp.getNameClass().visit(inNameClass);	// check the name
 			
 			exp.exp.getExpandedExp(reader.pool).visit(inAttribute);
 			errorContext = oldContext;
+			hasText = oldHasText;
 		}
 		public void onList( ListExp exp ) {
 			exp.exp.visit(inList);
 		}
-		public void onTypedString( TypedStringExp exp ) {
+		public void onData( DataExp exp ) {
 			exp.except.visit(inExcept);
 		}
 		public void onChoice( ChoiceExp exp ) {
@@ -141,12 +151,46 @@ public class RestrictionChecker {
 			if(elemDupChecker==null)
 				super.onInterleave(exp);
 			else {
+				// elemDupChecker is null only for the top-level particle.
+				// in there, <text/> is prohibited so we only need to
+				// check "<text> in both operands of <interleave>" here.
+				final boolean oldHasText = hasText;
+				hasText = false;
+				
+				// process the first branch
 				int idx = elemDupChecker.start();
 				exp.exp1.visit(this);
 				elemDupChecker.endLeftBranch(idx);
+				
+				final boolean leftHasText = hasText;
+				hasText = false;
+				
+				// then the second
 				exp.exp2.visit(this);
 				elemDupChecker.endRightBranch();
+				
+				// see if there are <text/> in both operands
+				if( leftHasText && hasText ) {
+					reportError( exp, ERR_TEXT_IN_INTERLEAVE );
+					hasText = false;	// recover from the error
+				} else
+					hasText = hasText|oldHasText|leftHasText;
+					/*
+					we cannot simply overwrite oldHasText.
+					imagine a following scenario
+						<interleave>
+							<text/>
+							<interleave>
+								<text/>
+								<element X/>
+							</interleave>
+						</interleave>
+					*/
 			}
+		}
+		public void onAnyString() {
+			hasText = true;
+			super.onAnyString();
 		}
 	}
 	
@@ -223,10 +267,7 @@ public class RestrictionChecker {
 	};
 	
 	
-	/**
-	 * Used to visit children of lists.
-	 */
-	private final ExpressionWalker inList = new DefaultChecker() {
+	private class ListChecker extends DefaultChecker {
 		public void onAttribute( AttributeExp exp ) {
 			reportError( exp, ERR_ATTRIBUTE_IN_LIST );
 		}
@@ -238,6 +279,23 @@ public class RestrictionChecker {
 		}
 		public void onAnyString() {
 			reportError( null, ERR_TEXT_IN_LIST );
+		}
+	}
+	/**
+	 * Used to visit children of interleaves in lists.
+	 */
+	private final ExpressionWalker inInterleaveInList = new ListChecker() {
+		public void onData( DataExp exp ) {
+			reportError( exp, ERR_DATA_IN_INTERLEAVE_IN_LIST );
+		}
+		// TODO: value
+	};
+	/**
+	 * Used to visit children of lists.
+	 */
+	private final ExpressionWalker inList = new ListChecker() {
+		public void onInterleave( InterleaveExp exp ) {
+			exp.visit(inInterleaveInList);
 		}
 	};
 	
@@ -263,7 +321,10 @@ public class RestrictionChecker {
 		public void onInterleave( InterleaveExp exp ) {
 			reportError( exp, ERR_INTERLEAVE_IN_START );
 		}
-		public void onTypedString( TypedStringExp exp ) {
+		public void onData( DataExp exp ) {
+			reportError( exp, ERR_DATA_IN_START );
+		}
+		public void onValue( ValueExp exp ) {
 			reportError( exp, ERR_DATA_IN_START );
 		}
 		public void onOneOrMore( OneOrMoreExp exp ) {
@@ -518,6 +579,10 @@ public class RestrictionChecker {
 		"RELAXNGReader.DataInStart";
 	private static final String ERR_ONEORMORE_IN_START =
 		"RELAXNGReader.OneOrMoreInStart";
+	private static final String ERR_TEXT_IN_INTERLEAVE =
+		"RELAXNGReader.TextInInterleave";
+	private static final String ERR_DATA_IN_INTERLEAVE_IN_LIST =
+		"RELAXNGReader.DataInInterleaveInList";
 	
 	private static final String ERR_ANYNAME_IN_ANYNAME =
 		"RELAXNGReader.AnyNameInAnyName";

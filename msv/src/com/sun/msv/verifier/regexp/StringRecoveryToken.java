@@ -9,7 +9,8 @@
  */
 package com.sun.msv.verifier.regexp;
 
-import com.sun.msv.grammar.TypedStringExp;
+import com.sun.msv.grammar.DataExp;
+import com.sun.msv.grammar.ValueExp;
 import com.sun.msv.grammar.ListExp;
 import com.sun.msv.util.DatatypeRef;
 import java.util.Set;
@@ -39,7 +40,16 @@ class StringRecoveryToken extends StringToken {
 	 */
 	final Set failedExps;
 	
-	boolean match( TypedStringExp exp ) {
+	boolean match( DataExp exp ) {
+		if( super.match(exp) )
+			return true;
+		
+		// this datatype didn't accept me. so record it for diagnosis.
+		failedExps.add( exp );
+		return true;
+	}
+	
+	boolean match( ValueExp exp ) {
 		if( super.match(exp) )
 			return true;
 		

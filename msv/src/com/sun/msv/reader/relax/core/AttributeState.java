@@ -55,7 +55,7 @@ public class AttributeState extends ExpressionState implements FacetStateParent
 				// we can use cheaper anyString
 				value = Expression.anyString;
 			else
-				value = reader.pool.createTypedString( incubator.derive(null) );
+				value = reader.pool.createData( incubator.derive(null) );
 			
 			Expression exp = reader.pool.createAttribute(
 				new SimpleNameClass("",name),

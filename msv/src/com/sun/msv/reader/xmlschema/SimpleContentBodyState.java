@@ -138,7 +138,7 @@ public class SimpleContentBodyState extends SequenceState
 
 	private Expression getDatatypeExp() {
 		try {
-			return reader.pool.createTypedString(
+			return reader.pool.createData(
 				parentDecl.simpleBaseType = incubator.derive(null) );
 		} catch( DatatypeException e ) {
 			// derivation failed

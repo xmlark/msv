@@ -23,8 +23,9 @@ public abstract class Token
 	/** returns true if the given ElementExp can consume this token  */
 	boolean match( ElementExp p )		{ return false;	}
 	boolean match( AttributeExp p )		{ return false; }
-	/** returns true if the given TypedStringExp can consume this token */
-	boolean match( TypedStringExp p )	{ return false; }
+	/** returns true if the given DataExp can consume this token */
+	boolean match( DataExp p )			{ return false; }
+	boolean match( ValueExp p )			{ return false; }
 	/** returns true if the given ListExp can consume this token */
 	boolean match( ListExp p )			{ return false; }
 	

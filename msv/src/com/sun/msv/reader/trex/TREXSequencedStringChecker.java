@@ -95,7 +95,8 @@ class TREXSequencedStringChecker implements ExpressionVisitor
 	
 	public Object onEpsilon() { return null; }
 	public Object onNullSet() { return null; }
-	public Object onTypedString( TypedStringExp exp ) { return typedString; }
+	public Object onData( DataExp exp )		{ return typedString; }
+	public Object onValue( ValueExp exp )	{ return typedString; }
 	public Object onList( ListExp exp )		{ return typedString; }
 	
 	public Object onAttribute( AttributeExp exp ) {

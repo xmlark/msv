@@ -110,7 +110,12 @@ public class ResidualCalculator implements ExpressionVisitorExpression {
 			return r;
 	}
 	
-	public Expression onTypedString( TypedStringExp exp ) {
+	public Expression onData( DataExp exp ) {
+		if(token.match(exp))	return Expression.epsilon;
+		else					return Expression.nullSet;
+	}
+	
+	public Expression onValue( ValueExp exp ) {
 		if(token.match(exp))	return Expression.epsilon;
 		else					return Expression.nullSet;
 	}

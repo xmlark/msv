@@ -43,7 +43,8 @@ public class StringCareLevelCalculator implements ExpressionVisitorBoolean {
 	public boolean onEpsilon()							{ return false; }
 	public boolean onNullSet()							{ return false; }
 	public boolean onAnyString()						{ return true; }
-	public boolean onTypedString( TypedStringExp exp )	{ return true; }
+	public boolean onData( DataExp exp )				{ return true; }
+	public boolean onValue( ValueExp exp )				{ return true; }
 
 	public static int calc( Expression exp )
 	{

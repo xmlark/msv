@@ -161,10 +161,14 @@ public class ExpressionPrinter implements ExpressionVisitor {
 		return printBinary(exp,",");
 	}
 	
-	public Object onTypedString( TypedStringExp exp ) {
+	public Object onData( DataExp exp ) {
 		return "$"+exp.name.localName;
 	}	
 
+	public Object onValue( ValueExp exp ) {
+		return "$$"+exp.value;
+	}	
+	
 	public Object onOther( OtherExp exp ) {
 		
 		return exp.printName()+"["+exp.exp.visit(this)+"]";

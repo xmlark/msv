@@ -116,16 +116,20 @@ public class ExpressionPool implements java.io.Serializable {
 		return createChoice(child,Expression.epsilon);
 	}
 	
-	public final Expression createTypedString( XSDatatype dt ) {
-		return createTypedString( dt, new StringPair("",dt.displayName()) );
+	public final Expression createData( XSDatatype dt ) {
+		return createData( dt, new StringPair("",dt.displayName()) );
 	}
 	
-	public final Expression createTypedString( Datatype dt, StringPair typeName ) {
-		return createTypedString( dt, typeName, Expression.nullSet );
+	public final Expression createData( Datatype dt, StringPair typeName ) {
+		return createData( dt, typeName, Expression.nullSet );
 	}
 	
-	public final Expression createTypedString( Datatype dt, StringPair typeName, Expression except ) {
-		return unify( new TypedStringExp(dt,typeName,except) );
+	public final Expression createData( Datatype dt, StringPair typeName, Expression except ) {
+		return unify( new DataExp(dt,typeName,except) );
+	}
+	
+	public final Expression createValue( Datatype dt, StringPair typeName, Object value ) {
+		return unify( new ValueExp(dt,typeName,value) );
 	}
 	
 	public final Expression createList( Expression exp ) {

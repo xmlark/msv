@@ -50,7 +50,8 @@ public final class ExportedHedgeRuleChecker implements RELAXExpressionVisitorBoo
 	public boolean onEpsilon()							{ return true; }
 	public boolean onNullSet()							{ return true; }
 	public boolean onAnyString()						{ return true; }
-	public boolean onTypedString( TypedStringExp exp )	{ return true; }
+	public boolean onData( DataExp exp )				{ return true; }
+	public boolean onValue( ValueExp exp )				{ return true; }
 	public boolean onAttPool( AttPoolClause exp )		{ throw new Error(); }	// should never be called
 	public boolean onTag( TagClause exp )				{ throw new Error(); }	// should never be called
 

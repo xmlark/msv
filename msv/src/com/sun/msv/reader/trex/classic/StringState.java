@@ -10,9 +10,10 @@
 package com.sun.msv.reader.trex.classic;
 
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.trex.TypedString;
 import com.sun.msv.reader.ExpressionWithoutChildState;
 import com.sun.msv.util.StringPair;
+import com.sun.msv.datatype.xsd.StringType;
+import com.sun.msv.datatype.xsd.TokenType;
 import com.sun.msv.datatype.xsd.WhiteSpaceProcessor;
 
 /**
@@ -33,9 +34,17 @@ public class StringState extends ExpressionWithoutChildState
 	}
 	
 	protected Expression makeExpression() {
-		return reader.pool.createTypedString(
-			new TypedString(new String(text),
-				"preserve".equals(startTag.getAttribute("whiteSpace") ) ),
-			new StringPair("$trex","string") );
+		if("preserve".equals(startTag.getAttribute("whiteSpace")))
+			return reader.pool.createValue(
+				StringType.theInstance,
+				new StringPair("","string"),
+				text.toString() );
+		else
+			return reader.pool.createValue(
+				TokenType.theInstance,
+				new StringPair("","token"),
+				WhiteSpaceProcessor.collapse(text.toString()) );
+		
+		// masquerade RELAX NG built-in datatypes
 	}
 }

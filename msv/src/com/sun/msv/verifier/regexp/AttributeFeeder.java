@@ -107,7 +107,10 @@ public class AttributeFeeder implements ExpressionVisitorExpression {
 			pool.createSequence( exp.exp1.visit(this), exp.exp2 ),
 			pool.createSequence( exp.exp1, exp.exp2.visit(this) ) );
 	}
-	public Expression onTypedString( TypedStringExp exp ) {
+	public Expression onData( DataExp exp ) {
+		return Expression.nullSet;
+	}
+	public Expression onValue( ValueExp exp ) {
 		return Expression.nullSet;
 	}
 	public Expression onConcur( ConcurExp exp ) {

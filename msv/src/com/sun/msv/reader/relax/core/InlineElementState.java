@@ -81,7 +81,7 @@ public class InlineElementState extends ExpressionState implements FacetStatePar
 					// we can use cheaper anyString
 					contentModel = Expression.anyString;
 				} else {
-					contentModel = reader.pool.createTypedString(
+					contentModel = reader.pool.createData(
 						incubator.derive(null) );
 				}
 			} else {

@@ -15,7 +15,6 @@ import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.AttributeExp;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.SimpleNameClass;
-import com.sun.msv.grammar.trex.TypedString;
 import com.sun.msv.grammar.trex.ElementPattern;
 import com.sun.msv.grammar.xmlschema.ElementDeclExp;
 import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
@@ -91,7 +90,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 					// datatypes of XML Schema part 2
 					Datatype dt = reader.resolveBuiltinDataType(s[1]);
 					if(dt!=null)
-						e = reader.pool.createTypedString( dt, new StringPair(s[0],s[1]) );
+						e = reader.pool.createData( dt, new StringPair(s[0],s[1]) );
 				}
 				
 				if(e==null) {
@@ -161,8 +160,9 @@ public class ElementDeclState extends ExpressionWithChildState {
 		if( fixed!=null )
 			// TODO: is this 'fixed' value should be added through enumeration facet?
 			// TODO: check if content model is a simpleType.
-			contentType = reader.pool.createTypedString(
-				new TypedString(fixed,false), new StringPair("$xsd","$fixed") );
+			contentType = reader.pool.createValue(
+				com.sun.msv.datatype.xsd.TokenType.theInstance,
+				new StringPair("","token"), fixed ); // emulate RELAX NG built-in token type
 		
 		
 		ElementDeclExp decl;

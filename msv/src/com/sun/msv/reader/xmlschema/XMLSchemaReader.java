@@ -119,7 +119,7 @@ public class XMLSchemaReader extends GrammarReader {
 			// @nil
 			pool.createAttribute(
 				new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace,"nil"),
-				pool.createTypedString( BooleanType.theInstance ) ),
+				pool.createData( BooleanType.theInstance ) ),
 			// content must be empty
 			Expression.epsilon );
 		
@@ -532,7 +532,7 @@ public class XMLSchemaReader extends GrammarReader {
 		if( isSchemaNamespace(r[0]) ) {
 			Datatype dt = resolveBuiltinDataType(r[1]);
 			if(dt!=null)
-				return pool.createTypedString( dt, new StringPair(r[0],r[1]) );
+				return pool.createData( dt, new StringPair(r[0],r[1]) );
 			
 			// the type was not found.
 			// maybe we are parsing schema for schema.

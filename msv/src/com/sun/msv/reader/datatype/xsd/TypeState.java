@@ -58,14 +58,14 @@ abstract class TypeState extends SimpleState
 						public State getOwnerState() { return TypeState.this; }
 						public void patch() {
 							// perform binding.
-							ref.exp = reader.pool.createTypedString(lbdt.getBody(null));
+							ref.exp = reader.pool.createData(lbdt.getBody(null));
 						}
 				});
 				
 			} else {
 				// if the parent expects Expression, convert type into Expression
 				((ExpressionOwner)parentState).onEndChild(
-					reader.pool.createTypedString(type) );
+					reader.pool.createData(type) );
 			}
 			return;
 		}

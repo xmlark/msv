@@ -12,7 +12,7 @@ package com.sun.msv.reader.trex.ng.comp;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.AttributeExp;
 //import com.sun.msv.grammar.SimpleNameClass;
-import com.sun.msv.reader.trex.AttributeState;
+import com.sun.msv.reader.trex.ng.AttributeState;
 
 /**
  * parses &lt;attribute&gt; pattern.

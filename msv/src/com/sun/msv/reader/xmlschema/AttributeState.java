@@ -14,7 +14,6 @@ import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.AttributeExp;
 import com.sun.msv.grammar.SimpleNameClass;
-import com.sun.msv.grammar.trex.TypedString;
 import com.sun.msv.grammar.xmlschema.AttributeDeclExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.grammar.relax.NoneType;
@@ -113,13 +112,14 @@ public class AttributeState extends ExpressionWithChildState {
 			if( fixed!=null )
 				// TODO: is this 'fixed' value should be added through enumeration facet?
 				// in that way, we can check if this value is acceptable as the base type.
-				contentType = reader.pool.createTypedString(
-					new TypedString(fixed,false),
-					new StringPair("$xsd","fixed") );
+				contentType = reader.pool.createValue(
+					com.sun.msv.datatype.xsd.TokenType.theInstance,
+					new StringPair("","token"), // emulate RELAX NG built-in "token" type
+					fixed );
 			
 			if( "prohibited".equals(use) )
 				// use='prohibited' is implemented through NoneType
-				contentType = reader.pool.createTypedString( NoneType.theInstance );
+				contentType = reader.pool.createData( NoneType.theInstance );
 			
 			exp = reader.pool.createAttribute(
 				new SimpleNameClass( targetNamespace, name ),

@@ -73,7 +73,6 @@ public abstract class ExpressionCloner implements ExpressionVisitorExpression {
 	public Expression onEpsilon()	{ return Expression.epsilon; }
 	public Expression onNullSet()	{ return Expression.nullSet; }
 	public Expression onAnyString()	{ return Expression.anyString; }
-	public Expression onTypedString( TypedStringExp exp ) {
-		return exp;
-	}
+	public Expression onData( DataExp exp ) { return exp; }
+	public Expression onValue( ValueExp exp ) { return exp; }
 }

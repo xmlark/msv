@@ -78,7 +78,8 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 	public void onEpsilon()								{}
 	public void onNullSet()								{}
 	public void onAnyString()							{}
-	public void onTypedString( TypedStringExp exp )		{}
+	public void onData( DataExp exp )					{}
+	public void onValue( ValueExp exp )					{}
 	
 	protected final void binaryVisit( BinaryExp exp ) {
 		enter(exp);

@@ -28,7 +28,8 @@ public interface ExpressionVisitorVoid {
 	void onNullSet();
 	void onAnyString();
 	void onSequence( SequenceExp exp );
-	void onTypedString( TypedStringExp exp );
+	void onData( DataExp exp );
+	void onValue( ValueExp exp );
 	void onConcur( ConcurExp exp );
 	void onInterleave( InterleaveExp exp );
 }

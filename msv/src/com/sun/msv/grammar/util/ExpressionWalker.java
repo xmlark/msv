@@ -36,7 +36,8 @@ public abstract class ExpressionWalker implements ExpressionVisitorVoid {
 	public void onEpsilon() {}
 	public void onNullSet() {}
 	public void onAnyString() {}
-	public void onTypedString( TypedStringExp exp ) {}
+	public void onData( DataExp exp ) {}
+	public void onValue( ValueExp exp ) {}
 		
 	public void onInterleave( InterleaveExp exp ) {
 		onBinExp(exp);

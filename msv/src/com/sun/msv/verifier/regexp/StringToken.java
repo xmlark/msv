@@ -54,8 +54,8 @@ public class StringToken extends Token {
 		if( ignorable && refType!=null )	refType.types = ignoredType;
 	}
 	
-	/** TypedStringExp can consume this token if its datatype can accept this string */
-	boolean match( TypedStringExp exp ) {
+	/** DataExp can consume this token if its datatype can accept this string */
+	boolean match( DataExp exp ) {
 		
 		if(!exp.dt.isValid( literal, context )) return false; // not accepted.
 		
@@ -68,6 +68,22 @@ public class StringToken extends Token {
 				return false;	// this token is accepted by its 'except' clause
 		}
 		
+		// this type accepts me.
+		if(refType!=null)		assignType(exp.dt);
+		
+		// if the type has ID semantics, report it.
+		if( exp.dt.getIdType()!=exp.dt.ID_TYPE_NULL && context!=null )
+			// context can be legally null when this datatype is not context dependent.
+			context.onID( exp.dt, literal );
+		
+		return true;
+	}
+	
+	boolean match( ValueExp exp ) {
+		
+		Object thisValue = exp.dt.createValue(literal,context);
+		if(!exp.dt.sameValue( thisValue, exp.value ))	return false;
+				
 		// this type accepts me.
 		if(refType!=null)		assignType(exp.dt);
 		

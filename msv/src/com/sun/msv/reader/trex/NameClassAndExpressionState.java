@@ -95,8 +95,7 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
 			return reader.createExpressionChildState(this,tag);
 	}
 	
-	protected void endSelf()
-	{
+	protected void endSelf() {
 		if( nameClass==null )
 		{// name class is missing
 			reader.reportError( TREXBaseReader.ERR_MISSING_CHILD_NAMECLASS );

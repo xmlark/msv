@@ -170,7 +170,7 @@ public class XSAcceptor extends SimpleAcceptor {
 		if( typeName[0].equals(XMLSchemaNamespace) ) {
 			// special handling is required for built-in datatypes.
 			try {
-				contentModel = _docDecl.grammar.getPool().createTypedString(
+				contentModel = _docDecl.grammar.getPool().createData(
 					DatatypeFactory.getTypeByName(typeName[1]) );
 			} catch( DatatypeException e ) {
 				return onTypeResolutionFailure(sti,type,refErr);

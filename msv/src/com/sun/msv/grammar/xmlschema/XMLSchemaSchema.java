@@ -19,6 +19,7 @@ import java.util.Map;
 /**
  * XML Schema object.
  * 
+ * <p>
  * A set of "schema components" that share the same target namespace.
  * It contains all global declarations.
  * 

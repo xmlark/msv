@@ -10,8 +10,6 @@
 package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.trex.TypedString;
-import com.sun.msv.grammar.relaxng.ValueType;
 import com.sun.msv.grammar.IDContextProvider;
 import com.sun.msv.verifier.*;
 import com.sun.msv.util.StartTagInfo;
@@ -474,9 +472,12 @@ public abstract class ExpressionAcceptor implements Acceptor {
 	 * @return null
 	 *		if diagnosis failed.
 	 */
-	private final String getDiagnosisFromTypedString( TypedStringExp exp, StringToken value ) {
+	private final String getDiagnosisFromTypedString( DataOrValueExp exp, StringToken value ) {
 		try {
-			exp.dt.checkValid(	value.literal, value.context );
+			exp.getType().checkValid(	value.literal, value.context );
+			
+			// TODO: diagnose errors if exp is ValueExp and 
+			// this is a not correct value
 			
 			// it should throw an exception.
 			// but just in case the datatype library has a bug,
@@ -628,17 +629,13 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		// provide error messages if it matchs the pattern.
 		// otherwise provide a generic error message.
 		
-		// resolve indirect references first, if any.
-		while( constraint instanceof ReferenceExp ) 
-			constraint = ((ReferenceExp)constraint).exp;
-							
-		if( constraint instanceof TypedStringExp ) {
+		if( constraint instanceof DataOrValueExp ) {
 			// if only one AttributeExp is specified for this attribute
 			// and if it has a TypedString as its child.					
 			// for RELAX, this is the only possible case
-			TypedStringExp tse = (TypedStringExp)constraint;
+			DataOrValueExp tse = (DataOrValueExp)constraint;
 			
-			if( tse.dt == com.sun.msv.grammar.relax.NoneType.theInstance ) {
+			if( tse.getType() == com.sun.msv.grammar.relax.NoneType.theInstance ) {
 				// if the underlying datatype is "none",
 				// this should be reported as unexpected attribute.
 				return docDecl.localizeMessage(
@@ -674,9 +671,8 @@ public abstract class ExpressionAcceptor implements Acceptor {
 			ChoiceExp ch = (ChoiceExp)constraint;
 			Expression[] children = ch.getChildren();					
 			for( int i=0; i<children.length; i++ ) {
-				if( children[i] instanceof TypedStringExp
-				&&  ((TypedStringExp)children[i]).dt instanceof TypedString )
-					items.add( ((TypedString)((TypedStringExp)children[i]).dt).value );
+				if( children[i] instanceof ValueExp )
+					items.add( ((ValueExp)children[i]).value );
 				else
 					// this is a fairly complex expression
 					// that we can't provide diagnosis.
@@ -792,9 +788,10 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		
 		if( srt.failedExps.size()==1 ) {
 			
-			TypedStringExp texp = (TypedStringExp)srt.failedExps.iterator().next();
+			DataOrValueExp texp = (DataOrValueExp)srt.failedExps.iterator().next();
 			try {
-				texp.dt.checkValid( srt.literal, srt.context );
+				// TODO: handle ValueExp nicely
+				texp.getType().checkValid( srt.literal, srt.context );
 			} catch( DatatypeException de ) {
 				// this literal is invalid.
 				if( de.getMessage()!=null )
@@ -811,16 +808,11 @@ public abstract class ExpressionAcceptor implements Acceptor {
 			Iterator itr = srt.failedExps.iterator();
 								
 			while(itr.hasNext()) {
-				TypedStringExp texp = (TypedStringExp)itr.next();
+				DataOrValueExp texp = (DataOrValueExp)itr.next();
 				
-				if( texp.dt instanceof TypedString )
-					// this expression is <string> of TREX.
-					// So we can list this item as one of the candidates
-					items.add( ((TypedString)texp.dt).value );
-				else
-				if( texp.dt instanceof ValueType )
-					// this expression is <value> of RELAX NG.
-					items.add( ((ValueType)texp.dt).value.toString() );
+				if( texp instanceof ValueExp )
+					// we can list this item as one of the candidates
+					items.add( ((ValueExp)texp).value.toString() );
 				else
 					// this must be some datatype
 					// that we can't provide diagnosis.

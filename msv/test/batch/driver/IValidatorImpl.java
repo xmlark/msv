@@ -3,6 +3,7 @@ package msv;
 import org.relaxng.testharness.validator.*;
 import org.relaxng.testharness.model.XMLDocument;
 import org.relaxng.testharness.model.RNGHeader;
+import org.iso_relax.verifier.*;
 import org.xml.sax.*;
 import com.sun.msv.driver.textui.ReportErrorHandler;
 import com.sun.msv.driver.textui.DebugController;
@@ -20,16 +21,61 @@ import javax.xml.parsers.SAXParserFactory;
  */
 public abstract class IValidatorImpl extends AbstractValidatorExImpl
 {
-//	protected final SAXParserFactory factory;
+	/**
+	 * If true, this validator will apply extra checkes to the schema.
+	 */
+	private final boolean strictCheck;
 	
-	public IValidatorImpl() {
-//		factory = SAXParserFactory.newInstance();
-//		factory.setNamespaceAware(true);
+	/**
+	 * SAXParserFactory which should be used to parse a schema.
+	 */
+	protected SAXParserFactory factory;
+	
+	public IValidatorImpl( boolean _strictCheck ) {
+		strictCheck = _strictCheck;
+		
+		if(strictCheck) {
+			// if we run a strict check, wrap it by the s4s
+			factory = new com.sun.msv.verifier.jaxp.SAXParserFactoryImpl(
+				getSchemaForSchema());
+		} else {
+			// create a plain SAXParserFactory
+			factory = SAXParserFactory.newInstance();
+			factory.setNamespaceAware(true);
+		}
 	}
+	
+	/**
+	 * Gets the schema for schema for this language.
+	 */
+	protected Schema getSchemaForSchema() { return null; }
 	
 	public ISchema parseSchema( XMLDocument pattern, RNGHeader header ) throws Exception {
 		GrammarReader reader = getReader(header);
-		pattern.getAsSAX( reader );
+		
+		if(!strictCheck)
+			pattern.getAsSAX(reader);
+		else {
+			Schema schema = getSchemaForSchema();
+			final boolean[] hadError = new boolean[1];
+			
+			// set up a pipe line so that the file will be validated by s4s
+			VerifierFilter filter = schema.newVerifier().getVerifierFilter();
+			filter.setErrorHandler( new ReportErrorHandler() {
+				public void error( SAXParseException e ) throws SAXException {
+					super.error(e);
+					hadError[0]=true;
+				}
+				public void fatalError( SAXParseException e ) throws SAXException {
+					super.fatalError(e);
+					hadError[0]=true;
+				}
+			});
+			filter.setContentHandler(reader);
+			pattern.getAsSAX((ContentHandler)filter);
+			
+			if( hadError[0]==true )		return null;
+		}
 		
 		Grammar grammar = getGrammarFromReader(reader,header);
 		
@@ -38,7 +84,7 @@ public abstract class IValidatorImpl extends AbstractValidatorExImpl
 	}
 
 	public Grammar parseSchema( InputSource is, GrammarReaderController controller ) throws Exception {
-		return GrammarLoader.loadSchema(is,createController());
+		return GrammarLoader.loadSchema(is,createController(),factory);
 	}
 
 	/**

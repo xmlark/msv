@@ -48,7 +48,7 @@ public class TypedString implements DataType
 		else						return null;
 	}
 
-	public String convertToLexicalValue( Object value ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if( value instanceof String )
 			return (String)value;
 		else

@@ -3,23 +3,26 @@
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
 	<TITLE>Tranquilo Developer's Guide</TITLE>
 	<style>
-		.title
-		{
+		.title {
 			text-align:center;
 			font-weight:bold;
 		}
-		PRE
-		{
+		PRE {
 			background-color: rgb(240,240,240);
 		}
-		P
-		{
+		P {
 			margin-left: 2em;
 		}
-		PRE
-		{
+		PRE {
 			margin-left: 4em;
 			margin-right:4em;
+		}
+		DL {
+			margin-left: 2em;
+		}
+		DT {
+			margin-top: 0.5em;
+			font-weight: bold;
 		}
 	</style>
 </HEAD>
@@ -71,24 +74,41 @@
 
 <A id="overview" />
 <H1>Design Overview</H1>
-<P>Tranquilo consists of five components.</P>
-<OL>
-  <LI>
-  <DIV><STRONG>Abstract grammar model(AGM):</STRONG> schema-independent grammar
-  model. Both TREX and RELAX can be parsed into this internal representation. 
-  This model, coupled with reader, may be useful for other applications.</DIV>
-  <LI>
-  <DIV><STRONG>Grammar reader:</STRONG> a component to parser RELAX 
-  and TREX by using SAX and construct AGM.</DIV>
-  <LI>
-  <DIV><STRONG>Verification grammar model(VGM):</STRONG> a bridge between AGM 
-  and Verifier. Grammar model from the viewpoint of Verifier.</DIV>
-  <LI>
-  <DIV><STRONG>Verifier:</STRONG> a component to validate XML instance with VGM by using 
-  SAX.</DIV>
-  <LI>
-  <DIV><STRONG>Datatype validator: </STRONG>a component separately available as 
-  Sun XSDLib.</DIV></LI></OL>
+<P>Tranquilo consists of six components.</P>
+<DL>
+	<DT>Abstract grammar model(AGM):</DT>
+	<DD>
+		schema-independent grammar
+		model. Both TREX and RELAX can be parsed into this internal representation. 
+		This model, coupled with reader, may be useful for other applications.
+	</DD>
+	<DT>Grammar reader:</DT>
+	<DD>
+		a component to parser RELAX and TREX by using SAX and construct AGM.
+	</DD>
+	
+	<DT>Verification grammar model(VGM):</DT>
+	<DD>
+		a bridge between AGM and Verifier. Grammar model from the viewpoint of Verifier.
+	</DD>
+	
+	<DT>Verifier:</DT>
+	<DD>
+		a component to validate XML instance with VGM by using SAX.
+	</DD>
+	
+	<DT>Datatype validator: </DT>
+	<DD>
+		a component separately available as Sun XML Datatypes Library.
+	</DD>
+	
+	<DT>RELAX Namespace ("divide&amp;validate" framework):</DT>
+	<DD>
+		a component that allow multiple schema languages to coordinate
+		one instance. <i>Implementation is likely to change substantially in
+		the future.</i>
+	</DD>
+</DL>
   
   
 <A id="qs" />
@@ -118,7 +138,7 @@ void f( SAXParserFactory pf )
   pf.setNamespaceAware( true );
   
   // create a VerifierFactory
-  VerifierFactory factory = new com.sun.tranquilo.verifier.jarv.RELAXFactoryImpl(pf);
+  VerifierFactory factory = new com.sun.tranquilo.verifier.jarv.RELAXCoreFactoryImpl(pf);
   
   // load RELAX schema
   // <b>if you'd like to use TREX schema, then </b>
@@ -161,19 +181,47 @@ void f( SAXParserFactory pf )
   will focus on the direct use of Tranquilo.
 </P>
 <P>
-  To load TREX grammar,
+  The easiest way to load a grammar is to use loadSchema method of
+  <code>com.sun.tranquilo.reader.util.GrammarLoader</code>.
 </P>
 <PRE>
-import com.sun.tranquilo.grammar.trex.TREXGrammar;
-import com.sun.tranquilo.reader.trex.TREXGrammarReader;
-import javax.xml.parsers.SAXParserFactory;
-
-TREXGrammar loadTREX( String schemaFileNameOrURL )
+Grammar loadTREX( String schemaFileNameOrURL )
 {
   SAXParserFactory factory = new javax.xml.parsers.SAXParserFactory();
   // or you can use different parser like Xerces-J by
   // <b>new org.apache.xerces.parsers.jaxp.SAXParserFactoryImpl();</b>
 
+  factory.setNamespaceAware(true);
+  
+  return GrammarLoader.loadSchema(
+                        schemaFileNameOrURL,
+                        new com.sun.tranquilo.reader.util.IgnoreController(),
+                        factory );
+}
+</PRE>
+<P>
+  GrammarLoaded automatically detects the type of schema (RELAX Core/TREX/RELAX Namespace)
+  and handles it appropriately.
+  
+  The second 
+  parameter specifies "controller" object that receives notifacations and controls 
+  behavior of loading. By providing a different object, you can control the parsing
+  process.
+  
+  The third parameter specifies SAXParserFactory to be used. Both TREX and RELAX
+  use namespace, so please configure factory as namespace-aware.
+</P>
+<P>
+  Alternatively, to load a TREX grammar,
+</P>
+<PRE>
+import com.sun.tranquilo.grammar.Grammar;
+import com.sun.tranquilo.reader.util.GrammarLoader;
+import javax.xml.parsers.SAXParserFactory;
+
+TREXGrammar loadTREX( String schemaFileNameOrURL )
+{
+  SAXParserFactory factory = new javax.xml.parsers.SAXParserFactory();
   factory.setNamespaceAware(true);
   
   return TREXGrammarReader.parse(
@@ -183,34 +231,26 @@ TREXGrammar loadTREX( String schemaFileNameOrURL )
 }
 </PRE>
 <P>
-  The second parameter specifies SAXParserFactory to be used. Both TREX and RELAX
-  use namespace, so configure factory as namespace-aware.
-  
-  The third 
-  parameter specifies "controller" object that receives notifacations and controls 
-  behavior of loading. By providing a different object, you can control the parsing
-  process.
-  
   parse method also accepts several other forms of arguments (e.g., InputSource).
 </P>
 <P>
   If loading fails, parse method returns null. 
 </P>
 <P>
-  The following snip illustrates how to load RELAX module or RELAX grammar.
+  The following snip illustrates how to load RELAX module.
 </P>
 <PRE>
-import com.sun.tranquilo.grammar.relax.RELAXGrammar;
+import com.sun.tranquilo.grammar.relax.core.RELAXModule;
 import com.sun.tranquilo.grammar.trex.TREXPatternPool;
-import com.sun.tranquilo.reader.relax.RELAXReader;
+import com.sun.tranquilo.reader.relax.core.RELAXCoreReader;
 import javax.xml.parsers.SAXParserFactory;
 
-RELAXGrammar loadRELAX( String schemaFileNameOrURL )
+RELAXModule loadRELAX( String schemaFileNameOrURL )
 {
   SAXParserFactory factory = new javax.xml.parsers.SAXParserFactory();
   factory.setNamespaceAware(true);
   
-  return RELAXReader.parse(
+  return RELAXCoreReader.parse(
                         schemaFileNameOrURL,
                         factory,
                         new com.sun.tranquilo.reader.util.IgnoreController(),
@@ -218,9 +258,9 @@ RELAXGrammar loadRELAX( String schemaFileNameOrURL )
 }
 </PRE>
 <P>
-  RELAXReader automatically detects whether the schema is module or grammar, 
-  and handles it appropriately. For now, consider the fourth parameter as a 
-  magical keyword.
+  For now, consider the fourth parameter as a magical keyword.
+  To load a RELAX grammar, use <code>com.sun.tranquilo.relaxns.reader.RELAXNSReader</code>
+  in the same way.
 </P>
 <P>
   In this way, you can parse XML representation of RELAX/TREX into AGM of Tranquilo.
@@ -232,6 +272,7 @@ RELAXGrammar loadRELAX( String schemaFileNameOrURL )
 <H1>Playing with  AGM</H1>
 <P>
   AGM is the internal representation of schema used by Tranquilo.
+  It is a binarized regular expression commonly seen in many validating processors.
 </P>
 
 <A id="agm_dep" />
@@ -297,7 +338,7 @@ com.sun.tranquilo.verifier.regexp is one of such examples.</P>
 
 <A id="agm_create" />
 <H2>Creating AGM from scratch</H2>
-<P>RELAXReader/TREXGrammarReader is just one way to create 
+<P>RELAXCoreReader/TREXGrammarReader/RELAXNSReader is just one way to create 
 AGM. Alternatively, you can create AGM from scratch.</P>
 <PRE>
 import com.sun.tranquilo.grammar.trex.*;
@@ -642,9 +683,19 @@ void startElement( .... )
 </XMP></PRE>
 
 <P>
-  And use TypedTREXGrammarReader instead of normal TREXGrammarReader.
-  TypedTREXGrammarReader annotates AGM by those label attributes.
+  The following example illustrates how to load this annotated TREX pattern.
 </P>
+<PRE>
+TREXGrammarReader reader = new TREXGrammarReader(
+    myGrammarReaderControllerObject,
+    saxParserFactory,
+    new com.sun.tranquilo.reader.trex.typed.TypedTREXGrammarInterceptor(),
+    new TREXPatternPool() );
+((XMLReader)reader).parse(schemaFileName);
+
+// obtain parsed grammar object.
+TREXGrammar grammar = reader.getResult();
+</PRE>
 <P>
   The following example shows how to access TREX "label" information from your ContentHandler.
 </P>

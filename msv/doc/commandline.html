@@ -34,15 +34,15 @@ a schema. It supports RELAX Namespace, RELAX Core, and TREX.</P>
 <P>
   To validate XML documents with a schema, do as follows
 </P>
-<PRE>$ java -jar tranquilo.jar MySchema.rxg MyDocument1.xml MyDocument2.xml</PRE>
+<PRE>$ java -jar tranquilo.jar MySchema.rxg MyDocument1.xml MyDocument2.xml ...</PRE>
 <P>
   Or if you'd like to use TREX,
 </P>
 <PRE>$ java -jar tranquilo.jar MySchema.trex MyDocument1.xml MyDocument2.xml</PRE>
 <P>
   You can also use URL instead of filename. 
-  Under some operating systems (including Windows), wild card for filenames is not 
-  available.
+  Under some Java VM, wild card for filenames is not available
+  (e.g., "jview" of Microsoft).
 </P>
 <P>
   If the schema contains some errors, you will see messages like this.

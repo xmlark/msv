@@ -117,7 +117,7 @@ public class ExpressionPool implements java.io.Serializable {
 	}
 	
 	public final Expression createData( XSDatatype dt ) {
-		return createData( dt, new StringPair("",dt.displayName()) );
+		return createData( dt, new StringPair(dt.getNamespaceUri(),dt.displayName()) );
 	}
 	
 	public final Expression createData( Datatype dt, StringPair typeName ) {

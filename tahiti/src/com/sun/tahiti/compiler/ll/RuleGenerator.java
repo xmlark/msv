@@ -367,6 +367,10 @@ public class RuleGenerator
 						if( j==definitions.length )
 							// we've successfully rewrote all rules.
 							rs = expandedRs;
+						else
+							// we've failed to rewrite this rules.
+							// abandon optimization for rs[i].
+							break;
 					}
 				}
 				

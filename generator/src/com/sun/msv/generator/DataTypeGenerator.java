@@ -18,4 +18,10 @@ import com.sun.msv.datatype.DataType;
  */
 public interface DataTypeGenerator {
 	String generate( DataType dt, ContextProvider context );
+	
+	public static class GenerationException extends RuntimeException {
+		public GenerationException( String msg ) {
+			super(msg);
+		}
+	}
 }

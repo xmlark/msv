@@ -184,7 +184,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 	}
 
 	protected void fail( DataType dt ) {
-		throw new Error("unable to generate value for this datatype: " + dt.displayName() );
+		throw new GenerationException("unable to generate value for this datatype: " + dt.displayName() );
 	}
 
 	protected String generateNMTOKEN() {

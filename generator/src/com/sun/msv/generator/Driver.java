@@ -46,8 +46,6 @@ public class Driver {
 			"  -quiet    : be quiet.\n"+
 			"  -encoding <str>\n"+
 			"      output encoding (Java name)\n"+
-			"  -validate : validate documents before write to output.\n"+
-			"      when generating errors, check that the document is actually invalid.\n"+
 			"  -example <filename>\n"+
 			"      use the given file as an example. tokens found in the example\n"+
 			"      is used to generate documents\n"+
@@ -63,7 +61,11 @@ public class Driver {
 	}
 
 	public static void main( String[] args ) throws Exception {
-		System.exit( new Driver().run(args, System.err) );
+		try {
+			System.exit( new Driver().run(args, System.err) );
+		} catch( DataTypeGenerator.GenerationException e ) {
+			System.err.println(e.getMessage());
+		}
 	}
 	
 	protected double getRatio( String s ) {
@@ -91,7 +93,7 @@ public class Driver {
 		String outputName=null;
 		String encoding="UTF-8";
 		boolean createError = false;
-		boolean validate = false;
+		boolean validate = true;
 		boolean debug = false;
 		boolean quiet = false;
 		
@@ -116,7 +118,7 @@ public class Driver {
 		//===========================================
 		try {
 			for( int i=0; i<args.length; i++ ) {
-				if( args[i].equalsIgnoreCase("-debug") )
+				if( args[i].equalsIgnoreCase("-debug") )	// secret option
 					debug = true;
 				else
 				if( args[i].equalsIgnoreCase("-quiet") )
@@ -150,8 +152,8 @@ public class Driver {
 				if( args[i].equalsIgnoreCase("-seed") )
 					opt.random.setSeed( new Long(args[++i]).longValue() );
 				else
-				if( args[i].equalsIgnoreCase("-validate") )
-					validate = true;
+				if( args[i].equalsIgnoreCase("-nonvalidate") )	// secret option
+					validate = false;
 				else
 				if( args[i].startsWith("-error") ) {
 					createError = true;
@@ -269,7 +271,7 @@ public class Driver {
 		// generate instances
 		//===========================================
 		for( int i=0; i<number; i++ ) {
-			if(quiet) {
+			if(!quiet) {
 				if(number<=10 )	out.println("generating a document #"+(i+1));
 				else			out.print(">");
 			}

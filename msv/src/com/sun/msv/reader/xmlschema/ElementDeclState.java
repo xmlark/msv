@@ -17,12 +17,14 @@ import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.grammar.trex.TypedString;
 import com.sun.msv.grammar.trex.ElementPattern;
 import com.sun.msv.grammar.xmlschema.ElementDeclExp;
+import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.ExpressionWithChildState;
 import org.xml.sax.Locator;
+import java.util.StringTokenizer;
 
 /**
  * used to parse &lt;element &gt; element without ref attribute.
@@ -107,6 +109,11 @@ public class ElementDeclState extends ExpressionWithChildState {
 	}
 																												   
 	protected Expression defaultExpression() {
+		if( startTag.containsAttribute("substitutionGroup") )
+			reader.reportError( XMLSchemaReader.ERR_UNIMPLEMENTED_FEATURE,
+				"omitting type attribute in <element> element with substitutionGroup attribute");
+			// recover by assuming ur-type.
+			
 		// if no content model is given, then this element type is ur-type.
 		// TODO: confirm it.
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
@@ -123,7 +130,27 @@ public class ElementDeclState extends ExpressionWithChildState {
 			// recover by abandoning this element.
 			return Expression.nullSet;
 		}
-		
+/*		
+		String block = startTag.getDefaultedAttribute("block", reader.blockDefault );
+		if( block!=null ) {
+			StringTokenizer tokens = new StringTokenizer(block);
+			boolean blockExtension = false;
+			boolean blockRestriction = false;
+			boolean blockSubstitution = false;
+			
+			while( tokens.hasMoreTokens() ) {
+				String token = tokens.nextToken();
+				if( token.equals("#all") )
+					blockExtension = blockRestriction = blockSubstitution = true;
+				if( token.equals("extension") )
+					blockExtension = true;
+				if( token.equals("restriction") )
+					blockRestriction = true;
+				if( token.equals("substitution") )
+					blockSubstitution = true;
+			}
+		}
+*/		
 		String targetNamespace;
 		if( isGlobal() )
 			// TODO: form attribute is prohibited at toplevel.
@@ -133,28 +160,6 @@ public class ElementDeclState extends ExpressionWithChildState {
 			// targetNamespace is affected by @form and schema's @attributeFormDefault.
 			targetNamespace = ((XMLSchemaReader)reader).resolveNamespaceOfElementDecl(
 				startTag.getAttribute("form") );
-		
-		// TODO: this doesn't work: super class signals an error
-		// if contentType is null at this moment.
-		if( contentType==null ) {
-			// type attribute is not present, and
-			// no simpleType/complexType is given as a child.
-			
-			if( startTag.containsAttribute("substitutionGroup") )
-				reader.reportError( XMLSchemaReader.ERR_UNIMPLEMENTED_FEATURE,
-					"omitting type attribute in <element> element with substitutionGroup attribute");
-				// recover by assuming ur-type.
-			
-			// so it is assumed as "ur-type".
-			// TODO: is this correct?
-			/* it may be
-				<zeroOrMore>
-					<element>
-						<anyName />
-						....
-			*/
-			contentType = Expression.anyString;
-		}
 		
 		String fixed = startTag.getAttribute("fixed");
 		if( fixed!=null )
@@ -173,12 +178,6 @@ public class ElementDeclState extends ExpressionWithChildState {
 				contentType, reader.nilExpression );
 		}
 
-		// TODO: abstract is prohibited in local declarations.
-		String abstract_ = startTag.getAttribute("abstract");
-		if( "true".equals(abstract_) )
-			// prohibit this element declaration from appearing.
-			contentType = Expression.nullSet;
-		
 		// allow xsi:schemaLocation and xsi:noNamespaceSchemaLocation
 		contentType = reader.pool.createSequence( reader.xsiSchemaLocationExp, contentType );
 		
@@ -200,7 +199,13 @@ public class ElementDeclState extends ExpressionWithChildState {
 				new Object[]{name} );
 		
 		decl.self = exp;
-		decl.exp = reader.pool.createChoice( decl.exp, decl.self );
+
+		String abstract_ = startTag.getAttribute("abstract");
+		if( !"true".equals(abstract_) )
+			// prohibit this element declaration from appearing.
+			// by not adding self as a member of choice.
+			decl.exp = reader.pool.createChoice( decl.exp, decl.self );
+		
 		reader.setDeclaredLocationOf(decl);
 			
 		String substitutionGroupQName = startTag.getAttribute("substitutionGroup");
@@ -220,7 +225,14 @@ public class ElementDeclState extends ExpressionWithChildState {
 		}
 			
 		// TODO: @block
+		if( startTag.containsAttribute("block") )
+			reader.reportWarning( reader.ERR_UNIMPLEMENTED_FEATURE,
+				"block attribute for <element>" );
 		// TODO: @final
+		if( startTag.containsAttribute("final") )
+			reader.reportWarning( reader.ERR_UNIMPLEMENTED_FEATURE,
+				"final attribute for <element>" );
+		
 		return decl;
 	}
 

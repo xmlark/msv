@@ -115,7 +115,13 @@ public class ComplexTypeDeclState extends RedefinableDeclState {
 			// recover by ignoring this error.
 		
 		// TODO: @block
+		if( startTag.containsAttribute("block") )
+			reader.reportWarning( reader.ERR_UNIMPLEMENTED_FEATURE,
+				"block attribute for <complexType>" );
 		// TODO: @final
+		if( startTag.containsAttribute("final") )
+			reader.reportWarning( reader.ERR_UNIMPLEMENTED_FEATURE,
+				"final attribute for <complexType>" );
 		
 		String mixed = startTag.getAttribute("mixed");
 		if( "true".equals(mixed) )

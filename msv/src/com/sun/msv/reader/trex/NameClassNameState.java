@@ -29,9 +29,18 @@ public class NameClassNameState extends NameClassWithoutChildState {
 	}
 
 	protected NameClass makeNameClass() {
-		return new SimpleNameClass(
-			getPropagatedNamespace(),
-			WhiteSpaceProcessor.collapse(new String(text)) );
-			
+        
+        String name = WhiteSpaceProcessor.collapse(new String(text));
+        
+        int idx = name.indexOf(':');
+        if(idx<0)
+            // if the name is NCName
+            return new SimpleNameClass( getPropagatedNamespace(), name );
+        
+        // if it's a QName, resolve it.
+        String[] qname 
+            = reader.splitQName(name);
+        
+		return new SimpleNameClass( qname[0], qname[1] );
 	}
 }

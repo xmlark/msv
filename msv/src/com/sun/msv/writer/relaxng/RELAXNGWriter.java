@@ -65,7 +65,7 @@ import java.util.Vector;
  *   </define>
  * </grammar>
  * </xmp></pre>
- * <img src="doc-files/simpleAGM.gif" />
+ * <img src="../trex/doc-files/simpleAGM.gif" />
  * 
  * <p>
  *   Note that
@@ -89,7 +89,7 @@ import java.util.Vector;
  *   and most importantly it doesn't contain any cycles in it. Member of an island
  *   can be always reached from its head.
  * </p>
- * <img src="doc-files/island.gif"/>
+ * <img src="../trex/doc-files/island.gif"/>
  * <p>
  *   TREXWriter will make every {@link ElementExp} and
  *   {@link ReferenceExp} a head of their own island. So each of them
@@ -99,7 +99,7 @@ import java.util.Vector;
  *   Several islands can form a cycle, but one island can never have a cycle in it.
  *   This is because there is always at least one ElementExp in any cycle.
  * </p>
- * <img src="doc-files/island_before.gif" />
+ * <img src="../trex/doc-files/island_before.gif" />
  * <p>
  *   Note that since expressions are shared, one expression can be
  *   a member of several islands (although this isn't depicted in the above figure.)
@@ -113,7 +113,7 @@ import java.util.Vector;
  *   In other words, any island who is only referenced at most once is merged
  *   into its referer. This step makes the output more compact.
  * </p>
- * <img src="doc-files/island_merged.gif" />
+ * <img src="../trex/doc-files/island_merged.gif" />
  * <p>
  *   Next, TREXWriter assigns a name to each island. It tries to use the name of
  *   the head expression. If a head is anonymous ReferenceExp (ReferenceExp whose

@@ -64,6 +64,6 @@ public class SimpleURType extends BuiltinAtomicType {
 	 * no facet is applicable to the simple ur-type.
 	 */
 	public final int isFacetApplicable( String facetName ) {
-		return NOT_ALLOWED;
+		return APPLICABLE;
 	}
 }

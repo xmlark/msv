@@ -567,6 +567,42 @@ public class XMLSchemaReader extends GrammarReader {
 		return e;
 	}
 
+	/**
+	 * The intended target namespace of the chameleon schema.
+	 * 
+	 * <p>
+	 * When parsing a chameleon schema (inclusion of a schema without
+	 * the targetNamespace attribute), this field is set to the target namespace
+	 * of the callee, so that any reference occured in the chameleon schema
+	 * is treated correctly.
+	 * 
+	 * <p>
+	 * This field must be set to null in other cases. In that case, QName resolution
+	 * is handled just normally.
+	 * 
+	 * <p>
+	 * This field is maintained by {@link SchemaIncludedState}.
+	 */
+	protected String chameleonTargetNamespace = null;
+	
+	/**
+	 * Resolves a QName into a pair of (namespace URI,local name).
+	 * 
+	 * <p>
+	 * When we are parsing a "chameleon schema", any reference to
+	 * the default empty namespace("") has to be treated as a reference to
+	 * the intended target namespace.
+	 */
+	public String[] splitQName( String qName ) {
+		String[] r = super.splitQName(qName);
+		if(r==null)		return r;
+		if(r[0].length()==0 && chameleonTargetNamespace!=null)
+			r[0] = chameleonTargetNamespace;
+		return r;
+	}
+	
+	
+	
 	protected Expression interceptExpression( ExpressionState state, Expression exp ) {
 		// process minOccurs/maxOccurs
 		if( state instanceof SequenceState

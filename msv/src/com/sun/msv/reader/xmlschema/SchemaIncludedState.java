@@ -25,11 +25,10 @@ public class SchemaIncludedState extends GlobalDeclState {
 	 * target namespace that the caller expects.
 	 * 
 	 * If this field is null, that indicates caller doesn't
-	 * expect particular target namespace, therefore schema element
-	 * must have targetNamespace attribute.
+	 * expect particular target namespace.
 	 * 
-	 * If this field is non-null and schema element has different
-	 * value as targetNamespace, then error will be signaled.
+	 * If this field is non-null and schema element has a different
+	 * value as targetNamespace, then error will be reported.
 	 */
 	protected String expectedTargetNamespace;
 	
@@ -37,10 +36,12 @@ public class SchemaIncludedState extends GlobalDeclState {
 		this.expectedTargetNamespace = expectedTargetNamespace;
 	}
 	
+	// these fields keep the previous values.
 	private String previousElementFormDefault;
 	private String previousAttributeFormDefault;
 	private String previousFinalDefault;
 	private String previousBlockDefault;
+	private String previousChameleonTargetNamespace;
 	
 	/**
 	 * this flag is set to true to indicate all the contents of this element
@@ -58,15 +59,30 @@ public class SchemaIncludedState extends GlobalDeclState {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		super.startSelf();
 		
+		// back up the current values
+		previousElementFormDefault = reader.elementFormDefault;
+		previousAttributeFormDefault = reader.attributeFormDefault;
+		previousFinalDefault = reader.finalDefault;
+		previousBlockDefault = reader.blockDefault;
+		previousChameleonTargetNamespace = reader.chameleonTargetNamespace;
+
+		
+		// the chameleonTargetNamespace is usually null, unless we are parsing 
+		// a chameleon schema.
+		reader.chameleonTargetNamespace = null;
+		
 		String targetNs = startTag.getAttribute("targetNamespace");
 		if( targetNs==null ) {
 			if( expectedTargetNamespace==null ) {
-				// this is not an error. It just means target namespace is absent.
+				// this is not an error. It just means that the target namespace is absent.
 				// reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "schema", "targetNamespace" );
 				targetNs = "";	// recover by assuming "" namespace.
 			}
-			else
+			else {
+				// this is a chameleon schema.
 				targetNs = expectedTargetNamespace;
+				reader.chameleonTargetNamespace = expectedTargetNamespace;
+			}
 		} else {
 			if( expectedTargetNamespace!=null
 			&& !expectedTargetNamespace.equals(targetNs) )
@@ -88,10 +104,6 @@ public class SchemaIncludedState extends GlobalDeclState {
 			s.add(this.location.getSystemId());
 
 		// process other attributes.
-		previousElementFormDefault = reader.elementFormDefault;
-		previousAttributeFormDefault = reader.attributeFormDefault;
-		previousFinalDefault = reader.finalDefault;
-		previousBlockDefault = reader.blockDefault;
 		
 		String form;
 		form = startTag.getDefaultedAttribute("elementFormDefault","unqualified");

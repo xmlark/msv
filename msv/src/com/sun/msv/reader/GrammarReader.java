@@ -160,10 +160,10 @@ public abstract class GrammarReader
 	
 	
 	/**
-	 * calls processName method of NamespaceSupport.
+	 * Resolves a QName into a pair of (namespace URI,local name).
 	 * Therefore this method returns null if it fails to process QName.
 	 */
-	public final String[] splitQName( String qName ) {
+	public String[] splitQName( String qName ) {
 		int idx = qName.indexOf(':');
 		if(idx<0) {
 			String ns = prefixResolver.resolve("");

@@ -131,7 +131,6 @@ public class FieldMatcher extends MatcherBundle {
 			elementText.append(buf,start,len);
 	}
 	
-	
 	/** this field matches more than once. */
 	private void doubleMatchError() throws SAXException {
 		int i;

@@ -34,136 +34,136 @@ import org.relaxng.datatype.ValidationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class PSVIDump implements TypedContentHandler {
-	
-	public static void main( String[] args ) throws Exception {
-		if( args.length!=2 ) {
-			System.out.println("Usage: PSVIDump <schema> <XML instance>\n");
-			return;
-		}
-		
-		// load a schema. GrammarLoader will detect the schema language automatically.
-		GrammarLoader loader = new GrammarLoader();
-		loader.setController( new DebugController(false,false) );
-		DocumentDeclaration grammar = GrammarLoader.loadVGM( args[0] );
-		
-		if( grammar==null ) {
-			System.err.println("failed to load a grammar");
-			return;
-		}
-		
-		// create an XMLReader to be used to parse the instance document
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		factory.setNamespaceAware(true);
-		XMLReader reader = factory.newSAXParser().getXMLReader();
-		
-		// create an instance of verifier,
-		TypeDetector verifier = new TypeDetector(grammar, new ErrorHandlerImpl() );
-		
-		// configure a pipeline so that the verifier will receive SAX events first.
-		reader.setContentHandler(verifier);
-		
-		// then set your application handler to verifier.
-		verifier.setContentHandler(new PSVIDump());
-		
-		// finally, parse the document and see what happens!
-		reader.parse(args[1]);
-	}
-	
-	
-	
-	private int indent = 0;
-	
-	/** print indentation. */
-	private void printIndent() {
-		for( int i=0; i<indent; i++ )
-			System.out.print("  ");
-	}
+    
+    public static void main( String[] args ) throws Exception {
+        if( args.length!=2 ) {
+            System.out.println("Usage: PSVIDump <schema> <XML instance>\n");
+            return;
+        }
+        
+        // load a schema. GrammarLoader will detect the schema language automatically.
+        GrammarLoader loader = new GrammarLoader();
+        loader.setController( new DebugController(false,false) );
+        DocumentDeclaration grammar = GrammarLoader.loadVGM( args[0] );
+        
+        if( grammar==null ) {
+            System.err.println("failed to load a grammar");
+            return;
+        }
+        
+        // create an XMLReader to be used to parse the instance document
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        factory.setNamespaceAware(true);
+        XMLReader reader = factory.newSAXParser().getXMLReader();
+        
+        // create an instance of verifier,
+        TypeDetector verifier = new TypeDetector(grammar, new ErrorHandlerImpl() );
+        
+        // configure a pipeline so that the verifier will receive SAX events first.
+        reader.setContentHandler(verifier);
+        
+        // then set your application handler to verifier.
+        verifier.setContentHandler(new PSVIDump());
+        
+        // finally, parse the document and see what happens!
+        reader.parse(args[1]);
+    }
+    
+    
+    
+    private int indent = 0;
+    
+    /** print indentation. */
+    private void printIndent() {
+        for( int i=0; i<indent; i++ )
+            System.out.print("  ");
+    }
 
-	private ExpressionPool pool = new ExpressionPool();
-	
-//	
+    private ExpressionPool pool = new ExpressionPool();
+    
+//    
 // TypedContentHandler callbacks
 //
 // It just dumps all the information.
 
-	public void startElement( String namespaceUri, String localName, String qName ) {
-		printIndent();
-		indent++;
-		System.out.println("<"+qName+">");
-	}
-	
-	public void startAttribute( String namespaceUri, String localName, String qName ) {
-		printIndent();
-		indent++;
-		System.out.println("<@"+qName+">");
-	}
-	public void endAttribute( String namespaceUri, String localName, String qName, AttributeExp type ) {
-		indent--;
-		printIndent();
-		System.out.print("</@"+qName+"> :");
-		
-		// the type parameter is of interest here.
-		// this parameter tells you the type assigned to this attribute.
-		
-		// for starter, use ExpressionPrinter to print a content model.
-		System.out.println( ExpressionPrinter.printContentModel(
-			type.exp.getExpandedExp(pool)) );
-	}
-	
-	public void endAttributePart() {
-		// this method is called after all the attributes are reported.
-		printIndent();
-		System.out.println("------");
-	}
-	
-	public void characterChunk( String literal, Datatype type ) {
-		printIndent();
-		
-		// type shows the assigned type.
-		// if you are using W3C XML Schema, RELAX Core or DTD, then
-		// this type parameter can be always casted into DatabindableDatatype.
-		// if you are using RELAX NG, then it depends on the situation.
-		if(!(type instanceof DatabindableDatatype)) {
-			System.out.print("not databindable");
-		} else {
-			DatabindableDatatype dt = (DatabindableDatatype)type;
-			// the createJavaObject method can be used to convert this literal
-			// into Java friendly object. Here, we use the context object
-			// which is passed through the startDocument method.
-			Object javaObject = dt.createJavaObject( literal, context );
-			// dump the class name for a proof that an object is actually created.
-			System.out.print( javaObject.getClass().getName() );
-		}
-		System.out.print(" : ");
-		System.out.println(literal.trim());
-		// the trim method is called only to make the output cleaner.
-	}
-	
-	public void endElement( String uri, String local, String qName, ElementExp type ) {
-		indent--;
-		printIndent();
-		System.out.print("</"+qName+"> : ");
-		
-		// the type parameter is of interest here.
-		// this parameter tells you the type assigned to this element.
-		
-		// for starter, use ExpressionPrinter to print a content model.
-		System.out.println( ExpressionPrinter.printContentModel(
-			type.contentModel.getExpandedExp(pool)) );
-	}
-	
-	
-	private ValidationContext context;
-	public void startDocument( ValidationContext context ) {
-		// Later, this context object will be used to convert characters into
-		// Java-friendly object.
-		// So just store it for now.
-		this.context = context;
-		
-		System.out.println("startDocument");
-	}
-	
-	public void endDocument() {
-		System.out.println("endDocument");
-	}
+    public void startElement( String namespaceUri, String localName, String qName ) {
+        printIndent();
+        indent++;
+        System.out.println("<"+qName+">");
+    }
+    
+    public void startAttribute( String namespaceUri, String localName, String qName ) {
+        printIndent();
+        indent++;
+        System.out.println("<@"+qName+">");
+    }
+    public void endAttribute( String namespaceUri, String localName, String qName, AttributeExp type ) {
+        indent--;
+        printIndent();
+        System.out.print("</@"+qName+"> :");
+        
+        // the type parameter is of interest here.
+        // this parameter tells you the type assigned to this attribute.
+        
+        // for starter, use ExpressionPrinter to print a content model.
+        System.out.println( ExpressionPrinter.printContentModel(
+            type.exp.getExpandedExp(pool)) );
+    }
+    
+    public void endAttributePart() {
+        // this method is called after all the attributes are reported.
+        printIndent();
+        System.out.println("------");
+    }
+    
+    public void characterChunk( String literal, Datatype type ) {
+        printIndent();
+        
+        // type shows the assigned type.
+        // if you are using W3C XML Schema, RELAX Core or DTD, then
+        // this type parameter can be always casted into DatabindableDatatype.
+        // if you are using RELAX NG, then it depends on the situation.
+        if(!(type instanceof DatabindableDatatype)) {
+            System.out.print("not databindable");
+        } else {
+            DatabindableDatatype dt = (DatabindableDatatype)type;
+            // the createJavaObject method can be used to convert this literal
+            // into Java friendly object. Here, we use the context object
+            // which is passed through the startDocument method.
+            Object javaObject = dt.createJavaObject( literal, context );
+            // dump the class name for a proof that an object is actually created.
+            System.out.print( javaObject.getClass().getName() );
+        }
+        System.out.print(" : ");
+        System.out.println(literal.trim());
+        // the trim method is called only to make the output cleaner.
+    }
+    
+    public void endElement( String uri, String local, String qName, ElementExp type ) {
+        indent--;
+        printIndent();
+        System.out.print("</"+qName+"> : ");
+        
+        // the type parameter is of interest here.
+        // this parameter tells you the type assigned to this element.
+        
+        // for starter, use ExpressionPrinter to print a content model.
+        System.out.println( ExpressionPrinter.printContentModel(
+            type.contentModel.getExpandedExp(pool)) );
+    }
+    
+    
+    private ValidationContext context;
+    public void startDocument( ValidationContext context ) {
+        // Later, this context object will be used to convert characters into
+        // Java-friendly object.
+        // So just store it for now.
+        this.context = context;
+        
+        System.out.println("startDocument");
+    }
+    
+    public void endDocument() {
+        System.out.println("endDocument");
+    }
 }

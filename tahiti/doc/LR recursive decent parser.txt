@@ -1,0 +1,729 @@
+
+// computes FOLLOW(N) for all non-terminals.
+// returns FIRST(p)
+function follow( Pattern p, Set follows ) returns Set {
+	switch(p) {
+	case <nonTerminal> N </nonTerminal>:
+		FOLLOW(N) := follows;	// since N cannot be shared. N is visited only once.
+		return follow(N,follows);
+		
+	case <group> p1 p2 </group>:
+		return first(p1,first(p2,follows));
+		
+	case <choice> p1 p2 </choice>:
+		return follow(p1,follows) \cup follow(p2,follows);
+		
+	case <interleave> p1 p2 </interleave>:
+		return follow(p1,follows) \cup follow(p2,follows);
+		先頭にこれるのはp1,p2のfirst全てでそれ以外はこれない
+		
+	case <oneOrMore> p1 </oneOrMore>:
+		return first(p1,follows);
+		
+	case <value/>:
+	case <data/>:
+	case <text/>:
+	case <element/>:
+	case <attribute/>:
+		if(p.isEpsilonReducible())	return {p} \cup follows;
+		return {p};
+		
+	case <empty/>:
+		return follows;
+}
+
+
+●Recursive Decent Parserの構成
+
+<oneOrMore> p </oneOrMore> =>
+	do {
+		-- p --;
+	}while( token \in first(p) );
+	
+	アルファベットが全て違うのならば、first(p)とfollowsがかぶっている時は、外にも
+	ループがあることを意味する。その場合、中ループを回ってよい。
+
+<group> p1 p2 </group> =>
+	-- p1 --;
+	-- p2 --;
+
+<choice> p1 p2 </choice> =>
+	if( token \in first(p1) ) {
+		-- p1 --;
+	} else {
+		-- p2 --;
+	}
+
+<empty/> =>
+	;
+
+<attribute/>, <element/>, <data/>, or <value/> =>
+	consume;
+
+<interleave> p1 p2 </interleave> =>
+	enterInterleave(p2);	// p2に含まれているトークンは無視してそれ以外のものから先行消費
+	-- p1 --;
+	leaveInterleave();		// 元のモードに復帰
+	-- p2 --;
+
+	
+	これだと、
+	
+	<oneOrMore>
+		<interleave>
+			<oneOrMore>
+				<element A/>
+			</oneOrMore>
+			<element B/>
+		</interleave>
+	</oneOrMore>
+	
+	みたいなものをうまく処理できない。これに対応する制限は、
+	
+>>	FOLLOWS(<interleave> p1 p2 </interleave>)と、FIRST(<interleave> p1 p2 </interleave>)が重ならないこと
+	
+	要するに、FOLLOWS(<interleave/>)がストッパーとして働くようにするということ。
+	
+	
+	--- もうちょっと改善（制限緩和）の余地があるようにも思う。
+
+● token \in first(X)
+	
+	より正確には
+	
+	( {token} \cup unconsumed attributes ) \cap first(X)  \neq  \phi
+	
+	つまり、属性はいつでも出てきてよいようにする。
+
+
+● validation historyの記録
+
+	全てを違うアルファベットにするためには、RELAX Verifier for Javaでやっていたように、
+	履歴のトラックが必要。
+
+
+
+● 非RDP LLマーシャラ
+
+入力：
+	t1,t2, ... , tn
+		子要素・子テキストからなるパケット列
+	A
+		子属性パケット列
+	E<S>
+		最終的に還元して至るべきスタートルールE<S>
+
+Symbol :=
+	E<LABEL> | A<i> | C<$type> | N<name>
+
+class Packet {
+	Symbol		symbol;
+	Object[]	payload;
+}
+
+class StackItem {
+	StackItem	prev;
+	Symbol		symbol;
+	void action(Packet item);
+}
+
+StackItem	top;	スタックトップ
+
+function
+{
+	Packet root = new Packet(E<S>,[]);
+	top = new StackItem(null,E<S>,action(item){
+		if( item.symbol is A<X> or E<X> )
+			// A<X>,E<X>のpayloadは始めた時に既に埋まっている
+			root.payload.add(item.payload);
+		else
+			// この時点ではまだitem.payloadは空
+			root.payload.add(item);
+	});
+	
+	
+	Packet current = getNextPacket();
+	while( true ) {
+		// 受理の場合
+		if( top==null && current==null )	break;	
+		
+		// 非終端の場合
+		if( top.symbol is N<X> ) {
+			let N<X> -> abcd == Table(N<X>,current.symbol);
+			
+			Packet np = new Packet(N<X>,[]);
+			for( all Symbol x in d, ..., a ) {// 逆順
+				top = new StackItem(top,x,
+					action(item) {
+						if(item.symbol is A<X> or E<X>) {
+							for( each o in item.payload )
+								self(o);
+							return;
+						}
+						
+						assert(item.symbol is C<X>); Nが来ることはない
+						np.payload.add(item);
+					}
+				);
+			}
+			// 非終端だからconsumeしない
+			continue;
+		}
+		// 非終端の場合その２
+		if( top.p is C<X> ) {
+			let C<X> -> abcd == Table(C<X>,current.symbol);
+			
+			X newObj = new X();
+			top.receiver.action(newObj);
+			for( x in d, ..., a ) {
+				top = new StackItem(top,x,
+					action(N<name> item){
+						if(item.symbol is A<X> or E<X>) {
+							for( each o in item.payload )
+								self(o);
+							return;
+						}
+						X.name = item.body;
+					}
+				);
+			}
+			continue;
+		}
+		
+		// ターミナルの場合
+		if( top.p is E<X> && current==E<X> ) {
+			consume;
+			// currentの内容をtopにマッチさせる
+			top.receiver.action(current);
+			current = getNextPacket();
+			continue;
+		}
+		if( top.p is A<X> && top.p == a \in A ) {
+			A.remove(a);
+			top.receiver.action(a);
+			continue;
+		}
+}
+
+	破綻。よくわからん。
+
+
+● RDP, packet列前処理型マーシャラ
+
+	今、endElementに来たとする。
+	
+入力：
+	p1, p2, ..., pn		子要素・子テキストからなるパケット列
+		それぞれには、マッチしたパターン(ElementExp/TypedStringExp/AnyString)
+		も入っている。
+	a1, a2, ..., am		子属性からなるパケット列
+	
+	
+	
+
+● 非RDP LLマーシャラ（２）
+
+	actionは全てを関連付けた後で実行するもの。すなわち、入力のパケット列に
+	実行すべきactionを関連付けられたら、完成となる。
+	
+	バックトラックするかもしれないので、最後まで実行はしない。
+	バックトラックはまだこれには含まれていない。
+	
+入力：
+	p1,2p, ... , pn
+		子要素・子テキストからなるパケット列
+	A
+		子属性パケット列
+	E<S>
+		最終的に還元して至るべきスタートルールE<S>
+	
+	Symbol :=
+	E<LABEL> | A<i> | C<type> | N<name> | (*,$dt)
+
+出力
+	Packet	この要素に対応するパケット
+
+class Packet {
+	Symbol		symbol;
+	Object[]	payload;
+}
+
+class StackItem {
+	StackItem	prev;
+	Symbol		symbol;
+	void action(Packet item);
+}
+
+StackItem	top;	スタックトップ
+
+function
+{
+	Packet root = new Packet(E<S>,[]);
+	top = new StackItem(null,E<S>,action(item){
+		root.payload.add(item);
+	});
+	
+	Packet->Action af;	// 最後にどのパケットをどのactionで実行するのか特定
+	
+	Packet current = getNextPacket();
+	while( true ) {
+		// 受理の場合
+		if( top==null && current==null )	break;	
+		
+		// 非終端の場合
+		if( top.symbol is N<X> or C<X> ) {
+			if( top.symbol is N<X> )
+				actionFunc = new Action(){
+					void action(item){
+						assert(item.symbol is C<type>); N<X>が来ることはない
+						// 来たクラスに名前情報を付加して上へ
+						top.action( new Packet(N<X>,item) );
+					}
+				}
+			if( top.symbol is C<X> )
+				actionFunc = new Action(){
+					X obj;
+					void action(item){
+						assert(item.symbol is N<fieldName>); Cが来ることはない
+						if(obj==null)
+							// 自分を作ってまず親に送る
+							top.action( obj = new X() );
+						// フィールドに設定
+						obj.fieldName.set(item.payload);
+					}
+				}
+			
+		//	let A -> abcd <= Table(A, current.symbol)  A は C<X> or N<X>
+			let top.symbol -> abcd == Table( top.symbol, current.symbol );
+			
+			
+			for( all Symbol x in d, ..., a ) {// 逆順
+				top = new StackItem(top,x,actionFunc);
+			}
+			// 非終端だからconsumeしない
+			continue;
+		}
+		
+		// 終端記号の場合
+		if( top.symbol==current.symbol && it is E<X> or (X,$dt) ) {
+			// currentの内容をtopにマッチさせる
+			af[current] = top.action;
+			current = getNextPacket();	// consume
+			continue;
+		}
+		if( top.symbol is A<X> && p \in A && p.symbol==A<X> ) {
+			// currentの内容をtopにマッチさせる
+			af[p] = top.action;
+			consume p;
+			continue;
+		}
+		
+		エラー。assertion failed. fail fastである限り、ここにはこないはず
+	}
+	
+	for( all Packet p in af ) {
+		if(p.symbol is A<X> or E<X>)
+			// 要素と属性は一時的なコンテナに過ぎないので中身を展開
+			for( each o in p.payload )
+				af[p](o);
+		else
+			af[p](p);
+	}
+	return root;
+}
+
+問題点：
+	インターリーブをサポートしていない
+	バックトラックしない
+
+
+・問題点研究
+
+	インターリーブ. See ノート No.3 表
+	
+	バックトラック. See ノート No.3 裏
+
+
+
+● 非RDP LLマーシャラ（３）
+
+	特に前処理を必要としないはず
+
+	(2)+バックトラック
+	
+class BackTrackRecord {
+	BackTrackRecord	last;	// 最後のバックトラックレコード
+	
+	StackItem		top;	// その時のスタックトップ
+	int				idx;	// その時の読み込みポインタ位置（入力パケット列上）
+	int	applicableRule;		// 次に何番の選択肢を試したらよいか
+}
+
+BackTrackRecord backLog;
+
+function
+{
+	Packet root = new Packet(E<S>,[]);
+	top = new StackItem(null,E<S>,action(item){
+		root.payload.add(item);
+	});
+	
+	Packet->Action af;	// 最後にどのパケットをどのactionで実行するのか特定
+	
+	Packet current = getNextPacket();
+	while( true ) {
+		// 受理の場合
+		if( top==null && current==null )	break;	
+		
+		// 非終端の場合
+		if( top.symbol is N<X> or C<X> ) {
+			if( top.symbol is N<X> )
+				actionFunc = new Action(){
+					void action(item){
+						assert(item.symbol is C<type>); N<X>が来ることはない
+						// 来たクラスに名前情報を付加して上へ
+						top.action( new Packet(N<X>,item) );
+					}
+				}
+			if( top.symbol is C<X> )
+				actionFunc = new Action(){
+					X obj;
+					void action(item){
+						assert(item.symbol is N<fieldName>); Cが来ることはない
+						if(obj==null)
+							// 自分を作ってまず親に送る
+							top.action( obj = new X() );
+						// フィールドに設定
+						obj.fieldName.set(item.payload);
+					}
+				}
+			
+			// テーブルから処理を決定( rule は A->abcdの形 )
+			rules = Table[ top.symbol, current.symbol];
+			
+			if( rules==null )
+				// 適用可能ルールなし。困った。
+				goto backTrack;
+			
+			if( rules.length > 1 ) {
+				// ２番目以降の選択肢もあり得るので、それを記録
+				backLog = new BackTrackRecord(last,
+					top, current, 1 );
+			}
+			// そして最初の選択肢をトライ
+			let top.symbol -> abcd <= rules[0];
+			
+			top = top.previous;			// pop;
+			
+			for( all Symbol x in rules.rightHandSideの逆順 ) {// 逆順
+				top = new StackItem(top,x,actionFunc);
+			}
+			// 非終端だからconsumeしない
+			continue;
+		}
+		
+		// 終端記号の場合
+		if( top.symbol==current.symbol && it is E<X> or (X,$dt) ) {
+			// currentの内容をtopにマッチさせる
+			af[current] = top.action;
+			current = getNextPacket();	// consume
+			continue;
+		}
+		if( top.symbol is A<X> && p \in A && p.symbol==A<X> ) {
+			// currentの内容をtopにマッチさせる
+			af[p] = top.action;
+			consume p;
+			continue;
+		}
+		
+		// エラー。バックトラックを試みる
+	backTrack:
+		if(backLog==null)	assertion failed();
+		// 全てのバックトラックを試してもダメというのなら、文法違反のはず
+		
+		top = backLog.top;
+		** 入力トークン列もbackLog.indexに従って再設定 **
+		
+		
+		rules = Table[ top.symbol, current.symbol ];
+		// ルールは必ずあるはず
+		assert( rules!=null )
+		// 今回はこの番号の選択肢を使う
+		int thisTry = backLog.applicableRule;
+		
+		if( rules.length==thisTry ) {
+			// 更にもう選択肢がこれ以上なければバックログ削除
+			backLog = backLog.previous;
+		}
+		
+		// そして最初の選択肢をトライ
+		let top.symbol -> abcd <= rules[thisTry];
+		
+		top = top.previous;			// pop;
+		
+		for( all Symbol x in rules.rightHandSideの逆順 ) {// 逆順
+			top = new StackItem(top,x,actionFunc);
+		}
+		
+		/*
+			既に作られてしまったaction objectはＧＣされる
+		*/
+	}
+	
+	for( all Packet p in af ) {
+		if(p.symbol is A<X> or E<X>)
+			// 要素と属性は一時的なコンテナに過ぎないので中身を展開
+			for( each o in p.payload )
+				af[p](o);
+		else
+			af[p](p);
+	}
+	return root;
+}
+
+
+● 非RDP LLマーシャラ　インターリーブ付
+
+{
+	// 入力トークン列
+	Packet[]	input;
+	
+	class InputReader {
+		int		base;		// まだ未消化トークンの先頭位置
+		int		idx;		// 現在のトークン位置
+		フィルタがかかっていると、両者が食い違うことがある
+		Filter	filter;			// 現在のフィルタ
+		
+		Packet current() { return input[idx]; }
+		Packet next() {
+			if( filter.rejects(input[++idx]) )
+		}
+	}
+}
+
+	一時中断
+
+
+● 非RDP LLマーシャラ(4)
+
+	(3)+中間ルールサポート
+
+	N<X>でもC<X>でもない中間ルールというのが存在する。
+	このための新しい非終端記号Ｂを導入する
+
+
+	Symbol :=
+	E<LABEL> | A<i> | C<type> | N<name> | (*,$dt) | B<i>
+
+
+function
+{
+	Packet root = new Packet(E<S>,[]);
+	top = new StackItem(null,E<S>,action(item){
+		root.payload.add(item);
+	});
+	
+	Packet->Action af;	// 最後にどのパケットをどのactionで実行するのか特定
+	
+	Packet current = getNextPacket();
+	while( true ) {
+		// 受理の場合
+		if( top==null && current==null )	break;	
+		
+		// 非終端の場合
+		if( top.symbol is N<X> or C<X> or B<i> ) {
+			if( top.symbol is N<X> )
+				actionFunc = new Action(){
+					void action(item){
+						assert(item.symbol is C<type>); N<X>が来ることはない
+						// 来たクラスに名前情報を付加して上へ
+						top.action( new Packet(N<X>,item) );
+					}
+				}
+			if( top.symbol is C<X> )
+				actionFunc = new Action(){
+					X obj;
+					void action(item){
+						assert(item.symbol is N<fieldName>); Cが来ることはない
+						if(obj==null)
+							// 自分を作ってまず親に送る
+							top.action( obj = new X() );
+						// フィールドに設定
+						obj.fieldName.set(item.payload);
+					}
+				}
+			if( top.symbol is B<i> )
+				// 親のアクションを伝播
+				actionFunc = top.action;
+			
+			// テーブルから処理を決定( rule は A->abcdの形 )
+			rules = Table[ top.symbol, current.symbol];
+			
+			if( rules==null )
+				// 適用可能ルールなし。困った。
+				goto backTrack;
+			
+			if( rules.length > 1 ) {
+				// ２番目以降の選択肢もあり得るので、それを記録
+				backLog = new BackTrackRecord(last,
+					top, current, 1 );
+			}
+			// そして最初の選択肢をトライ
+			let top.symbol -> abcd <= rules[0];
+			
+			top = top.previous;			// pop;
+			
+			for( all Symbol x in rules.rightHandSideの逆順 ) {// 逆順
+				top = new StackItem(top,x,actionFunc);
+			}
+			// 非終端だからconsumeしない
+			continue;
+		}
+		
+		// 終端記号の場合
+		if( top.symbol==current.symbol && it is E<X> or (X,$dt) ) {
+			// currentの内容をtopにマッチさせる
+			af[current] = top.action;
+			current = getNextPacket();	// consume
+			continue;
+		}
+		if( top.symbol is A<X> && p \in A && p.symbol==A<X> ) {
+			// currentの内容をtopにマッチさせる
+			af[p] = top.action;
+			consume p;
+			continue;
+		}
+		
+		// エラー。バックトラックを試みる
+	backTrack:
+		if(backLog==null)	assertion failed();
+		// 全てのバックトラックを試してもダメというのなら、文法違反のはず
+		
+		top = backLog.top;
+		** 入力トークン列もbackLog.indexに従って再設定 **
+		
+		
+		rules = Table[ top.symbol, current.symbol ];
+		// ルールは必ずあるはず
+		assert( rules!=null )
+		// 今回はこの番号の選択肢を使う
+		int thisTry = backLog.applicableRule;
+		
+		if( rules.length==thisTry ) {
+			// 更にもう選択肢がこれ以上なければバックログ削除
+			backLog = backLog.previous;
+		}
+		
+		// そして最初の選択肢をトライ
+		let top.symbol -> abcd <= rules[thisTry];
+		
+		top = top.previous;			// pop;
+		
+		for( all Symbol x in rules.rightHandSideの逆順 ) {// 逆順
+			top = new StackItem(top,x,actionFunc);
+		}
+		
+		/*
+			既に作られてしまったaction objectはＧＣされる
+		*/
+	}
+	
+	for( all Packet p in af ) {
+		if(p.symbol is A<X> or E<X>)
+			// 要素と属性は一時的なコンテナに過ぎないので中身を展開
+			for( each o in p.payload )
+				af[p](o);
+		else
+			af[p](p);
+	}
+	return root;
+}
+
+
+●インターリーブ再考
+
+	<interleave> p1 p2 </interleave>
+	
+・p1とp2に出てくるトークンがdisjointでない場合、フィルタを使ったとしても、
+	更にトークンを読み飛ばす機能が必要。
+	
+	<interleave>
+		<group>
+			<element A/>
+			<element B/>
+		</group>
+		<group>
+			<element B/>
+			<element C/>
+		</group>
+	</interleave>
+	
+	これで、p2-p1であるCを見ないようにすると、した時、
+	
+	A,B,C,B
+	
+	と来たら、１つ目のBを読み飛ばせないと、バックトラックしても
+	正解のマッチを発見できない。
+	
+	
+・更に、disjointだったとしても、
+
+	<oneOrMore>
+		<interleave>
+			<oneOrMore>
+				<element A/>
+			</oneOrMore>
+			<element B/>
+		</interleave>
+	</oneOrMore>
+	
+	みたいなパターンはかなり辛い。
+	
+	A,B,A,B,....,A,B
+	
+	ときたら、最初Aを全て取ってからBを取り、残りのBを消費できないことに気付いて
+	バックトラック。Ａを一つずつ戻して全ての選択肢を試さないと正解が発見できない。
+	
+	しかし、一応解けることは解ける。
+	
+	→よってdisjointをとりあえず要請しよう
+	
+	
+	
+{
+	// 入力トークン列
+	Packet[]	input;
+	
+	class InputReader {
+		boolean[]	used;	// 消費したトークンはtrueになっている
+		int		base;		// まだ未消化トークンの先頭位置
+		int		idx;		// 現在のトークン位置
+		フィルタがかかっていると、両者が食い違うことがある
+		
+		Filter	filter;			// 現在のフィルタ
+		
+		Packet current() { return input[idx]; }
+		Packet consume() {
+			used[idx++] = true;
+			
+			while( used[idx] || filter.rejects(input[idx]) )	idx++;
+			
+			while( used[base] )	base++;
+			
+			return current();
+		}
+		void applyFilter( Filter newFilter ) {
+			filter = new Filter(filter,newFilter);
+		}
+		void removeFilter() {
+			idx=base;
+			filter = filter.previous;
+		}
+		
+		InputReader clone() {
+			used,base,idxをディープコピー
+			filterは参照を保存
+		}
+	}
+}
+

@@ -32,7 +32,7 @@ public class StartState extends SequenceState {
 			exp = ref;
 		}
 		
-		getReader().grammar.start = exp;
+		getReader().grammar.exp = exp;
 		return null;	// return value is meaningless.
 	}
 }

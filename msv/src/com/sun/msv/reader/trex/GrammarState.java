@@ -32,7 +32,7 @@ public class GrammarState extends DivInGrammarState {
 	
 	protected Expression makeExpression() {
 		// start pattern is the grammar-as-a-pattern.
-		return newGrammar.start;
+		return newGrammar;
 	}
 
 	protected void startSelf() {
@@ -51,9 +51,9 @@ public class GrammarState extends DivInGrammarState {
 			grammar.namedPatterns, TREXBaseReader.ERR_UNDEFINED_PATTERN );
 
 		// is start pattern defined?
-		if( grammar.start==null ) {
+		if( grammar.exp==null ) {
 			reader.reportError( reader.ERR_MISSING_TOPLEVEL );
-			grammar.start = Expression.nullSet;	// recover by assuming a valid pattern
+			grammar.exp = Expression.nullSet;	// recover by assuming a valid pattern
 		}
 		
 		// this method is called when this State is about to be removed.

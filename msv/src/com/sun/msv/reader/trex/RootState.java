@@ -59,7 +59,7 @@ public class RootState extends RootIncludedPatternState {
 
 		if( simple )
 			// set the top-level expression if that is necessary.
-			reader.grammar.start = exp;
+			reader.grammar.exp = exp;
 		
 		// perform final wrap-up.
 		reader.wrapUp();

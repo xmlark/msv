@@ -165,10 +165,10 @@ public class RELAXNGReader extends TREXBaseReader {
 		 */
 		public String combineMethod;
 		
-		public static abstract class RedefinitionStatus {}
-		public static RedefinitionStatus notBeingRedefined = new RedefinitionStatus(){};
-		public static RedefinitionStatus originalNotFoundYet = new RedefinitionStatus(){};
-		public static RedefinitionStatus originalFound = new RedefinitionStatus(){};
+		public static class RedefinitionStatus {}
+		public static RedefinitionStatus notBeingRedefined = new RedefinitionStatus();
+		public static RedefinitionStatus originalNotFoundYet = new RedefinitionStatus();
+		public static RedefinitionStatus originalFound = new RedefinitionStatus();
 		
 		/**
 		 * current redefinition status.

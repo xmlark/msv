@@ -52,7 +52,7 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 		create a "(element name,attribute name)->Id datatype name" map.
 		Also detects invalid use of datatypes.
 		*/
-		reader.getGrammar().start.visit( new ExpressionWalker(){
+		reader.getGrammar().visit( new ExpressionWalker(){
 			
 			/** current element name. Only available when in a simple-name element */
 			private StringPair elementName=null;

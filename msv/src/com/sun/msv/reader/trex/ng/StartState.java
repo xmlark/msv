@@ -31,8 +31,6 @@ public class StartState extends DefineState {
 			return null;
 		}
 			
-		if(reader.getGrammar().start==null)
-			reader.getGrammar().start = new ReferenceExp("start");
-		return (ReferenceExp)reader.getGrammar().start;
+		return reader.getGrammar();
 	}
 }

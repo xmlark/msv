@@ -490,7 +490,7 @@ public class DTDReader implements DTDEventListener {
 		grammar.namedPatterns.getOrCreate("$  all  $").exp = allExp;
 		
 		// also this allExp is used as top-level expression.
-		grammar.start = allExp;
+		grammar.exp = allExp;
 		
 		// check undefined element.
 		ReferenceExp[] exps = grammar.namedPatterns.getAll();

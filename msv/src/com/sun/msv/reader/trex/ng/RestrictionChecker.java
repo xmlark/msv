@@ -40,7 +40,7 @@ public class RestrictionChecker {
 	}
 	
 	public static void check( RELAXNGReader reader ) {
-		reader.getGrammar().start.visit(new RestrictionChecker(reader).inStart);
+		reader.getGrammar().visit(new RestrictionChecker(reader).inStart);
 	}
 	
 	/** Reader object to which errors are reported. */

@@ -113,7 +113,7 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
 		// oneOrMoreAncestor.
 		// also (element name,attribute name)->default value
 		// map is created here.
-		grammar.start.visit( new ExpressionWalker() {
+		grammar.visit( new ExpressionWalker() {
 			// in the first pass, the elements variable
 			// is used to record visited ElementExps.
 			

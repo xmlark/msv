@@ -15,9 +15,12 @@ import com.sun.msv.reader.datatype.DataTypeVocabularyMap;
 /**
  * TREX grammar, which is expressed as &lt;grammar&gt; element.
  * 
+ * <p>
+ * The <code>exp</code> field keeps the start pattern.
+ * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TREXGrammar implements Grammar {
+public class TREXGrammar extends ReferenceExp implements Grammar{
 	
 	static final public class RefContainer extends ReferenceContainer {
 		public ReferenceExp getOrCreate( String name ) {
@@ -34,13 +37,12 @@ public class TREXGrammar implements Grammar {
 	 */
 	public final RefContainer namedPatterns = new RefContainer();
 	
-	/** Start pattern.
+	/** gets the start pattern.
 	 * 
 	 * The pattern defined under &lt;start&gt; element.
 	 * This pattern will be used to verify document element.
 	 */
-	public Expression start;
-	public Expression getTopLevel() { return start; }
+	public Expression getTopLevel() { return this.exp; }
 	
 	/** ExpressionPool that is associated with this grammar */
 	public final ExpressionPool pool;
@@ -71,6 +73,7 @@ public class TREXGrammar implements Grammar {
 	 *		attribute.
 	 */
 	public TREXGrammar( ExpressionPool pool, TREXGrammar parentGrammar ) {
+		super(null);
 		this.pool = pool;
 		this.parentGrammar = parentGrammar;
 	}

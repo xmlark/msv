@@ -253,7 +253,7 @@ public class Driver {
 	
 	public static void dumpTREX( TREXGrammar g ) throws Exception {
 		System.out.println("*** start ***");
-		System.out.println(ExpressionPrinter.printFragment(g.start));
+		System.out.println(ExpressionPrinter.printFragment(g.exp));
 		System.out.println("*** others ***");
 		System.out.print(
 			ExpressionPrinter.fragmentInstance.printRefContainer(

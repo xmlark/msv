@@ -27,23 +27,23 @@ import org.relaxng.datatype.DatatypeException;
  * ComplexType definition.
  * 
  * ComplexTypeExp holds an expression (as a ReferenceExp) that matches to
- * this type itself and all substitutable types.
+ * this type itself.
  * 
  * <p>
- * <code>self</code> contains the expression that exactly matches
+ * the {@link #body} field contains the expression that exactly matches
  * to the declared content model (without any substitutable types).
  * 
  * <p>
- * <code>selfWType</code> field matches to " @xsi:type<'typeQName'>,self ".
- * This should be referenced from base type.
+ * the <code>exp</code> field contains the reference to the body field,
+ * if this complex type is not abstract. If abstract, then nullSet is set.
+ * You shouldn't directly manipulate the exp field. Instead, you should use
+ * the {@link #setAbstract} method to do it.
  * 
  * <p>
- * {@link #extensions} field matches to selfWType of those types which
- * are derived from this type by extension only.
- * {@link #restrictions} field contains choices of selfWType of those
- * types which are derived from this type by restriction only.
- * {@link #hybrids} field contains choices of selfWType of those types
- * which are derived from this by using both restriction and extension.
+ * Note: The runtime type substitution
+ * (the use of <code>xsi:type</code> attribute)
+ * is implemented at the VGM layer. Therefore, AGMs of XML Schema does <b>NOT</b>
+ * precisely represent what are actually allowed and what are not.
  * 
  * 
  * <h2>Complex Type Definition Schema Component Properties</h2>
@@ -106,7 +106,7 @@ import org.relaxng.datatype.DatatypeException;
  *    attribtue uses <br> attribute wildcard <br> content type
  *   </td><td>
  *    Not directly accessible. Can be found by walking
- *    the children of the {@link #self} field.
+ *    the children of the {@link #body} field.
  *   </td>
  *  </tr><tr>
  *   <td>
@@ -234,101 +234,19 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 	public ComplexTypeExp( XMLSchemaSchema schema, String localName ) {
 		super(localName);
 		this.parent = schema;
-		this.self = new ReferenceExp( localName + ":self" );
-		
-		this.extensions = new ReferenceExp( localName + ":extensions" );
-		this.extensions.exp = Expression.nullSet;
-		this.extensionsSwitch = new OtherExp(this.extensions);
-			
-		this.restrictions = new ReferenceExp( localName + ":restrictions" );
-		this.restrictions.exp = Expression.nullSet;
-		this.restrictionsSwitch = new OtherExp(this.restrictions);
-		
-		this.hybrids = new ReferenceExp( localName + ":hybridDerivedTypes" );
-		this.hybrids.exp = Expression.nullSet;
-		this.hybridsSwitch = new OtherExp(this.hybrids);
-		
-		this.selfWType = new ReferenceExp( localName + ":type" );
-		this.selfWType.exp = schema.pool.createSequence(
-							schema.pool.createAttribute(
-								new ChoiceNameClass(
-									new SimpleNameClass(
-										schema.XMLSchemaInstanceNamespace,
-										"type"),
-									new SimpleNameClass(
-										schema.XMLSchemaInstanceNamespace_old,
-										"type")),
-								schema.pool.createTypedString(
-									getQNameType(schema.targetNamespace,localName)
-								)), self );
-		
-		// self will be added later after the abstract attribute
-		// is examined.
-		this.exp = schema.pool.createChoice(selfWType,
-				schema.pool.createChoice(extensionsSwitch,
-					schema.pool.createChoice(restrictionsSwitch,hybridsSwitch)));
+		this.body = new ReferenceExp(null,null);
+		this.exp = this.body;
 	}
 	
-
-	/**
-	 * the pattern that represents the content model of this type.
-	 */
-	public final ReferenceExp self;
-	/**
-	 * choices of the <code>selfWType</code> field of
-	 * all complextypes which are derived only by extension from this type.
-	 * @see #hybrids
-	 */
-	public final ReferenceExp extensions;
-	public final OtherExp extensionsSwitch;
 	
 	/**
-	 * choices of the <code>selfWType</code> field of
-	 * all complextypes which are derived only by restriction from this type.
-	 * @see #hybrids
+	 * actual content model definition.
 	 */
-	public final ReferenceExp restrictions;
-	public final OtherExp restrictionsSwitch;
-	
-	/**
-	 * choices of the <code>selfWType</code> field of
-	 * all complextypes which are derived by using both restriction and extension
-	 * from this type.
-	 * 
-	 * <p>
-	 * For example, say that this ComplexTypeExp represents B, and B has the following
-	 * type hierarchy.
-	 * 
-	 * <pre>
-	 *         B
-	 *        / \
-	 *       /r  \e
-	 *      /     \
-	 *     Dr      De
-	 *    /r \e   /r \e
-	 *  Drr  Dre Der  Dee
-	 * </pre>
-	 * 
-	 * Then
-	 * the <code>restrictions</code> field contains Dr and Drr, 
-	 * the <code>extensions</code> field contains De and Dee, and
-	 * the <code>hybrids</code> field contains Dre and Der.
-	 */
-	public final ReferenceExp hybrids;
-	public final OtherExp hybridsSwitch;
-	
-	
-	/**
-	 * content model plus "xsi:type='typeName'" attribute.
-	 * This pattern is used from the base type.
-	 */
-	public final ReferenceExp selfWType;
+	public final ReferenceExp body;
 	
 	/** parent XMLSchemaSchema object to which this object belongs. */
 	public final XMLSchemaSchema parent;
-	
-	
-	
+
 	
 	
 //
@@ -379,11 +297,6 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 	 */
 	public int derivationMethod = -1;
 	
-	// actual values for these constants must keep in line with those values
-	// defined in the ElementDeclExp.
-	public static final int RESTRICTION	= 0x1;
-	public static final int EXTENSION	= 0x2;
-	
 
 	/**
 	 * checks if this complex type is abstract.
@@ -396,26 +309,11 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 	 *		true if this method is abstract. Flase if not.
 	 */
 	public boolean isAbstract() {
-		// if it is abstract, then XSElementExp pointed by the self field
-		// is not reachable from the exp field.
-		final RuntimeException eureka = new RuntimeException();
-		try {
-			exp.visit( new ExpressionWalker() {
-				public void onRef( ReferenceExp exp ) {
-					if( exp==self )
-						throw eureka;	// it's not abstract
-					else
-						return;
-				}
-			});
-			// if the self field is not contained in the exp field,
-			// it's abstract.
-			return true;
-		} catch( RuntimeException e ) {
-			if( e == eureka )
-				return false;
-			throw e;
-		}
+		return exp==Expression.nullSet;
+	}
+	public void setAbstract( boolean isAbstract ) {
+		if( isAbstract )		exp=Expression.nullSet;
+		else					exp=body;
 	}
 	
 	/**
@@ -475,6 +373,12 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 			derived = derived.complexBaseType;
 		}
 	}
+	public boolean isDerivedTypeOf( XMLSchemaTypeExp exp, int constraint ) {
+		if( exp instanceof ComplexTypeExp )
+			return isDerivedTypeOf( (ComplexTypeExp)exp, constraint );
+		else
+			return isDerivedTypeOf( ((SimpleTypeExp)exp).getType(), constraint );
+	}
 
 
 	/**
@@ -495,6 +399,12 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 	 */
 	public int block =0;
 	
+	/**
+	 * gets the value of the block constraint.
+	 * SimpleTypeExp always returns 0 because it doesn't have the block constraint.
+	 */
+	public int getBlock() { return block; }
+
 	
 	
 	
@@ -513,9 +423,7 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 		super.redefine(_rhs);
 		
 		ComplexTypeExp rhs = (ComplexTypeExp)_rhs;
-		self.exp = rhs.self.exp;
-		extensions.exp = rhs.extensions.exp;
-		restrictions.exp = rhs.restrictions.exp;
+		body.exp = rhs.body.exp;
 		if( this.parent != rhs.parent )
 			// those two must share the parent.
 			throw new IllegalArgumentException();
@@ -554,6 +462,6 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 	 * work for this class because the exp field is set by the constructor.
 	 */
 	public boolean isDefined() {
-		return self.isDefined();
+		return body.isDefined();
 	}
 }

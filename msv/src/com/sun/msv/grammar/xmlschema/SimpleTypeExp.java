@@ -41,6 +41,12 @@ public class SimpleTypeExp extends XMLSchemaTypeExp {
 	public XSDatatype getType() {
 		return type;
 	}
+
+	/**
+	 * gets the value of the block constraint.
+	 * SimpleTypeExp always returns 0 because it doesn't have the block constraint.
+	 */
+	public int getBlock() { return 0; }
 	
 	/** clone this object. */
 	public RedefinableExp getClone() {

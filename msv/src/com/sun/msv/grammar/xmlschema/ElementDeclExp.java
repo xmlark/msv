@@ -9,6 +9,7 @@
  */
 package com.sun.msv.grammar.xmlschema;
 
+import com.sun.msv.grammar.ChoiceExp;
 import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.SimpleNameClass;
@@ -135,7 +136,8 @@ public class ElementDeclExp extends ReferenceExp
 	public ElementDeclExp( XMLSchemaSchema schema, String typeLocalName ) {
 		super(typeLocalName);
 		this.parent = schema;
-		this.exp = Expression.nullSet;
+		this.substitutions = new ReferenceExp( typeLocalName+":substitutions" );
+		this.substitutions.exp = Expression.nullSet;
 	}
 
 	/**
@@ -147,10 +149,14 @@ public class ElementDeclExp extends ReferenceExp
 	public ElementDeclExp substitutionAffiliation;
 	
 	/**
-	 * those who set the value to this field is also responsible to
-	 * add self into this#exp.
+	 * body.
 	 */
-	public XSElementExp self;
+	public XSElementExp body;
+	
+	/**
+	 * choices of all elements that can validly substitute this element.
+	 */
+	public final ReferenceExp substitutions;
 	
 	/**
 	 * gets the pattern that represents the content model of
@@ -159,7 +165,7 @@ public class ElementDeclExp extends ReferenceExp
 	 * This method is just a short cut for <code>self.contentModel</code>.
 	 */
 	public Expression getContentModel() {
-		return self.contentModel;
+		return body.contentModel;
 	}
 	
 	/** parent XMLSchemaSchema object to which this object belongs. */
@@ -171,13 +177,14 @@ public class ElementDeclExp extends ReferenceExp
 	 * 
 	 * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
 	 */
-	public static class XSElementExp extends ElementExp {
+	public class XSElementExp extends ElementExp {
 		public final SimpleNameClass elementName;
 		public final NameClass getNameClass() { return elementName; }
 		
 		public XSElementExp( SimpleNameClass elementName, Expression contentModel ) {
 			super(contentModel,false);
 			this.elementName = elementName;
+			parent = ElementDeclExp.this;
 		}
 		
 		/**
@@ -191,12 +198,7 @@ public class ElementDeclExp extends ReferenceExp
 		 */
 		public final Vector identityConstraints = new Vector();
 		
-		/**
-		 * owner ElementDeclExp. If this element declaration is a global one,
-		 * then this field is non-null. If this is a local one, then this field
-		 * is null.
-		 */
-		public ElementDeclExp parent;
+		public final ElementDeclExp parent;
 	}
 
 	
@@ -206,6 +208,9 @@ public class ElementDeclExp extends ReferenceExp
 // Schema component properties
 //======================================
 //
+	
+	public boolean isNillable;
+	
 	
 	/**
 	 * gets the target namespace property of this component as
@@ -230,26 +235,21 @@ public class ElementDeclExp extends ReferenceExp
 	 *		true if this method is abstract.
 	 */
 	public boolean isAbstract() {
-		// if it is abstract, then XSElementExp pointed by the self field
-		// is not reachable from the exp field.
-		final RuntimeException eureka = new RuntimeException();
-		try {
-			exp.visit( new ExpressionWalker() {
-				public void onElement( ElementExp exp ) {
-					if( exp==self )
-						throw eureka;	// it's not abstract
-					else
-						return;
-				}
-			});
-			// if the self field is not contained in the exp field,
-			// it's abstract.
+		if( exp instanceof ChoiceExp ) {
+			ChoiceExp cexp = (ChoiceExp)exp;
+			if(cexp.exp1!=body && cexp.exp2!=body)
+				throw new Error();	// assertion failed
 			return true;
-		} catch( RuntimeException e ) {
-			if( e == eureka )
-				return false;
-			throw e;
 		}
+		
+		if(exp!=substitutions)
+			throw new Error();	// assertion failed
+		return false;
+	}
+	
+	public void setAbstract( boolean isAbstract ) {
+		if(isAbstract)	exp = substitutions;
+		else			exp = parent.pool.createChoice( substitutions, body );
 	}
 
 	
@@ -277,30 +277,32 @@ public class ElementDeclExp extends ReferenceExp
 	 */
 	public int block =0;
 	
+	public boolean isSubstitutionBlocked() { return (block&SUBSTITUTION)!=0; }
+	public boolean isRestrictionBlocked() { return (block&RESTRICTION)!=0; }
+	
 	
 	/**
-	 * the <a href="http://www.w3.org/TR/xmlschema-1/#type_definition">
+	 * gets the <a href="http://www.w3.org/TR/xmlschema-1/#type_definition">
 	 * type definition property</a> of this schema component.
 	 */
 	public XMLSchemaTypeExp getTypeDefinition() {
 		final RuntimeException eureka = new RuntimeException();
-		final XMLSchemaTypeExp[] r = new XMLSchemaTypeExp[1];
+		final XMLSchemaTypeExp[] result = new XMLSchemaTypeExp[1];
 		try {
-			self.contentModel.visit( new ExpressionWalker() {
+			body.contentModel.visit( new ExpressionWalker(){
+				public void onElement( ElementExp exp ) {}
 				public void onRef( ReferenceExp exp ) {
-					if( exp instanceof XMLSchemaTypeExp ) {
-						r[0] = (XMLSchemaTypeExp)exp;
+					if(exp instanceof XMLSchemaTypeExp) {
+						result[0] = (XMLSchemaTypeExp)exp;
 						throw eureka;
 					}
 					super.onRef(exp);
 				}
-				public void onElement( ElementExp exp ) { return; }
 			});
-			// no type object was found.
-			return null;
+			// assertion failed. It couldn't be found.
+			throw new Error();
 		} catch( RuntimeException e ) {
-			if( e == eureka )
-				return r[0];
+			if(e==eureka)	return result[0];
 			throw e;
 		}
 	}
@@ -309,7 +311,7 @@ public class ElementDeclExp extends ReferenceExp
 // Implementation details
 //=========================================
 	public boolean isDefined() {
-		return self!=null;
+		return super.isDefined() && body!=null;
 	}
 	
 }

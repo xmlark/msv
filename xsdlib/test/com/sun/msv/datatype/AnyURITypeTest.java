@@ -38,7 +38,7 @@ public class AnyURITypeTest extends TestCase
 		assertEquals( AnyURIType.escape("-_.!~*'()[]#%"), "-_.!~*'()[]#%" );
 		
 		// those characters have to be escaped.
-		assertEquals( AnyURIType.escape(" &="), "%20%26%3D" );
+		assertEquals( AnyURIType.escape(" \""), "%20%22" );
 	}
 	
 	/** test %HH escaping of non-ASCII characters. */

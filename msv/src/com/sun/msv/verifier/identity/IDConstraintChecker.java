@@ -12,35 +12,44 @@ package com.sun.msv.verifier.identity;
 import java.util.Vector;
 import java.util.Map;
 import java.util.Set;
-import com.sun.msv.verifier.DocumentDeclaration;
 import com.sun.msv.verifier.VerificationErrorHandler;
 import com.sun.msv.verifier.IVerifier;
 import com.sun.msv.verifier.ValidityViolation;
 import com.sun.msv.verifier.Verifier;
+import com.sun.msv.verifier.regexp.xmlschema.XSREDocDecl;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.grammar.xmlschema.ElementDeclExp;
 import com.sun.msv.grammar.xmlschema.IdentityConstraint;
 import com.sun.msv.grammar.xmlschema.KeyRefConstraint;
+import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
+import com.sun.msv.grammar.xmlschema.XMLSchemaTypeExp;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 
-
 /**
- * Verifier with XML Schema's identity constraint enforcement.
+ * Verifier with XML Schema-related enforcement.
  * 
+ * <p>
  * This class can be used in the same way as {@link Verifier}.
- * This class also checks XML Schema's identity constraint.
+ * This class also checks XML Schema's identity constraint and handles
+ * all xsi:*** attributes.
  * 
- * This class can be used with non XML Schema grammar.
- * In that case, this class does nothing.
+ * <p>
+ * REDocumentDeclaration is the only supported VGM implementation.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class IDConstraintChecker extends Verifier {
 
-	public IDConstraintChecker( DocumentDeclaration documentDecl, VerificationErrorHandler errorHandler ) {
-		super(documentDecl,errorHandler);
+	public IDConstraintChecker( XMLSchemaGrammar grammar, VerificationErrorHandler errorHandler ) {
+		super(new XSREDocDecl(grammar),errorHandler);
+		this.grammar = grammar;
 	}
+	
+	/** the grammar object against which we are validating. */
+	protected final XMLSchemaGrammar grammar;
 	
 	/** active mathcers. */
 	protected final Vector matchers = new Vector();
@@ -105,6 +114,8 @@ public class IDConstraintChecker extends Verifier {
 			}
 		}
 	}
+
+	
 	
 	public void characters( char[] buf, int start, int len ) throws SAXException {
 		super.characters(buf,start,len);
@@ -142,6 +153,10 @@ public class IDConstraintChecker extends Verifier {
 			new ValidityViolation( loc,
 				localizeMessage(propKey,args) ) );
 	}
+	
+	public static String localizeMessage( String propertyName, Object arg ) {
+		return localizeMessage( propertyName, new Object[]{arg} );
+	}
 
 	public static String localizeMessage( String propertyName, Object[] args ) {
 		String format = java.util.ResourceBundle.getBundle(
@@ -160,5 +175,5 @@ public class IDConstraintChecker extends Verifier {
 		"IdentityConstraint.DoubleMatch"; // arg:3
 	public static final String ERR_UNDEFINED_KEY =
 		"IdentityConstraint.UndefinedKey"; // arg:2 
-
+	
 }

@@ -23,6 +23,7 @@ import com.sun.msv.relaxns.grammar.ExternalElementExp;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
 import com.sun.msv.relaxns.reader.relax.RELAXCoreIslandSchemaReader;
 import com.sun.msv.relaxns.reader.trex.TREXIslandSchemaReader;
+import com.sun.msv.reader.trex.classic.TREXGrammarReader;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.LocatorImpl;
@@ -105,11 +106,11 @@ public class RELAXNSReader
 			if( language.equals( RELAXCoreNamespace ) )	// RELAX Core
 				return new com.sun.msv.relaxns.reader.relax.RELAXCoreIslandSchemaReader(
 					controller,parserFactory,(ExpressionPool)pool,expectedTargetNamespace);
-			if( language.equals( com.sun.msv.reader.trex.TREXGrammarReader.TREXNamespace ) ) // TREX
+			if( language.equals( TREXGrammarReader.TREXNamespace ) ) // TREX
 				return new com.sun.msv.relaxns.reader.trex.TREXIslandSchemaReader(
-					new com.sun.msv.reader.trex.TREXGrammarReader(
+					new TREXGrammarReader(
 						controller,parserFactory,
-						new com.sun.msv.reader.trex.TREXGrammarReader.StateFactory(),
+						new com.sun.msv.reader.trex.classic.TREXGrammarReader.StateFactory(),
 						pool) );
 
 		} catch( javax.xml.parsers.ParserConfigurationException e ) {

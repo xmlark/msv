@@ -26,6 +26,9 @@ public final class AnyNameClass extends NameClass {
     /** singleton instance */
     public static final NameClass theInstance = new AnyNameClass();
     
+    /** empty name class instance. */
+    public static final NameClass EMPTY = new NotNameClass(theInstance);
+    
     private AnyNameClass() {}
     
     public String toString()    { return "*:*"; }

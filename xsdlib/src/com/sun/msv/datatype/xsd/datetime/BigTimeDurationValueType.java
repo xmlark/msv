@@ -137,6 +137,50 @@ public class BigTimeDurationValueType implements ITimeDurationValueType {
     { return fromMinutes(Util.int2bi(minutes)); }
     public static BigTimeDurationValueType fromMinutes( BigInteger minutes )
     { return new BigTimeDurationValueType(null,null,null,null,minutes,null); }
+
+
+    /**
+     * @return
+     */
+    public BigInteger getDay() {
+        return day;
+    }
+
+    /**
+     * @return
+     */
+    public BigInteger getHour() {
+        return hour;
+    }
+
+    /**
+     * @return
+     */
+    public BigInteger getMinute() {
+        return minute;
+    }
+
+    /**
+     * @return
+     */
+    public BigInteger getMonth() {
+        return month;
+    }
+
+    /**
+     * @return
+     */
+    public BigDecimal getSecond() {
+        return second;
+    }
+
+    /**
+     * @return
+     */
+    public BigInteger getYear() {
+        return year;
+    }
+
     
 
     // serialization support

@@ -25,9 +25,9 @@ public class IncludeMergeState extends SimpleState {
 		return null;
 	}
 	
-	protected void startSelf() {
-		super.startSelf();
-	
+	protected void endSelf() {
+		// For RELAX NG, inclusion has to be done at the endSelf method,
+		// not in the startSelf method.
 		final String href = startTag.getAttribute("href");
 
 		if(href==null)
@@ -39,5 +39,7 @@ public class IncludeMergeState extends SimpleState {
 		else
 			// parse specified file
 			reader.switchSource(href,new RootMergedGrammarState());
+		
+		super.endSelf();
 	}
 }

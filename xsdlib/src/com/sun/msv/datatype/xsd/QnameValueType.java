@@ -14,8 +14,8 @@ package com.sun.msv.datatype.xsd;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class QnameValueType implements java.io.Serializable {
-	String namespaceURI;
-	String localPart;
+	public final String namespaceURI;
+	public final String localPart;
 	
 	public boolean equals( Object o ) {
 		QnameValueType rhs = (QnameValueType)o;
@@ -31,7 +31,7 @@ public class QnameValueType implements java.io.Serializable {
 		return "{"+namespaceURI+"}:"+localPart;
 	}
 	
-	QnameValueType( String uri, String localPart ) {
+	public QnameValueType( String uri, String localPart ) {
 		this.namespaceURI	= uri;
 		this.localPart		= localPart;
 	}

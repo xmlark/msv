@@ -306,9 +306,9 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 		}
 		
 		// now the situation is something like (A,X)^(A,Y).
-		// both accepts this token. So continuation becomes meaningless.
+		// both accepts this token. So continuation will be X^(A,Y).
 		content = pool.createChoice( content, content1 );
-		continuation = Expression.nullSet;
+		continuation = pool.createInterleave( continuation1, exp.exp2 );
 	}
 	
 	/**
@@ -446,8 +446,9 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 		// now, we have candidates in both left and right.
 		// say,
 		// exp = (A,X)?,(A,Y)
-		// continuation will be therefore meaningless
+		// continuation will be X?,Y
 		content = pool.createChoice( content, content1 );
-		continuation = Expression.nullSet;
+		continuation = pool.createSequence(
+			pool.createOptional(continuation1), continuation );
 	}
 }

@@ -265,12 +265,12 @@ class RelationNormalizer {
 			return Expression.epsilon;
 		}
 		public Expression onNullSet() {
-			multiplicity = Multiplicity.zero;
-			return Expression.nullSet;
+			// nullSet should have been completely removed.
+			throw new Error();
 		}
 		public Expression onAnyString() {
-			multiplicity = Multiplicity.zero;
-			return Expression.anyString;
+			// anyString should have been completely removed.
+			throw new Error();
 		}
 		public Expression onTypedString( TypedStringExp exp ) {
 			multiplicity = Multiplicity.zero;

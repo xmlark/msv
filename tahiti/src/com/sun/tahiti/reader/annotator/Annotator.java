@@ -25,6 +25,12 @@ public class Annotator
 		if( topLevel==Expression.nullSet )	return topLevel;
 		
 		/*
+		add PrimitiveItem.
+		*/
+		topLevel = topLevel.visit( new PrimitiveTypeAnnotator(reader.pool) );
+		if( topLevel==Expression.nullSet )	return topLevel;
+		
+		/*
 		then remove temporarily added class items. temporary class items
 		are added while parsing various grammars into the AGM. And some
 		of them are unnecessary.

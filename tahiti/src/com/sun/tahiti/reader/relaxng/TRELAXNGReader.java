@@ -48,45 +48,12 @@ public class TRELAXNGReader extends RELAXNGReader {
 		this.result = result;
 	}
 	
-	/** gets Type of Java object from TypedStringExp. */
-	protected Class getJavaType( TypedStringExp texp ) {
-		if( texp.dt instanceof DatabindableDatatype ) {
-			return ((DatabindableDatatype)texp.dt).getJavaObjectType();
-		}
-		
-		// if any other attempt fails, use String.
-		return String.class;
-	}
-	
-	/**
-	 * a map from TypedStringExp to the PrimitiveItem which wraps it.
-	 * used to unify PrimitiveItems.
-	 */
-	private final Map primitiveItems = new java.util.HashMap();
-	
 	/** ReaderResult object that should be filled by this class. */
 	private final ReaderResult result;
 	
 	protected Expression interceptExpression( ExpressionState state, Expression exp ) {
 		// if an error was found, stop processing.
 		if( hadError )	return exp;
-		
-		
-		if( exp instanceof TypedStringExp ) {
-			// if this is a typed string, then wrap it by the PrimitiveItem.
-			
-			if( primitiveItems.containsKey(exp) )
-				// if this exp is already wrapped, use it instead of creating another one.
-				// this will reduce the size of the LL grammar for data-binding.
-				exp = (Expression)primitiveItems.get(exp);
-			else {
-				// if this is the first time, wrap it and memorize it.
-				PrimitiveItem p = new PrimitiveItem(getJavaType((TypedStringExp)exp));
-				primitiveItems.put( exp, p );
-				p.exp = exp;
-				exp = p;
-			}
-		}
 		
 		// check Tahiti attributes.
 		

@@ -120,6 +120,15 @@ other RELAX NG processors will silently ignore all Schematron constraints.
 
 
 ----------------------------------------------------------------------
+LIMITATION
+----------------------------------------------------------------------
+
+- id() function works correctly only if Xerces or Crimson is used as
+  the DOM implementaion.
+
+
+
+----------------------------------------------------------------------
 REFERENCES
 ----------------------------------------------------------------------
 [ 1] RELAX NG

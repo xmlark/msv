@@ -345,9 +345,10 @@ public abstract class GrammarReader
 	}
 	
 	/**
-	 * switchs InputSource to the specified URL and
+	 * Switchs InputSource to the specified URL and
 	 * parses it by the specified state.
 	 * 
+	 * The method will return after the parsing of the new source is completed.
 	 * derived classes can use this method to realize semantics of 'include'.
 	 * 
 	 * @param sourceState
@@ -366,7 +367,11 @@ public abstract class GrammarReader
 		final InputSource source = resolveLocation(sourceState,url);
 		if(source==null)		return;	// recover by ignoring this.
 		
-		url = source.getSystemId();
+        switchSource( source, newState );
+    }
+    
+    public void switchSource( InputSource source, State newState ) {
+		String url = source.getSystemId();
 		
 		for( InclusionContext ic = pendingIncludes; ic!=null; ic=ic.previousContext )
 			if( ic.systemId.equals(url) ) {
@@ -407,7 +412,7 @@ public abstract class GrammarReader
 	}
 	
 	/** parses a grammar from the specified source */
-	private void _parse( Object source, Locator errorSource ) {
+	public final void _parse( Object source, Locator errorSource ) {
 		try {
 			XMLReader reader = parserFactory.newSAXParser().getXMLReader();
 			reader.setContentHandler(this);

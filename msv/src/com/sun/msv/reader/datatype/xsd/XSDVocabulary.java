@@ -14,7 +14,8 @@ import java.util.Map;
 public class XSDVocabulary implements DataTypeVocabulary
 {
 	/** namespace URI of XML Schema */
-	public static final String XMLSchemaNamespace = "http://www.w3.org/2000/10/XMLSchema";
+	public static final String XMLSchemaNamespace = "http://www.w3.org/2001/XMLSchema-datatypes";
+	public static final String XMLSchemaNamespace2= "http://www.w3.org/2001/XMLSchema";
 	
 	public State createTopLevelReaderState( StartTagInfo tag )
 	{

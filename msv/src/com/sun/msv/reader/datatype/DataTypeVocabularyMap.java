@@ -22,6 +22,7 @@ public class DataTypeVocabularyMap
 		{
 			v = new com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary();
 			impl.put( com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace, v );
+			impl.put( com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace2, v );
 		}
 		
 		return v;

@@ -6,6 +6,8 @@
         with the same name.
 (TREX)  modified to accept old "http://www.w3.org/2000/10/XMLSchema"
         namespace with a warning.
+(dt)    Corrected namespace URI to "http://www.w3.org/2001/XMLSchema"
+        and "http://www.w3.org/2001/XMLSchema-datatypes"
 (both)  Better error diagnosis gets produced when the user forgot to
         declare namespace URI or declared a wrong namespace.
 

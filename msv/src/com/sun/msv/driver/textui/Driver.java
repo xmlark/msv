@@ -16,7 +16,6 @@ import com.sun.msv.grammar.relax.*;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.ExpressionPrinter;
 import com.sun.msv.reader.util.GrammarLoader;
-//import com.sun.msv.reader.dtd.DTDReader;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
 import com.sun.msv.relaxns.verifier.SchemaProviderImpl;
 import com.sun.msv.verifier.*;
@@ -48,6 +47,7 @@ public class Driver {
 		boolean verbose = false;
 		boolean warning = false;
 		boolean standalone=false;
+		boolean strict=false;
 		EntityResolver entityResolver=null;
 		
 		if( args.length==0 ) {
@@ -56,6 +56,8 @@ public class Driver {
 		}
 		
 		for( int i=0; i<args.length; i++ ) {
+			if( args[i].equalsIgnoreCase("-strict") )			strict = true;
+			else
 			if( args[i].equalsIgnoreCase("-standalone") )		standalone = true;
 			else
 			if( args[i].equalsIgnoreCase("-loose") )			standalone = true;	// backward compatible name
@@ -155,10 +157,15 @@ public class Driver {
 
 		Grammar grammar=null;
 		try {
-			grammar = GrammarLoader.loadSchema(
-				grammarName,
-				new DebugController(warning,false,entityResolver),
-				factory);
+			GrammarLoader loader = new GrammarLoader();
+			
+			// set various parameters
+			loader.setController( new DebugController(warning,false,entityResolver) );
+			loader.setSAXParserFactory(factory);
+			loader.setStrictCheck(strict);
+			
+			grammar = loader.parse(grammarName);
+			
 		} catch(SAXParseException spe) {
 //			spe.printStackTrace();
 			; // this error is already reported.

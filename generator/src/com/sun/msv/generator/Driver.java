@@ -276,7 +276,13 @@ public class Driver
 			{
 				int idx = outputName.indexOf('$');
 				if( idx!=-1 )
-					os = new FileOutputStream( outputName.substring(0,idx)+i+outputName.substring(idx+1) );
+				{
+					String s = Integer.toString(i);
+					for( int j=s.length(); j<Integer.toString(number-1).length(); j++ )
+						s = "0"+s;
+					
+					os = new FileOutputStream( outputName.substring(0,idx)+s+outputName.substring(idx+1) );
+				}
 				else
 					os = new FileOutputStream( outputName );
 			}
@@ -298,7 +304,7 @@ public class Driver
 		try
 		{// try it as a file
 			InputSource is = new InputSource(new java.io.FileInputStream(fileOrURL));
-			is.setSystemId(new File(fileOrURL).getAbsolutePath());
+			is.setSystemId(new File(fileOrURL).getCanonicalPath());
 			return is;
 		}
 		catch( Exception e )

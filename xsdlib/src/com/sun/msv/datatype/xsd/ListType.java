@@ -19,7 +19,7 @@ import org.relaxng.datatype.ValidationContext;
  * 
  * type of the value object is {@link ListValueType}.
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class ListType extends ConcreteType implements Discrete {
 	

@@ -17,7 +17,7 @@ import org.relaxng.datatype.ValidationContext;
  * type of the value object is <code>java.lang.Short</code>.
  * See http://www.w3.org/TR/xmlschema-2/#short for the spec
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ShortType extends IntegerDerivedType {
 	public static final ShortType theInstance = new ShortType("short");

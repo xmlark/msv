@@ -17,7 +17,7 @@ import org.relaxng.datatype.ValidationContext;
 /**
  * "enumeration" facets validator.
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class EnumerationFacet extends DataTypeWithValueConstraintFacet {
 	protected EnumerationFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )

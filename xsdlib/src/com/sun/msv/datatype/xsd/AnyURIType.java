@@ -20,7 +20,7 @@ import org.relaxng.datatype.ValidationContext;
  * See http://www.w3.org/TR/xmlschema-2/#anyURI for the spec.
  * type of the value object is <code>java.lang.String</code>.
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class AnyURIType extends ConcreteType implements Discrete {
 	

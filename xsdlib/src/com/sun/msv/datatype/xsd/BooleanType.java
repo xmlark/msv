@@ -18,7 +18,7 @@ import com.sun.msv.datatype.SerializationContext;
  * type of the value object is <code>java.lang.Boolean</code>.
  * See http://www.w3.org/TR/xmlschema-2/#boolean for the spec
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class BooleanType extends ConcreteType {
 	public static final BooleanType theInstance = new BooleanType();

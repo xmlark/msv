@@ -16,7 +16,7 @@ import com.sun.msv.datatype.SerializationContext;
 /**
  * "final" component.
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class FinalComponent extends XSDatatypeImpl {
 	/** immediate base type, which may be a concrete type or DataTypeWithFacet */

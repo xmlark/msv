@@ -15,7 +15,7 @@ import org.relaxng.datatype.DatatypeException;
 /**
  * base class for facets which constrain value space.
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class DataTypeWithValueConstraintFacet extends DataTypeWithFacet {
 	

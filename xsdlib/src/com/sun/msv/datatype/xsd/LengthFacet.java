@@ -19,7 +19,7 @@ import org.relaxng.datatype.ValidationContext;
  * this class also detects inconsistent facet setting
  * (for example, minLength=100 and maxLength=0)
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class LengthFacet extends DataTypeWithValueConstraintFacet {
 	public final int length;

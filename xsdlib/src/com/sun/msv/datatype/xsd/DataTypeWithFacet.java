@@ -15,7 +15,7 @@ import com.sun.msv.datatype.SerializationContext;
 /**
  * Base implementation of facet-restricted datatype
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class DataTypeWithFacet extends XSDatatypeImpl
 {

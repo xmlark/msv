@@ -17,7 +17,7 @@ import org.relaxng.datatype.ValidationContext;
  *
  * this class holds these facet information and performs validation.
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 	/** maximum number of total digits. */

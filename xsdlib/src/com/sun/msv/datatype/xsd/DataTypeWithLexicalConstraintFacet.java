@@ -15,7 +15,7 @@ import org.relaxng.datatype.DatatypeException;
 /**
  * base class for facets which constrains lexical space of data
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class DataTypeWithLexicalConstraintFacet extends DataTypeWithFacet {
 	

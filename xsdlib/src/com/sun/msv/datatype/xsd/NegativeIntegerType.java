@@ -20,7 +20,7 @@ import org.relaxng.datatype.ValidationContext;
  * v.isNegative is certainly faster than compareTo(ZERO).
  * This the sole reason why this class exists at all.
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NegativeIntegerType extends IntegerType {
 	public static final NegativeIntegerType theInstance = new NegativeIntegerType();

@@ -14,7 +14,7 @@ import org.relaxng.datatype.DatatypeException;
 /**
  * 'maxInclusive' facet
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class MaxInclusiveFacet extends RangeFacet {
 	protected MaxInclusiveFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )

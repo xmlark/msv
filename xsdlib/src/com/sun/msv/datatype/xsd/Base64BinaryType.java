@@ -18,7 +18,7 @@ import com.sun.msv.datatype.SerializationContext;
  * type of the value object is {@link BinaryValueType}.
  * See http://www.w3.org/TR/xmlschema-2/#base64Binary for the spec
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class Base64BinaryType extends BinaryBaseType {
 	public static final Base64BinaryType theInstance = new Base64BinaryType();

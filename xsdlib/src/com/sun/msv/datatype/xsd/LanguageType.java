@@ -19,7 +19,7 @@ import org.relaxng.datatype.ValidationContext;
  * type of the value object is <code>java.lang.String</code>.
  * See http://www.w3.org/TR/xmlschema-2/#language for the spec
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class LanguageType extends TokenType {
 	

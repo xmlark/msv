@@ -21,7 +21,7 @@ import org.relaxng.datatype.DatatypeException;
 /**
  * derives a new type by adding facets.
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TypeIncubator {
 	

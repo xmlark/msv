@@ -21,7 +21,7 @@ import org.relaxng.datatype.ValidationContext;
  * UnsignedIntType uses a LongType as a base implementation, for the convenience and
  * faster performance.
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class UnsignedIntType extends LongType {
 	

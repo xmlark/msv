@@ -21,7 +21,7 @@ import org.relaxng.datatype.DatatypeException;
  * "pattern" is a constraint facet which is applied against lexical space.
  * See http://www.w3.org/TR/xmlschema-2/#dt-pattern for the spec
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
 	

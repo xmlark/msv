@@ -15,7 +15,7 @@ import org.relaxng.datatype.ValidationContext;
 /**
  * Base class of "(max|min)(In|Ex)clusive" facet validator
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class RangeFacet extends DataTypeWithValueConstraintFacet {
 	public final Object limitValue;

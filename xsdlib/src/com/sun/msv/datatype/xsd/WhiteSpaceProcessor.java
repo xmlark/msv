@@ -16,7 +16,7 @@ import org.relaxng.datatype.DatatypeException;
 /**
  * processes white space normalization
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class WhiteSpaceProcessor implements Serializable {
 	

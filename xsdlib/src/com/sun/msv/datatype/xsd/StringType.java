@@ -18,7 +18,7 @@ import com.sun.msv.datatype.SerializationContext;
  * type of the value object is <code>java.lang.String</code>.
  * See http://www.w3.org/TR/xmlschema-2/#string for the spec
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class StringType extends ConcreteType implements Discrete {
 	

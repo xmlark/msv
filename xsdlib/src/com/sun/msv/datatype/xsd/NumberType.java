@@ -21,7 +21,7 @@ import com.sun.msv.datatype.SerializationContext;
  * See http://www.w3.org/TR/xmlschema-2/#decimal for the spec.
  * It was once known as "number" type.
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NumberType extends ConcreteType implements Comparator {
 	public static final NumberType theInstance = new NumberType();

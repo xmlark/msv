@@ -15,7 +15,7 @@ package com.sun.msv.datatype.xsd;
  * type of the value object is <code>java.lang.String</code>.
  * See http://www.w3.org/TR/xmlschema-2/#normalizedString for the spec
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NormalizedStringType extends StringType {
 	public static final NormalizedStringType theInstance = new NormalizedStringType("normalizedString");

@@ -16,7 +16,7 @@ import org.relaxng.datatype.ValidationContext;
 /**
  * whiteSpace facet validator
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class WhiteSpaceFacet extends DataTypeWithFacet {
 	

@@ -21,7 +21,7 @@ import org.relaxng.datatype.ValidationContext;
  * UnsignedShortType uses a IntType as a base implementation, for the convenience and
  * faster performance.
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class UnsignedShortType extends IntType {
 	public static final UnsignedShortType theInstance = new UnsignedShortType();

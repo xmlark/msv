@@ -15,7 +15,7 @@ import com.sun.msv.datatype.SerializationContext;
 /**
  * base class for types derived from integer.
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class IntegerDerivedType extends ConcreteType implements Comparator {
 	

@@ -12,7 +12,7 @@ package com.sun.msv.datatype.xsd;
 /**
  * Unicode-related utility functions.
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class UnicodeUtil {
 	/**

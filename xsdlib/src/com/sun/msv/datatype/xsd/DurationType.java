@@ -21,7 +21,7 @@ import org.relaxng.datatype.ValidationContext;
  * type of the value object is {@link ITimeDurationValueType}.
  * See http://www.w3.org/TR/xmlschema-2/#duration for the spec
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class DurationType extends ConcreteType implements Comparator {
 	

@@ -13,7 +13,7 @@ import org.relaxng.datatype.ValidationContext;
 
 /** base class of FloatType and DoubleType
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class FloatingNumberType extends ConcreteType implements Comparator {
 	protected FloatingNumberType( String typeName ) { super(typeName); }

@@ -24,7 +24,7 @@ import java.util.SimpleTimeZone;
  * base implementation of dateTime and dateTime-truncated types.
  * this class uses IDateTimeValueType as the value object.
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class DateTimeBaseType extends ConcreteType implements Comparator {
 	

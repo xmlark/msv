@@ -14,7 +14,7 @@ import org.relaxng.datatype.DatatypeException;
 /**
  * 'minExclusive' facet
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class MinExclusiveFacet extends RangeFacet {
 	protected MinExclusiveFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )

@@ -124,7 +124,39 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 
 
 	
-	protected final boolean isAtomType() { return false; }
+	public final boolean isDerivedTypeOf( XSDatatype baseType ) {
+		return isDerivedTypeOf(baseType,this);
+	}
+	
+	/**
+	 * an implementation of 
+	 * <a href="http://www.w3.org/TR/xmlschema-1/#cos-st-derived-ok">"Type Derivation OK (Simple)"</a>
+	 * of the spec.
+	 */
+	public static boolean isDerivedTypeOf( XSDatatype base, XSDatatype derived ) {
+		
+		if( base==SimpleURType.theInstance )	return true;
+		
+		if( base.getVariety()==VARIETY_UNION ) {
+			// if the base type is an union variety,
+			// type derivation is OK if "derived" is derived from one of member types.
+			XSDatatype t = base;
+			while(!(t instanceof UnionType))
+				t = t.getBaseType();
+			XSDatatypeImpl[] memberTypes = ((UnionType)t).memberTypes;
+			for( int i=0; i<memberTypes.length; i++ )
+				if( isDerivedTypeOf( memberTypes[i], derived ) )
+					return true;
+		}
+		
+		while( derived!=SimpleURType.theInstance ) {
+			if( base==derived )
+				return true;
+			derived = derived.getBaseType();
+		}
+		
+		return false;
+	}
 	
 	
 

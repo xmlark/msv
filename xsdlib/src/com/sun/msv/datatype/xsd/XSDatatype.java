@@ -22,7 +22,7 @@ import org.relaxng.datatype.ValidationContext;
  * {@link org.relaxng.datatype.Datatype} interface.
  * Application can use this interface to interact with datatype objects.
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface XSDatatype extends Serializable, DatabindableDatatype {
 
@@ -194,6 +194,10 @@ public interface XSDatatype extends Serializable, DatabindableDatatype {
 	 * <a href="http://www.w3.org/TR/xmlschema-1/#cos-st-derived-ok">"Type Derivation OK (Simple)"</a>
 	 * of the spec. Therefore use caution if what you want is a casual method
 	 * because this method may cause a lot of unintuitive result.
+	 * 
+	 * <p>
+	 * <b>Note to implementors</b> Use the static version of this method defined
+	 * in the XSDatatypeImpl class. You don't need to implement this method from scratch.
 	 */
-//	public boolean isDerivedTypeOf( XSDatatype baseType );
+	public boolean isDerivedTypeOf( XSDatatype baseType );
 }

@@ -24,7 +24,7 @@ import org.relaxng.datatype.DatatypeException;
  * <p>
  * Derivation by restriction should be done by using {@link TypeIncubator}.
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DatatypeFactory {
 	

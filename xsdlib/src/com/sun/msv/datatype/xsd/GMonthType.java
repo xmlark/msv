@@ -21,7 +21,7 @@ import java.util.Calendar;
  * type of the value object is {@link IDateTimeValueType}.
  * See http://www.w3.org/TR/xmlschema-2/#gMonth for the spec
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class GMonthType extends DateTimeBaseType {
 	

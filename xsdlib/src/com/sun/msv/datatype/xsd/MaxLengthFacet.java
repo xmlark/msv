@@ -15,7 +15,7 @@ import org.relaxng.datatype.ValidationContext;
 /**
  * 'maxLength' facet
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class MaxLengthFacet extends DataTypeWithValueConstraintFacet
 {

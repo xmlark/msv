@@ -17,7 +17,7 @@ import org.relaxng.datatype.ValidationContext;
  * type of the value object is {@link IntegerValueType}.
  * See http://www.w3.org/TR/xmlschema-2/#unsignedLong for the spec
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class UnsignedLongType extends IntegerType {
 	public static final UnsignedLongType theInstance = new UnsignedLongType();

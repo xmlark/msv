@@ -12,7 +12,7 @@ package com.sun.msv.datatype.xsd;
 /**
  * value type of "base64Binary" and "hexBinary" type.
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 class BinaryValueType implements java.io.Serializable {
 	/** raw byte data */

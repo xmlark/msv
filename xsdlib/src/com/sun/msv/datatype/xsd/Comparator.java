@@ -16,7 +16,7 @@ package com.sun.msv.datatype.xsd;
  * RangeFacet uses this interface to do its job.
  * It differs from {@link java.util.Comparator} in return value.
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface Comparator {
 	static final int LESS			= -1;	// lhs < rhs

@@ -15,7 +15,7 @@ import com.sun.msv.datatype.SerializationContext;
 /**
  * base implementation for "hexBinary" and "base64Binary" types.
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class BinaryBaseType extends ConcreteType implements Discrete {
 	BinaryBaseType( String typeName ) { super(typeName); }

@@ -17,7 +17,7 @@ import org.relaxng.datatype.ValidationContext;
  * type of the value object is <code>java.lang.String</code>.
  * See http://www.w3.org/TR/xmlschema-2/#Name for the spec
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NameType extends TokenType {
 	public static final NameType theInstance = new NameType();

@@ -16,7 +16,7 @@ import com.sun.msv.datatype.SerializationContext;
 /**
  * union type.
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 final public class UnionType extends ConcreteType {
 	/**

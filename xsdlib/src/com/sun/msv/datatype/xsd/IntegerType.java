@@ -18,7 +18,7 @@ import java.math.BigInteger;
  * type of the value object is {@link IntegerValueType}.
  * See http://www.w3.org/TR/xmlschema-2/#integer for the spec
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class IntegerType extends IntegerDerivedType {
 	

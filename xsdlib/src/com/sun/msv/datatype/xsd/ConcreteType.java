@@ -16,7 +16,7 @@ import org.relaxng.datatype.DatatypeException;
  * base class for those types which can be used by itself
  * (int,uriReference,string, etc) .
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class ConcreteType extends XSDatatypeImpl {
 	

@@ -14,7 +14,7 @@ import java.math.BigInteger;
 /**
  * Value object of "integer" type.
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class IntegerValueType implements Comparable, java.io.Serializable {
 	/** canonical representation of absolute value of integer

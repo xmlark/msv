@@ -12,7 +12,7 @@ package com.sun.msv.datatype.xsd;
 /**
  * base interface of types to which length-related facets are applicable.
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 interface Discrete {
 	/** count the number of item in value type.

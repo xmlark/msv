@@ -38,7 +38,7 @@ public class MinLengthFacet extends DataTypeWithValueConstraintFacet
 	public Object convertToValue( String literal, ValidationContextProvider context )
 	{
 		Object o = baseType.convertToValue(literal,context);
-		if(o==null || ((Discrete)concreteType).countLength(literal)<minLength)	return null;
+		if(o==null || ((Discrete)concreteType).countLength(o)<minLength)	return null;
 		return o;
 	}
 	
@@ -49,7 +49,7 @@ public class MinLengthFacet extends DataTypeWithValueConstraintFacet
 		// this method is never called.
 		if(o==null)	throw new IllegalStateException();	// assertion
 		
-		int cnt = ((Discrete)concreteType).countLength(content);
+		int cnt = ((Discrete)concreteType).countLength(o);
 		if(cnt<minLength)
 			return new DataTypeErrorDiagnosis( this, content, -1,
 				DataTypeErrorDiagnosis.ERR_MINLENGTH,

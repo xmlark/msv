@@ -43,7 +43,7 @@ public class LengthFacet extends DataTypeWithValueConstraintFacet
 	public Object convertToValue( String content, ValidationContextProvider context )
 	{
 		Object o = baseType.convertToValue(content,context);
-		if(o==null || ((Discrete)concreteType).countLength(content)!=length)	return null;
+		if(o==null || ((Discrete)concreteType).countLength(o)!=length)	return null;
 		return o;
 	}
 	
@@ -54,7 +54,7 @@ public class LengthFacet extends DataTypeWithValueConstraintFacet
 		// this method is never called.
 		if(o==null)	throw new IllegalStateException();	// assertion
 		
-		int cnt = ((Discrete)concreteType).countLength(content);
+		int cnt = ((Discrete)concreteType).countLength(o);
 		if(cnt!=length)
 			return new DataTypeErrorDiagnosis( this, content, -1,
 				DataTypeErrorDiagnosis.ERR_LENGTH,

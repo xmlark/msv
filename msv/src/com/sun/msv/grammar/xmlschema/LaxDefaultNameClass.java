@@ -42,14 +42,24 @@ import java.util.Set;
  */
 public class LaxDefaultNameClass extends NameClass {
 	
-	public LaxDefaultNameClass() {
+	/**
+	 * @param base
+	 *		this name class accepts a name if
+	 *		<ol>
+	 *		 <li>it's in the 'base" name class and
+	 *		 <li>it's not one of those excluded names
+	 */
+	public LaxDefaultNameClass( NameClass _base ) {
+		this.base = _base;
 		names.add( new StringPair(NAMESPACE_WILDCARD,LOCALNAME_WILDCARD) );
 	}
+	
+	private NameClass base;
 	
 	public Object visit( NameClassVisitor visitor ) {
 		// create equivalent name class and let visitor visit it.
 		if( equivalentNameClass==null ) {
-			NameClass nc = AnyNameClass.theInstance;
+			NameClass nc = base;
 			StringPair[] items = (StringPair[])names.toArray(new StringPair[0]);
 			for( int i=0; i<items.length; i++ ) {
 				if( items[i].namespaceURI==NAMESPACE_WILDCARD
@@ -72,7 +82,8 @@ public class LaxDefaultNameClass extends NameClass {
 	protected NameClass equivalentNameClass;
 	
 	public boolean accepts( String namespaceURI, String localName ) {
-		return !names.contains( new StringPair(namespaceURI,localName) );
+		return base.accepts(namespaceURI,localName) &&
+				!names.contains( new StringPair(namespaceURI,localName) );
 	}
 	
 	/**

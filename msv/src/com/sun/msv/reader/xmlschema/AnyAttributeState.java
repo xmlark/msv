@@ -15,6 +15,8 @@ import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.grammar.xmlschema.AttributeDeclExp;
+import com.sun.msv.grammar.xmlschema.AttributeWildcard;
+import com.sun.msv.grammar.xmlschema.AttWildcardExp;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.GrammarReader;
 import java.util.StringTokenizer;
@@ -30,71 +32,23 @@ public class AnyAttributeState extends AnyState {
 	protected Expression createExpression( final String namespace, final String process ) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		final XMLSchemaSchema currentSchema = reader.currentSchema;
+
+		int mode;
 		
-		if( process.equals("skip") ) {
-			// "skip" can be expanded now.
-			NameClass nc = getNameClass(namespace,currentSchema);
-			
-			// TODO: make sure that <zeroOrMore> is correct semantics.
-			return reader.pool.createZeroOrMore(
-				reader.pool.createAttribute(nc) );
+		if(process.equals("skip"))		mode = AttributeWildcard.SKIP;
+		else
+		if(process.equals("lax"))		mode = AttributeWildcard.LAX;
+		else
+		if(process.equals("strict"))	mode = AttributeWildcard.STRICT;
+		else {
+			reader.reportError( reader.ERR_BAD_ATTRIBUTE_VALUE, "processContents", process );
+			mode = AttributeWildcard.SKIP;
 		}
 		
-		// "lax"/"strict" has to be back-patched later.
-		final ReferenceExp anyAttExp = new ReferenceExp("anyAttribute("+process+":"+namespace+")");
-		reader.addBackPatchJob( new GrammarReader.BackPatch(){
-			public State getOwnerState() { return AnyAttributeState.this; }
-			public void patch() {
-				
-				if( !process.equals("lax")
-				&&  !process.equals("strict") )  {
-					reader.reportError( reader.ERR_BAD_ATTRIBUTE_VALUE, "processContents", process );
-					anyAttExp.exp = Expression.nullSet;
-					return;
-				}
-				
-				anyAttExp.exp = Expression.epsilon;
-				NameClass nc = getNameClass(namespace,currentSchema);
-				Iterator itr = reader.grammar.iterateSchemas();
-				while( itr.hasNext() ) {
-					XMLSchemaSchema schema = (XMLSchemaSchema)itr.next();
-					// nc is built by using NamespaceNameClass.
-					// "strict" allows global element declarations of 
-					// specified namespaces.
-					if(nc.accepts( schema.targetNamespace, nc.LOCALNAME_WILDCARD )) {
-							
-						// gather global attributes.
-						ReferenceExp[] atts = schema.attributeDecls.getAll();
-						for( int i=0; i<atts.length; i++ )
-							anyAttExp.exp = reader.pool.createSequence(
-								reader.pool.createOptional(atts[i]),
-								anyAttExp.exp );
-					}
-				}
-				
-				if( !process.equals("lax") )
-					return;	// if processContents="strict", the above is fine.
-				
-				// if "lax", we have to add an expression to
-				// match other attributes.
-				NameClass laxNc = createLaxNameClass( nc,
-					new XMLSchemaReader.RefResolver() {
-						public ReferenceContainer get( XMLSchemaSchema schema ) {
-							return schema.attributeDecls;
-						}
-					});
-				
-				anyAttExp.exp = reader.pool.createSequence(
-					reader.pool.createZeroOrMore(
-						reader.pool.createAttribute( laxNc )
-					),
-					anyAttExp.exp );
-			}
-		});
+		((AnyAttributeOwner)parentState).setAttributeWildcard(
+			new AttributeWildcard( getNameClass(namespace,currentSchema), mode ) );
 		
-		anyAttExp.exp = Expression.nullSet;	// dummy for a while.
-		
-		return anyAttExp;
+		return Expression.epsilon;
 	}
 
 	protected NameClass getNameClassFrom( ReferenceExp exp ) {

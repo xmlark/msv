@@ -148,19 +148,36 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 	public ComplexTypeExp( XMLSchemaSchema schema, String localName ) {
 		super(localName);
 		this.parent = schema;
-		this.body = new ReferenceExp(null,null);
-		this.exp = this.body;
+		setAbstract(false);
 	}
 	
 	
-	/**
-	 * actual content model definition.
-	 */
-	public final ReferenceExp body;
+	/** actual content model definition + attribute uses. */
+	public final ReferenceExp body = new ReferenceExp(null);
+	
+	/** attribute wildcard as an expression. */
+	public final ReferenceExp attWildcard = new ReferenceExp(null,Expression.epsilon);
+	
 	
 	/** parent XMLSchemaSchema object to which this object belongs. */
 	public final XMLSchemaSchema parent;
 
+	/**
+	 * Attribute wild card constraint.
+	 * 
+	 * <p>
+	 * Due to the nasty definition of the interaction between attribute wildcards,
+	 * we cannot add the expression for validating wildcard until the very last moment.
+	 * 
+	 * <p>
+	 * Until the wrap-up phase of the schema parsing, this field will contain
+	 * the "local wildcard definition." In the wrap-up phase, this field is replaced
+	 * by the "complete wildcard definition." 
+	 */
+	public AttributeWildcard wildcard;
+	
+	public AttributeWildcard getAttributeWildcard() { return wildcard; }
+	public void setAttributeWildcard( AttributeWildcard local ) { wildcard=local; }
 	
 	
 //
@@ -226,8 +243,8 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 		return exp==Expression.nullSet;
 	}
 	public void setAbstract( boolean isAbstract ) {
-		if( isAbstract )		exp=Expression.nullSet;
-		else					exp=body;
+		if( isAbstract )	exp=Expression.nullSet;
+		else				exp=parent.pool.createSequence(body,attWildcard);
 	}
 	
 	/**
@@ -338,6 +355,13 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 		
 		ComplexTypeExp rhs = (ComplexTypeExp)_rhs;
 		body.exp = rhs.body.exp;
+		complexBaseType = rhs.complexBaseType;
+		simpleBaseType = rhs.simpleBaseType;
+		derivationMethod = rhs.derivationMethod;
+		finalValue = rhs.finalValue;
+		block = rhs.block;
+		wildcard = rhs.wildcard.copy();
+		
 		if( this.parent != rhs.parent )
 			// those two must share the parent.
 			throw new IllegalArgumentException();

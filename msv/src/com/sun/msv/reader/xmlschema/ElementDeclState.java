@@ -173,6 +173,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 					new Locator[]{this.location,reader.getDeclaredLocationOf(decl)},
 					reader.ERR_DUPLICATE_ELEMENT_DEFINITION,
 					new Object[]{name} );
+			
 		} else {
 			// create a local object.
 			decl = new ElementDeclExp(reader.currentSchema,null);

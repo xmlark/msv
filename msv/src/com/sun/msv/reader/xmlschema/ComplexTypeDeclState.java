@@ -13,6 +13,7 @@ import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.grammar.ReferenceContainer;
+import com.sun.msv.grammar.xmlschema.AttributeWildcard;
 import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.reader.State;
@@ -23,8 +24,9 @@ import org.xml.sax.Locator;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ComplexTypeDeclState extends RedefinableDeclState {
+public class ComplexTypeDeclState extends RedefinableDeclState implements AnyAttributeOwner {
 	
+	/** ComplexType object that we are now constructing. */
 	protected ComplexTypeExp decl;
 	
 	protected ReferenceContainer getContainer() {
@@ -77,6 +79,10 @@ public class ComplexTypeDeclState extends RedefinableDeclState {
 				r |= ComplexTypeExp.RESTRICTION;
 		}
 		return r;
+	}
+
+	public void setAttributeWildcard( AttributeWildcard local ) {
+		decl.wildcard = local;
 	}
 	
 	protected State createChildState( StartTagInfo tag ) {

@@ -13,6 +13,7 @@ import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.xmlschema.AttributeGroupExp;
+import com.sun.msv.grammar.xmlschema.AttributeWildcard;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.reader.State;
@@ -23,7 +24,7 @@ import org.xml.sax.Locator;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class AttributeGroupState extends RedefinableDeclState {
+public class AttributeGroupState extends RedefinableDeclState implements AnyAttributeOwner {
 	
 	protected State createChildState( StartTagInfo tag ) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
@@ -53,6 +54,11 @@ public class AttributeGroupState extends RedefinableDeclState {
 		return exp;
 	}
 
+	private AttributeWildcard wildcard;
+	public void setAttributeWildcard( AttributeWildcard local ) {
+		this.wildcard = local;
+	}
+	
 	protected Expression castExpression( Expression halfCastedExpression, Expression newChildExpression ) {
 		if( startTag.containsAttribute("ref") )
 			reader.reportError( reader.ERR_MORE_THAN_ONE_CHILD_EXPRESSION );
@@ -87,6 +93,7 @@ public class AttributeGroupState extends RedefinableDeclState {
 		}
 		reader.setDeclaredLocationOf(exp);
 		exp.exp = contentType;
+		exp.wildcard = this.wildcard;
 		return exp;
 	}
 }

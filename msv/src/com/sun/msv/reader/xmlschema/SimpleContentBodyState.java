@@ -15,6 +15,7 @@ import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
+import com.sun.msv.grammar.xmlschema.AttributeWildcard;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.SequenceState;
 import com.sun.msv.reader.GrammarReader;
@@ -31,7 +32,7 @@ import org.relaxng.datatype.DatatypeException;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class SimpleContentBodyState extends SequenceState
-	implements FacetStateParent,TypeOwner {
+	implements FacetStateParent,TypeOwner,AnyAttributeOwner {
 	
 	protected final boolean extension;
 
@@ -41,6 +42,10 @@ public class SimpleContentBodyState extends SequenceState
 	protected SimpleContentBodyState( ComplexTypeExp parentDecl, boolean extension ) {
 		this.parentDecl = parentDecl;
 		this.extension = extension;
+	}
+
+	public void setAttributeWildcard( AttributeWildcard local ) {
+		parentDecl.wildcard = local;
 	}
 	
 	/** used to restrict simpleType */

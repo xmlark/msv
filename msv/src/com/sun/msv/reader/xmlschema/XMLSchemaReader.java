@@ -27,6 +27,7 @@ import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
 import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
 import com.sun.msv.grammar.xmlschema.ElementDeclExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaTypeExp;
+import com.sun.msv.grammar.xmlschema.AttWildcardExp;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.IgnoreState;
@@ -151,6 +152,8 @@ public class XMLSchemaReader extends GrammarReader {
 		this.grammar = new XMLSchemaGrammar(pool);
 		
 		xsdSchema = new XMLSchemaSchema( XMLSchemaNamespace, grammar );
+		// since we might parse the schema-for-schema, we cannot mark
+		// this schema as "already defined."
 //		markSchemaAsDefined(xsdSchema);
 	
 		ElementPattern e = new ElementPattern( AnyNameClass.theInstance, Expression.nullSet );
@@ -675,7 +678,8 @@ public class XMLSchemaReader extends GrammarReader {
 	protected void wrapUp() {
 		Iterator itr;
 		
-
+		// mark schema namespace as defined
+		markSchemaAsDefined(xsdSchema);		
 		
 		// TODO: undefined grammar check.
 		Expression grammarTopLevel = Expression.nullSet;
@@ -790,6 +794,14 @@ public class XMLSchemaReader extends GrammarReader {
 		
 		// runaway expression check
 		RunAwayExpressionChecker.check( this, grammar.topLevel );
+
+		
+		// compute the attribute wildcard
+		//-----------------------------------------
+		// this process traverses the whole grammar, so runaway check has to
+		// be done before this process.
+		if(!hadError)
+			grammar.topLevel.visit( new AttributeWildcardComputer(this) );
 		
 	}
 	

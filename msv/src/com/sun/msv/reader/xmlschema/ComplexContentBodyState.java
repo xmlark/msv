@@ -11,6 +11,7 @@ package com.sun.msv.reader.xmlschema;
 
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ReferenceContainer;
+import com.sun.msv.grammar.xmlschema.AttributeWildcard;
 import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.reader.State;
@@ -22,7 +23,7 @@ import com.sun.msv.util.StartTagInfo;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ComplexContentBodyState extends SequenceState {
+public class ComplexContentBodyState extends SequenceState implements AnyAttributeOwner {
 	
 	/** ComplexType object that we are now constructing. */
 	protected ComplexTypeExp parentDecl;
@@ -53,6 +54,10 @@ public class ComplexContentBodyState extends SequenceState {
 		return reader.createAttributeState(this,tag);
 	}
 
+	public void setAttributeWildcard( AttributeWildcard local ) {
+		parentDecl.wildcard = local;
+	}
+	
 	protected Expression initialExpression() {
 		// if nothing is specified, then empty
 		return Expression.epsilon;

@@ -19,7 +19,6 @@ import com.sun.msv.relaxns.verifier.IslandSchemaImpl;
 import com.sun.msv.relaxns.grammar.DeclImpl;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
-import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -33,10 +32,7 @@ public class TREXIslandSchema extends IslandSchemaImpl
 	/** underlying TREX pattern which this IslandSchema is representing */
 	protected final TREXGrammar grammar;
 	
-	public TREXIslandSchema( TREXGrammar grammar )
-	{
-		super( new REDocumentDeclaration( grammar ) );
-
+	public TREXIslandSchema( TREXGrammar grammar ) {
 		this.grammar = grammar;
 		
 		// export all named patterns.
@@ -46,9 +42,12 @@ public class TREXIslandSchema extends IslandSchemaImpl
 			elementDecls.put( refs[i].name, new DeclImpl(refs[i]) );
 	}
 	
-	public void bind( SchemaProvider provider, ErrorHandler handler )
-	{
-		Binder binder = new Binder(provider,handler,docDecl.pool);
+	protected Grammar getGrammar() {
+		return grammar;
+	}
+	
+	public void bind( SchemaProvider provider, ErrorHandler handler ) {
+		Binder binder = new Binder( provider, handler, grammar.pool );
 		bind( grammar.namedPatterns, binder );
 	}
 }

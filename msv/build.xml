@@ -130,6 +130,7 @@
 	PatternSets for the partial test
 	========================================================================
 	
+	This pattern specifies which test codes should be executed.
 	The same pattern is used to test both the working copy and the release package.
 -->
 	<!-- all -->
@@ -420,14 +421,12 @@
 		
 		<!-- compile files -->
 		<mkdir	dir="temp" />
-		<javac	srcdir="${stageName}/src"
-				destdir="temp"
-				classpath="lib/relaxng/relaxng.jar">
+		<javac	srcdir="${stageName}/src" destdir="temp">
+			
+			<classpath path="${relaxngDatatype.jar}"/>
 			<include name="**/*.java" />
 		</javac>
 		
-		<!-- unzip contents from relaxng.jar into binary directory -->
-		<unjar src="lib/relaxng/relaxng.jar" dest="temp" />
 		
 		<!-- create a time stamp file -->
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
@@ -441,6 +440,8 @@
 			<fileset dir="${stageName}/src" includes="**/*.properties" />
 		</jar>
 		<delete dir="temp" />
+		<delete dir="xerces"/>
+		
 		<!-- copy jar file to package dir -->
 		<copy file="${stageName}/xsdlib.jar" tofile="./package/xsdlib.jar" />
 		
@@ -458,12 +459,15 @@
 			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
 			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
 		</javadoc>
-
-		<!-- delete the source! -->		
+		
+		<!-- copy additional jar files -->
+		<copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
+		
+		<!-- delete the source! -->
 		<delete>
 			<fileset dir="${stageName}/src" excludes="**/CommandLineTester.java" />
 		</delete>
-
+		
 		<!-- creates distribution package -->
 		<zip	zipfile="${packageDir}/xsdlib.${DSTAMP}.zip"
 				basedir="."
@@ -535,10 +539,6 @@
 		<copy file="${isorelax.jar}" tofile="${stageName}/isorelax.jar" />
 		<copy file="c:\winnt\java\classes\xerces.jar" tofile="${stageName}/xerces.jar" />
 		
-		<!-- unzip contents from xerces.jar -->
-		<mkdir dir="xerces" />
-		<unjar src="c:\winnt\java\classes\xerces.jar" dest="xerces" />
-		
 		<!-- create a time stamp file -->
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
 		
@@ -548,7 +548,6 @@
 				compress="false">
 			<fileset dir="${stageName}/src" includes="**/msv/**/*.properties" />
 			<fileset dir="temp" />
-			<fileset dir="c:\winnt\java\classes" includes="org/apache/xerces/utils/regex/*.*" />
 		</jar>
 		
 		<!-- creates javadoc -->
@@ -578,11 +577,10 @@
 		<delete dir="${stageName}" includes="**/*.vsd">
 			<!-- remove Visio files from release package -->
 		</delete>
-
+		
 		<delete dir="temp" />
-		<delete dir="xerces" />
 		<delete dir="temp_xsdlibsrc"/>
-
+		
 		<!-- copy sample files -->
 		<copy todir="${stageName}/examples">
 			<fileset dir="${stageName}/src" includes="com/sun/msv/writer/trex/**/*.*" />
@@ -634,40 +632,27 @@
 		<!-- compile files -->
 		<mkdir	dir="temp" />
 		<javac	srcdir="${stageName}/src"
-				destdir="temp"
-				classpath="./package/msv.jar:${java.class.path}">
+				destdir="temp">
+			
+			<classpath path="package/msv.jar"/>
+			<classpath path="package/xsdlib.jar"/>
+			<classpath path="${java.class.path}"/>
+			
 			<include name="**/*.java" />
 		</javac>
 		
 		<!-- create a time stamp file -->
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
-
-		<!-- creates binary jar -->
-		<jar	jarfile="${stageName}/xmlgen.small.jar"
-				manifest="./META-INF/Generator.MANIFEST.MF"
-				compress="false">
-			<fileset dir="${stageName}/src" includes="**/*.properties" />
-			<fileset dir="temp" includes="**/*.*" />
-		</jar>
 		
-		
-		<!-- unzip contents from xerces.jar -->
-		<mkdir dir="xerces" />
-		<unjar src="c:\winnt\java\classes\xerces.jar" dest="xerces" />
-		
-		<!-- unzip contents from msv.jar -->
-		<unjar src="./package/msv.jar" dest="temp" />
-		
-		<!-- creates the complete binary jar -->
+		<!-- creates the binary jar -->
 		<jar	jarfile="${stageName}/xmlgen.jar"
 				manifest="./META-INF/Generator.MANIFEST.MF"
 				compress="false">
 			<fileset dir="${stageName}/src" includes="**/*.properties" />
-			<fileset dir="xerces" includes="org/apache/xml/serialize/*.*" />
 			<fileset dir="temp" includes="**/*.*" />
 		</jar>
 		<delete dir="temp" />
-		<delete dir="xerces" />
+		
 		<!-- copy jar file to package dir -->
 		<copy file="${stageName}/xmlgen.jar" tofile="./package/xmlgen.jar" />
 		
@@ -689,6 +674,13 @@
 		
 <!-- temporarily, remove source codes -->
 		<delete dir="${stageName}/src" />
+		
+		<!-- copy additional jars -->
+		<copy file="package/xsdlib.jar" tofile="${stageName}/xsdlib.jar" />
+		<copy file="package/msv.jar" tofile="${stageName}/msv.jar" />
+		<copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
+		<copy file="${isorelax.jar}" tofile="${stageName}/isorelax.jar" />
+		<copy file="c:\winnt\java\classes\xerces.jar" tofile="${stageName}/xerces.jar" />
 		
 		<!-- creates distribution package -->
 		<zip	zipfile="${packageDir}/xmlgen.${DSTAMP}.zip"
@@ -726,31 +718,17 @@
 		
 		<!-- compile files -->
 		<mkdir	dir="temp" />
-		<javac	srcdir="${stageName}/src"
-				destdir="temp"
-				classpath="./package/msv.jar:${java.class.path}">
+		<javac	srcdir="${stageName}/src" destdir="temp">
+			
+			<classpath path="package/msv.jar"/>
+			<classpath path="package/xsdlib.jar"/>
+			<classpath path="${java.class.path}"/>
+			
 			<include name="**/*.java" />
 		</javac>
 		
 		<!-- create a time stamp file -->
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
-
-
-		<!-- creates binary jar -->
-		<jar	jarfile="${stageName}/rngconv.small.jar"
-				manifest="./META-INF/rngconv.MANIFEST.MF"
-				compress="false">
-			<fileset dir="${stageName}/src" includes="**/*.properties" />
-			<fileset dir="temp" includes="**/*.*" />
-		</jar>
-		
-		
-		<!-- unzip contents from xerces.jar -->
-		<mkdir dir="xerces" />
-		<unjar src="c:\winnt\java\classes\xerces.jar" dest="xerces" />
-
-		<!-- unzip contents from msv.jar -->
-		<unjar src="./package/msv.jar" dest="temp" />
 		
 		<!-- creates the complete binary jar -->
 		<jar	jarfile="${stageName}/rngconv.jar"
@@ -758,10 +736,9 @@
 				compress="false">
 			<fileset dir="${stageName}/src" includes="**/*.properties" />
 			<fileset dir="temp" includes="**/*.*" />
-			<fileset dir="xerces" includes="org/apache/xml/serialize/*.*" />
 		</jar>
 		<delete dir="temp" />
-		<delete dir="xerces" />
+		
 		<!-- copy jar file to package dir -->
 		<copy file="${stageName}/rngconv.jar" tofile="./package/rngconv.jar" />
 		
@@ -769,6 +746,13 @@
 
 <!-- temporarily, remove source codes -->
 		<delete dir="${stageName}/src" />
+		
+		<!-- copy additional jars -->
+		<copy file="package/xsdlib.jar" tofile="${stageName}/xsdlib.jar" />
+		<copy file="package/msv.jar" tofile="${stageName}/msv.jar" />
+		<copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
+		<copy file="${isorelax.jar}" tofile="${stageName}/isorelax.jar" />
+		<copy file="c:\winnt\java\classes\xerces.jar" tofile="${stageName}/xerces.jar" />
 		
 		<!-- creates distribution package -->
 		<zip	zipfile="${packageDir}/rngconv.${DSTAMP}.zip"
@@ -808,9 +792,12 @@
 		
 		<!-- compile files -->
 		<mkdir	dir="temp" />
-		<javac	srcdir="${stageName}/src"
-				destdir="temp"
-				classpath="./package/msv.jar:${java.class.path}">
+		<javac	srcdir="${stageName}/src" destdir="temp">
+			
+			<classpath path="package/msv.jar"/>
+			<classpath path="package/xsdlib.jar"/>
+			<classpath path="${java.class.path}"/>
+			
 			<include name="**/*.java" />
 		</javac>
 		
@@ -827,30 +814,29 @@
 		</jar>
 		
 		
-		<!-- unzip contents from xerces.jar -->
-		<mkdir dir="xerces" />
-		<unjar src="c:\winnt\java\classes\xerces.jar" dest="xerces" />
-
-		<!-- unzip contents from msv.jar -->
-		<unjar src="./package/msv.jar" dest="temp" />
-		
 		<!-- creates the complete binary jar -->
 		<jar	jarfile="${stageName}/trexconv.jar"
 				manifest="./META-INF/trexconv.MANIFEST.MF"
 				compress="false">
 			<fileset dir="${stageName}/src" includes="**/*.properties" />
 			<fileset dir="temp" includes="**/*.*" />
-			<fileset dir="xerces" includes="org/apache/xml/serialize/*.*" />
 		</jar>
 		<delete dir="temp" />
-		<delete dir="xerces" />
+		
 		<!-- copy jar file to package dir -->
-		<copy file="${stageName}/msv.jar" tofile="./package/trexconv.jar" />
+		<copy file="${stageName}/trexconv.jar" tofile="./package/trexconv.jar" />
 		
 		<!-- we don't create javadoc for rngconv -->
 		
 <!-- temporarily, remove source codes -->
 		<delete dir="${stageName}/src" />
+		
+		<!-- copy additional jars -->
+		<copy file="package/xsdlib.jar" tofile="${stageName}/xsdlib.jar" />
+		<copy file="package/msv.jar" tofile="${stageName}/msv.jar" />
+		<copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
+		<copy file="${isorelax.jar}" tofile="${stageName}/isorelax.jar" />
+		<copy file="c:\winnt\java\classes\xerces.jar" tofile="${stageName}/xerces.jar" />
 		
 		<!-- creates distribution package -->
 		<zip	zipfile="${packageDir}/trexconv.${DSTAMP}.zip"

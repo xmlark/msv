@@ -11,14 +11,14 @@
 	<facets><permutation>
 		<!-- pattern facet test -->
 		<chioce>
-			<facet answer="ox" name="pattern" value="tr.*" />
-			<facet answer="xo" name="pattern" value="f.*" />
+			<facet answer="o." name="pattern" value="tr.*" />
+			<facet answer=".o" name="pattern" value="f.*" />
 		</chioce>
 
 		<!-- enumeration facet -->
 		<chioce>
-			<facet answer="ox" name="enumeration" value="true" />
-			<facet answer="xo" name="enumeration" value="false" />
+			<facet answer="o." name="enumeration" value="true" />
+			<facet answer=".o" name="enumeration" value="false" />
 		</chioce>
 	</permutation></facets>
 	
@@ -106,14 +106,14 @@
 			<facet             answer="ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo" name="precision" value="99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999</value>
 			<!-- precision can be any positiveInteger -->
 		</choice>
-		<orGroup>
+		<permutation mode="or">
 			<facet             answer="..... ..... ..... ...o.  ....o ..... ..... ....." name="pattern" value="1*" />
 			<facet             answer="..... ..... ooooo o.ooo  ooooo ..... ..... ....." name="pattern" value="...." />
-		</orGroup>
-		<orGroup>
+		</permutation>
+		<permutation mode="or">
 			<facet			   answer="..... ..... ....o ooo..  ..... ..... ..... ....." name="enumeration" value="0" />
 			<facet			   answer="..... ..... ..... ....o  ..... ..... ..... ....." name="enumeration" value="2" />
-		</orGroup>
+		</permutation>
 		<choice>
 			<permutation><!-- min-max pair part.1 -->
 				<choice>
@@ -193,11 +193,11 @@
 
 <!--
 	<facets><permutation>
-		<orGroup>
+		<permutation mode="or">
 			<facet answer="..... .ooo. ..... .." name="pattern" value="(0|\.|e)+" />
 			<facet answer="..... ..... ..... oo" name="pattern" value="[^0-9]+" />
-		</orGroup>
-		<orGroup>
+		</permutation>
+		<permutation mode="or">
 			<facet answer="..... ooooo ..... .." name="pattern" value="0" />
 			<facet answer="..... 
 	</permutation></facets>

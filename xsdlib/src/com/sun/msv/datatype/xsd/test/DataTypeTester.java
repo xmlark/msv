@@ -106,6 +106,8 @@ public class DataTypeTester
 			for( int i=0; i<wrongs.length; i++ )
 				if(typeObj.verify(wrongs[i]))
 					throw new Exception("unexpected result");
+			
+			pattern.next();
 		}
 		
 		// test done

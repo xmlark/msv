@@ -9,6 +9,7 @@
  */
 package com.sun.msv.verifier;
 
+import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.relax.ElementRule;
@@ -25,7 +26,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.XMLFilter;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
 
 /**
  * dumps RELAX label assigned to each element.
@@ -129,11 +130,15 @@ public class TypeReporter extends DefaultHandler
 	
 	public void endElement( String namespaceUri, String localName, String qName )
 	{
-		DataType[] types = filter.getVerifier().getLastCharacterType();
+		Datatype[] types = filter.getVerifier().getLastCharacterType();
 		if( types!=null ) {
 			String r="";
-			for( int i=0; i<types.length; i++ )
-				r+=types[i].displayName()+" ";
+			for( int i=0; i<types.length; i++ ) {
+				if( types[i] instanceof XSDatatype )
+					r+=((XSDatatype)types[i]).displayName()+" ";
+				else
+					r+=types[i]+" ";
+			}
 			
 			printIndent();
 			System.out.println("-- "+r+" --");

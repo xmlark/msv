@@ -9,11 +9,8 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-//import com.sun.msv.datatype.DataType;
 import com.sun.msv.reader.ChildlessState;
 import com.sun.msv.reader.SimpleState;
-//import com.sun.msv.grammar.Expression;
-//import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.grammar.NamespaceNameClass;
@@ -178,14 +175,14 @@ public class IdentityConstraintState extends SimpleState {
 		// split to A|B|C
 		StringTokenizer paths = new StringTokenizer(xpath,"|");
 		while(paths.hasMoreTokens()) {
-			XPath pathObj = field.new FieldPath();
+			XPath pathObj = new XPath();
 			pathObjs.add(pathObj);
 			
 			if(!parsePath(pathObj,paths.nextToken(),true))
 				return new Field();	// recover by retuning a dummy field.
 		}
 		
-		field.paths = (Field.FieldPath[])pathObjs.toArray(new Field.FieldPath[pathObjs.size()]);
+		field.paths = (XPath[])pathObjs.toArray(new XPath[pathObjs.size()]);
 		return field;
 	}
 	
@@ -242,7 +239,7 @@ public class IdentityConstraintState extends SimpleState {
 			if( qn[1].equals("*") )		nc = new NamespaceNameClass(qn[0]);
 			else						nc = new SimpleNameClass(qn[0],qn[1]);
 			
-			if( attribute==true )	((Field.FieldPath)pathObj).attributeStep = nc;
+			if( attribute==true )	pathObj.attributeStep = nc;
 			else					stepObjs.add(nc);
 		}
 			

@@ -22,8 +22,16 @@ public class XPath implements java.io.Serializable {
 	 * this field is true if the XPath starts with '//' operator.
 	 */
 	public boolean			isAnyDescendant;
+	
 	/**
 	 * each name class represents each step.
 	 */
 	public NameClass[]		steps;
+	
+	/**
+	 * optional attribute step that can only appear as the last child.
+	 * Null if not present.
+	 */
+	public NameClass		attributeStep;
+
 }

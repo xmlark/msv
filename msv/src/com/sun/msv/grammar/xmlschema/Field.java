@@ -22,14 +22,5 @@ public class Field implements java.io.Serializable {
 	 * XPath that characterizes this field.
 	 * 'A|B' is represented by using two FieldPath objects.
 	 */
-	public FieldPath[]	paths;
-	
-	/**
-	 * Path expression for field.
-	 * Field can use an attribute at the last of a path expression,
-	 * which is hed by attributeStep field.
-	 */
-	public class FieldPath extends XPath {
-		public NameClass		attributeStep;
-	}
+	public XPath[]	paths;
 }

@@ -111,6 +111,7 @@
 					windowtitle="Internal Use Only --- Sun Multi Schema Validator"
 					public="yes"
 					author="yes"
+					overview="src/com/sun/msv/overview.html"
 					>
 			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
 			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
@@ -495,6 +496,12 @@
 				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}" />
 	
+		<!-- obtain example files from the test project-->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="tranquilo/test/com/sun/msv/verifier/psvi"
+				command="export -d . ${cvsExportOpt}"
+				dest="${stageName}/test/com/sun/msv/verifier/psvi" />
+	
 		<!-- run javacc -->
 		<antcall target="doJavacc">
 			<param name="src" value="${stageName}/src" />
@@ -522,7 +529,7 @@
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
 		
 		<!-- creates light-weight binary jar -->
-		<jar	jarfile="${packageDir}/msv.light.jar"
+		<jar	jarfile="${stageName}/msv.light.jar"
 				manifest="./META-INF/MANIFEST.MF"
 				compress="false">
 			<fileset dir="${stageName}/src" includes="**/msv/**/*.properties" />
@@ -549,7 +556,8 @@
 					sourcepath="${stageName}/src:${rngInterfaceSource}"
 					classpath="temp;${java.class.path}"
 					destdir="${stageName}/javadoc"
-					windowtitle="Sun Multi Schema Validator"
+					windowtitle="Sun Multi Schema XML Validator"
+					overview="${stageName}/src/com/sun/msv/overview.html"
 					author="yes"
 					public="yes"
 					>
@@ -571,6 +579,7 @@
 		<!-- copy sample files -->
 		<copy todir="${stageName}/examples">
 			<fileset dir="${stageName}/src" includes="com/sun/msv/writer/trex/**/*.*" />
+			<fileset dir="${stageName}/test" includes="com/sun/msv/verifier/psvi/**/*.*" />
 		</copy>
 <!-- temporarily, remove source codes -->
 		<delete dir="${stageName}/src" />
@@ -582,6 +591,7 @@
 				includes="${stageName}/**/*.*" />
 		
 		<!-- copy jar file to package dir -->
+		<copy file="${stageName}/msv.light.jar" tofile="./package/msv.light.jar" />
 		<copy file="${stageName}/msv.jar" tofile="./package/msv.jar" />
 		
 		<delete dir="${stageName}" />

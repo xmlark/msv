@@ -29,64 +29,32 @@ import com.sun.xml.util.XmlNames;
  * See http://www.w3.org/TR/xmlschema-2/#QName for the spec
  *
  * TODO: if we have to check that prefix is actually declared,
- *       then we cannot derive this class from String anymore.
+ *       then we have to add more code here.
  */
-public class QnameType extends StringType
+public class QnameType extends DataTypeImpl
 {
-	/** singleton access to the plain QName type */
-	public static QnameType theInstance = new QnameType("QName");
-	
-	public boolean verify( String content )
-	{
-		if(!super.verify(content))	return false;
-		
-		return XmlNames.isQualifiedName(
-			WhiteSpaceProcessor.theCollapse.process(content) );
-	}
-	
-	public DataTypeErrorDiagnosis diagnose( String content )
-	{
-		// TODO : implement this method
-		return null;
-	}
-	
-	public DataType derive( String newName, Facets facets )
-		throws BadTypeException
-	{
-		// no facets specified. So no need for derivation
-		if( facets.isEmpty() )		return this;
+	public static final QnameType theInstance = new QnameType();
+	private QnameType() { super("QName"); }
 
-		return new QnameType( newName,
-			LengthFacet.merge(this.lengths,facets),
-			PatternFacet.merge(this.pattern,facets),
-			EnumerationFacet.merge(this,this.enumeration,facets) );
-	}
-	
-	/**
-	 * creates a plain QName type which is specified in
-	 * http://www.w3.org/TR/xmlschema-2/#QName
-	 * 
-	 * This method is only accessible within this class.
-	 * To use a plain QName type, use theInstance property instead.
-	 */
-	protected QnameType( String typeName )
+	protected boolean checkFormat( String content )
 	{
-		super( typeName );
+		return XmlNames.isQualifiedName(content);
 	}
 	
-	/**
-	 * constructor for derived-type from QName by restriction.
-	 * 
-	 * To derive a datatype by restriction from QName, call derive method.
-	 * This method is only accessible within this class.
-	 */
-	protected QnameType( String typeName, 
-					    LengthFacet lengths, PatternFacet pattern,
-						EnumerationFacet enumeration )
+	public Object convertToValue( String content )
 	{
-		// white space is always "collapse"
-		super( typeName, lengths, pattern, enumeration,
-			WhiteSpaceProcessor.theCollapse, null/* no base type*/ );
+		if(XmlNames.isQualifiedName(content))	return content;
+		else									return null;
 	}
 	
+	public final int isFacetApplicable( String facetName )
+	{
+		// TODO : it seems to me that the spec has obvious typos.
+		// so check it with the latest version.
+		if( facetName.equals(FACET_PATTERN)
+		||	facetName.equals(FACET_ENUMERATION) )
+			return APPLICABLE;
+		else
+			return NOT_ALLOWED;
+	}
 }

@@ -8,18 +8,14 @@ public abstract class WhiteSpaceProcessor
 	 * returns a WhiteSpaceProcessor object if "whiteSpace" facet is specified.
 	 * Otherwise returns null.
 	 */
-	protected static WhiteSpaceProcessor create( Facets facets )
+	protected static WhiteSpaceProcessor get( String name )
 		throws BadTypeException
 	{
-		if( !facets.contains("whiteSpace") )	return null;	// no whiteSpace facet
+		if( name.equals("preserve") )		return theReplace;
+		if( name.equals("collapse") )		return theCollapse;
+		if( name.equals("replace") )		return theReplace;
 		
-		String o = facets.getFacet("whiteSpace");
-		
-		if( o.equals("preserve") )		return null;
-		if( o.equals("collapse") )		return theCollapse;
-		if( o.equals("replace") )		return theReplace;
-		
-		throw new BadTypeException( BadTypeException.ERR_INVALID_WHITESPACE_VALUE, o );
+		throw new BadTypeException( BadTypeException.ERR_INVALID_WHITESPACE_VALUE, name );
 	}
 	
 	private static boolean isWhiteSpace( char ch )
@@ -27,11 +23,12 @@ public abstract class WhiteSpaceProcessor
 		return ch==0x9 || ch==0xA || ch==0xD || ch==0x20;
 	}
 	
-	protected static Replace		theReplace = new Replace();
-	protected static Collapse		theCollapse= new Collapse();
-			
+	protected static WhiteSpaceProcessor thePreserve = new WhiteSpaceProcessor()
+	{
+		public String process( String text )	{ return text; }
+	};
 	
-	private static class Replace extends WhiteSpaceProcessor
+	protected static WhiteSpaceProcessor theReplace = new WhiteSpaceProcessor()
 	{
 		public String process( String text )
 		{
@@ -45,9 +42,9 @@ public abstract class WhiteSpaceProcessor
 			
 			return result;		
 		}
-	}
-	
-	private static class Collapse extends WhiteSpaceProcessor
+	};
+
+	protected static WhiteSpaceProcessor theCollapse= new WhiteSpaceProcessor()
 	{
 		public String process( String text )
 		{
@@ -69,11 +66,14 @@ public abstract class WhiteSpaceProcessor
 			
 			// remove trailing whitespaces
 			len = result.length();
-			while( len>0 )
-				if( result.charAt(len-1)==' ' )	len--;
+			if( len>0 && result.charAt(len-1)==' ' )
+				len--;
+			// whitespaces are already collapsed,
+			// so all we have to do is to remove the last one character
+			// if it's a whitespace.
 			
 			return result.substring(0,len);
 		}
-	}
+	};
 }
 

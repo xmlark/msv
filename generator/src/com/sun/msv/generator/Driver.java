@@ -378,7 +378,7 @@ public class Driver {
 				dom = domFactory.newDocumentBuilder().newDocument();
 				Generator.generate(topLevel,dom,opt);
 				
-				if( !validate)		break;
+				if(!validate)		break;
 				
 				// check the validity of generated document.
 				DOM2toSAX2 d2s = new DOM2toSAX2();

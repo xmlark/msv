@@ -41,13 +41,19 @@ public class DOM2toSAX2 {
 		AttributesImpl sa = new AttributesImpl();
 		for( int i=0; i<atts.getLength(); i++ ) {
 			Attr a = (Attr)atts.item(i);
-			if(a.getNamespaceURI().equals(XMLNS_URI))	continue;
 			
             String value = a.getValue();
 			if(value==null)	value="";
             
-			sa.addAttribute( a.getNamespaceURI(), a.getLocalName(), a.getName(),
-				"CDATA", value );
+            String uri = a.getNamespaceURI();
+            if(uri==null)   uri=""; // work defensively
+            
+            String localName = a.getLocalName();
+            if(localName==null) localName=a.getName();
+
+            if(XMLNS_URI.equals(uri))   continue;
+                        
+			sa.addAttribute( uri, localName, a.getName(), "CDATA", value );
 		}
 		return sa;
 	}

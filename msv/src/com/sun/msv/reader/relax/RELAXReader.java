@@ -265,7 +265,26 @@ public class RELAXReader extends GrammarReader
 		return stubModules.contains(module);
 	}
 	
-	
+	/**
+	 * map from type name of Candidate Recommendation to the current type.
+	 */
+	private static final Map deprecatedTypes = initDeprecatedTypes();
+	private static Map initDeprecatedTypes()
+	{
+		Map m = new java.util.HashMap();
+		m.put("uriReference",		com.sun.tranquilo.datatype.AnyURIType.theInstance );
+		m.put("decimal",			com.sun.tranquilo.datatype.NumberType.theInstance );
+		m.put("timeDuration",		com.sun.tranquilo.datatype.DurationType.theInstance );
+		m.put("CDATA",				com.sun.tranquilo.datatype.NormalizedStringType.theInstance );
+		return m;
+	}
+	public DataType getBackwardCompatibleType( String typeName )
+	{
+		DataType dt = (DataType)deprecatedTypes.get(typeName);
+		if( dt!=null )
+			reportWarning( WRN_DEPRECATED_TYPENAME, typeName, dt.getName() );
+		return dt;
+	}
 	
 	/**
 	 * gets DataType object from type name.
@@ -280,6 +299,9 @@ public class RELAXReader extends GrammarReader
 		
 		if(dt==null)
 		{
+			dt = getBackwardCompatibleType(typeName);
+			if(dt!=null)	return dt;
+			
 			reportError( ERR_UNDEFINED_DATATYPE, typeName );
 			return NoneType.theInstance;	// recover by assuming a valid DataType
 		}
@@ -349,4 +371,6 @@ public class RELAXReader extends GrammarReader
 		= "RELAXReader.IdAbuse";
 	public static final String ERR_ID_ABUSE_1 // arg:1
 		= "RELAXReader.IdAbuse.1";
+	public static final String WRN_DEPRECATED_TYPENAME = // arg:2
+		"RELAXReader.Warning.DeprecatedTypeName";
 }

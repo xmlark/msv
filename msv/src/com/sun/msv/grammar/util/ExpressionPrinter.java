@@ -176,6 +176,6 @@ public class ExpressionPrinter implements ExpressionVisitor {
 		
 	public Object onRef( ReferenceExp exp ) {
 		if( (mode&FRAGMENT)!=0 )		return "{%"+exp.name+"}";
-		else							return exp.exp.visit(this);
+		else							return "("+exp.exp.visit(this)+")";
 	}
 }

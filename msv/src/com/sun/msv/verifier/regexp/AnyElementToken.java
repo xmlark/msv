@@ -36,5 +36,5 @@ public final class AnyElementToken extends ElementToken
 	 */
 	public static final Token theInstance = new AnyElementToken();
 	private AnyElementToken(){ super(null); }
-	boolean match( ElementExp exp ) { return true; }
+	public boolean match( ElementExp exp ) { return true; }
 }

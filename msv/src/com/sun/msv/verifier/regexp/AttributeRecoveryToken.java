@@ -29,7 +29,7 @@ final class AttributeRecoveryToken extends AttributeToken
 	
 	private Expression failedExp = Expression.nullSet;
 	
-	boolean match( AttributeExp exp ) {
+	public boolean match( AttributeExp exp ) {
 		
 		// Attribute name must meet the constraint of NameClass
 		if(!exp.nameClass.accepts(namespaceURI,localName))	return false;

@@ -24,7 +24,7 @@ public class ElementToken extends Token {
 		this.acceptedPatterns = acceptedPatterns;
 	}
 	
-	boolean match( ElementExp exp ) {
+	public boolean match( ElementExp exp ) {
 		// since every subpatterns are reused, object identity is enough
 		// to judge the equality of patterns
 		for( int i=0; i<acceptedPatterns.length; i++ )

@@ -55,7 +55,7 @@ public class StringToken extends Token {
 	}
 	
 	/** DataExp can consume this token if its datatype can accept this string */
-	boolean match( DataExp exp ) {
+	public boolean match( DataExp exp ) {
 		
 		if(!exp.dt.isValid( literal, context )) return false; // not accepted.
 		
@@ -79,7 +79,7 @@ public class StringToken extends Token {
 		return true;
 	}
 	
-	boolean match( ValueExp exp ) {
+	public boolean match( ValueExp exp ) {
 		
 		Object thisValue = exp.dt.createValue(literal,context);
 		if(!exp.dt.sameValue( thisValue, exp.value ))	return false;
@@ -96,7 +96,7 @@ public class StringToken extends Token {
 	}
 	
 	/** ListExp can consume this token if its pattern accepts this string */
-	boolean match( ListExp exp ) {
+	public boolean match( ListExp exp ) {
 		StringTokenizer tokens = new StringTokenizer(literal);
 		Expression residual = exp.exp;
 		
@@ -162,7 +162,7 @@ public class StringToken extends Token {
 	}
 
 	// anyString can match any string
-	boolean matchAnyString() {
+	public boolean matchAnyString() {
 		if(refType!=null)	assignType(StringType.theInstance);
 		return true;
 	}

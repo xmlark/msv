@@ -21,16 +21,16 @@ import com.sun.msv.grammar.*;
 public abstract class Token
 {
 	/** returns true if the given ElementExp can consume this token  */
-	boolean match( ElementExp p )		{ return false;	}
-	boolean match( AttributeExp p )		{ return false; }
+	public boolean match( ElementExp p )		{ return false;	}
+	public boolean match( AttributeExp p )		{ return false; }
 	/** returns true if the given DataExp can consume this token */
-	boolean match( DataExp p )			{ return false; }
-	boolean match( ValueExp p )			{ return false; }
+	public boolean match( DataExp p )			{ return false; }
+	public boolean match( ValueExp p )			{ return false; }
 	/** returns true if the given ListExp can consume this token */
-	boolean match( ListExp p )			{ return false; }
+	public boolean match( ListExp p )			{ return false; }
 	
 	/** returns true if anyString pattern can consume this token */
-	boolean matchAnyString()			{ return false; }
+	public boolean matchAnyString()			{ return false; }
 
 	/** checks if this token is ignorable. */
 	boolean isIgnorable() { return false; }

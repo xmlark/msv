@@ -40,7 +40,7 @@ class StringRecoveryToken extends StringToken {
 	 */
 	final Set failedExps;
 	
-	boolean match( DataExp exp ) {
+	public boolean match( DataExp exp ) {
 		if( super.match(exp) )
 			return true;
 		
@@ -49,7 +49,7 @@ class StringRecoveryToken extends StringToken {
 		return true;
 	}
 	
-	boolean match( ValueExp exp ) {
+	public boolean match( ValueExp exp ) {
 		if( super.match(exp) )
 			return true;
 		
@@ -58,7 +58,7 @@ class StringRecoveryToken extends StringToken {
 		return true;
 	}
 	
-	boolean match( ListExp exp ) {
+	public boolean match( ListExp exp ) {
 		super.match(exp);
 		return true;
 	}

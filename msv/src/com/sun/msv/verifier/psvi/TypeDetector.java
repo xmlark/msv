@@ -22,6 +22,7 @@ import com.sun.msv.util.StringRef;
 import com.sun.msv.util.DatatypeRef;
 import com.sun.msv.verifier.Acceptor;
 import com.sun.msv.verifier.DocumentDeclaration;
+import com.sun.msv.verifier.ErrorInfo;
 import com.sun.msv.verifier.ValidityViolation;
 import com.sun.msv.verifier.Verifier;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
@@ -76,7 +77,8 @@ public class TypeDetector extends Verifier {
 					
 				// report an error
 				errorHandler.error( new ValidityViolation(locator,
-					localizeMessage( ERR_UNEXPECTED_TEXT, null ) ) );
+					localizeMessage( ERR_UNEXPECTED_TEXT, null ),
+					new ErrorInfo.BadText(txt) ) );
 			}
 			
 			// characters are validated. report to the handler.

@@ -16,6 +16,7 @@ import com.sun.msv.util.LightStack;
 import com.sun.msv.verifier.IVerifier;
 import com.sun.msv.verifier.ValidityViolation;
 import com.sun.msv.verifier.Verifier;
+import com.sun.msv.verifier.ErrorInfo;
 import com.sun.msv.verifier.Acceptor;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.verifier.regexp.xmlschema.XSREDocDecl;
@@ -156,7 +157,7 @@ public class IDConstraintChecker extends Verifier {
 				for( int j=0; j<keyrefs.length; j++ ) {
 					if( keys==null || !keys.contains(keyrefs[j]) )
 						// this keyref doesn't have a corresponding key.
-						reportError( keyrefs[j].locator, ERR_UNDEFINED_KEY,
+						reportError( keyrefs[j].locator, null, ERR_UNDEFINED_KEY,
 							new Object[]{
 								key.idConst.namespaceURI,
 								key.idConst.localName} );
@@ -256,16 +257,15 @@ public class IDConstraintChecker extends Verifier {
 
 	
 	/** reports an error. */
-	protected void reportError( String propKey, Object[] args ) throws SAXException {
+	protected void reportError( ErrorInfo ei, String propKey, Object[] args ) throws SAXException {
 		// use the current location.
-		reportError( getLocator(), propKey, args );
+		reportError( getLocator(), ei, propKey, args );
 	}
 	
-	protected void reportError( Locator loc, String propKey, Object[] args ) throws SAXException {
+	protected void reportError( Locator loc, ErrorInfo ei, String propKey, Object[] args ) throws SAXException {
 		hadError = true;
-		errorHandler.error(
-			new ValidityViolation( loc,
-				localizeMessage(propKey,args) ) );
+		errorHandler.error( new ValidityViolation( loc,
+				localizeMessage(propKey,args), ei ) );
 	}
 	
 	public static String localizeMessage( String propertyName, Object arg ) {

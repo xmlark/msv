@@ -10,7 +10,7 @@ public class FloatType extends FloatingNumberType
 	public static final FloatType theInstance = new FloatType();
 	private FloatType() { super("float"); }
 	
-	public Object convertToValue( String lexicalValue )
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
 	{// TODO : quick hack. Spec doesn't allow me directly to use FloatValueType.valueOf method
 		
 		/* Incompatibilities of XML Schema's float "xfloat" and Java's float "jfloat"

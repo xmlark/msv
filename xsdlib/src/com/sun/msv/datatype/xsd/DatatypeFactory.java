@@ -112,6 +112,8 @@ public class DataTypeFactory
 			add( m, NameType.theInstance );
 			add( m, NcnameType.theInstance );
 	//		NOTATION
+			add( m, new StringType("NOTATION", WhiteSpaceProcessor.theCollapse) );
+			
 			add( m, IntegerType.theInstance );
 			add( m, NonPositiveIntegerType.theInstance );
 			add( m, NegativeIntegerType.theInstance );

@@ -29,11 +29,17 @@ import java.util.Hashtable;
 public interface DataType extends Serializable,Cloneable
 {
 	/**
-	 * checks if 'content' matchs this datatype
+	 * checks if 'literal' matchs this datatype
 	 * 
-	 * @return true if 'content' can is a member of this datatype
+	 * @param literal
+	 *		the lexical representation to be verified
+	 * @param context
+	 *		context information provider that may be
+	 *		necessary to verify given literal.
+	 * 
+	 * @return true if 'literal' can is a member of this datatype
 	 */
-	boolean verify( String content );
+	boolean verify( String literal, ValidationContextProvider context );
 	
 	/**
 	 * computes the reason of error
@@ -46,7 +52,7 @@ public interface DataType extends Serializable,Cloneable
 	 *		if 'content' is accepted by this pattern, or 
 	 *		if the derived class doesn't support this operation
 	 */
-	DataTypeErrorDiagnosis diagnose( String content )
+	DataTypeErrorDiagnosis diagnose( String content, ValidationContextProvider context )
 		throws UnsupportedOperationException;
 	
 	/**
@@ -62,8 +68,13 @@ public interface DataType extends Serializable,Cloneable
 	 * 
 	 * It is completely legal to use null as the newTypeName paratmer,
 	 * which means deriving anonymous datatype.
+	 *
+	 * @param context
+	 *		in case of deriving a type from QName, the implementation needs to
+	 *		resolve prefixs to namespace URIs. Therefore, the caller must
+	 *		supply a ValidationContextProvider.
 	 */
-	DataType derive( String newTypeName, Facets facets )
+	DataType derive( String newTypeName, Facets facets, ValidationContextProvider context )
 		throws BadTypeException;
 	
 	
@@ -73,7 +84,7 @@ public interface DataType extends Serializable,Cloneable
 	 * @return	null
 	 *		when the given lexical value is not valid lexical value for this type.
 	 */
-	Object convertToValueObject( String lexicalValue );
+	Object convertToValueObject( String lexicalValue, ValidationContextProvider context );
 	
 	/**
 	 * @returns true if this type is an atom type

@@ -13,7 +13,7 @@ public class UnsignedByteType extends IntegerDerivedType
     /** upper bound value. this is the maximum possible valid value as an unsigned int */
     private static final short upperBound = 255;
 
-	public Object convertToValue( String lexicalValue )
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
 	{
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		try

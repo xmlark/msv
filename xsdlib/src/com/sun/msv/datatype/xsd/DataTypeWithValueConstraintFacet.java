@@ -11,9 +11,10 @@ abstract class DataTypeWithValueConstraintFacet extends DataTypeWithFacet
 	
 	final protected boolean needValueCheck() { return true; }
 	
-	// this class does not perform any lexical check.
-	protected final boolean checkFormat( String literal )
+	protected final boolean checkFormat( String literal, ValidationContextProvider context )
 	{
-		return baseType.checkFormat(literal);
+		// since we always return true for needValueCheck,
+		// this method should never be called.
+		throw new IllegalStateException();
 	}
 }

@@ -33,7 +33,7 @@ public class NcnameType extends TokenType
 	public static final NcnameType theInstance = new NcnameType();
 	private NcnameType() { super("NCName"); }
 	
-	public Object convertToValue( String content )
+	public Object convertToValue( String content, ValidationContextProvider context )
 	{
 		if(XmlNames.isNCNmtoken(content))	return content;
 		else								return null;

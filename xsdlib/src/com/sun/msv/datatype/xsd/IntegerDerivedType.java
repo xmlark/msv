@@ -23,9 +23,9 @@ abstract class IntegerDerivedType extends ConcreteType implements Comparator
 			return NOT_ALLOWED;
 	}
 	
-	protected final boolean checkFormat( String content )
+	protected final boolean checkFormat( String content, ValidationContextProvider context )
 	{// integer-derived types always checks lexical format by trying to convert it to value object
-		return convertToValue(content)!=null;
+		return convertToValue(content,context)!=null;
 	}
 	
 	public final int compare( Object o1, Object o2 )

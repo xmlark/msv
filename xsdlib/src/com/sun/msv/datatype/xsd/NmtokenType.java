@@ -31,7 +31,7 @@ public class NmtokenType extends TokenType
 	public static final NmtokenType theInstance = new NmtokenType();
 	private NmtokenType() { super("NMTOKEN"); }
 	
-	public Object convertToObject( String content )
+	public Object convertToObject( String content, ValidationContextProvider context )
 	{
 		if(XmlNames.isNmtoken(content))		return content;
 		else								return null;

@@ -32,7 +32,7 @@ public class LanguageType extends TokenType
 	public static final LanguageType theInstance = new LanguageType();
 	private LanguageType() { super("language"); }
 	
-	public Object convertToValue( String content )
+	public Object convertToValue( String content, ValidationContextProvider context )
 	{
 		/*	RFC1766 defines the following BNF
 		

@@ -19,7 +19,7 @@ public final class DurationType extends ConcreteType implements Comparator
 		return new ISO8601Parser( new ByteArrayInputStream( content.getBytes("UTF-8") ) );
 	}
 	
-	protected boolean checkFormat( String content )
+	protected boolean checkFormat( String content, ValidationContextProvider context )
 	{// string derived types should use convertToValue method to check its validity
 		try
 		{
@@ -32,7 +32,7 @@ public final class DurationType extends ConcreteType implements Comparator
 		}
 	}
 	
-	public Object convertToValue( String content )
+	public Object convertToValue( String content, ValidationContextProvider context )
 	{// for string, lexical space is value space by itself
 		try
 		{

@@ -10,9 +10,9 @@ public class NonPositiveIntegerType extends IntegerType
 	public static final NonPositiveIntegerType theInstance = new NonPositiveIntegerType();
 	private NonPositiveIntegerType() { super("nonPositiveInteger"); }
 	
-	public Object convertValue( String lexicalValue )
+	public Object convertValue( String lexicalValue, ValidationContextProvider context )
 	{
-		Object o = super.convertToValue(lexicalValue);
+		Object o = super.convertToValue(lexicalValue,context);
 		if(o==null)		return null;
 		
 		final IntegerValueType v = (IntegerValueType)o;

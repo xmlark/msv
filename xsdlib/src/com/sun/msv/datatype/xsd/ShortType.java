@@ -10,7 +10,7 @@ public class ShortType extends IntegerDerivedType
 	public static final ShortType theInstance = new ShortType();
 	private ShortType() { super("short"); }
 	
-	public Object convertToValue( String lexicalValue )
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
 	{
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		try

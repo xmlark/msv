@@ -117,7 +117,7 @@ public class DataTypeTester
 			DataType typeObj=null;
 			try
 			{
-				typeObj = baseType.derive("anonymous",  testCase.facets );
+				typeObj = baseType.derive("anonymous",  testCase.facets, null );
 			}
 			catch( BadTypeException bte )
 			{
@@ -137,8 +137,8 @@ public class DataTypeTester
 				// test each value and see what happens
 				for( int i=0; i<values.length; i++ )
 				{
-					boolean v = typeObj.verify(values[i]);
-					boolean d = (typeObj.diagnose(values[i])==null);
+					boolean v = typeObj.verify(values[i],null);
+					boolean d = (typeObj.diagnose(values[i],null)==null);
 					
 					if(v && d && answer.charAt(i)=='o')
 						continue;	// as predicted
@@ -158,8 +158,8 @@ public class DataTypeTester
 
 				// test each wrong values and makes sure that they are rejected.
 				for( int i=0; i<wrongs.length; i++ )
-					if( typeObj.verify(wrongs[i])
-					||  typeObj.diagnose(wrongs[i])==null )
+					if( typeObj.verify(wrongs[i],null)
+					||  typeObj.diagnose(wrongs[i],null)==null )
 					{
 						if( !err.report( new UnexpectedResultException(
 							typeObj, baseType.getName(),

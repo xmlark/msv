@@ -34,7 +34,7 @@ public class Base64BinaryType extends BinaryBaseType
 		return map;
 	}
 
-	public Object convertToValue( String lexicalValue )
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
 	{
 		final byte[] buf = lexicalValue.getBytes();
 
@@ -73,7 +73,7 @@ public class Base64BinaryType extends BinaryBaseType
 		return new BinaryValueType(out);
 	}
 
-	protected boolean checkFormat( String lexicalValue )
+	protected boolean checkFormat( String lexicalValue, ValidationContextProvider context )
 	{
 		return calcLength( lexicalValue.getBytes() ) != -1;
 	}

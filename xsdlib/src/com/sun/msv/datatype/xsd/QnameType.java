@@ -27,24 +27,71 @@ import com.sun.xml.util.XmlNames;
  * "QName" and string-derived types
  * 
  * See http://www.w3.org/TR/xmlschema-2/#QName for the spec
- *
- * TODO: if we have to check that prefix is actually declared,
- *       then we have to add more code here.
  */
 public class QnameType extends ConcreteType
 {
 	public static final QnameType theInstance = new QnameType();
 	private QnameType() { super("QName"); }
 
-	protected boolean checkFormat( String content )
+	private static String getNamespaceURI( String content, ValidationContextProvider context )
 	{
-		return XmlNames.isQualifiedName(content);
+		return context.resolveNamespacePrefix( content.substring(0, content.indexOf(':')) );
 	}
 	
-	public Object convertToValue( String content )
+	protected boolean checkFormat( String value, ValidationContextProvider context )
 	{
-		if(XmlNames.isQualifiedName(content))	return content;
-		else									return null;
+		// [6] QName ::= (Prefix ':')? LocalPart
+		// [7] Prefix ::= NCName
+		// [8] LocalPart ::= NCName
+
+		final int first = value.indexOf(':');
+
+		// no Prefix, only check LocalPart
+		if(first <= 0)		return XmlNames.isUnqualifiedName(value);
+
+		// Prefix exists, check everything
+		final int	last = value.lastIndexOf(':');
+		if (last != first)	return false;
+
+		final String prefix = value.substring (0, first);
+		return XmlNames.isUnqualifiedName(prefix)
+			&& XmlNames.isUnqualifiedName(value.substring (first + 1))
+			&& context.resolveNamespacePrefix(prefix)!=null;
+	}
+	
+	public Object convertToValue( String value, ValidationContextProvider context )
+	{
+		String uri,localPart;
+		// [6] QName ::= (Prefix ':')? LocalPart
+		// [7] Prefix ::= NCName
+		// [8] LocalPart ::= NCName
+
+		final int first = value.indexOf(':');
+
+		if(first <= 0)
+		{// no Prefix, only check LocalPart
+			if(!XmlNames.isUnqualifiedName(value))	return null;
+			uri = context.resolveNamespacePrefix("");
+			localPart = value;
+		}
+		else
+		{// Prefix exists, check everything
+			final int	last = value.lastIndexOf (':');
+			if (last != first)	return null;
+			
+			final String prefix = value.substring(0, first);
+			localPart = value.substring(first + 1);
+			
+			if(!XmlNames.isUnqualifiedName(prefix)
+			|| !XmlNames.isUnqualifiedName(localPart) )
+				return null;
+			
+			uri = context.resolveNamespacePrefix(prefix);
+		}
+		
+		if(uri==null)	return null;
+		
+		return new QnameValueType(uri,localPart);
 	}
 	
 	public final int isFacetApplicable( String facetName )

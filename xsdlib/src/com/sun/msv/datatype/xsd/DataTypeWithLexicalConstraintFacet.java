@@ -10,15 +10,15 @@ abstract class DataTypeWithLexicalConstraintFacet extends DataTypeWithFacet
 	}
 	
 	// this class does not perform any lexical check.
-	protected final boolean checkFormat( String literal )
+	protected final boolean checkFormat( String literal, ValidationContextProvider context )
 	{
-		if(!baseType.checkFormat(literal))	return false;
+		if(!baseType.checkFormat(literal,context))	return false;
 		return checkLexicalConstraint(literal);
 	}
 	
-	public final Object convertToValue( String literal )
+	public final Object convertToValue( String literal, ValidationContextProvider context )
 	{
-		Object o = baseType.convertToValue(literal);
+		Object o = baseType.convertToValue(literal,context);
 		if(o!=null && !checkLexicalConstraint(literal) )	return null;
 		return o;
 	}

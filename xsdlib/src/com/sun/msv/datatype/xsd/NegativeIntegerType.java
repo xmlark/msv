@@ -13,9 +13,9 @@ public class NegativeIntegerType extends IntegerType
 	public static final NegativeIntegerType theInstance = new NegativeIntegerType();
 	private NegativeIntegerType() { super("negativeInteger"); }
 	
-	public Object convertValue( String lexicalValue )
+	public Object convertValue( String lexicalValue, ValidationContextProvider context )
 	{
-		Object o = super.convertToValue(lexicalValue);
+		Object o = super.convertToValue(lexicalValue,context);
 		if(o==null)		return null;
 		
 		final IntegerValueType v = (IntegerValueType)o;

@@ -19,7 +19,7 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator
 		return new ISO8601Parser( new ByteArrayInputStream( content.getBytes("UTF-8") ) );
 	}
 	
-	protected final boolean checkFormat( String content )
+	protected final boolean checkFormat( String content, ValidationContextProvider context )
 	{// string derived types should use convertToValue method to check its validity
 		try
 		{
@@ -36,7 +36,7 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator
 	abstract protected void runParserL( ISO8601Parser p ) throws Exception;
 
 	
-	public final Object convertToValue( String content )
+	public final Object convertToValue( String content, ValidationContextProvider context )
 	{// for string, lexical space is value space by itself
 		try
 		{

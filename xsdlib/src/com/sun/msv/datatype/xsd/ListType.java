@@ -36,18 +36,18 @@ final public class ListType extends ConcreteType implements Discrete
 			return NOT_ALLOWED;
 	}
 	
-	protected final boolean checkFormat( String content )
+	protected final boolean checkFormat( String content, ValidationContextProvider context )
 	{
 		// Are #x9, #xD, and #xA allowed as a separator, or not?
 		StringTokenizer tokens = new StringTokenizer(content);
 		
 		while( tokens.hasMoreTokens() )
-			if(!itemType.checkFormat(tokens.nextToken()))	return false;
+			if(!itemType.checkFormat(tokens.nextToken(),context))	return false;
 		
 		return true;
 	}
 	
-	public Object convertToValue( String content )
+	public Object convertToValue( String content, ValidationContextProvider context )
 	{
 		// StringTokenizer correctly implements the semantics of whiteSpace="collapse"
 		StringTokenizer tokens = new StringTokenizer(content);
@@ -57,7 +57,7 @@ final public class ListType extends ConcreteType implements Discrete
 		
 		while( tokens.hasMoreTokens() )
 		{
-			if( ( values[i++] = itemType.convertToValue(tokens.nextToken()) )==null )
+			if( ( values[i++] = itemType.convertToValue(tokens.nextToken(),context) )==null )
 				return null;
 		}
 			
@@ -70,7 +70,7 @@ final public class ListType extends ConcreteType implements Discrete
 	}
 	
 	/** The current implementation detects which list item is considered wrong. */
-	protected DataTypeErrorDiagnosis diagnoseValue(String content)
+	protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context)
 	{
 		// StringTokenizer correctly implements the semantics of whiteSpace="collapse"
 		StringTokenizer tokens = new StringTokenizer(content);
@@ -78,7 +78,7 @@ final public class ListType extends ConcreteType implements Discrete
 		while( tokens.hasMoreTokens() )
 		{
 			String token = tokens.nextToken();
-			DataTypeErrorDiagnosis err = itemType.diagnose(token);
+			DataTypeErrorDiagnosis err = itemType.diagnose(token,context);
 			if(err!=null) return err;
 		}
 		

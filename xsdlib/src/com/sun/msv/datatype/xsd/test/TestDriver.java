@@ -27,15 +27,15 @@ class TestDriver implements ErrorReceiver
 		System.err.println("type name            : "+exp.baseTypeName);
 		System.err.println("tested instance      : \""+exp.testInstance+"\"");
 		System.err.println("supposed to be valid : "+exp.supposedToBeValid);
-		System.err.println("verify method        : "+exp.type.verify(exp.testInstance) );
-		System.err.println("diagnose method      : "+(exp.type.diagnose(exp.testInstance)==null) );
+		System.err.println("verify method        : "+exp.type.verify(exp.testInstance,null) );
+		System.err.println("diagnose method      : "+(exp.type.diagnose(exp.testInstance,null)==null) );
 		
 		if( exp.testCase.facets.isEmpty() )
 			System.err.println("facets: none");
 		else
 			exp.testCase.facets.dump(System.err);
 
-		DataTypeErrorDiagnosis err = exp.type.diagnose(exp.testInstance);
+		DataTypeErrorDiagnosis err = exp.type.diagnose(exp.testInstance,null);
 		
 		if( err!=null && err.message!=null )
 			System.err.println("diagnosis: " + err.message);
@@ -43,7 +43,7 @@ class TestDriver implements ErrorReceiver
 			System.err.println("diagnosis: N/A");
 		
 		// do it again (for trace purpose)
-		exp.type.verify(exp.testInstance);
+		exp.type.verify(exp.testInstance,null);
 		
 		return false;
 	}

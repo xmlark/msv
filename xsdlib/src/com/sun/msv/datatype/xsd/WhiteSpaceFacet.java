@@ -25,12 +25,12 @@ public class WhiteSpaceFacet extends DataTypeWithFacet
 		facets.consume(FACET_WHITESPACE);
 	}
 	
-	protected boolean checkFormat( String content )
-	{ return baseType.checkFormat(content); }
-	public Object convertToValue( String content )
-	{ return baseType.convertToValue(content); }
+	protected boolean checkFormat( String content, ValidationContextProvider context )
+	{ return baseType.checkFormat(content,context); }
+	public Object convertToValue( String content, ValidationContextProvider context )
+	{ return baseType.convertToValue(content,context); }
 	
 	/** whiteSpace facet never constrain anything */
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context)
 	{ return null; }
 }

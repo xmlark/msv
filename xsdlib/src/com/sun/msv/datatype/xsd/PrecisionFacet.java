@@ -34,7 +34,7 @@ class PrecisionFacet extends DataTypeWithLexicalConstraintFacet
 		return countPrecision(content)<=precision;
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context)
 	{
 		final int cnt = countPrecision(content);
 		if( cnt<=precision )

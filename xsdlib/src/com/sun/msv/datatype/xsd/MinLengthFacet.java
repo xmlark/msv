@@ -22,16 +22,16 @@ public class MinLengthFacet extends DataTypeWithValueConstraintFacet
 		// consistency with maxLength is checked in DataTypeImpl.derive method.
 	}
 	
-	public Object convertToValue( String literal )
+	public Object convertToValue( String literal, ValidationContextProvider context )
 	{
-		Object o = baseType.convertToValue(literal);
+		Object o = baseType.convertToValue(literal,context);
 		if(o==null || ((Discrete)concreteType).countLength(literal)<minLength)	return null;
 		return o;
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context)
 	{
-		Object o = concreteType.convertToValue(content);
+		Object o = concreteType.convertToValue(content,context);
 		// base type must have accepted this lexical value, otherwise 
 		// this method is never called.
 		if(o==null)	throw new IllegalStateException();	// assertion

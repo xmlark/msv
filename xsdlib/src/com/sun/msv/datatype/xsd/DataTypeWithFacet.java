@@ -81,17 +81,17 @@ abstract class DataTypeWithFacet extends DataTypeImpl
 		return concreteType.isAtomType();
 	}
 	
-	final protected DataTypeErrorDiagnosis diagnoseValue(String content)
+	final protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context )
 	{
 		// if base type complains, pass it through.
-		DataTypeErrorDiagnosis err = baseType.diagnoseValue(content);
+		DataTypeErrorDiagnosis err = baseType.diagnoseValue(content,context);
 		if(err!=null)		return err;
 		
 		// otherwise, perform own diagnosis.
-		return diagnoseByFacet(content);
+		return diagnoseByFacet(content,context);
 	}
 	
-	protected abstract DataTypeErrorDiagnosis diagnoseByFacet(String content)
+	protected abstract DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context)
 		throws UnsupportedOperationException;
 
 }

@@ -8,7 +8,7 @@ import java.util.Vector;
  */
 public class EnumerationFacet extends DataTypeWithValueConstraintFacet
 {
-	protected EnumerationFacet( String typeName, DataTypeImpl baseType, Facets facets )
+	protected EnumerationFacet( String typeName, DataTypeImpl baseType, Facets facets, ValidationContextProvider context )
 		throws BadTypeException
 	{
 		super(typeName,baseType,FACET_ENUMERATION,facets);
@@ -22,7 +22,7 @@ public class EnumerationFacet extends DataTypeWithValueConstraintFacet
 			// loosened enumeration value will be detected in this process.
 			
 			final String val = (String)lexValues.elementAt(i);
-			Object o = baseType.convertToValueObject(val);
+			Object o = baseType.convertToValueObject(val,context);
 			if(o==null)
 			{
 				throw new BadTypeException(
@@ -39,16 +39,16 @@ public class EnumerationFacet extends DataTypeWithValueConstraintFacet
 	/** set of valid values */
 	private final Set values = new java.util.HashSet();
 
-	public Object convertToValue( String literal )
+	public Object convertToValue( String literal, ValidationContextProvider context )
 	{
-		Object o = baseType.convertToValue(literal);
+		Object o = baseType.convertToValue(literal,context);
 		if(o==null || !values.contains(o))		return null;
 		return o;
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context)
 	{
-		if( convertToValue(content)!=null )	return null;
+		if( convertToValue(content,context)!=null )	return null;
 			
 		return new DataTypeErrorDiagnosis(this, content, -1,
 			DataTypeErrorDiagnosis.ERR_ENUMERATION );

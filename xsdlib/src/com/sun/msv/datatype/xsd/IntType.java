@@ -10,7 +10,7 @@ public class IntType extends IntegerDerivedType
 	public static final IntType theInstance = new IntType("int");
 	protected IntType(String typeName) { super(typeName); }
 	
-	public Object convertToValue( String lexicalValue )
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
 	{
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		try

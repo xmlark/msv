@@ -12,7 +12,7 @@ public class ByteType extends IntegerDerivedType
 	public final static ByteType theInstance = new ByteType();
 	private ByteType() { super("byte"); }
 	
-	public Object convertToValue( String content )
+	public Object convertToValue( String content, ValidationContextProvider context )
 	{
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		try

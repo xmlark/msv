@@ -32,12 +32,12 @@ public class StringType extends ConcreteType implements Discrete
 	protected StringType( String typeName, WhiteSpaceProcessor whiteSpace )
 	{ super(typeName,whiteSpace); }
 	
-	protected final boolean checkFormat( String content )
+	protected final boolean checkFormat( String content, ValidationContextProvider context )
 	{// string derived types should use convertToValue method to check its validity
-		return convertToValue(content)!=null;
+		return convertToValue(content,context)!=null;
 	}
 	
-	public Object convertToValue( String lexicalValue )
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
 	{// for string, lexical space is value space by itself
 		return lexicalValue;
 	}

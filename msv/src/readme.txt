@@ -2,12 +2,65 @@
 TODO
 ----
 
-* add another hierarchy to better handle type dizzy-chain
+* "double" type. if value is out of range of java.lang.Double,
+  it doesn't accept the value, although it is a valid double value.
 * implement SmallDateTime/SmallTimeDuration
 * test derivation and its error.
   - it can wait.
 * prepare more test cases for DataTypeTest.xml
 * make sure that separators are correctly handled in ListType.
+
+Known limitation
+----------------
+
+* 'NOTATION'
+
+ this type is validated by 'string' type. The Oct/24/2000 version
+of the spec says NOTATION is derived from QName. This implies that
+
+<simpleType name="myNotation">
+  <restriction base="NOTATION" xmlns:myns="myURI">
+    <enumeration value="myns:foo" />
+    <enumeration value="myns:bar" />
+  </restricted>
+</simpleType>
+
+should match the following:
+
+<root xmlns:myURI = "myURI">
+  <someElement a="myURI:foo" />
+
+Even worse, if you understand XML Schema's NOTATION in terms of that of XML1.0,
+you would be tempted to write as follows.
+
+<simpleType name="mathType" xmlns="XSD">
+  <restriction base="NOTATION">
+    <enumeration value="tex" />
+    <enumeration value="mathML" />
+  </restricted>
+</simpleType>
+
+But this is a big mistake.
+Because QName "tex" is mapped to {XSD}:tex, so it cannot match the following
+statement.
+
+<root xmlns="myURI">
+  <formula type="tex"> x \subseteq y </formula>
+</root>
+
+This surprising result is enough to rethink about the rightness of
+the design of NOTATION.
+
+Also, one of the member of Schema WG acknowledged that "there is no connection
+between them(NOTATION in XML Schema) and XML 1.0 Notations," whereas the spec
+says NOTATION type is just for compatibility purpose.
+
+I think that the Schema WG is aware of these problems along with several other
+problems regarding NOTATION. Thus NOTATION type is highly likely to be changed
+in future relase.
+
+Therefore, at this moment, it is impossible to seriously implement NOTATION
+type in consistent manner.
 
 
 
@@ -38,10 +91,6 @@ Unresolved issue
   オーバーライドされるの？それとも、基底型は基底型で、派生型は派生型で、
   別にチェックされるのだろうか。
 
-* QName
-  Do I have to check that the prefix is actually declared?
-  if so, implementation needs a change.
-
 * ID / IDREF is not implemented. Due to the design issue.
 
   Treating ID and IDREF as a datatype is not a good idea, due to
@@ -64,3 +113,4 @@ Unresolved issue
 
 * possible limit of maximum precision?
   
+* 0 = 0.0 for decimal ? ( currently implemented in this way)

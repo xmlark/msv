@@ -30,12 +30,12 @@ public class BooleanType extends ConcreteType
 	
 	private BooleanType()	{ super("boolean"); }
 	
-	protected boolean checkFormat( String content )
+	protected boolean checkFormat( String content, ValidationContextProvider context )
 	{
 		return "true".equals(content) || "false".equals(content);
 	}
 	
-	public Object convertToValue( String lexicalValue )
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
 	{// for string, lexical space is value space by itself
 		if( lexicalValue.equals("true") )		return Boolean.TRUE;
 		if( lexicalValue.equals("false") )		return Boolean.FALSE;

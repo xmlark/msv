@@ -22,7 +22,7 @@ public class HexBinaryType extends BinaryBaseType
 		return -1;
 	}
 
-	public Object convertToValue( String lexicalValue )
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
 	{
 		final int len = lexicalValue.length();
 
@@ -44,7 +44,7 @@ public class HexBinaryType extends BinaryBaseType
 		return new BinaryValueType(out);
 	}
 
-	protected boolean checkFormat( String lexicalValue )
+	protected boolean checkFormat( String lexicalValue, ValidationContextProvider context )
 	{
 		final int len = lexicalValue.length();
 

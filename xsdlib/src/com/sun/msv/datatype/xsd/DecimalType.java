@@ -16,7 +16,7 @@ public class DecimalType extends ConcreteType implements Comparator
 	/** constant */
 	private static final BigInteger the10 = new BigInteger("10");
 
-	protected boolean checkFormat( String content )
+	protected boolean checkFormat( String content, ValidationContextProvider context )
 	{
 		final int len = content.length();
 		int i=0;
@@ -55,7 +55,7 @@ public class DecimalType extends ConcreteType implements Comparator
 		return atLeastOneDigit;	// at least one digit must be present.
 	}
 	
-	public Object convertToValue( String content )
+	public Object convertToValue( String content, ValidationContextProvider context )
 	{
 		try
 		{
@@ -64,7 +64,7 @@ public class DecimalType extends ConcreteType implements Comparator
 			
 			// so call checkFormat to make sure that
 			// format is XML Schema spec compliant.
-			if(!checkFormat(content))		return null;
+			if(!checkFormat(content,context))		return null;
 
 			// XML Schema allows optional leading '+' sign,
 			// but BigDecimal doesn't.

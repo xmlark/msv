@@ -34,7 +34,7 @@ class ScaleFacet extends DataTypeWithLexicalConstraintFacet
 		return countScale(content)<=scale;
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context)
 	{
 		final int cnt = countScale(content);
 		if(cnt<=scale)		return null;

@@ -75,7 +75,7 @@ final class PatternFacet extends DataTypeWithLexicalConstraintFacet
 		// ignore it for now.
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content)
+	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context)
 	{
 		if( checkLexicalConstraint(content) )	return null;
 		

@@ -26,9 +26,9 @@ abstract class ConcreteType extends DataTypeImpl
 	}
 
 	// default implementation for concrete type. somewhat shabby.
-	protected DataTypeErrorDiagnosis diagnoseValue(String content)
+	protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context)
 	{
-		if(checkFormat(content))	return null;
+		if(checkFormat(content,context))	return null;
 		
 		return new DataTypeErrorDiagnosis(this,content,-1,
 			DataTypeErrorDiagnosis.ERR_INAPPROPRIATE_FOR_TYPE, getName() );

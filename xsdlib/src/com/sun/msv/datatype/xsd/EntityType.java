@@ -31,7 +31,6 @@ public class EntityType extends ConcreteType
 	
 	public final int isFacetApplicable( String facetName )
 	{
-		// TODO : should we allow scale facet, or not?
 		if( facetName.equals(FACET_LENGTH)
 		||	facetName.equals(FACET_MINLENGTH)
 		||	facetName.equals(FACET_MAXLENGTH)
@@ -42,15 +41,14 @@ public class EntityType extends ConcreteType
 			return NOT_ALLOWED;
 	}
 	
-	protected boolean checkFormat( String content )
+	protected boolean checkFormat( String content, ValidationContextProvider context )
 	{
-		// we have to perform actual check
-		throw new UnsupportedOperationException();
+		return context.isUnparsedEntity(content);
 	}
 
-	public Object convertToValue( String content )
+	public Object convertToValue( String content, ValidationContextProvider context )
 	{
-		// we have to perform actual check
-		throw new UnsupportedOperationException();
+		if(context.isUnparsedEntity(content))	return content;
+		else									return null;
 	}
 }

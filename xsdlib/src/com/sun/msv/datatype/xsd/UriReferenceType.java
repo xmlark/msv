@@ -31,12 +31,12 @@ public class UriReferenceType extends ConcreteType
 	public static final UriReferenceType theInstance = new UriReferenceType();
 	private UriReferenceType() { super("uriReference"); }
 	
-	protected boolean checkFormat( String content )
+	protected boolean checkFormat( String content, ValidationContextProvider context )
 	{
-		return convertToValue(content)!=null;
+		return convertToValue(content,context)!=null;
 	}
 	
-	public Object convertToValue( String content )
+	public Object convertToValue( String content, ValidationContextProvider context )
 	{
 		// we can't use java.net.URL (for example, it cannot handle IPv6.)
 		// so use lexical value instead

@@ -10,7 +10,7 @@ public class IntegerType extends IntegerDerivedType
 	public static final IntegerType theInstance = new IntegerType("integer");
 	protected IntegerType(String typeName) { super(typeName); }
 	
-	public Object convertToValue( String lexicalValue )
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
 	{
 		return IntegerValueType.create(lexicalValue);
 	}

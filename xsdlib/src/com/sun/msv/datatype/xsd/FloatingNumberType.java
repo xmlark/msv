@@ -6,9 +6,9 @@ abstract class FloatingNumberType extends ConcreteType implements Comparator
 {
 	protected FloatingNumberType( String typeName ) { super(typeName); }
 	
-	final protected boolean checkFormat( String lexicalValue )
+	final protected boolean checkFormat( String lexicalValue, ValidationContextProvider context )
 	{// FloatType and DoubleType checks format by trying to convert it to value object
-		return convertToValue(lexicalValue)!=null;
+		return convertToValue(lexicalValue,context)!=null;
 	}
 	
 	protected static boolean isDigitOrPeriodOrSign( char ch )

@@ -33,43 +33,43 @@ abstract class DataTypeImpl implements DataType
 		this.whiteSpace	= whiteSpace;
 	}
 
-	final public Object convertToValueObject( String lexicalValue )
+	final public Object convertToValueObject( String lexicalValue, ValidationContextProvider context )
 	{
-		return convertToValue(whiteSpace.process(lexicalValue));
+		return convertToValue(whiteSpace.process(lexicalValue),context);
 	}
 	
 	/**
 	 * converts whitespace-processed lexical value into value object
 	 */
-	abstract protected Object convertToValue( String content );
+	abstract protected Object convertToValue( String content, ValidationContextProvider context );
 
 	
-	final public DataTypeErrorDiagnosis diagnose(String content)
+	final public DataTypeErrorDiagnosis diagnose(String content, ValidationContextProvider context)
 	{
-		return diagnoseValue(whiteSpace.process(content));
+		return diagnoseValue(whiteSpace.process(content),context);
 	}
 	
 	/** actual 'meat' of diagnose method */
-	abstract protected DataTypeErrorDiagnosis diagnoseValue(String content)
+	abstract protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context)
 		throws UnsupportedOperationException;
 	
 
-	final public boolean verify( String literal )
+	final public boolean verify( String literal, ValidationContextProvider context )
 	{
 		// step.1 white space processing
 		literal = whiteSpace.process(literal);
 		
 		if( needValueCheck() )
 		{// constraint facet that needs computation of value is specified.
-			return convertToValue(literal)!=null;
+			return convertToValue(literal,context)!=null;
 		}
 		else
 		{// lexical validation is enough.
-			return checkFormat(literal);
+			return checkFormat(literal,context);
 		}
 	}
 	
-	abstract protected boolean checkFormat( String literal );
+	abstract protected boolean checkFormat( String literal, ValidationContextProvider context );
 	protected boolean needValueCheck() { return false; }
 	
 	/**
@@ -99,7 +99,7 @@ abstract class DataTypeImpl implements DataType
 			new String[]{	FACET_MININCLUSIVE, FACET_MINEXCLUSIVE }
 		};
 	
-	final public DataType derive( String newName, Facets facets )
+	final public DataType derive( String newName, Facets facets, ValidationContextProvider context )
 		throws BadTypeException
 	{
 		// if no facet is specified, no need to create another object.
@@ -181,7 +181,7 @@ abstract class DataTypeImpl implements DataType
 		if( localCopy.contains(FACET_PATTERN) )
 			r = new PatternFacet		( newName, r, localCopy );
 		if( localCopy.contains(FACET_ENUMERATION) )
-			r = new EnumerationFacet	( newName, r, localCopy );
+			r = new EnumerationFacet	( newName, r, localCopy, context );
 		
 		if( !localCopy.isEmpty() )
 		{// there exists some unconsumed facet. So signal error.

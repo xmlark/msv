@@ -22,7 +22,6 @@ public class StringState extends ExpressionWithoutChildState
 	{
 		return reader.pool.createTypedString(
 			new TypedString(new String(text),
-			startTag.containsAttribute("whiteSpace")
-				&&	startTag.getAttribute("whiteSpace").equals("preserve") ) );
+			"preserve".equals(startTag.getAttribute("whiteSpace") ) ) );
 	}
 }

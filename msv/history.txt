@@ -1,4 +1,7 @@
 
+(TREX)  added check of "sequenced string". Due to the lack of the formal
+        description of exactly what should be prohibited, the current
+        implementation is based on the reference implementation by James Clark.
 (TREX)  support QName for "name" attribute of "element"/"attribute" declaration.
 (TREX)  added support for patterns whose document element is not
         <grammar> element but other arbitrary pattern element.

@@ -16,7 +16,6 @@ import com.sun.msv.grammar.NameClassVisitor;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface TREXNameClassVisitor extends NameClassVisitor
-{
+public interface TREXNameClassVisitor extends NameClassVisitor {
 	Object onDifference( DifferenceNameClass nc );
 }

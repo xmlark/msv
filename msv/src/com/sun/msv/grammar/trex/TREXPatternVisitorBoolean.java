@@ -16,8 +16,7 @@ import com.sun.msv.grammar.ExpressionVisitorBoolean;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface TREXPatternVisitorBoolean extends ExpressionVisitorBoolean
-{
+public interface TREXPatternVisitorBoolean extends ExpressionVisitorBoolean {
 	boolean onConcur( ConcurPattern p );
 	boolean onInterleave( InterleavePattern p );
 }

@@ -17,18 +17,17 @@ import com.sun.msv.datatype.ValidationContextProvider;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TypedStringExp extends Expression
-{
+public class TypedStringExp extends Expression {
+	
+	/** datatype object that actually validates text. */
 	public final DataType dt;
 	
-	TypedStringExp( DataType dt )
-	{
+	TypedStringExp( DataType dt ) {
 		super(hashCode(dt,HASHCODE_TYPED_STRING));
 		this.dt=dt;
 	}
 	
-	public boolean equals( Object o )
-	{
+	public boolean equals( Object o ) {
 		// Note that equals method of this class can be sloppy, 
 		// since this class does not have a pattern as its child.
 		
@@ -43,8 +42,7 @@ public class TypedStringExp extends Expression
 	public boolean visit( ExpressionVisitorBoolean visitor )		{ return visitor.onTypedString(this); }
 	public void visit( ExpressionVisitorVoid visitor )				{ visitor.onTypedString(this); }
 
-	protected boolean calcEpsilonReducibility()
-	{
+	protected boolean calcEpsilonReducibility() {
 		return dt.verify("",dummyContext);
 	}
 	

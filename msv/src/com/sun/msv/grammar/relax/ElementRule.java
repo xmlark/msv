@@ -16,8 +16,8 @@ import com.sun.msv.grammar.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ElementRule extends ElementExp
-{
+public class ElementRule extends ElementExp {
+	
 	/** constraints over start tag of the element */
 	public final TagClause clause;
 	
@@ -36,8 +36,7 @@ public class ElementRule extends ElementExp
 	
 	public final NameClass getNameClass()	{ return clause.nameClass; }
 	
-	public ElementRule( ExpressionPool pool, TagClause clause, Expression contentModel )
-	{
+	public ElementRule( ExpressionPool pool, TagClause clause, Expression contentModel ) {
 		super( pool.createSequence(clause,contentModel), true );
 		this.clause = clause;
 		this.attributeFreeContentModel = contentModel;

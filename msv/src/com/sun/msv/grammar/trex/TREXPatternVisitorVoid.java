@@ -16,8 +16,7 @@ import com.sun.msv.grammar.ExpressionVisitorVoid;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface TREXPatternVisitorVoid extends ExpressionVisitorVoid
-{
+public interface TREXPatternVisitorVoid extends ExpressionVisitorVoid {
 	void onConcur( ConcurPattern p );
 	void onInterleave( InterleavePattern p );
 }

@@ -32,58 +32,58 @@ import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
  */
 public class RELAXModule implements Grammar {
 	
-	final public class ElementRulesContainer extends ReferenceContainer
-	{
-		public ElementRules getOrCreate( String name )
-		{ return (ElementRules)super._getOrCreate(name); }
-
-		public ElementRules get( String name )
-		{ return (ElementRules)super._get(name); }
-
-		protected ReferenceExp createReference( String name )
-		{ return new ElementRules(name,RELAXModule.this); }
+	final public class ElementRulesContainer extends ReferenceContainer {
+		public ElementRules getOrCreate( String name ) {
+			return (ElementRules)super._getOrCreate(name);
+		}
+		public ElementRules get( String name ) {
+			return (ElementRules)super._get(name);
+		}
+		protected ReferenceExp createReference( String name ) {
+			return new ElementRules(name,RELAXModule.this);
+		}
 	}
 	/** map from label name to ElementRules object */
 	public final ElementRulesContainer elementRules = new ElementRulesContainer();
 	
-	final public class HedgeRulesContainer extends ReferenceContainer
-	{
-		public HedgeRules getOrCreate( String name )
-		{ return (HedgeRules)super._getOrCreate(name); }
-	
-		public HedgeRules get( String name )
-		{ return (HedgeRules)super._get(name); }
-
-		protected ReferenceExp createReference( String name )
-		{ return new HedgeRules(name,RELAXModule.this); }
+	final public class HedgeRulesContainer extends ReferenceContainer {
+		public HedgeRules getOrCreate( String name ) {
+			return (HedgeRules)super._getOrCreate(name);
+		}
+		public HedgeRules get( String name ) {
+			return (HedgeRules)super._get(name);
+		}
+		protected ReferenceExp createReference( String name ) {
+			return new HedgeRules(name,RELAXModule.this);
+		}
 	}
 	/** map from label name to HedgeRules object */
 	public final HedgeRulesContainer hedgeRules = new HedgeRulesContainer();
 
-	final public class TagContainer extends ReferenceContainer
-	{
-		public TagClause getOrCreate( String name )
-		{ return (TagClause)super._getOrCreate(name); }
-	
-		public TagClause get( String name )
-		{ return (TagClause)super._get(name); }
-
-		protected ReferenceExp createReference( String name )
-		{ return new TagClause(name); }
+	final public class TagContainer extends ReferenceContainer {
+		public TagClause getOrCreate( String name ) {
+			return (TagClause)super._getOrCreate(name);
+		}
+		public TagClause get( String name ) {
+			return (TagClause)super._get(name);
+		}
+		protected ReferenceExp createReference( String name ) {
+			return new TagClause(name);
+		}
 	}
 	/** map from role name to TagClause object */
 	public final TagContainer tags = new TagContainer();
 
-	final public class AttPoolContainer extends ReferenceContainer
-	{
-		public AttPoolClause getOrCreate( String name )
-		{ return (AttPoolClause)super._getOrCreate(name); }
-	
-		public AttPoolClause get( String name )
-		{ return (AttPoolClause)super._get(name); }
-
-		protected ReferenceExp createReference( String name )
-		{ return new AttPoolClause(name); }
+	final public class AttPoolContainer extends ReferenceContainer {
+		public AttPoolClause getOrCreate( String name ) {
+			return (AttPoolClause)super._getOrCreate(name);
+		}
+		public AttPoolClause get( String name ) {
+			return (AttPoolClause)super._get(name);
+		}
+		protected ReferenceExp createReference( String name ) {
+			return new AttPoolClause(name);
+		}
 	}
 	/** map from role name to AttPoolClause object */
 	public final AttPoolContainer attPools = new AttPoolContainer();
@@ -103,15 +103,6 @@ public class RELAXModule implements Grammar {
 	
 		To do this, this class has separate difinition for all exported attPools.
 	*/
-	
-	/**
-	 * creates an empty ReferenceExp that can then be used
-	 * for anyOtherElement.
-	 */
-//	public final ReferenceExp createAnyOtherElementSkelton()
-//	{
-//		return new HedgeRules("##anyOtherElement",this);
-//	}
 	
 	/** target namespace URI */
 	public final String targetNamespace;
@@ -134,8 +125,7 @@ public class RELAXModule implements Grammar {
 	public final ExpressionPool pool;
 	public ExpressionPool getPool() { return pool; }
 	
-	public RELAXModule( ExpressionPool pool, String targetNamespace )
-	{
+	public RELAXModule( ExpressionPool pool, String targetNamespace ) {
 		// if you don't want to namespace, specify ""
 		if( targetNamespace==null )		throw new NullPointerException();
 		

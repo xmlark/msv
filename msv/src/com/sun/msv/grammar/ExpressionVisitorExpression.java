@@ -14,8 +14,8 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface ExpressionVisitorExpression
-{
+public interface ExpressionVisitorExpression {
+	
 	Expression onAttribute( AttributeExp exp );
 	Expression onChoice( ChoiceExp exp );
 	Expression onElement( ElementExp exp );

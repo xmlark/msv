@@ -27,8 +27,8 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class MixedExp extends UnaryExp
-{
+public class MixedExp extends UnaryExp {
+	
 	MixedExp( Expression exp )	{ super( exp,HASHCODE_MIXED ); }
 	
 	public Object visit( ExpressionVisitor visitor )				{ return visitor.onMixed(this);	}
@@ -36,8 +36,7 @@ public class MixedExp extends UnaryExp
 	public boolean visit( ExpressionVisitorBoolean visitor )		{ return visitor.onMixed(this); }
 	public void visit( ExpressionVisitorVoid visitor )				{ visitor.onMixed(this); }
 
-	protected boolean calcEpsilonReducibility()
-	{
+	protected boolean calcEpsilonReducibility() {
 		return exp.isEpsilonReducible();
 	}
 }

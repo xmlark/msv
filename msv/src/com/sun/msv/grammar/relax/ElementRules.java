@@ -18,26 +18,23 @@ import com.sun.msv.grammar.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ElementRules extends ReferenceExp implements Exportable
-{
-	protected ElementRules( String label, RELAXModule ownerModule )
-	{
+public class ElementRules extends ReferenceExp implements Exportable {
+	
+	protected ElementRules( String label, RELAXModule ownerModule ) {
 		super(label);
 		this.ownerModule = ownerModule;
 	}
 	
-	public boolean equals( Object o )
-	{
+	public boolean equals( Object o ) {
 		return this==o;
 	}
 	
-	protected boolean calcEpsilonReducibility()
-	{// elementRules are always not epsilon-reducible.
+	protected boolean calcEpsilonReducibility() {
+		// elementRules are always not epsilon-reducible.
 		return false;
 	}
 	
-	public void addElementRule( ExpressionPool pool, ElementRule newRule )
-	{
+	public void addElementRule( ExpressionPool pool, ElementRule newRule ) {
 		newRule.parent = this;
 		if( exp==null )		// the first element
 			exp = newRule;

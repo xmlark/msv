@@ -14,18 +14,18 @@ package com.sun.msv.grammar.trex;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class Localizer
-{
-	public static String localize( String prop, Object[] args )
-	{
+class Localizer {
+	public static String localize( String prop, Object[] args ) {
 		return java.text.MessageFormat.format(
 			java.util.ResourceBundle.getBundle("com.sun.msv.grammar.trex.Messages").getString(prop),
 			args );
 	}
 	
-	public static String localize( String prop )
-	{ return localize( prop, null ); }
+	public static String localize( String prop ) {
+		return localize( prop, null );
+	}
 	
-	public static String localize( String prop, Object arg1 )
-	{ return localize( prop, new Object[]{arg1} ); }
+	public static String localize( String prop, Object arg1 ) {
+		return localize( prop, new Object[]{arg1} );
+	}
 }

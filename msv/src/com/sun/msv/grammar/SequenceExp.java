@@ -14,8 +14,8 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class SequenceExp extends BinaryExp
-{
+public class SequenceExp extends BinaryExp {
+	
 	SequenceExp( Expression left, Expression right )	{ super(left,right,HASHCODE_SEQUENCE); }
 	
 	public Object visit( ExpressionVisitor visitor )				{ return visitor.onSequence(this); }
@@ -23,8 +23,7 @@ public class SequenceExp extends BinaryExp
 	public boolean visit( ExpressionVisitorBoolean visitor )		{ return visitor.onSequence(this); }
 	public void visit( ExpressionVisitorVoid visitor )				{ visitor.onSequence(this); }
 
-	protected boolean calcEpsilonReducibility()
-	{
+	protected boolean calcEpsilonReducibility() {
 		return exp1.isEpsilonReducible() && exp2.isEpsilonReducible();
 	}
 }

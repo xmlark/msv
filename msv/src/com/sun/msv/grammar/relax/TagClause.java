@@ -18,10 +18,9 @@ import com.sun.msv.grammar.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TagClause extends ReferenceExp
-{
-	/** tag name constraint.
-	 * 
+public class TagClause extends ReferenceExp {
+	/**
+	 * tag name constraint.
 	 * This should be SimpleNameClass. The only exception is for stub module.
 	 */
 	public NameClass nameClass;

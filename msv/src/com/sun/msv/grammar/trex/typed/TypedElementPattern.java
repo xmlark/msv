@@ -20,12 +20,11 @@ import com.sun.msv.grammar.trex.ElementPattern;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TypedElementPattern extends ElementPattern
-{
+public class TypedElementPattern extends ElementPattern {
+	/** label of this element. */
 	public final String label;
 	
-	public TypedElementPattern( NameClass nameClass, Expression contentModel, String label )
-	{
+	public TypedElementPattern( NameClass nameClass, Expression contentModel, String label ) {
 		super(nameClass,contentModel);
 		this.label = label;
 	}

@@ -14,8 +14,8 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface NameClassVisitor
-{
+public interface NameClassVisitor {
+	
 	Object onChoice( ChoiceNameClass nc );
 	Object onAnyName( AnyNameClass nc );
 	Object onSimple( SimpleNameClass nc );

@@ -36,14 +36,12 @@ import com.sun.msv.datatype.DataType;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ExpressionPool
-{
-	public final Expression createAttribute( NameClass nameClass )
-	{
+public class ExpressionPool {
+	
+	public final Expression createAttribute( NameClass nameClass ) {
 		return unify(new AttributeExp(nameClass,Expression.anyString));
 	}
-	public final Expression createAttribute( NameClass nameClass, Expression content )
-	{
+	public final Expression createAttribute( NameClass nameClass, Expression content ) {
 		return unify(new AttributeExp(nameClass,content));
 	}
 	
@@ -51,8 +49,7 @@ public class ExpressionPool
 	public final Expression createNullSet() { return Expression.nullSet; }
 	public final Expression createAnyString() { return Expression.anyString; }
 	
-	public final Expression createChoice( Expression left, Expression right )
-	{
+	public final Expression createChoice( Expression left, Expression right ) {
 		if( left==Expression.nullSet )		return right;
 		if( right==Expression.nullSet )		return left;
 		
@@ -62,17 +59,14 @@ public class ExpressionPool
 		// TODO: should we re-order choice in cconsistent manner?
 		
 		// associative operators are grouped to the right
-		if( left instanceof ChoiceExp )
-		{
+		if( left instanceof ChoiceExp ) {
 			final ChoiceExp c = (ChoiceExp)left;
-			
 			return createChoice( c.exp1, createChoice(c.exp2, right) );
 		}
 
 		// eliminate duplicate choice items.
 		Expression next = right;
-		while( true )
-		{
+		while( true ) {
 			if( next==left )	return right;	// left is already in the choice
 			if(!(next instanceof ChoiceExp))	break;
 				
@@ -94,8 +88,7 @@ public class ExpressionPool
 			return o;
 	}
 	
-	public final Expression createOneOrMore( Expression child )
-	{
+	public final Expression createOneOrMore( Expression child ) {
 		if( child == Expression.epsilon
 		||  child == Expression.anyString
 		||  child == Expression.nullSet
@@ -105,42 +98,35 @@ public class ExpressionPool
 		return unify(new OneOrMoreExp(child));
 	}
 	
-	public final Expression createZeroOrMore( Expression child )
-	{
+	public final Expression createZeroOrMore( Expression child ) {
 		return createOptional(createOneOrMore(child));
 	}
 	
-	public final Expression createOptional( Expression child )
-	{
+	public final Expression createOptional( Expression child ) {
 		// optimization will be done in createChoice method.
 		return createChoice(child,Expression.epsilon);
 	}
 	
-	public final Expression createTypedString( DataType dt )
-	{
+	public final Expression createTypedString( DataType dt ) {
 		return unify( new TypedStringExp(dt) );
 	}
 	
-	public final Expression createMixed( Expression body )
-	{
+	public final Expression createMixed( Expression body ) {
 		if( body==Expression.nullSet )		return Expression.nullSet;
 		if( body==Expression.epsilon )		return Expression.anyString;
 		
 		return unify( new MixedExp(body) );
 	}
 	
-	public final Expression createSequence( Expression left, Expression right )
-	{
+	public final Expression createSequence( Expression left, Expression right ) {
 		if( left ==Expression.nullSet
 		||	right==Expression.nullSet )	return Expression.nullSet;
 		if( left ==Expression.epsilon )	return right;
 		if( right==Expression.epsilon )	return left;
 		
 		// associative operators are grouped to the right
-		if( left instanceof SequenceExp )
-		{
+		if( left instanceof SequenceExp ) {
 			final SequenceExp s = (SequenceExp)left;
-			
 			return createSequence( s.exp1, createSequence(s.exp2, right) );
 		}
 		
@@ -185,20 +171,17 @@ public class ExpressionPool
 	 * 
 	 * If it's not registered, then register it and return it.
 	 */
-	protected final Expression unify( Expression exp )
-	{
+	protected final Expression unify( Expression exp ) {
 		// call of get method need not be synchronized.
 		// the implementation guarantee that simulatenous calls to get & put
 		// will work correctly.
 		Object o = expTable.get(exp);
 		
-		if(o==null)
-		{// expression may not be registered. So try it again with lock
-			synchronized(expTable)
-			{
+		if(o==null) {
+			// expression may not be registered. So try it again with lock
+			synchronized(expTable) {
 				o = expTable.get(exp);
-				if(o==null)
-				{
+				if(o==null) {
 					// this check prevents two same expressions to be added simultaneously.
 					// expression is not registered.
 					expTable.put( exp );
@@ -218,8 +201,7 @@ public class ExpressionPool
 	 * Special care has to be taken wrt threading.
 	 * This implementation allows get and put method to be called simulatenously.
 	 */
-	public final static class ClosedHash
-	{
+	public final static class ClosedHash {
 		/** The hash table data. */
 		private Expression table[];
 
@@ -244,18 +226,15 @@ public class ExpressionPool
 		
 		public ClosedHash() { this(null); }
 		
-		public ClosedHash( ClosedHash parent )
-		{
+		public ClosedHash( ClosedHash parent ) {
 			table = new Expression[initialCapacity];
 			threshold = (int)(initialCapacity * loadFactor);
 			this.parent = parent;
 		}
 
 		
-		public Expression get( int hash, Expression left, Expression right, Class type )
-		{
-			if( parent!=null )
-			{
+		public Expression get( int hash, Expression left, Expression right, Class type ) {
+			if( parent!=null ) {
 				Expression e = parent.get(hash,left,right,type);
 				if(e!=null)		return e;
 			}
@@ -263,12 +242,10 @@ public class ExpressionPool
 			Expression tab[] = table;
 			int index = (hash & 0x7FFFFFFF) % tab.length;
 			
-			while(true)
-			{
+			while(true) {
 				final Expression e = tab[index];
 				if( e==null )		return null;
-				if( e.hashCode()==hash && e.getClass()==type )
-				{
+				if( e.hashCode()==hash && e.getClass()==type ) {
 					BinaryExp be = (BinaryExp)e;
 					if( be.exp1==left && be.exp2==right )
 						return be;
@@ -276,10 +253,9 @@ public class ExpressionPool
 				index = (index+1)%tab.length;
 			}
 		}
-		public Expression get( int hash, Expression child, Class type )
-		{
-			if( parent!=null )
-			{
+		
+		public Expression get( int hash, Expression child, Class type ) {
+			if( parent!=null ) {
 				Expression e = parent.get(hash,child,type);
 				if(e!=null)		return e;
 			}
@@ -287,22 +263,18 @@ public class ExpressionPool
 			Expression tab[] = table;
 			int index = (hash & 0x7FFFFFFF) % tab.length;
 			
-			while(true)
-			{
+			while(true) {
 				final Expression e = tab[index];
 				if( e==null )		return null;
-				if( e.hashCode()==hash && e.getClass()==type )
-				{
+				if( e.hashCode()==hash && e.getClass()==type ) {
 					UnaryExp ue = (UnaryExp)e;
 					if( ue.exp==child )		return ue;
 				}
 				index = (index+1)%tab.length;
 			}
 		}
-		public Expression get( Expression key )
-		{
-			if( parent!=null )
-			{
+		public Expression get( Expression key ) {
+			if( parent!=null ) {
 				Expression e = parent.get(key);
 				if(e!=null)		return e;
 			}
@@ -310,8 +282,7 @@ public class ExpressionPool
 			Expression tab[] = table;
 			int index = (key.hashCode() & 0x7FFFFFFF) % tab.length;
 			
-			while(true)
-			{
+			while(true) {
 				final Expression e = tab[index];
 				if( e==null )		return null;
 				if( e.equals(key) )	return e;
@@ -326,8 +297,7 @@ public class ExpressionPool
 		 * while another thread is performing rehash.
 		 * Keep this in mind.
 		 */
-		private void rehash()
-		{
+		private void rehash() {
 			// create a new table first.
 			// meanwhile, other threads can safely access get method.
 			int oldCapacity = table.length;
@@ -337,8 +307,7 @@ public class ExpressionPool
 			Expression newMap[] = new Expression[newCapacity];
 
 			for (int i = oldCapacity ; i-- > 0 ;)
-				if( oldMap[i]!=null )
-				{
+				if( oldMap[i]!=null ) {
 					int index = (oldMap[i].hashCode() & 0x7FFFFFFF) % newMap.length;
 					while(newMap[index]!=null)
 						index=(index+1)%newMap.length;
@@ -355,8 +324,7 @@ public class ExpressionPool
 		 * put method. No two threads can call this method simulatenously,
 		 * and it's the caller's responsibility to enforce it.
 		 */
-		public void put(Expression newExp)
-		{
+		public void put(Expression newExp) {
 			if (count >= threshold)		rehash();
 
 			Expression tab[] = table;
@@ -368,7 +336,5 @@ public class ExpressionPool
 			
 			count++;
 		}
-
 	}
-
 }

@@ -16,8 +16,8 @@ import com.sun.msv.grammar.ExpressionVisitorBoolean;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface RELAXExpressionVisitorBoolean extends ExpressionVisitorBoolean
-{
+public interface RELAXExpressionVisitorBoolean extends ExpressionVisitorBoolean {
+	
 	// RELAX visitor can ignore onRef callback.
 	boolean onAttPool( AttPoolClause exp );
 	boolean onTag( TagClause exp );

@@ -19,8 +19,7 @@ import com.sun.msv.grammar.util.ExpressionPrinter;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class TREXPatternPrinter extends ExpressionPrinter implements TREXPatternVisitor
-{
+public final class TREXPatternPrinter extends ExpressionPrinter implements TREXPatternVisitor {
 	// singleton access
 	public static TREXPatternPrinter fragmentInstance = new TREXPatternPrinter(FRAGMENT);
 	public static TREXPatternPrinter contentModelInstance = new TREXPatternPrinter(CONTENTMODEL);
@@ -30,22 +29,18 @@ public final class TREXPatternPrinter extends ExpressionPrinter implements TREXP
 	
 	public Object onConcur( ConcurPattern exp )		{ return printBinary(exp,"&"); }
 	public Object onInterleave( InterleavePattern exp ){ return printBinary(exp,"^"); }
-	public Object onRef( ReferenceExp exp )
-	{
+	public Object onRef( ReferenceExp exp ) {
 		if( (mode&FRAGMENT)!=0 )		return "{"+exp.name+"}";
 		else							return exp.exp.visit(this);
 	}
 	
-	public static String printFragment(Expression exp)
-	{
+	public static String printFragment(Expression exp) {
 		return (String)exp.visit(fragmentInstance);
 	}
-	public static String printContentModel(Expression exp)
-	{
+	public static String printContentModel(Expression exp) {
 		return (String)exp.visit(contentModelInstance);
 	}
-	public static String printSmallest(Expression exp)
-	{
+	public static String printSmallest(Expression exp) {
 		return (String)exp.visit(smallestInstance);
 	}
 }

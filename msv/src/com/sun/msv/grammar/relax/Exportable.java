@@ -14,7 +14,6 @@ package com.sun.msv.grammar.relax;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface Exportable
-{
+public interface Exportable {
 	boolean isExported();
 }

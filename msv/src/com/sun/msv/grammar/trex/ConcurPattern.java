@@ -16,24 +16,27 @@ import com.sun.msv.grammar.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class ConcurPattern extends BinaryExp
-{
+public final class ConcurPattern extends BinaryExp {
+	
 	ConcurPattern( Expression left, Expression right ) { super(left,right,HASHCODE_CONCUR); }
 
-	public Object visit( ExpressionVisitor visitor )
-	{ return ((TREXPatternVisitor)visitor).onConcur(this); }
+	public Object visit( ExpressionVisitor visitor ) {
+		return ((TREXPatternVisitor)visitor).onConcur(this);
+	}
 
-	public Expression visit( ExpressionVisitorExpression visitor )
-	{ return ((TREXPatternVisitorExpression)visitor).onConcur(this); }
+	public Expression visit( ExpressionVisitorExpression visitor ) {
+		return ((TREXPatternVisitorExpression)visitor).onConcur(this);
+	}
 	
-	public boolean visit( ExpressionVisitorBoolean visitor )
-	{ return ((TREXPatternVisitorBoolean)visitor).onConcur(this); }
+	public boolean visit( ExpressionVisitorBoolean visitor ) {
+		return ((TREXPatternVisitorBoolean)visitor).onConcur(this);
+	}
 
-	public void visit( ExpressionVisitorVoid visitor )
-	{ ((TREXPatternVisitorVoid)visitor).onConcur(this); }
+	public void visit( ExpressionVisitorVoid visitor ) {
+		((TREXPatternVisitorVoid)visitor).onConcur(this);
+	}
 
-	protected boolean calcEpsilonReducibility()
-	{
+	protected boolean calcEpsilonReducibility() {
 		return exp1.isEpsilonReducible() && exp2.isEpsilonReducible();
 	}
 }

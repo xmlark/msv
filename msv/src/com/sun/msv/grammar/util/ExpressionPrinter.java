@@ -18,8 +18,8 @@ import com.sun.msv.grammar.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public abstract class ExpressionPrinter implements ExpressionVisitor
-{
+public abstract class ExpressionPrinter implements ExpressionVisitor {
+	
 	/** in this mode, reference to other expression is
 	 * one of the terminal symbol of stringnization.
 	 * 
@@ -43,12 +43,10 @@ public abstract class ExpressionPrinter implements ExpressionVisitor
 	 * 
 	 * this method is a useful piece to dump the entire grammar.
 	 */
-	public String printRefContainer( ReferenceContainer cont )
-	{
+	public String printRefContainer( ReferenceContainer cont ) {
 		String r="";
 		java.util.Iterator itr = cont.iterator();
-		while( itr.hasNext() )
-		{
+		while( itr.hasNext() ) {
 			ReferenceExp exp = (ReferenceExp)itr.next();
 			
 			r += exp.name + "  : " + exp.exp.visit(this) + "\n";
@@ -57,13 +55,11 @@ public abstract class ExpressionPrinter implements ExpressionVisitor
 	}
 	
 	/** determines whether brackets should be used to represent the pattern */
-	protected static boolean isComplex( Expression exp )
-	{
+	protected static boolean isComplex( Expression exp ) {
 		return exp instanceof BinaryExp;
 	}
 	
-	protected String printBinary( BinaryExp exp, String op )
-	{
+	protected String printBinary( BinaryExp exp, String op ) {
 		String r;
 		
 		if( isComplex(exp.exp1) )	r="("+exp.exp1.visit(this)+")";
@@ -79,62 +75,61 @@ public abstract class ExpressionPrinter implements ExpressionVisitor
 		return r;
 	}
 	
-	public Object onAttribute( AttributeExp exp )
-	{
+	public Object onAttribute( AttributeExp exp ) {
 		return "@"+exp.nameClass.toString()+"<"+exp.exp.visit(this)+">";
 	}
-	private Object optional( Expression exp )
-	{
-		if( exp instanceof OneOrMoreExp )
-		{
+	
+	private Object optional( Expression exp ) {
+		if( exp instanceof OneOrMoreExp ) {
 			OneOrMoreExp ome = (OneOrMoreExp)exp;
 			if( isComplex(ome.exp) )	return "("+ome.exp.visit(this)+")*";
 			else						return ome.exp.visit(this)+"*";
-		}
-		else
-		{
+		} else {
 			if( isComplex(exp) )	return "("+exp.visit(this)+")?";
 			else					return exp.visit(this)+"?";
 		}
 	}
-	public Object onChoice( ChoiceExp exp )	
-	{
+	
+	public Object onChoice( ChoiceExp exp )	 {
 		if( exp.exp1==Expression.epsilon )	return optional(exp.exp2);
 		if( exp.exp2==Expression.epsilon )	return optional(exp.exp1);
 			
 		return printBinary(exp,"|");
 	}
-	public Object onElement( ElementExp exp )
-	{
+	
+	public Object onElement( ElementExp exp ) {
 		if( (mode&CONTENTMODEL)!=0 )
 			return exp.getNameClass().toString();
 		else
 			return exp.getNameClass().toString()+"<"+exp.contentModel.visit(this)+">";
 	}
-	public Object onOneOrMore( OneOrMoreExp exp )
-	{
+	
+	public Object onOneOrMore( OneOrMoreExp exp ) {
 		if( isComplex(exp.exp) )	return "("+exp.exp.visit(this)+")+";
 		else						return exp.exp.visit(this)+"+";
 	}
-	public Object onMixed( MixedExp exp )
-	{
+	
+	public Object onMixed( MixedExp exp ) {
 		return "mixed["+exp.exp.visit(this)+"]";
 	}
-	public Object onEpsilon()
-	{
+	
+	public Object onEpsilon() {
 		return "#epsilon";
 	}
-	public Object onNullSet()
-	{
+	
+	public Object onNullSet() {
 		return "#nullSet";
 	}
-	public Object onAnyString()
-	{
+	
+	public Object onAnyString() {
 		return "<anyString>";
 	}
-	public Object onSequence( SequenceExp exp )	{ return printBinary(exp,","); }
-	public Object onTypedString( TypedStringExp exp )
-	{
+	
+	public Object onSequence( SequenceExp exp )	{
+		return printBinary(exp,",");
+	}
+	
+	public Object onTypedString( TypedStringExp exp ) {
 		return "$"+exp.dt.displayName();
 	}	
 }

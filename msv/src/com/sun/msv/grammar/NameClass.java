@@ -16,8 +16,7 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface NameClass
-{
+public interface NameClass {
 	/**
 	 * checks if this name class accepts given namespace:localName pair.
 	 * 
@@ -43,6 +42,5 @@ public interface NameClass
 	Object visit( NameClassVisitor visitor );
 	
 	public static final String NAMESPACE_WILDCARD = "*";
-	
 	public static final String LOCALNAME_WILDCARD = "*";
 }

@@ -17,8 +17,7 @@ import com.sun.msv.grammar.NameClassVisitor;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class LocalNameClass implements NameClass
-{
+public final class LocalNameClass implements NameClass {
 	public final String localName;
 	
 	public boolean accepts( String namespaceURI, String localName ) {

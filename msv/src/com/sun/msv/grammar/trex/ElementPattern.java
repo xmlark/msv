@@ -16,13 +16,11 @@ import com.sun.msv.grammar.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ElementPattern extends ElementExp
-{
+public class ElementPattern extends ElementExp {
 	public final NameClass nameClass;
 	public final NameClass getNameClass() { return nameClass; }
 	
-	public ElementPattern( NameClass nameClass, Expression contentModel )
-	{
+	public ElementPattern( NameClass nameClass, Expression contentModel ) {
 		super(contentModel,false);
 		this.nameClass = nameClass;
 	}

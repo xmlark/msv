@@ -17,14 +17,13 @@ import com.sun.msv.datatype.ValidationContextProvider;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class IDType extends NmtokenType
-{
+public class IDType extends NmtokenType {
+	
 	public static final IDType theInstance = new IDType();
 	protected IDType()	{ super("ID"); }
 	
 	
-	public Object convertToValue( String content, ValidationContextProvider context )
-	{
+	public Object convertToValue( String content, ValidationContextProvider context ) {
 		Object o = super.convertToValue(content,context);
 		if(o==null)		return null;
 

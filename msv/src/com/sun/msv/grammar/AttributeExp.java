@@ -17,8 +17,8 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class AttributeExp extends Expression implements NameClassAndExpression
-{
+public final class AttributeExp extends Expression implements NameClassAndExpression {
+	
 	/** constraint over attribute name */
 	public final NameClass nameClass;
 	public final NameClass getNameClass() { return nameClass; }
@@ -28,15 +28,14 @@ public final class AttributeExp extends Expression implements NameClassAndExpres
 	public final Expression getContentModel() { return exp; }
 	
 	/** use ExpressionPool to create it from outside */
-	AttributeExp( NameClass nameClass, Expression exp )
-	{// only PatternPool can create the instance
+	AttributeExp( NameClass nameClass, Expression exp ) {
+		// only PatternPool can create the instance
 		super( hashCode( nameClass, exp, HASHCODE_ATTRIBUTE ) );
 		this.nameClass	= nameClass;
 		this.exp		= exp;
 	}
 	
-	public boolean equals( Object o )
-	{
+	public boolean equals( Object o ) {
 		if(!(o instanceof AttributeExp))	return false;
 		return ((AttributeExp)o).nameClass.equals(nameClass)
 			&& ((AttributeExp)o).exp.equals(exp);
@@ -47,6 +46,7 @@ public final class AttributeExp extends Expression implements NameClassAndExpres
 	public boolean visit( ExpressionVisitorBoolean visitor )		{ return visitor.onAttribute(this);	}
 	public void visit( ExpressionVisitorVoid visitor )				{ visitor.onAttribute(this);	}
 	
-	protected boolean calcEpsilonReducibility()
-	{ return false; }
+	protected boolean calcEpsilonReducibility() {
+		return false;
+	}
 }

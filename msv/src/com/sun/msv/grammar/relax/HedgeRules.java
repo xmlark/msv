@@ -19,16 +19,14 @@ import com.sun.msv.grammar.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class HedgeRules extends ReferenceExp implements Exportable
-{
-	protected HedgeRules( String label, RELAXModule ownerModule )
-	{
+public class HedgeRules extends ReferenceExp implements Exportable {
+	
+	protected HedgeRules( String label, RELAXModule ownerModule ) {
 		super(label);
 		this.ownerModule = ownerModule;
 	}
 	
-	public void addHedge( Expression exp, ExpressionPool pool )
-	{
+	public void addHedge( Expression exp, ExpressionPool pool ) {
 		if( this.exp==null )		this.exp=exp;	// first time
 		else						this.exp=pool.createChoice(this.exp,exp);
 	}

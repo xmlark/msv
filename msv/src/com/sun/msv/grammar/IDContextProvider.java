@@ -16,8 +16,8 @@ import com.sun.msv.datatype.ValidationContextProvider;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface IDContextProvider extends ValidationContextProvider
-{
+public interface IDContextProvider extends ValidationContextProvider {
+	
 	/**
 	 * this method is called when another ID is found to
 	 * check whether this ID is already used or not.

@@ -14,19 +14,16 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class NotNameClass implements NameClass
-{
+public final class NotNameClass implements NameClass {
 	public final NameClass child;
 
-	public boolean accepts( String namespaceURI, String localName )
-	{
+	public boolean accepts( String namespaceURI, String localName ) {
 		return !child.accepts(namespaceURI,localName);
 	}
 	
 	public Object visit( NameClassVisitor visitor ) { return visitor.onNot(this); }
 
-	public NotNameClass( NameClass child )
-	{
+	public NotNameClass( NameClass child ) {
 		this.child = child;
 	}
 	

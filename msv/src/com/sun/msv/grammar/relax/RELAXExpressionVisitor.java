@@ -23,8 +23,8 @@ import com.sun.msv.grammar.ExpressionVisitor;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface RELAXExpressionVisitor extends ExpressionVisitor
-{
+public interface RELAXExpressionVisitor extends ExpressionVisitor {
+	
 	Object onAttPool( AttPoolClause exp );
 	Object onTag( TagClause exp );
 	Object onElementRules( ElementRules exp );

@@ -16,20 +16,18 @@ import java.util.Iterator;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public abstract class BinaryExp extends Expression
-{
+public abstract class BinaryExp extends Expression {
+	
 	public final Expression exp1;
 	public final Expression exp2;
 	
-	public BinaryExp( Expression left, Expression right, int hashKey )
-	{
+	public BinaryExp( Expression left, Expression right, int hashKey ) {
 		super( hashCode(left,right,hashKey) );
 		this.exp1 = left;
 		this.exp2 = right;
 	}
 
-	public boolean equals( Object o )
-	{
+	public boolean equals( Object o ) {
 		if( !this.getClass().equals(o.getClass()) )		return false;
 		
 		// every existing children are already unified.
@@ -48,33 +46,26 @@ public abstract class BinaryExp extends Expression
 	 * This method returns an iterator that iterates all children
 	 * (A,B, and C in this example)
 	 */
-	public Iterator children()
-	{
+	public Iterator children() {
 		return new ChildrenIterator(this);
 	}
 	
-	private static final class ChildrenIterator implements Iterator
-	{
+	private static final class ChildrenIterator implements Iterator {
 		private Expression exp;
 		private final Class operator;
 		
-		ChildrenIterator( BinaryExp owner )
-		{
+		ChildrenIterator( BinaryExp owner ) {
 			exp = owner;
 			operator = owner.getClass();
 		}
 		
-		public Object next()
-		{
+		public Object next() {
 			Expression r;
 			
-			if( exp.getClass()==operator )
-			{
+			if( exp.getClass()==operator ) {
 				r = ((BinaryExp)exp).exp1;
 				exp = ((BinaryExp)exp).exp2;
-			}
-			else
-			{
+			} else {
 				r = exp;
 				exp = null;
 			}

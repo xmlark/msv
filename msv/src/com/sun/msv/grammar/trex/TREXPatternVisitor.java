@@ -28,8 +28,7 @@ import com.sun.msv.grammar.ExpressionVisitor;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface TREXPatternVisitor extends ExpressionVisitor
-{
+public interface TREXPatternVisitor extends ExpressionVisitor {
 	Object onConcur( ConcurPattern p );
 	Object onInterleave( InterleavePattern p );
 }

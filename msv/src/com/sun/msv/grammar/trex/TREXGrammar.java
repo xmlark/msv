@@ -19,13 +19,13 @@ import com.sun.msv.reader.datatype.DataTypeVocabularyMap;
  */
 public class TREXGrammar implements Grammar {
 	
-	static final public class RefContainer extends ReferenceContainer
-	{
-		public ReferenceExp getOrCreate( String name )
-		{ return super._getOrCreate(name); }
-	
-		protected ReferenceExp createReference( String name )
-		{ return new ReferenceExp(name); }
+	static final public class RefContainer extends ReferenceContainer {
+		public ReferenceExp getOrCreate( String name ) {
+			return super._getOrCreate(name);
+		}
+		protected ReferenceExp createReference( String name ) {
+			return new ReferenceExp(name);
+		}
 	}
 	
 	/** named patterns which are defined by using &lt;define&gt; element.
@@ -70,8 +70,7 @@ public class TREXGrammar implements Grammar {
 	 *		this object is used to resolve &lt;ref&gt; element with parent
 	 *		attribute.
 	 */
-	public TREXGrammar( TREXPatternPool pool, TREXGrammar parentGrammar )
-	{
+	public TREXGrammar( TREXPatternPool pool, TREXGrammar parentGrammar ) {
 		this.pool = pool;
 		this.parentGrammar = parentGrammar;
 	}

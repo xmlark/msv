@@ -14,10 +14,9 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class ChoiceExp extends BinaryExp
-{
-	ChoiceExp( Expression left, Expression right )
-	{
+public final class ChoiceExp extends BinaryExp {
+	
+	ChoiceExp( Expression left, Expression right ) {
 		super(left,right,HASHCODE_CHOICE);
 	}
 	
@@ -26,8 +25,7 @@ public final class ChoiceExp extends BinaryExp
 	public boolean visit( ExpressionVisitorBoolean visitor )		{ return visitor.onChoice(this); }
 	public void visit( ExpressionVisitorVoid visitor )				{ visitor.onChoice(this); }
 
-	protected boolean calcEpsilonReducibility()
-	{
+	protected boolean calcEpsilonReducibility() {
 		return exp1.isEpsilonReducible() || exp2.isEpsilonReducible();
 	}
 }

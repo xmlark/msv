@@ -16,15 +16,13 @@ import com.sun.msv.datatype.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TypedString implements DataType
-{
+public class TypedString implements DataType {
 	/** this type only matches this string */
 	public final String value;
 	/** true indicates that whiteSpace should be preserved. */
 	public final boolean preserveWhiteSpace;
 	
-	public TypedString( String value, boolean preserveWhiteSpace )
-	{
+	public TypedString( String value, boolean preserveWhiteSpace ) {
 		if(preserveWhiteSpace)
 			this.value = value;
 		else
@@ -33,14 +31,12 @@ public class TypedString implements DataType
 		this.preserveWhiteSpace = preserveWhiteSpace;
 	}
 
-	public int isFacetApplicable( String facetName )
-	{
+	public int isFacetApplicable( String facetName ) {
 		// again derivation will never be required.
 		throw new UnsupportedOperationException();
 	}
 
-	public Object convertToValueObject( String literal, ValidationContextProvider context )
-	{
+	public Object convertToValueObject( String literal, ValidationContextProvider context ) {
 		if(!preserveWhiteSpace)
 			literal = WhiteSpaceProcessor.theCollapse.process(literal);
 		
@@ -58,13 +54,11 @@ public class TypedString implements DataType
 	public boolean isAtomType() { return true; }
 	public boolean isFinal(int t) { return true; }
 	
-	public boolean verify( String literal, ValidationContextProvider context )
-	{
+	public boolean verify( String literal, ValidationContextProvider context ) {
 		return convertToValueObject(literal,context)!=null;
 	}
 	
-	public DataTypeErrorDiagnosis diagnose( String content, ValidationContextProvider context )
-	{
+	public DataTypeErrorDiagnosis diagnose( String content, ValidationContextProvider context ) {
 		if( convertToValueObject(content,context)!=null )	return null;
 		
 		return new DataTypeErrorDiagnosis(

@@ -38,8 +38,7 @@ import java.util.Collection;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public abstract class Expression
-{
+public abstract class Expression {
 	/** cached value of epsilon reducibility.
 	 * 
 	 * Epsilon reducibility can only be calculated after parsing the entire expression,
@@ -53,8 +52,7 @@ public abstract class Expression
 	 * may return approximated value. When this method is used while validation,
 	 * this method is guaranteed to return the correct value.
 	 */
-	public boolean isEpsilonReducible()
-	{
+	public boolean isEpsilonReducible() {
 		if( epsilonReducibility==null )
 			epsilonReducibility = calcEpsilonReducibility()?Boolean.TRUE:Boolean.FALSE;
 		
@@ -64,8 +62,7 @@ public abstract class Expression
 	/** computes epsilon reducibility */
 	protected abstract boolean calcEpsilonReducibility();
 	
-	protected Expression( int hashCode )
-	{
+	protected Expression( int hashCode ) {
 		this.cachedHashCode = hashCode;
 	}
 	
@@ -101,21 +98,18 @@ public abstract class Expression
 	 */
 	private final int cachedHashCode;
 	
-	public final int hashCode()
-	{
+	public final int hashCode() {
 		return cachedHashCode;
 	}
 	
 	public abstract boolean equals( Object o );
 	
-	static protected int hashCode( Object o1, Object o2, int hashKey )
-	{
+	static protected int hashCode( Object o1, Object o2, int hashKey ) {
 		// TODO: more efficient hashing algorithm
 		return o1.hashCode()+o2.hashCode()+hashKey;
 	}
 
-	static protected int hashCode( Object o, int hashKey )
-	{
+	static protected int hashCode( Object o, int hashKey ) {
 		// TODO: more efficient hashing algorithm
 		return o.hashCode()+hashKey;
 	}
@@ -136,8 +130,7 @@ public abstract class Expression
 	protected static final int HASHCODE_CONCUR =			20;
 	protected static final int HASHCODE_INTERLEAVE =		21;
 	
-	private static class EpsilonExpression extends Expression
-	{
+	private static class EpsilonExpression extends Expression {
 		EpsilonExpression() { super(Expression.HASHCODE_EPSILON); }
 		public Object visit( ExpressionVisitor visitor )				{ return visitor.onEpsilon(); }
 		public Expression visit( ExpressionVisitorExpression visitor )	{ return visitor.onEpsilon(); }
@@ -148,8 +141,7 @@ public abstract class Expression
 	};
 	public static final Expression epsilon = new EpsilonExpression();
 	
-	private static class NullSetExpression extends Expression
-	{
+	private static class NullSetExpression extends Expression {
 		NullSetExpression() { super(Expression.HASHCODE_NULLSET); }
 		public Object visit( ExpressionVisitor visitor )				{ return visitor.onNullSet(); }
 		public Expression visit( ExpressionVisitorExpression visitor )	{ return visitor.onNullSet(); }
@@ -160,8 +152,7 @@ public abstract class Expression
 	};
 	public static final Expression nullSet = new NullSetExpression();
 	
-	private static class AnyStringExpression extends Expression
-	{
+	private static class AnyStringExpression extends Expression {
 		AnyStringExpression() { super(Expression.HASHCODE_ANYSTRING); }
 		public Object visit( ExpressionVisitor visitor )				{ return visitor.onAnyString(); }
 		public Expression visit( ExpressionVisitorExpression visitor ) { return visitor.onAnyString(); }

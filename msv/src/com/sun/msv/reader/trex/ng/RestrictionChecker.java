@@ -166,6 +166,9 @@ public class RestrictionChecker {
 		public void onAnyString() {
 			reportError( null, ERR_TEXT_IN_EXCEPT );
 		}
+		public void onEpsilon() {
+			reportError( null, ERR_EMPTY_IN_EXCEPT );
+		}
 		public void onSequence( SequenceExp exp ) {
 			reportError( exp, ERR_SEQUENCE_IN_EXCEPT );
 		}
@@ -250,6 +253,9 @@ public class RestrictionChecker {
 		}
 		public void onAnyString() {
 			reportError( null, ERR_TEXT_IN_START );
+		}
+		public void onEpsilon() {
+			reportError( null, ERR_EMPTY_IN_START );
 		}
 		public void onSequence( SequenceExp exp ) {
 			reportError( exp, ERR_SEQUENCE_IN_START );
@@ -474,6 +480,8 @@ public class RestrictionChecker {
 		"RELAXNGReader.ListInExcept";
 	private static final String ERR_TEXT_IN_EXCEPT =
 		"RELAXNGReader.TextInExcept";
+	private static final String ERR_EMPTY_IN_EXCEPT =
+		"RELAXNGReader.EmptyInExcept";
 	private static final String ERR_SEQUENCE_IN_EXCEPT =
 		"RELAXNGReader.SequenceInExcept";
 	private static final String ERR_INTERLEAVE_IN_EXCEPT =
@@ -500,6 +508,8 @@ public class RestrictionChecker {
 		"RELAXNGReader.ListInStart";
 	private static final String ERR_TEXT_IN_START =
 		"RELAXNGReader.TextInStart";
+	private static final String ERR_EMPTY_IN_START =
+		"RELAXNGReader.EmptyInStart";
 	private static final String ERR_SEQUENCE_IN_START =
 		"RELAXNGReader.SequenceInStart";
 	private static final String ERR_INTERLEAVE_IN_START =

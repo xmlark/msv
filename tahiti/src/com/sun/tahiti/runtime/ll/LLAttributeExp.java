@@ -26,4 +26,8 @@ public class LLAttributeExp extends AttributeExp {
 	public LLAttributeExp( NameClass nc, Expression body ) {
 		super(nc,body);
 	}
+	
+	public boolean equals( Object rhs ) {
+		return this==rhs;
+	}
 }

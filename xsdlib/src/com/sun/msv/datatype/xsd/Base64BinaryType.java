@@ -109,6 +109,8 @@ public class Base64BinaryType extends BinaryBaseType {
 		for( i=0; i<len; i++ ) {
 			if( buf[i]=='=' )	// decodeMap['=']!=-1, so we have to check this first.
 				break;
+            if( buf[i]>=256 )
+                return -1;      // incorrect character
 			if( decodeMap[buf[i]]!=-1 )
 				base64count++;
 		}
@@ -119,6 +121,8 @@ public class Base64BinaryType extends BinaryBaseType {
 				paddingCount++;
 				continue;
 			}
+            if( buf[i]>=256 )
+                return -1;      // incorrect character
 			if( decodeMap[buf[i]]!=-1 )
 				return -1;
 		}

@@ -12,6 +12,7 @@ package batch;
 import javax.xml.parsers.*;
 import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.Vector;
 import java.io.*;
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.InputSource;
@@ -19,8 +20,6 @@ import org.relaxng.testharness.model.*;
 import junit.framework.*;
 import com.sun.msv.verifier.*;
 import com.sun.msv.reader.GrammarReaderController;
-//import com.sun.msv.reader.dtd.DTDReader;
-//import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.resolver.tools.CatalogResolver;
@@ -59,30 +58,61 @@ public abstract class BatchTester {
 	
 	
 	
-	
+	/**
+	 * This method should print the usage information.
+	 */
 	protected abstract void usage();
 	
+	/**
+	 * Creates JUnit test suite from the source test suite information.
+	 */
 	protected abstract TestSuite suite( RNGTestSuite src );
 	
-	
+	/**
+	 * Creates the test suite from the specified file/directory.
+	 */
 	public RNGTest parse( String target ) throws Exception {
+		return parse(target,false);
+	}
+	
+	/**
+	 * Creates the test suite from the specified file/directory.
+	 * 
+	 * @param recursive
+	 *		if the target is directory and this parameter is true, then
+	 *		subdirectories are recursively parsed into a test suite.
+	 */
+	public RNGTest parse( String target, boolean recursive ) throws Exception {
 		File src = new File(target);
 		
 		if(src.isDirectory())
 			return DirectoryTestReader.parseDirectory(
-				src, ext, false );
+				src, ext, recursive );
 		else
 			return DirectoryTestReader.parseSchema(src);
 	}
 	
-	public void init( String target ) {
+	/**
+	 * Initializes various fields by setting a target schema language.
+	 */
+	public void init( String target, boolean strict ) {
+		
+		if(strict)
+			System.out.println("strict schema check will be done");
+		
+		if(strict && (
+			target.equals("relax") ||
+			target.equals("trex") ||
+			target.equals("relax") ))
+			System.out.println("*** strict option is not supported for the language "+target);
+		
 		if( target.equals("relax") )		_init( ".rlx", new GenericValidator() );
 		else
 		if( target.equals("trex") )		_init( ".trex", new GenericValidator() );
 		else
-		if( target.equals("rng") )		_init( ".rng", new IValidatorImplForRNG() );
+		if( target.equals("rng") )		_init( ".rng", new IValidatorImplForRNG(strict) );
 		else
-		if( target.equals("xsd") )		_init( ".xsd", new IValidatorImplForXS() );
+		if( target.equals("xsd") )		_init( ".xsd", new IValidatorImplForXS(strict) );
 		else
 		if( target.equals("dtd") )		_init( ".dtd", new DTDValidator() );
 		else
@@ -94,19 +124,49 @@ public abstract class BatchTester {
 		this.validator = _validator;
 	}
 	
+	protected void onOption( String opt ) throws Exception {
+		System.out.println("unrecognized option:"+opt);
+		throw new Error();
+	}
+	
 	public void run( String[] av ) throws Exception {
 		
-		if( av.length<2 ) {
+		String target = null;
+		Vector instances = new Vector();
+		boolean strict = false;
+		boolean recursive = false;
+		
+		for( int i=0; i<av.length; i++ ) {
+			if(av[i].charAt(0)=='-') {
+				if(av[i].equals("-strict")) {
+					strict = true;
+					continue;
+				}
+				if(av[i].equals("-recursive")) {
+					recursive = true;
+					continue;
+				}
+				
+				onOption(av[i]);
+			} else {
+				if(target==null)
+					target = av[i];
+				else
+					instances.add(av[i]);
+			}
+		}
+
+		if( instances.size()==0 ) {
 			usage();
 			return;
 		}
 		
-		init(av[0]);
+		init(target,strict);
 		
 		// collect test cases
 		RNGTestSuite s = new RNGTestSuite();
-		for( int i=1; i<av.length; i++ )
-			s.addTest(parse(av[i]));
+		for( int i=0; i<instances.size(); i++ )
+			s.addTest(parse((String)instances.get(i),recursive));
 		
 		junit.textui.TestRunner.run( suite(s) );
 	}
@@ -126,7 +186,10 @@ public abstract class BatchTester {
 	 * 
 	 * Mainly used to run an automated test from Ant.
 	 */
-	public TestSuite createFromProperty( String propertyName ) throws Exception {
+	public TestSuite createFromProperty( String target, String propertyName ) throws Exception {
+																								   
+		init(target, System.getProperty("MSV_STRICT_CHECK")!=null);
+		
 		String property = System.getProperty(propertyName);
 		if(property==null)
 			return new TestSuite();	// return an empty test suite.
@@ -135,9 +198,14 @@ public abstract class BatchTester {
 
 		// collect test cases
 		RNGTestSuite s = new RNGTestSuite();
-		while( tokens.hasMoreTokens() )
-			s.addTest(parse(tokens.nextToken()));
-				
+		while( tokens.hasMoreTokens() ) {
+			String name = tokens.nextToken();
+			if(name.charAt(name.length()-1)=='@')
+				s.addTest(parse(name.substring(0,name.length()-1),true));
+			else
+				s.addTest(parse(name));
+		}
+		
 		return suite(s);
 	}
 	

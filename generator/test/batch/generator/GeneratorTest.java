@@ -27,16 +27,14 @@ public class GeneratorTest {
 	public static TestSuite suite() throws Exception {
 		TestSuite s = new TestSuite();
 
-		append( s, "RELAXBatchTestDir", ".rlx" );
-		append( s, "TREXBatchTestDir", ".trex" );
-		append( s, "XSDBatchTestDir", ".xsd" );
-		append( s, "DTDBatchTestDir", ".dtd" );
+		append( s, "RELAXBatchTestDir", "relax" );
+		append( s, "TREXBatchTestDir", "trex" );
+		append( s, "XSDBatchTestDir", "xsd" );
+		append( s, "DTDBatchTestDir", "dtd" );
 		return s;
 	}
 	
-	private static void append( TestSuite s, String propName, String ext ) throws Exception {
-		GeneratorTester tester = new GeneratorTester();
-		tester.init( ext );
-		s.addTest( tester.createFromProperty(propName) );
+	private static void append( TestSuite s, String propName, String target ) throws Exception {
+		s.addTest( new GeneratorTester().createFromProperty(target,propName) );
 	}
 }

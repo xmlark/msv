@@ -21,9 +21,7 @@ import java.util.StringTokenizer;
  */
 public class RELAXBatchTest {
 	public static TestSuite suite() throws Exception {
-		BatchVerifyTester t = new BatchVerifyTester();
-		t.init("relax");
-		
-		return t.createFromProperty("RELAXBatchTestDir");
+		return new BatchVerifyTester().createFromProperty(
+			"relax","RELAXBatchTestDir");
 	}
 }

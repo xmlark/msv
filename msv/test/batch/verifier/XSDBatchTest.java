@@ -20,9 +20,7 @@ import junit.framework.*;
  */
 public class XSDBatchTest {
 	public static TestSuite suite() throws Exception {
-		BatchVerifyTester t = new BatchVerifyTester();
-		t.init("xsd");
-		
-		return t.createFromProperty("XSDBatchTestDir");
+		return new BatchVerifyTester().createFromProperty(
+			"xsd","XSDBatchTestDir");
 	}
 }

@@ -21,9 +21,7 @@ import java.util.StringTokenizer;
  */
 public class TREXBatchTest {
 	public static TestSuite suite() throws Exception {
-		BatchVerifyTester t = new BatchVerifyTester();
-		t.init("trex");
-		
-		return t.createFromProperty("TREXBatchTestDir");
+		return new BatchVerifyTester().createFromProperty(
+			"trex","TREXBatchTestDir");
 	}
 }

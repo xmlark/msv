@@ -20,7 +20,7 @@ public class GeneratorTester extends batch.BatchTester {
 	
 	protected void usage() {
 		System.out.println(
-			"usage "+this.getClass().getName()+" (relax|trex|xsd|dtd|rng) <test case directory>\n"+
+			"usage "+this.getClass().getName()+" (relax|trex|xsd|dtd|rng) [-strict] <test case directory>\n"+
 			"  tests the generator by using schema files and test instances\n"+
 			"  in the specified directory.");
 	}

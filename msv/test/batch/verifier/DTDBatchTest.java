@@ -22,9 +22,7 @@ import java.util.StringTokenizer;
  */
 public class DTDBatchTest {
 	public static TestSuite suite() throws Exception {
-		BatchVerifyTester t = new BatchVerifyTester();
-		t.init("dtd");
-		
-		return t.createFromProperty("DTDBatchTestDir");
+		return new BatchVerifyTester().createFromProperty(
+			"dtd","DTDBatchTestDir");
 	}
 }

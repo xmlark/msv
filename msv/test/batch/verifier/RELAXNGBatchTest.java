@@ -22,9 +22,7 @@ import java.io.File;
  */
 public class RELAXNGBatchTest {
 	public static TestSuite suite() throws Exception {
-		BatchVerifyTester t = new BatchVerifyTester();
-		t.init("rng");
-		
-		return t.createFromProperty("RELAXNGBatchTestDir");
+		return new BatchVerifyTester().createFromProperty(
+			"rng","RELAXNGBatchTestDir");
 	}
 }

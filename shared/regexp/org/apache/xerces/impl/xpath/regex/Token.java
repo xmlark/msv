@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999,2000 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@
  * <http://www.apache.org/>.
  */
 
-package org.apache.xerces.utils.regex;
+package org.apache.xerces.impl.xpath.regex;
 
 import java.util.Vector;
 import java.util.Hashtable;
@@ -639,108 +639,163 @@ class Token implements java.io.Serializable {
         "Cn", "Lu", "Ll", "Lt", "Lm", "Lo", "Mn", "Me", "Mc", "Nd",
         "Nl", "No", "Zs", "Zl", "Zp", "Cc", "Cf", null, "Co", "Cs",
         "Pd", "Ps", "Pe", "Pc", "Po", "Sm", "Sc", "Sk", "So", // 28
-        "L", "M", "N", "Z", "C", "P", "S",      // 29-35
+        "Pi", "Pf",  // 29, 30
+        "L", "M", "N", "Z", "C", "P", "S",      // 31-37
     };
-    static final int CHAR_LETTER = 29;
-    static final int CHAR_MARK = 30;
-    static final int CHAR_NUMBER = 31;
-    static final int CHAR_SEPARATOR = 32;
-    static final int CHAR_OTHER = 33;
-    static final int CHAR_PUNCTUATION = 34;
-    static final int CHAR_SYMBOL = 35;
-    static final String[] blockNames = {
-        "Basic Latin",                          // 0
-        "Latin-1 Supplement",
-        "Latin Extended-A",
-        "Latin Extended-B",
-        "IPA Extensions",
-        "Spacing Modifier Letters",
-        "Combining Diacritical Marks",
-        "Greek",
-        "Cyrillic",                             // 8
-        "Armenian",
-        "Hebrew",
-        "Arabic",
-        "Devanagari",
-        "Bengali",
-        "Gurmukhi",
-        "Gujarati",
-        "Oriya",                                // 16
-        "Tamil",
-        "Telugu",
-        "Kannada",
-        "Malayalam",
-        "Thai",
-        "Lao",
-        "Tibetan",
-        "Georgian",                             // 24
-        "Hangul Jamo",
-        "Latin Extended Additional",
-        "Greek Extended",
-        "General Punctuation",
-        "Superscripts and Subscripts",
-        "Currency Symbols",
-        "Combining Marks for Symbols",
-        "Letterlike Symbols",                   // 32
-        "Number Forms",
-        "Arrows",
-        "Mathematical Operators",
-        "Miscellaneous Technical",
-        "Control Pictures",
-        "Optical Character Recognition",
-        "Enclosed Alphanumerics",
-        "Box Drawing",                          // 40
-        "Block Elements",
-        "Geometric Shapes",
-        "Miscellaneous Symbols",
-        "Dingbats",
-        "CJK Symbols and Punctuation",
-        "Hiragana",
-        "Katakana",
-        "Bopomofo",                             // 48
-        "Hangul Compatibility Jamo",
-        "Kanbun",
-        "Enclosed CJK Letters and Months",
-        "CJK Compatibility",
-        "CJK Unified Ideographs",
-        "Hangul Syllables",
-        "High Surrogates",
-        "High Private Use Surrogates",          // 56
-        "Low Surrogates",
-        "Private Use",
-        "CJK Compatibility Ideographs",
-        "Alphabetic Presentation Forms",
-        "Arabic Presentation Forms-A",
-        "Combining Half Marks",
-        "CJK Compatibility Forms",
-        "Small Form Variants",                  // 64
-        "Arabic Presentation Forms-B",
-        "Specials",
-        "Halfwidth and Fullwidth Forms",        // 67
-    };
-    static final String blockRanges =
-    "\u0000\u007F\u0080\u00FF\u0100\u017F\u0180\u024F\u0250\u02AF\u02B0\u02FF"
-    +"\u0300\u036F\u0370\u03FF\u0400\u04FF\u0530\u058F\u0590\u05FF\u0600\u06FF"
-    +"\u0900\u097F\u0980\u09FF\u0A00\u0A7F\u0A80\u0AFF\u0B00\u0B7F\u0B80\u0BFF"
-    +"\u0C00\u0C7F\u0C80\u0CFF\u0D00\u0D7F\u0E00\u0E7F\u0E80\u0EFF\u0F00\u0FBF"
-    +"\u10A0\u10FF\u1100\u11FF\u1E00\u1EFF\u1F00\u1FFF\u2000\u206F\u2070\u209F"
-    +"\u20A0\u20CF\u20D0\u20FF\u2100\u214F\u2150\u218F\u2190\u21FF\u2200\u22FF"
-    +"\u2300\u23FF\u2400\u243F\u2440\u245F\u2460\u24FF\u2500\u257F\u2580\u259F"
-    +"\u25A0\u25FF\u2600\u26FF\u2700\u27BF\u3000\u303F\u3040\u309F\u30A0\u30FF"
-    +"\u3100\u312F\u3130\u318F\u3190\u319F\u3200\u32FF\u3300\u33FF\u4E00\u9FFF"
-    +"\uAC00\uD7A3\uD800\uDB7F\uDB80\uDBFF\uDC00\uDFFF\uE000\uF8FF\uF900\uFAFF"
-    +"\uFB00\uFB4F\uFB50\uFDFF\uFE20\uFE2F\uFE30\uFE4F\uFE50\uFE6F\uFE70\uFEFE"
-    +"\uFEFF\uFEFF\uFF00\uFFEF";
 
-    static protected RangeToken getRange(String name, boolean positive) {
+    // Schema Rec. {Datatypes} - Punctuation 
+    static final int CHAR_INIT_QUOTE  = 29;     // Pi - initial quote
+    static final int CHAR_FINAL_QUOTE = 30;     // Pf - final quote
+    static final int CHAR_LETTER = 31;
+    static final int CHAR_MARK = 32;
+    static final int CHAR_NUMBER = 33;
+    static final int CHAR_SEPARATOR = 34;
+    static final int CHAR_OTHER = 35;
+    static final int CHAR_PUNCTUATION = 36;
+    static final int CHAR_SYMBOL = 37;
+    
+    //blockNames in UNICODE 3.1 that supported by XML Schema REC             
+    static final String[] blockNames = {
+        /*0000..007F;*/ "Basic Latin",
+        /*0080..00FF;*/ "Latin-1 Supplement",
+        /*0100..017F;*/ "Latin Extended-A",
+        /*0180..024F;*/ "Latin Extended-B",
+        /*0250..02AF;*/ "IPA Extensions",
+        /*02B0..02FF;*/ "Spacing Modifier Letters",
+        /*0300..036F;*/ "Combining Diacritical Marks",
+        /*0370..03FF;*/ "Greek",
+        /*0400..04FF;*/ "Cyrillic",
+        /*0530..058F;*/ "Armenian",
+        /*0590..05FF;*/ "Hebrew",
+        /*0600..06FF;*/ "Arabic",
+        /*0700..074F;*/ "Syriac",  
+        /*0780..07BF;*/ "Thaana",
+        /*0900..097F;*/ "Devanagari",
+        /*0980..09FF;*/ "Bengali",
+        /*0A00..0A7F;*/ "Gurmukhi",
+        /*0A80..0AFF;*/ "Gujarati",
+        /*0B00..0B7F;*/ "Oriya",
+        /*0B80..0BFF;*/ "Tamil",
+        /*0C00..0C7F;*/ "Telugu",
+        /*0C80..0CFF;*/ "Kannada",
+        /*0D00..0D7F;*/ "Malayalam",
+        /*0D80..0DFF;*/ "Sinhala",
+        /*0E00..0E7F;*/ "Thai",
+        /*0E80..0EFF;*/ "Lao",
+        /*0F00..0FFF;*/ "Tibetan",
+        /*1000..109F;*/ "Myanmar", 
+        /*10A0..10FF;*/ "Georgian",
+        /*1100..11FF;*/ "Hangul Jamo",
+        /*1200..137F;*/ "Ethiopic",
+        /*13A0..13FF;*/ "Cherokee",
+        /*1400..167F;*/ "Unified Canadian Aboriginal Syllabics",
+        /*1680..169F;*/ "Ogham",
+        /*16A0..16FF;*/ "Runic",
+        /*1780..17FF;*/ "Khmer",
+        /*1800..18AF;*/ "Mongolian",
+        /*1E00..1EFF;*/ "Latin Extended Additional",
+        /*1F00..1FFF;*/ "Greek Extended",
+        /*2000..206F;*/ "General Punctuation",
+        /*2070..209F;*/ "Superscripts and Subscripts",
+        /*20A0..20CF;*/ "Currency Symbols",
+        /*20D0..20FF;*/ "Combining Marks for Symbols",
+        /*2100..214F;*/ "Letterlike Symbols",
+        /*2150..218F;*/ "Number Forms",
+        /*2190..21FF;*/ "Arrows",
+        /*2200..22FF;*/ "Mathematical Operators",
+        /*2300..23FF;*/ "Miscellaneous Technical",
+        /*2400..243F;*/ "Control Pictures",
+        /*2440..245F;*/ "Optical Character Recognition",
+        /*2460..24FF;*/ "Enclosed Alphanumerics",
+        /*2500..257F;*/ "Box Drawing",
+        /*2580..259F;*/ "Block Elements",
+        /*25A0..25FF;*/ "Geometric Shapes",
+        /*2600..26FF;*/ "Miscellaneous Symbols",
+        /*2700..27BF;*/ "Dingbats",
+        /*2800..28FF;*/ "Braille Patterns",
+        /*2E80..2EFF;*/ "CJK Radicals Supplement",
+        /*2F00..2FDF;*/ "Kangxi Radicals",
+        /*2FF0..2FFF;*/ "Ideographic Description Characters",
+        /*3000..303F;*/ "CJK Symbols and Punctuation",
+        /*3040..309F;*/ "Hiragana",
+        /*30A0..30FF;*/ "Katakana",
+        /*3100..312F;*/ "Bopomofo",
+        /*3130..318F;*/ "Hangul Compatibility Jamo",
+        /*3190..319F;*/ "Kanbun",
+        /*31A0..31BF;*/ "Bopomofo Extended",
+        /*3200..32FF;*/ "Enclosed CJK Letters and Months",
+        /*3300..33FF;*/ "CJK Compatibility",
+        /*3400..4DB5;*/ "CJK Unified Ideographs Extension A",
+        /*4E00..9FFF;*/ "CJK Unified Ideographs",
+        /*A000..A48F;*/ "Yi Syllables",
+        /*A490..A4CF;*/ "Yi Radicals",
+        /*AC00..D7A3;*/ "Hangul Syllables",
+        /*D800..DB7F;*/ "High Surrogates",
+        /*DB80..DBFF;*/ "High Private Use Surrogates",
+        /*DC00..DFFF;*/ "Low Surrogates",
+        /*E000..F8FF;*/ "Private Use",
+        /*F900..FAFF;*/ "CJK Compatibility Ideographs",
+        /*FB00..FB4F;*/ "Alphabetic Presentation Forms",
+        /*FB50..FDFF;*/ "Arabic Presentation Forms-A",
+        /*FE20..FE2F;*/ "Combining Half Marks",
+        /*FE30..FE4F;*/ "CJK Compatibility Forms",
+        /*FE50..FE6F;*/ "Small Form Variants",
+        /*FE70..FEFE;*/ "Arabic Presentation Forms-B",
+        /*FEFF..FEFF;*/ "Specials",
+        /*FF00..FFEF;*/ "Halfwidth and Fullwidth Forms",
+         //missing Specials add manually
+        /*10300..1032F;*/ "Old Italic",
+        /*10330..1034F;*/ "Gothic",
+        /*10400..1044F;*/ "Deseret",
+        /*1D000..1D0FF;*/ "Byzantine Musical Symbols",
+        /*1D100..1D1FF;*/ "Musical Symbols",
+        /*1D400..1D7FF;*/ "Mathematical Alphanumeric Symbols",
+        /*20000..2A6D6;*/ "CJK Unified Ideographs Extension B",
+        /*2F800..2FA1F;*/ "CJK Compatibility Ideographs Supplement",
+        /*E0000..E007F;*/ "Tags",
+        //missing 2 private use add manually
+
+    };
+    //ADD THOSE MANUALLY
+    //F0000..FFFFD; "Private Use",
+    //100000..10FFFD; "Private Use"
+    //FFF0..FFFD; "Specials", 
+    static final String blockRanges = 
+       "\u0000\u007F\u0080\u00FF\u0100\u017F\u0180\u024F\u0250\u02AF\u02B0\u02FF\u0300\u036F"
+        +"\u0370\u03FF\u0400\u04FF\u0530\u058F\u0590\u05FF\u0600\u06FF\u0700\u074F\u0780\u07BF"
+        +"\u0900\u097F\u0980\u09FF\u0A00\u0A7F\u0A80\u0AFF\u0B00\u0B7F\u0B80\u0BFF\u0C00\u0C7F\u0C80\u0CFF"
+        +"\u0D00\u0D7F\u0D80\u0DFF\u0E00\u0E7F\u0E80\u0EFF\u0F00\u0FFF\u1000\u109F\u10A0\u10FF\u1100\u11FF"
+        +"\u1200\u137F\u13A0\u13FF\u1400\u167F\u1680\u169F\u16A0\u16FF\u1780\u17FF\u1800\u18AF\u1E00\u1EFF"
+        +"\u1F00\u1FFF\u2000\u206F\u2070\u209F\u20A0\u20CF\u20D0\u20FF\u2100\u214F\u2150\u218F\u2190\u21FF\u2200\u22FF"
+        +"\u2300\u23FF\u2400\u243F\u2440\u245F\u2460\u24FF\u2500\u257F\u2580\u259F\u25A0\u25FF\u2600\u26FF\u2700\u27BF"
+        +"\u2800\u28FF\u2E80\u2EFF\u2F00\u2FDF\u2FF0\u2FFF\u3000\u303F\u3040\u309F\u30A0\u30FF\u3100\u312F\u3130\u318F"
+        +"\u3190\u319F\u31A0\u31BF\u3200\u32FF\u3300\u33FF\u3400\u4DB5\u4E00\u9FFF\uA000\uA48F\uA490\uA4CF"
+        +"\uAC00\uD7A3\uD800\uDB7F\uDB80\uDBFF\uDC00\uDFFF\uE000\uF8FF\uF900\uFAFF\uFB00\uFB4F\uFB50\uFDFF"
+        +"\uFE20\uFE2F\uFE30\uFE4F\uFE50\uFE6F\uFE70\uFEFE\uFEFF\uFEFF\uFF00\uFFEF\u10300\u1032F\u10330\u1034F"
+        +"\u10400\u1044F\u1D000\u1D0FFs\u1D100\u1D1FF\u1D400\u1D7FF\u20000\u2A6D6\u2F800\u2FA1F\uE0000\uE007F";
+
+     static protected RangeToken getRange(String name, boolean positive) {
         if (Token.categories.size() == 0) {
             synchronized (Token.categories) {
                 Token[] ranges = new Token[Token.categoryNames.length];
                 for (int i = 0;  i < ranges.length;  i ++) {
                     ranges[i] = Token.createRange();
                 }
+                int type;
                 for (int i = 0;  i < 0x10000;  i ++) {
-                    int type = Character.getType((char)i);
+                    type = Character.getType((char)i);
+                    if (type == Character.START_PUNCTUATION || 
+                        type == Character.END_PUNCTUATION) {
+                        //build table of Pi values
+                        if (i == 0x00AB || i == 0x2018 || i == 0x201B || i == 0x201C ||
+                            i == 0x201F || i == 0x2039) {
+                            type = CHAR_INIT_QUOTE;
+                        }
+                        //build table of Pf values
+                        if (i == 0x00BB || i == 0x2019 || i == 0x201D || i == 0x203A ) {
+                            type = CHAR_FINAL_QUOTE;
+                        }
+                    }
                     ranges[type].addRange(i, i);
                     switch (type) {
                       case Character.UPPERCASE_LETTER:
@@ -776,6 +831,8 @@ class Token implements java.io.Serializable {
                       case Character.DASH_PUNCTUATION:
                       case Character.START_PUNCTUATION:
                       case Character.END_PUNCTUATION:
+                      case CHAR_INIT_QUOTE:
+                      case CHAR_FINAL_QUOTE:
                       case Character.OTHER_PUNCTUATION:
                         type = CHAR_PUNCTUATION;
                         break;
@@ -803,40 +860,63 @@ class Token implements java.io.Serializable {
                                               Token.complementRanges(ranges[i]));
                     }
                 }
+                //REVISIT: do we really need to support block names as in Unicode 3.1
+                //         or we can just create all the names in IsBLOCKNAME format (XML Schema REC)?
+                //
+                StringBuffer buffer = new StringBuffer(50);
+                int location = 0;
                 for (int i = 0;  i < Token.blockNames.length;  i ++) {
                     Token r1 = Token.createRange();
-                    int rstart = Token.blockRanges.charAt(i*2);
-                    int rend = Token.blockRanges.charAt(i*2+1);
+                    location = i*2;
+                    int rstart = Token.blockRanges.charAt(location);
+                    int rend = Token.blockRanges.charAt(location+1);
                     String n = Token.blockNames[i];
+                    //DEBUGING
+                    //System.out.println(n+" " +Integer.toHexString(rstart)
+                    //                     +"-"+ Integer.toHexString(rend));
                     r1.addRange(rstart, rend);
                     if (n.equals("Specials"))
                         r1.addRange(0xfff0, 0xfffd);
+                    if (n.equals("Private Use")) {
+                        r1.addRange(0xF0000,0xFFFFD);
+                        r1.addRange(0x100000,0x10FFFD);
+                    }
                     Token.categories.put(n, r1);
                     Token.categories2.put(n, Token.complementRanges(r1));
+                    buffer.setLength(0);                    
+                    buffer.append("Is");
                     if (n.indexOf(' ') >= 0) {
-                        StringBuffer buffer = new StringBuffer(n.length()+2);
-                        buffer.append("Is");
                         for (int ci = 0;  ci < n.length();  ci ++)
                             if (n.charAt(ci) != ' ')  buffer.append((char)n.charAt(ci));
-                        Token.setAlias(new String(buffer), n, true);
                     }
+                    else {
+                        buffer.append(n);
+                    }
+                    Token.setAlias(buffer.toString(), n, true);
                 }
 
-                                                // TR#18 1.2
+                // REVISIT: remove this code later 
+                // the following does not match the XML Schema definition
+                // for Regular Expressions 
+                
+                /*
+                // TR#18 1.2
                 Token.setAlias("ASSIGNED", "Cn", false);
                 Token.setAlias("UNASSIGNED", "Cn", true);
                 Token all = Token.createRange();
                 all.addRange(0, Token.UTF16_MAX);
                 Token.categories.put("ALL", all);
                 Token.categories2.put("ALL", Token.complementRanges(all));
-
+                */
+                
+                /*
                 Token isalpha = Token.createRange();
                 isalpha.mergeRanges(ranges[Character.UPPERCASE_LETTER]); // Lu
                 isalpha.mergeRanges(ranges[Character.LOWERCASE_LETTER]); // Ll
                 isalpha.mergeRanges(ranges[Character.OTHER_LETTER]); // Lo
                 Token.categories.put("IsAlpha", isalpha);
                 Token.categories2.put("IsAlpha", Token.complementRanges(isalpha));
-
+                
                 Token isalnum = Token.createRange();
                 isalnum.mergeRanges(isalpha);   // Lu Ll Lo
                 isalnum.mergeRanges(ranges[Character.DECIMAL_DIGIT_NUMBER]); // Nd
@@ -893,11 +973,12 @@ class Token implements java.io.Serializable {
                 Token.setAlias("upper", "IsUpper", true);
                 Token.setAlias("word", "IsWord", true); // Perl extension
                 Token.setAlias("xdigit", "IsXDigit", true);
-
+                 */
             } // synchronized
         } // if null
         RangeToken tok = positive ? (RangeToken)Token.categories.get(name)
             : (RangeToken)Token.categories2.get(name);
+        if (tok == null) System.out.println(name);
         return tok;
     }
 
@@ -1003,7 +1084,7 @@ class Token implements java.io.Serializable {
         }
         
         public String toString(int options) {
-            if (this.type == super.BACKREFERENCE)
+            if (this.type == BACKREFERENCE)
                 return "\\"+this.refNumber;
             else
                 return REUtil.quoteMeta(this.string);
@@ -1032,9 +1113,9 @@ class Token implements java.io.Serializable {
 
         public String toString(int options) {
             String ret;
-            if (this.child2.type == super.CLOSURE && this.child2.getChild(0) == this.child) {
+            if (this.child2.type == CLOSURE && this.child2.getChild(0) == this.child) {
                 ret = this.child.toString(options)+"+";
-            } else if (this.child2.type == super.NONGREEDYCLOSURE && this.child2.getChild(0) == this.child) {
+            } else if (this.child2.type == NONGREEDYCLOSURE && this.child2.getChild(0) == this.child) {
                 ret = this.child.toString(options)+"+?";
             } else
                 ret = this.child.toString(options)+this.child2.toString(options);
@@ -1060,7 +1141,7 @@ class Token implements java.io.Serializable {
         public String toString(int options) {
             String ret;
             switch (this.type) {
-              case Token.CHAR:
+              case CHAR:
                 switch (this.chardata) {
                   case '|':  case '*':  case '+':  case '?':
                   case '(':  case ')':  case '.':  case '[':
@@ -1082,7 +1163,7 @@ class Token implements java.io.Serializable {
                 }
                 break;
 
-              case Token.ANCHOR:
+              case ANCHOR:
                 if (this == Token.token_linebeginning || this == Token.token_lineend)
                     ret = ""+(char)this.chardata;
                 else 
@@ -1096,7 +1177,7 @@ class Token implements java.io.Serializable {
         }
 
         boolean match(int ch) {
-            if (this.type == Token.CHAR) {
+            if (this.type == CHAR) {
                 return ch == this.chardata;
             } else
                 throw new RuntimeException("NFAArrow#match(): Internal error: "+this.type);
@@ -1140,7 +1221,7 @@ class Token implements java.io.Serializable {
 
         public String toString(int options) {
             String ret;
-            if (this.type == super.CLOSURE) {
+            if (this.type == CLOSURE) {
                 if (this.getMin() < 0 && this.getMax() < 0) {
                     ret = this.child.toString(options)+"*";
                 } else if (this.getMin() == this.getMax()) {
@@ -1196,7 +1277,7 @@ class Token implements java.io.Serializable {
         public String toString(int options) {
             String ret = null;
             switch (this.type) {
-              case Token.PAREN:
+              case PAREN:
                 if (this.parennumber == 0) {
                     ret = "(?:"+this.child.toString(options)+")";
                 } else {
@@ -1204,19 +1285,19 @@ class Token implements java.io.Serializable {
                 }
                 break;
 
-              case Token.LOOKAHEAD:
+              case LOOKAHEAD:
                 ret = "(?="+this.child.toString(options)+")";
                 break;
-              case Token.NEGATIVELOOKAHEAD:
+              case NEGATIVELOOKAHEAD:
                 ret = "(?!"+this.child.toString(options)+")";
                 break;
-              case Token.LOOKBEHIND:
+              case LOOKBEHIND:
                 ret = "(?<="+this.child.toString(options)+")";
                 break;
-              case Token.NEGATIVELOOKBEHIND:
+              case NEGATIVELOOKBEHIND:
                 ret = "(?<!"+this.child.toString(options)+")";
                 break;
-              case Token.INDEPENDENT:
+              case INDEPENDENT:
                 ret = "(?>"+this.child.toString(options)+")";
                 break;
             }
@@ -1320,12 +1401,12 @@ class Token implements java.io.Serializable {
         void addChild(Token tok) {
             if (tok == null)  return;
             if (this.children == null)  this.children = new Vector();
-            if (this.type == super.UNION) {
+            if (this.type == UNION) {
                 this.children.addElement(tok);
                 return;
             }
                                                 // This is CONCAT, and new child is CONCAT.
-            if (tok.type == super.CONCAT) {
+            if (tok.type == CONCAT) {
                 for (int i = 0;  i < tok.size();  i ++)
                     this.addChild(tok.getChild(i)); // Recursion
                 return;
@@ -1336,8 +1417,8 @@ class Token implements java.io.Serializable {
                 return;
             }
             Token previous = (Token)this.children.elementAt(size-1);
-            if (!((previous.type == super.CHAR || previous.type == super.STRING)
-                  && (tok.type == super.CHAR || tok.type == super.STRING))) {
+            if (!((previous.type == CHAR || previous.type == STRING)
+                  && (tok.type == CHAR || tok.type == STRING))) {
                 this.children.addElement(tok);
                 return;
             }
@@ -1345,8 +1426,8 @@ class Token implements java.io.Serializable {
             //System.err.println("Merge '"+previous+"' and '"+tok+"'.");
 
             StringBuffer buffer;
-            int nextMaxLength = (tok.type == super.CHAR ? 2 : tok.getString().length());
-            if (previous.type == super.CHAR) {        // Replace previous token by STRING
+            int nextMaxLength = (tok.type == CHAR ? 2 : tok.getString().length());
+            if (previous.type == CHAR) {        // Replace previous token by STRING
                 buffer = new StringBuffer(2 + nextMaxLength);
                 int ch = previous.getChar();
                 if (ch >= 0x10000)
@@ -1360,7 +1441,7 @@ class Token implements java.io.Serializable {
                 buffer.append(previous.getString());
             }
 
-            if (tok.type == super.CHAR) {
+            if (tok.type == CHAR) {
                 int ch = tok.getChar();
                 if (ch >= 0x10000)
                     buffer.append(REUtil.decomposeToSurrogates(ch));
@@ -1370,7 +1451,7 @@ class Token implements java.io.Serializable {
                 buffer.append(tok.getString());
             }
 
-            ((Token.StringToken)previous).string = new String(buffer);
+            ((StringToken)previous).string = new String(buffer);
         }
 
         int size() {
@@ -1382,13 +1463,13 @@ class Token implements java.io.Serializable {
 
         public String toString(int options) {
             String ret;
-            if (this.type == super.CONCAT) {
+            if (this.type == CONCAT) {
                 if (this.children.size() == 2) {
                     Token ch = this.getChild(0);
                     Token ch2 = this.getChild(1);
-                    if (ch2.type == super.CLOSURE && ch2.getChild(0) == ch) {
+                    if (ch2.type == CLOSURE && ch2.getChild(0) == ch) {
                         ret = ch.toString(options)+"+";
-                    } else if (ch2.type == super.NONGREEDYCLOSURE && ch2.getChild(0) == ch) {
+                    } else if (ch2.type == NONGREEDYCLOSURE && ch2.getChild(0) == ch) {
                         ret = ch.toString(options)+"+?";
                     } else
                         ret = ch.toString(options)+ch2.toString(options);
@@ -1401,10 +1482,10 @@ class Token implements java.io.Serializable {
                 }
                 return ret;
             }
-            if (this.children.size() == 2 && this.getChild(1).type == super.EMPTY) {
+            if (this.children.size() == 2 && this.getChild(1).type == EMPTY) {
                 ret = this.getChild(0).toString(options)+"?";
             } else if (this.children.size() == 2
-                       && this.getChild(0).type == super.EMPTY) {
+                       && this.getChild(0).type == EMPTY) {
                 ret = this.getChild(1).toString(options)+"??";
             } else {
                 StringBuffer sb = new StringBuffer();

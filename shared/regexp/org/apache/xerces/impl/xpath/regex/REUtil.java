@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999,2000 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,8 +55,7 @@
  * <http://www.apache.org/>.
  */
 
-package org.apache.xerces.utils.regex;
-
+package org.apache.xerces.impl.xpath.regex;
 
 import java.text.CharacterIterator;
 
@@ -285,7 +284,7 @@ public final class REUtil {
      * Creates a RegularExpression instance.
      * This method caches created instances.
      *
-     * @see org.apache.xerces.utils.regex.RegularExpression#RegularExpression(java.lang.String, java.lang.String)
+     * @seeq RegularExpression#RegularExpression(java.lang.String, java.lang.String)
      */
     public static RegularExpression createRegex(String pattern, String options)
         throws ParseException {
@@ -318,7 +317,7 @@ public final class REUtil {
 
     /**
      *
-     * @see org.apache.xerces.utils.regex.RegularExpression#matches(java.lang.String)
+     * @see RegularExpression#matches(java.lang.String)
      */
     public static boolean matches(String regex, String target) throws ParseException {
         return REUtil.createRegex(regex, null).matches(target);
@@ -326,7 +325,7 @@ public final class REUtil {
 
     /**
      *
-     * @see org.apache.xerces.utils.regex.RegularExpression#matches(java.lang.String)
+     * @see RegularExpression#matches(java.lang.String)
      */
     public static boolean matches(String regex, String options, String target) throws ParseException {
         return REUtil.createRegex(regex, options).matches(target);

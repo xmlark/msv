@@ -10,6 +10,7 @@
 package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.util.ExpressionFinder;
 import com.sun.msv.verifier.Acceptor;
 
 /**
@@ -21,7 +22,7 @@ import com.sun.msv.verifier.Acceptor;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class StringCareLevelCalculator implements ExpressionVisitorBoolean {
+public class StringCareLevelCalculator extends ExpressionFinder {
 	
 	protected StringCareLevelCalculator(){}
 	
@@ -29,19 +30,10 @@ public class StringCareLevelCalculator implements ExpressionVisitorBoolean {
 	protected static final StringCareLevelCalculator theInstance = new StringCareLevelCalculator();
 	
 	// those expressions which are sensitive about string must return true
-	public boolean onSequence( SequenceExp exp )		{ return exp.exp1.visit(this)||exp.exp2.visit(this); }
-	public boolean onInterleave( InterleaveExp exp )	{ return exp.exp1.visit(this)||exp.exp2.visit(this); }
-	public boolean onConcur( ConcurExp exp )			{ return exp.exp1.visit(this)||exp.exp2.visit(this); }
-	public boolean onChoice( ChoiceExp exp )			{ return exp.exp1.visit(this)||exp.exp2.visit(this); }
 	public boolean onAttribute( AttributeExp exp )		{ return false; }
 	public boolean onElement( ElementExp exp )			{ return false; }
-	public boolean onOneOrMore( OneOrMoreExp exp )		{ return exp.exp.visit(this); }
 	public boolean onMixed( MixedExp exp )				{ return true; }
 	public boolean onList( ListExp exp )				{ return true; }
-	public boolean onRef( ReferenceExp exp )			{ return exp.exp.visit(this); }
-	public boolean onOther( OtherExp exp )				{ return exp.exp.visit(this); }
-	public boolean onEpsilon()							{ return false; }
-	public boolean onNullSet()							{ return false; }
 	public boolean onAnyString()						{ return true; }
 	public boolean onData( DataExp exp )				{ return true; }
 	public boolean onValue( ValueExp exp )				{ return true; }

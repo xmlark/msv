@@ -65,29 +65,40 @@
 		<pathelement path="${testRoot}/suites/errorRELAXGrammar/lrgErrRatio"/>
 		<pathelement path="${testRoot}/errorRELAXGrammar/smlErrRatio" />
 	</path>
+	
 	<path id="RELAXBatchTestDir">
 		<path refid="commonTestDir"/>
 		<pathelement path="${testRoot}/relax"/>
 	</path>
+	<property name="RELAXBatchTestDir" refid="RELAXBatchTestDir"/>
+	
 	<path id="RELAXNGBatchTestDir">
 		<path refid="commonTestDir"/>
 		<pathelement path="${testRoot}/relaxng"/>
 	</path>
+	<property name="RELAXNGBatchTestDir" refid="RELAXNGBatchTestDir"/>
+	
 	<path id="TREXBatchTestDir">
 		<path refid="commonTestDir"/>
 		<pathelement path="${testRoot}/trex"/>
 	</path>
+	<property name="TREXBatchTestDir" refid="TREXBatchTestDir"/>
+	
 	<path id="DTDBatchTestDir">
 		<path refid="commonTestDir"/>
 		<pathelement path="${testRoot}/DTD/XHTMLm12n/examples"/>
 		<pathelement path="${testRoot}/DTD/XHTML1.0"/>
 	</path>
+	<property name="DTDBatchTestDir" refid="DTDBatchTestDir"/>
+	
 	<path id="XSDBatchTestDir">
 		<path refid="commonTestDir"/>
 		<pathelement path="${testRoot}/xmlschema"/>
 		<pathelement path="${testRoot}/xmlschema/tutorialExamples"/>
 		<pathelement path="${testRoot}/xmlschema/identity" />
 	</path>
+	<property name="XSDBatchTestDir" refid="XSDBatchTestDir"/>
+	
 	
 	<!-- environment dependend -->
 	<property name="javaCClib"				value="./ref/javacc/bin/lib" />
@@ -297,11 +308,11 @@
 			-->
 			<junit haltonfailure="yes" printsummary="yes" fork="yes"
 				haltonerror="yes">
-				<sysproperty key="RELAXBatchTestDir"	refid="RELAXBatchTestDir"/>
-				<sysproperty key="TREXBatchTestDir"		refid="TREXBatchTestDir"/>
-				<sysproperty key="DTDBatchTestDir"		refid="DTDBatchTestDir"/>
-				<sysproperty key="XSDBatchTestDir"		refid="XSDBatchTestDir"/>
-				<sysproperty key="RELAXNGBatchTestDir"	refid="RELAXNGBatchTestDir"/>
+				<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
+				<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
+				<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
+				<sysproperty key="XSDBatchTestDir"		value="${XSDBatchTestDir}"/>
+				<sysproperty key="RELAXNGBatchTestDir"	value="${RELAXNGBatchTestDir}"/>
 				
   				<formatter type="plain" />
 				
@@ -360,11 +371,11 @@
 			<mkdir dir="./testLog" />
 			<junit haltonfailure="yes" printsummary="yes" fork="yes"
 				haltonerror="yes">
-				<sysproperty key="RELAXBatchTestDir"	refid="RELAXBatchTestDir"/>
-				<sysproperty key="TREXBatchTestDir"		refid="TREXBatchTestDir"/>
-				<sysproperty key="DTDBatchTestDir"		refid="DTDBatchTestDir"/>
-				<sysproperty key="XSDBatchTestDir"		refid="XSDBatchTestDir"/>
-				<sysproperty key="RELAXNGBatchTestDir"	refid="RELAXNGBatchTestDir"/>
+				<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
+				<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
+				<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
+				<sysproperty key="XSDBatchTestDir"		value="${XSDBatchTestDir}"/>
+				<sysproperty key="RELAXNGBatchTestDir"	value="${RELAXNGBatchTestDir}"/>
 				
   				<formatter type="plain" />
 				
@@ -372,10 +383,10 @@
 					<!-- do not refer to the working copy -->
 					<pathelement location="${testDir}" />
 					<pathelement location="./temp" />
-					<!-- do not let whatever binaries in your classpath interfer with it. -->
 					<pathelement location="${JUnitJar}"/>
 					<pathelement location="${AntJar}"/>
-				<!--<pathelement path="${java.class.path}" />-->
+					<!-- do not let whatever binaries in your classpath interfer with it. -->
+				<!-- DO NOT: <pathelement path="${java.class.path}" />-->
 				</classpath>
 				
 				<batchtest todir="./testLog">

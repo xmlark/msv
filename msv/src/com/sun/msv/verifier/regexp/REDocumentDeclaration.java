@@ -66,14 +66,18 @@ public class REDocumentDeclaration implements DocumentDeclaration
 	/**
 	 * the StartTagInfoEx object which is used to store the start tag information.
 	 * 
+	 * <p>
 	 * StartTagInfoEx object is used only during Verifier.startElement method.
 	 * So instead of creating new object every time the method is called, we can
 	 * kept using one copy.
+	 * 
+	 * <p>
+	 * This object can also hold information about what types are assigned to attributes,
+	 * and what types are assigned to attribute content.
 	 */
 	protected final StartTagInfoEx					startTag;
 
-	public Acceptor createAcceptor()
-	{
+	public Acceptor createAcceptor() {
 		// top-level Acceptor cannot have continuation.
 		return new SimpleAcceptor(this, topLevel, null, Expression.epsilon);
 	}

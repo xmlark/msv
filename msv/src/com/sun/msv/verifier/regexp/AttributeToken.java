@@ -10,6 +10,7 @@
 package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.*;
+import com.sun.msv.util.DataTypeRef;
 
 /**
  * represents attribute and its value.
@@ -18,14 +19,35 @@ import com.sun.msv.grammar.*;
  */
 class AttributeToken extends Token
 {
-	protected final String				namespaceURI;
-	protected final String				localName;
-	protected final StringToken			value;
+	protected final String					namespaceURI;
+	protected final String					localName;
+	protected final StringToken				value;
 	protected final REDocumentDeclaration	docDecl;
+	
+	/**
+	 * holds a reference to the assigned type.
+	 * 
+	 * If this AttributeToken is successfully consumed, then this field
+	 * contains the AttributeExp which consumed this token.
+	 * 
+	 * If this token is not consumed or several different AttributeExps
+	 * consumed this token, then null.
+	 */
+	public AttributeExp matchedExp = null;
+	/**
+	 * If this value is false, the "matched" field must always null. This indicates
+	 * that no AttributeExp has consumed this token yet.
+	 * If this value is true and the "matched" field is non-null, then it means
+	 * that AttributeExp has consumed this token.
+	 * If this value is true and the "matched" field is null, then more than
+	 * one AttributeExps have consumed this token.
+	 */
+	private boolean saturated = false;
 	
 	protected AttributeToken( REDocumentDeclaration docDecl,
 			String namespaceURI, String localName, String value, IDContextProvider context ) {
-		this( docDecl, namespaceURI, localName, new StringToken(docDecl,value,context) );
+		this( docDecl, namespaceURI, localName,
+			new StringToken(docDecl,value,context,new DataTypeRef()) );
 	}
 	protected AttributeToken( REDocumentDeclaration docDecl,
 			String namespaceURI, String localName, StringToken value ) {
@@ -50,8 +72,20 @@ class AttributeToken extends Token
 		if(!exp.nameClass.accepts(namespaceURI,localName))	return false;
 		
 		// content model of the attribute must consume the value
-		if(docDecl.resCalc.calcResidual(exp.exp, value).isEpsilonReducible())
+		if(docDecl.resCalc.calcResidual(exp.exp, value).isEpsilonReducible()) {
+			// store the expression who consumed this token.
+			if( !saturated || exp==matchedExp )		matchedExp=exp;
+			else									matchedExp=null;
+		/*	the above is the shortened form of:
+			if( !saturated )
+				matchedExp = exp;
+			else
+				if( exp!=matchedExp )
+					matchedExp = null;
+		 */
+			saturated = true;
 			return true;
+		}
 		
 		return false;
 	}

@@ -32,7 +32,7 @@ public class StringToken extends Token {
 	 * if this field is non-null,
 	 * this field will receive assigned DataType object.
 	 */
-	protected final DataTypeRef refType;
+	public final DataTypeRef refType;
 	protected boolean saturated = false;
 	
 	public StringToken( REDocumentDeclaration docDecl, String literal, IDContextProvider context ) {
@@ -81,9 +81,14 @@ public class StringToken extends Token {
 		
 		// if the application needs type information,
 		// collect them from children.
-		DataTypeRef dtRef = (this.refType!=null)?new DataTypeRef():null;
-		DataType[] childTypes = new DataType[tokens.countTokens()];
+		DataTypeRef dtRef = null;
+		DataType[] childTypes = null;
 		int cnt=0;
+		
+		if( this.refType!=null ) {
+			dtRef = new DataTypeRef();
+			childTypes = new DataType[tokens.countTokens()];
+		}
 		
 		while( tokens.hasMoreTokens() ) {
 			StringToken child = createChildStringToken(tokens.nextToken(),dtRef);
@@ -117,14 +122,16 @@ public class StringToken extends Token {
 		
 		// this <list> accepts this string.
 		
-		// assign datatype
-		if(saturated)
-			// a type is already assigned. That means this string has more than one type.
-			// so bail out.
-			refType.types=null;
-		else
-			refType.types = childTypes;
-		saturated = true;
+		if( childTypes!=null ) {
+			// assign datatype
+			if(saturated)
+				// a type is already assigned. That means this string has more than one type.
+				// so bail out.
+				refType.types=null;
+			else
+				refType.types = childTypes;
+			saturated = true;
+		}
 		
 		return true;
 	}

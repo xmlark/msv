@@ -55,13 +55,15 @@ class TestDriver implements ErrorReceiver
 	
 	public boolean report( UnexpectedResultException exp ) {
 		Object o = exp.type.createValue(exp.testInstance,DummyContextProvider.theInstance);
+		Object jo = exp.type.createJavaObject(exp.testInstance,DummyContextProvider.theInstance);
 		
 		System.out.println("************* error *************");
 		System.out.println("type name            : "+exp.baseTypeName);
 		System.out.println("tested instance      : \""+exp.testInstance+"\"");
 		System.out.println("supposed to be valid : "+exp.supposedToBeValid);
 		System.out.println("verify method        : "+exp.type.isValid(exp.testInstance,DummyContextProvider.theInstance) );
-		System.out.println("convertToValue method: "+(o!=null) );
+		System.out.println("createValue method   : "+(o!=null) );
+		System.out.println("createJavaObj method : "+(jo!=null) );
 		System.out.println("diagnose method      : "+(getDiagnosis(exp.type,exp.testInstance)==null) );
 		
 		try {

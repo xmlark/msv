@@ -193,10 +193,11 @@ public class DataTypeTester
 					boolean v = typeObj.isValid(values[i],DummyContextProvider.theInstance);
 					boolean d;
 					
+					boolean roundTripError = false;
+					
 					Object o = typeObj.createValue(
 						values[i],DummyContextProvider.theInstance);
 					
-					boolean roundTripError = false;
 					try {
 						if(o!=null) {
 							// should be able to convert it back.
@@ -211,6 +212,20 @@ public class DataTypeTester
 					} catch( IllegalArgumentException iae ) {
 						roundTripError = true;
 					}
+
+					Object jo = typeObj.createJavaObject( values[i], DummyContextProvider.theInstance );
+					
+					if( jo!=null ) {
+						String s = typeObj.serializeJavaObject( jo,
+										DummyContextProvider.theInstance );
+						if(s==null)
+							roundTripError = true;
+						else {
+							Object o2 = typeObj.createJavaObject(s,DummyContextProvider.theInstance);
+							if( o2==null || !o.equals(o2) )
+								roundTripError = true;
+						}
+					}
 					
 					try {
 						typeObj.checkValid(values[i],DummyContextProvider.theInstance);
@@ -222,7 +237,7 @@ public class DataTypeTester
 					// if convertToValueObject and verify method differs,
 					// it's always an error.
 					// roundTripError is always an error.
-					if(!roundTripError && (o!=null)==v) {
+					if(!roundTripError && (o!=null)==v && (jo!=null)==v ) {
 						
 						if(v && d && answer.charAt(i)=='o')
 							continue;	// as predicted
@@ -257,6 +272,9 @@ public class DataTypeTester
 					} catch (DatatypeException de) {
 						;	// it should throw an exception
 					}
+					
+					if( typeObj.createJavaObject(wrongs[i],DummyContextProvider.theInstance)!=null )
+						err = true;
 					
 					if( err ) {
 						if( !this.err.report( new UnexpectedResultException(

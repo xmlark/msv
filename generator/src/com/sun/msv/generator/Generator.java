@@ -16,6 +16,7 @@ import com.sun.tranquilo.datatype.StringType;
 import com.sun.tranquilo.grammar.*;
 import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.util.StringPair;
+import com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter;
 import java.util.*;
 
 /**
@@ -35,20 +36,43 @@ public class Generator implements TREXPatternVisitorVoid
 	/** current nest level (depth of elements). */
 	private int depth = 0;
 	
+	/** this flag is set to true once an error is generated. */
+	private boolean errorGenerated = false;
+
 	/** returns true if generator should cut back. */
 	protected boolean cutBack() { return depth>5; }
 	
+	/** ID tokens that are used */
 	private final Set ids = new HashSet();
+	/** Text nodes of IDREFs that should be "patched" by IDs. */
 	private final Set idrefs = new HashSet();
 	
+	/** all ElementExps in the grammar. */
+	private final ElementExp[] elementDecls;
+	/** all AttributeExps in the grammar. */
+	private final AttributeExp[] attributeDecls;
+	
+	/** generates instance by using default settings. */
 	public static void generate( Expression exp, Document emptyDoc )
 	{
 		generate( exp, emptyDoc, new GeneratorOption() );
 	}
+	
+	/** generates instance by custom settings. */
 	public static void generate( Expression exp, Document emptyDoc, GeneratorOption opts )
 	{
-		Generator g = new Generator(emptyDoc,opts);
-		exp.visit(g);
+		Generator g;
+		
+		do
+		{
+			while( emptyDoc.getFirstChild()!=null ) // delete any existing children
+				emptyDoc.removeChild( emptyDoc.getFirstChild() );
+			
+			g = new Generator(exp,emptyDoc,opts);
+			exp.visit(g);
+			// if error ratio is specified and no error is generated, do it again.
+		}while( !g.errorGenerated && opts.errorSpecified() );
+		
 		
 		Object[] ids = g.ids.toArray();
 		
@@ -61,15 +85,39 @@ public class Generator implements TREXPatternVisitorVoid
 			Text node = (Text)itr.next();
 			node.setData( (String)ids[opts.random.nextInt(ids.length)] );
 		}
-//		emptyDoc.normalize();
 	}
 	
-	private Generator( Document emptyDoc, GeneratorOption opts )
+	protected Generator( Expression exp, Document emptyDoc, GeneratorOption opts )
 	{
 		opts.fillInByDefault();
 		this.opts = opts;
 		this.pool = opts.pool;
 		node = domDoc = emptyDoc;
+		
+		// collect element and attribute decls.
+		Set[] s= ElementDeclCollector.collect(exp);
+		elementDecls = new ElementExp[s[0].size()];
+		s[0].toArray(elementDecls);
+		attributeDecls = new AttributeExp[s[1].size()];
+		s[1].toArray(attributeDecls);
+	}
+	
+	/** annotate DOM by adding a comment that an error is generated. */
+	private void noteError( String error )
+	{
+		errorGenerated = true;
+		Comment com = domDoc.createComment("  "+error+"  ");
+		
+		Node n = node;
+		if( n.getNodeType()==n.ATTRIBUTE_NODE )
+		{
+			n = n.getParentNode();
+			n.insertBefore( com, n.getFirstChild() );
+		}
+		else
+		{
+			n.appendChild(com);
+		}
 	}
 	
 	
@@ -78,6 +126,21 @@ public class Generator implements TREXPatternVisitorVoid
 	
 	public void onSequence( SequenceExp exp )
 	{
+		if(!(exp.exp1 instanceof AttributeExp)
+		&& !(exp.exp2 instanceof AttributeExp) )
+		{// sequencing error of attribute is meaningless.
+			if( opts.random.nextDouble() < opts.probSeqError )
+			{// generate sequencing error
+				noteError("swap sequence to "+
+						  TREXPatternPrinter.printSmallest(exp.exp2)+","+
+						  TREXPatternPrinter.printSmallest(exp.exp1) );
+				exp.exp2.visit(this);
+				exp.exp1.visit(this);
+				return;
+			}
+		}
+		
+		// generate valid instance.
 		exp.exp1.visit(this);
 		exp.exp2.visit(this);
 	}
@@ -129,9 +192,18 @@ public class Generator implements TREXPatternVisitorVoid
 		
 		if( cutBack() && cp.isEpsilonReducible() )	return;	// cut back
 		
+		
 		// gather candidates
 		Vector vec = getChildren(cp);
 
+		if( opts.random.nextDouble() < opts.probGreedyChoiceError )
+		{// greedy choice error. visit twice.
+			noteError("greedy choice");
+			((Expression)vec.get(opts.random.nextInt(vec.size()))).visit(this);
+			((Expression)vec.get(opts.random.nextInt(vec.size()))).visit(this);
+			return;
+		}
+		
 		// randomly select one candidate.
 		((Expression)vec.get(opts.random.nextInt(vec.size()))).visit(this);
 	}
@@ -150,13 +222,38 @@ public class Generator implements TREXPatternVisitorVoid
 	
 	public void onAttribute( AttributeExp exp )
 	{
+		if( opts.random.nextDouble() < opts.probMutatedAttrError )
+		{// mutated element error. generate a random attribute and ignore this declaration.
+			noteError("mutated attribute "+exp.nameClass);
+			onAttribute( attributeDecls[opts.random.nextInt(attributeDecls.length)] );
+			return;
+		}
+		
+		if( opts.random.nextDouble() < opts.probMissingAttrError )
+		{// missing attribute error. skip generating this instance.
+			noteError("missing attribute "+exp.nameClass);
+			return;
+		}
+		
+		if( opts.random.nextDouble() < opts.probSlipInAttrError )
+		{// slip-in error. generate random attribute.
+			exp = attributeDecls[opts.random.nextInt(attributeDecls.length)];
+			noteError("slip-in attribute "+exp.nameClass);
+		}
+		
+		
 		// generate attribute name
 		StringPair name;
+		int retry=0;
 		do
 		{
 			name = getName(exp.nameClass);
-		}while( ((Element)node).getAttributeNodeNS(name.namespaceURI,name.localName)!=null );
+		}while( ((Element)node).getAttributeNodeNS(name.namespaceURI,name.localName)!=null
+			&&  retry++<100/*abort after several retries*/ );
 
+		// It is possible
+		// that this attribute is already added as a result of
+		// generating an error.
 		Attr a = domDoc.createAttributeNS( name.namespaceURI, name.localName );
 		((Element)node).setAttributeNodeNS(a);
 
@@ -168,6 +265,25 @@ public class Generator implements TREXPatternVisitorVoid
 	
 	public void onElement( ElementExp exp )
 	{
+		if( opts.random.nextDouble() < opts.probMutatedElemError )
+		{// mutated element error. generate a random element and ignore this declaration.
+			noteError("mutated element");
+			onElement( elementDecls[opts.random.nextInt(elementDecls.length)] );
+			return;
+		}
+			
+		if( opts.random.nextDouble() < opts.probMissingElemError )
+		{// missing element error. skip generating this instance.
+			noteError("missing element: "+TREXPatternPrinter.printSmallest(exp) );
+			return;
+		}
+		
+		if( opts.random.nextDouble() < opts.probSlipInElemError )
+		{// slip-in error. generate random element.
+			exp = elementDecls[opts.random.nextInt(elementDecls.length)];
+			noteError("slip-in element: "+TREXPatternPrinter.printSmallest(exp) );
+		}
+		
 		StringPair name = getName(exp.getNameClass());
 		
 		Element child = domDoc.createElementNS( name.namespaceURI, name.localName );
@@ -189,6 +305,12 @@ public class Generator implements TREXPatternVisitorVoid
 	
 	public void onOneOrMore( OneOrMoreExp exp )
 	{
+		if( opts.random.nextDouble() < opts.probMissingPlus )
+		{
+			noteError("missing " + TREXPatternPrinter.printSmallest(exp) );
+			return;
+		}
+		
 		int m = opts.width.next()+1;
 		if( cutBack() )	m=1;
 		for( int i=0; i<m; i++ )

@@ -28,7 +28,7 @@ import com.sun.tranquilo.driver.textui.SchemaDetector;
  */
 public class Driver
 {
-	private static void usage()
+	protected void usage()
 	{
 		System.out.println(
 			"Sun XMLGenerator\n"+
@@ -43,6 +43,8 @@ public class Driver
 			"  -width <n>: maximum number of times '*'/'+' are repeated\n" +
 			"  -n <n>    : # of files to be generated\n" +
 			"  -encoding <str>: output encoding (Java name)\n"+
+			"  -error <n>/<m>: error ratio. generate n errors per m elemnts (average)."+
+			"                  to control error generation, see manual for details."+
 			"\n"+
 			"  <output name> must include one '$'. '$' will be replaced by number.\n"+
 			"  e.g., test.$.xml -> test.1.xml test.2.xml test.3.xml ...\n"+
@@ -51,6 +53,11 @@ public class Driver
 	}
 
 	public static void main( String[] args ) throws Exception
+	{
+		new Driver().run(args);
+	}
+	
+	protected void run( String[] args ) throws Exception
 	{
 		boolean relax=false;
 		boolean trex=false;
@@ -65,6 +72,8 @@ public class Driver
 		
 		opt.dtGenerator = new DataTypeGeneratorImpl();
 
+		// parse options
+		//===========================================
 		for( int i=0; i<args.length; i++ )
 		{
 			if( args[i].equalsIgnoreCase("-relax") )			relax = true;
@@ -125,17 +134,39 @@ public class Driver
 					usage(); return;
 				}
 			}
-//			else
-//			if( args[i].equalsIgnoreCase("-debug") )			Debug.debug = true;
-//			else
-//			if( args[i].equalsIgnoreCase("-xerces") )
-//				factory = (SAXParserFactory)Class.forName("org.apache.xerces.jaxp.SAXParserFactoryImpl").newInstance();
-//			else
-//			if( args[i].equalsIgnoreCase("-crimson") )
-//				factory = (SAXParserFactory)Class.forName("org.apache.crimson.jaxp.SAXParserFactoryImpl").newInstance();
-//			else
-//			if( args[i].equalsIgnoreCase("-verbose") )
-//				verbose = true;
+			else
+			if( args[i].equalsIgnoreCase("-error") )
+			{
+				try
+				{
+					int idx = args[++i].indexOf('/');
+					double n = Double.parseDouble(args[i].substring(0,idx));
+					double m = Double.parseDouble(args[i].substring(idx+1));
+					
+					double ratio = n/m;
+					
+					if( ratio<=0 || ratio>1 )
+					{
+						System.out.println("error ratio out of range");
+						usage();
+						return;
+					}
+					
+					opt.probGreedyChoiceError=
+					opt.probMissingAttrError=
+					opt.probMissingElemError=
+					opt.probMutatedAttrError=
+					opt.probMutatedElemError=
+					opt.probSeqError=
+					opt.probSlipInAttrError=
+					opt.probSlipInElemError=
+					opt.probMissingPlus=	ratio;
+				}
+				catch( Exception e )
+				{
+					usage(); return;
+				}
+			}
 			else
 			{
 				if( args[i].charAt(0)=='-' )
@@ -172,11 +203,20 @@ public class Driver
 		factory.setNamespaceAware(true);
 		factory.setValidating(false);
 		
+		try
+		{
+			factory.setFeature("http://xml.org/sax/features/validation",false);
+			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
+		}
+		catch(Exception e) { ;	}
+		
 		Expression topLevel;
 		
 		System.err.println("parsing a grammar");
 		
 		
+		// load a schema
+		//===========================================
 		if( !trex && !relax )
 		{// schema type is not specified. sniff it.
 //			if( verbose )
@@ -202,7 +242,7 @@ public class Driver
 				RELAXReader.parse(
 					getInputSource(grammarName),
 					factory,
-					new com.sun.tranquilo.driver.textui.DebugController(),
+					new com.sun.tranquilo.driver.textui.DebugController(false),
 					new TREXPatternPool() );
 			NoneTypeRemover.removeNoneType(g);
 			opt.pool = (TREXPatternPool)g.pool;
@@ -214,10 +254,12 @@ public class Driver
 				TREXGrammarReader.parse(
 					getInputSource(grammarName),
 					factory,
-					new com.sun.tranquilo.driver.textui.DebugController() );
+					new com.sun.tranquilo.driver.textui.DebugController(false) );
 			topLevel = g.start.visit( new RefExpRemover(g.pool) );
 		}
 		
+		// generate instances
+		//===========================================
 		for( int i=0; i<number; i++ )
 		{
 			if( number<10 )		System.err.println("generating a document #"+(i+1));
@@ -239,13 +281,9 @@ public class Driver
 					os = new FileOutputStream( outputName );
 			}
 			
+			// write generated instance.
 			XMLSerializer2 s = new XMLSerializer2( os, new OutputFormat("XML",encoding,true) );
 			s.serialize(dom);
-
-//			Writer osw = new OutputStreamWriter(System.out);
-//			org.apache.soap.util.xml.DOM2Writer.serializeAsXML( dom, osw );
-//			osw.flush();
-//			osw.close();
 			
 			if( os!=System.out )	os.close();
 			else

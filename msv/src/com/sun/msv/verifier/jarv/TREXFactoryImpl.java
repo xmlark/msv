@@ -46,27 +46,4 @@ public class TREXFactoryImpl extends FactoryImpl
 		if(g==null)		return null;	// load failure
 		return getVerifier(g);
 	}
-	
-	public Verifier newVerifier( java.io.File source )
-		throws VerifierConfigurationException,
-			   SAXException
-	{
-		return newVerifier( source.getAbsolutePath() );
-	}
-	
-	private final Verifier getVerifier( TREXGrammar g )
-		throws VerifierConfigurationException,
-			   SAXException
-	{
-		try
-		{
-			return new VerifierImpl(
-				new REDocumentDeclaration(g),
-				factory.newSAXParser().getXMLReader() );
-		}
-		catch( javax.xml.parsers.ParserConfigurationException pce )
-		{
-			throw new VerifierConfigurationException(pce);
-		}
-	}
 }

@@ -13,6 +13,8 @@ import org.iso_relax.verifier.*;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import com.sun.msv.grammar.Grammar;
 
 /**
  * base implementation of RELAXFactoryImpl and TREXFactoryImpl
@@ -41,5 +43,23 @@ abstract class FactoryImpl extends VerifierFactory {
 	public void setProperty(String property, Object value)
 		throws SAXNotRecognizedException {
 		throw new SAXNotRecognizedException(property);
+	}
+	
+	
+	
+	public Verifier newVerifier( java.io.File source )
+		throws VerifierConfigurationException, SAXException {
+		return newVerifier( source.getAbsolutePath() );
+	}
+	
+	protected final Verifier getVerifier( Grammar g )
+			throws VerifierConfigurationException, SAXException {
+		try	{
+			return new VerifierImpl(
+				new REDocumentDeclaration(g),
+				factory.newSAXParser().getXMLReader() );
+		} catch( ParserConfigurationException pce ) {
+			throw new VerifierConfigurationException(pce);
+		}
 	}
 }

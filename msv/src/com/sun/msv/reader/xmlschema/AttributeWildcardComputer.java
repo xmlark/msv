@@ -14,6 +14,7 @@ import com.sun.msv.grammar.xmlschema.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Stack;
 
 /**
  * Processes the attribtue wildcard according to the spec.
@@ -57,8 +58,19 @@ import java.util.HashSet;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class AttributeWildcardComputer extends ExpressionWalker {
+
+    public static void compute( XMLSchemaReader reader, Expression topLevel ) {
+        new AttributeWildcardComputer(reader).compute(topLevel);
+    }
+    
+    private void compute( Expression topLevel ) {
+        topLevel.visit(this);
+        while(!unprocessedElementExps.isEmpty())
+            ((ElementExp)unprocessedElementExps.pop()).contentModel.visit(this);
+    }
 	
-	public AttributeWildcardComputer( XMLSchemaReader _reader ) {
+    
+	protected AttributeWildcardComputer( XMLSchemaReader _reader ) {
 		this.reader = _reader;
 	}
 	
@@ -68,16 +80,19 @@ public class AttributeWildcardComputer extends ExpressionWalker {
 	 * Visited ElementExps and ReferenceExps to prevent infinite recursion.
 	 */
 	private final Set visitedExps = new HashSet();
+    
+    private final Stack unprocessedElementExps = new Stack();
 	
 	/**
 	 * Used to collect AttributeWildcards of children.
 	 */
 	private Set wildcards = null;
+    
 	
 	public void onElement( ElementExp exp ) {
 		if( !visitedExps.add(exp) )
 			return;		// this element has already been processed
-		super.onElement(exp);
+        unprocessedElementExps.add(exp);
 	}
 	
 	public void onRef( ReferenceExp exp ) {

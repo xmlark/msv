@@ -815,8 +815,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 		// this process traverses the whole grammar, so runaway check has to
 		// be done before this process.
 		if(!controller.hadError())
-			grammar.topLevel.visit( new AttributeWildcardComputer(this) );
-		
+            AttributeWildcardComputer.compute( this, grammar.topLevel );
 	}
 	
 	

@@ -47,13 +47,25 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 	 */
 	private Stack refStack = new Stack();
 	
+    /**
+     * Queue of unchecked element exps.
+     */
+    private Stack unprocessedElementExps = new Stack();
+    
 	private final GrammarReader reader;
 	
 	protected RunAwayExpressionChecker( GrammarReader reader ) { this.reader = reader; }
 
 	private void check( Expression exp ) {
 		try {
-			exp.visit(this);
+            exp.visit(this);
+            
+            while(!unprocessedElementExps.isEmpty()) {
+                contentModel.clear();
+                refStack.clear();
+                ElementExp e = (ElementExp)unprocessedElementExps.pop();
+                e.contentModel.visit(this);
+            }
 		} catch( RuntimeException e ) {
 			if(e!=eureka)	throw e;
 		}
@@ -153,21 +165,10 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 	
 	public void onElement( ElementExp exp )
 	{
-		if( testedExps.contains(exp) )
+		if( !testedExps.add(exp) )
 			// this expression is already tested. no need to test it again.
 			return;
-		
-		testedExps.add(exp);	// add it first to prevent infinite recursion.
-		
-		// restore the current basket, and use a fresh one to check this element.
-		Set previousContentModel = contentModel;
-		Stack previousRefStack = refStack;
-		contentModel = new java.util.HashSet();
-		refStack = new java.util.Stack();
-		
-		exp.contentModel.visit(this);
-		
-		contentModel = previousContentModel;
-		refStack = previousRefStack;
+        
+        unprocessedElementExps.push(exp);   // process this later.
 	}
 }

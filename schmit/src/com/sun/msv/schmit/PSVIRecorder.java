@@ -80,7 +80,8 @@ public class PSVIRecorder implements TypedContentHandler {
     }
 
     public void endAttribute(String namespaceURI, String localName, String qName, AttributeExp type) {
-        // TODO
+        Element e = (Element)scanner.getCurrentLocation();
+        manager.put( e.getAttributeNodeNS(namespaceURI,localName), type );
     }
 
     public void endAttributePart() throws SAXException {

@@ -9,7 +9,7 @@
  */
 package com.sun.msv.schmit.reader.relaxng;
 
-import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * Receives parsed annotations.
@@ -18,5 +18,11 @@ import org.w3c.dom.Element;
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public interface AnnotationParent {
-    void onEndAnnotation( Element annotation );
+    /**
+     * Receives parsed annotations.
+     * 
+     * @param annotation
+     *      Either Element or Attr.
+     */
+    void onEndAnnotation( Node annotation );
 }

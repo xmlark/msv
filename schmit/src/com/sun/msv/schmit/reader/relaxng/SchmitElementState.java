@@ -12,7 +12,7 @@ package com.sun.msv.schmit.reader.relaxng;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.reader.State;
@@ -38,8 +38,13 @@ public class SchmitElementState extends ElementState implements AnnotationParent
         else
             return super.createChildState(tag);
     }
+    
+    protected void startSelf() {
+        super.startSelf();
+        ((SchmitRELAXNGReader)reader).parseAttributeAnnotation( startTag, this );
+    }
 
-    public void onEndAnnotation(Element annotation) {
+    public void onEndAnnotation(Node annotation) {
         annotations.add(annotation);
     }
 

@@ -9,9 +9,6 @@
  */
 package com.sun.msv.schmit.reader.relaxng;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -33,14 +30,13 @@ public class AnnotationState extends State {
     private Document document;
     private Node currentParent;
 
-    public AnnotationState() {
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(true);
-            document = dbf.newDocumentBuilder().newDocument();
-        } catch( ParserConfigurationException e ) {
-            e.printStackTrace();    // can't happen
-        }
+    protected void startSelf() {
+        super.startSelf();
+        
+        document = ((SchmitRELAXNGReader)reader).dom;
+        
+        currentParent = createElement( startTag.namespaceURI, startTag.qName, startTag.attributes );
+        document.appendChild(currentParent);
     }
 
     public final void startElement(String namespaceURI, String localName, String qName, Attributes atts) {
@@ -70,10 +66,6 @@ public class AnnotationState extends State {
     }
 
 
-    protected void startSelf() {
-        currentParent = createElement( startTag.namespaceURI, startTag.qName, startTag.attributes );
-        document.appendChild(currentParent);
-    }
 
     /**
      * Creates a new DOM element.

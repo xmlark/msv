@@ -12,11 +12,13 @@ package com.sun.msv.schmit.reader.relaxng;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
+import com.sun.msv.grammar.Expression;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.trex.ng.AttributeState;
 import com.sun.msv.reader.trex.ng.RELAXNGReader;
+import com.sun.msv.schmit.grammar.AnnotatedAttributePattern;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -37,8 +39,21 @@ public class SchmitAttributeState extends AttributeState implements AnnotationPa
             return super.createChildState(tag);
     }
 
-    public void onEndAnnotation(Element annotation) {
+    public void onEndAnnotation(Node annotation) {
         annotations.add(annotation);
+    }
+    
+    protected void startSelf() {
+        super.startSelf();
+        ((SchmitRELAXNGReader)reader).parseAttributeAnnotation( startTag, this );
+    }
+
+
+    protected Expression annealExpression( Expression contentModel ) {
+        AnnotatedAttributePattern e =
+            new AnnotatedAttributePattern( nameClass, contentModel, annotations );
+        reader.setDeclaredLocationOf(e);
+        return e;
     }
 
     protected boolean isGrammarElement(StartTagInfo tag) {

@@ -43,7 +43,7 @@ final class ListType extends ConcreteType implements Discrete
 	{
 		// cannot derive by list from list.
 		if(derivationType==DERIVATION_BY_LIST)	return true;
-		return false;
+		return itemType.isFinal(derivationType);
 	}
 	
 	public final int isFacetApplicable( String facetName )

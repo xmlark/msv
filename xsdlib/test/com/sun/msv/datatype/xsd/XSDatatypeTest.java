@@ -80,4 +80,53 @@ public class XSDatatypeTest extends TestCase
 		
 	}
 	
+	/** test isDerivedTypeOf method. */
+	public void testIsDerivedTypeOf() throws Exception {
+		XSDatatype urType = SimpleURType.theInstance;
+		
+		// test reflexivity
+		assert( NonPositiveIntegerType.theInstance.isDerivedTypeOf(NonPositiveIntegerType.theInstance) );
+		
+		// test multi-step derivation
+		assert( ByteType.theInstance.isDerivedTypeOf(NumberType.theInstance) );
+		assert( EntityType.theInstance.isDerivedTypeOf(TokenType.theInstance) );
+		assert( EntityType.theInstance.isDerivedTypeOf(urType) );
+		
+		// test the simple ur-type
+		assert( urType.isDerivedTypeOf(urType) );
+		assert( !urType.isDerivedTypeOf(StringType.theInstance) );
+		assert( UnsignedByteType.theInstance.isDerivedTypeOf(urType) );
+		
+		// test the list derivation
+		XSDatatype longList = DatatypeFactory.deriveByList("name", LongType.theInstance );
+		XSDatatype byteList = DatatypeFactory.deriveByList("name", ByteType.theInstance );
+		assert( !byteList.isDerivedTypeOf(longList) );
+		assert( !longList.isDerivedTypeOf(byteList) );
+		assert( byteList.isDerivedTypeOf(urType) );
+		assert( longList.isDerivedTypeOf(urType) );
+		assert( !byteList.isDerivedTypeOf(ByteType.theInstance) );
+		
+		// test the union derivation
+		XSDatatype union1 = DatatypeFactory.deriveByUnion("name",
+			new XSDatatype[]{TokenType.theInstance,LongType.theInstance});
+		XSDatatype union2 = DatatypeFactory.deriveByUnion("name",
+			new XSDatatype[]{union1,longList});
+		XSDatatype union3;
+		{
+			TypeIncubator inc = new TypeIncubator(union2);
+			inc.addFacet( "enumeration", "52", false, null );
+			union3 = inc.derive(null);
+		}
+		
+		assert( union1.isDerivedTypeOf(urType) );
+		assert( ShortType.theInstance.isDerivedTypeOf(union1) );
+		assert( union3.isDerivedTypeOf(urType) );
+		assert( union3.isDerivedTypeOf(union2) );
+		assert( longList.isDerivedTypeOf(union2) );
+		assert( union1.isDerivedTypeOf(union2) );
+		assert( TokenType.theInstance.isDerivedTypeOf(union2) );
+		assert( LongType.theInstance.isDerivedTypeOf(union2) );
+		
+		assert( TokenType.theInstance.isDerivedTypeOf(union3) );
+	}
 }

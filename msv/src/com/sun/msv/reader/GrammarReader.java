@@ -17,6 +17,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
 import org.xml.sax.helpers.NamespaceSupport;
+import org.xml.sax.helpers.XMLFilterImpl;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import com.sun.tranquilo.grammar.*;
 import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.util.StartTagInfo;
@@ -33,12 +35,28 @@ import com.sun.tranquilo.datatype.DataType;
 /**
  * base implementation of grammar readers that read grammar from SAX2 stream.
  * 
- * GrammarReader class shouldn't be created directly by the client applications.
- * Instead, they should use parse static method of this class.
+ * GrammarReader class can be used as a ContentHandler that parses a grammar.
+ * So the typical usage is
+ * <PRE><XMP>
+ * 
+ * GrammarReader reader = new RELAXGrammarReader(...);
+ * XMLReader parser = .... // create a new XMLReader here
+ * 
+ * parser.setContentHandler(reader);
+ * parser.parse(whateverYouLike);
+ * return reader.grammar;  // obtain parsed grammar.
+ * </XMP></PRE>
+ * 
+ * Or you may want to use several pre-defined static "parse" methods for
+ * ease of use.
+ * 
+ * @see RELAXGrammarReader#parse
+ * @see TREXGrammarReader#parse
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class GrammarReader
+	extends XMLFilterImpl
 	implements IDContextProvider
 {
 	/** document Locator that is given by XML reader */
@@ -57,13 +75,19 @@ public abstract class GrammarReader
 	protected GrammarReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
-		ExpressionPool pool )
+		ExpressionPool pool,
+		State initialState )
+		throws SAXException, ParserConfigurationException
 	{
 		this.controller = controller;
 		this.parserFactory = parserFactory;
 		if( !parserFactory.isNamespaceAware() )
 			throw new IllegalArgumentException("parser factory must be namespace-aware");
 		this.pool = pool;
+		pushState( initialState, null );
+		
+		// creates initial SAX parser
+		parserFactory.newSAXParser().getXMLReader().setContentHandler(this);
 	}
 	
 	
@@ -73,18 +97,11 @@ public abstract class GrammarReader
 	/** checks if given element is that of the grammar elements. */
 	protected abstract boolean isGrammarElement( StartTagInfo tag );
 	
-	/** SAX2 parser currently in use. */
-	private XMLReader parser;
-	public final XMLReader getParser() { return parser; }
-	
-	/** namespace prefix to URI conversion map.
-	 * 
+	/**
+	 * namespace prefix to URI conversion map.
 	 * this variable is evacuated to InclusionContext when the parser is switched.
 	 */
 	private NamespaceSupport namespaceSupport = new NamespaceSupport();
-	
-	protected void declareNamespacePrefix( String prefix, String uri )
-	{ namespaceSupport.declarePrefix(prefix,uri); }
 	
 	/**
 	 * calls processName method of NamespaceSupport
@@ -112,7 +129,7 @@ public abstract class GrammarReader
 	 * gets DataType object from type name.
 	 * 
 	 * If undefined type name is specified, this method is responsible
-	 * to report an error, and recovers.
+	 * to report an error, and recovery.
 	 * 
 	 * @param typeName
 	 *		For RELAX, this is unqualified type name. For TREX,
@@ -133,16 +150,14 @@ public abstract class GrammarReader
 	 */
 	private class InclusionContext
 	{
-		final XMLReader			parser;
 		final NamespaceSupport	nsSupport;
 		final Locator			locator;
 		final String			systemId;
 
 		final InclusionContext	previousContext;
 
-		InclusionContext( XMLReader r, NamespaceSupport ns, Locator loc, String sysId, InclusionContext prev )
+		InclusionContext( NamespaceSupport ns, Locator loc, String sysId, InclusionContext prev )
 		{
-			this.parser = r;
 			this.nsSupport = ns;
 			this.locator = loc;
 			this.systemId = sysId;
@@ -156,17 +171,15 @@ public abstract class GrammarReader
 	private void pushInclusionContext( )
 	{
 		pendingIncludes = new InclusionContext(
-			parser, namespaceSupport, locator, locator.getSystemId(),
+			namespaceSupport, locator, locator.getSystemId(),
 			pendingIncludes );
 		
-		parser = null;	// XMLReader is created in _parse method.
 		namespaceSupport = new NamespaceSupport();
 		locator = null;
 	}
 	
 	private void popInclusionContext()
 	{
-		parser				= pendingIncludes.parser;
 		namespaceSupport	= pendingIncludes.nsSupport;
 		locator				= pendingIncludes.locator;
 		
@@ -232,38 +245,33 @@ public abstract class GrammarReader
 			}
 		
 		pushInclusionContext();
+		State currentState = getCurrentState();
 		try
 		{
-			_parse( source, newState );
+			// this state will receive endDocument event.
+			pushState( newState, null );
+			guardedParse( source );
 		}
 		finally
 		{
+			// restore the current state.
+			super.setContentHandler(currentState);
 			popInclusionContext();
 		}
 	}
 	
 	/**
-	 * kicks the parser to start reading a grammar from the specified location.
+	 * calls parse method.
+	 * 
+	 * this method handls all errors and reports it to the appropriate handler.
 	 */
-	protected final void _parse( Object source, State initialState )
+	protected final void guardedParse( Object source )
 	{
 		try
 		{
-			this.parser = parserFactory.newSAXParser().getXMLReader();
-		}
-		catch( Exception e )
-		{
-			reportError( e, ERR_XMLPARSERFACTORY_EXCEPTION, e.getMessage() );
-			return;	// cannot recover from this error.
-		}
-		
-		pushState( initialState, null );
-		// initialState will receive endDocument event.
-		
-		try
-		{
-			if( source instanceof InputSource )		parser.parse((InputSource)source);
-			if( source instanceof String )			parser.parse((String)source);
+			// invoke XMLReader
+			if( source instanceof InputSource )		super.parse((InputSource)source);
+			if( source instanceof String )			super.parse((String)source);
 		}
 		catch( IOException e )
 		{
@@ -385,11 +393,9 @@ public abstract class GrammarReader
 	/** pushs the current state into the stack and sets new one */
 	public void pushState( State newState, StartTagInfo startTag )
 	{
-		namespaceSupport.pushContext();
-		
 		// ASSERT : parser.getContentHandler()==newState.parentState
-		State parentState = (State)parser.getContentHandler();
-		parser.setContentHandler(newState);
+		State parentState = getCurrentState();
+		super.setContentHandler(newState);
 		newState.init( this, parentState, startTag );
 		
 		// this order of statements ensures that
@@ -399,23 +405,46 @@ public abstract class GrammarReader
 	/** pops the previous state from the stack */
 	public void popState()
 	{
-		State currentState = (State)parser.getContentHandler();
+		State currentState = getCurrentState();
 		
 		if( currentState.parentState!=null )
-			parser.setContentHandler( currentState.parentState );
+			super.setContentHandler( currentState.parentState );
 		else	// if the root state is poped, supply a dummy.
-			parser.setContentHandler( new org.xml.sax.helpers.DefaultHandler() );
-		
-		namespaceSupport.popContext();
+			super.setContentHandler( new org.xml.sax.helpers.DefaultHandler() );
 	}
 
 	/** gets current State object. */
-	public State getCurrentState() { return (State)parser.getContentHandler(); }
+	public final State getCurrentState() { return (State)super.getContentHandler(); }
 	
 	/**
 	 * creates an appropriate State object for parsing particle/pattern.
 	 */
 	public abstract State createExpressionChildState( StartTagInfo tag );
+
+	
+// SAX events interception
+//============================================
+	public void startElement( String a, String b, String c, Attributes d ) throws SAXException
+	{
+		namespaceSupport.pushContext();
+		super.startElement(a,b,c,d);
+	}
+	public void endElement( String a, String b, String c ) throws SAXException
+	{
+		super.endElement(a,b,c);
+		namespaceSupport.popContext();
+	}
+	public void setDocumentLocator( Locator loc )
+	{
+		super.setDocumentLocator(loc);
+		this.locator = loc;
+	}
+	public void startPrefixMapping(String prefix, String uri ) throws SAXException
+	{
+		super.startPrefixMapping(prefix,uri);
+		namespaceSupport.declarePrefix(prefix,uri);
+	}
+	public void endPrefixMapping(String prefix) {}
 
 
 	

@@ -15,9 +15,11 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.XMLReader;
+import org.xml.sax.SAXException;
 import com.sun.tranquilo.datatype.DataType;
 import com.sun.tranquilo.datatype.DataTypeFactory;
 import com.sun.tranquilo.grammar.*;
@@ -40,9 +42,11 @@ public class RELAXReader extends GrammarReader
 	/** loads RELAX grammar */
 	public static RELAXGrammar parse( String moduleURL,
 		SAXParserFactory factory, GrammarReaderController controller, ExpressionPool pool )
+//		throws SAXException,ParserConfigurationException
 	{
 		RELAXReader reader = new RELAXReader(controller,factory,pool);
-		reader._parse(moduleURL,new RootState());
+		reader.guardedParse(moduleURL);
+		
 		if(reader.hadError)	return null;
 		else				return reader.grammar;
 	}
@@ -52,31 +56,19 @@ public class RELAXReader extends GrammarReader
 		SAXParserFactory factory, GrammarReaderController controller, ExpressionPool pool )
 	{
 		RELAXReader reader = new RELAXReader(controller,factory,pool);
-		reader._parse(module,new RootState());
+		reader.guardedParse(module);
+		
 		if(reader.hadError)	return null;
 		else				return reader.grammar;
 	}
 	
-	/** loads RELAX grammar */
-	public static RELAXGrammar parse( String moduleURL,
-		SAXParserFactory factory, GrammarReaderController controller )
-	{
-		return parse(moduleURL,factory,controller,new ExpressionPool());
-	}
-	
-	/** loads RELAX grammar */
-	public static RELAXGrammar parse( InputSource module,
-		SAXParserFactory factory, GrammarReaderController controller )
-	{
-		return parse(module,factory,controller,new ExpressionPool());
-	}
 	
 	protected RELAXReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
 		ExpressionPool pool )
 	{
-		super(controller,parserFactory,pool);
+		super(controller,parserFactory,pool,new RootState());
 		grammar = new RELAXGrammar(pool);
 	}
 	

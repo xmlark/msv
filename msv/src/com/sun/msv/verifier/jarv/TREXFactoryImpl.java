@@ -18,6 +18,7 @@ import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * VerifierFactory implementation of TREX.
@@ -32,18 +33,28 @@ public class TREXFactoryImpl extends FactoryImpl
 		throws VerifierConfigurationException,
 			   SAXException
 	{
-		TREXGrammar g = TREXGrammarReader.parse(uri,factory,new IgnoreController());
-		if(g==null)		return null;	// load failure
-		return getVerifier(g);
+		try
+		{
+			TREXGrammar g = TREXGrammarReader.parse(uri,factory,new IgnoreController());
+			if(g==null)		return null;	// load failure
+			return getVerifier(g);
+		}
+		catch( ParserConfigurationException pce )
+		{ throw new VerifierConfigurationException(pce); }
 	}
 
 	public Verifier newVerifier( InputSource source )
 		throws VerifierConfigurationException,
 			   SAXException
 	{
-		TREXGrammar g = TREXGrammarReader.parse(source,factory,new IgnoreController());
-		if(g==null)		return null;	// load failure
-		return getVerifier(g);
+		try
+		{
+			TREXGrammar g = TREXGrammarReader.parse(source,factory,new IgnoreController());
+			if(g==null)		return null;	// load failure
+			return getVerifier(g);
+		}
+		catch( ParserConfigurationException pce )
+		{ throw new VerifierConfigurationException(pce); }
 	}
 	
 	public Verifier newVerifier( java.io.File source )

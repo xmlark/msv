@@ -149,19 +149,14 @@ public abstract class State implements ContentHandler
 			}
 	}
 		
+	
+// unused handlers
+//----------------------------		
 	public void processingInstruction( String target, String data ) {}
 	public void ignorableWhitespace(char[] buffer, int from, int len ) {}
 	public void skippedEntity( String name ) {}
 	public final void startDocument() {}
-	
-	public void setDocumentLocator( Locator loc )
-	{
-		reader.locator = loc;
-	}
-	
-// namespace support
-//----------------------------		
-	public void startPrefixMapping(String prefix, String uri )
-	{ reader.declareNamespacePrefix(prefix,uri); }
+	public void setDocumentLocator( Locator loc ) {}
+	public void startPrefixMapping(String prefix, String uri ) {}
 	public void endPrefixMapping(String prefix) {}
 }

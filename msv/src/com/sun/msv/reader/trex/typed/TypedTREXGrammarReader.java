@@ -16,6 +16,8 @@ import com.sun.tranquilo.grammar.trex.TREXPatternPool;
 import com.sun.tranquilo.grammar.trex.TREXGrammar;
 import com.sun.tranquilo.util.StartTagInfo;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 
 /**
@@ -32,6 +34,7 @@ public class TypedTREXGrammarReader extends TREXGrammarReader
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
 		TREXPatternPool pool )
+		throws SAXException,ParserConfigurationException
 	{
 		super(controller,parserFactory,pool);
 	}
@@ -45,9 +48,11 @@ public class TypedTREXGrammarReader extends TREXGrammarReader
 	/** loads TREX pattern */
 	public static TREXGrammar parse( String grammarURL,
 		SAXParserFactory factory, GrammarReaderController controller )
+		throws SAXException,ParserConfigurationException
 	{
 		TypedTREXGrammarReader reader = new TypedTREXGrammarReader(controller,factory,new TREXPatternPool());
-		reader._parse(grammarURL,new RootState());
+		reader.guardedParse(grammarURL);
+		
 		if(reader.hadError)	return null;
 		else				return reader.grammar;
 	}
@@ -55,9 +60,11 @@ public class TypedTREXGrammarReader extends TREXGrammarReader
 	/** loads TREX pattern */
 	public static TREXGrammar parse( InputSource grammar,
 		SAXParserFactory factory, GrammarReaderController controller )
+		throws SAXException,ParserConfigurationException
 	{
 		TypedTREXGrammarReader reader = new TypedTREXGrammarReader(controller,factory,new TREXPatternPool());
-		reader._parse(grammar,new RootState());
+		reader.guardedParse(grammar);
+		
 		if(reader.hadError)	return null;
 		else				return reader.grammar;
 	}

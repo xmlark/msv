@@ -18,6 +18,7 @@ import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * VerifierFactory implementation of RELAX.
@@ -32,20 +33,30 @@ public class RELAXFactoryImpl extends FactoryImpl
 		throws VerifierConfigurationException,
 			   SAXException
 	{
-		TREXPatternPool pool = new TREXPatternPool();
-		RELAXGrammar g = RELAXReader.parse(uri,factory,new IgnoreController(),pool);
-		if(g==null)		return null;	// load failure
-		return getVerifier(g);
+		try
+		{
+			TREXPatternPool pool = new TREXPatternPool();
+			RELAXGrammar g = RELAXReader.parse(uri,factory,new IgnoreController(),pool);
+			if(g==null)		return null;	// load failure
+			return getVerifier(g);
+		}
+		catch( ParserConfigurationException pce )
+		{ throw new VerifierConfigurationException(pce); }
 	}
 
 	public Verifier newVerifier( InputSource source )
 		throws VerifierConfigurationException,
 			   SAXException
 	{
-		TREXPatternPool pool = new TREXPatternPool();
-		RELAXGrammar g = RELAXReader.parse(source,factory,new IgnoreController(),pool);
-		if(g==null)		return null;	// load failure
-		return getVerifier(g);
+		try
+		{
+			TREXPatternPool pool = new TREXPatternPool();
+			RELAXGrammar g = RELAXReader.parse(source,factory,new IgnoreController(),pool);
+			if(g==null)		return null;	// load failure
+			return getVerifier(g);
+		}
+		catch( ParserConfigurationException pce )
+		{ throw new VerifierConfigurationException(pce); }
 	}
 	
 	public Verifier newVerifier( java.io.File source )

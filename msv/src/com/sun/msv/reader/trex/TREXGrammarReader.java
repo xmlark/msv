@@ -39,7 +39,8 @@ public class TREXGrammarReader extends GrammarReader
 		SAXParserFactory factory, GrammarReaderController controller )
 	{
 		TREXGrammarReader reader = new TREXGrammarReader(controller,factory,new TREXPatternPool());
-		reader._parse(grammarURL,new RootState());
+		reader.guardedParse(grammarURL);
+		
 		if(reader.hadError)	return null;
 		else				return reader.grammar;
 	}
@@ -49,7 +50,8 @@ public class TREXGrammarReader extends GrammarReader
 		SAXParserFactory factory, GrammarReaderController controller )
 	{
 		TREXGrammarReader reader = new TREXGrammarReader(controller,factory,new TREXPatternPool());
-		reader._parse(grammar,new RootState());
+		reader.guardedParse(grammar);
+		
 		if(reader.hadError)	return null;
 		else				return reader.grammar;
 	}
@@ -59,7 +61,7 @@ public class TREXGrammarReader extends GrammarReader
 		SAXParserFactory parserFactory,
 		TREXPatternPool pool )
 	{
-		super(controller,parserFactory,pool);
+		super(controller,parserFactory,pool,new RootState());
 	}
 	
 	protected String localizeMessage( String propertyName, Object[] args )

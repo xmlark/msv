@@ -34,11 +34,18 @@ public class IntegerType extends IntegerDerivedType {
 	}
 	
 	public Object _createJavaObject( String literal, ValidationContext context ) {
-		Object o = _createValue(literal,context);
+        return load(literal);
+	}
+    
+    public BigInteger load( String s ) {
+		Object o = _createValue(s,null);
 		if(o==null)		return null;
 		// o must be IntegerValueType.
 		return new BigInteger(o.toString());
-	}
+    }
+    public String save( BigInteger v ) {
+        return v.toString();
+    }
 	
 	// the default implementation of the serializeJavaObject method works correctly.
 	// so there is no need to override it here.

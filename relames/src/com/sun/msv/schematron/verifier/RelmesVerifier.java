@@ -222,7 +222,9 @@ public class RelmesVerifier implements IVerifier {
 	
 	
 	
-	
+	public void setPanicMode(boolean v) {
+		core.setPanicMode(v);
+	}
 	public boolean isValid() {
 		return schematronValid && core.isValid();
 	}

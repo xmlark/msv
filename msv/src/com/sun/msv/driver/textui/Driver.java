@@ -93,7 +93,7 @@ public class Driver {
 		}
 		
 		if( factory==null )
-			factory = (SAXParserFactory)Class.forName("org.apache.xerces.jaxp.SAXParserFactoryImpl").newInstance();
+			factory = SAXParserFactory.newInstance();
 		
 		if( verbose )
 			System.out.println( localize( MSG_PARSER, factory.getClass().getName()) );

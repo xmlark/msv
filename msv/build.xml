@@ -165,6 +165,9 @@
       <classpath path="${relaxngDatatype.jar}"/>
       <classpath path="${isorelax.jar}"/>
       <classpath path="../package/xsdlib.jar"/>
+      <classpath path="${resolver.jar}"/>
+      <classpath path="${xerces.jar}"/>
+      <classpath path="${junit.jar}"/>
       
       <include name="**/*.java" />
     </javac>

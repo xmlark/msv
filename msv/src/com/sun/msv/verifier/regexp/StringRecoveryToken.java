@@ -10,6 +10,7 @@
 package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.TypedStringExp;
+import com.sun.msv.grammar.ListExp;
 import java.util.Set;
 
 /**
@@ -23,13 +24,19 @@ import java.util.Set;
 class StringRecoveryToken extends StringToken {
 	
 	StringRecoveryToken( StringToken base ) {
-		super( base.literal, base.context );
+		this( base, new java.util.HashSet() );
+	}
+	
+	StringRecoveryToken( StringToken base, Set failedExps ) {
+		super( base.docDecl, base.literal, base.context );
+		this.failedExps = failedExps;
 	}
 	
 	/**
-	 * TypedStringExps that rejected this token are collected into this set.
+	 * TypedStringExps and ListExps that
+	 * rejected this token are collected into this set.
 	 */
-	final Set failedExps = new java.util.HashSet();
+	final Set failedExps;
 	
 	boolean match( TypedStringExp exp ) {
 		if( super.match(exp) )
@@ -39,4 +46,16 @@ class StringRecoveryToken extends StringToken {
 		failedExps.add( exp );
 		return true;
 	}
+	
+	boolean match( ListExp exp ) {
+		super.match(exp);
+		return true;
+	}
+	
+		
+	protected Token createChildStringToken( String literal ) {
+		return new StringRecoveryToken(
+			new StringToken( docDecl, literal, context ) );
+	}
+
 }

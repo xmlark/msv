@@ -80,9 +80,14 @@ public class AttributePicker implements ExpressionVisitorExpression
 	public Expression onRef( ReferenceExp exp )
 		{ return exp.exp.visit(this); }
 	
-	public Expression onTypedString( TypedStringExp exp )
-		{ return Expression.epsilon; }
-	
+	public Expression onTypedString( TypedStringExp exp ) {
+		return Expression.epsilon;
+	}
+
+	public Expression onList( ListExp exp ) {
+		return Expression.epsilon;
+	}
+
 	public Expression onAttribute( AttributeExp exp )
 	{
 		return exp;

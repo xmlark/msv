@@ -34,6 +34,7 @@ public class AttributeFreeMarker implements ExpressionVisitorBoolean
 	public boolean onElement( ElementExp exp )		{ return true; }
 	public boolean onOneOrMore( OneOrMoreExp exp )	{ return onUnaryExp(exp); }
 	public boolean onMixed( MixedExp exp )			{ return onUnaryExp(exp); }
+	public boolean onList( ListExp exp )			{ return false; }
 	public boolean onRef( ReferenceExp exp )		{ return exp.exp.visit(this); }
 	public boolean onEpsilon()						{ return true; }
 	public boolean onNullSet()						{ return true; }

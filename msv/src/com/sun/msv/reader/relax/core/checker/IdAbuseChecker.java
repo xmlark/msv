@@ -155,5 +155,6 @@ public class IdAbuseChecker implements RELAXExpressionVisitorVoid
 	public void onHedgeRules( HedgeRules exp )		{ throw new Error(); }
 	public void onInterleave( InterleaveExp exp )	{ throw new Error(); }
 	public void onConcur( ConcurExp exp )			{ throw new Error(); }
+	public void onList( ListExp exp )				{ throw new Error(); }
 
 }

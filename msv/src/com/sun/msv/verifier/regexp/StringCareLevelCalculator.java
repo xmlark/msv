@@ -37,6 +37,7 @@ public class StringCareLevelCalculator implements ExpressionVisitorBoolean
 	public boolean onElement( ElementExp exp )			{ return false; }
 	public boolean onOneOrMore( OneOrMoreExp exp )		{ return exp.exp.visit(this); }
 	public boolean onMixed( MixedExp exp )				{ return true; }
+	public boolean onList( ListExp exp )				{ return true; }
 	public boolean onRef( ReferenceExp exp )			{ return exp.exp.visit(this); }
 	public boolean onEpsilon()							{ return false; }
 	public boolean onNullSet()							{ return false; }

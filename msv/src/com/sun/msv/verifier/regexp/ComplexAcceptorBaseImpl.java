@@ -44,7 +44,7 @@ public class ComplexAcceptorBaseImpl extends ContentModelAcceptor
 	{
 		if(!super.stepForward(literal,context,refErr,refType))	return false;
 
-		final StringToken token = new StringToken(literal,context);
+		final StringToken token = new StringToken(docDecl,literal,context);
 		final ResidualCalculator res = docDecl.resCalc;
 
 		// some may become invalid, but at least one always remain valid

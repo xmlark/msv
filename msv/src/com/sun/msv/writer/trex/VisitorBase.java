@@ -47,7 +47,11 @@ public abstract class VisitorBase implements ExpressionVisitorVoid {
 	public void onMixed( MixedExp exp ) {
 		exp.exp.visit(this);
 	}
-		
+	
+	public void onList( ListExp exp ) {
+		exp.exp.visit(this);
+	}
+	
 	public void onOneOrMore( OneOrMoreExp exp ) {
 		exp.exp.visit(this);
 	}

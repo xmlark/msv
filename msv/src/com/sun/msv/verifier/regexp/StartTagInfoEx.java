@@ -41,10 +41,10 @@ public class StartTagInfoEx extends StartTagInfo
 		attTokens = new AttributeToken[attributes.getLength()];
 		for( int i=0; i<attTokens.length; i++ )
 			attTokens[i] = new AttributeToken(
-				owner.pool,
+				owner,
 				attributes.getURI(i),
 				attributes.getLocalName(i),
 				attributes.getValue(i),
-				context, owner.resCalc );
+				context );
 	}
 }

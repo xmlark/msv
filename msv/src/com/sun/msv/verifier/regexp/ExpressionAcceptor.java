@@ -152,7 +152,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 	
 	public boolean stepForward( String literal, IDContextProvider provider, StringRef refErr, DataTypeRef refType )
 	{
-		return stepForward( new StringToken(literal,provider,refType), refErr );
+		return stepForward( new StringToken(docDecl,literal,provider,refType), refErr );
 	}
 	
 	public final boolean stepForwardByContinuation( Expression continuation, StringRef errRef )

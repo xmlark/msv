@@ -109,6 +109,9 @@ public class AttributeFeeder implements ExpressionVisitorExpression {
 	public Expression onMixed( MixedExp exp ) {
 		return pool.createMixed( exp.exp.visit(this) );
 	}
+	public Expression onList( ListExp exp ) {
+		return Expression.nullSet;
+	}
 	public Expression onEpsilon()		{ return Expression.nullSet; }
 	public Expression onNullSet()		{ return Expression.nullSet; }
 	public Expression onAnyString()		{ return Expression.nullSet; }

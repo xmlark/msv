@@ -25,9 +25,11 @@ public abstract class Token
 	boolean match( AttributeExp p )		{ return false; }
 	/** returns true if the given TypedStringExp can consume this token */
 	boolean match( TypedStringExp p )	{ return false; }
+	/** returns true if the given ListExp can consume this token */
+	boolean match( ListExp p )			{ return false; }
 	
 	/** returns true if anyString pattern can consume this token */
-	boolean matchAnyString()				{ return false; }
+	boolean matchAnyString()			{ return false; }
 
 	/** checks if this token is ignorable. */
 	boolean isIgnorable() { return false; }

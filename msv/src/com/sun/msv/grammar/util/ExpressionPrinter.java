@@ -139,6 +139,10 @@ public class ExpressionPrinter implements ExpressionVisitor {
 		return "mixed["+exp.exp.visit(this)+"]";
 	}
 	
+	public Object onList( ListExp exp ) {
+		return "list["+exp.exp.visit(this)+"]";
+	}
+	
 	public Object onEpsilon() {
 		return "#epsilon";
 	}

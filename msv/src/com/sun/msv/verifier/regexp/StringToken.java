@@ -14,6 +14,7 @@ import com.sun.msv.grammar.relaxng.NGTypedStringExp;
 import com.sun.msv.datatype.StringType;
 import com.sun.msv.util.DataTypeRef;
 import org.relaxng.datatype.DataType;
+import java.util.StringTokenizer;
 
 /**
  * chunk of string.
@@ -24,6 +25,7 @@ public class StringToken extends Token {
 	
 	protected final String literal;
 	protected final IDContextProvider context;
+	protected final REDocumentDeclaration docDecl;
 	protected final boolean ignorable;
 	/**
 	 * if this field is non-null,
@@ -32,11 +34,12 @@ public class StringToken extends Token {
 	protected final DataTypeRef refType;
 	protected boolean saturated = false;
 	
-	public StringToken( String literal, IDContextProvider context ) {
-		this(literal,context,null);
+	public StringToken( REDocumentDeclaration docDecl, String literal, IDContextProvider context ) {
+		this(docDecl,literal,context,null);
 	}
 	
-	public StringToken( String literal, IDContextProvider context, DataTypeRef refType ) {
+	public StringToken( REDocumentDeclaration docDecl, String literal, IDContextProvider context, DataTypeRef refType ) {
+		this.docDecl = docDecl;
 		this.literal = literal;
 		this.context = context;
 		this.refType = refType;
@@ -66,7 +69,24 @@ public class StringToken extends Token {
 		}
 		return ret;
 	}
+
+	/** ListExp can consume this token if its pattern accepts this string */
+	boolean match( ListExp exp ) {
+		StringTokenizer tokens = new StringTokenizer(literal);
+		Expression residual = exp.exp;
 	
+		while( residual!=Expression.nullSet && tokens.hasMoreTokens() ) {
+			residual = docDecl.resCalc.calcResidual( residual,
+				createChildStringToken(tokens.nextToken()) );
+		}
+		
+		return residual.isEpsilonReducible();
+	}
+	
+	protected Token createChildStringToken( String literal ) {
+		return new StringToken( docDecl, literal, context );
+	}
+
 	// anyString can match any string
 	boolean matchAnyString() {
 		if(refType!=null)	assignType(StringType.theInstance);
@@ -77,8 +97,8 @@ public class StringToken extends Token {
 		if(saturated)
 			// more than one types are assigned. roll back to null
 			refType.type=null;
-		else
-		{// this is the first assignment. remember this value.
+		else {
+			// this is the first assignment. remember this value.
 			refType.type=dt;
 			saturated=true;
 		}

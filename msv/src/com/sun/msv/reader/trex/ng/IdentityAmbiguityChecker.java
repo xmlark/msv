@@ -97,6 +97,7 @@ public class IdentityAmbiguityChecker {
 		
 		public void onOneOrMore( OneOrMoreExp exp )		{ exp.exp.visit(this); }
 		public void onMixed( MixedExp exp )				{ exp.exp.visit(this); }
+		public void onList( ListExp exp )				{ exp.exp.visit(this); }
 		public void onRef( ReferenceExp exp )			{ exp.exp.visit(this); }
 		public void onChoice( ChoiceExp exp )			{ onBinExp(exp); }
 		public void onSequence( SequenceExp exp )		{ onBinExp(exp); }
@@ -110,7 +111,10 @@ public class IdentityAmbiguityChecker {
 	}
 
 	/** collects all identity constraints used with in the expression. */
-	private final ExpressionWalker constraintsCollector = new ExpressionWalker() {};
+	private final ExpressionWalker constraintsCollector = new ExpressionWalker() {
+		// TODO: do the real work
+		public void onTypedString( TypedStringExp exp ) { throw new Error(); }
+	};
 	
 	/** collects all possible names from NameClass. */
 	private final NameClassVisitor nameCollector = new NameClassVisitor(){
@@ -170,6 +174,8 @@ public class IdentityAmbiguityChecker {
 		public Expression onNullSet()						{ return Expression.epsilon; }
 		public Expression onAnyString()						{ return Expression.epsilon; }
 		public Expression onTypedString( TypedStringExp exp ){ return Expression.epsilon; }
+		// list is ignorable. Just like TypedString.
+		public Expression onList( ListExp exp )				{ return Expression.epsilon; }
 
 		public Expression onChoice( ChoiceExp exp )			{ return onBinExp(exp); }
 		public Expression onSequence( SequenceExp exp )		{ return onBinExp(exp); }

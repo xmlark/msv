@@ -151,6 +151,10 @@ public class TREXWriter {
 	 * @param defaultNs
 	 *		if specified, this namespace URI is used as "ns" attribute
 	 *		of grammar element. Can be null.
+	 * 
+	 * @exception IllegalArgumentException
+	 *		If the given grammar is beyond the expressive power of TREX
+	 *		(e.g., some RELAX NG grammar), then this exception is thrown.
 	 */
 	public void write( Grammar g, String defaultNs ) throws SAXException {
 		
@@ -373,6 +377,9 @@ public class TREXWriter {
 				return null;
 			}
 			public Object onTypedString( TypedStringExp exp ) {
+				return null;
+			}
+			public Object onList( ListExp exp ) {
 				return null;
 			}
 		});
@@ -625,6 +632,11 @@ public class TREXWriter {
 	
 		public void onConcur( ConcurExp exp ) {
 			visitBinExp("concur", exp, ConcurExp.class );
+		}
+	
+		public void onList( ListExp exp ) {
+			// TODO: actually, some of them can be converted to W3C Schema's list.
+			throw new IllegalArgumentException("beyond the expressive power of TREX");
 		}
 	
 		protected void onOptional( Expression exp ) {

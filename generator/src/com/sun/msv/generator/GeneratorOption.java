@@ -104,6 +104,16 @@ public class GeneratorOption
 	public double probGreedyChoiceError = 0;
 	
 	/**
+	 * probability of "element name typo" per # of elements.
+	 */
+	public double probElemNameTypo = 0;
+	
+	/**
+	 * probability of "attribute name typo" per # of attributes.
+	 */
+	public double probAttrNameTypo = 0;
+	
+	/**
 	 * fills unspecified parameters by default values.
 	 */
 	public void fillInByDefault()

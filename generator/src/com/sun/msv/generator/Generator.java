@@ -17,6 +17,7 @@ import com.sun.tranquilo.grammar.*;
 import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.util.StringPair;
 import com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter;
+import com.sun.xml.util.XmlChars;
 import java.util.*;
 
 /**
@@ -106,7 +107,8 @@ public class Generator implements TREXPatternVisitorVoid
 	private void noteError( String error )
 	{
 		errorGenerated = true;
-		Comment com = domDoc.createComment("  "+error+"  ");
+		Node com = domDoc.createComment("  "+error+"  ");
+//		Node com = domDoc.createProcessingInstruction("error",error);
 		
 		Node n = node;
 		if( n.getNodeType()==n.ATTRIBUTE_NODE )
@@ -198,20 +200,19 @@ public class Generator implements TREXPatternVisitorVoid
 
 		if( opts.random.nextDouble() < opts.probGreedyChoiceError )
 		{// greedy choice error. visit twice.
-			noteError("greedy choice:"+
-					  TREXPatternPrinter.printSmallest(cp));
+			Expression[] es = new Expression[2];
 			for( int i=0; i<2; i++ )
-			{
-				Expression exp;
 				do
 				{
-					exp = (Expression)vec.get(opts.random.nextInt(vec.size()));
-				}while(exp==Expression.epsilon);
+					es[i] = (Expression)vec.get(opts.random.nextInt(vec.size()));
+				}while(es[i]==Expression.epsilon);
 
-				noteError("greedy choice("+i+"):"+
-					  TREXPatternPrinter.printSmallest(exp));
-				exp.visit(this);
-			}
+			noteError("greedy choice "+
+					  TREXPatternPrinter.printSmallest(es[0])+ " & "+
+					  TREXPatternPrinter.printSmallest(es[1]));
+			
+			for( int i=0; i<2; i++ )
+				es[i].visit(this);
 			return;
 		}
 		
@@ -248,8 +249,9 @@ public class Generator implements TREXPatternVisitorVoid
 		
 		if( opts.random.nextDouble() < opts.probSlipInAttrError )
 		{// slip-in error. generate random attribute.
-			onAttribute( attributeDecls[opts.random.nextInt(attributeDecls.length)] );
-			noteError("slip-in attribute "+exp.nameClass);
+			AttributeExp a = attributeDecls[opts.random.nextInt(attributeDecls.length)];
+			noteError("slip-in attribute "+a.nameClass);
+			onAttribute( a );
 		}
 		
 		
@@ -262,6 +264,12 @@ public class Generator implements TREXPatternVisitorVoid
 		}while( ((Element)node).getAttributeNodeNS(name.namespaceURI,name.localName)!=null
 			&&  retry++<100/*abort after several retries*/ );
 
+		if( opts.random.nextDouble() < opts.probAttrNameTypo )
+		{
+			noteError("attribute name typo: "+name.localName);
+			name = generateTypo(name);
+		}
+		
 		// It is possible
 		// that this attribute is already added as a result of
 		// generating an error.
@@ -300,6 +308,12 @@ public class Generator implements TREXPatternVisitorVoid
 		}
 		
 		StringPair name = getName(exp.getNameClass());
+
+		if( opts.random.nextDouble() < opts.probElemNameTypo )
+		{
+			noteError("element name typo: "+name.localName);
+			name = generateTypo(name);
+		}
 		
 		Element child = domDoc.createElementNS( name.namespaceURI, name.localName );
 		node.appendChild( child );
@@ -393,4 +407,32 @@ public class Generator implements TREXPatternVisitorVoid
 		while( itr.hasNext() )	vec.add( itr.next() );
 		return vec;
 	}
+
+	/**
+	 * generates 'typo'.
+	 */
+	protected StringPair generateTypo( StringPair pair )
+	{
+		// in this implementation, typo is made only to localName.
+		StringBuffer buf = new StringBuffer(pair.localName);
+		
+		int idx = opts.random.nextInt(buf.length());
+		
+		char ch = buf.charAt(idx);
+		if( XmlChars.isNCNameChar((char)(ch-1)) )
+			ch = (char)(ch-1);
+		else
+		if( XmlChars.isNCNameChar((char)(ch+1)) )
+			ch = (char)(ch+1);
+		else
+		do
+		{
+			ch = (char)opts.random.nextInt();
+		}while(!XmlChars.isNCNameChar(ch));
+		
+		buf.setCharAt( idx, ch );
+		
+		return new StringPair(pair.namespaceURI,buf.toString());
+	}
+	
 }

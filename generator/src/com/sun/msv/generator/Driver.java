@@ -160,7 +160,10 @@ public class Driver
 					opt.probSeqError=
 					opt.probSlipInAttrError=
 					opt.probSlipInElemError=
-					opt.probMissingPlus=	ratio;
+					opt.probMissingPlus=
+					opt.probAttrNameTypo=
+					opt.probElemNameTypo=
+						ratio;
 				}
 				catch( Exception e )
 				{

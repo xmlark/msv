@@ -64,7 +64,7 @@ public class Verifier implements
 	public final VerificationErrorHandler getVErrorHandler() { return errorHandler; }
 	
 	/** this flag will be set to true if an error is found */
-	private boolean hadError;
+	protected boolean hadError;
 	
 	/** this flag will be set to true after endDocument method is called. */
 	private boolean isFinished;

@@ -29,6 +29,11 @@ public abstract class NameClassWithChildState extends NameClassState implements 
 	protected NameClass nameClass = null;
 
 	/**
+	 * if this flag is true, then it is OK not to have any children.
+	 */
+	protected boolean allowNullChild = false;
+	
+	/**
 	 * receives a Pattern object that is contained in this element.
 	 */
 	public final void onEndChild( NameClass childNameClass ) {
@@ -36,7 +41,7 @@ public abstract class NameClassWithChildState extends NameClassState implements 
 	}
 	
 	protected final NameClass makeNameClass() {
-		if( nameClass==null ) {
+		if( nameClass==null && !allowNullChild ) {
 			reader.reportError( TREXBaseReader.ERR_MISSING_CHILD_NAMECLASS );
 			nameClass = AnyNameClass.theInstance;
 			// recover by assuming some name class.

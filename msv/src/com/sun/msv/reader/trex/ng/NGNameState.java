@@ -24,6 +24,10 @@ import com.sun.msv.util.StartTagInfo;
  */
 public abstract class NGNameState extends NameClassWithChildState {
 	
+	NGNameState() {
+		allowNullChild = true;
+	}
+	
 	protected State createChildState( StartTagInfo tag ) {
 		// <except> tag is allowed only once.
 		if( super.nameClass==null && tag.localName.equals("except") )

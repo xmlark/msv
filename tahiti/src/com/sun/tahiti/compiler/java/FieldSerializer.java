@@ -1,5 +1,7 @@
 package com.sun.tahiti.compiler.java;
 
+import org.w3c.dom.Element;
+
 interface FieldSerializer {
 	
 	/** gets the string that represents the type of the field. */
@@ -33,6 +35,9 @@ interface FieldSerializer {
 	/**
 	 * produces a code to marshall the next token of this field, and consumes
 	 * that token.
+	 * 
+	 * @param marshallElement
+	 *		
 	 */
-	String marshall();
+	String marshall( Element marshallElement );
 }

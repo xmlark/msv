@@ -10,6 +10,7 @@
 package com.sun.tahiti.runtime.ll;
 
 import com.sun.tahiti.runtime.TypeDetecter;
+import com.sun.tahiti.runtime.sm.MarshallableObject;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import javax.xml.parsers.SAXParserFactory;
@@ -29,8 +30,8 @@ public class Unmarshaller extends TypeDetecter {
 		setContentHandler(binder);
 	}
 	
-	public Object getResult() {
-		return binder.getResult();
+	public MarshallableObject getResult() {
+		return (MarshallableObject)binder.getResult();
 	}
 	
 	/**

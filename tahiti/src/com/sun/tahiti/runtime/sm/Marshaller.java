@@ -9,6 +9,14 @@
  */
 package com.sun.tahiti.runtime.sm;
 
+import com.sun.msv.datatype.DatabindableDatatype;
+
+/**
+ * interface of marshaller.
+ * 
+ * A marshaller should implement this interface and perform actual
+ * marshalling.
+ */
 public interface Marshaller {
 	void startElement( String namespaceURI, String localName );
 	void endElement( String namespaceURI, String localName );
@@ -16,5 +24,5 @@ public interface Marshaller {
 	void startAttribute( String namespaceURI, String localName );
 	void endAttribute( String namespaceURI, String localName );
 	
-	void data( Object data );
+	void data( Object data, DatabindableDatatype type );
 }

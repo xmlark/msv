@@ -178,23 +178,23 @@ class Binder implements TypedContentHandler {
 		assert( bufLen==1 );
 	}
 	
-	private Object theResult;	// this field is a local variable of the getResult method.
 	public Object getResult() {
 		
 		// after the completion of a parsing,
 		// buffer must have one and only one packet, and it must be an ItemPacket.
 		Packet.ItemPacket top = (Packet.ItemPacket)buffer[0];
 		
-		theResult = null;
+		final Object[] theResult = new Object[1];
+		
 		try {
 			top.dispatch(
 				new LLParser.ObjectReceiver(){
 					public void start() {}
 					public void end() {}
 					public void action(Object item) {
-						if(theResult!=null)	// the top-level class must be unique.
+						if(theResult[0]!=null)	// the top-level class must be unique.
 							throw new Error();
-						theResult = item;
+						theResult[0] = item;
 					}
 			}, null );
 		}catch(Exception e) {
@@ -202,7 +202,7 @@ class Binder implements TypedContentHandler {
 			assert(false);	// impossible. because we don't throw any exception from the action.
 		}
 		
-		return theResult;
+		return theResult[0];
 	}
 	
 	private static void assert( boolean b ) {

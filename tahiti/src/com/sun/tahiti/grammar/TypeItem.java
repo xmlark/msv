@@ -19,6 +19,8 @@ public abstract class TypeItem extends JavaItem implements Type {
 	
 	public TypeItem( String name ) {
 		super(name);
+		// everyone inherites MarshallableObject
+		interfaces.add( SystemType.get(com.sun.tahiti.runtime.sm.MarshallableObject.class) );
 	}
 	
 	public final Set interfaces = new java.util.HashSet();

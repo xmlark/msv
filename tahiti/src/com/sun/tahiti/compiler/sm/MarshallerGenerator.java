@@ -20,6 +20,7 @@ import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xml.serialize.OutputFormat;
 import java.io.ByteArrayOutputStream;
 import java.util.Set;
+import java.util.Iterator;
 
 /**
  * generates a simple marhsllaer for a ClassItem.
@@ -121,23 +122,23 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 	 */
 	public void onOneOrMore( OneOrMoreExp exp ) {
 				
-		String uniqueField = calcUniqueField( owner.exp, exp );
-		if( uniqueField==null ) {
+		Set uniqueFields = calcUniqueField( owner.exp, exp );
+		if( uniqueFields==null ) {
 			// this class cannot be marshalled.
 			controller.warning( null,
 				localize(
 					UNABLE_TO_PRODUCE_MARSHALLER_ONEORMORE, owner.getTypeName() ));
 			throw new Abort();
 		}
-		if( uniqueField.length()==0 ) {
+		if( uniqueFields.size()==0 ) {
 			// there is no field in this.
 			// so ignore this <oneOrMore>.
 			exp.exp.visit(this);
 			return;
 		}
 				
-				
-		out.start("oneOrMore",new String[]{"while",uniqueField});
+		
+		out.start("oneOrMore",new String[]{"while",setToString(uniqueFields)});
 		exp.exp.visit(this);
 		out.end("oneOrMore");
 	}
@@ -168,12 +169,27 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 			*/
 			boolean hasEpsilonEdge = false;
 			boolean fail = false;
+			boolean hasMarshallableItem = false;
+			boolean hasPrimitiveItem = false;
+			// common type of primitives
+			PrimitiveItem primitiveType = null;
 			
 			for( int i=0; i<children.length; i++ ) {
 				if( children[i] instanceof InterfaceItem
-				||  children[i] instanceof ClassItem
-				||  children[i] instanceof PrimitiveItem)
-					continue;	// these are JavaItems.
+				||  children[i] instanceof ClassItem) {
+					hasMarshallableItem = true;
+					continue;
+				}
+				if( children[i] instanceof PrimitiveItem) {
+					hasPrimitiveItem = true;
+					PrimitiveItem thisType = (PrimitiveItem)children[i];
+					if(primitiveType==null)		primitiveType = thisType;
+					else
+					// this short cut doesn't work if the underlying datatype is
+					// possibly different.
+					if(primitiveType.dt!=thisType.dt)	fail = true;
+					continue;
+				}
 				
 				if( (children[i] instanceof IgnoreItem && children[i].isEpsilonReducible() )
 				||  children[i]==Expression.epsilon ) {
@@ -186,6 +202,10 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 				break;
 			}
 			
+			if( hasMarshallableItem && hasPrimitiveItem )
+				// this short cut doesn't work if these two types are mixed.
+				fail = true;
+			
 			if( !fail && hasEpsilonEdge
 			&&  !owner.getFieldUse(currentField.name).multiplicity.isAtMostOnce() )
 				// if there is an epsilon-edge, then the entire field must be (0,1)/(1,1)
@@ -197,17 +217,27 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 				if( hasEpsilonEdge ) {
 					out.start("choice");
 					out.start("option",new String[]{"if",currentField.name});
-					out.element("marshall",
-						new String[]{"fieldName", currentField.name });
+				}
+				
+				if( hasMarshallableItem ) {
+					out.element("marshall", new String[]{
+							"type", "object",
+							"fieldName", currentField.name });
+				} else {
+					out.element("marshall", new String[]{
+							"type", "primitive",
+							"fieldName", currentField.name,
+							"dataSymbol", symbolizer.getId(primitiveType.exp) });
+				}
+				
+				if( hasEpsilonEdge ) {
 					out.end("option");
 					out.start("otherwise");
 					out.element("epsilon");
 					out.end("otherwise");
 					out.end("choice");
-				} else {
-					out.element("marshall",
-						new String[]{"fieldName", currentField.name });
 				}
+				
 				return;
 			}
 		}
@@ -217,9 +247,9 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 		out.start("choice");
 		
 		for( int i=0; i<children.length; i++ ) {
-			String uniqueField = calcUniqueField( owner.exp, children[i] );
+			Set uniqueFields = calcUniqueField( owner.exp, children[i] );
 						
-			if( uniqueField==null ) {
+			if( uniqueFields==null ) {
 				// we can possibly have one branch which doesn't have
 				// the unique field. ("possibly" means if there is
 				// no "otherwise" branch.)
@@ -233,14 +263,14 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 				undecidable = children[i];
 				continue;
 			}
-			if( uniqueField.length()==0 ) {
+			if( uniqueFields.size()==0 ) {
 				// if this branch doesn't have a FieldItem, use it
 				// as the "otherwise" case.
 				otherwise = children[i];
 				continue;
 			}
 						
-			out.start("option",new String[]{"if",uniqueField});
+			out.start("option",new String[]{"if",setToString(uniqueFields)});
 			children[i].visit(this);
 			out.end("option");
 		}
@@ -265,8 +295,19 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 						
 		out.end("choice");
 	}
-				
-				
+	
+	/**
+	 * converts a set of Strings into whitespace-delimited string.
+	 */			
+	private String setToString( Set s ) {
+		StringBuffer buffer = new StringBuffer();
+		Iterator itr = s.iterator();
+		while( itr.hasNext() ) {
+			buffer.append(' ');
+			buffer.append(itr.next());
+		}
+		return buffer.toString();
+	}
 				
 				
 				
@@ -308,9 +349,9 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 		if( exp instanceof PrimitiveItem ) {
 			out.element("marshall",
 				new String[]{
-					"type","data",
+					"type","primitive",
 					"fieldName", currentField.name,
-					"dataSymbol", symbolizer.getId(exp) });
+					"dataSymbol", symbolizer.getId(((PrimitiveItem)exp).exp) });
 			return;
 		}
 		if( exp instanceof IgnoreItem ) {
@@ -407,10 +448,10 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 	 * 
 	 * @return
 	 *		this method returns null to indicate that there is no unique name.
-	 *		Otherwise, this method returns a name
-	 *		of the field which appears in this branch but not elsewhere.
+	 *		Otherwise, this method returns a set
+	 *		of the fields which appear in this branch but not elsewhere.
 	 */
-	private String calcUniqueField( Expression root, final Expression branch ) {
+	private Set calcUniqueField( Expression root, final Expression branch ) {
 
 		final Set branchFields = new java.util.HashSet();
 		
@@ -505,7 +546,7 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 		// there is no unique field.
 		if( branchFields.size()==0 )	return null;
 		
-		return (String)branchFields.iterator().next();
+		return branchFields;
 	}
 	
 	

@@ -19,14 +19,15 @@ import com.sun.tahiti.grammar.util.Multiplicity;
 import com.sun.tahiti.reader.NameUtil;
 import com.sun.tahiti.util.text.Formatter;
 import com.sun.tahiti.util.xml.XSLTUtil;
-import com.sun.tahiti.util.xml.DOMBuilder;
 import com.sun.tahiti.util.xml.DOMVisitor;
+import com.sun.tahiti.util.xml.DOMBuilder;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Map;
 import java.text.MessageFormat;
+import org.w3c.dom.Element;
 
 /**
  * produces Java source codes of the object model.
@@ -47,7 +48,14 @@ public class ClassSerializer
 	private final AnnotatedGrammar grammar;
 	private final Symbolizer symbolizer;
 	private final Controller controller;
+	
+	/** fully-qualified name of the Gramamr class. */
 	private final String grammarClassName;
+	/**
+	 * bare class name of the Grammar class.
+	 * Since the Grammar class is imported in generated classes,
+	 * this bare name can be used to refer to the Grammar class.
+	 */
 	private final String grammarShortClassName;
 		
 	public void generate() throws IOException {
@@ -74,6 +82,9 @@ public class ClassSerializer
 	}
 	private static String format( String fmt, Object arg1, Object arg2, Object arg3 ) {
 		return MessageFormat.format(fmt,new Object[]{arg1,arg2,arg3});
+	}
+	private static String format( String fmt, Object arg1, Object arg2, Object arg3, Object arg4 ) {
+		return MessageFormat.format(fmt,new Object[]{arg1,arg2,arg3,arg4});
 	}
 	
 	/**
@@ -293,11 +304,12 @@ public class ClassSerializer
 					// as the type.
 					return format("{0}!=null", fu.name );
 				}
-				public String marshall() {
+				public String marshall( Element e ) {
 					if( fu.type instanceof ClassItem || fu.type instanceof InterfaceItem )
 						return format("{0}.marshall(out);", fu.name );
 					else
-						return format("out.data({0});", fu.name );
+						return format("out.data({0},{1}.{2});", fu.name,
+							grammarShortClassName, e.getAttribute("dataSymbol") );
 				}
 				public String marshallerInitializer() {
 					return null;
@@ -338,13 +350,14 @@ public class ClassSerializer
 				// as the type.
 				return format("idx_{0}!=len_{0}", fu.name );
 			}
-			public String marshall() {
+			public String marshall( Element e ) {
 				if( fu.type instanceof ClassItem || fu.type instanceof InterfaceItem )
-					return format("(({0}){1}.get(idx_{1})).marshall(out);",
+					return format("(({0}){1}.get(idx_{1}++)).marshall(out);",
 						toPrintName(fu.type), fu.name );
 				else
-					return format("out.data(({0}){1}.get(idx_{1}));",
-						toPrintName(fu.type), fu.name );
+					return format("out.data(({0}){1}.get(idx_{1}++), {2}.{3});",
+						toPrintName(fu.type), fu.name,
+						grammarShortClassName, e.getAttribute("dataSymbol") );
 			}
 		};
 	}

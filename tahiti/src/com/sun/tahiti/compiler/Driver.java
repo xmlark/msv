@@ -30,7 +30,6 @@ import com.sun.tahiti.compiler.Symbolizer;
 import com.sun.tahiti.grammar.TypeItem;
 import com.sun.tahiti.grammar.util.SuperClassBodyRemover;
 import com.sun.tahiti.grammar.AnnotatedGrammar;
-import com.sun.tahiti.util.xml.DOMBuilder;
 import com.sun.tahiti.util.xml.XSLTUtil;
 import com.sun.msv.reader.GrammarReaderController;
 import org.apache.xml.serialize.XMLSerializer;

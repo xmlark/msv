@@ -1,7 +1,11 @@
 import com.sun.msv.grammar.Grammar;
 import com.sun.tahiti.runtime.ll.*;
+import com.sun.tahiti.runtime.sm.*;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.XMLReader;
+import org.xml.sax.SAXException;
+import org.apache.xml.serialize.XMLSerializer;
+import org.apache.xml.serialize.OutputFormat;
 
 public class TestDriver
 {
@@ -27,9 +31,20 @@ public class TestDriver
 		XMLReader reader = factory.newSAXParser().getXMLReader();
 		reader.setContentHandler(unmarshaller);
 		
-		reader.parse(args[1]);
+		try {
+			reader.parse(args[1]);
+		} catch( SAXException e ) {
+			if( e.getException()!=null )
+				e.getException().printStackTrace();
+		}
 		
-		System.out.println(unmarshaller.getResult());
+		MarshallableObject mo = unmarshaller.getResult();
+		System.out.println(mo);
+		DOMMarshaller dom = new DOMMarshaller();
+		mo.marshall(dom);
+		
+		// serialize
+		new XMLSerializer( System.out, new OutputFormat() ).serialize(dom.getResult());
 	}
 	
 	static BindableGrammar getGrammar( String className ) throws Exception {

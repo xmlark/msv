@@ -102,7 +102,7 @@ public class ]]></xsl:text>
 	
 	<!-- datatype symbols -->
 		<xsl:for-each select="dataSymbol">
-			<xsl:text>	private static final DatabindableDatatype </xsl:text>
+			<xsl:text>	public static final DatabindableDatatype </xsl:text>
 			<xsl:value-of select="@id"/>
 			<xsl:text>;</xsl:text>
 			<xsl:call-template name="CRLF"/>

@@ -395,7 +395,7 @@ class FieldItemAnnotation
 			*/
 			Expression expanded = pool.createInterleave(
 					pool.createZeroOrMore(
-						new PrimitiveItem( String.class,
+						new PrimitiveItem( StringType.theInstance,
 							pool.createTypedString(StringType.theInstance) )),
 					exp.exp );
 			

@@ -10,6 +10,7 @@
 package com.sun.tahiti.grammar;
 
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.datatype.DatabindableDatatype;
 import java.util.Set;
 
 /**
@@ -20,18 +21,32 @@ import java.util.Set;
  */
 public class PrimitiveItem extends JavaItem implements Type {
 	
-	public PrimitiveItem( Class type ) {
-		super(type.getName());
-		this.type = SystemType.get(type);
+	public PrimitiveItem( DatabindableDatatype dt ) {
+		super(calcType(dt).getName());
+		this.type = SystemType.get(calcType(dt));
+		this.dt = dt;
 	}
 
-	public PrimitiveItem( Class type, Expression exp ) {
+	public PrimitiveItem( DatabindableDatatype type, Expression exp ) {
 		this(type);
 		this.exp = exp;
 	}
 	
-	/** actual type. This object works as a proxy to this field */
+	private static Class calcType( DatabindableDatatype dt ) {
+		if(dt==null)	return String.class;
+		else			return dt.getJavaObjectType();
+	}
+	
+	/**
+	 * actual type. This object works as a proxy to this field
+	 */
 	public final SystemType type;
+	
+	/**
+	 * underlying datatype object.
+	 * This field is null if the underlying datatype is not databindable.
+	 */
+	public final DatabindableDatatype dt;
 	
 	public String getTypeName()		{ return type.getTypeName(); }
 	public Type[] getInterfaces()	{ return type.getInterfaces(); }

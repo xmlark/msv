@@ -4,6 +4,7 @@ import com.sun.tahiti.util.xml.DOMVisitor;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.StringTokenizer;
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 
@@ -42,7 +43,42 @@ class MarshallerSerializer extends DOMVisitor {
 	/** output will be sent to this object. */
 	private final PrintWriter out;
 	
+	/**
+	 * returns an Iterator that enumerates whitespace-delimited tokens in the
+	 * given string.
+	 */
+	private Iterator tokinizeString( String s ) {
+		final StringTokenizer tokens = new StringTokenizer(s);
+		return new Iterator(){
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
+			public boolean hasNext() {
+				return tokens.hasMoreTokens();
+			}
+			public Object next() {
+				return tokens.nextToken();
+			}
+		};
+	}
 	
+	/**
+	 * constructs condition expression.
+	 */
+	private String getConditionExp( String exp ) {
+		Iterator itr = tokinizeString(exp);
+		boolean orNeeded = false;
+		StringBuffer buf = new StringBuffer();
+		
+		while( itr.hasNext() ) {
+			if(orNeeded)
+				buf.append(" || ");
+			orNeeded = true;
+			
+			buf.append( getSerializer((String)itr.next()).hasMoreToken() );
+		}
+		return buf.toString();
+	}
 	
 	public void visit( Element e ) {
 		final String tagName = e.getTagName();
@@ -58,7 +94,7 @@ class MarshallerSerializer extends DOMVisitor {
 			super.visit(e);
 			indent--;
 			println("} while( "+
-				getSerializer(exp).hasMoreToken()+" );");
+				getConditionExp(exp)+" );");
 			return;
 		}
 		if(tagName.equals("choice")) {
@@ -67,7 +103,7 @@ class MarshallerSerializer extends DOMVisitor {
 		}
 		if(tagName.equals("option")) {
 			String exp = e.getAttribute("if");
-			println("if( "+ getSerializer(exp).hasMoreToken() +" ) {");
+			println("if( "+ getConditionExp(exp) +" ) {");
 			indent++;
 			super.visit(e);
 			indent--;
@@ -93,7 +129,7 @@ class MarshallerSerializer extends DOMVisitor {
 		}
 		if(tagName.equals("marshall")) {
 			String exp = e.getAttribute("fieldName");
-			println( getSerializer(exp).marshall() );
+			println( getSerializer(exp).marshall(e) );
 			return;
 		}
 		if(tagName.equals("element") || tagName.equals("attribute")) {

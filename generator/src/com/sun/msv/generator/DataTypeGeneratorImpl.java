@@ -61,6 +61,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator
 			return Long.toString(r);
 		}
 		
+		if( dt.getClass()==ShortType.class )	return Long.toString( (short)random.nextInt() );
 		if( dt.getClass()==IntType.class )		return Long.toString( random.nextInt() );
 		if( dt.getClass()==LongType.class )		return Long.toString( random.nextLong() );
 		if( dt.getClass()==IntegerType.class )	return Long.toString( random.nextLong() );

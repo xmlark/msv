@@ -2,6 +2,34 @@
 <!-- $Id$ -->
 <suite>
 
+<comment>
+<!-- sloppy test -->
+<case name="test for hexBinary">
+	<value></value>
+	<value>1d2f35</value>
+	<value>1234567890abcdefABCDEF   </value>
+	
+	<answer for="hexBinary"			>ooo</answer>
+
+	<facets><combination>
+		<facet answer=				".o." name="enumeration" value="1D2F35" />
+		
+		<choice>
+			<facet answer=			".o." name="length" value="3" />
+			<facet answer=			"..o" name="length" value="11" />
+			<facet answer=			"oo." name="maxLength" value="10" />
+		</choice>
+	</combination></facets>
+	
+	<wrongs>
+		<value>	12 34 </value>	<!-- inline space-->
+		<value> x5 </value>		<!-- illegal characters -->
+		<value> 124</value>		<!-- odd number of digits -->
+	</wrongs>
+</case>
+
+
+
 <!-- sloppy test -->
 <case name="test for base64">
 	<value>ABCX</value>
@@ -33,7 +61,6 @@
 	</wrongs>
 </case>
 
-<comment>
 <case name="test for language">
 	<value>en-us</value>
 	<value>En-Us</value>

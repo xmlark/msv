@@ -18,7 +18,11 @@ import com.sun.msv.datatype.DataTypeImpl;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
+import java.util.Iterator;
 import java.util.Stack;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashMap;
 
 /**
  * generates XML representation of TREX pattern through SAX2 events.
@@ -39,10 +43,10 @@ public class TREXWriter {
 		SAXWrapper( SAXException e ) { this.e=e; }
 	}
 	
-	
-	public void write( TREXGrammar grammar ) throws SAXException {
+
+	public void write( Grammar g ) throws SAXException {
 		// find a namespace URI that can be used as default "ns" attribute.
-		write( grammar, (String)sniffDefaultNs(grammar.start) );
+		write(g,sniffDefaultNs(g.getTopLevel()));
 	}
 	
 	/**
@@ -52,7 +56,56 @@ public class TREXWriter {
 	 *		if specified, this namespace URI is used as "ns" attribute
 	 *		of grammar element. Can be null.
 	 */
-	public void write( TREXGrammar grammar, String defaultNs ) throws SAXException {
+	public void write( Grammar g, String defaultNs ) throws SAXException {
+		RefExpCollector col = new RefExpCollector();
+		g.getTopLevel().visit(col);
+		
+		// create (name->RefExp) map while resolving name conflicts
+		Map name2ref = new HashMap();
+		{
+			int cnt=0;	// use to name anonymous RefExp.
+		
+			Iterator itr = col.refs.keySet().iterator();
+			while( itr.hasNext() ) {
+				ReferenceExp exp = (ReferenceExp)itr.next();
+				if( exp.name == null ) {
+					if( ((Integer)col.refs.get(exp)).intValue()!= 1 ) {
+						// RefExps who are only referenced are not necessarily
+						// defined by name.
+						
+						// decide unique name
+						while( name2ref.containsKey("anonymous"+cnt) )
+							cnt++;
+						
+						name2ref.put( "anonymous"+cnt, exp );
+					}
+				} else {
+					// decide unique name
+					String name = exp.name;
+					if( name2ref.containsKey(name) ) {
+						int num = 2;
+						while( name2ref.containsKey( exp.name + num ) )
+							num++;
+						name = exp.name + num;
+					}
+					
+					name2ref.put( name, exp );
+				}
+			}
+		}
+		
+		// then reverse name2ref to ref2name
+		ref2name = new HashMap();
+		{
+			Iterator itr = name2ref.keySet().iterator();
+			while( itr.hasNext() ) {
+				String name = (String)itr.next();
+				ref2name.put( name2ref.get(name), name );
+			}
+		}
+		
+		
+		// generates SAX events
 		try {
 			handler.startDocument();
 			handler.startPrefixMapping("",TREXGrammarReader.TREXNamespace);
@@ -66,23 +119,75 @@ public class TREXWriter {
 			
 			{// write start pattern.
 				start("start");
-				grammar.start.visit(patternWriter);
+				writeIsland( g.getTopLevel() );
 				end("start");
 			}
 			
-			// write all named patterns.
-			ReferenceExp[] named = grammar.namedPatterns.getAll();
-			for( int i=0; i<named.length; i++ ) {
-				start("define",new String[]{"name",named[i].name});
-				named[i].exp.visit(patternWriter);
+			// write all named expressions
+			Iterator itr = ref2name.keySet().iterator();
+			while( itr.hasNext() ) {
+				ReferenceExp exp = (ReferenceExp)itr.next();
+				start("define",new String[]{"name",(String)ref2name.get(exp)});
+				writeIsland( exp.exp );
 				end("define");
 			}
+			
 			end("grammar");
 			handler.endDocument();
 		} catch( SAXWrapper sw ) {
 			throw sw.e;
 		}
 	}
+	
+	/**
+	 * writes a bunch of expression into one tree.
+	 */
+	protected void writeIsland( Expression exp ) {
+		ElementExp[] locals = getLoopElement(exp);
+		if(locals==null || locals.length==0 ) {
+			// no cycle in this expression (normal case)
+			// so we can write it simply.
+			this.loopElements = null;
+			exp.visit(patternWriter);
+		} else {
+			// this expression has local cycle.
+			// we need local grammar to write it.
+			start("grammar");
+			
+			this.loopElements = locals;
+			start("start");
+			exp.visit(patternWriter);
+			end("start");
+			
+			for( int i=0; i<locals.length; i++ ) {
+				start("define", new String[]{"name",LOOP_ELEMENT_NAME+i});
+				patternWriter.writeElement(locals[i]);
+				end("define");
+			}
+			
+			end("grammar");
+		}
+	}
+	
+	/** used as a prefix of the pattern name of locally looped elements. */
+	public static final String LOOP_ELEMENT_NAME = "local";
+	
+	
+	/**
+	 * map from ReferenceExp to its unique name.
+	 * "unique name" is used to write/reference this ReferenceExp.
+	 * ReferenceExps who are not in this list can be directly written into XML.
+	 */
+	protected Map ref2name;
+	
+	/**
+	 * elements who are going to be written as a separate &lt;define&gt; element.
+	 * loopElements[5] will be written as the name of LOOP_ELEMENT_NAME + "5".
+	 * If this array is non-null, any global reference shall be accomapnied with
+	 * parent="true" attribute.
+	 */
+	protected ElementExp[] loopElements;
+	
 	
 	/**
 	 * sniffs namespace URI that can be used as default 'ns' attribute
@@ -158,6 +263,8 @@ public class TREXWriter {
 		this.handler = handler;
 	}
 	
+	
+	
 // primitive write methods
 //-----------------------------------------
 	protected void element( String name ) {
@@ -201,10 +308,12 @@ public class TREXWriter {
 	protected TREXNameClassVisitor createNameClassWriter() {
 		return new NameClassWriter();
 	}
-	protected TREXPatternVisitorVoid patternWriter = createPatternWriter();
-	protected TREXPatternVisitorVoid createPatternWriter() {
+	protected PatternWriter patternWriter = createPatternWriter();
+	protected PatternWriter createPatternWriter() {
 		return new PatternWriter();
 	}
+	
+	
 	
 	/** visits NameClass and writes its XML representation. */
 	protected class NameClassWriter implements TREXNameClassVisitor {
@@ -283,8 +392,45 @@ public class TREXWriter {
 	
 	/** visits Expression and writes its XML representation. */
 	protected class PatternWriter implements TREXPatternVisitorVoid {
+		
 		public void onRef( ReferenceExp exp ) {
-			element("ref", new String[]{"name",exp.name});
+			String uniqueName = (String)ref2name.get(exp);
+			if( uniqueName!=null ) {
+				if( loopElements!=null )
+					element("ref", new String[]{"name",uniqueName,"parent","true"});
+				else
+					element("ref", new String[]{"name",uniqueName});
+			} else
+				// this expression will not be written as a named pattern.
+				exp.exp.visit(this);
+		}
+	
+		public void onElement( ElementExp exp ) {
+			if( loopElements!=null ) {
+				for( int i=0; i<loopElements.length; i++ )
+					if( loopElements[i]==exp ) {
+						// we will use <ref> for this element.
+						element("ref", new String[]{"name",LOOP_ELEMENT_NAME + i} );
+						return;
+					}
+			}
+			
+			writeElement(exp);
+		}
+			
+		public void writeElement( ElementExp exp ) {
+			NameClass nc = exp.getNameClass();
+			if( nc instanceof SimpleNameClass
+			&&  ((SimpleNameClass)nc).namespaceURI.equals(defaultNs) )
+				// we can use name attribute to simplify output.
+				start("element",new String[]{"name",
+					((SimpleNameClass)nc).localName} );
+			else {
+				start("element");
+				exp.getNameClass().visit(nameClassWriter);
+			}
+			visitUnary(exp.contentModel);
+			end("element");
 		}
 	
 		public void onEpsilon() {
@@ -373,21 +519,6 @@ public class TREXWriter {
 			end("zeroOrMore");
 		}
 	
-		public void onElement( ElementExp exp ) {
-			NameClass nc = exp.getNameClass();
-			if( nc instanceof SimpleNameClass
-			&&  ((SimpleNameClass)nc).namespaceURI.equals(defaultNs) )
-				// we can use name attribute to simplify output.
-				start("element",new String[]{"name",
-					((SimpleNameClass)nc).localName} );
-			else {
-				start("element");
-				exp.getNameClass().visit(nameClassWriter);
-			}
-			visitUnary(exp.contentModel);
-			end("element");
-		}
-	
 		public void onAttribute( AttributeExp exp ) {
 			if( exp.nameClass instanceof SimpleNameClass
 			&&  ((SimpleNameClass)exp.nameClass).namespaceURI.equals("") )
@@ -442,12 +573,156 @@ public class TREXWriter {
 					// TODO: support serialization of derived types.
 					element("data",new String[]{"type","xsd:"+dt.getName()});
 					handler.endPrefixMapping("xsd");
+					return;
 				}
 			
-				throw new UnsupportedOperationException();
+				throw new UnsupportedOperationException( dt.getClass().getName() );
 			} catch( SAXException e ) {
 				throw new SAXWrapper(e);
 			}
 		}
+	}
+	
+	
+	
+	/** collect all reachable ReferenceExps in the expression. */
+	protected static class RefExpCollector implements TREXPatternVisitorVoid {
+		
+		/**
+		 * this map will contain all reachable ReferenceExps and
+		 * their reference counts.
+		 */
+		protected Map refs = new java.util.HashMap();
+		
+		private static Integer one = new Integer(1);
+		
+		
+		public void onRef( ReferenceExp exp ) {
+			Integer i = (Integer)refs.get(exp);
+			if(i==null)	i = one;
+			else		i = new Integer(i.intValue()+1);
+			refs.put(exp,i);
+			
+			// visit the definition only once
+			if(i==one) {
+				// what we want to catch by using visitedElements are
+				// cycle without any ReferenceExp.
+				// so we have to provide new stack each time we cross RefExp.
+				Stack oldVE = visitedElements;
+				visitedElements = new Stack();
+				exp.exp.visit(this);
+				visitedElements = oldVE;
+			}
+		}
+		
+		/** stack of currently visiting elements.
+		 * this stack is used to prevent infinite recursion.
+		 */
+		private Stack visitedElements = new Stack();
+		
+		public void onElement( ElementExp exp ) {
+			if( visitedElements.contains(exp) )
+				return;
+			visitedElements.push(exp);
+			exp.contentModel.visit(this);
+			visitedElements.pop();
+		}
+		
+		public void onEpsilon() {}
+		public void onNullSet() {}
+		public void onAnyString() {}
+		public void onTypedString( TypedStringExp exp ) {}
+		
+		public void onInterleave( InterleavePattern exp ) {
+			onBinExp(exp);
+		}
+		
+		public void onConcur( ConcurPattern exp ) {
+			onBinExp(exp);
+		}
+			
+		public void onChoice( ChoiceExp exp ) {
+			onBinExp(exp);
+		}
+		
+		public void onSequence( SequenceExp exp ) {
+			onBinExp(exp);
+		}
+		
+		public void onBinExp( BinaryExp exp ) {
+			exp.exp1.visit(this);
+			exp.exp2.visit(this);
+		}
+		
+		public void onMixed( MixedExp exp ) {
+			exp.exp.visit(this);
+		}
+		
+		public void onOneOrMore( OneOrMoreExp exp ) {
+			exp.exp.visit(this);
+		}
+		
+		public void onAttribute( AttributeExp exp ) {
+			exp.exp.visit(this);
+		}
+	}
+	
+
+	/** get all looped elements. */
+	protected ElementExp[] getLoopElement( Expression exp ) {
+		LoopElementFinder finder = new LoopElementFinder();
+		exp.visit(finder);
+		return (ElementExp[])finder.loop.toArray(new ElementExp[0]);
+	}
+	
+	/** finds ElementExps who form cycles without any ReferenceExps. */
+	protected class LoopElementFinder implements TREXPatternVisitorVoid {
+		/** stack for memorizing currently visited elements. */
+		private final Stack s = new Stack();
+		/** ElementExp detected to form a cycle is put into this set. */
+		private final Set loop = new java.util.HashSet();
+		
+		public void onElement( ElementExp exp ) {
+			if( s.contains(exp) ) {
+				loop.add(exp);
+				return;
+			}
+			s.push(exp);
+			exp.contentModel.visit(this);
+			s.pop();
+		}
+		public void onChoice( ChoiceExp exp ) {
+			onBinExp(exp);
+		}
+		public void onSequence( SequenceExp exp ) {
+			onBinExp(exp);
+		}
+		public void onInterleave( InterleavePattern exp ) {
+			onBinExp(exp);
+		}
+		public void onConcur( ConcurPattern exp ) {
+			onBinExp(exp);
+		}
+		public void onBinExp( BinaryExp exp ) {
+			exp.exp1.visit(this);
+			exp.exp2.visit(this);
+		}
+		public void onMixed( MixedExp exp ) {
+			exp.exp.visit(this);
+		}
+		public void onOneOrMore( OneOrMoreExp exp ) {
+			exp.exp.visit(this);
+		}
+		public void onRef( ReferenceExp exp ) {
+			if( !ref2name.containsKey(exp) )
+				// RefExps who are not in ref2name will be written inline.
+				// so we have to check the content of them.
+				exp.exp.visit(this);
+		}
+		public void onAttribute( AttributeExp exp ) {}
+		public void onNullSet() {}
+		public void onEpsilon() {}
+		public void onAnyString() {}
+		public void onTypedString( TypedStringExp exp ) {}
 	}
 }

@@ -143,6 +143,24 @@ public class TREXGrammarReader extends GrammarReader
 		return null;		// unknown element. let the default error be thrown.
 	}
 	
+	private boolean issueObsoletedXMLSchemaNamespace = false;
+	/**
+	 * maps obsoleted XML Schema namespace to the current one.
+	 */
+	private String mapNamespace( String namespace )
+	{
+		if(namespace.equals("http://www.w3.org/2000/10/XMLSchema")
+		|| namespace.equals("http://www.w3.org/2000/10/XMLSchema-datatypes"))
+		{// namespace of CR version.
+			if( !issueObsoletedXMLSchemaNamespace )
+				// report warning only once.
+				reportWarning(WRN_OBSOLETED_XMLSCHEMA_NAMSPACE,namespace);
+			issueObsoletedXMLSchemaNamespace = true;
+			return com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace;
+		}
+		return namespace;
+	}
+	
 	public State createExpressionChildState( StartTagInfo tag )
 	{
 		if(tag.localName.equals("element"))		return new ElementState();
@@ -167,8 +185,10 @@ public class TREXGrammarReader extends GrammarReader
 		final String role = tag.getAttribute(TREXNamespace,"role");
 		if("datatype".equals(role))
 		{
-			DataTypeVocabulary v = grammar.dataTypes.get(tag.namespaceURI);
+			String namespaceURI = mapNamespace(tag.namespaceURI);
 			
+			DataTypeVocabulary v = grammar.dataTypes.get(namespaceURI);
+		
 			if(v==null)
 			{
 				reportError( ERR_UNKNOWN_DATATYPE_VOCABULARY, tag.namespaceURI );
@@ -196,6 +216,8 @@ public class TREXGrammarReader extends GrammarReader
 			// recover by using a dummy DataType
 			return StringType.theInstance;
 		}
+		
+		s[0] = mapNamespace(s[0]);
 		
 		DataTypeVocabulary v = grammar.dataTypes.get(s[0]);
 		if(v==null)
@@ -252,4 +274,6 @@ public class TREXGrammarReader extends GrammarReader
 		"TREXGrammarReader.CombineMissing";
 	public static final String WRN_COMBINE_IGNORED =
 		"TREXGrammarReader.Warning.CombineIgnored";
+	public static final String WRN_OBSOLETED_XMLSCHEMA_NAMSPACE =
+		"TREXGrammarReader.Warning.ObsoletedXMLSchemaNamespace";
 }

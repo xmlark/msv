@@ -279,8 +279,12 @@ class FieldItemAnnotation
 			// NNN is digits.
 			int idx = name.length()-1;
 			while( Character.isDigit(name.charAt(idx)) && idx>=0 )	idx--;
+			idx++;
 			
-			names.push( name.substring(0,idx)+(Integer.parseInt(name.substring(idx))+1) );
+			if(idx==name.length())	// the name doesn't have any number in its suffix.
+				names.push( name+"1" );
+			else // increment the number
+				names.push( name.substring(0,idx)+(Integer.parseInt(name.substring(idx))+1) );
 			
 			return name;
 		}

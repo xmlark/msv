@@ -32,6 +32,9 @@ abstract class AbstractValidatorExImpl implements IValidatorEx
 	}
 
     protected static SAXParserFactory factory = SAXParserFactory.newInstance();
+    static {
+        factory.setNamespaceAware(true);
+    }
 	private final static CatalogResolver resolver = new CatalogResolver();
     
 	public boolean validate( Grammar grammar, File instance ) throws Exception {

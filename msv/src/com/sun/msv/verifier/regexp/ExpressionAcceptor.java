@@ -572,7 +572,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 													CombinedChildContentExpCreator cccc )
 	{
 		// if the expression is complex, bail out. 
-		// the chance is remote that we can provide simple error message.
+		// the chance that we can provide simple error message is remote.
 		if( cccc.isComplex() )		return null;
 
 		// if the combined child content expression is not complex,
@@ -580,7 +580,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 							
 		// this is the choice of all constraints that made this
 		// attribute fail.
-		final Expression constraint = rtoken.getFailedExp();
+		Expression constraint = rtoken.getFailedExp();
 							
 		// The problem here is that sti.attributes.getValue(i)
 		// didn't satisfy this expression.
@@ -588,16 +588,18 @@ public abstract class ExpressionAcceptor implements Acceptor
 		// test some typical expression patterns and
 		// provide error messages if it matchs the pattern.
 		// otherwise provide a generic error message.
+		
+		// resolve indirect references first, if any.
+		while( constraint instanceof ReferenceExp ) 
+			constraint = ((ReferenceExp)constraint).exp;
 							
-		if( constraint instanceof TypedStringExp )
-		{
+		if( constraint instanceof TypedStringExp ) {
 			// if only one AttributeExp is specified for this attribute
 			// and if it has a TypedString as its child.					
 			// for RELAX, this is the only possible case
 			TypedStringExp tse = (TypedStringExp)constraint;
 			
-			if( tse.dt == com.sun.msv.grammar.relax.NoneType.theInstance )
-			{
+			if( tse.dt == com.sun.msv.grammar.relax.NoneType.theInstance ) {
 				// if the underlying datatype is "none",
 				// this should be reported as unexpected attribute.
 				return docDecl.localizeMessage(
@@ -605,14 +607,13 @@ public abstract class ExpressionAcceptor implements Acceptor
 			}
 			
 			String dtMsg = getDiagnosisFromTypedString( tse, sti, attIndex );
-			if(dtMsg==null)	return null;
+			if(dtMsg==null)		return null;
 			
 			return docDecl.localizeMessage(
 						docDecl.DIAG_BAD_ATTRIBUTE_VALUE_DATATYPE,
 						sti.attributes.getQName(attIndex), dtMsg );
 		}
-		if( constraint instanceof ChoiceExp )
-		{
+		if( constraint instanceof ChoiceExp ) {
 			// choice of <string>s.
 			//
 			// this is also a frequently used pattern by TREX.

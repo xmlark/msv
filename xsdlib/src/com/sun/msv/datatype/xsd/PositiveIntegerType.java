@@ -19,7 +19,7 @@ public class PositiveIntegerType extends IntegerType
 	public static final PositiveIntegerType theInstance = new PositiveIntegerType();
 	private PositiveIntegerType() { super("positiveInteger"); }
 	
-	public Object convertValue( String lexicalValue, ValidationContextProvider context )
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
 	{
 		Object o = super.convertToValue(lexicalValue,context);
 		if(o==null)		return null;

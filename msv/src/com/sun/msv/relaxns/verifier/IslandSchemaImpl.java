@@ -194,6 +194,11 @@ public abstract class IslandSchemaImpl implements IslandSchema
 			}
 		}
 	
+		/**
+		 * localizes messages.
+		 * derived class can override this method to provide schema languagespecific
+		 * error messages.
+		 */
 		public String localize( String propertyName, Object[] args ) {
 			String format = java.util.ResourceBundle.getBundle(
 				"com.sun.tranquilo.relaxns.verifier.Messages").getString(propertyName);

@@ -14,6 +14,7 @@ import com.sun.tranquilo.verifier.ValidityViolation;
 import com.sun.tranquilo.verifier.ValidationUnrecoverableException;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.SAXException;
 
 /**
  * {@link VerificationErrorHandler} that reports all errors and warnings.
@@ -29,7 +30,11 @@ public class ReportErrorHandler
 	private int counter = 0;
 	
 	public void error( SAXParseException spe )			{ printSAXParseException( spe, MSG_SAXPARSEEXCEPTION_ERROR ); }
-	public void fatalError( SAXParseException spe )		{ printSAXParseException( spe, MSG_SAXPARSEEXCEPTION_FATAL ); }
+	public void fatalError( SAXParseException spe ) throws SAXException
+	{
+		printSAXParseException( spe, MSG_SAXPARSEEXCEPTION_FATAL );
+		throw new ValidationUnrecoverableException();
+	}
 	public void warning( SAXParseException spe )		{ printSAXParseException( spe, MSG_SAXPARSEEXCEPTION_WARNING ); }
 	private void printSAXParseException( SAXParseException spe, String prop )
 	{

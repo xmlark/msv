@@ -25,7 +25,7 @@ public final class DurationType extends ConcreteType implements Comparator
 
 	private final ISO8601Parser getParser( String content ) throws Exception
 	{
-		return new ISO8601Parser( new ByteArrayInputStream( content.getBytes("UTF-8") ) );
+		return new ISO8601Parser( new ByteArrayInputStream( content.getBytes("UTF8") ) );
 	}
 	
 	protected boolean checkFormat( String content, ValidationContextProvider context )

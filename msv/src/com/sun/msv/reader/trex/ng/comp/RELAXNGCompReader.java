@@ -89,7 +89,6 @@ public class RELAXNGCompReader extends RELAXNGReader {
 		StateFactory stateFactory,
 		ExpressionPool pool ) {
 		
-		// TODO: add s4s
 		super( controller, parserFactory, stateFactory, pool );
 		
 		lastRNGElement.push(null);

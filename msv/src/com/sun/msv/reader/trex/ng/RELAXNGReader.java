@@ -39,6 +39,7 @@ import com.sun.msv.reader.trex.IncludePatternState;
 import com.sun.msv.reader.datatype.DataTypeVocabulary;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.LightStack;
+import com.sun.msv.util.Util;
 
 /**
  * reads RELAX NG grammar from SAX2 and constructs abstract grammar model.
@@ -272,7 +273,7 @@ public class RELAXNGReader extends TREXBaseReader {
 		return (StateFactory)super.sfactory;
 	}
 	
-	State createNameClassChildState( State parent, StartTagInfo tag ) {
+	protected State createNameClassChildState( State parent, StartTagInfo tag ) {
 		if(tag.localName.equals("name"))		return sfactory.nsName(parent,tag);
 		if(tag.localName.equals("anyName"))		return sfactory.nsAnyName(parent,tag);
 		if(tag.localName.equals("nsName"))		return sfactory.nsNsName(parent,tag);
@@ -330,6 +331,17 @@ public class RELAXNGReader extends TREXBaseReader {
 	
 	
 	
+	public void wrapUp() {
+		super.wrapUp();
+		if(!hadError) {
+			// check RELAX NG contextual restrictions
+			RestrictionChecker.check(this);
+			// this algorithm does not work if there is a runaway expression
+		}
+	}
+	
+	
+	
 // propagatable attributes
 //--------------------------------
 	/**
@@ -378,6 +390,14 @@ public class RELAXNGReader extends TREXBaseReader {
 			datatypeLibURI = d.getValue("datatypeLibrary");
 			datatypeLib = resolveDataTypeLibrary(datatypeLibURI);
 		}
+		
+		if( d.getIndex("ns")!=-1 ) {
+			// check the correctness of the ns attribute
+			// schema-for-schema will check whether the ns attribute is anyURI or not.
+			String ns = d.getValue("ns");
+			if( !Util.isAbsoluteURI(ns) )
+				reportError( ERR_NOT_ABSOLUTE_URI, ns );
+		}
 		// if nothing specified, datatype library stays the same.
 		super.startElement(a,b,c,d);
 	}
@@ -411,4 +431,6 @@ public class RELAXNGReader extends TREXBaseReader {
 		"RELAXNGReader.UnknownDatatypeVocabulary1";
 	public static final String ERR_MULTIPLE_EXCEPT = // arg:0
 		"RELAXNGReader.MultipleExcept";
+	public static final String ERR_NOT_ABSOLUTE_URI = // arg:1
+		"RELAXNGReader.NotAbsoluteURI";
 }

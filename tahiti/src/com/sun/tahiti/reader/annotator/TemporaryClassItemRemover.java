@@ -45,6 +45,9 @@ import java.util.Iterator;
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 class TemporaryClassItemRemover {
+
+	/** debug logger. */
+	private static java.io.PrintStream debug = System.out;
 	
 	public static void remove( AnnotatedGrammar grammar ) {
 		// run the first pass and determine which class items can be removed.
@@ -131,16 +134,21 @@ class TemporaryClassItemRemover {
 			childItems.add(item);	// this has to be done before the checkedClasses field is examined.
 			
 			if((parentItem instanceof SuperClassItem)
-			|| (parentItem instanceof InterfaceItem))
+			|| (parentItem instanceof InterfaceItem)) {
 				// if a ClassItem is referenced from SuperClassItem or InterfaceItem,
 				// then it can't be removed.
-				notRemovableClasses.add(item);
+				if(notRemovableClasses.add(item))
+					if( debug!=null )
+						debug.println(item.getTypeName()+" : referenced by a superClass/interfaceItem");
+			}
 			
 			if(!checkedClasses.add(item)) {
 				// if this ClassItem is already checked don't check it again.
 				// This also means that this ClassItem is referenced more than once.
 				// so this ClassItem cannot be removed.
-				notRemovableClasses.add(item);
+				if(notRemovableClasses.add(item))
+					if( debug!=null )
+						debug.println(item.getTypeName()+" : referenced more than once");
 				return null;
 			}
 			
@@ -157,17 +165,21 @@ class TemporaryClassItemRemover {
 				// if there is no child item, then probably
 				// the existance of this element is significant.
 				// so keep it.
-				notRemovableClasses.add(item);
+				if(notRemovableClasses.add(item))
+					if( debug!=null )
+						debug.println(item.getTypeName()+" : this class has no child item");
 			} else
 			if( childItems.size()>1 ) {
 				// if a ClassItem has more than one child items,
 				// then it cannot be removed.
-				notRemovableClasses.add(item);
-			} else {
-				// if its sole child is not a primitive item, then it cannot
-				// be removed either.
-				if(!(childItems.iterator().next() instanceof PrimitiveItem ))
-					notRemovableClasses.add(item);
+				if(notRemovableClasses.add(item))
+					if( debug!=null )
+						debug.println(item.getTypeName()+" : this class has multiple fields");
+//			} else {
+//				// if its sole child is not a primitive item, then it cannot
+//				// be removed either.
+//				if(!(childItems.iterator().next() instanceof PrimitiveItem ))
+//					notRemovableClasses.add(item);
 			}
 			
 			childItems = oldChildItems;

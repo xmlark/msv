@@ -155,10 +155,16 @@ public abstract class GrammarReader
 	 */
 	public final String[] splitQName( String qName ) {
 		int idx = qName.indexOf(':');
-		if(idx<0)	return new String[]{prefixResolver.resolve(""),qName,qName};
+		if(idx<0) {
+			String ns = prefixResolver.resolve("");
+			// if the default namespace is not bounded, return "".
+			// this behavior is consistent with SAX.
+			if(ns==null)	ns="";
+			return new String[]{ns,qName,qName};
+		}
 		
 		String uri = prefixResolver.resolve(qName.substring(0,idx));
-		if(uri==null)	return null;
+		if(uri==null)	return null;	// prefix is not defined.
 		
 		return new String[]{uri, qName.substring(idx+1), qName};
 	}
@@ -189,30 +195,50 @@ public abstract class GrammarReader
 	public abstract Datatype resolveDataType( String typeName );
 
 	/**
-	 * map from type name of Candidate Recommendation to the current type.
-	 */
-	private static final Map deprecatedTypes = initDeprecatedTypes();
-	private static Map initDeprecatedTypes() {
-		Map m = new java.util.HashMap();
-		m.put("uriReference",		com.sun.msv.datatype.xsd.AnyURIType.theInstance );
-		m.put("number",				com.sun.msv.datatype.xsd.NumberType.theInstance );
-		m.put("timeDuration",		com.sun.msv.datatype.xsd.DurationType.theInstance );
-		m.put("CDATA",				com.sun.msv.datatype.xsd.NormalizedStringType.theInstance );
-		m.put("year",				com.sun.msv.datatype.xsd.GYearType.theInstance );
-		m.put("yearMonth",			com.sun.msv.datatype.xsd.GYearMonthType.theInstance );
-		m.put("month",				com.sun.msv.datatype.xsd.GMonthType.theInstance );
-		m.put("monthDay",			com.sun.msv.datatype.xsd.GMonthDayType.theInstance );
-		m.put("day",				com.sun.msv.datatype.xsd.GDayType.theInstance );
-		return m;
-	}
-	/**
 	 * tries to obtain a DataType object by resolving obsolete names.
 	 * this method is useful for backward compatibility purpose.
 	 */
 	public Datatype getBackwardCompatibleType( String typeName ) {
-		XSDatatype dt = (XSDatatype)deprecatedTypes.get(typeName);
+		/*
+			This method is not heavily used.
+			So it is a good idea not to create a reference to the actual instance
+			unless it's absolutely necessary, so that the class loader doesn't load
+			the datatype class easily.
+		
+			If we use a map, it makes the class loader loads all classes. 
+		*/
+		XSDatatype dt = null;
+		
+		if( typeName.equals("uriReference") )
+			dt = com.sun.msv.datatype.xsd.AnyURIType.theInstance;
+		else
+		if( typeName.equals("number") )
+			dt = com.sun.msv.datatype.xsd.NumberType.theInstance;
+		else
+		if( typeName.equals("timeDuration") )
+			dt = com.sun.msv.datatype.xsd.DurationType.theInstance;
+		else
+		if( typeName.equals("CDATA") )
+			dt = com.sun.msv.datatype.xsd.NormalizedStringType.theInstance;
+		else
+		if( typeName.equals("year") )
+			dt = com.sun.msv.datatype.xsd.GYearType.theInstance;
+		else
+		if( typeName.equals("yearMonth") )
+			dt = com.sun.msv.datatype.xsd.GYearMonthType.theInstance;
+		else
+		if( typeName.equals("month") )
+			dt = com.sun.msv.datatype.xsd.GMonthType.theInstance;
+		else
+		if( typeName.equals("monthDay") )
+			dt = com.sun.msv.datatype.xsd.GMonthDayType.theInstance;
+		else
+		if( typeName.equals("day") )
+			dt = com.sun.msv.datatype.xsd.GDayType.theInstance;
+
 		if( dt!=null )
 			reportWarning( WRN_DEPRECATED_TYPENAME, typeName, dt.displayName() );
+		
 		return dt;
 	}
 	

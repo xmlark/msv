@@ -6,6 +6,11 @@ import com.sun.tranquilo.datatype.ValidationContextProvider;
 import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.util.StringRef;
 
+/**
+ * represents a pseudo-automaton acceptor.
+ * 
+ * this interface is used to verify content models.
+ */
 public interface Acceptor
 {
 	/**
@@ -38,9 +43,6 @@ public interface Acceptor
 	 */
 	boolean stepForward( String literal, ValidationContextProvider context, StringRef refErr );
 	
-	/** eat accepted ElementDeclarations. */
-//	boolean stepForward( ElementDeclaration[] accepted );
-	
 	/** eats a child element
 	 * 
 	 * It is the caller's responsibility to make sure that child acceptor
@@ -51,12 +53,6 @@ public interface Acceptor
 	 *		if this child element is not allowed.
 	 */
 	boolean stepForward( Acceptor child, StringRef errRef );
-	
-	/**
-	 * gets accepted ElementDeclarations by this Acceptor.
-	 * these ElementDeclarations can be considered as owners of this Acceptor.
-	 */
-//	void getSatisfiedElements( Collection resultReceiver );
 	
 	/** checks if this Acceptor is satisifed */
 	boolean isAcceptState();

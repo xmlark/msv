@@ -14,6 +14,7 @@ import org.iso_relax.dispatcher.IslandSchema;
 import org.xml.sax.ErrorHandler;
 import com.sun.tranquilo.relaxns.verifier.SchemaProviderImpl;
 import com.sun.tranquilo.relaxns.verifier.IslandSchemaImpl;
+import com.sun.tranquilo.relaxns.grammar.relax.RELAXIslandSchema;
 import com.sun.tranquilo.relaxns.reader.GrammarReaderControllerAdaptor;
 import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.reader.State;

@@ -12,7 +12,7 @@ package com.sun.tranquilo.relaxns.verifier;
 import org.iso_relax.dispatcher.Dispatcher;
 import org.iso_relax.dispatcher.IslandSchema;
 import org.iso_relax.dispatcher.IslandVerifier;
-import org.iso_relax.dispatcher.Rule;
+import org.iso_relax.dispatcher.ElementDecl;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import com.sun.tranquilo.relaxns.grammar.relax.AnyOtherElementExp;
@@ -159,7 +159,7 @@ class IslandVerifierImpl
 			
 		// memorize ExternalElementExps to the map
 		// so that it will be easy to obtain what ExternalElementExps are accepted.
-		Rule[] rules = new Rule[exps.length];
+		ElementDecl[] rules = new ElementDecl[exps.length];
 		for( int i=0; i<exps.length; i++ ) {
 			rules[i] = exps[i].rule;
 			rule2exp.put( rules[i], exps[i] );
@@ -207,9 +207,9 @@ class IslandVerifierImpl
 	private String lastNamaespaceUri;
 	private String lastLocalName;
 	private String lastQName;
-	private Rule[] candidates;
+	private ElementDecl[] candidates;
 	
-	public void endChildIsland( String childURI, Rule[] ruleSet ) throws SAXException
+	public void endChildIsland( String childURI, ElementDecl[] ruleSet ) throws SAXException
 	{
 		ElementExp[] exps = new ElementExp[ruleSet.length];
 		for( int i=0; i<ruleSet.length; i++ )
@@ -234,8 +234,8 @@ class IslandVerifierImpl
 		super.endElement( lastNamaespaceUri, lastLocalName, lastQName );
 	}
 	
-	public Rule[] endIsland()
+	public ElementDecl[] endIsland()
 	{
-		return ((RulesAcceptor)current).getSatisfiedRules();
+		return ((RulesAcceptor)current).getSatisfiedElementDecls();
 	}
 }

@@ -18,11 +18,12 @@ import com.sun.tranquilo.grammar.ExpressionPool;
 import com.sun.tranquilo.grammar.ReferenceExp;
 import com.sun.tranquilo.grammar.ChoiceNameClass;
 import com.sun.tranquilo.grammar.NotNameClass;
-import org.iso_relax.dispatcher.Rule;
+import org.iso_relax.dispatcher.ElementDecl;
 import org.iso_relax.dispatcher.SchemaProvider;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.ErrorHandler;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -32,7 +33,7 @@ import java.util.StringTokenizer;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class AnyOtherElementExp extends ElementExp implements Rule {
+public class AnyOtherElementExp extends ElementExp implements ElementDecl {
 	
 	public NameClass getNameClass() { return nameClass; }
 	public String getName() { return "anyOtherElement:"+nameClass; }
@@ -135,5 +136,12 @@ public class AnyOtherElementExp extends ElementExp implements Rule {
 				owner.getPool().createZeroOrMore(
 					owner.getPool().createChoice(this,pseudoContentModel) ) );
 	}
-		
+	
+	public boolean getFeature( String feature ) throws SAXNotRecognizedException {
+		throw new SAXNotRecognizedException(feature);
+	}
+	
+	public Object getProperty( String property ) throws SAXNotRecognizedException {
+		throw new SAXNotRecognizedException(property);
+	}
 }

@@ -9,17 +9,19 @@
  */
 package com.sun.tranquilo.relaxns.grammar.relax;
 
-import org.iso_relax.dispatcher.Rule;
+import org.iso_relax.dispatcher.ElementDecl;
 import org.iso_relax.dispatcher.IslandSchema;
 import org.iso_relax.dispatcher.SchemaProvider;
 import org.xml.sax.SAXException;
 import org.xml.sax.ErrorHandler;
 import com.sun.tranquilo.relaxns.verifier.IslandSchemaImpl;
-import com.sun.tranquilo.relaxns.grammar.RuleImpl;
+import com.sun.tranquilo.relaxns.grammar.DeclImpl;
 import com.sun.tranquilo.relaxns.grammar.ExternalElementExp;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.ReferenceExp;
 import com.sun.tranquilo.grammar.relax.RELAXModule;
+import com.sun.tranquilo.grammar.relax.ElementRules;
+import com.sun.tranquilo.grammar.relax.AttPoolClause;
 import com.sun.tranquilo.grammar.trex.TREXPatternPool;
 import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
 import java.util.Set;
@@ -43,10 +45,19 @@ public class RELAXIslandSchema extends IslandSchemaImpl
 		this.module = module;
 		this.pendingAnyOtherElements = pendingAnyOtherElements;
 		
-		// elementRule is the only thing "officially" exported.
+		// export elementRules as ElementDecl
 		ReferenceExp[] refs= module.elementRules.getAll();
 		for( int i=0; i<refs.length; i++ )
-			rules.put( refs[i].name, new RuleImpl(refs[i]) );
+			if( ((ElementRules)refs[i]).exported )
+				elementDecls.put( refs[i].name, new DeclImpl(refs[i]) );
+		
+		// export attPools as AttributesDecl
+		ExportedAttPoolGenerator expGen = new ExportedAttPoolGenerator( module.pool );
+		refs = module.attPools.getAll();
+		for( int i=0; i<refs.length; i++ )
+			if( ((AttPoolClause)refs[i]).exported )
+				attributesDecls.put( refs[i].name,
+					new DeclImpl( refs[i].name, expGen.create(module,refs[i].exp) ) );
 	}
 	
 	
@@ -64,9 +75,8 @@ public class RELAXIslandSchema extends IslandSchemaImpl
 		Binder binder = new Binder(provider,handler,docDecl.getPool());
 		bind( module.elementRules, binder );
 		bind( module.hedgeRules, binder );
-		
-//		bind( module.attPools, binder );
-//		bind( module.tags, binder );
+		bind( module.attPools, binder );
+		bind( module.tags, binder );
 	}
 	
 	/**
@@ -81,7 +91,7 @@ public class RELAXIslandSchema extends IslandSchemaImpl
 		while( itr.hasNext() ) {
 			String namespace = (String)itr.next();
 			IslandSchema is = provider.getSchemaByNamespace(namespace);
-			Rule[] rules = is.getRules();
+			ElementDecl[] rules = is.getElementDecls();
 			
 			for( int j=0; j<rules.length; j++ )
 				exp = module.pool.createChoice(exp,

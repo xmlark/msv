@@ -65,7 +65,7 @@ public class RELAXNSReader
 		SAXParserFactory parserFactory,
 		TREXPatternPool pool )
 	{
-		super(controller,parserFactory,pool,new RootGrammarState());
+		super(controller,parserFactory,new StateFactory(),pool,new RootGrammarState());
 		grammar = new RELAXGrammar(pool);
 	}
 	

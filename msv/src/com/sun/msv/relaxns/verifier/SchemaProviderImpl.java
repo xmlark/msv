@@ -16,7 +16,7 @@ import org.iso_relax.dispatcher.IslandVerifier;
 import org.iso_relax.dispatcher.IslandSchema;
 import org.iso_relax.dispatcher.impl.AbstractSchemaProviderImpl;
 import com.sun.tranquilo.relaxns.grammar.RELAXGrammar;
-import com.sun.tranquilo.relaxns.grammar.RuleImpl;
+import com.sun.tranquilo.relaxns.grammar.DeclImpl;
 import com.sun.tranquilo.grammar.Grammar;
 import com.sun.tranquilo.grammar.ReferenceExp;
 import com.sun.tranquilo.grammar.trex.TREXPatternPool;
@@ -31,7 +31,7 @@ import java.util.Iterator;
 public class SchemaProviderImpl extends AbstractSchemaProviderImpl {
 	
 	private final RELAXGrammar grammar;
-	private final RuleImpl[] topLevel;
+	private final DeclImpl[] topLevel;
 	protected final TREXDocumentDeclaration docDecl;
 	
 	public IslandVerifier createTopLevelVerifier() {
@@ -65,7 +65,7 @@ public class SchemaProviderImpl extends AbstractSchemaProviderImpl {
 	public SchemaProviderImpl( RELAXGrammar grammar, TREXDocumentDeclaration docDecl ) {
 		this.grammar = grammar;
 		this.docDecl = docDecl;
-		this.topLevel = new RuleImpl[]{new RuleImpl("##start",grammar.topLevel)};
+		this.topLevel = new DeclImpl[]{new DeclImpl("##start",grammar.topLevel)};
 		
 		// add all parsed modules into the provider.
 		Iterator itr = grammar.moduleMap.keySet().iterator();

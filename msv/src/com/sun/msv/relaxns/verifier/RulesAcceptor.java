@@ -14,10 +14,10 @@ import com.sun.tranquilo.grammar.ExpressionPool;
 import com.sun.tranquilo.verifier.Acceptor;
 import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
 import com.sun.tranquilo.datatype.ValidationContextProvider;
-import com.sun.tranquilo.relaxns.grammar.RuleImpl;
+import com.sun.tranquilo.relaxns.grammar.DeclImpl;
 import com.sun.tranquilo.util.StringRef;
 import com.sun.tranquilo.util.DataTypeRef;
-import org.iso_relax.dispatcher.Rule;
+import org.iso_relax.dispatcher.ElementDecl;
 
 /**
  * Acceptor that is used to validate root node of the island.
@@ -29,10 +29,10 @@ import org.iso_relax.dispatcher.Rule;
 public class RulesAcceptor
 	extends com.sun.tranquilo.verifier.regexp.trex.ComplexAcceptorBaseImpl
 {
-	protected final RuleImpl[]		owners;
+	protected final DeclImpl[]		owners;
 	
 	/** helper function for constructor */
-	private static Expression createCombined( ExpressionPool pool, RuleImpl[] rules )
+	private static Expression createCombined( ExpressionPool pool, DeclImpl[] rules )
 	{
 		Expression exp = Expression.nullSet;
 		for( int i=0; i<rules.length; i++ )
@@ -41,7 +41,7 @@ public class RulesAcceptor
 	}
 	
 	/** helper function for constructor */
-	private static Expression[] getContents( RuleImpl[] rules )
+	private static Expression[] getContents( DeclImpl[] rules )
 	{
 		Expression[] r = new Expression[rules.length];
 		for( int i=0; i<rules.length; i++ )
@@ -51,25 +51,25 @@ public class RulesAcceptor
 	
 	public RulesAcceptor(
 		TREXDocumentDeclaration docDecl,
-		RuleImpl[] rules )
+		DeclImpl[] rules )
 	{
 		super( docDecl, createCombined(docDecl.getPool(),rules), getContents(rules) );
 		owners = rules;
 	}
 	
 	/**
-	 * collects satisfied RuleImpls.
+	 * collects satisfied ElementDeclImpls.
 	 * 
 	 * @see com.sun.tranquilo.verifier.regexp.trex.ComplexAcceptor#getSatisfiedOwners
 	 */
-	Rule[] getSatisfiedRules()
+	ElementDecl[] getSatisfiedElementDecls()
 	{
 		int cnt=0;
 		for( int i=0; i<owners.length; i++ )
 			if( contents[i].isEpsilonReducible() )
 				cnt++;
 		
-		Rule[] r = new RuleImpl[cnt];
+		ElementDecl[] r = new DeclImpl[cnt];
 		cnt=0;
 		for( int i=0; i<owners.length; i++ )
 			if( contents[i].isEpsilonReducible() )

@@ -12,7 +12,7 @@ package com.sun.tranquilo.relaxns.verifier;
 import org.iso_relax.dispatcher.IslandVerifier;
 import org.iso_relax.dispatcher.IslandSchema;
 import org.iso_relax.dispatcher.Dispatcher;
-import org.iso_relax.dispatcher.Rule;
+import org.iso_relax.dispatcher.ElementDecl;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -55,7 +55,7 @@ public class AnyOtherElementVerifier
 		if( is!=null ) {
 			// find an island that has to be validated.
 			// switch to the new IslandVerifier.
-			IslandVerifier iv = is.createNewVerifier( namespaceURI, is.getRules() );
+			IslandVerifier iv = is.createNewVerifier( namespaceURI, is.getElementDecls() );
 			dispatcher.switchVerifier(iv);
 			iv.startElement(namespaceURI,localName,qName,atts);
 			return;
@@ -80,19 +80,19 @@ public class AnyOtherElementVerifier
 		
 	}
 	
-	public void endChildIsland( String namespaceURI, Rule[] rules ) {
+	public void endChildIsland( String namespaceURI, ElementDecl[] rules ) {
 		// error report should have done by child verifier, if any.
 		// so just do nothing.
 	}
 	
-	public Rule[] endIsland() {
+	public ElementDecl[] endIsland() {
 		// collect satisfied AnyOtherElements and return it as Rules
 		int i,j;
 		int len=0;
 		for( i=0; i<exps.length; i++ )
 			if( exps[i]!=null )		len++;
 		
-		Rule[] r = new Rule[len];
+		ElementDecl[] r = new ElementDecl[len];
 		for( i=0,j=0; i<exps.length; i++ )
 			if( exps[i]!=null )	r[j++]=exps[i];
 		

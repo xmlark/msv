@@ -19,6 +19,7 @@ import com.sun.tranquilo.reader.State;
 import com.sun.tranquilo.reader.ExpressionState;
 import com.sun.tranquilo.relaxns.grammar.relax.RELAXIslandSchema;
 import com.sun.tranquilo.relaxns.grammar.ExternalElementExp;
+import com.sun.tranquilo.relaxns.grammar.ExternalAttributeExp;
 import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.util.StringPair;
 import org.iso_relax.dispatcher.IslandSchemaReader;
@@ -45,7 +46,11 @@ public class RELAXCoreIslandSchemaReader extends RELAXCoreReader
 		String expectedTargetnamespace )
 		throws SAXException,ParserConfigurationException
 	{
-		super(controller,parserFactory,pool,expectedTargetnamespace);
+		super(controller,parserFactory,new StateFactory(),pool,expectedTargetnamespace);
+	}
+	
+	private static class StateFactory extends RELAXCoreReader.StateFactory {
+		public State interface_(State parent,StartTagInfo tag) { return new InterfaceStateEx(); }
 	}
 	
 	// to allow access within this package.
@@ -63,12 +68,12 @@ public class RELAXCoreIslandSchemaReader extends RELAXCoreReader
 		else			return new RELAXIslandSchema( m, pendingAnyOtherElements );
 	}
 	
-	public State createDefaultExpressionChildState( StartTagInfo tag )
+	public State createDefaultExpressionChildState( State parent,StartTagInfo tag )
 	{
 		if(! RELAXCoreNamespace.equals(tag.namespaceURI) )	return null;
 
 		if(tag.localName.equals("anyOtherElement"))	return new AnyOtherElementState();
-		return super.createDefaultExpressionChildState(tag);
+		return super.createDefaultExpressionChildState(parent,tag);
 	}
 	
 	/** map from StringPair(namespace,label) to ExternalElementExp. */
@@ -101,8 +106,9 @@ public class RELAXCoreIslandSchemaReader extends RELAXCoreReader
 	protected Expression resolveAttPoolRef( String namespace, String label )
 	{
 		if( namespace!=null )
-			throw new Error();	// TODO: framework to export/import attributes constraint
-		return super.resolveAttPoolRef(namespace,label);
+			return new ExternalAttributeExp(pool,namespace,label,new LocatorImpl(locator));
+		else
+			return super.resolveAttPoolRef(namespace,label);
 	}
 
 	

@@ -15,13 +15,13 @@ import com.sun.tranquilo.grammar.NameClass;
 import com.sun.tranquilo.grammar.NamespaceNameClass;
 import com.sun.tranquilo.grammar.ExpressionPool;
 import com.sun.tranquilo.grammar.ReferenceExp;
-import org.iso_relax.dispatcher.Rule;
+import org.iso_relax.dispatcher.ElementDecl;
 import org.xml.sax.Locator;
 
 /**
- * place holder for imported rule.
+ * place holder for imported element declaration.
  * 
- * This class derives ElementExp because "rule" is a constraint over one element.
+ * This class derives ElementExp because "elementDecl" is a constraint over one element.
  * This class also provides stub methods so that programs who are not aware to
  * divide&validate can gracefully degrade.
  * 
@@ -47,10 +47,10 @@ public class ExternalElementExp extends ElementExp
 	public Locator source;
 	
 	/**
-	 * imported Rule object that actually validates this element.
+	 * imported ElementDecl object that actually validates this element.
 	 * this variable is set during binding phase.
 	 */
-	public Rule rule;
+	public ElementDecl rule;
 
 	public ExternalElementExp(
 		ExpressionPool pool, String namespaceURI, String ruleName,

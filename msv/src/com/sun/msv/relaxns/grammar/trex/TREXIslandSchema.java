@@ -12,11 +12,11 @@ package com.sun.tranquilo.relaxns.grammar.trex;
 import org.iso_relax.dispatcher.IslandSchema;
 import org.iso_relax.dispatcher.IslandVerifier;
 import org.iso_relax.dispatcher.SchemaProvider;
-import org.iso_relax.dispatcher.Rule;
+import org.iso_relax.dispatcher.ElementDecl;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
 import com.sun.tranquilo.relaxns.verifier.IslandSchemaImpl;
-import com.sun.tranquilo.relaxns.grammar.RuleImpl;
+import com.sun.tranquilo.relaxns.grammar.DeclImpl;
 import com.sun.tranquilo.grammar.*;
 import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
@@ -43,7 +43,7 @@ public class TREXIslandSchema extends IslandSchemaImpl
 		// TODO: modify to export only those element declarations.
 		ReferenceExp[] refs = grammar.namedPatterns.getAll();
 		for( int i=0; i<refs.length; i++ )
-			rules.put( refs[i].name, new RuleImpl(refs[i]) );
+			elementDecls.put( refs[i].name, new DeclImpl(refs[i]) );
 	}
 	
 	public void bind( SchemaProvider provider, ErrorHandler handler )

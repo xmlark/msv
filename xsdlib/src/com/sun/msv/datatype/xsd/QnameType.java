@@ -97,6 +97,7 @@ public class QnameType extends ConcreteType
 	public final int isFacetApplicable( String facetName )
 	{
 		// TODO : it seems to me that the spec has obvious typos.
+		// cause range-related facets does not make sense at all.
 		// so check it with the latest version.
 		if( facetName.equals(FACET_PATTERN)
 		||	facetName.equals(FACET_ENUMERATION) )

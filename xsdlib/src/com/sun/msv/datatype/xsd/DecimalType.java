@@ -100,7 +100,6 @@ public class DecimalType extends ConcreteType implements Comparator
 
 	public final int isFacetApplicable( String facetName )
 	{
-		// TODO : should we allow scale facet, or not?
 		if( facetName.equals(FACET_PRECISION)
 		||	facetName.equals(FACET_SCALE)
 		||	facetName.equals(FACET_PATTERN)

@@ -101,4 +101,19 @@ public interface DataType extends Serializable,Cloneable
 	 *			NOT_ALLOWED		if the facet is not applicable to this datatype at all.
 	 */
 	public int isFacetApplicable( String facetName );
+
+
+	// well-known facet name constants
+	final static String	FACET_LENGTH		= "length";
+	final static String	FACET_MINLENGTH		= "minLength";
+	final static String	FACET_MAXLENGTH		= "maxLength";
+	final static String	FACET_PATTERN		= "pattern";
+	final static String	FACET_ENUMERATION	= "enumeration";
+	final static String	FACET_PRECISION		= "precision";
+	final static String	FACET_SCALE			= "scale";
+	final static String	FACET_MININCLUSIVE	= "minInclusive";
+	final static String	FACET_MAXINCLUSIVE	= "maxInclusive";
+	final static String	FACET_MINEXCLUSIVE	= "minExclusive";
+	final static String	FACET_MAXEXCLUSIVE	= "maxExclusive";
+	final static String	FACET_WHITESPACE	= "whiteSpace";
 }

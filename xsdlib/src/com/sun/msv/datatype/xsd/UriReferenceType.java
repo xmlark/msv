@@ -66,7 +66,6 @@ public class UriReferenceType extends ConcreteType
 	
 	public final int isFacetApplicable( String facetName )
 	{
-		// TODO : should we allow scale facet, or not?
 		if( facetName.equals(FACET_LENGTH)
 		||	facetName.equals(FACET_MINLENGTH)
 		||	facetName.equals(FACET_MAXLENGTH)

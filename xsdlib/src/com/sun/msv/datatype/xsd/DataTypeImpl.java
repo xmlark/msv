@@ -5,20 +5,6 @@ package com.sun.tranquilo.datatype;
  */
 abstract class DataTypeImpl implements DataType
 {
-	// well-known facet name constants
-	protected final static String	FACET_LENGTH		= "length";
-	protected final static String	FACET_MINLENGTH		= "minLength";
-	protected final static String	FACET_MAXLENGTH		= "maxLength";
-	protected final static String	FACET_PATTERN		= "pattern";
-	protected final static String	FACET_ENUMERATION	= "enumeration";
-	protected final static String	FACET_PRECISION		= "precision";
-	protected final static String	FACET_SCALE			= "scale";
-	protected final static String	FACET_MININCLUSIVE	= "minInclusive";
-	protected final static String	FACET_MAXINCLUSIVE	= "maxInclusive";
-	protected final static String	FACET_MINEXCLUSIVE	= "minExclusive";
-	protected final static String	FACET_MAXEXCLUSIVE	= "maxExclusive";
-	protected final static String	FACET_WHITESPACE	= "whiteSpace";
-	
 	private final String typeName;
 	public String getName()	{ return typeName; }
 	

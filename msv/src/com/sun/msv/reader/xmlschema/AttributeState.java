@@ -46,21 +46,14 @@ public class AttributeState extends ExpressionWithChildState {
 			return exp;
 		}
 		
-		if( !startTag.containsAttribute("type") )
+		final String typeAttr = startTag.getAttribute("type");
+		if( typeAttr==null )
 			// return null to indicate that no type definition is given.
 			return null;
 		
 		// if <attribute> element has @type, then
 		// it shall be used as content type.
-		Expression exp = reader.resolveQNameRef(
-			startTag, "type",
-			new XMLSchemaReader.RefResolver() {
-				public ReferenceContainer get( XMLSchemaSchema g ) {
-					return g.simpleTypes;
-				}
-			} );
-		if( exp==null )		return Expression.epsilon;	// couldn't resolve QName.
-		return exp;
+		return reader.resolveDelayedDataType( typeAttr );
 	}
 
 	protected Expression castExpression( Expression halfCastedExpression, Expression newChildExpression ) {

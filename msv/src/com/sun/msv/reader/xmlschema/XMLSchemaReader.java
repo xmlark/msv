@@ -223,15 +223,7 @@ public class XMLSchemaReader extends GrammarReader
 	
 	protected boolean isGrammarElement( StartTagInfo tag ) {
 		
-		if( !XMLSchemaNamespace.equals(tag.namespaceURI) ) {
-			if( !XMLSchemaNamespace_old.equals(tag.namespaceURI) ) 
-				return false;
-			
-			// report a warning only once.
-			if( !issuedOldNamespaceWarning )
-				reportWarning( WRN_OBSOLETED_NAMESPACE, null );
-			issuedOldNamespaceWarning = true;
-		}
+		if(!isSchemaNamespace(tag.namespaceURI))	return false;
 		
 		// annotation is ignored at this level.
 		// by returning false, the entire subtree will be simply ignored.
@@ -290,6 +282,22 @@ public class XMLSchemaReader extends GrammarReader
 		return StringType.theInstance;	// recover by assuming string.
 	}
 	
+	public boolean isSchemaNamespace( String ns ) {
+		if( ns.equals(XMLSchemaNamespace) ) return true;
+		
+		if( ns.equals(XMLSchemaNamespace_old) ) {
+			// old namespace.
+			// report a warning only once.
+			if( !issuedOldNamespaceWarning )
+				reportWarning( WRN_OBSOLETED_NAMESPACE, null );
+			issuedOldNamespaceWarning = true;
+			return true;
+		}
+		
+		return false;
+	}
+		
+	
 	public DataType resolveDataType( String typeQName ) {
 		
 		String[] r = splitQName(typeQName);
@@ -300,18 +308,8 @@ public class XMLSchemaReader extends GrammarReader
 			return StringType.theInstance;	// recover by assuming string.
 		}
 		
-		if( r[0].equals(XMLSchemaNamespace) )
+		if( isSchemaNamespace(typeQName) )
 			return resolveBuiltinDataType(r[1]);
-		
-		if( r[0].equals(XMLSchemaNamespace_old) ) {
-			// old namespace.
-			// report a warning only once.
-			if( !issuedOldNamespaceWarning )
-				reportWarning( WRN_OBSOLETED_NAMESPACE, null );
-			issuedOldNamespaceWarning = true;
-			
-			return resolveBuiltinDataType(r[1]);
-		}
 		
 		DataType dt = getOrCreateSchema(r[0]/*uri*/).simpleTypes.
 			getOrCreate(r[1]/*local name*/).getType();
@@ -321,6 +319,26 @@ public class XMLSchemaReader extends GrammarReader
 		reportError( ERR_UNDEFINED_OR_FORWARD_REFERENCED_TYPE, r[2]/*qName*/ );
 		// TODO: implement error data type.
 		return StringType.theInstance;
+	}
+	
+	/**
+	 * gets a TypedString expression for the specified datatype.
+	 * this method may return a ReferenceExp whose content will be supplied later
+	 * (to make forward-reference possible).
+	 */
+	public Expression resolveDelayedDataType( String qName ) {
+		String[] r = splitQName(qName);
+		if(r==null) {
+			reportError( ERR_UNDECLARED_PREFIX, qName );
+			// TODO: implement UndefinedType, that is used only when an error is encountered.
+			// it should accept anything and any facets.
+			return Expression.nullSet;	// recover by assuming some expression.
+		}
+		
+		if( isSchemaNamespace(r[0]) )
+			return pool.createTypedString( resolveBuiltinDataType(r[1]) );
+		
+		return getOrCreateSchema(r[0]/*uri*/).simpleTypes.getOrCreate(r[1]/*local name*/);
 	}
 	
 	public static interface RefResolver {
@@ -340,7 +358,7 @@ public class XMLSchemaReader extends GrammarReader
 			return null;
 		}
 		
-		Expression e = resolver.get( getOrCreateSchema(r[0]/*uri*/) )._getOrCreate(r[1]/*local name*/);
+		Expression e =  resolver.get( getOrCreateSchema(r[0]/*uri*/) )._getOrCreate(r[1]/*local name*/);
 		backwardReference.memorizeLink(e);
 		
 		return e;

@@ -163,7 +163,7 @@ public class Base64BinaryType extends BinaryBaseType {
 				r.append( encode((v.rawData[i+1]&0xF)<<2) );
 				r.append("=");
 				break;
-			case 3:
+			default:
 				r.append( encode(v.rawData[i]>>2) );
 				r.append( encode(
 							((v.rawData[i]&0x3)<<4) |

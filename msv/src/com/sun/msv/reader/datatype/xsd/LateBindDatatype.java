@@ -17,6 +17,8 @@ import com.sun.msv.datatype.SerializationContext;
 import com.sun.msv.reader.State;
 import org.relaxng.datatype.*;
 import org.xml.sax.Locator;
+import java.util.Stack;
+import java.util.Vector;
 
 /**
  * Place holder datatype object.
@@ -40,7 +42,68 @@ public class LateBindDatatype implements XSDatatype {
 	
 	/** this object renders the actual datatype object. */
 	public interface Renderer {
-		XSDatatype render() throws DatatypeException;
+		/**
+		 * creates (or retrieves, whatever) the actual, concrete, real
+		 * XSDatatype object.
+		 * 
+		 * <p>
+		 * This method is typically called from the wrapUp method of the GrammarReader.
+		 * 
+		 * @return
+		 *		the XSDatatype object which this LateBindDatatype object is representing.
+		 *		It shall not return an instance of LateBindDatatype object.
+		 * 
+		 * @param context
+		 *		If this renderer calls the getBody method of the other
+		 *		LateBindDatatype objects, then this context should be passed
+		 *		to the getBody method. This context object is responsible for
+		 *		detecting recursive references.
+		 * 
+		 * @exception
+		 *		If an error occurs during rendering, the renderer should throw
+		 *		a DatatypeException instead of trying to report an error by itself.
+		 *		The caller of this method will report an error message to the appropriate
+		 *		handler.
+		 */
+		XSDatatype render( RenderingContext context ) throws DatatypeException;
+	}
+	
+	/**
+	 * this object is used to keep the information about
+	 * the dependency between late-bind datatype objects.
+	 * 
+	 * <p>
+	 * Consider the following schema:
+	 * 
+	 * <PRE><XMP>
+	 * <xs:simpleType name="foo">
+	 *   <xs:restriction base="bar">
+	 *     <xs:minLength value="3"/>
+	 *   </xs:restriction>
+	 * </xs:simpleType>
+	 * <xs:simpleType name="bar">
+	 *   <xs:restriction base="foo">
+	 *     <xs:minLength value="3"/>
+	 *   </xs:restriction>
+	 * </xs:simpleType>
+	 * </XMP></PRE>
+	 * 
+	 * Since two types are depending on each other, if you call the
+	 * getBody method of "foo" type, it will call the getBody method of "bar" type.
+	 * Then in turn it will call "foo" again. So this will result in the
+	 * infinite recursion.
+	 * 
+	 * <p>
+	 * This context object is used to detect such condition and reports the
+	 * dependency to the user.
+	 * 
+	 * <p>
+	 * No method is publicly accessible.
+	 */
+	public static class RenderingContext {
+		RenderingContext() {}
+		
+		private final Stack callStack = new Stack();
 	}
 	
 	/**
@@ -75,15 +138,35 @@ public class LateBindDatatype implements XSDatatype {
 	 * gets the actual definition.
 	 * This method cannot be called before the "wrapUp" method.
 	 */
-	public XSDatatype getBody() {
-		if(body==null)
+	public XSDatatype getBody( RenderingContext context ) {
+		
+		if(context==null)	// create a new context.
+			context = new RenderingContext();
+		
+		if(body==null) {
+			if( context.callStack.contains(this) ) {
+				// a recursive definition is detected.
+				Vector locs = new Vector();
+				for( int i=0; i<context.callStack.size(); i++ )
+					locs.add( ((LateBindDatatype)context.callStack.get(i)).ownerState.getLocation() );
+				
+				ownerState.reader.reportError(
+					(Locator[])locs.toArray(new Locator[0]),
+					ownerState.reader.ERR_RECURSIVE_DATATYPE, null );
+				return StringType.theInstance;
+			}
+			context.callStack.push(this);
+			
 			try {
-				body = renderer.render();
+				body = renderer.render(context);
 			} catch( DatatypeException e ) {
 				ownerState.reader.reportError( ownerState.reader.ERR_BAD_TYPE,
 					new Object[]{e}, e, new Locator[]{ownerState.getLocation()} );
 				body = StringType.theInstance;	// recover by assuming a valid type.
 			}
+			
+			context.callStack.pop();
+		}
 		
 		// DBG
 		if( body instanceof LateBindDatatype )
@@ -93,6 +176,10 @@ public class LateBindDatatype implements XSDatatype {
 								// if there was an error, it must recover from it.
 		return body;
 	}
+	
+	
+	
+	
 	
 // no method works
 	

@@ -50,9 +50,9 @@ public class SimpleTypeState extends TypeWithOneChildState
 			if( dt instanceof LateBindDatatype ) {
 				// late-binding
 				return new LateBindDatatype( new LateBindDatatype.Renderer() {
-					public XSDatatype render() throws DatatypeException {
+					public XSDatatype render( LateBindDatatype.RenderingContext context ) throws DatatypeException {
 						return new FinalComponent(
-							(XSDatatypeImpl)((LateBindDatatype)dt).getBody(),
+							(XSDatatypeImpl)((LateBindDatatype)dt).getBody(context),
 							finalValue );
 					}
 				}, this );

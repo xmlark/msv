@@ -77,7 +77,7 @@ public class GlobalDeclState extends SimpleState
 				public void patch() {
 					// replace the definition of the SimpleTypeExp by
 					// a real object.
-					exp.setType( lbdt.getBody(), reader.pool );
+					exp.setType( lbdt.getBody(null), reader.pool );
 				}
 			});
 		}

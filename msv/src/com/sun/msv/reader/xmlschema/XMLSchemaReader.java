@@ -409,7 +409,7 @@ public class XMLSchemaReader extends GrammarReader {
 		// return a late-bind datatype object to support forward references.
 		
 		dt = new LateBindDatatype( new LateBindDatatype.Renderer(){
-			public XSDatatype render() {
+			public XSDatatype render( LateBindDatatype.RenderingContext context ) {
 				XSDatatype dt = sexp.getType();
 				
 				if( dt==null ) {
@@ -419,7 +419,7 @@ public class XMLSchemaReader extends GrammarReader {
 				}
 				
 				if( dt instanceof LateBindDatatype )
-					return ((LateBindDatatype)dt).getBody();
+					return ((LateBindDatatype)dt).getBody(context);
 				else
 					return dt;
 			}

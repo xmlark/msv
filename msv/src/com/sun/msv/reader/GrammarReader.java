@@ -705,4 +705,6 @@ public abstract class GrammarReader
 		"GrammarReader.Warning.DeprecatedTypeName";
 	public static final String ERR_BAD_TYPE	=	// arg:1
 		"GrammarReader.BadType";
+	public static final String ERR_RECURSIVE_DATATYPE = // arg:0
+		"GrammarReader.RecursiveDatatypeDefinition";
 }

@@ -58,7 +58,11 @@ public class LateBindTypeIncubator extends TypeIncubator {
 	}
 
 	public XSDatatypeImpl derive( String name ) throws DatatypeException {
-		TypeIncubator ti = new TypeIncubator( baseType.getBody() );
+		return derive( name, null );
+	}
+	
+	public XSDatatypeImpl derive( String name, LateBindDatatype.RenderingContext context ) throws DatatypeException {
+		TypeIncubator ti = new TypeIncubator( baseType.getBody(context) );
 		Iterator itr = facets.iterator();
 		while( itr.hasNext() ) {
 			Facet f = (Facet)itr.next();

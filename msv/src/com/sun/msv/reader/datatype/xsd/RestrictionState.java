@@ -41,8 +41,9 @@ public class RestrictionState extends TypeWithOneChildState implements FacetStat
 			// late-bind construction.
 			return new LateBindDatatype(
 				new LateBindDatatype.Renderer() {
-					public XSDatatype render() throws DatatypeException {
-						return incubator.derive(newTypeName);
+					public XSDatatype render( LateBindDatatype.RenderingContext context )
+								throws DatatypeException {
+						return ((LateBindTypeIncubator)incubator).derive(newTypeName,context);
 					}
 				}, this );
 		else

@@ -33,9 +33,10 @@ public class ListState extends TypeWithOneChildState
 		if( baseType instanceof LateBindDatatype )
 			// late-bind construction
 			return new LateBindDatatype( new LateBindDatatype.Renderer() {
-				public XSDatatype render() throws DatatypeException {
+				public XSDatatype render( LateBindDatatype.RenderingContext context )
+											throws DatatypeException {
 					return DatatypeFactory.deriveByList( newTypeName,
-						((LateBindDatatype)baseType).getBody() );
+						((LateBindDatatype)baseType).getBody(context) );
 				}
 			}, this );
 		else

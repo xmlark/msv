@@ -77,12 +77,12 @@ public class UnionState extends TypeState implements TypeOwner {
 		
 		// late binding
 		return new LateBindDatatype( new LateBindDatatype.Renderer() {
-			public XSDatatype render() throws DatatypeException {
+			public XSDatatype render( LateBindDatatype.RenderingContext context ) throws DatatypeException {
 				int len = memberTypes.size();
 				for( int i=0; i<len; i++ ) {
 					XSDatatype dt = (XSDatatype)memberTypes.get(i);
 					if( dt instanceof LateBindDatatype )
-						memberTypes.set(i, ((LateBindDatatype)dt).getBody() );
+						memberTypes.set(i, ((LateBindDatatype)dt).getBody(context) );
 				}
 				
 				return DatatypeFactory.deriveByUnion( newTypeName, memberTypes );

@@ -18,10 +18,13 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.Attributes;
 import org.relaxng.datatype.*;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.grammar.relaxng.NGTypedStringExp;
+import com.sun.msv.grammar.relaxng.datatype.BuiltinDataTypeLibrary;
 import com.sun.msv.reader.*;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.reader.trex.TREXBaseReader;
@@ -107,10 +110,10 @@ public class RELAXNGReader extends TREXBaseReader {
 	 * This set is used to detect this error.
 	 */
 	protected final Set headRefExps = new java.util.HashSet();
-	
+
 	
 	/** Namespace URI of RELAX NG */
-	public static final String RELAXNGNamespace = "http://www.relaxng.org/";
+	public static final String RELAXNGNamespace = "http://relaxng.org/ns/structure/0.9";
 
 	protected boolean isGrammarElement( StartTagInfo tag ) {
 		return RELAXNGNamespace.equals(tag.namespaceURI);
@@ -292,6 +295,37 @@ public class RELAXNGReader extends TREXBaseReader {
 			}
 		}
 	}
+
+	
+	
+	
+// propagatable attributes
+//--------------------------------
+	/**
+	 * currently active datatype library.
+	 * This field is maintained by this class.
+	 * In case of an error, this field may be set to null after issuing an error.
+	 * So care should be taken not to report the same error again.
+	 */
+	protected DataTypeLibrary datatypeLib = new BuiltinDataTypeLibrary();
+	private final Stack dtLibStack = new Stack();
+	
+	public void startElement( String a, String b, String c, Attributes d ) throws SAXException {
+		// handle 'datatypeLibrary' attribute propagation
+		dtLibStack.push(datatypeLib);
+		if( d.getIndex("datatypeLibrary")!=-1 )
+			datatypeLib = resolveDataTypeLibrary(d.getValue("datatypeLibrary"));
+		
+		// if nothing specified, datatype library stays the same.
+		super.startElement(a,b,c,d);
+	}
+	public void endElement( String a, String b, String c ) throws SAXException {
+		super.endElement(a,b,c);
+		datatypeLib = (DataTypeLibrary)dtLibStack.pop();
+	}
+	
+	
+	
 	
 	// error messages
 	public static final String ERR_BAD_FACET = // arg:2

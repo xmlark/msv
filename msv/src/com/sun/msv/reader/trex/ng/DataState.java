@@ -47,23 +47,15 @@ public class DataState extends ExpressionState {
 		if( baseType==null ) {
 			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "data", "type" );
 		} else {
-			String[] names = reader.splitQName(baseType);
-			if( names==null ) {
-				reader.reportError( reader.ERR_UNDECLEARED_PREFIX, baseType );
-			} else {
-				baseTypeName = new StringPair( names[0], names[1] );
-				
-				// create a type incubator
-				 DataTypeLibrary lib = reader.resolveDataTypeLibrary(names[0]/*URI*/);
-				 if( lib!=null ) {// an error is already reported if lib==null.
-					 try {
-						typeBuilder = lib.createDataTypeBuilder(names[1]/*local*/);
-						if( typeBuilder==null )
-							 reader.reportError( reader.ERR_UNDEFINED_DATATYPE, baseType );
-					 } catch( DataTypeException dte ) {
-						 // TODO: attach the message of dte, if any.
+			// create a type incubator
+			if( reader.datatypeLib!=null ) {// an error is already reported if lib==null.
+				 try {
+					typeBuilder = reader.datatypeLib.createDataTypeBuilder(baseType);
+					if( typeBuilder==null )
 						 reader.reportError( reader.ERR_UNDEFINED_DATATYPE, baseType );
-					 }
+				 } catch( DataTypeException dte ) {
+					 // TODO: attach the message of dte, if any.
+					 reader.reportError( reader.ERR_UNDEFINED_DATATYPE, baseType );
 				 }
 			}
 		}

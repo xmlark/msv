@@ -10,7 +10,7 @@
 package com.sun.msv.datatype;
 
 import junit.framework.*;
-import java.lang.reflect.*;
+import util.*;
 
 /**
  * tests BadTypeException.
@@ -33,16 +33,16 @@ public class BadTypeExceptionTest extends TestCase
 	 *
 	 * TODO: multi-lingual support.
 	 */
-	public void testResource() throws Exception
-	{
-		Field[] fields = com.sun.msv.datatype.BadTypeException.class.getDeclaredFields();
-		
-		for( int i=0; i<fields.length; i++ )
-			if( fields[i].getName().startsWith("ERR_") )
-			{
-				String propertyName = (String)fields[i].get(null);
-				// if the specified property doesn't exist, this will throw an error
-				new BadTypeException( propertyName, "", "", "" /** dummy parameters */ );
-			}
+	public void testResource() throws Exception {
+		ResourceChecker.check(
+			BadTypeException.class,
+			"ERR_",
+			new Checker(){
+				public void check( String propertyName ) {
+					// if the specified property doesn't exist, this will throw an error
+					System.out.println(
+						(new BadTypeException( propertyName, "@@@", "@@@", "@@@" /** dummy parameters */ )).getMessage() );
+				}
+			});
 	}
 }

@@ -1,0 +1,30 @@
+package com.sun.msv.relaxns.verifier;
+
+import junit.framework.*;
+import util.*;
+
+public class LocalizerTest extends TestCase
+{
+	public LocalizerTest( String name ) { super(name); }
+	
+	public static void main(java.lang.String[] args) {
+		junit.textui.TestRunner.run(suite());
+	}
+	
+	public static Test suite() {
+		return new TestSuite(LocalizerTest.class);
+	}
+	
+	/** tests the existence of all messages */
+	public void testMessages() throws Exception {
+		Checker checker = new Checker(){
+			public void check( String propertyName ) {
+				// if the specified property doesn't exist, this will throw an error
+				System.out.println(
+					Localizer.localize(propertyName,new Object[]{"@@@","@@@","@@@","@@@","@@@"}));
+			}
+		};
+		
+		ResourceChecker.check( AnyOtherElementVerifier.class, "", checker );
+	}
+}

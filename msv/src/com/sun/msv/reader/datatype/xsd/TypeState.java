@@ -43,7 +43,7 @@ abstract class TypeState extends SimpleState
 		if( parentState instanceof TypeOwner ) {
 			// if the parent can understand what we are creating,
 			// then pass the result.
-			((TypeOwner)parentState).onEndChildType(type,type.name());
+			((TypeOwner)parentState).onEndChildType(type,type.name);
 			return;
 		}
 		if( parentState instanceof ExpressionOwner ) {

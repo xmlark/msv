@@ -84,6 +84,10 @@ public abstract class RedefinableDeclState extends ExpressionWithChildState {
 	protected boolean isGlobal() {
 		return parentState instanceof GlobalDeclState;
 	}
+    /**
+     * Returns true if this declaration is a redefinition of an
+     * existing declaration.
+     */
 	protected boolean isRedefine() {
 		return parentState instanceof RedefineState;
 	}

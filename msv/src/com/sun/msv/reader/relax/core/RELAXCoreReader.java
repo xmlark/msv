@@ -169,7 +169,7 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
     private final Map userDefinedTypes = new java.util.HashMap();
     
     public final void addUserDefinedType( XSDatatypeExp exp ) {
-        userDefinedTypes.put( exp.name(), exp );
+        userDefinedTypes.put( exp.name, exp );
     }
     
 	/**

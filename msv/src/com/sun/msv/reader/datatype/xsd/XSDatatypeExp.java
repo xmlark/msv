@@ -38,7 +38,6 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
     /** Creates this object from existing XSDatatype. */
     public XSDatatypeExp( XSDatatype dt, ExpressionPool _pool ) {
         super(dt.getName());
-        this.name = dt.getName();
         this.dt = dt;
         this.pool = _pool;
         this.ownerState = null;
@@ -48,8 +47,8 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
     
     /** Creates lazily created datatype. */
     public XSDatatypeExp( String typeName, GrammarReader reader, Renderer _renderer ) {
+//        this(typeName, reader, reader.getCurrentState(), _renderer );
         super(typeName);
-        this.name = typeName;
         this.dt = null;
         this.ownerState = reader.getCurrentState();
         this.renderer = _renderer;
@@ -58,9 +57,10 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
         reader.addBackPatchJob(this);
     }
     
-    /** Name of this type. can be null in case of anonymous types. */
-    private final String name;
-    public String name() { return name; }
+    /** Used only for cloning */
+    private XSDatatypeExp( String typeName ) {
+        super(typeName);
+    }
     
     /**
      * Creates an incubator so that the caller can add more facets
@@ -181,6 +181,28 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
     
     public final boolean isLateBind() { return dt==null; }
     
+    /** Gets a clone of this object. */
+    public XSDatatypeExp getClone() {
+        XSDatatypeExp t = new XSDatatypeExp(this.name);
+        t.redefine(this);
+        return t;
+    }
+    
+    /** Updates this object by copying the state from rhs */
+    public void redefine( XSDatatypeExp rhs ) {
+//        this.name   = rhs.name;
+        this.exp    = rhs.exp;
+        this.dt     = rhs.dt;
+        this.pool   = rhs.pool;
+        this.ownerState = rhs.ownerState;
+        this.renderer = rhs.renderer;
+        
+        // rhs might be a late-bind object.
+        // note that it's safe to call this method
+        // if this is not a late-bind object.
+        if(ownerState!=null)
+            ownerState.reader.addBackPatchJob(this);
+    }
     
     
     /** Derives a new type by setting final values. */

@@ -48,7 +48,7 @@ public class DivInModuleState extends SimpleState implements ExpressionOwner, XS
 	public void onEndChild( XSDatatypeExp type ) {
         // user-defined simple types
 		
-		final String typeName = type.name();
+		final String typeName = type.name;
 		
 		if( typeName==null ) {
             // top-level simpleType must define a named type

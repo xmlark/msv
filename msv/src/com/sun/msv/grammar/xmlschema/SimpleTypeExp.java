@@ -68,7 +68,17 @@ public class SimpleTypeExp extends XMLSchemaTypeExp {
 	public void redefine( RedefinableExp _rhs ) {
 		super.redefine(_rhs);
 		
-		((SimpleTypeExp)_rhs).set(this.type);
+        SimpleTypeExp rhs = (SimpleTypeExp)_rhs;
+        
+        if(type==null)
+            type = rhs.getType().getClone();
+        else {
+            // because redefinition only happens by a defined declaration
+            if(rhs.getType()==null)
+                throw new InternalError();
+                
+            type.redefine(rhs.getType());
+        }
 	}
 	
 

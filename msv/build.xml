@@ -106,7 +106,20 @@
   
   
   
-  
+  <target name="private-jar" depends="binary" description="build jar file from local source files">
+    <jar jarfile="msv.jar"
+        manifest="./MANIFEST.MF"
+        compress="false">
+      <fileset dir="src">
+        <patternset refid="resource.files" />
+      </fileset>
+      <fileset dir="bin" />
+    </jar>
+    <zip zipfile="msv-src.zip"
+        compress="true">
+      <fileset dir="src" />
+    </zip>
+  </target>
   
   
   
@@ -163,7 +176,7 @@
         dest="${stageName}" />
     
     <!-- compile files -->
-    <javac  srcdir="${stageName}/src"
+    <javac  srcdir="${stageName}/src" debug="on"
         destdir="temp">
       
       <classpath path="temp"/>

@@ -87,7 +87,7 @@ public class AttributeToken extends Token
 		
 		// content model of the attribute must consume the value
 		boolean satisfied = false;
-		if(value.literal.length()==0 && exp.exp.isEpsilonReducible())
+		if(value.literal.trim().length()==0 && exp.exp.isEpsilonReducible())
 			satisfied = true;
 		else
 		if(docDecl.resCalc.calcResidual(exp.exp, value).isEpsilonReducible())

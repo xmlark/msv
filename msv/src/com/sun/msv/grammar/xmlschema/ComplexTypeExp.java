@@ -154,7 +154,7 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 	
 	/** actual content model definition + attribute uses. */
 	public final ReferenceExp body = new ReferenceExp(null);
-	
+    
 	/** attribute wildcard as an expression. */
 	public final ReferenceExp attWildcard = new ReferenceExp(null,Expression.epsilon);
 	
@@ -331,13 +331,13 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 	public int block =0;
 	
 	/**
-	 * gets the value of the block constraint.
+	 * Gets the value of the block constraint.
 	 * SimpleTypeExp always returns 0 because it doesn't have the block constraint.
 	 */
 	public int getBlock() { return block; }
 
 	
-	
+    
 	
 //
 // Other implementation details
@@ -369,8 +369,8 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 			throw new IllegalArgumentException();
 	}
 
-	/** derives a QName type that only accepts this type name. */
-	private static XSDatatype getQNameType( final String namespaceURI, final String localName ) {
+//	/** derives a QName type that only accepts this type name. */
+/*	private static XSDatatype getQNameType( final String namespaceURI, final String localName ) {
 		try {
 			TypeIncubator ti = new TypeIncubator( QnameType.theInstance );
 			ti.addFacet( "enumeration", "foo:"+localName, true,
@@ -394,7 +394,7 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 			throw new Error();
 		}
 	}
-
+*/
 	/**
 	 * implementation detail.
 	 * 

@@ -25,6 +25,8 @@ import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
 import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
+import com.sun.msv.grammar.xmlschema.ElementDeclExp;
+import com.sun.msv.grammar.xmlschema.XMLSchemaTypeExp;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.IgnoreState;
@@ -45,6 +47,7 @@ import javax.xml.parsers.SAXParserFactory;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Map;
+import java.util.Vector;
 import java.util.Iterator;
 import java.text.MessageFormat;
 import org.xml.sax.Locator;
@@ -141,7 +144,7 @@ public class XMLSchemaReader extends GrammarReader {
 						pool.createAttribute( AnyNameClass.theInstance ),
 						e )));
 		complexUrType = new ComplexTypeExp( xsdSchema, "anyType" );
-		complexUrType.self.exp = e.contentModel;
+		complexUrType.body.exp = e.contentModel;
 		complexUrType.complexBaseType = complexUrType;
 		complexUrType.derivationMethod = ComplexTypeExp.RESTRICTION;
 		
@@ -635,6 +638,7 @@ public class XMLSchemaReader extends GrammarReader {
 			// violate the final property of the parent type.
 			
 			// prepare top-level expression.
+			// at the same time, compute the substitutions field of ElementDeclExps.
 			// TODO: make sure this is a correct implementation
 			// any globally declared element can be a top-level element.
 			Expression exp = Expression.nullSet;
@@ -665,6 +669,54 @@ public class XMLSchemaReader extends GrammarReader {
 		}
 		locator = oldLoc;
 		
+		// perform substitutability computation
+		//-----------------------------------------
+		// this process depends on the result of back-patching.
+		
+		// a buffer which will be used to check the recursive substitution group definition.
+		final Set recursiveSubstBuffer = new java.util.HashSet();
+		
+		itr = grammar.iterateSchemas();
+		while( itr.hasNext() ) {
+			XMLSchemaSchema schema = (XMLSchemaSchema)itr.next();
+
+			ReferenceExp[] elems = schema.elementDecls.getAll();
+			for( int i=0; i<elems.length; i++ ) {
+				final ElementDeclExp e = (ElementDeclExp)elems[i];
+			
+				recursiveSubstBuffer.clear();
+				
+				if(!hadError) {
+					// set the substitution group
+					// this process is skipped if an error is already found.
+					// the above check is added because I'm not confident
+					// whether the following code works if some of the properties
+					// are broken due to the invalid grammar.
+					for( ElementDeclExp c = e.substitutionAffiliation;
+						 c!=null; c=c.substitutionAffiliation ) {
+						
+						if( !recursiveSubstBuffer.add(c) ) {
+							// recursive substitution group
+							reportError(
+								new Locator[]{ getDeclaredLocationOf(c), getDeclaredLocationOf(e) },
+								ERR_RECURSIVE_SUBSTITUTION_GROUP,
+								new Object[]{c.name, e.name} );
+							break;
+						}
+						
+						if( isSubstitutable( c, e ) ) {
+							if( com.sun.msv.driver.textui.Debug.debug )
+								System.out.println( c.name+"<-"+e.name );
+							c.substitutions.exp =
+								pool.createChoice( c.substitutions.exp, e.body );
+						} else {
+							if( com.sun.msv.driver.textui.Debug.debug )
+								System.out.println( c.name+"<-X-"+e.name );
+						}
+					}
+				}
+			}
+		}
 		
 		if( hadError )	return;
 		// undefined expressions may interfare with runaway expression check.
@@ -674,6 +726,122 @@ public class XMLSchemaReader extends GrammarReader {
 		
 	}
 	
+	
+	private interface Type {
+		int getDerivationMethod();
+		int getBlockValue();
+		Type getBaseType();
+		Object getCore();
+	}
+	
+	private Type getType( XMLSchemaTypeExp exp ) {
+		if( exp instanceof ComplexTypeExp ) {
+			final ComplexTypeExp cexp = (ComplexTypeExp)exp;
+			return new Type(){
+				public int getDerivationMethod() { return cexp.derivationMethod; }
+				public int getBlockValue() { return cexp.block; }
+				public Type getBaseType() {
+					if( cexp.complexBaseType!=null )
+						return getType(cexp.complexBaseType);
+					if( cexp.simpleBaseType!=null )
+						return getType(cexp.simpleBaseType);
+					return getType(complexUrType);
+				}
+				public Object getCore() { return cexp; }
+			};
+		} else {
+			return getType( ((SimpleTypeExp)exp).getType() );
+		}
+	}
+	
+	private Type getType( final XSDatatype dt ) {
+		if(dt==null)	throw new Error();	// invalid argument error
+		
+		return new Type(){
+			public int getDerivationMethod() { return ComplexTypeExp.RESTRICTION; }
+			public int getBlockValue() { return 0; }
+			public Type getBaseType() {
+				XSDatatype base = dt.getBaseType();
+				if(base==null)	return getType(complexUrType);
+				else			return getType(base);
+			}
+			public Object getCore() { return dt; }
+		};
+	}
+	
+	/**
+	 * implementation of "SCC: Substitution Group OK (Transitive)".
+	 * 
+	 * @return
+	 *		<b>true</b> if d can validly substitute c.
+	 * 
+	 * @param c
+	 *		the substitution head
+	 * @param d
+	 *		a member of the substitution group of c.
+	 */
+	private boolean isSubstitutable( ElementDeclExp c, ElementDeclExp d ) {
+		
+		// clause 1
+		if(c.isSubstitutionBlocked())
+			return false;
+		
+		// clause 2 must be implicitly tested before this method is called.
+		
+		
+		final Type cType = getType(c.getTypeDefinition());
+		Type dType = getType(d.getTypeDefinition());
+		
+		// test clause 3
+		int constraint = c.block;
+		int derivationMethod = 0;
+						
+		while( true ) {
+			if( dType.getCore()==cType.getCore() ) {// if they represents the same object,
+				if( (constraint&derivationMethod)==0 )
+					// this substitution doesn't violate blocking constraint.
+					return true;
+				else
+					// it is rejected by the blocking constraint
+					return false;
+			}
+			
+			derivationMethod |= dType.getDerivationMethod();
+			constraint |= dType.getBlockValue();
+			
+			if( dType.getCore()==complexUrType ) {
+				// error: substitution group has to be related by types.
+				reportError(
+					new Locator[]{getDeclaredLocationOf(c),getDeclaredLocationOf(d)},
+					ERR_UNRELATED_TYPES_IN_SUBSTITUTIONGROUP,
+					new Object[]{c.name, d.name} );
+				return false;
+			}
+			
+			dType = dType.getBaseType();
+							
+			/*
+			TODO: thre is a bug in the spec.
+							
+			According to the "SCC:Element Declaration Properties Correct",
+			clause 3, the type of the substitution group head and the type
+			of this element declaration has to be related to through
+			"Type Derivation OK".
+							
+			Now assume that the type of the head is	union of int and token,
+			and the type of this declaration is int. These two types satisfies
+			the constraint imposed on "Type Derivation OK".
+							
+			Let's move to the "SCC:Substitution Group OK (Transitive)".
+			Now the problem arises. According to the clause 3, it is assumed
+			that there is a chain of derivation from union(int,token) to
+			int, but there is no such thing!
+							
+			The decision here is to reject them as errors. But it may be
+			better to allow them.
+			*/
+		}
+	}	
 	
 	
 	protected String localizeMessage( String propertyName, Object[] args ) {
@@ -745,6 +913,10 @@ public class XMLSchemaReader extends GrammarReader {
 		"XMLSchemaReader.KeyFieldNumberMismatch";
 	public static final String ERR_KEYREF_REFERRING_NON_KEY = // arg:1
 		"XMLSchemaReader.KeyrefReferringNonKey";
+	public static final String ERR_UNRELATED_TYPES_IN_SUBSTITUTIONGROUP = // arg:2
+		"XMLSchemaReader.UnrelatedTypesInSubstitutionGroup";
+	public static final String ERR_RECURSIVE_SUBSTITUTION_GROUP = // arg:2
+		"XMLSchemaReader.RecursiveSubstitutionGroup";
 	public static final String WRN_IMPLICIT_URTYPE_FOR_ELEMENT = // arg:0
 		"XMLSchemaReader.Warning.ImplicitUrTypeForElement";
 	public static final String WRN_IMPLICIT_URTYPE_FOR_COMPLEXTYPE = // arg:0

@@ -48,7 +48,7 @@ public class ComplexTypeDeclState extends RedefinableDeclState {
 				decl = new ComplexTypeExp( reader.currentSchema, name );
 			else {
 				decl = reader.currentSchema.complexTypes.getOrCreate(name);
-				if( decl.self.exp!=null )
+				if( decl.body.exp!=null )
 					reader.reportError( 
 						new Locator[]{this.location,reader.getDeclaredLocationOf(decl)},
 						reader.ERR_DUPLICATE_COMPLEXTYPE_DEFINITION,
@@ -122,24 +122,22 @@ public class ComplexTypeDeclState extends RedefinableDeclState {
 		return reader.complexUrType;
 	}
 	
+	
 	protected Expression annealExpression(Expression contentType) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		
-//		String targetNamespace = reader.grammar.targetNamespace;
 		
 		String abstract_ = startTag.getAttribute("abstract");
 		if( "false".equals(abstract_) || abstract_==null )
-			// allow content model to directly appear as this type.
-			decl.exp = reader.pool.createChoice( decl.self, decl.exp );
-		else
-		if( !"true".equals(abstract_) )
-			reader.reportError( reader.ERR_BAD_ATTRIBUTE_VALUE, "abstract", abstract_ );
-			// recover by ignoring this error.
+			// allow the content model to directly appear as this type.
+			decl.setAbstract(false);
+		else {
+			decl.setAbstract(true);
+			if( !"true".equals(abstract_) )
+				reader.reportError( reader.ERR_BAD_ATTRIBUTE_VALUE, "abstract", abstract_ );
+				// recover by ignoring this error.
+		}
 		
-		// TODO: @block
-		if( startTag.containsAttribute("block") )
-			reader.reportWarning( reader.ERR_UNIMPLEMENTED_FEATURE,
-				"block attribute for <complexType>" );
 		
 		String mixed = startTag.getAttribute("mixed");
 		if( "true".equals(mixed) )
@@ -149,7 +147,7 @@ public class ComplexTypeDeclState extends RedefinableDeclState {
 			reader.reportError( reader.ERR_BAD_ATTRIBUTE_VALUE, "mixed", mixed );
 			// recover by ignoring this error.
 
-		decl.self.exp = contentType;
+		decl.body.exp = contentType;
 
 		if( isRedefine() ) {
 			// copy new definition back into the original definition.
@@ -158,7 +156,7 @@ public class ComplexTypeDeclState extends RedefinableDeclState {
 		}
 		
 		reader.setDeclaredLocationOf(decl);
-		reader.setDeclaredLocationOf(decl.self);
+		reader.setDeclaredLocationOf(decl.body);
 		return decl;
 	}
 }

@@ -151,6 +151,8 @@ public class ElementDeclState extends ExpressionWithChildState {
 			targetNamespace = ((XMLSchemaReader)reader).resolveNamespaceOfElementDecl(
 				startTag.getAttribute("form") );
 		
+		
+		// TODO: better way to handle the "fixed" attribtue.
 		String fixed = startTag.getAttribute("fixed");
 		if( fixed!=null )
 			// TODO: is this 'fixed' value should be added through enumeration facet?
@@ -158,50 +160,48 @@ public class ElementDeclState extends ExpressionWithChildState {
 			contentType = reader.pool.createTypedString(
 				new TypedString(fixed,false), new StringPair("$xsd","$fixed") );
 		
+		
+		ElementDeclExp decl;
+		if( isGlobal() ) {
+			decl = reader.currentSchema.elementDecls.getOrCreate(name);
+			if( decl.body!=null )
+				reader.reportError( 
+					new Locator[]{this.location,reader.getDeclaredLocationOf(decl)},
+					reader.ERR_DUPLICATE_ELEMENT_DEFINITION,
+					new Object[]{name} );
+		} else {
+			// create a local object.
+			decl = new ElementDeclExp(reader.currentSchema,null);
+		}
+		
+		reader.setDeclaredLocationOf(decl);
+
+		ElementDeclExp.XSElementExp exp = decl.new XSElementExp(
+			new SimpleNameClass(targetNamespace,name), contentType );
+		
+		// set the body.
+		decl.body = exp;
+
+		// set identity constraints
+		exp.identityConstraints.addAll(idcs);
+		
+		// process the nillable attribute.
+		boolean isNillable = false;
 		String nillable = startTag.getAttribute("nillable");
 		if( nillable!=null ) {
 			if( !nillable.equals("true") )
 				reader.reportError( XMLSchemaReader.ERR_BAD_ATTRIBUTE_VALUE, "nillable", nillable );
 				// recovery by assuming "true".
 			
-			// allow nil expression as well as original content model.
-			contentType = reader.pool.createChoice(
-				contentType, reader.nilExpression );
+			decl.isNillable = true;
 		}
 
-		// allow xsi:schemaLocation and xsi:noNamespaceSchemaLocation
-		contentType = reader.pool.createSequence( reader.xsiSchemaLocationExp, contentType );
-		
-		ElementDeclExp.XSElementExp exp = new ElementDeclExp.XSElementExp(
-			new SimpleNameClass(targetNamespace,name), contentType );
-		
-		// set identity constraints
-		exp.identityConstraints.addAll(idcs);
-		
-		if( !isGlobal() )
-			// minOccurs/maxOccurs is processed through interception
-			return exp;
-		
-		
-		// register this as global element declaration
-		ElementDeclExp decl = reader.currentSchema.elementDecls.getOrCreate(name);
-		if( decl.self!=null )
-			reader.reportError( 
-				new Locator[]{this.location,reader.getDeclaredLocationOf(decl)},
-				reader.ERR_DUPLICATE_ELEMENT_DEFINITION,
-				new Object[]{name} );
-		
-		decl.self = exp;
-		exp.parent = decl;
-
+		// process the "abstract" attribute.
 		String abstract_ = startTag.getAttribute("abstract");
-		if( !"true".equals(abstract_) )
-			// prohibit this element declaration from appearing.
-			// by not adding self as a member of choice.
-			decl.exp = reader.pool.createChoice( decl.exp, decl.self );
+		decl.setAbstract( "true".equals(abstract_) );
+		// TODO: abstract is prohibited for the local element.
 		
-		reader.setDeclaredLocationOf(decl);
-			
+		// TODO: substitutionGroup is also prohibited for the local element.	
 		String substitutionGroupQName = startTag.getAttribute("substitutionGroup");
 		if( substitutionGroupQName!=null ) {
 			String[] r = reader.splitQName(substitutionGroupQName);
@@ -214,9 +214,10 @@ public class ElementDeclState extends ExpressionWithChildState {
 					elementDecls.getOrCreate(r[1]/*local name*/);
 				
 				decl.substitutionAffiliation = head;
-					
-				// TODO: where to insert it?
-				head.exp = reader.pool.createChoice( head.exp, decl );
+				
+				// before adding this "decl" to "head.substitutions",
+				// we need to check the block attribute of various related components.
+				// Therefore, this process is done at the wrapUp method of XMLSchemaReader.
 			}
 		}
 		
@@ -244,6 +245,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 				decl.finalValue |= decl.RESTRICTION;
 		}
 		
+		// minOccurs/maxOccurs is processed through interception
 		return decl;
 	}
 

@@ -37,17 +37,18 @@ class SetFieldSerializer extends FieldSerializer
 			"	<%0> int get<%1>Size() {\n"+
 			"		return <%2>.size();\n"+
 			"	}\n"+
-			"	<%0> boolean contains<%1>( <%3> item ) {\n"+
+			"	<%0> boolean contains<%1>( <%4> item ) {\n"+
 			"		return <%2>.contains(item);\n"+
 			"	}\n"+
 			"	<%0> java.util.Iterator iterate<%1>() {\n"+
 			"		return <%2>.iterator();\n"+
 			"	}\n"+
-			"	<%0> <%3>[] get<%1>s() {\n"+
-			"		return (<%3>[])<%s>.toArray(new <%3>[<%2>.size()]);\n"+
+			"	<%0> <%4>[] get<%1>s() {\n"+
+			"		return (<%4>[])<%2>.toArray(new <%4>[<%2>.size()]);\n"+
 			"	}\n",
 			new Object[]{
-				mod, capitalizedFieldName, fu.name, getTypeStr()
+				mod, capitalizedFieldName, fu.name, getTypeStr(),
+				parent.toPrintName(fu.type)
 			}));
 	}
 	
@@ -56,14 +57,15 @@ class SetFieldSerializer extends FieldSerializer
 			"	<%0> void clear<%1>() {\n"+
 			"		<%2>.clear();\n"+
 			"	}\n"+
-			"	<%0> boolean remove( <%3> item ) {\n"+
+			"	<%0> boolean remove( <%4> item ) {\n"+
 			"		return <%2>.remove(item);\n"+
 			"	}\n"+
-			"	<%0> boolean add<%1>( <%3> item ) {\n"+
+			"	<%0> boolean add<%1>( <%4> item ) {\n"+
 			"		return <%2>.add(item);\n"+
 			"	}\n",
 			new Object[]{
-				mod, capitalizedFieldName, fu.name, getTypeStr()
+				mod, capitalizedFieldName, fu.name, getTypeStr(),
+				parent.toPrintName(fu.type)
 			}));
 	}
 	

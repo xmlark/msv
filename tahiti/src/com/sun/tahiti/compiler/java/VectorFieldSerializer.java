@@ -37,17 +37,18 @@ class VectorFieldSerializer extends FieldSerializer
 			"	<%0> int get<%1>Size() {\n"+
 			"		return <%2>.size();\n"+
 			"	}\n"+
-			"	<%0> <%3> get<%1>( int idx ) {\n"+
-			"		return <%2>.get(idx);\n"+
+			"	<%0> <%4> get<%1>( int idx ) {\n"+
+			"		return (<%4>)<%2>.get(idx);\n"+
 			"	}\n"+
 			"	<%0> java.util.Iterator iterate<%1>() {\n"+
 			"		return <%2>.iterator();\n"+
 			"	}\n"+
-			"	<%0> <%3>[] get<%1>s() {\n"+
-			"		return (<%3>[])<%s>.toArray(new <%3>[<%2>.size()]);\n"+
+			"	<%0> <%4>[] get<%1>s() {\n"+
+			"		return (<%4>[])<%2>.toArray(new <%4>[<%2>.size()]);\n"+
 			"	}\n",
 			new Object[]{
-				mod, capitalizedFieldName, fu.name, getTypeStr()
+				mod, capitalizedFieldName, fu.name, getTypeStr(),
+				parent.toPrintName(fu.type)
 			}));
 	}
 	
@@ -56,14 +57,15 @@ class VectorFieldSerializer extends FieldSerializer
 			"	<%0> void clear<%1>() {\n"+
 			"		<%2>.clear();\n"+
 			"	}\n"+
-			"	<%0> <%3> set<%1>( int idx, <%3> item ) {\n"+
-			"		return <%2>.set(idx,item);\n"+
+			"	<%0> <%4> set<%1>( int idx, <%4> item ) {\n"+
+			"		return (<%4>)<%2>.set(idx,item);\n"+
 			"	}\n"+
-			"	<%0> void add<%1>( <%3> item ) {\n"+
+			"	<%0> void add<%1>( <%4> item ) {\n"+
 			"		<%2>.add(item);\n"+
 			"	}\n",
 			new Object[]{
-				mod, capitalizedFieldName, fu.name, getTypeStr()
+				mod, capitalizedFieldName, fu.name, getTypeStr(),
+				parent.toPrintName(fu.type)
 			}));
 	}
 	

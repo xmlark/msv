@@ -65,6 +65,14 @@ class TestDriver implements ErrorReceiver
 		System.out.println("createValue method   : "+(o!=null) );
 		System.out.println("createJavaObj method : "+(jo!=null) );
 		System.out.println("diagnose method      : "+(getDiagnosis(exp.type,exp.testInstance)==null) );
+		System.out.println("JavaObjectType       : "+(jo!=null?jo.getClass().toString():"N/A") );
+		System.out.println("expected Type        : "+exp.type.getJavaObjectType() );
+		
+		try {
+			System.out.println("serializeJavaObject  : "+exp.type.serializeJavaObject(jo,DummyContextProvider.theInstance) );
+		} catch( Exception e ) {
+			System.out.println("serializeJavaObject  : "+e );
+		}
 		
 		try {
 			System.out.println("convertToLexical     : "+exp.type.convertToLexicalValue(o,DummyContextProvider.theInstance));

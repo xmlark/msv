@@ -216,14 +216,22 @@ public class DataTypeTester
 					Object jo = typeObj.createJavaObject( values[i], DummyContextProvider.theInstance );
 					
 					if( jo!=null ) {
+						if( !typeObj.getJavaObjectType().isAssignableFrom(jo.getClass()) ) {
+							System.out.println("type error");
+							roundTripError = true;
+						}
+						
 						String s = typeObj.serializeJavaObject( jo,
 										DummyContextProvider.theInstance );
-						if(s==null)
+						if(s==null) {
+							System.out.println("serializeJavaObject failed");
 							roundTripError = true;
-						else {
+						} else {
 							Object o2 = typeObj.createJavaObject(s,DummyContextProvider.theInstance);
-							if( o2==null || !o.equals(o2) )
+							if( o2==null ) {
+								System.out.println("round-trip conversion failed");
 								roundTripError = true;
+							}
 						}
 					}
 					

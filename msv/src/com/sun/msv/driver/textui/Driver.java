@@ -69,11 +69,16 @@ public class Driver
 			if( args[i].equalsIgnoreCase("-crimson") )
 				factory = (SAXParserFactory)Class.forName("org.apache.crimson.jaxp.SAXParserFactoryImpl").newInstance();
 			else
-			if( args[i].equalsIgnoreCase("-verbose") )
-				verbose = true;
+			if( args[i].equalsIgnoreCase("-verbose") )			verbose = true;
 			else
-			if( args[i].equalsIgnoreCase("-warning") )
-				warning = true;
+			if( args[i].equalsIgnoreCase("-warning") )			warning = true;
+			else
+			if( args[i].equalsIgnoreCase("-version") )
+			{
+				System.out.println("Tranquilo Ver."+
+					java.util.ResourceBundle.getBundle("version").getString("version") );
+				return;
+			}
 			else
 			{
 				if( args[i].charAt(0)=='-' )
@@ -284,7 +289,10 @@ public class Driver
 		try
 		{// try it as a file
 			InputSource is = new InputSource(new java.io.FileInputStream(fileOrURL));
-			is.setSystemId(new File(fileOrURL).getAbsolutePath());
+//			is.setSystemId(new File(fileOrURL).getAbsolutePath());
+			// this has to be getCanonicalPath, otherwise
+			// java cannot resolve relative paths like "c:work.rlx" (in Windows).
+			is.setSystemId(new File(fileOrURL).getCanonicalPath());
 			return is;
 		}
 		catch( Exception e )

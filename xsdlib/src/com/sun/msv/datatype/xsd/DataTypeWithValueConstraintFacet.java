@@ -31,4 +31,7 @@ abstract class DataTypeWithValueConstraintFacet extends DataTypeWithFacet {
 	protected final boolean checkFormat( String literal, ValidationContext context ) {
 		return _createValue(literal,context)!=null;
 	}
+    
+    // serialization support
+    private final static long serialVersionUID =  2497055158497151572L;
 }

@@ -36,7 +36,7 @@ public class EmptyStringType extends ConcreteType {
 		else							return null;
 	}
 	
-	public String convertToLexicalValue( Object o ) {
+	public String convertToLexicalValue( Object o, SerializationContext context ) {
 		if( o.equals("") )	return "";
 		else				throw new IllegalArgumentException();
 	}

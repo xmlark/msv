@@ -101,4 +101,8 @@ abstract class IntegerDerivedType extends BuiltinAtomicType implements Comparato
              throw new InternalError(); // impossible
          }
     }
+    
+    
+    // serialization support
+    private static final long serialVersionUID = -7353993842821534786L;    
 }

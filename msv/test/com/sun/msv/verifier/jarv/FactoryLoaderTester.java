@@ -20,13 +20,13 @@ import org.xml.sax.SAXParseException;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class FactoryLoaderTester
+public class FactoryLoaderTester extends JARVTester
 {
-	public static void main(java.lang.String[] args) {
+	public static void main(java.lang.String[] args) throws Exception {
 		new TheFactoryImplTester().run(args);
 	}
 	
 	protected VerifierFactory getFactory(String language) {
-		return VerifierFactory.newInstance(args[0]);
+		return VerifierFactory.newInstance(language);
 	}
 }

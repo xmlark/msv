@@ -22,7 +22,7 @@ import org.xml.sax.SAXParseException;
  */
 abstract class JARVTester
 {
-	protected abstract VerifierFactory getFactory() throws Exception;
+	protected abstract VerifierFactory getFactory(String language) throws Exception;
 	
 	public void run(java.lang.String[] args) throws Exception {
 		if(args.length<3) {

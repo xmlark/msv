@@ -18,9 +18,9 @@ import org.iso_relax.verifier.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TheFactoryImplTester
+public class TheFactoryImplTester extends JARVTester
 {
-	public static void main(java.lang.String[] args) {
+	public static void main(java.lang.String[] args) throws Exception {
 		new TheFactoryImplTester().run(args);
 	}
 	

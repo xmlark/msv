@@ -29,6 +29,7 @@ public class StartState extends SequenceState
 			final String name = startTag.getAttribute("name");
 			ReferenceExp ref = getReader().grammar.namedPatterns.getOrCreate(name);
 			ref.exp = exp;
+			exp = ref;
 		}
 		
 		getReader().grammar.start = exp;

@@ -17,7 +17,7 @@
 		/>
 
 		<!-- run javacc for UriReference -->
-		<javacc	target="${sourceDir}/com/sun/tranquilo/datatype/uriReference.jj"
+		<javacc	target="${sourceDir}/com/sun/tranquilo/datatype/anyURI.jj"
 				outputdirectory="${sourceDir}/com/sun/tranquilo/datatype"
 				javacchome="${javaCClib}"
 		/>

@@ -28,9 +28,6 @@ import org.relaxng.datatype.DatatypeException;
  */
 public class DatatypeFactory {
 	
-	/** a map that contains all built in types */
-	private static final Map builtinType = createStaticTypes();
-	
 	private DatatypeFactory(){}
 	
 	/**
@@ -91,14 +88,6 @@ public class DatatypeFactory {
 		return new UnionType(newTypeName,m);
 	}
 	
-	/**
-	 * obtain a built-in DataType object by its name
-	 * 
-	 * @return null	if DataType is not found
-	 */
-	public static XSDatatype getTypeByName( String dataTypeName ) {
-		return (XSDatatype)builtinType.get(dataTypeName);
-	}
 	
 	private static void add( Map m, XSDatatypeImpl type ) {
 		final String name = type.getName();
@@ -113,63 +102,134 @@ public class DatatypeFactory {
 		
 		m.put( name, type );
 	}
+
 	
-	/** creates a map that contains all static types */
-	private static Map createStaticTypes() {
+	/**
+	 * obtain a built-in DataType object by its name
+	 * 
+	 * @return null	if DataType is not found
+	 */
+	public static XSDatatype getTypeByName( String dataTypeName ) {
+		XSDatatype dt = (XSDatatype)builtinType.get(dataTypeName);
+		if(dt!=null)	return dt;
+		
 		try {
-			Map m = new java.util.HashMap();
-
-			// missing types are noted inline.
-
-			add( m, StringType.theInstance );
-			add( m, BooleanType.theInstance );
-			add( m, NumberType.theInstance );
-			add( m, FloatType.theInstance );
-			add( m, DoubleType.theInstance );
-			add( m, DurationType.theInstance );
-			add( m, DateTimeType.theInstance );
-			add( m, TimeType.theInstance );
-			add( m, DateType.theInstance );
-			add( m, GYearMonthType.theInstance );
-			add( m, GYearType.theInstance );
-			add( m, GMonthDayType.theInstance );
-			add( m, GDayType.theInstance );
-			add( m, GMonthType.theInstance );
-			add( m, HexBinaryType.theInstance );
-			add( m, Base64BinaryType.theInstance );
-			add( m, AnyURIType.theInstance );
-	//		ID, IDREF
-			add( m, EntityType.theInstance );
-			add( m, QnameType.theInstance );
-			add( m, NormalizedStringType.theInstance );
-			add( m, TokenType.theInstance );
-			add( m, LanguageType.theInstance );
-	//		IDREFS
-			add( m, new ListType("ENTITIES",EntityType.theInstance) );
-			add( m, NmtokenType.theInstance );
-			add( m, new ListType("NMTOKENS",NmtokenType.theInstance) );
-			add( m, NameType.theInstance );
-			add( m, NcnameType.theInstance );
-	//		NOTATION
-			add( m, new StringType("NOTATION", WhiteSpaceProcessor.theCollapse) );
-			
-			add( m, IntegerType.theInstance );
-			add( m, NonPositiveIntegerType.theInstance );
-			add( m, NegativeIntegerType.theInstance );
-			add( m, LongType.theInstance );
-			add( m, IntType.theInstance );
-			add( m, ShortType.theInstance );
-			add( m, ByteType.theInstance );
-			add( m, NonNegativeIntegerType.theInstance );
-			add( m, UnsignedLongType.theInstance );
-			add( m, UnsignedIntType.theInstance );
-			add( m, UnsignedShortType.theInstance );
-			add( m, UnsignedByteType.theInstance );
-			add( m, PositiveIntegerType.theInstance );
-			return m;
+			// types may be not added to the map.
+			if( dataTypeName.equals("float") )
+				add( builtinType, FloatType.theInstance );
+			else
+			if( dataTypeName.equals("double") )
+				add( builtinType, DoubleType.theInstance );
+			else
+			if( dataTypeName.equals("duration") )
+				add( builtinType, DurationType.theInstance );
+			else
+			if( dataTypeName.equals("dateTime") )
+				add( builtinType, DateTimeType.theInstance );
+			else
+			if( dataTypeName.equals("time") )
+				add( builtinType, TimeType.theInstance );
+			else
+			if( dataTypeName.equals("date") )
+				add( builtinType, DateType.theInstance );
+			else
+			if( dataTypeName.equals("gYearMonth") )
+				add( builtinType, GYearMonthType.theInstance );
+			else
+			if( dataTypeName.equals("gYear") )
+				add( builtinType, GYearType.theInstance );
+			else
+			if( dataTypeName.equals("gMonthDay") )
+				add( builtinType, GMonthDayType.theInstance );
+			else
+			if( dataTypeName.equals("gDay") )
+				add( builtinType, GDayType.theInstance );
+			else
+			if( dataTypeName.equals("gMonth") )
+				add( builtinType, GMonthType.theInstance );
+			else
+			if( dataTypeName.equals("hexBinary") )
+				add( builtinType, HexBinaryType.theInstance );
+			else
+			if( dataTypeName.equals("base64Binary") )
+				add( builtinType, Base64BinaryType.theInstance );
+			else
+			if( dataTypeName.equals("anyURI") )
+				add( builtinType, AnyURIType.theInstance );
+			else
+			if( dataTypeName.equals("entity") )
+				add( builtinType, EntityType.theInstance );
+			else
+			if( dataTypeName.equals("language") )
+				add( builtinType, LanguageType.theInstance );
+			else
+			if( dataTypeName.equals("ENTITIES") )
+				add( builtinType, new ListType("ENTITIES",EntityType.theInstance) );
+			else
+			if( dataTypeName.equals("NMTOKENS") )
+				add( builtinType, new ListType("NMTOKENS",NmtokenType.theInstance) );
+			else
+			if( dataTypeName.equals("NOTATION") )
+				add( builtinType, new StringType("NOTATION", WhiteSpaceProcessor.theCollapse) );
+			else
+			if( dataTypeName.equals("nonPositiveInteger") )
+				add( builtinType, NonPositiveIntegerType.theInstance );
+			else
+			if( dataTypeName.equals("unsignedLong") )
+				add( builtinType, UnsignedLongType.theInstance );
+			else
+			if( dataTypeName.equals("unsignedInt") )
+				add( builtinType, UnsignedIntType.theInstance );
+			else
+			if( dataTypeName.equals("unsignedShort") )
+				add( builtinType, UnsignedShortType.theInstance );
+			else
+			if( dataTypeName.equals("unsignedByte") )
+				add( builtinType, UnsignedByteType.theInstance );
 		} catch( DatatypeException dte )	{
 			// assertion failed
 			throw new Error();
 		}
+		
+		return (XSDatatype)builtinType.get(dataTypeName);
+	}
+	
+	/**
+	 * a map that contains built in types.
+	 * 
+	 * To speed up the boot process, only a handful types are added
+	 * at the first time.
+	 */
+	private static final Map builtinType = createInitialBuiltinTypesMap();
+	
+	/** creates a map that contains frequently-used built-in types */
+	private static Map createInitialBuiltinTypesMap() {
+		Map m = new java.util.HashMap();
+
+		// missing types are noted inline.
+
+		add( m, StringType.theInstance );
+		add( m, BooleanType.theInstance );
+		add( m, NumberType.theInstance );
+//		ID, IDREF
+		add( m, QnameType.theInstance );
+		add( m, NormalizedStringType.theInstance );
+		add( m, TokenType.theInstance );
+//		IDREFS
+		add( m, NmtokenType.theInstance );
+		add( m, NameType.theInstance );
+		add( m, NcnameType.theInstance );
+			
+		add( m, IntegerType.theInstance );
+		add( m, NegativeIntegerType.theInstance );
+		add( m, LongType.theInstance );
+		add( m, IntType.theInstance );
+		add( m, ShortType.theInstance );
+		add( m, ByteType.theInstance );
+		add( m, NonNegativeIntegerType.theInstance );
+		add( m, PositiveIntegerType.theInstance );
+
+			
+		return m;
 	}
 }

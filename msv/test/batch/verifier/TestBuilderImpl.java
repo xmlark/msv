@@ -15,7 +15,7 @@ public class TestBuilderImpl implements TestBuilder
     
     private class SchemaTestCase extends TestCase {
         public SchemaTestCase( File _src ) {
-            super(getName(_src));
+            super(TestBuilderImpl.getName(_src));
             this.src=_src;
         }
         

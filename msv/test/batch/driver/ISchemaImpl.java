@@ -5,8 +5,10 @@ import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.relaxng.RELAXNGGrammar;
 	
 public class ISchemaImpl implements ISchema {
-	public final Grammar grammar;
-	
+    
+	private final Grammar grammar;
+    public Grammar asGrammar() { return grammar; }
+    
 	ISchemaImpl( Grammar grammar ) {
 		if(grammar==null)	throw new Error("grammar is null");
 		this.grammar = grammar;

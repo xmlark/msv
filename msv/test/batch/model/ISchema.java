@@ -9,6 +9,8 @@
  */
 package batch.model;
 
+import com.sun.msv.grammar.Grammar;
+
 /**
  * Represents a compiled shcmea.
  * 
@@ -17,5 +19,7 @@ package batch.model;
  * @author
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface ISchema {}
+public interface ISchema {
+    Grammar asGrammar();
+}
 

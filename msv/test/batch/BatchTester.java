@@ -55,6 +55,8 @@ public abstract class BatchTester {
 	
 	private TestReader reader;
     
+    /** Set to true if the strict option is specified. */
+    protected boolean strict = false;
     
 	
 	
@@ -140,7 +142,6 @@ public abstract class BatchTester {
 		
 		String target = null;
 		Vector instances = new Vector();
-		boolean strict = false;
 		boolean recursive = false;
 		
 		for( int i=0; i<av.length; i++ ) {

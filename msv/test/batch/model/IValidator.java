@@ -10,6 +10,7 @@
 package batch.model;
 
 import java.io.File;
+import java.io.InputStream;
 
 /**
  * A validator has to implement this interface to be tested with this harness.
@@ -32,6 +33,8 @@ public interface IValidator
 	 */
 	ISchema parseSchema( File schema ) throws Exception;
 	
+    ISchema parseSchema( InputStream is ) throws Exception;
+    
 	/**
 	 * validates the specified instance with the schema.
 	 * 

@@ -11,6 +11,7 @@ package com.sun.msv.reader.xmlschema;
 
 import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
+import com.sun.msv.reader.AbortException;
 import com.sun.msv.reader.ChildlessState;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.datatype.xsd.SimpleTypeState;
@@ -66,10 +67,13 @@ public class RedefineState extends GlobalDeclState {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		super.startSelf();
 	
-		// parse included grammar first.
-		reader.switchSource( this,
-			new RootIncludedSchemaState(
-				reader.sfactory.schemaIncluded(this,reader.currentSchema.targetNamespace) ) );
+        try {// parse included grammar first.
+    		reader.switchSource( this,
+	    		new RootIncludedSchemaState(
+		    		reader.sfactory.schemaIncluded(this,reader.currentSchema.targetNamespace) ) );
+        } catch( AbortException e ) {
+            // recover by ignoring the error
+        }
 		
 		// disable duplicate definition check.
 		prevDuplicateCheck = reader.doDuplicateDefinitionCheck;

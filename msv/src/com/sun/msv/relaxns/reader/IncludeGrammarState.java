@@ -9,6 +9,7 @@
  */
 package com.sun.msv.relaxns.reader;
 
+import com.sun.msv.reader.AbortException;
 import com.sun.msv.reader.ChildlessState;
 
 /**
@@ -24,13 +25,16 @@ public class IncludeGrammarState extends ChildlessState
 	
 		final String href = startTag.getAttribute("grammarLocation");
 
-		if(href==null)
-		{// name attribute is required.
+		if(href==null) {
+            // name attribute is required.
 			reader.reportError( reader.ERR_MISSING_ATTRIBUTE,
 				"include","grammarLocation");
 			// recover by ignoring this include element
-		}
-		else
-			reader.switchSource(this,href,new RootGrammarMergeState());
+		} else
+            try {
+    			reader.switchSource(this,href,new RootGrammarMergeState());
+            } catch( AbortException e ) {
+    			// recover by ignoring this include element
+            }
 	}
 }

@@ -9,6 +9,7 @@
  */
 package com.sun.msv.reader.xmlschema;
 
+import com.sun.msv.reader.AbortException;
 import com.sun.msv.reader.ChildlessState;
 
 /**
@@ -35,9 +36,12 @@ public class ImportState extends ChildlessState {
 			// this grammar is already defined.
 			// so ignore it.
 			return;
-		
-		
-		reader.switchSource( this,
-			new RootIncludedSchemaState(reader.sfactory.schemaHead(namespace)) );
+				
+        try {
+    		reader.switchSource( this,
+	    		new RootIncludedSchemaState(reader.sfactory.schemaHead(namespace)) );
+        } catch( AbortException e ) {
+            // recover by ignoring the error
+        }
 	}
 }

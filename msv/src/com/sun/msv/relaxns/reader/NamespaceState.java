@@ -9,6 +9,7 @@
  */
 package com.sun.msv.relaxns.reader;
 
+import com.sun.msv.reader.AbortException;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.GrammarReader;
@@ -107,7 +108,8 @@ public class NamespaceState extends State
                 reader.controller.error( e, getLocation() );
 			} catch( SAXException e ) {
                 reader.controller.error( e, getLocation() );
-			}
+            } catch( AbortException e ) {
+            }
 			
 			getSchema(moduleReader);
 			

@@ -29,6 +29,7 @@ import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
 import com.sun.msv.grammar.xmlschema.ElementDeclExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaTypeExp;
 import com.sun.msv.grammar.xmlschema.AttWildcardExp;
+import com.sun.msv.reader.AbortException;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.reader.datatype.xsd.XSDatatypeResolver;
 import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
@@ -660,7 +661,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 
     
     
-	protected void switchSource( State sourceState, State newRootState ) {
+	protected void switchSource( State sourceState, State newRootState ) throws AbortException {
 		final String schemaLocation = sourceState.getStartTag().getAttribute("schemaLocation");
 
 		if(schemaLocation==null) {

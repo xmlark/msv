@@ -9,6 +9,7 @@
  */
 package com.sun.msv.reader.xmlschema;
 
+import com.sun.msv.reader.AbortException;
 import com.sun.msv.reader.ChildlessState;
 
 /**
@@ -21,8 +22,12 @@ public class IncludeState extends ChildlessState {
 	protected void startSelf() {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		super.startSelf();
-		reader.switchSource( this,
-			new RootIncludedSchemaState(
-				reader.sfactory.schemaIncluded(this,reader.currentSchema.targetNamespace) ) );
+        try {
+    		reader.switchSource( this,
+	    		new RootIncludedSchemaState(
+		    		reader.sfactory.schemaIncluded(this,reader.currentSchema.targetNamespace) ) );
+        } catch( AbortException e ) {
+            // recover by ignoring the error
+        }
 	}
 }

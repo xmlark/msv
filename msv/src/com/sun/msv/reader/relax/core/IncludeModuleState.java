@@ -10,6 +10,7 @@
 package com.sun.msv.reader.relax.core;
 
 import com.sun.msv.reader.ChildlessState;
+import com.sun.msv.reader.AbortException;
 
 /**
  * parses &lt;include&gt; element of RELAX Core.
@@ -18,21 +19,19 @@ import com.sun.msv.reader.ChildlessState;
  */
 public class IncludeModuleState extends ChildlessState
 {
-	protected void startSelf()
-	{
+	protected void startSelf() {
 		super.startSelf();
 	
 		final String href = startTag.getAttribute("moduleLocation");
 
-		if(href==null)
-		{// name attribute is required.
+		if(href==null) {
+            // name attribute is required.
 			reader.reportError( RELAXCoreReader.ERR_MISSING_ATTRIBUTE,
 				"include","moduleLocation");
-			// recover by ignoring this include element
-		}
-		else
-		{
-			reader.switchSource(this,href,new RootModuleMergeState());
-		}
+		} else
+            try {
+    			reader.switchSource(this,href,new RootModuleMergeState());
+            } catch( AbortException e ) {}
+		// recover by ignoring this include element
 	}
 }

@@ -13,6 +13,7 @@ import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.trex.TREXGrammar;
 import com.sun.msv.reader.ExpressionWithoutChildState;
 import com.sun.msv.reader.ExpressionOwner;
+import com.sun.msv.reader.AbortException;
 
 /**
  * &lt;include&gt; element in the pattern. (&lt;externalRef&gt; of RELAX NG).
@@ -39,8 +40,9 @@ public class IncludePatternState extends ExpressionWithoutChildState implements 
 			return Expression.nullSet;
 		}
 		
-		
-		reader.switchSource(this,href,new RootIncludedPatternState(this));
+        try {
+    		reader.switchSource(this,href,new RootIncludedPatternState(this));
+        } catch( AbortException e ) {} // recover by ignoring an error
 		
 		// onEndChild method is called inside the above function call and
 		// included will be set.

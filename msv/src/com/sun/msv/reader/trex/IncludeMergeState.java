@@ -9,6 +9,7 @@
  */
 package com.sun.msv.reader.trex;
 
+import com.sun.msv.reader.AbortException;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.SimpleState;
 import com.sun.msv.util.StartTagInfo;
@@ -37,8 +38,12 @@ public class IncludeMergeState extends SimpleState {
 			// recover by ignoring this include element
 		}
 		else
-			// parse specified file
-			reader.switchSource(this,href,new RootMergedGrammarState());
+            try {
+			    // parse specified file
+			    reader.switchSource(this,href,new RootMergedGrammarState());
+            } catch( AbortException e ) {
+                // recover by ignoring the error
+            }
 		
 		super.endSelf();
 	}

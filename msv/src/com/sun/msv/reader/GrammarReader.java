@@ -231,66 +231,6 @@ public abstract class GrammarReader
 		return exp;
 	}
 	
-	/**
-	 * gets DataType object from type name.
-	 * 
-	 * If undefined type name is specified, this method is responsible
-	 * to report an error, and recover.
-	 * 
-	 * @param typeName
-	 *		For RELAX, this is unqualified type name. For TREX,
-	 *		this is a QName.
-	 */
-//	public abstract Datatype resolveDataType( String typeName );
-
-	/**
-	 * tries to obtain a DataType object by resolving obsolete names.
-	 * this method is useful for backward compatibility purpose.
-	 */
-	public XSDatatype getBackwardCompatibleType( String typeName ) {
-		/*
-			This method is not heavily used.
-			So it is a good idea not to create a reference to the actual instance
-			unless it's absolutely necessary, so that the class loader doesn't load
-			the datatype class easily.
-		
-			If we use a map, it makes the class loader loads all classes. 
-		*/
-		XSDatatype dt = null;
-		
-		if( typeName.equals("uriReference") )
-			dt = com.sun.msv.datatype.xsd.AnyURIType.theInstance;
-		else
-		if( typeName.equals("number") )
-			dt = com.sun.msv.datatype.xsd.NumberType.theInstance;
-		else
-		if( typeName.equals("timeDuration") )
-			dt = com.sun.msv.datatype.xsd.DurationType.theInstance;
-		else
-		if( typeName.equals("CDATA") )
-			dt = com.sun.msv.datatype.xsd.NormalizedStringType.theInstance;
-		else
-		if( typeName.equals("year") )
-			dt = com.sun.msv.datatype.xsd.GYearType.theInstance;
-		else
-		if( typeName.equals("yearMonth") )
-			dt = com.sun.msv.datatype.xsd.GYearMonthType.theInstance;
-		else
-		if( typeName.equals("month") )
-			dt = com.sun.msv.datatype.xsd.GMonthType.theInstance;
-		else
-		if( typeName.equals("monthDay") )
-			dt = com.sun.msv.datatype.xsd.GMonthDayType.theInstance;
-		else
-		if( typeName.equals("day") )
-			dt = com.sun.msv.datatype.xsd.GDayType.theInstance;
-
-		if( dt!=null )
-			reportWarning( WRN_DEPRECATED_TYPENAME, typeName, dt.displayName() );
-		
-		return dt;
-	}
-	
 
 	
 // parsing and related services
@@ -355,13 +295,23 @@ public abstract class GrammarReader
 	 *		always return non-null valid object
 	 */
 	public final InputSource resolveLocation( State sourceState, String url )
-        throws IOException, SAXException {
-		// resolve a relative URL to an absolute one
-		url = combineURL( sourceState.getBaseURI(), url );
+        throws AbortException {
+        
+        try {
+		    // resolve a relative URL to an absolute one
+		    url = combineURL( sourceState.getBaseURI(), url );
 	
-		InputSource source = controller.resolveEntity(null,url);
-		if(source==null)	return new InputSource(url);	// default handling
-		else				return source;
+		    InputSource source = controller.resolveEntity(null,url);
+		    if(source==null)	return new InputSource(url);	// default handling
+		    else				return source;
+            
+        // in case of an error, throw the AbortException
+        } catch( IOException e ) {
+            controller.error(e,locator);
+        } catch( SAXException e ) {
+            controller.error(e,locator);
+        }
+        throw AbortException.theInstance;
 	}
 
 	/**
@@ -388,23 +338,17 @@ public abstract class GrammarReader
 	 *		this state will parse top-level of new XML source.
 	 *		this state receives document element by its createChildState method.
 	 */
-	public void switchSource( State sourceState, String url, State newState ) {
+	public void switchSource( State sourceState, String url, State newState ) throws AbortException {
 		
-		if( url.indexOf('#')>=0 )
+        if( url.indexOf('#')>=0 ) {
 			// this href contains the fragment identifier.
 			// we cannot handle them properly.
 			reportError( ERR_FRAGMENT_IDENTIFIER, url );
-		
-        try {
-            switchSource(
-    		    resolveLocation(sourceState,url), newState );
-        } catch( IOException e ) {
-            // recover by ignoring this.
-            controller.error(e,locator);
-        } catch( SAXException e ) {
-            // recover by ignoring this.
-            controller.error(e,locator);
+            throw AbortException.theInstance;
         }
+		
+        switchSource(
+    	    resolveLocation(sourceState,url), newState );
     }
     
     public void switchSource( InputSource source, State newState ) {
@@ -466,6 +410,7 @@ public abstract class GrammarReader
 		} catch( SAXException e ) {
             controller.error( e, errorSource );
 		}
+        // TODO: shall we throw AbortException here?
 	}
 	
 	

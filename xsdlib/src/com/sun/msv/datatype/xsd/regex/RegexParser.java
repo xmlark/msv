@@ -127,7 +127,7 @@ class RegexParser {
 
     public void setLocale(Locale locale) {
         try {
-            this.resources = ResourceBundle.getBundle("org.apache.xerces.impl.xpath.regex.message", locale);
+            this.resources = ResourceBundle.getBundle("com.sun.msv.datatype.xsd.regex.message", locale);
         } catch (MissingResourceException mre) {
             throw new RuntimeException("Installation Problem???  Couldn't load messages: "
                                        +mre.getMessage());

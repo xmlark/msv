@@ -85,7 +85,6 @@ public class GrammarLoader
 		SAXParserFactory factory )
 		throws SAXException, ParserConfigurationException, java.io.IOException
 	{
-//		try {
 		TREXPatternPool pool = new TREXPatternPool();
 		RELAXNSReader relaxNs = new RELAXNSReader(controller,factory,pool);
 		RELAXCoreReader relaxCore = new RELAXCoreReader(controller,factory,pool);
@@ -94,20 +93,13 @@ public class GrammarLoader
 		XMLReader parser = factory.newSAXParser().getXMLReader();
 		Sniffer sniffer = new Sniffer(relaxNs,relaxCore,trex,parser);
 		parser.setContentHandler(sniffer);
+		parser.setErrorHandler(new GrammarReaderControllerAdaptor(controller));
 		if( source instanceof String )	parser.parse( (String)source );
 		else							parser.parse( (InputSource)source );
 		
 		if(sniffer.winner==relaxNs)		return relaxNs.getResult();
 		if(sniffer.winner==relaxCore)	return relaxCore.getResult();
 		else							return trex.getResult();
-		
-		// TODO: remove this catch clause
-//		}
-//		catch(SAXException e)
-//		{
-//			e.getException().printStackTrace();
-//			throw e;
-//		}
 	}
 	
 	

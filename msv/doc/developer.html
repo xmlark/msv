@@ -93,18 +93,18 @@
   
 <A id="qs" />
 <H1>Quick Start: validating documents</H1>
-<P>You can use Tranquilo as a stand-alone SAX <A 
-href="http://www.megginson.com/SAX/Java/javadoc/org/xml/sax/ContentHandler.html">ContentHandler</A>    &nbsp;or a SAX <A 
-href="http://www.megginson.com/SAX/Java/javadoc/org/xml/sax/XMLFilter.html">XMLFilter</A> to your own handler. If this satisfies your 
-needs, then this section will be the only section you have to read.</P>
-<P>The easiest way to validate the document before your code processes it is to 
-use "Java API for RELAX Verifiers" (JARV). JARV is an implementation-independent 
-interface set, so you can even switch to a different verifier implementation if 
-you like.&nbsp;For information about JARV, see @@@@@@.</P>
 <P>
-  Unlike its name, JARV is not limited to RELAX, but it can be used with TREX.
+  You can use Tranquilo to verify documents before your application reads them.
+  If this satisfies your needs, then this section will be the only section you have to read.
 </P>
 <P>
+  The easiest way to do this is to 
+  use "Java API for RELAX Verifiers" (JARV). JARV is an implementation-independent 
+  interface set, so you can even switch to a different verifier implementation if 
+  you like. For information about JARV, see @@@@@@.
+</P>
+<P>
+  Despite its name, JARV is not limited to RELAX, but it can be used with TREX.
   The following example illustrates a typical usage of JARV.
 </P>
 <PRE>
@@ -121,7 +121,7 @@ void f( SAXParserFactory pf )
   
   // load RELAX schema
   // <b>if you'd like to use TREX schema, then </b>
-  // <b>create TREXFactoryImpl instead of RELAXFactoryImpl</b>
+  // <b>create TREXFactoryImpl instead of RELAXFactoryImpl in the above line</b>
   Verifier verifier = factory.newVerifier( new File("foo.rxg") );
   
   try {
@@ -147,6 +147,9 @@ void f( SAXParserFactory pf )
 <P>
   VerifierFilter validates the document before your ContentHandler receives
   SAX events. If an error happens, @@@@@@
+</P>
+<P>
+  Currently, there is no way to create DOM with JARV.
 </P>
 
 <A id="load" />

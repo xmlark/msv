@@ -25,6 +25,7 @@ import com.sun.msv.grammar.trex.*;
 import com.sun.msv.reader.*;
 import com.sun.msv.reader.trex.TREXBaseReader;
 import com.sun.msv.reader.trex.AnyStringState;
+import com.sun.msv.reader.trex.IncludePatternState;
 import com.sun.msv.reader.trex.RootState;
 import com.sun.msv.reader.datatype.DataTypeVocabulary;
 import com.sun.msv.util.StartTagInfo;
@@ -137,6 +138,7 @@ public class TREXGrammarReader extends TREXBaseReader {
 		public State string		( State parent, StartTagInfo tag )	{ return new StringState(); }
 		public State data		( State parent, StartTagInfo tag )	{ return new DataState(); }
 		public State define		( State parent, StartTagInfo tag )	{ return new DefineState(); }
+		public State includePattern( State parent, StartTagInfo tag ) { return new IncludePatternState(); }
 	}
 	protected StateFactory getStateFactory() {
 		return (StateFactory)super.sfactory;
@@ -165,6 +167,7 @@ public class TREXGrammarReader extends TREXBaseReader {
 		if(tag.localName.equals("anyString"))	return getStateFactory().anyString(parent,tag);
 		if(tag.localName.equals("string"))		return getStateFactory().string(parent,tag);
 		if(tag.localName.equals("data"))		return getStateFactory().data(parent,tag);
+		if(tag.localName.equals("include"))		return getStateFactory().includePattern(parent,tag);
 
 		final String role = tag.getAttribute(TREXNamespace,"role");
 		if("datatype".equals(role)) {

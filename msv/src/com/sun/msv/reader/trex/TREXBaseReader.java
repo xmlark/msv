@@ -97,7 +97,6 @@ public abstract class TREXBaseReader extends GrammarReader {
 		public State ref		( State parent, StartTagInfo tag ) { return new RefState(); }
 		public State empty		( State parent, StartTagInfo tag ) { return new EmptyState(); }
 		public State notAllowed	( State parent, StartTagInfo tag ) { return new NullSetState(); }
-		public State includePattern( State parent, StartTagInfo tag ) { return new IncludePatternState(); }
 		public State includeGrammar( State parent, StartTagInfo tag ) { return new IncludeMergeState(); }
 		public State grammar	( State parent, StartTagInfo tag ) { return new GrammarState(); }
 		public State start		( State parent, StartTagInfo tag ) { return new StartState(); }
@@ -135,7 +134,6 @@ public abstract class TREXBaseReader extends GrammarReader {
 //		if(tag.localName.equals("string"))		return sfactory.string(parent,tag);
 //		if(tag.localName.equals("data"))		return sfactory.data(parent,tag);
 		if(tag.localName.equals("notAllowed"))	return sfactory.notAllowed(parent,tag);
-		if(tag.localName.equals("include"))		return sfactory.includePattern(parent,tag);
 		if(tag.localName.equals("grammar"))		return sfactory.grammar(parent,tag);
 
 		return null;		// unknown element. let the default error be thrown.

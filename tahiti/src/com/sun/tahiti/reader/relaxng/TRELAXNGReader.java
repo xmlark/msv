@@ -7,6 +7,7 @@ import com.sun.msv.reader.ExpressionState;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.tahiti.reader.RelationNormalizer;
+import com.sun.tahiti.reader.NameUtil;
 import com.sun.tahiti.grammar.*;
 import javax.xml.parsers.SAXParserFactory;
 import java.util.Map;
@@ -136,7 +137,7 @@ public class TRELAXNGReader extends RELAXNGReader {
 			// this is the case of <define/>,<ref/>, and sometimes
 			// <element/> and <attribute/>
 			name = tag.getAttribute("name");
-			if(name!=null)	name = xmlNameToJavaName(role,name);
+			if(name!=null)	name = NameUtil.xmlNameToJavaName(role,name);
 		}
 		
 		if(name==null) {
@@ -146,7 +147,7 @@ public class TRELAXNGReader extends RELAXNGReader {
 			if( exp instanceof NameClassAndExpression ) {
 				NameClass nc = ((NameClassAndExpression)exp).getNameClass();
 				if( nc instanceof SimpleNameClass )
-					name = xmlNameToJavaName(role,((SimpleNameClass)nc).localName);
+					name = NameUtil.xmlNameToJavaName(role,((SimpleNameClass)nc).localName);
 					
 				// if it's not a simple type, abort.
 			}
@@ -165,21 +166,6 @@ public class TRELAXNGReader extends RELAXNGReader {
 		}
 		
 		return name;
-	}
-	
-	/**
-	 * convert XML names (like element names) to the corresponding Java names.
-	 * 
-	 * This method should perform conversion like ("abc"->"Abc").
-	 * 
-	 * @param role
-	 *		the role of this expression. One of "field","interface", and "class".
-	 */
-	protected String xmlNameToJavaName( String role, String xmlName ) {
-		// TODO
-		if( role.equals("class") || role.equals("interface") )
-			return Character.toUpperCase(xmlName.charAt(0))+xmlName.substring(1);
-		return xmlName;
 	}
 	
 	public void wrapUp() {

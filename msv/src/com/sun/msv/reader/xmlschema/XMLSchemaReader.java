@@ -28,6 +28,7 @@ import com.sun.msv.reader.State;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.SequenceState;
 import com.sun.msv.reader.ChoiceState;
+import com.sun.msv.reader.InterleaveState;
 import com.sun.msv.reader.ExpressionState;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.GrammarReaderController;
@@ -216,7 +217,7 @@ public class XMLSchemaReader extends GrammarReader {
 		}
 		
 		protected State simpleType			(State parent,StartTagInfo tag)	{ return new SimpleTypeState(); }
-		protected State all					(State parent,StartTagInfo tag)	{ return new AllState(); }
+		protected State all					(State parent,StartTagInfo tag)	{ return new InterleaveState(); }
 		protected State choice				(State parent,StartTagInfo tag)	{ return new ChoiceState(true); }
 		protected State sequence			(State parent,StartTagInfo tag)	{ return new SequenceState(true); }
 		protected State group				(State parent,StartTagInfo tag)	{ return new GroupState(); }
@@ -448,7 +449,7 @@ public class XMLSchemaReader extends GrammarReader {
 		// process minOccurs/maxOccurs
 		if( state instanceof SequenceState
 		||  state instanceof ChoiceState
-		||  state instanceof AllState
+		||  state instanceof InterleaveState
 		||  state instanceof AnyElementState
 		||  state instanceof ElementDeclState
 		||  state instanceof ElementRefState

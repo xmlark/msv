@@ -192,6 +192,18 @@ public class GrammarLoader
 	}
 
 	/**
+	 * returns a thread-safe AGM object, depending on the language used.
+	 */
+	public static Grammar loadSchema( InputSource source,
+		GrammarReaderController controller )
+			throws SAXException, ParserConfigurationException, java.io.IOException
+	{
+		GrammarLoader loader = new GrammarLoader();
+		loader.setController(controller);
+		return loader.parse(source);
+	}
+	
+	/**
 	 * parses the specified schema and returns the result as a Grammar object.
 	 * 
 	 * This method uses the default SAX parser and throws an exception

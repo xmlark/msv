@@ -109,12 +109,16 @@ public class SAXParserFactoryImpl extends SAXParserFactory
 	public boolean getFeature( String name ) throws ParserConfigurationException,
 													SAXNotRecognizedException,
 													SAXNotSupportedException {
+        if( name.equals(com.sun.msv.verifier.jarv.Const.PANIC_MODE_FEATURE) )
+            return jarvFactory.isFeature(name);
 		return core.getFeature(name);
 	}
 	
 	public void setFeature( String name, boolean value )
 		throws ParserConfigurationException, SAXNotRecognizedException,	SAXNotSupportedException {
 		
+        if( name.equals(com.sun.msv.verifier.jarv.Const.PANIC_MODE_FEATURE) )
+            jarvFactory.setFeature(name,value);
 		core.setFeature(name,value);
 	}
 	

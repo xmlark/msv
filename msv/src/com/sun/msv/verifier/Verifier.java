@@ -74,7 +74,8 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	/** Schema object against which the validation will be done */
 	protected final DocumentDeclaration docDecl;
 	
-	/** Panic level.
+	/**
+	 * Panic level.
 	 * 
 	 * If the level is non-zero, createChildAcceptors will silently recover
 	 * from error. This effectively suppresses spurious error messages.
@@ -85,7 +86,18 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	 */
 	protected int panicLevel = 0;
 	
-	private final static int INITIAL_PANIC_LEVEL = 3;
+    /**
+     * Initial panic level when an error is found.
+     * If this value is bigger, MSV will take more time to recover from errors,
+     * Setting this value to 0 means turning the panic mode off entirely.
+     */
+	private int initialPanicLevel = DEFAULT_PANIC_LEVEL;
+    
+    private static final int DEFAULT_PANIC_LEVEL = 3;
+    
+    public final void setPanicMode( boolean usePanicMode ) {
+        initialPanicLevel = usePanicMode?DEFAULT_PANIC_LEVEL:0;
+    }
 
 	public Verifier( DocumentDeclaration documentDecl, ErrorHandler errorHandler ) {
 		this.docDecl = documentDecl;
@@ -310,7 +322,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		if( errorHandler!=null && panicLevel==0 )
 			errorHandler.error(vv);
 			
-		panicLevel = INITIAL_PANIC_LEVEL;
+		panicLevel = initialPanicLevel;
 		return vv;
 	}
 	

@@ -61,6 +61,9 @@ public class VerifierFilter extends XMLFilterImpl implements IVerifier {
 		super.setErrorHandler(handler);
 		verifier.setErrorHandler(handler);
 	}
+    public final void setPanicMode( boolean usePanicMode ) {
+        verifier.setPanicMode(usePanicMode);
+    }
 
 	
 	public IVerifier getVerifier() { return verifier; }

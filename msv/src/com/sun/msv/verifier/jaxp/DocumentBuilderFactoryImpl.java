@@ -16,6 +16,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.iso_relax.verifier.VerifierFactory;
 //import org.iso_relax.verifier.VerifierConfigurationException;
 import org.iso_relax.verifier.Schema;
@@ -72,9 +73,22 @@ public class DocumentBuilderFactoryImpl extends DocumentBuilderFactory {
 	
 	
 	public Object getAttribute( String name ) {
+        if( name.equals(com.sun.msv.verifier.jarv.Const.PANIC_MODE_FEATURE) )
+            try {
+                return jarvFactory.isFeature(name)?Boolean.TRUE:Boolean.FALSE;
+            } catch( SAXException e ) {
+                throw new IllegalArgumentException(e.getMessage());
+            }
 		return core.getAttribute(name);
 	}
 	public void setAttribute( String name, Object value ) {
+        if( name.equals(com.sun.msv.verifier.jarv.Const.PANIC_MODE_FEATURE) )
+            try {
+                jarvFactory.setFeature(name,((Boolean)value).booleanValue());
+            } catch( SAXException e ) {
+                throw new IllegalArgumentException(e.getMessage());
+            }
+        
 		if(Const.SCHEMA_PROPNAME.equals(name)) {
 			try {
 				if(value instanceof String) {

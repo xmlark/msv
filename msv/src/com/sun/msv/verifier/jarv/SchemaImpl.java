@@ -18,6 +18,7 @@ import org.xml.sax.InputSource;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.verifier.DocumentDeclaration;
+import com.sun.msv.verifier.IVerifier;
 
 /**
  * base implementation of RELAXFactoryImpl and TREXFactoryImpl
@@ -29,13 +30,18 @@ public class SchemaImpl implements Schema
 	protected final Grammar grammar;
 	protected final SAXParserFactory factory;
 	
-	protected SchemaImpl( Grammar grammar, SAXParserFactory factory ) {
+	protected SchemaImpl( Grammar grammar, SAXParserFactory factory,
+        boolean _usePanicMode ) {
+        
 		this.grammar = grammar;
 		this.factory = factory;
+        this.usePanicMode = _usePanicMode;
 	}
 	
 	public Verifier newVerifier() throws VerifierConfigurationException {
-		return new VerifierImpl( FactoryImpl.createVerifier(grammar), createXMLReader() );
+        IVerifier core = FactoryImpl.createVerifier(grammar);
+        core.setPanicMode(usePanicMode);
+		return new VerifierImpl( core, createXMLReader() );
 	}
 	
 	private synchronized XMLReader createXMLReader() throws VerifierConfigurationException {
@@ -49,4 +55,6 @@ public class SchemaImpl implements Schema
 			throw new VerifierConfigurationException(e);
 		}
 	}
+    
+    private boolean usePanicMode;
 }

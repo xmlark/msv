@@ -48,6 +48,7 @@ public class Driver {
 		boolean warning = false;
 		boolean standalone=false;
 		boolean strict=false;
+        boolean usePanicMode=true;
 		EntityResolver entityResolver=null;
 		
 		for( int i=0; i<args.length; i++ ) {
@@ -77,6 +78,8 @@ public class Driver {
 			else
 			if( args[i].equalsIgnoreCase("-warning") )			warning = true;
 			else
+            if( args[i].equalsIgnoreCase("-maxerror") )         usePanicMode = false;
+            else
 			if( args[i].equalsIgnoreCase("-locale") ) {
 				String code = args[++i];
 				
@@ -231,10 +234,12 @@ public class Driver {
 				
 				result = verifier.verify(
 					reader,
-					Util.getInputSource(instName));
+					Util.getInputSource(instName),
+                    usePanicMode);
 			} catch( com.sun.msv.verifier.ValidationUnrecoverableException vv ) {
 				System.out.println(localize(MSG_BAILOUT));
 			} catch( SAXParseException se ) {
+				  se.getException().printStackTrace();
 				; // error is already reported by ErrorHandler
 			} catch( SAXException e ) {
 				  e.getException().printStackTrace();
@@ -321,7 +326,7 @@ public class Driver {
 
 	/** acts as a function closure to validate a document. */
 	private interface DocumentVerifier {
-		boolean verify( XMLReader p, InputSource instance ) throws Exception;
+		boolean verify( XMLReader p, InputSource instance, boolean usePanicMode ) throws Exception;
 	}
 	
 	/** validates a document by using divide &amp; validate framework. */
@@ -330,12 +335,13 @@ public class Driver {
 		
 		RELAXNSVerifier( SchemaProvider sp ) { this.sp=sp; }
 		
-		public boolean verify( XMLReader p, InputSource instance ) throws Exception {
+		public boolean verify( XMLReader p, InputSource instance, boolean panicMode ) throws Exception {
 			Dispatcher dispatcher = new DispatcherImpl(sp);
 			dispatcher.attachXMLReader(p);
 			ReportErrorHandler errorHandler = new ReportErrorHandler();
 			dispatcher.setErrorHandler( errorHandler );
 			
+            // TODO: support the panicMode argument
 			p.parse(instance);
 			return !errorHandler.hadError;
 		}
@@ -346,9 +352,10 @@ public class Driver {
 		
 		SimpleVerifier( DocumentDeclaration docDecl ) { this.docDecl = docDecl; }
 
-		public boolean verify( XMLReader p, InputSource instance ) throws Exception {
+		public boolean verify( XMLReader p, InputSource instance, boolean panicMode ) throws Exception {
 			ReportErrorHandler reh = new ReportErrorHandler();
 			Verifier v = new Verifier( docDecl, reh );
+            v.setPanicMode(panicMode);
 		
 			p.setDTDHandler(v);
 			p.setContentHandler(v);
@@ -364,9 +371,10 @@ public class Driver {
 		
 		XMLSchemaVerifier( XMLSchemaGrammar grammar ) { this.grammar = grammar; }
 
-		public boolean verify( XMLReader p, InputSource instance ) throws Exception {
+		public boolean verify( XMLReader p, InputSource instance, boolean panicMode ) throws Exception {
 			ReportErrorHandler reh = new ReportErrorHandler();
 			Verifier v = new IDConstraintChecker( grammar, reh );
+            v.setPanicMode(panicMode);
 		
 			p.setDTDHandler(v);
 			p.setContentHandler(v);

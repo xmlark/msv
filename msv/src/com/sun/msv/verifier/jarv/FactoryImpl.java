@@ -14,6 +14,7 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.iso_relax.verifier.*;
 import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.InputSource;
@@ -44,6 +45,26 @@ public abstract class FactoryImpl extends VerifierFactory {
 		factory.setNamespaceAware(true);
 	}
 	
+    
+    private boolean usePanicMode = true;
+    
+    public void setFeature( String feature, boolean v )
+            throws SAXNotRecognizedException,SAXNotSupportedException {
+        if(feature.equals(Const.PANIC_MODE_FEATURE))
+            usePanicMode = v;
+        else
+            super.setFeature(feature,v);
+    }
+    
+    public boolean isFeature( String feature )
+            throws SAXNotRecognizedException,SAXNotSupportedException {
+        
+        if(feature.equals(Const.PANIC_MODE_FEATURE))
+            return usePanicMode;
+        else
+            return super.isFeature(feature);
+    }
+    
 	
 	/**
 	 * To be used to resolve files included/imported by the schema. Can be null.
@@ -76,7 +97,7 @@ public abstract class FactoryImpl extends VerifierFactory {
 				// theoretically this isn't possible because we throw an exception
 				// if an error happens.
 				throw new VerifierConfigurationException("unable to parse the schema");
-			return new SchemaImpl(g,factory);
+			return new SchemaImpl(g,factory,usePanicMode);
 		} catch( WrapperException we ) {
 			throw we.e;
 		} catch( Exception pce ) {

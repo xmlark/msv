@@ -20,6 +20,7 @@ import com.sun.msv.writer.*;
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributeListImpl;
+import org.xml.sax.helpers.LocatorImpl;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.Map;
@@ -255,6 +256,7 @@ public class TREXWriter implements GrammarWriter {
 		
 		// generates SAX events
 		try {
+			handler.setDocumentLocator(new LocatorImpl());
 			handler.startDocument();
 //			handler.startPrefixMapping("",TREXGrammarReader.TREXNamespace);
 //			handler.startPrefixMapping("trex",TREXGrammarReader.TREXNamespace);

@@ -21,6 +21,7 @@ import com.sun.msv.writer.*;
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributeListImpl;
+import org.xml.sax.helpers.LocatorImpl;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.Map;
@@ -256,6 +257,7 @@ public class RELAXNGWriter implements GrammarWriter {
 		
 		// generates SAX events
 		try {
+			handler.setDocumentLocator( new LocatorImpl() );
 			handler.startDocument();
 //			handler.startPrefixMapping("",TREXGrammarReader.TREXNamespace);
 //			handler.startPrefixMapping("trex",TREXGrammarReader.TREXNamespace);
@@ -1012,7 +1014,7 @@ public class RELAXNGWriter implements GrammarWriter {
 					});
 				
 				ns.add("type");
-				ns.add("xsd:"+ dt.getConcreteType().getName() );
+				ns.add(dt.getConcreteType().getName() );
 				
 				if( allowed )
 					element("value", (String[])ns.toArray(new String[0]) );

@@ -70,6 +70,28 @@ public class AnyURIType extends ConcreteType implements Discrete
 		appendByte(buf, 0x80 + (ucs%64) );
 	}
 	
+	/**
+	 * a table that indicates whether a particular character has to be
+	 * escaped or not. false indicates it has to be escaped.
+	 * this table is of length 128.
+	 */
+	private static final boolean[] isUnreserved = createUnreservedMap();
+	private static boolean[] createUnreservedMap()
+	{
+		boolean r[] = new boolean[128];
+		
+		for( int i='a'; i<='z'; i++ )	r[i] = true;
+		for( int i='A'; i<='Z'; i++ )	r[i] = true;
+		for( int i='0'; i<='9'; i++ )	r[i] = true;
+		
+		char[] mark = new char[]{'-','_','.','!','~','*','\'','(',')','#','%','[',']'};
+		for( int i=0; i<mark.length; i++ )
+			r[mark[i]] = true;
+		
+		return r;
+	}
+	
+	
 	/** escape non-ASCII characters in URL */
 	public static String escape( String content )
 	{
@@ -77,13 +99,13 @@ public class AnyURIType extends ConcreteType implements Discrete
 		for( int i=0; i<content.length(); i++ )
 		{
 			char ch = content.charAt(i);
-			if( ch<128 )	// TODO: how should we escape reserved characters
+			if( ch<128 && isUnreserved[ch])
 				escaped.append(ch);
 			else
 			{// escape it
 				if( 0xD800 <= ch && ch < 0xDC00 )	// surrogate pair
 					appendEscaped( escaped, ch, content.charAt(++i) );
-				else	// normal
+				else	// other characters.
 					appendEscaped( escaped, ch );
 			}
 		}

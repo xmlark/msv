@@ -90,10 +90,10 @@ public class TestSuiteReader {
 				Element e = (Element)lst.item(i);
 				
 				if(e.getTagName().equals("testCase")) {
-					if( e.getElementsByTagName("validPattern").getLength()!=0 )
-						suite.addTest( parseValidTestCase(e) );
+					if( e.getElementsByTagName("correct").getLength()!=0 )
+						suite.addTest( parseCorrectTestCase(e) );
 					else
-						suite.addTest( parseInvalidTestCase(e) );
+						suite.addTest( parseIncorrectTestCase(e) );
 				}
 				if(e.getTagName().equals("testSuite"))
 					suite.addTest( parseTestSuite(e) );
@@ -108,21 +108,21 @@ public class TestSuiteReader {
 	}
 	
 	/**
-	 * parses &lt;testCase> element with &lt;validPattern> into a RNGTestCase object.
+	 * parses &lt;testCase> element with &lt;correct> into a RNGTestCase object.
 	 */
-	private RNGValidTestCase parseValidTestCase( Element testCaseNode ) {
+	private RNGValidTestCase parseCorrectTestCase( Element testCaseNode ) {
 		RNGValidTestCase testCase = new RNGValidTestCase();
 		
 		testCase.header = parseHeader(testCaseNode);
 		
-		Element pattern = (Element)testCaseNode.getElementsByTagName("validPattern").item(0);
+		Element pattern = (Element)testCaseNode.getElementsByTagName("correct").item(0);
 		testCase.pattern = parseXMLDocument(pattern);
 		
-		if( "ng".equals(pattern.getAttribute("annotation")) )
+		if( "incompatible".equals(pattern.getAttribute("annotation")) )
 			testCase.isAnnotationCompatible = false;
-		if( "ng".equals(pattern.getAttribute("defaultValue")) )
+		if( "incompatible".equals(pattern.getAttribute("defaultValue")) )
 			testCase.isDefaultValueCompatible = false;
-		if( "ng".equals(pattern.getAttribute("ididref")) )
+		if( "incompatible".equals(pattern.getAttribute("ididref")) )
 			testCase.isIdIdrefCompatible = false;
 		
 		
@@ -133,7 +133,7 @@ public class TestSuiteReader {
 				Element e = (Element)lst.item(i);
 				ValidDocument doc = new ValidDocument(parseXMLDocument(e));
 				
-				if( "ng".equals(e.getAttribute("ididref")) )
+				if( "notsound".equals(e.getAttribute("ididref")) )
 					doc.isIdIdrefSound = false;
 				
 				testCase.addValidDocument(doc);
@@ -151,15 +151,15 @@ public class TestSuiteReader {
 	}
 
 	/**
-	 * parses &lt;testCase> element with &lt;invalidPattern> into a RNGTestCase object.
+	 * parses &lt;testCase> element with &lt;incorrect> into a RNGTestCase object.
 	 */
-	private RNGInvalidTestCase parseInvalidTestCase( Element testCaseNode ) {
+	private RNGInvalidTestCase parseIncorrectTestCase( Element testCaseNode ) {
 		RNGInvalidTestCase testCase = new RNGInvalidTestCase();
 		
 		testCase.header = parseHeader(testCaseNode);
 		
 		{// load patterns
-			NodeList lst = testCaseNode.getElementsByTagName("invalidPattern");
+			NodeList lst = testCaseNode.getElementsByTagName("incorrect");
 			int len = lst.getLength();
 			for( int i=0; i<len; i++ )
 				testCase.addPattern( parseXMLDocument( (Element)lst.item(i) ) );
@@ -174,13 +174,8 @@ public class TestSuiteReader {
 	 * @param item
 	 *		an element that possibly contains a &lt;header> element.
 	 */
-	private RNGHeader parseHeader( Element item ) {
-		// currently, no header field is defined.
-		NodeList headers = item.getElementsByTagName("header");
-		if( headers.getLength()>0 )
-			return new RNGHeaderImpl( (Element)headers.item(0) );
-		else
-			return null;
+	protected RNGHeader parseHeader( Element item ) {
+		return new RNGHeaderImpl(item);
 	}
 	
 	/**

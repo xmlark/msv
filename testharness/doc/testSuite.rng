@@ -41,17 +41,15 @@
 			<ref name="header"/>
 			
 			<choice>
-				<!-- invalid patterns -->
-				<oneOrMore>
-					<element name="invalidPattern">
-						<ref name="anyElement"/>
-					</element>
-				</oneOrMore>
+				<!-- An incorrect schema -->
+				<element name="incorrect">
+					<ref name="anyElement"/>
+				</element>
 				
-				<!-- a valid pattern and test cases -->
+				<!-- A correct schema and test cases -->
 				<group>
-					<element name="validPattern">
-						<!-- the compatibility of this schema with various features -->
+					<element name="correct">
+						<!-- Compatibilities of this schema with various features -->
 						<optional>
 							<attribute name="annotation">
 								<ref name="ok.ng"/>
@@ -68,15 +66,14 @@
 							</attribute>
 						</optional>
 						
-						<!-- pattern itself -->
 						<externalRef href="relaxng.rng"/>
 					</element>
 					
 					<oneOrMore>
 						<choice>
-							<!-- valid test cases -->
+							<!-- Valid test cases -->
 							<element name="valid">
-								<!-- the soundness of this document -->
+								<!-- The soundness of this document -->
 								<optional>
 									<attribute name="ididref">
 										<ref name="ok.ng"/>
@@ -84,7 +81,7 @@
 								</optional>
 								<ref name="anyElement"/>
 							</element>
-							<!-- invalid test cases -->
+							<!-- Invalid test cases -->
 							<element name="invalid">
 								<ref name="anyElement"/>
 							</element>
@@ -124,16 +121,71 @@
 	</define>
 	
 	
-	<!-- header is a place holder for meta-information -->
 	<define name="header">
-		<optional>
-			<element name="header">
-				<!-- this schema does not check the contents of headers -->
+		<interleave>
+				<!-- title of the test -->
+				<optional>
+					<element name="title">
+						<text/>
+					</element>
+				</optional>
+				
+				<!-- description of the test -->
+				<optional>
+					<element name="documentation">
+						<text/>
+					</element>
+				</optional>
+				
+				<!-- sections of the spec which the test is intended to test -->
 				<zeroOrMore>
-					<ref name="anyElement"/>
+					<element name="section">
+						<text/>
+					</element>
 				</zeroOrMore>
-			</element>
-		</optional>
+				
+				<!-- other meta information -->
+				<zeroOrMore>
+					<element>
+						<anyName>
+							<except>
+								<nsName/>
+							</except>
+						</anyName>
+						<ref name="any"/>
+					</element>
+			</choice>
+		</zeroOrMore>
 	</define>
+	
+	<define name="resources">
+		<zeroOrMore>
+			<choice>
+				<element name="resource">
+					<attribute name="name">
+						<ref name="pathSegment"/>
+					</attribute>
+					<ref name="anyElement"/>
+				</element>
+        <element name="dir">
+          <attribute name="name">
+            <ref name="pathSegment"/>
+          </attribute>
+          <ref name="resources"/>
+        </element>
+      </choice>
+    </zeroOrMore>
+  </define>
+
+
+  <!-- A relative URI segment. -->
+  
+  <define name="pathSegment">
+    <data datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+          type="string">
+      <!-- one or more RFC 2396 pchars -->
+      <param name="pattern">[-A-Za-z0-9:@&amp;=+$,_.!~*'()]+</param>
+    </data>
+  </define>
 	
 </grammar>

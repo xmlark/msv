@@ -15,7 +15,7 @@ public class TComplexContentBodyState extends ComplexContentBodyState {
 	 */
 	protected Expression combineToBaseType( ComplexTypeExp baseType, Expression addedExp ) {
 		if( extension ) {
-			SuperClassItem si = new SuperClassItem(baseType.self);
+			SuperClassItem si = new SuperClassItem(baseType.body);
 			reader.setDeclaredLocationOf(si);
 			return reader.pool.createSequence( si, addedExp );
 		} else

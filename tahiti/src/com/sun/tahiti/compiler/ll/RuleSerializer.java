@@ -422,7 +422,7 @@ public class RuleSerializer implements Symbolizer {
 				else
 					getNumberedName( name, 2, m );
 			} else 
-				return getNumberedName( xsdt.getConcreteType().getName(), 2, m );
+				return getNumberedName( xsdt.displayName(), 2, m );
 		}
 		
 		return getNumberedName( "", 0, m );

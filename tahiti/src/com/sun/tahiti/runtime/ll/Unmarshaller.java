@@ -9,10 +9,12 @@
  */
 package com.sun.tahiti.runtime.ll;
 
-import com.sun.msv.verifier.psvi.TypeDetector;
 import com.sun.tahiti.runtime.sm.MarshallableObject;
 import com.sun.msv.grammar.Grammar;
+import com.sun.msv.verifier.psvi.TypeDetector;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
+import com.sun.msv.verifier.VerificationErrorHandler;
+import com.sun.msv.verifier.ValidityViolation;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.XMLReader;
@@ -34,7 +36,14 @@ public class Unmarshaller extends TypeDetector {
 	private final Binder binder;
 	
 	public Unmarshaller( BindableGrammar grammar ) {
-		super(new REDocumentDeclaration(grammar));
+		super( new REDocumentDeclaration(grammar),
+			new VerificationErrorHandler(){
+				// throw an exception if any error happens.
+				public void onWarning( ValidityViolation vv ) {}
+				public void onError( ValidityViolation vv ) throws UnmarshallingException {
+					throw new UnmarshallingException(vv);
+				}
+			});
 		binder = new Binder(grammar);
 		setContentHandler(binder);
 	}

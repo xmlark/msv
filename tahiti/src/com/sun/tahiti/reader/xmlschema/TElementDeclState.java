@@ -99,7 +99,7 @@ public class TElementDeclState extends ElementDeclState {
 				return reader.pool.createChoice( exp.exp1.visit(this), exp.exp2.visit(this) );
 			}
 			public Expression onElement( ElementExp exp ) {
-				if( exp!=decl.self )	return exp;
+				if( exp!=decl.body )	return exp;
 				// this is the element that we are looking for.
 				// wrap it by a ClassItem.
 				ClassItem item = reader.annGrammar.createClassItem( className, exp );

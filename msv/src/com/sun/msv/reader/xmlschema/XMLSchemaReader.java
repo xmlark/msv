@@ -9,7 +9,6 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import com.sun.msv.datatype.DataType;
 import com.sun.msv.datatype.StringType;
 import com.sun.msv.datatype.BooleanType;
 import com.sun.msv.grammar.Expression;
@@ -39,13 +38,13 @@ import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.util.StartTagInfo;
 import javax.xml.parsers.SAXParserFactory;
 import java.util.ResourceBundle;
-import java.util.Vector;
 import java.util.Set;
 import java.util.Map;
 import java.util.Iterator;
 import java.text.MessageFormat;
 import org.xml.sax.Locator;
 import org.xml.sax.InputSource;
+import org.relaxng.datatype.DataType;
 
 /**
  * parses XML representation of XML Schema and constructs AGM.
@@ -615,27 +614,6 @@ public class XMLSchemaReader extends GrammarReader {
 		// runaway expression check
 		RunAwayExpressionChecker.check( this, grammar.topLevel );
 		
-	}
-	
-// back patching
-//===========================================
-/*
-	several things cannot be done when XMLSchemaReader saw XML representation.
-	(e.g., generating the expression that matches to <any />).
-	
-	those jobs are queued here and processed after the parsing is completed.
-*/
-	
-	public static interface BackPatch {
-		/** do back-patching. */
-		void patch();
-		/** gets State object who has submitted this patch job. */
-		State getOwnerState();
-	}
-	
-	private final Vector backPatchJobs = new Vector();
-	public void addBackPatchJob( BackPatch job ) {
-		backPatchJobs.add(job);
 	}
 	
 	

@@ -33,6 +33,13 @@ public abstract class DOMVisitor
 			Node n = lst.item(i);
 			if( n.getNodeType() == n.ELEMENT_NODE )
 				visit( (Element)n );
+			else
+				visitNode( n );
 		}
 	}
+	
+	/**
+	 * other nodes.
+	 */
+	public void visitNode( Node n ) {}
 }

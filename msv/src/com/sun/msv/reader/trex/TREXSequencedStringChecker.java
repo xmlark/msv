@@ -13,6 +13,7 @@ import com.sun.msv.reader.RunAwayExpressionChecker;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
 import java.util.Set;
+import java.util.Map;
 
 /**
  * makes sure that there is no sequenced string.
@@ -36,19 +37,31 @@ class TREXSequencedStringChecker implements ExpressionVisitor
 	private static final Object both = new Object();
 	
 	private final TREXBaseReader reader;
-	TREXSequencedStringChecker( TREXBaseReader reader )
-	{ this.reader = reader;	}
+	TREXSequencedStringChecker( TREXBaseReader reader ) {
+		this.reader = reader;
+	}
 	
 	/**
-	 * set of checked elementExps.
+	 * set of checked Expressions.
 	 * 
-	 * once an ElementExp is checked, it will be added to this set.
+	 * once an ElementExp/AttributeExp is checked, it will be added to this set.
 	 * this set is used to prevent infinite recursion.
 	 */
-	private final Set checkedElements = new java.util.HashSet();
+	private final Set checkedExps = new java.util.HashSet();
+	
+	/**
+	 * set of checked ReferenceExps.
+	 * 
+	 * Once a ReferenceExp is checked, it will be added (with its result)
+	 * to this map. This is useful to speed up the check.
+	 */
+	private final Map checkedRefExps = new java.util.HashMap();
 	
 	public Object onRef( ReferenceExp exp ) {
-		return exp.exp.visit(this);
+		Object r = checkedRefExps.get(exp);
+		if(r!=null)	return r;
+		checkedRefExps.put(exp, r=exp.exp.visit(this) );
+		return r;
 	}
 	public Object onOther( OtherExp exp ) {
 		return exp.exp.visit(this);
@@ -87,19 +100,17 @@ class TREXSequencedStringChecker implements ExpressionVisitor
 	public Object onKey( KeyExp exp )		{ return exp.exp.visit(this); }
 	
 	public Object onAttribute( AttributeExp exp ) {
-		exp.exp.visit(this);
+		if( checkedExps.add(exp) )
+			exp.exp.visit(this);
 		return null;
 	}
 	
 	public Object onElement( ElementExp exp ) {
-		if( !checkedElements.contains(exp) ) {
+		if( checkedExps.add(exp) )
 			// if this is the first visit
 			// this has to be done before checking content model
 			// otherwise it leads to the infinite recursion.
-			checkedElements.add(exp);
-			
 			exp.contentModel.visit(this);
-		}
 		return elements;
 	}
 	

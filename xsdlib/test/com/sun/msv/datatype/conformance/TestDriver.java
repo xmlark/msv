@@ -43,24 +43,24 @@ class TestDriver implements ErrorReceiver
     }
 	
 	public boolean report( UnexpectedResultException exp ) {
-		System.err.println("************* error *************");
-		System.err.println("type name            : "+exp.baseTypeName);
-		System.err.println("tested instance      : \""+exp.testInstance+"\"");
-		System.err.println("supposed to be valid : "+exp.supposedToBeValid);
-		System.err.println("verify method        : "+exp.type.verify(exp.testInstance,DummyContextProvider.theInstance) );
-		System.err.println("diagnose method      : "+(exp.type.diagnose(exp.testInstance,DummyContextProvider.theInstance)==null) );
+		System.out.println("************* error *************");
+		System.out.println("type name            : "+exp.baseTypeName);
+		System.out.println("tested instance      : \""+exp.testInstance+"\"");
+		System.out.println("supposed to be valid : "+exp.supposedToBeValid);
+		System.out.println("verify method        : "+exp.type.verify(exp.testInstance,DummyContextProvider.theInstance) );
+		System.out.println("diagnose method      : "+(exp.type.diagnose(exp.testInstance,DummyContextProvider.theInstance)==null) );
 		
 		if( exp.incubator.isEmpty() )
-			System.err.println("facets: none");
+			System.out.println("facets: none");
 		else
-			exp.incubator.dump(System.err);
+			exp.incubator.dump(System.out);
 
 		DataTypeErrorDiagnosis err = exp.type.diagnose(exp.testInstance,DummyContextProvider.theInstance);
 		
 		if( err!=null && err.message!=null )
-			System.err.println("diagnosis: " + err.message);
+			System.out.println("diagnosis: " + err.message);
 		else
-			System.err.println("diagnosis: N/A");
+			System.out.println("diagnosis: N/A");
 		
 		// do it again (for trace purpose)
 		exp.type.verify(exp.testInstance,DummyContextProvider.theInstance);

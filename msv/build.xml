@@ -96,7 +96,8 @@
 				please remove jaxp.jar from ant directory,
 				because it uses an old one, and this test needs the latest one
 			-->
-			<junit haltonfailure="yes" printsummary="yes" fork="yes">
+			<junit haltonfailure="yes" printsummary="yes" fork="yes"
+				haltonerror="yes">
 				<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
 				<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
 				<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
@@ -350,6 +351,9 @@
 				basedir="."
 				includes="${stageName}/**/*.*" />
 		
+		<!-- copy jar file to package dir -->
+		<copy file="${stageName}/msv.jar" tofile="./package/msv.jar" />
+		
 		<delete dir="${stageName}" />
 	</target>
 	
@@ -385,14 +389,25 @@
 		<mkdir	dir="temp" />
 		<javac	srcdir="${stageName}/src"
 				destdir="temp"
-				classpath="./package/msv.jar">
+				classpath="./package/msv.jar:${java.class.path}">
 			<include name="**/*.java" />
 		</javac>
 		
 		<!-- create a time stamp file -->
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
-		
+
 		<!-- creates binary jar -->
+		<jar	jarfile="${stageName}/xmlgen.small.jar"
+				manifest="./META-INF/Generator.MANIFEST.MF"
+				compress="false">
+			<fileset dir="temp" includes="**/*.*" />
+		</jar>
+		
+		
+		<!-- unzip contents from msv.jar -->
+		<unjar src="./packages/msv.jar" dest="temp" />
+		
+		<!-- creates the complete binary jar -->
 		<jar	jarfile="${stageName}/xmlgen.jar"
 				manifest="./META-INF/Generator.MANIFEST.MF"
 				compress="false">
@@ -409,7 +424,7 @@
 					destdir="${stageName}/javadoc"
 					windowtitle="Sun XML Generator"
 					public="yes"
-					authro="yes"
+					author="yes"
 					>
 			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
 			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />

@@ -70,7 +70,7 @@ public class BatchVerifyTester
 		
 		// run the test
 		junit.textui.TestRunner.run( 
-			new BatchVerifyTester( av[0], av[1]+"\\", av[0].equals("relax")?".rlx":".trex" ).suite() );
+			new BatchVerifyTester( av[0], av[1], av[0].equals("relax")?".rlx":".trex" ).suite() );
 	}
 	
 	/** gets a TestSuite that loads and verifies all test instances in the test directory. */

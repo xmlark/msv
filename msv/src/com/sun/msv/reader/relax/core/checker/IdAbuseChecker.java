@@ -114,12 +114,14 @@ public class IdAbuseChecker implements RELAXExpressionVisitorVoid {
 
 	public void onAttribute( AttributeExp exp ) {
 		if(!(exp.nameClass instanceof SimpleNameClass ))	return;
-		if(!(exp.exp instanceof DataExp ))					return;
+        
+        Expression body = exp.exp.getExpandedExp(reader.pool);
+		if(!(body instanceof DataExp ))					return;
 		
 		SimpleNameClass snc = (SimpleNameClass)exp.nameClass;
 		if(!snc.namespaceURI.equals(""))	return;
 		
-		Datatype dt = ((DataExp)exp.exp).dt;
+		Datatype dt = ((DataExp)body).dt;
 		if( dt==IDType.theInstance || dt==IDREFType.theInstance ) {
 			if( currentTagName==null
 				// complex attribute name is used.

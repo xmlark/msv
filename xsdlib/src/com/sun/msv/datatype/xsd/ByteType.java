@@ -23,7 +23,7 @@ public class ByteType extends IntegerDerivedType {
 	public final static ByteType theInstance = new ByteType();
 	private ByteType() {
         super("byte",createRangeFacet(ShortType.theInstance,
-            new Short(Byte.MIN_VALUE), new Short(Byte.MAX_VALUE)));
+            new Byte(Byte.MIN_VALUE), new Byte(Byte.MAX_VALUE)));
     }
 	
 	final public XSDatatype getBaseType() {

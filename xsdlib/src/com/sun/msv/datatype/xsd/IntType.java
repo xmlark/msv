@@ -23,8 +23,8 @@ public class IntType extends IntegerDerivedType {
 	
 	public static final IntType theInstance =
         new IntType("int",createRangeFacet( LongType.theInstance,
-            new Long(Integer.MIN_VALUE),
-            new Long(Integer.MAX_VALUE)));
+            new Integer(Integer.MIN_VALUE),
+            new Integer(Integer.MAX_VALUE)));
 	
     protected IntType(String typeName,XSDatatypeImpl baseFacets) {
         super(typeName,baseFacets);

@@ -22,8 +22,8 @@ import org.relaxng.datatype.ValidationContext;
 public class ShortType extends IntegerDerivedType {
 	public static final ShortType theInstance =
         new ShortType("short",createRangeFacet(IntType.theInstance,
-            new Integer(Short.MIN_VALUE),
-            new Integer(Short.MAX_VALUE)));
+            new Short(Short.MIN_VALUE),
+            new Short(Short.MAX_VALUE)));
 	
     protected ShortType(String typeName,XSDatatypeImpl baseFacets) {
         super(typeName,baseFacets);

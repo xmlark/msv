@@ -23,8 +23,8 @@ public class LongType extends IntegerDerivedType {
 	public static final LongType theInstance = new LongType();
 	private LongType() {
         super("long",createRangeFacet( IntegerType.theInstance,
-            IntegerValueType.create("-9223372036854775808"),
-            IntegerValueType.create("9223372036854775807")));
+            new Long(Long.MIN_VALUE),
+            new Long(Long.MAX_VALUE)));
     }
 	protected LongType( String typeName, XSDatatypeImpl baseFacets ) {
         super(typeName,baseFacets);

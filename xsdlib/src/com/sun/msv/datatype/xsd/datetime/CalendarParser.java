@@ -10,7 +10,6 @@
 package com.sun.msv.datatype.xsd.datetime;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -26,16 +25,16 @@ public final class CalendarParser extends AbstractCalendarParser {
         return parser.cal;
     }
     
-    private final GregorianCalendar cal = new GregorianCalendar();
-    
-    private static final Date date0 = new Date(0);
+    // this version is faster than new GregorianCalendar()
+    // which involves in setting the current time.
+    private final GregorianCalendar cal = new GregorianCalendar(0,0,0);
     
     private CalendarParser( String format, String value ) {
         super(format,value);
         // erase all the fields to remove any trace of the current time.
-        // cal.setTimeInMillis(0); -- this requires JDK 1.4
-        cal.setTime(date0); // but this should be equivalent
-        cal.clear();
+        cal.clear(Calendar.YEAR);
+        cal.clear(Calendar.MONTH);
+        cal.clear(Calendar.DAY_OF_MONTH);
     }
     
     protected void parseFractionSeconds() {

@@ -9,6 +9,7 @@
  */
 package com.sun.tahiti.compiler.sm;
 
+import com.sun.tahiti.compiler.Symbolizer;
 import com.sun.tahiti.compiler.XMLWriter;
 import com.sun.tahiti.grammar.*;
 import com.sun.msv.grammar.*;
@@ -31,17 +32,30 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 	/**
 	 * generates a marshaller for the given ClassItem.
 	 * 
-	 * Note that this method does NOT call the startDocument/endDocument events
-	 * of the handler.
+	 * <p>
+	 * Using this method directly is discouraged due to the following reasons.
+	 * 
+	 * <ul>
+	 *  <li>
+	 *		This method does NOT call the startDocument/endDocument events
+	 *		of the handler. The caller has to invoke them if necessary.
+	 *	</li><li>
+	 *		This method could fail even after several fragments are sent
+	 *		to a XMLWriter object, by throwing an Abort exception.
+	 *		This happens when the object model is
+	 *		too compilcated for this algorithm. The caller has to catch it
+	 *		and cancel any sideeffects caused by already written fragments.
+	 *	</li>
+	 * </ul>
 	 * 
 	 * <p>
 	 * This method throws an Abort exception if it finds impossible to generate
 	 * a marshaller.
 	 */
-	public static void write( final ClassItem cls, final XMLWriter out,
+	public static void write( Symbolizer symbolizer, ClassItem cls, XMLWriter out,
 				final GrammarReaderController controller ) {
 		
-		cls.exp.visit(new MarshallerGenerator(cls,out,controller));
+		cls.exp.visit(new MarshallerGenerator(symbolizer,cls,out,controller));
 	}
 
 	/**
@@ -51,8 +65,8 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 	 *		a byte array that contains XML representation of the marshaller.
 	 *		null if this method fails to produce a marhsaller.
 	 */
-	public static byte[] write( ClassItem cls, GrammarReaderController controller )
-		throws SAXException {
+	public static byte[] write( Symbolizer symbolizer, ClassItem cls,
+					GrammarReaderController controller ) throws SAXException {
 		
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -61,7 +75,7 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 				new XMLSerializer(baos,new OutputFormat("xml",null,true) ));
 			
 			out.handler.startDocument();
-			write( cls, out, controller );
+			write( symbolizer, cls, out, controller );
 			out.handler.endDocument();
 			
 			return baos.toByteArray();
@@ -72,19 +86,26 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 		}
 	}
 	
-	private MarshallerGenerator(
-		final ClassItem cls, final XMLWriter out, final GrammarReaderController controller) {
+	
+	
+	private MarshallerGenerator( Symbolizer symbolizer,
+		ClassItem cls, XMLWriter out, GrammarReaderController controller) {
 		
+		this.symbolizer = symbolizer;
 		this.owner = cls;
 		this.out = out;
 		this.controller = controller;
 	}
 	
+	private final Symbolizer symbolizer;
 	private final ClassItem owner;
 	private final XMLWriter out;
 	private final GrammarReaderController controller;
 	
-	
+	/**
+	 * Exception that indicates the object model is too complicated
+	 * to generate a marshaller by this algorithm.
+	 */
 	public static class Abort extends RuntimeException {};
 	
 
@@ -277,10 +298,19 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 			currentField = null;
 			return;
 		}
-		if( exp instanceof ClassItem || exp instanceof InterfaceItem
-		||  exp instanceof PrimitiveItem ) {
+		if( exp instanceof ClassItem || exp instanceof InterfaceItem ) {
 			out.element("marshall",
-				new String[]{"fieldName", currentField.name });
+				new String[]{
+					"type","object",
+					"fieldName", currentField.name });
+			return;
+		}
+		if( exp instanceof PrimitiveItem ) {
+			out.element("marshall",
+				new String[]{
+					"type","data",
+					"fieldName", currentField.name,
+					"dataSymbol", symbolizer.getId(exp) });
 			return;
 		}
 		if( exp instanceof IgnoreItem ) {

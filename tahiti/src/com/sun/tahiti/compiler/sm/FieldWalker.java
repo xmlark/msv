@@ -14,7 +14,7 @@ import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
 
 /**
- * traverses an exp tree and reports class items with the field name.
+ * traverses an expression tree and reports class items with the field name.
  */
 abstract class FieldWalker extends ExpressionWalker
 {
@@ -23,8 +23,23 @@ abstract class FieldWalker extends ExpressionWalker
 	}
 	
 	FieldWalker() { this(null); }
-	
+
 	private FieldItem currentField;
+
+	/**
+	 * this method is called whenever a ClassItem/PrimitiveItem/InterfaceItem
+	 * is found. Note that the same object can be reported more than once,
+	 * with possibly the different name (or the same name).
+	 * 
+	 * @param field
+	 *		FieldItem object that encapsulates the 'child' object. In other words,
+	 *		the 'child' object is stored in this field.
+	 * @param child
+	 *		ClassItem, PrimitiveItem, or InterfaceItem object found in
+	 *		the expression tree. This is the child object.
+	 */
+	protected abstract void findField( FieldItem field, Type child );
+
 	
 	
 	public void onOther( OtherExp exp ) {
@@ -46,8 +61,6 @@ abstract class FieldWalker extends ExpressionWalker
 		assert(!(exp instanceof JavaItem));
 		super.onOther(exp);
 	}
-
-	protected abstract void findField( FieldItem field, Type child );
 
 	private static void assert( boolean b ) {
 		if(!b)	throw new Error();

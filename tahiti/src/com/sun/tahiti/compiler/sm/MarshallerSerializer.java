@@ -12,6 +12,7 @@ package com.sun.tahiti.compiler.sm;
 import com.sun.tahiti.grammar.AnnotatedGrammar;
 import com.sun.tahiti.grammar.ClassItem;
 import com.sun.tahiti.compiler.XMLWriter;
+import com.sun.tahiti.compiler.Symbolizer;
 import com.sun.tahiti.util.xml.DocumentFilter;
 import com.sun.msv.reader.GrammarReaderController;
 import org.xml.sax.Parser;
@@ -27,7 +28,8 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class MarshallerSerializer {
 	
-	public static void serialize( AnnotatedGrammar grammar, GrammarReaderController controller,
+	public static void serialize(
+		AnnotatedGrammar grammar, Symbolizer symbolizer, GrammarReaderController controller,
 				DocumentHandler handler ) throws SAXException,ParserConfigurationException,IOException {
 		
 		final XMLWriter out = new XMLWriter(handler);
@@ -42,7 +44,7 @@ public class MarshallerSerializer {
 			for( int i=0; i<classes.length; i++ ) {
 				out.start("class",new String[]{"name", classes[i].getTypeName()});
 				
-				byte[] marshaller = MarshallerGenerator.write(classes[i],controller);
+				byte[] marshaller = MarshallerGenerator.write(symbolizer,classes[i],controller);
 				
 				if(marshaller==null) {
 					// we've failed to produce marshaller for this class.

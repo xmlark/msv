@@ -245,7 +245,7 @@ public class ClassSerializer
 				DOMBuilder builder = new DOMBuilder();
 				XMLWriter writer = XMLWriter.fromContentHandler(builder);
 				writer.handler.startDocument();
-				MarshallerGenerator.write( citm, writer, controller );
+				MarshallerGenerator.write( symbolizer, citm, writer, controller );
 				writer.handler.endDocument();
 				
 				// produce a source code fragment from DOM.

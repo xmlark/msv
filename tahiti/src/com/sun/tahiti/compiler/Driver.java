@@ -66,7 +66,7 @@ public class Driver
 		// and the file name of the generated grammar?
 		
 		OutputMethod out = java;
-		String grammar=null;
+		String grammarFileName=null;
 		File outDir = new File(".");
 		
 		for( int i=0; i<args.length; i++ ) {
@@ -90,15 +90,15 @@ public class Driver
 					return -1;
 				}
 			} else {
-				if( grammar!=null ) {
+				if( grammarFileName!=null ) {
 					System.err.println("more than one grammar specified");
 					usage();
 					return -1;
 				}
-				grammar = args[i];
+				grammarFileName = args[i];
 			}
 		}
-		if( grammar==null ) {
+		if( grammarFileName==null ) {
 			System.err.println("no grammar is specified");
 			usage();
 			return -1;
@@ -113,12 +113,12 @@ public class Driver
 		System.err.println("parsing a schema...");
 		GrammarReaderController grammarController =
 			new com.sun.msv.driver.textui.DebugController(false,false);
-		AnnotatedGrammar g;
+		AnnotatedGrammar grammar;
 		{// parse grammar
 			TRELAXNGReader reader = new TRELAXNGReader( grammarController, f );
-			reader.parse(grammar);
-			g = reader.getAnnotatedResult();
-			if(g==null) {
+			reader.parse(grammarFileName);
+			grammar = reader.getAnnotatedResult();
+			if(grammar==null) {
 				System.err.println("bailing out");
 				return -1;
 			}
@@ -143,17 +143,17 @@ public class Driver
 			TransformerHandler xsltEngine = XSLTUtil.getTransformer(
 				Driver.class.getResourceAsStream("grammar2java.xsl"));
 			xsltEngine.setResult( new StreamResult(
-				new FileOutputStream( getJavaFile(outDir,g.grammarName)) ));
+				new FileOutputStream( getJavaFile(outDir,grammar.grammarName)) ));
 			
 			grammarReceiver = new com.sun.msv.writer.ContentHandlerAdaptor(xsltEngine);
 		}
 
-		SuperClassBodyRemover.remove(g);
+		SuperClassBodyRemover.remove(grammar);
 		
-		Map rules = RuleGenerator.create(g);
+		Map rules = RuleGenerator.create(grammar);
 		
 		Symbolizer symbolizer =
-			RuleSerializer.serialize( g, rules, grammarReceiver );
+			RuleSerializer.serialize( grammar, rules, grammarReceiver );
 
 	
 	// generate marshallers
@@ -164,7 +164,7 @@ public class Driver
 			marshallerReceiver = new XMLSerializer(
 				new FileOutputStream( new File( outDir, "marshaller.xml" ) ),
 				new OutputFormat("xml",null,true) );
-			MarshallerSerializer.serialize( g, grammarController, marshallerReceiver );
+			MarshallerSerializer.serialize( grammar, symbolizer, grammarController, marshallerReceiver );
 		}
 		// the marshaller file is unnecessary when we are generating Java files.
 		
@@ -194,7 +194,7 @@ public class Driver
 			};
 		}
 		
-		generator.generate( g, symbolizer, controller );
+		generator.generate( grammar, symbolizer, controller );
 
 	
 		System.err.println("done.");

@@ -16,18 +16,32 @@ import com.sun.tahiti.grammar.util.*;
 public class Annotator
 {
 	public static Expression annotate( Expression topLevel, GrammarReader reader ) {
-		// remove <notAllowed/> from the grammar.
+		
+		/*
+		remove <notAllowed/> from the grammar. <notAllowed/> affects the
+		calculation of multiplicity and therefore has to be removed first.
+		*/
 		topLevel = topLevel.visit( new NotAllowedRemover(reader.pool) );
 		if( topLevel==Expression.nullSet )	return topLevel;
 		
-		// then remove temporarily added class items
+		/*
+		then remove temporarily added class items. temporary class items
+		are added while parsing various grammars into the AGM. And some
+		of them are unnecessary.
+		*/
 		topLevel = topLevel.visit( new TemporaryClassItemRemover(reader.pool) );
 		
-		// performs field annotation.
-		// this will normalize C-C/C-P/C-I relation and make up for missing FieldItems.
+		/*
+		perform field annotation. this will normalize
+		C-C/C-P/C-I relation and make up for missing FieldItems.
+		*/
 		topLevel = FieldItemAnnotation.annotate( topLevel, reader.pool );
 		
-		// then finally perform overall normalization.
+		/*
+		finally perform overall normalization. This will ensure that
+		JavaItems are used correctly and compute various field values for
+		JavaItems.
+		*/
 		topLevel = RelationNormalizer.normalize( reader, topLevel );
 		
 		return topLevel;

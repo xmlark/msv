@@ -17,8 +17,8 @@ import com.sun.tranquilo.datatype.ValidationContextProvider;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class StartTagInfo
-{
+public class StartTagInfo {
+	
 	public final String		namespaceURI;
 	public final String		localName;
 	public final String		qName;
@@ -30,8 +30,7 @@ public class StartTagInfo
 	
 	public StartTagInfo(
 		String namespaceURI, String localName, String qName,
-		Attributes attributes, ValidationContextProvider context )
-	{
+		Attributes attributes, ValidationContextProvider context ) {
 		this.namespaceURI	= namespaceURI;
 		this.localName		= localName;
 		this.qName			= qName;
@@ -39,10 +38,11 @@ public class StartTagInfo
 		this.context		= context;
 	}
 	
-	public final boolean containsAttribute( String attrName )
-	{ return containsAttribute("",attrName); }
-	public final boolean containsAttribute( String namespaceURI, String attrName )
-	{
+	public final boolean containsAttribute( String attrName ) {
+		return containsAttribute("",attrName);
+	}
+	
+	public final boolean containsAttribute( String namespaceURI, String attrName ) {
 		return attributes.getIndex(namespaceURI,attrName)!=-1;
 	}
 	
@@ -51,11 +51,21 @@ public class StartTagInfo
 	 * 
 	 * @return null		attribute does not exist.
 	 */
-	public final String getAttribute( String attrName )
-	{ return getAttribute("",attrName); }
+	public final String getAttribute( String attrName ) {
+		return getAttribute("",attrName);
+	}
 
-	public final String getAttribute( String namespaceURI, String attrName )
-	{
+	public final String getAttribute( String namespaceURI, String attrName ) {
 		return attributes.getValue(namespaceURI,attrName);
+	}
+	
+	public final String getDefaultedAttribute( String attrName, String defaultValue ) {
+		return getDefaultedAttribute("",attrName);
+	}
+	
+	public final String getDefaultedAttribute( String namespaceURI, String attrName, String defaultValue ) {
+		String v = getAttribute(namespaceURI,attrName);
+		if(v!=null)		return v;
+		else			return defaultValue;
 	}
 }

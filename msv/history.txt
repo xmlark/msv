@@ -1,4 +1,9 @@
 
+(TREX)  modified to accept old "http://www.w3.org/2000/10/XMLSchema"
+        namespace with a warning.
+(both)  Better error diagnosis gets produced when the user forgot to
+        declare namespace URI or declared a wrong namespace.
+
 2000/03/20 release
 ------------------
 

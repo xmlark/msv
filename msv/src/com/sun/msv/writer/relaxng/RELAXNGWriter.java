@@ -15,12 +15,14 @@ import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
 import com.sun.msv.grammar.trex.TypedString;
 import com.sun.msv.grammar.relaxng.ValueType;
+import com.sun.msv.grammar.util.PossibleNamesCollector;
 import com.sun.msv.datatype.SerializationContext;
 import com.sun.msv.datatype.xsd.*;
 import com.sun.msv.reader.trex.ng.RELAXNGReader;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.datatype.xsd.XSDatatypeImpl;
 import com.sun.msv.writer.*;
+import com.sun.msv.util.StringPair;
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributeListImpl;
@@ -479,6 +481,112 @@ public class RELAXNGWriter implements GrammarWriter {
 	}
 
 	
+	private void writeNameClass( NameClass src ) {
+		final String MAGIC = PossibleNamesCollector.MAGIC;
+		Set names = PossibleNamesCollector.calc(src);
+/*		
+		// simplify name class
+		Iterator itr = names.iterator();
+		while( itr.hasNext() ) {
+			StringPair name = (StringPair)itr.next();
+			if( name.namespaceURI==MAGIC && name.localName==MAGIC ) {
+				itr.remove();
+				continue;
+			}
+			if( name.localName==MAGIC
+				&&  nc.accepts(name.namespaceURI,MAGIC)==nc.accepts(MAGIC,MAGIC) ) {
+				itr.remove();
+				continue;
+			}
+			if( nc.accepts(name)==nc.accepts(name.namespaceURI,MAGIC) ) {
+				itr.remove();
+				continue;
+			}
+		}
+		
+*/		
+		// convert a name class to the canonical form.
+		StringPair[] values = (StringPair[])names.toArray(new StringPair[names.size()]);
+
+		Set uriset = new HashSet();
+		for( int i=0; i<values.length; i++ )
+			uriset.add( values[i].namespaceURI );
+		
+		NameClass r = null;
+		String[] uris = (String[])uriset.toArray(new String[uriset.size()]);
+		for( int i=0; i<uris.length; i++ ) {
+			if( uris[i]==MAGIC )	continue;
+			
+			NameClass tmp = null;
+			
+			for( int j=0; j<values.length; j++ ) {
+				if( !values[i].namespaceURI.equals(uris[i]) )	continue;
+				if( values[i].localName==MAGIC )				continue;
+				
+				if( src.accepts(values[i])!=src.accepts(uris[i],MAGIC) ) {
+					if(tmp==null)	tmp = new SimpleNameClass(values[i]);
+					else			tmp = new ChoiceNameClass( tmp, new SimpleNameClass(values[i]) );
+				}
+			}
+			
+			if( src.accepts(uris[i],MAGIC)!=src.accepts(MAGIC,MAGIC) ) {
+				if(tmp==null)
+					tmp = new NamespaceNameClass(uris[i]);
+				else
+					tmp = new DifferenceNameClass( new NamespaceNameClass(uris[i]), tmp );
+			}
+			
+			if(r==null)		r = tmp;
+			else			r = new ChoiceNameClass(r,tmp);
+		}
+		
+		r.visit(nameClassWriter);
+		
+/*		
+		Stack tags = new Stack();
+		
+		if( nc.accepts(MAGIC,MAGIC) ) {
+			tags.push("anyName");
+			start("anyName");
+			if( values.length!=0 ) {
+				tags.push("except");
+				start("except");
+			}
+		}
+		
+		
+		Set uriset = new HashSet();
+		for( int i=0; i<values.length; i++ )
+			uriset.add( values[i].namespaceURI );
+		
+		String[] uris = (String[])uriset.toArray(new String[uris.size()]);
+		if(uris.length>1 && tags.size()==0) {
+			tags.push("choice");
+			start("choice");
+		}
+		
+		for( int i=0; i<uris.length; i++ ) {
+			if( uris[i]==MAGIC )	continue;
+			
+			boolean needExcept = false;
+			
+			if( nc.accepts(uris[i],MAGIC)!=nc.accepts(MAGIC,MAGIC) ) {
+				tags.push("nsName");
+				start("nsName",new String[]{"ns",uris[i]});
+				needExcept = true;
+			}
+			
+			for( int j=0; j<values.length; j++ ) {
+				if( !values[i].namespaceURI.equals(uris[i]) )	continue;
+				if( values[i].localName==MAGIC )				continue;
+				
+				if(needExcept) {
+					
+				}
+			}
+		}
+		if( names.contains( new StringPair(MAGIC,MAGIC) ) )
+*/	}
 	
 	protected NameClassVisitor nameClassWriter = createNameClassWriter();
 	protected NameClassVisitor createNameClassWriter() {
@@ -491,7 +599,11 @@ public class RELAXNGWriter implements GrammarWriter {
 	
 	
 	
-	/** visits NameClass and writes its XML representation. */
+	/**
+	 * visits NameClass and writes its XML representation.
+	 * 
+	 * this class can only handle canonicalized name class.
+	 */
 	protected class NameClassWriter implements NameClassVisitor {
 		public Object onAnyName(AnyNameClass nc) {
 			element("anyName");
@@ -519,15 +631,18 @@ public class RELAXNGWriter implements GrammarWriter {
 		}
 		
 		public Object onNot( NotNameClass nc ) {
-			start("not");
-			nc.child.visit(this);
-			end("not");
-			return null;
+			// should not be called.
+			throw new Error();
 		}
 		
 		public Object onChoice( ChoiceNameClass nc ) {
 			start("choice");
+			processChoice(nc);
+			end("choice");
+			return null;
+		}
 			
+		private void processChoice( ChoiceNameClass nc ) {
 			Stack s = new Stack();
 			s.push(nc.nc1);
 			s.push(nc.nc2);
@@ -542,27 +657,33 @@ public class RELAXNGWriter implements GrammarWriter {
 				
 				n.visit(this);
 			}
-			
-			end("choice");
-			return null;
 		}
 		
 		public Object onDifference( DifferenceNameClass nc ) {
-			start("difference");
-			Stack s = new Stack();
-			
-			while(true) {
-				s.push( nc.nc2 );
-				if(!(nc.nc1 instanceof DifferenceNameClass ))
-					break;
-				nc = (DifferenceNameClass)nc.nc1;
+			if( nc.nc1 instanceof AnyNameClass ) {
+				start("anyName");
+				start("except");
+				if( nc.nc2 instanceof ChoiceNameClass )
+					processChoice( (ChoiceNameClass)nc.nc2 );
+				else
+					nc.nc2.visit(this);
+				end("except");
+				end("anyName");
 			}
+			else
+			if( nc.nc1 instanceof NamespaceNameClass ) {
+				startWithNs("nsName", ((NamespaceNameClass)nc.nc1).namespaceURI );
+				start("except");
+				if( nc.nc2 instanceof ChoiceNameClass )
+					processChoice( (ChoiceNameClass)nc.nc2 );
+				else
+					nc.nc2.visit(this);
+				end("except");
+				end("nsName");
+			}
+			else
+				throw new Error();
 			
-			nc.nc1.visit(this);
-			while( !s.empty() )
-				((NameClass)s.pop()).visit(this);
-	
-			end("difference");
 			return null;
 		}
 	}
@@ -603,7 +724,7 @@ public class RELAXNGWriter implements GrammarWriter {
 					((SimpleNameClass)nc).localName} );
 			else {
 				start("element");
-				exp.getNameClass().visit(nameClassWriter);
+				writeNameClass(exp.getNameClass());
 			}
 			visitUnary(simplify(exp.contentModel));
 			end("element");
@@ -748,7 +869,7 @@ public class RELAXNGWriter implements GrammarWriter {
 					((SimpleNameClass)exp.nameClass).localName} );
 			else {
 				start("attribute");
-				exp.nameClass.visit(nameClassWriter);
+				writeNameClass(exp.nameClass);
 			}
 			if( exp.exp != Expression.anyString )
 				// we can omit <anyString/> in the attribute.
@@ -917,13 +1038,19 @@ public class RELAXNGWriter implements GrammarWriter {
 			// attributes to be added to this <data> element.
 			Vector dataAtts = new Vector();
 			
+			String enclosing = null;
+			
 			// ID,IDREF are treated in a special manner.
 			if( x instanceof com.sun.msv.grammar.IDType ) {
-				start("data",new String[]{"type","NCName","key","XML_ID"});
+				enclosing = "key";
+				start("key",new String[]{"ns","","name","XML_ID"});
+				start("data",new String[]{"type","NCName"});
 			}
 			else
 			if( x instanceof com.sun.msv.grammar.IDREFType ) {
-				start("data",new String[]{"type","NCName","keyref","XML_ID"});
+				enclosing = "keyref";
+				start("keyref",new String[]{"ns","","name","XML_ID"});
+				start("data",new String[]{"type","NCName"});
 			}
 			else
 				start("data",new String[]{"type",x.getName()});
@@ -977,6 +1104,7 @@ public class RELAXNGWriter implements GrammarWriter {
 			}
 			
 			end("data");
+			if(enclosing!=null)	end(enclosing);
 		}
 
 		protected void param( String name, String value ) {

@@ -16,7 +16,7 @@ import java.util.Map;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class DataTypeVocabularyMap {
+public class DataTypeVocabularyMap implements java.io.Serializable {
 	
 	/** map from namespace URI to DataTypeVocabulary */
 	private final Map impl = new java.util.HashMap();

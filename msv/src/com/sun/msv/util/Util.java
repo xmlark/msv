@@ -12,6 +12,7 @@ package com.sun.msv.util;
 import org.xml.sax.InputSource;
 import java.io.File;
 import java.net.URL;
+import java.net.MalformedURLException;
 
 /**
  * Collection of utility methods.
@@ -26,6 +27,10 @@ public class Util
 	 */
 	public static InputSource getInputSource( String fileOrURL ) {
 		try {
+            // try it as an URL
+            new URL(fileOrURL);
+            return new InputSource(fileOrURL);
+        } catch( MalformedURLException e ) {
 			// try it as a file
 			String path = new File(fileOrURL).getAbsolutePath();
 			if (File.separatorChar != '/')
@@ -35,9 +40,6 @@ public class Util
 //			if (!path.endsWith("/") && isDirectory())
 //				path = path + "/";
             return new InputSource("file://"+path);
-		} catch( Exception e ) {
-			// try it as an URL
-			return new InputSource(fileOrURL);
 		}
 	}
 	

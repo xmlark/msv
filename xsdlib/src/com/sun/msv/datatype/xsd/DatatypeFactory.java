@@ -167,6 +167,15 @@ public class DatatypeFactory {
 			if( dataTypeName.equals("language") )
 				add( builtinType, LanguageType.theInstance );
 			else
+			if( dataTypeName.equals("ID") )
+				add( builtinType, IDType.theInstance );
+			else
+			if( dataTypeName.equals("IDREF") )
+				add( builtinType, IDREFType.theInstance );
+			else
+			if( dataTypeName.equals("IDREFS") )
+				add( builtinType, IDREFType.theIDREFSinstance );
+			else
 			if( dataTypeName.equals("ENTITIES") )
 				add( builtinType, createOneOrMoreList("ENTITIES",EntityType.theInstance) );
 			else
@@ -224,11 +233,9 @@ public class DatatypeFactory {
 		add( m, StringType.theInstance );
 		add( m, BooleanType.theInstance );
 		add( m, NumberType.theInstance );
-//		ID, IDREF
 		add( m, QnameType.theInstance );
 		add( m, NormalizedStringType.theInstance );
 		add( m, TokenType.theInstance );
-//		IDREFS
 		add( m, NmtokenType.theInstance );
 		add( m, NameType.theInstance );
 		add( m, NcnameType.theInstance );

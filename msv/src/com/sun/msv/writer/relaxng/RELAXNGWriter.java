@@ -395,9 +395,6 @@ public class RELAXNGWriter implements GrammarWriter {
 			public Object onList( ListExp exp ) {
 				return null;
 			}
-			public Object onKey( KeyExp exp ) {
-				return null;
-			}
 		});
 	}
 	
@@ -734,23 +731,6 @@ public class RELAXNGWriter implements GrammarWriter {
 			visitUnary(exp.exp);
 			end("list");
 		}
-
-		public void onKey( KeyExp exp ) {
-			String tagName;
-			if( exp.isKey )	tagName = "key";
-			else			tagName = "keyref";
-			
-			if( exp.name.namespaceURI.equals(defaultNs) )
-				start(tagName,new String[]{"name",exp.name.localName});
-			else
-				start(tagName, new String[]{"name",exp.name.localName,"ns",exp.name.namespaceURI});
-			
-			// since choce,data, and value are the only possible children,
-			// it is safe to rewrite the ns attribute here.
-			
-			exp.exp.visit(this);
-			end(tagName);
-		}
 	
 		
 		protected void onOptional( Expression exp ) {
@@ -990,22 +970,7 @@ public class RELAXNGWriter implements GrammarWriter {
 			// attributes to be added to this <data> element.
 			Vector dataAtts = new Vector();
 			
-			String enclosing = null;
-			
-			// ID,IDREF are treated in a special manner.
-			if( x instanceof com.sun.msv.grammar.IDType ) {
-				enclosing = "key";
-				start("key",new String[]{"ns","","name","XML_ID"});
-				start("data",new String[]{"type","NCName"});
-			}
-			else
-			if( x instanceof com.sun.msv.grammar.IDREFType ) {
-				enclosing = "keyref";
-				start("keyref",new String[]{"ns","","name","XML_ID"});
-				start("data",new String[]{"type","NCName"});
-			}
-			else
-				start("data",new String[]{"type",x.getName()});
+			start("data",new String[]{"type",x.getName()});
 			
 			
 			// serialize effective facets
@@ -1056,7 +1021,6 @@ public class RELAXNGWriter implements GrammarWriter {
 			}
 			
 			end("data");
-			if(enclosing!=null)	end(enclosing);
 		}
 
 		protected void param( String name, String value ) {
@@ -1075,8 +1039,6 @@ public class RELAXNGWriter implements GrammarWriter {
 				|| x instanceof ListType
 				|| x instanceof FinalComponent
 				|| x instanceof com.sun.msv.grammar.relax.EmptyStringType
-				|| x instanceof com.sun.msv.grammar.IDType
-				|| x instanceof com.sun.msv.grammar.IDREFType
 				|| x instanceof com.sun.msv.grammar.relax.NoneType);
 		}
 		
@@ -1173,6 +1135,7 @@ public class RELAXNGWriter implements GrammarWriter {
 						public boolean isNotation( String name ) {
 							return true;
 						}
+						public String getBaseUri() { return null; }
 					});
 				
 				ns.add("type");

@@ -17,10 +17,10 @@ import com.sun.msv.grammar.trex.ElementPattern;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ElementState extends NameClassAndExpressionState
-{
-	protected Expression annealExpression( Expression contentModel )
-	{
-		return new ElementPattern( nameClass, contentModel );
+public class ElementState extends NameClassAndExpressionState {
+	protected Expression annealExpression( Expression contentModel ) {
+		ElementPattern e = new ElementPattern( nameClass, contentModel );
+		reader.setDeclaredLocationOf(e);
+		return e;
 	}
 }

@@ -21,14 +21,12 @@ public class AttributeState extends NameClassAndExpressionState
 {
 	protected boolean firstChild=true;
 	
-	protected Expression initialExpression()
-	{
+	protected Expression initialExpression() {
 		// <attribute> defaults to <anyString />
 		return Expression.anyString;
 	}
 
-	protected String getNamespace()
-	{
+	protected String getNamespace() {
 		final String ns = startTag.getAttribute("ns");
 		final boolean global = "true".equals(startTag.getAttribute("global"));
 		
@@ -42,8 +40,7 @@ public class AttributeState extends NameClassAndExpressionState
 	}
 			
 
-	protected Expression castExpression( Expression initialExpression, Expression newChild )
-	{
+	protected Expression castExpression( Expression initialExpression, Expression newChild ) {
 		// <attribute> is allowed to have only one pattern
 		if(!firstChild)
 			reader.reportError( TREXBaseReader.ERR_MORE_THAN_ONE_CHILD_EXPRESSION );
@@ -52,8 +49,10 @@ public class AttributeState extends NameClassAndExpressionState
 		return newChild;
 	}
 
-	protected Expression annealExpression( Expression contentModel )
-	{
-		return reader.pool.createAttribute( nameClass, contentModel );
+	protected Expression annealExpression( Expression contentModel ) {
+		Expression e = reader.pool.createAttribute( nameClass, contentModel );
+		if(e instanceof AttributeExp)
+			reader.setDeclaredLocationOf(e);
+		return e;
 	}
 }

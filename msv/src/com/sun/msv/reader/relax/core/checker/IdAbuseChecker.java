@@ -10,6 +10,8 @@
 package com.sun.msv.reader.relax.core.checker;
 
 import org.relaxng.datatype.Datatype;
+import com.sun.msv.datatype.xsd.IDType;
+import com.sun.msv.datatype.xsd.IDREFType;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.relax.*;
 import com.sun.msv.reader.relax.core.RELAXCoreReader;
@@ -147,6 +149,5 @@ public class IdAbuseChecker implements RELAXExpressionVisitorVoid {
 	public void onInterleave( InterleaveExp exp )	{ throw new Error(); }
 	public void onConcur( ConcurExp exp )			{ throw new Error(); }
 	public void onList( ListExp exp )				{ throw new Error(); }
-	public void onKey( KeyExp exp )					{ throw new Error(); }
 
 }

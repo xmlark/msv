@@ -7,15 +7,25 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.grammar;
+package com.sun.msv.datatype.xsd;
 
 import com.sun.msv.datatype.xsd.NmtokenType;
 import com.sun.msv.datatype.xsd.XSDatatypeImpl;
 import com.sun.msv.datatype.xsd.DatatypeFactory;
+import com.sun.msv.datatype.xsd.TypeIncubator;
 import org.relaxng.datatype.ValidationContext;
 
 /**
  * very limited 'IDREF' type of XML Schema Part 2.
+ * 
+ * <p>
+ * The cross-reference semantics of the ID/IDREF types must be
+ * implemented externally. This type by itself does not enforce such a 
+ * constraint.
+ * 
+ * <p>
+ * One can call the {@link #getIdType} method to enforce the cross-reference
+ * semantics.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
@@ -26,7 +36,10 @@ public class IDREFType extends NmtokenType {
 		
 	private static XSDatatypeImpl createIDREFS() {
 		try {
-			return (XSDatatypeImpl)DatatypeFactory.deriveByList("IDREFS",IDREFType.theInstance );
+			TypeIncubator ti = new TypeIncubator(
+				DatatypeFactory.deriveByList("IDREFS",IDREFType.theInstance ) );
+			ti.addFacet("minLength","1",false,null);
+			return (XSDatatypeImpl)ti.derive("IDREFS");
 		} catch( Exception e ) {
 			// not possible
 			throw new Error();
@@ -35,16 +48,10 @@ public class IDREFType extends NmtokenType {
 	
 	protected IDREFType()	{ super("IDREF"); }
 	
+	public int getIdType() { return ID_TYPE_IDREF; }
+	
 	protected Object readResolve() {
 		// prevent serialization from breaking the singleton.
 		return theInstance;
-	}
-	
-	public Object _createValue( String content, ValidationContext context ) {
-		Object o = super._createValue(content,context);
-		if(o==null)		return null;
-
-		((IDContextProvider)context).onIDREF("","",content);
-		return o;
 	}
 }

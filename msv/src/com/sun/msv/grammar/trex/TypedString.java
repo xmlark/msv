@@ -38,6 +38,9 @@ public class TypedString implements DatabindableDatatype, java.io.Serializable {
 		this.preserveWhiteSpace = preserveWhiteSpace;
 	}
 
+	public boolean isContextDependent() { return false; }
+	public int getIdType() { return ID_TYPE_NULL; }
+	
 	public Object createValue( String literal, ValidationContext context ) {
 		if(!preserveWhiteSpace)
 			literal = WhiteSpaceProcessor.theCollapse.process(literal);

@@ -7,13 +7,22 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.grammar;
+package com.sun.msv.datatype.xsd;
 
 import com.sun.msv.datatype.xsd.NmtokenType;
 import org.relaxng.datatype.ValidationContext;
 
 /**
  * very limited 'ID' type of XML Schema Part 2.
+ * 
+ * <p>
+ * The cross-reference semantics of the ID/IDREF types must be
+ * implemented externally. This type by itself does not enforce such a 
+ * constraint.
+ * 
+ * <p>
+ * One can call the {@link #getIdType} method to enforce the cross-reference
+ * semantics.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
@@ -27,11 +36,5 @@ public class IDType extends NmtokenType {
 		return theInstance;
 	}
 	
-	public Object _createValue( String content, ValidationContext context ) {
-		Object o = super._createValue(content,context);
-		if(o==null)		return null;
-
-		if(!((IDContextProvider)context).onID("","",content))	return null;
-		return o;
-	}
+	public int getIdType() { return ID_TYPE_ID; }
 }

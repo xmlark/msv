@@ -389,9 +389,6 @@ public class TREXWriter implements GrammarWriter {
 			public Object onList( ListExp exp ) {
 				return null;
 			}
-			public Object onKey( KeyExp exp ) {
-				return null;
-			}
 		});
 	}
 	
@@ -653,11 +650,6 @@ public class TREXWriter implements GrammarWriter {
 	
 		public void onList( ListExp exp ) {
 			// TODO: actually, some of them can be converted to W3C Schema's list.
-			throw new IllegalArgumentException("beyond the expressive power of TREX");
-		}
-	
-		public void onKey( KeyExp exp ) {
-			// TODO: actually, we can continue conversion by ignoring this constraint.
 			throw new IllegalArgumentException("beyond the expressive power of TREX");
 		}
 	

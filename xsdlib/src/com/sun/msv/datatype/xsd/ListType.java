@@ -51,6 +51,27 @@ public final class ListType extends ConcreteType implements Discrete {
 		return SimpleURType.theInstance;
 	}
 	
+	/**
+	 * The list type is context-dependent if its item type is so.
+	 */
+	public boolean isContextDependent() {
+		return itemType.isContextDependent();
+	}
+
+	public int getIdType() {
+		switch(itemType.getIdType()) {
+		case ID_TYPE_NULL:		return ID_TYPE_NULL;
+		/* we don't support list of IDs.
+			The spec of XML Schema Part 1 doesn't seem to support the list of IDs.
+			It's probably the corner case of the spec, I guess.
+		*/
+		case ID_TYPE_ID:		return ID_TYPE_NULL;
+		case ID_TYPE_IDREF:		return ID_TYPE_IDREFS;
+		case ID_TYPE_IDREFS:	return ID_TYPE_IDREFS;
+		default:				throw new Error();		// undefined code.
+		}
+	}
+	
 	public final boolean isFinal( int derivationType ) {
 		// cannot derive by list from list.
 		if(derivationType==DERIVATION_BY_LIST)	return true;

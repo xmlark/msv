@@ -90,6 +90,5 @@ public class DblAttrConstraintChecker implements RELAXExpressionVisitorVoid
 	public void onConcur( ConcurExp exp )			{;}
 	public void onInterleave( InterleaveExp exp )	{;}
 	public void onList( ListExp exp )				{;}
-	public void onKey( KeyExp exp )					{;}
 	
 }

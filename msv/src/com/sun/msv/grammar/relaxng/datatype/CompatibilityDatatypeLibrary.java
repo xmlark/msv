@@ -27,11 +27,11 @@ public class CompatibilityDatatypeLibrary implements DatatypeLibrary {
 	
 	public Datatype createDatatype( String name ) throws DatatypeException {
 		if( name.equals("ID") )
-			return com.sun.msv.datatype.xsd.NcnameType.theInstance;
+			return com.sun.msv.datatype.xsd.IDType.theInstance;
 		if( name.equals("IDREF") )
-			return com.sun.msv.datatype.xsd.NcnameType.theInstance;
+			return com.sun.msv.datatype.xsd.IDREFType.theInstance;
 		if( name.equals("IDREFS") )
-			return com.sun.msv.grammar.IDREFType.theIDREFSinstance;
+			return com.sun.msv.datatype.xsd.IDREFType.theIDREFSinstance;
 		
 		throw new DatatypeException("undefined built-in type:"+name);
 	}

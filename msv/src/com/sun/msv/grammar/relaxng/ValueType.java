@@ -69,6 +69,14 @@ public class ValueType implements Datatype, java.io.Serializable {
 		return new StreamingValidatorImpl(this,context);
 	}
 	
+	public int getIdType() {
+		return baseType.getIdType();
+	}
+	
+	public boolean isContextDependent() {
+		return baseType.isContextDependent();
+	}
+	
 	
 	protected String localize( String propertyName, Object[] args ) {
 		String format = java.util.ResourceBundle.getBundle(

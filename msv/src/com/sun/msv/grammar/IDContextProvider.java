@@ -10,6 +10,7 @@
 package com.sun.msv.grammar;
 
 import org.relaxng.datatype.ValidationContext;
+import org.relaxng.datatype.Datatype;
 
 /**
  * ValidationContextProvider that supports limited ID/IDREF implementation.
@@ -19,34 +20,10 @@ import org.relaxng.datatype.ValidationContext;
 public interface IDContextProvider extends ValidationContext {
 	
 	/**
-	 * this method is called when another ID is found to
-	 * check whether this ID is already used or not.
+	 * this method is called when a type with ID semantics is matched.
 	 * 
 	 * It is the callee's responsibility that stores
-	 * ID and checks doubly defined ID.
-	 * 
-	 * @param symbolSpaceName
-	 *		token has to be unique within the same symbol space,
-	 *		but two tokens can have the same name if they reside in
-	 *		different symbol spaces.
-	 * 
-	 * @return
-	 *	true
-	 *		if there is no preceding ID of the same name;
-	 *	false
-	 *		if this name is already declared as ID.
+	 * ID and checks doubly defined ID, if it is necessary.
 	 */
-	boolean onID( String symbolSpaceURI, String symbolSpaceLocalName, Object newIDToken );
-	
-	/**
-	 * this method is called when an IDREF is found.
-	 * 
-	 * It is the callee's responsibility to store it
-	 * and checks the existance of corresponding IDs later.
-	 * 
-	 * Note that due to the forward reference, it is not
-	 * possible to perform this check when IDREF is found.
-	 * It must be done separately after parsing the entire document.
-	 */
-	void onIDREF( String symbolSpaceURI, String symbolSpaceLocalName, Object idrefToken );
+	void onID( Datatype datatype, String literal );
 }

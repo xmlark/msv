@@ -148,11 +148,29 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 		return false;
 	}
 	
+	/**
+	 * A property for RELAX NG DTD compatibility datatypes.
+	 * <code>ID_TYPE_NULL</code> is returned by default.
+	 */
+	public int getIdType() {
+		return ID_TYPE_NULL;
+	}
+	
+	/**
+	 * A property for RELAX NG DTD compatibility datatypes.
+	 * Context-independent by default.
+	 */
+	public boolean isContextDependent() {
+		return false;
+	}
+	
+	
 	protected static final ValidationContext serializedValueChecker =
 		new ValidationContext(){
 			public boolean isNotation( String s ) { return true; }
 			public boolean isUnparsedEntity( String s ) { return true; }
 			public String resolveNamespacePrefix( String ns ) { return "abc"; }
+			public String getBaseUri() { return null; }
 		};
 		
 

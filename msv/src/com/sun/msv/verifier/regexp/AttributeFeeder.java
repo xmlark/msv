@@ -91,9 +91,6 @@ public class AttributeFeeder implements ExpressionVisitorExpression {
 	public Expression onList( ListExp exp ) {
 		return Expression.nullSet;
 	}
-	public Expression onKey( KeyExp exp ) {
-		return Expression.nullSet;
-	}
 	public Expression onEpsilon()		{ return Expression.nullSet; }
 	public Expression onNullSet()		{ return Expression.nullSet; }
 	public Expression onAnyString()		{ return Expression.nullSet; }

@@ -182,6 +182,12 @@ public class LateBindDatatype implements XSDatatype {
 	
 // no method works
 	
+	public int getIdType() {
+		throw new Error();
+	}
+	public boolean isContextDependent() {
+		throw new Error();
+	}
 	public Object createJavaObject( String value, ValidationContext context ) {
 		throw new Error();
 	}

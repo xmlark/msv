@@ -48,7 +48,7 @@ public class Driver {
 		boolean dump=false;
 		boolean verbose = false;
 		boolean warning = false;
-		boolean loose=false;
+		boolean standalone=false;
 		EntityResolver entityResolver=null;
 		
 		boolean dtdAsSchema = false;
@@ -59,7 +59,9 @@ public class Driver {
 		}
 		
 		for( int i=0; i<args.length; i++ ) {
-			if( args[i].equalsIgnoreCase("-loose") )			loose = true;
+			if( args[i].equalsIgnoreCase("-standalone") )		standalone = true;
+			else
+			if( args[i].equalsIgnoreCase("-loose") )			standalone = true;	// backward compatible name
 			else
 			if( args[i].equalsIgnoreCase("-dtd") )				dtdAsSchema = true;
 			else
@@ -79,6 +81,19 @@ public class Driver {
 			if( args[i].equalsIgnoreCase("-verbose") )			verbose = true;
 			else
 			if( args[i].equalsIgnoreCase("-warning") )			warning = true;
+			else
+			if( args[i].equalsIgnoreCase("-locale") ) {
+				String code = args[++i];
+				
+				int idx = code.indexOf('-');
+				if(idx<0)	idx = code.indexOf('_');
+				
+				if(idx<0)
+					Locale.setDefault( new Locale(code,"") );
+				else
+					Locale.setDefault( new Locale(
+						code.substring(0,idx), code.substring(idx+1) ));
+			}
 			else
 			if( args[i].equalsIgnoreCase("-catalog") ) {
 				// use Sun's "XML Entity and URI Resolvers" by Norman Walsh
@@ -114,17 +129,16 @@ public class Driver {
 		
 		factory.setNamespaceAware(true);
 		factory.setValidating(false);
-		if( !loose && verbose )
+		if( !standalone && verbose )
 			System.out.println( localize( MSG_DTDVALIDATION ) );
 		
-		if( loose )
+		if( standalone )
 			try {
 				factory.setFeature("http://xml.org/sax/features/validation",false);
 				factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
 			} catch(Exception e) {
 //				e.printStackTrace();
-				if( verbose )
-					System.out.println( localize( MSG_FAILED_TO_IGNORE_EXTERNAL_DTD ) );
+				System.out.println( localize( MSG_FAILED_TO_IGNORE_EXTERNAL_DTD ) );
 			}
 		else
 			try {

@@ -29,10 +29,6 @@ public class DataTypeLibraryImpl implements DatatypeLibrary {
 	}
 	
 	private XSDatatype getType( String typeName) throws DatatypeException {
-		if( typeName.equals("ID") )		return NmtokenType.theInstance;
-		if( typeName.equals("IDREF") )	return NmtokenType.theInstance;
-		if( typeName.equals("IDREFS"))	typeName = "NMTOKENS";
-		
 		return DatatypeFactory.getTypeByName(typeName);
 	}
 	

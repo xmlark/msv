@@ -10,8 +10,10 @@
 package com.sun.msv.reader.relax.core;
 
 import java.util.Map;
+import java.util.Iterator;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.DatatypeException;
 import javax.xml.parsers.SAXParserFactory;
@@ -19,15 +21,15 @@ import javax.xml.parsers.ParserConfigurationException;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.ExpressionState;
+import com.sun.msv.reader.RunAwayExpressionChecker;
 import com.sun.msv.reader.relax.RELAXReader;
+import com.sun.msv.reader.relax.core.checker.*;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.ReferenceExp;
-import com.sun.msv.grammar.relax.RELAXModule;
-import com.sun.msv.grammar.relax.NoneType;
-import com.sun.msv.grammar.relax.AttPoolClause;
+import com.sun.msv.grammar.relax.*;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -222,6 +224,153 @@ public class RELAXCoreReader extends RELAXReader {
 	}
 	
 	
+	protected void wrapUp() {
+		// combine expressions to their masters.
+		// if no master is found, then create a new AttPool.
+		{
+			ReferenceExp[] combines = combinedAttPools.getAll();
+			for ( int i=0; i<combines.length; i++ ) {
+				
+				AttPoolClause ac = module.attPools.get(combines[i].name);
+				if( ac!=null ) {
+					// ac.exp==null means no master is found but someone
+					// has a reference to this clause.
+					// this is OK.
+					if( ac.exp==null )		ac.exp=Expression.epsilon;
+					ac.exp = pool.createSequence( ac.exp, combines[i].exp );
+					continue;
+				}
+				
+				TagClause tc = module.tags.get(combines[i].name);
+				if( tc!=null && tc.exp!=null ) {
+					// tc.exp==null means no master is found.
+					// In this case, we can't combine us to TagClause.
+					tc.exp = pool.createSequence( tc.exp, combines[i].exp );
+					continue;
+				}
+				
+				// no master is found. Create a new one.
+				ac = module.attPools.getOrCreate(combines[i].name);
+				ac.exp = combines[i].exp;
+			}
+		}
+
+		// role collision check.
+		detectCollision( module.tags, module.attPools, ERR_ROLE_COLLISION );
+		
+		
+		// detect undefined elementRules, hedgeRules, and so on.
+		// dummy definitions are given for undefined ones.
+		detectUndefinedOnes( module.elementRules,ERR_UNDEFINED_ELEMENTRULE );
+		detectUndefinedOnes( module.hedgeRules,	ERR_UNDEFINED_HEDGERULE );
+		detectUndefinedOnes( module.tags,		ERR_UNDEFINED_TAG );
+		detectUndefinedOnes( module.attPools,	ERR_UNDEFINED_ATTPOOL );
+		
+		// label collision detection should be done after
+		// undefined label detection because
+		// sometimes people use <ref label/> for hedgeRule,
+		
+		// detect label collision.
+		// it is prohibited for elementRule and hedgeRule to share the same label.
+		detectCollision( module.elementRules, module.hedgeRules, ERR_LABEL_COLLISION );
+						
+		detectDoubleAttributeConstraints( module );
+						
+		// checks ID abuse
+		IdAbuseChecker.check( this, module );
+		
+		// supply top-level expression.
+		Expression exp =
+			pool.createChoice(
+				choiceOfExported( module.elementRules ),
+				choiceOfExported( module.hedgeRules ) );
+			
+		if( exp==Expression.nullSet )
+			// at least one element must be exported or
+			// the grammar accepts nothing.
+			reportWarning( WRN_NO_EXPROTED_LABEL );
+			
+		module.topLevel = exp;
+		
+		// make sure that there is no recurisve hedge rules.
+		RunAwayExpressionChecker.check( this, module.topLevel );
+			
+		
+		{// make sure that there is no exported hedgeRule that references a label in the other namespace.
+			Iterator jtr = module.hedgeRules.iterator();
+			while(jtr.hasNext()) {
+				HedgeRules hr = (HedgeRules)jtr.next();
+				if(!hr.exported)	continue;
+						
+				ExportedHedgeRuleChecker ehrc = new ExportedHedgeRuleChecker(module);
+				if(!hr.visit( ehrc )) {
+					// this hedgeRule directly/indirectly references exported labels.
+					// report it to the user.
+							
+					// TODO: source information?
+					String dependency="";
+					for( int i=0; i<ehrc.errorSnapshot.length-1; i++ )
+						dependency+= ehrc.errorSnapshot[i].name + " > ";
+							
+					dependency += ehrc.errorSnapshot[ehrc.errorSnapshot.length-1].name;
+							
+					reportError( ERR_EXPROTED_HEDGERULE_CONSTRAINT, dependency );
+							
+				}
+			}
+		}
+	}
+
+
+	private Expression choiceOfExported( ReferenceContainer con )
+	{
+		Iterator itr = con.iterator();
+		Expression r = Expression.nullSet;
+		while( itr.hasNext() )
+		{
+			Exportable ex= (Exportable)itr.next();
+			if( ex.isExported() )
+				r = pool.createChoice(r,(Expression)ex);
+		}
+		return r;
+	}
+	
+		
+	/** detect two AttributeExps that share the same target name.
+	 * 
+	 * See {@link DblAttrConstraintChecker} for details.
+	 */
+	private void detectDoubleAttributeConstraints( RELAXModule module ) {
+		final DblAttrConstraintChecker checker = new DblAttrConstraintChecker();
+		
+		Iterator itr = module.tags.iterator();
+		while( itr.hasNext() )
+			// errors will be reported within this method
+			// no recovery is necessary.
+			checker.check( (TagClause)itr.next(), this );
+	}
+
+	
+	private void detectCollision( ReferenceContainer col1, ReferenceContainer col2, String errMsg ) {
+		Iterator itr = col1.iterator();
+		while( itr.hasNext() ) {
+			ReferenceExp r1	= (ReferenceExp)itr.next();
+			ReferenceExp r2	= col2._get( r1.name );
+			// if the grammar references elementRule by hedgeRef,
+			// (or hedgeRule by ref),  HedgeRules object and ElementRules object
+			// are created under the same name.
+			// And it is inappropriate to report this situation as "label collision".
+			// Therefore, we have to check both have definitions before reporting an error.
+			if( r2!=null && r1.exp!=null && r2.exp!=null )
+				reportError(
+					new Locator[]{ getDeclaredLocationOf(r1),
+								   getDeclaredLocationOf(r2) },
+					errMsg,	new Object[]{r1.name} );
+		}
+	}
+	
+	
+	
 // error messages	
 	protected String localizeMessage( String propertyName, Object[] args ) {
 		return super.localizeMessage(propertyName,args);
@@ -251,7 +400,7 @@ public class RELAXCoreReader extends RELAXReader {
 		= "RELAXReader.LabelCollision";
 	public static final String ERR_ROLE_COLLISION	// arg:1
 		= "RELAXReader.RoleCollision";
-	public static final String ERR_NO_EXPROTED_LABEL	// arg:0
+	public static final String WRN_NO_EXPROTED_LABEL	// arg:0
 		= "RELAXReader.NoExportedLabel";
 	public static final String ERR_EXPROTED_HEDGERULE_CONSTRAINT
 		= "RELAXReader.ExportedHedgeRuleConstraint";	// arg:1

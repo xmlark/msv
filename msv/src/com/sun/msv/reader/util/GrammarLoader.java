@@ -11,7 +11,7 @@ package com.sun.msv.reader.util;
 
 import com.sun.msv.reader.relax.core.RELAXCoreReader;
 import com.sun.msv.reader.trex.classic.TREXGrammarReader;
-import com.sun.msv.reader.trex.ng.RELAXNGReader;
+import com.sun.msv.reader.trex.ng.comp.RELAXNGCompReader;
 import com.sun.msv.reader.xmlschema.XMLSchemaReader;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.GrammarReaderController;
@@ -360,8 +360,8 @@ public class GrammarLoader
 						new TREXGrammarReader.StateFactory(),getPool()); 
 				else
 					// otherwise assume RELAX NG
-					winner = new RELAXNGReader(getController(),getSAXParserFactory(),
-						new RELAXNGReader.StateFactory(),getPool() );
+					winner = new RELAXNGCompReader(getController(),getSAXParserFactory(),
+						new RELAXNGCompReader.StateFactory(),getPool() );
 				
 				// simulate the start of the document.
 				winner.setDocumentLocator(locator);

@@ -10,6 +10,7 @@
 package com.sun.msv.reader.xmlschema;
 
 import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.BooleanType;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.AttributeExp;
 import com.sun.msv.grammar.ReferenceExp;
@@ -198,7 +199,11 @@ public class ElementDeclState extends ExpressionWithChildState {
 
 		// process the "abstract" attribute.
 		String abstract_ = startTag.getAttribute("abstract");
-		decl.setAbstract( "true".equals(abstract_) );
+		decl.setAbstract( "true".equals(abstract_)||"1".equals(abstract_) );
+		if( !BooleanType.theInstance.isValid(abstract_,null) )
+			// recover by assuming false.
+			reader.reportError( XMLSchemaReader.ERR_BAD_ATTRIBUTE_VALUE, "abstract", abstract_ );
+		
 		// TODO: abstract is prohibited for the local element.
 		
 		// TODO: substitutionGroup is also prohibited for the local element.	

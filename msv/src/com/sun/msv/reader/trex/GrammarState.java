@@ -39,7 +39,7 @@ public class GrammarState extends DivInGrammarState {
 		super.startSelf();
 		
 		previousGrammar = getReader().grammar;
-		newGrammar = new TREXGrammar( reader.pool, previousGrammar );
+		newGrammar = getReader().sfactory.createGrammar( reader.pool, previousGrammar );
 		getReader().grammar = newGrammar;
 	}
 

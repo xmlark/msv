@@ -11,7 +11,6 @@ package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.TypedStringExp;
 import com.sun.msv.grammar.ListExp;
-import com.sun.msv.grammar.KeyExp;
 import com.sun.msv.util.DatatypeRef;
 import java.util.Set;
 
@@ -30,7 +29,7 @@ class StringRecoveryToken extends StringToken {
 	}
 	
 	StringRecoveryToken( StringToken base, Set failedExps ) {
-		super( base.docDecl, base.literal, base.context );
+		super( base.resCalc, base.literal, base.context, null );
 		this.failedExps = failedExps;
 	}
 	
@@ -53,15 +52,10 @@ class StringRecoveryToken extends StringToken {
 		super.match(exp);
 		return true;
 	}
-	
-	boolean match( KeyExp exp ) {
-		super.match(exp);
-		return true;
-	}
 		
 	protected StringToken createChildStringToken( String literal, DatatypeRef dtRef ) {
 		return new StringRecoveryToken(
-			new StringToken( docDecl, literal, context ) );
+			new StringToken( resCalc, literal, context, dtRef ) );
 	}
 
 }

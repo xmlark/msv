@@ -67,6 +67,13 @@ public abstract class DataTypeWithFacet extends XSDatatypeImpl
 		}
 	}
 	
+	public boolean isContextDependent() {
+		return concreteType.isContextDependent();
+	}
+	
+	public int getIdType() {
+		return concreteType.getIdType();
+	}
 	
 	public final String displayName() {
 		return concreteType.getName()+"-derived";

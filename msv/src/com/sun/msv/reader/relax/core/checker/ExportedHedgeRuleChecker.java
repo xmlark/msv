@@ -58,7 +58,6 @@ public final class ExportedHedgeRuleChecker implements RELAXExpressionVisitorBoo
 	public boolean onInterleave( InterleaveExp exp )	{ throw new Error(); }
 	public boolean onConcur( ConcurExp exp )			{ throw new Error(); }
 	public boolean onList( ListExp exp )				{ throw new Error(); }
-	public boolean onKey( KeyExp exp )					{ throw new Error(); }
 	
 	public boolean onElementRules( ElementRules exp ) {
 		if(exp.ownerModule==module)		return true;

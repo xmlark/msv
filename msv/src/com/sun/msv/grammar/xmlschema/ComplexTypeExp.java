@@ -359,6 +359,7 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 					public boolean isNotation( String notationName ) {
 						throw new Error();	// shall never be called.
 					}
+					public String getBaseUri() { return null; }
 				} );
 		
 			return ti.derive(null);

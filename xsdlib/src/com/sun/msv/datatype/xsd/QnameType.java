@@ -27,6 +27,13 @@ public class QnameType extends ConcreteType implements Discrete {
 	final public XSDatatype getBaseType() {
 		return SimpleURType.theInstance;
 	}
+	
+	/**
+	 * QName type always returns true. That is, QName is a context-dependent type.
+	 */
+	public boolean isContextDependent() {
+		return true;
+	}
 
 	private static String getNamespaceURI( String content, ValidationContext context ) {
 		return context.resolveNamespacePrefix( content.substring(0, content.indexOf(':')) );

@@ -9,6 +9,8 @@
  */
 package com.sun.msv.util;
 
+import com.sun.msv.grammar.SimpleNameClass;
+
 /**
  * pair of Strings.
  * 
@@ -18,9 +20,14 @@ public final class StringPair implements java.io.Serializable
 {
 	public final String namespaceURI;
 	public final String localName;
+	
 	public StringPair( String ns, String ln ) { namespaceURI=ns; localName=ln; }
+	public StringPair( SimpleNameClass name ) { this(name.namespaceURI, name.localName); }
+	
 	public boolean equals( Object o )
 	{
+		if(!(o instanceof StringPair))	return false;
+		
 		return namespaceURI.equals(((StringPair)o).namespaceURI)
 			&& localName.equals(((StringPair)o).localName);
 	}

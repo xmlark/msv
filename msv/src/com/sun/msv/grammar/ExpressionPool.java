@@ -137,18 +137,6 @@ public class ExpressionPool implements java.io.Serializable {
 		
 		return unify( new MixedExp(body) );
 	}
-
-	public final Expression createKey( Expression body, StringPair name ) {
-		if( body==Expression.nullSet )		return Expression.nullSet;
-		
-		return unify( new KeyExp(body,name,true) );
-	}
-	
-	public final Expression createKeyref( Expression body, StringPair name ) {
-		if( body==Expression.nullSet )		return Expression.nullSet;
-		
-		return unify( new KeyExp(body,name,false) );
-	}
 	
 	public final Expression createSequence( Expression left, Expression right ) {
 		if( left ==Expression.nullSet

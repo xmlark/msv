@@ -24,7 +24,7 @@ public class StringToken extends Token {
 	
 	public final String literal;
 	public final IDContextProvider context;
-	protected final REDocumentDeclaration docDecl;
+	protected final ResidualCalculator resCalc;
 	protected final boolean ignorable;
 	
 	/**
@@ -37,11 +37,15 @@ public class StringToken extends Token {
 	private static final Datatype[] ignoredType = new Datatype[0];
 	
 	public StringToken( REDocumentDeclaration docDecl, String literal, IDContextProvider context ) {
-		this(docDecl,literal,context,null);
+		this(docDecl.resCalc,literal,context,null);
 	}
 	
 	public StringToken( REDocumentDeclaration docDecl, String literal, IDContextProvider context, DatatypeRef refType ) {
-		this.docDecl = docDecl;
+		this(docDecl.resCalc,literal,context,null);
+	}
+	
+	public StringToken( ResidualCalculator resCalc, String literal, IDContextProvider context, DatatypeRef refType ) {
+		this.resCalc = resCalc;
 		this.literal = literal;
 		this.context = context;
 		this.refType = refType;
@@ -56,7 +60,7 @@ public class StringToken extends Token {
 		if(!exp.dt.isValid( literal, context )) return false; // not accepted.
 		
 		if( exp.except!=Expression.nullSet ) {
-			if( docDecl.resCalc.calcResidual( exp.except, this )==Expression.epsilon )
+			if( resCalc.calcResidual( exp.except, this )==Expression.epsilon )
 				// due to the constraint imposed on the body of the 'except' clause,
 				// comparing the residual with the epsilon is OK and cheap.
 				// but it might be better to use the isEpsilonReducible method
@@ -66,39 +70,14 @@ public class StringToken extends Token {
 		
 		// this type accepts me.
 		if(refType!=null)		assignType(exp.dt);
+		
+		// if the type has ID semantics, report it.
+		if( exp.dt.getIdType()!=exp.dt.ID_TYPE_NULL )
+			context.onID( exp.dt, literal );
+		
 		return true;
 	}
 	
-	/** KeyExp can consume this token if its body can accept this string token. */
-	boolean match( KeyExp exp ) {
-		// we need to know what datatype is assigned to this token.
-		if( refType==null )	refType = new DatatypeRef();
-		
-		if(ignorable)
-			// In RELAX NG, key cannot accept ignorable tokens.
-			return false;
-		
-		if(docDecl.resCalc.calcResidual( exp.exp, this )!=Expression.epsilon)
-			return false;	// not accepted.
-		
-		// then report detected key/keyrefs.
-		if( refType.types.length!=1 )
-			// if the body accepts this token, then the datatype
-			// must be uniquely decidable.
-			// this situation can happen only when we are recovering from errors.
-			// so ignore this error.
-			return true;
-
-		if( exp.isKey )
-			return context.onID( exp.name.namespaceURI, exp.name.localName,
-				refType.types[0].createValue(literal,context) );
-		else
-			context.onIDREF( exp.name.namespaceURI, exp.name.localName,
-				refType.types[0].createValue(literal,context) );
-		
-		return true;
-	}
-
 	/** ListExp can consume this token if its pattern accepts this string */
 	boolean match( ListExp exp ) {
 		StringTokenizer tokens = new StringTokenizer(literal);
@@ -117,7 +96,7 @@ public class StringToken extends Token {
 		
 		while( tokens.hasMoreTokens() ) {
 			StringToken child = createChildStringToken(tokens.nextToken(),dtRef);
-			residual = docDecl.resCalc.calcResidual( residual, child );
+			residual = resCalc.calcResidual( residual, child );
 			
 			if( residual==Expression.nullSet )
 				// the expression is failed to accept this item.
@@ -162,7 +141,7 @@ public class StringToken extends Token {
 	}
 	
 	protected StringToken createChildStringToken( String literal, DatatypeRef dtRef ) {
-		return new StringToken( docDecl, literal, context, dtRef );
+		return new StringToken( resCalc, literal, context, dtRef );
 	}
 
 	// anyString can match any string

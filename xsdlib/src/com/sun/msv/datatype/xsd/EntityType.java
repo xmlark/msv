@@ -27,6 +27,13 @@ public class EntityType extends ConcreteType {
 	final public XSDatatype getBaseType() {
 		return NcnameType.theInstance;
 	}
+
+	/**
+	 * ENTITY type always returns true. That is, ENTITY is a context-dependent type.
+	 */
+	public boolean isContextDependent() {
+		return true;
+	}
 	
 	public final int isFacetApplicable( String facetName ) {
 		if( facetName.equals(FACET_LENGTH)

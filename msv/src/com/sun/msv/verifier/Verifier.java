@@ -268,14 +268,13 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		panicLevel = Math.max( panicLevel, stack.panicLevel );
 		stack = stack.previous;
 		
-		if(!current.stepForward( child, null ))
-		{// error
+		if(!current.stepForward( child, null )) {
+			// error
 			StringRef ref = new StringRef();
 			current.stepForward( child, ref );	// force recovery
 			
 			onError( ref, localizeMessage( ERR_UNEXPECTED_ELEMENT, new Object[]{qName} ) );
-		}
-		else
+		} else
 			panicLevel = Math.max( panicLevel-1, 0 );
 		
 		super.endElement( namespaceUri, localName, qName );
@@ -287,15 +286,14 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	 * This method can be overrided by the derived class to provide different behavior.
 	 */
 	protected ValidityViolation onError( StringRef ref, String defaultMsg ) throws SAXException {
-		ValidityViolation vv;
+		if(ref==null)		return onError( defaultMsg );
+		if(ref.str==null)	return onError( defaultMsg );
+		else				return onError( ref.str );
+	}
+	
+	protected ValidityViolation onError( String msg ) throws SAXException {
+		ValidityViolation vv = new ValidityViolation(locator,msg);
 		hadError = true;
-			
-		if( ref!=null && ref.str!=null )
-			// error message is available
-			vv = new ValidityViolation(locator,ref.str);
-		else
-			// no error message is avaiable, use default.
-			vv = new ValidityViolation( locator, defaultMsg );
 			
 		if( errorHandler!=null && panicLevel==0 )
 			errorHandler.error(vv);
@@ -323,6 +321,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		super.init();
 		hadError=false;
 		isFinished=false;
+		if(duplicateIds!=null)	duplicateIds.clear();
 	}
 	
 	public void startDocument() throws SAXException {
@@ -341,29 +340,39 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	
 	public void endDocument() throws SAXException {
 		// ID/IDREF check
-		Iterator itr = idrefs.keySet().iterator();
-		while( itr.hasNext() ) {
-			StringPair symbolSpace = (StringPair)itr.next();
-			
-			Set refs = (Set)idrefs.get(symbolSpace);
-			Set keys = (Set)ids.get(symbolSpace);
-			
-			if(keys==null || !keys.containsAll(refs)) {
+		if(performIDcheck) {
+			if(!ids.containsAll(idrefs)) {
 				hadError = true;
-				Iterator jtr = refs.iterator();
-				while( jtr.hasNext() ) {
-					Object idref = jtr.next();
-					if(keys==null || !keys.contains(idref)) {
-						if( symbolSpace.localName.length()==0 && symbolSpace.namespaceURI.length()==0 )
-							onError( null, localizeMessage( ERR_UNSOLD_IDREF, new Object[]{idref} ) );
-						else
-							onError( null, localizeMessage( ERR_UNSOLD_KEYREF, new Object[]{idref,symbolSpace} ) );
-					}
+				Iterator itr = idrefs.iterator();
+				while( itr.hasNext() ) {
+					Object idref = itr.next();
+					if(!ids.contains(idref))
+						onError( localizeMessage( ERR_UNSOLD_IDREF, new Object[]{idref} ) );
+				}
+			}
+			if(duplicateIds!=null) {
+				Iterator itr = duplicateIds.iterator();
+				while( itr.hasNext() ) {
+					Object id = itr.next();
+					onError( localizeMessage( ERR_DUPLICATE_ID, new Object[]{id} ) );
 				}
 			}
 		}
 		
 		isFinished=true;
+	}
+	
+	/**
+	 * Stores all duplicate id values.
+	 * Errors are reported at the endDocument method because
+	 * the onDuplicateId method cannot throw an exception.
+	 */
+	private Set duplicateIds;
+	
+	public void onDuplicateId( String id ) {
+		if(duplicateIds==null)
+			duplicateIds = new java.util.HashSet();
+		duplicateIds.add(id);
 	}
 
 	public static String localizeMessage( String propertyName, Object[] args ) {
@@ -387,6 +396,6 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		"Verifier.Error.UnexpectedElement";
 	public static final String ERR_UNSOLD_IDREF = // arg:1
 		"Verifier.Error.UnsoldIDREF";
-	public static final String ERR_UNSOLD_KEYREF = // arg:1
-		"Verifier.Error.UnsoldKeyref";
+	public static final String ERR_DUPLICATE_ID = // arg:1
+		"Verifier.Error.DuplicateId";
 }

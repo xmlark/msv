@@ -66,7 +66,6 @@ public class ElementsOfConcernCollector implements ExpressionVisitor
 	public final Object onAnyString()	{ return null; }
 	public final Object onTypedString( TypedStringExp exp )	{ return null; }
 	public final Object onList( ListExp exp )	{ return null; }
-	public final Object onKey( KeyExp exp )	{ return null; }
 	
 	public final Object onRef( ReferenceExp exp ) {
 		return exp.exp.visit(this);

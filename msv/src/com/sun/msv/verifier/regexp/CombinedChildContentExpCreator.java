@@ -371,7 +371,6 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	public void onAnyString()	{ content = continuation = Expression.nullSet; }
 	public void onTypedString( TypedStringExp exp )	{ content = continuation = Expression.nullSet; }
 	public void onList( ListExp exp )	{ content = continuation = Expression.nullSet; }
-	public void onKey( KeyExp exp )		{ content = continuation = Expression.nullSet; }
 	public void onRef( ReferenceExp exp ) {
 		exp.exp.visit(this);
 	}

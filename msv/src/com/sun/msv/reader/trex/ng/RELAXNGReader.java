@@ -168,8 +168,6 @@ public class RELAXNGReader extends TREXBaseReader {
 		public State dataParam		( State parent, StartTagInfo tag ) { return new DataParamState(); }
 		public State value			( State parent, StartTagInfo tag ) { return new ValueState(); }
 		public State list			( State parent, StartTagInfo tag ) { return new ListState(); }
-		public State key			( State parent, StartTagInfo tag ) { return new KeyState(true); }
-		public State keyref			( State parent, StartTagInfo tag ) { return new KeyState(false); }
 		public State define			( State parent, StartTagInfo tag ) { return new DefineState(); }
 		public State start			( State parent, StartTagInfo tag ) { return new StartState(); }
 		public State redefine		( State parent, StartTagInfo tag ) { return new DefineState(); }
@@ -249,8 +247,6 @@ public class RELAXNGReader extends TREXBaseReader {
 		if(tag.localName.equals("data"))		return getStateFactory().data(parent,tag);
 		if(tag.localName.equals("value"))		return getStateFactory().value(parent,tag);
 		if(tag.localName.equals("list"))		return getStateFactory().list(parent,tag);
-		if(tag.localName.equals("key"))			return getStateFactory().key(parent,tag);
-		if(tag.localName.equals("keyref"))		return getStateFactory().keyref(parent,tag);
 		if(tag.localName.equals("externalRef"))	return getStateFactory().externalRef(parent,tag);
 		if(tag.localName.equals("parentRef"))	return getStateFactory().parentRef(parent,tag);
 		
@@ -289,97 +285,6 @@ public class RELAXNGReader extends TREXBaseReader {
 			reportError( ERR_UNKNOWN_DATATYPE_VOCABULARY_1, uri, e.toString() );
 		}
 		return null;
-	}
-
-	/**
-	 * set of RELAXNGTypedStringExps that are found during parsing.
-	 * 
-	 * This set is used to detect undefined keys.
-	 */
-	protected final Set keyKeyrefs = new java.util.HashSet();
-	
-	public void wrapUp() {
-		super.wrapUp();
-		
-		if(!hadError) {
-			// detect undefined keys
-			Map keys = new java.util.HashMap();
-			
-			KeyExp[] keyKeyrefs = (KeyExp[])this.keyKeyrefs.toArray( new KeyExp[0] );
-			
-			// compute the datatype for each key/keyref
-			for( int i=0; i<keyKeyrefs.length; i++ ) {
-				final KeyExp k = keyKeyrefs[i];
-				k.visit( new ExpressionWalker(){
-					public void onTypedString( TypedStringExp exp ) {
-						if( k.dataTypeName!=null
-						&&  k.dataTypeName.equals(exp.name) )
-							reportError(
-								new Locator[]{ getDeclaredLocationOf(k) },
-								ERR_INCONSISTENT_KEY_TYPE, new String[]{k.name.localName} );
-						
-						k.dataTypeName = exp.name;
-					}
-				});
-			}
-			
-			// enumerate all keys.
-			for( int i=0; i<keyKeyrefs.length; i++ )
-				if( keyKeyrefs[i].isKey ) {
-					KeyExp pred = (KeyExp)keys.get(keyKeyrefs[i].name);
-					if(pred!=null) {
-						// there is another key with the same name.
-						// check the type consistency.
-						// if baseTypeName==null, then it means there was an error in that declaration.
-						// In that case, this error check is meaningless.
-						if( pred.dataTypeName!=null && keyKeyrefs[i].dataTypeName!=null
-							&&  !pred.dataTypeName.equals(keyKeyrefs[i].dataTypeName) ) {
-							reportError( 
-								new Locator[]{
-									getDeclaredLocationOf(pred),
-									getDeclaredLocationOf(keyKeyrefs[i]) },
-								ERR_INCONSISTENT_KEY_TYPE, new Object[]{pred.name.localName} );
-							// suppress excessive error messages by setting
-							// dataTypeName fields null.
-							pred.dataTypeName=null;
-							keyKeyrefs[i].dataTypeName=null;
-						}
-					}
-						
-					keys.put( keyKeyrefs[i].name, keyKeyrefs[i] );
-				}
-			
-			// then detect undefined keys.
-			for( int i=0; i<keyKeyrefs.length; i++ ) {
-				if( !keyKeyrefs[i].isKey ) {
-					
-					KeyExp pred = (KeyExp)keys.get(keyKeyrefs[i].name);
-					
-					if( pred==null )
-						reportError(
-							new Locator[]{getDeclaredLocationOf(keyKeyrefs[i])},
-							ERR_UNDEFINED_KEY,
-							new Object[]{keyKeyrefs[i].name} );
-					else {
-						// check the type consistency.
-						// if dataTypeName==null, then it means there was an error in that declaration.
-						// In that case, this error check is meaningless.
-						if( pred.dataTypeName!=null && keyKeyrefs[i].dataTypeName!=null
-							&&  !pred.dataTypeName.equals(keyKeyrefs[i].dataTypeName) ) {
-							reportError( 
-								new Locator[]{
-									getDeclaredLocationOf(pred),
-									getDeclaredLocationOf(keyKeyrefs[i]) },
-								ERR_INCONSISTENT_KEY_TYPE, new Object[]{pred.name.localName} );
-							// suppress excessive error messages by setting
-							// baseTypeName fields null.
-							pred.dataTypeName=null;
-							keyKeyrefs[i].dataTypeName=null;
-						}
-					}
-				}					
-			}
-		}
 	}
 
 	

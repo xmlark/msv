@@ -37,7 +37,7 @@ public class RootState extends RootIncludedPatternState {
 			// other pattern element is specified.
 			// create wrapper grammar
 			final TREXBaseReader reader = (TREXBaseReader)this.reader;
-			reader.grammar = new TREXGrammar( reader.pool, null );
+			reader.grammar = reader.sfactory.createGrammar( reader.pool, null );
 			simple = true;
 		}
 		

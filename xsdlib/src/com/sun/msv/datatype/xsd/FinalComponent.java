@@ -35,6 +35,14 @@ public final class FinalComponent extends XSDatatypeImpl {
 		this.finalValue = finalValue;
 	}
 	
+	public boolean isContextDependent() {
+		return baseType.isContextDependent();
+	}
+	
+	public int getIdType() {
+		return baseType.getIdType();
+	}
+	
 	public boolean isFinal( int derivationType ) {
 		if( (finalValue&derivationType) != 0 )	return true;
 		return baseType.isFinal(derivationType);

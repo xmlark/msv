@@ -48,6 +48,26 @@ final public class UnionType extends ConcreteType {
 	}
 
 	/**
+	 * The union type is context-dependent if one of the member types is so.
+	 */
+	public boolean isContextDependent() {
+		for( int i=0; i<memberTypes.length; i++ )
+			if(memberTypes[i].isContextDependent())
+				return true;
+		return false;
+	}
+	
+	/*
+		TODO: the getIdType method of the union type.
+	
+		What is the return code of the getIdType if the type is an union
+		of ID and Short?
+	
+		For this reason, for now, the getIdType method follows its default
+		implementation in the XSDatatypeImpl class, which is ID_TYPE_NULL.
+	*/
+	
+	/**
 	 * Variety of the UnionType is VARIETY_UNION. So this method always
 	 * returns VARIETY_UNION.
 	 */

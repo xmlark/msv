@@ -572,11 +572,14 @@ public abstract class GrammarReader
 		return true;
 	}
 	
+	public String getBaseUri() {
+		return getCurrentState().getBaseURI();
+	}
+	
 	// when the user uses enumeration over ID type,
 	// this method will be called.
 	// To make it work, simply allow everything.
-	public boolean onID( String uri, String local, Object token ) { return true; }
-	public void onIDREF( String uri, String local, Object token ) {}
+	public void onID( Datatype dt, String literal ) {}
 
 	
 	
@@ -637,6 +640,8 @@ public abstract class GrammarReader
 	public final void reportError( Locator[] locs, String propertyName, Object[] args )
 	{ reportError( propertyName, args, null, locs ); }
 
+	public final void reportWarning( String propertyName )
+	{ reportWarning( propertyName, null, null ); }
 	public final void reportWarning( String propertyName, Object arg1 )
 	{ reportWarning( propertyName, new Object[]{arg1}, null ); }
 	public final void reportWarning( String propertyName, Object arg1, Object arg2 )

@@ -49,17 +49,21 @@ public class RootGrammarState extends SimpleState implements ExpressionOwner
 		
 		ErrorHandler handler = new GrammarReaderControllerAdaptor(reader.controller);
 		
-		// then bind it as the final wrap-up.
-		if( !schemaProvider.bind(handler) )
-			reader.hadError = true;
+		if(!reader.hadError) {
+			// abort further wrap up if there was an error.
+			
+			// then bind it as the final wrap-up.
+			if( !schemaProvider.bind(handler) )
+				reader.hadError = true;
 		
-		// also bind top-level expression
-		if( reader.grammar.topLevel!=null )
-			// this 'if' clause is necessary when
-			// <topLevel> is not specified (which is an error, and already reported.)
-			reader.grammar.topLevel = 
-				reader.grammar.topLevel.visit(
-					new IslandSchemaImpl.Binder(schemaProvider, handler, reader.pool ) );
+			// also bind top-level expression
+			if( reader.grammar.topLevel!=null )
+				// this 'if' clause is necessary when
+				// <topLevel> is not specified (which is an error, and already reported.)
+				reader.grammar.topLevel = 
+					reader.grammar.topLevel.visit(
+						new IslandSchemaImpl.Binder(schemaProvider, handler, reader.pool ) );
+		}
 	}
 	
 	// GrammarState implements ExpressionState,

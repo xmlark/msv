@@ -15,6 +15,7 @@ import org.relaxng.datatype.Datatype;
 import java.util.Set;
 import java.util.Map;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.IDContextProvider;
 import com.sun.msv.util.StartTagInfo;
@@ -31,21 +32,29 @@ import com.sun.msv.util.DatatypeRef;
  *  <li>collecting ID/IDREFs.
  *  <li>storing Locator.
  * 
+ * <p>
+ *	By setting <code>performIDcheck</code> variable, the ID/IDREF checking
+ *  can be either turned on or turned off.
+ * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class AbstractVerifier implements
-	ContentHandler,
-	DTDHandler,
-	IDContextProvider {
+	ContentHandler, DTDHandler, IDContextProvider {
 	
 	/** document Locator that is given by XML reader */
 	protected Locator locator;
 	public final Locator getLocator() { return locator; }
 	
+	/**
+	 * set this flag to true to perform ID/IDREF validation.
+	 * this value cannot be modified in the middle of the validation.
+	 */
+	protected boolean performIDcheck = true;
+	
 	/** this map remembers every ID token encountered in this document */
-	protected final Map ids = new java.util.HashMap();
+	protected final Set ids = new java.util.HashSet();
 	/** this map remembers every IDREF token encountered in this document */
-	protected final Map idrefs = new java.util.HashMap();
+	protected final Set idrefs = new java.util.HashSet();
 	
 	public void setDocumentLocator( Locator loc ) {
 		this.locator = loc;
@@ -110,20 +119,34 @@ public abstract class AbstractVerifier implements
 	public boolean isNotation( String notationName ) {
 		return notations.contains(notationName);
 	}
-	
-	public void onIDREF( String uri, String local, Object token )	{
-		StringPair name = new StringPair(uri,local);
-		Set tokens = (Set)idrefs.get(name);
-		if(tokens==null)	idrefs.put(name,tokens = new java.util.HashSet());
-		tokens.add(token);
+	public String getBaseUri() {
+		// TODO: Verifier should implement the base URI
+		return null;
 	}
-	public boolean onID( String uri, String local, Object token ) {
-		StringPair name = new StringPair(uri,local);
-		Set tokens = (Set)ids.get(name);
-		if(tokens==null)	ids.put(name,tokens = new java.util.HashSet());
+	
+	/** this method is called when a duplicate id value is found. */
+	protected abstract void onDuplicateId( String id );
+	
+	public void onID( Datatype dt, String literal ) {
+		if(!performIDcheck)		return;
 		
-		if( tokens.contains(token) )	return false;	// not unique.
-		tokens.add(token);
-		return true;	// they are unique, at least now.
+		switch(dt.getIdType()) {
+		case dt.ID_TYPE_ID:
+			literal = literal.trim();
+			if(!ids.add(literal))
+				// duplicate id value
+				onDuplicateId(literal);
+			return;
+		case dt.ID_TYPE_IDREF:
+			idrefs.add(literal.trim());
+			return;
+		case dt.ID_TYPE_IDREFS:
+			StringTokenizer tokens = new StringTokenizer(literal);
+			while(tokens.hasMoreTokens())
+				idrefs.add(tokens.nextToken());
+			return;
+		default:
+			throw new Error();	// assertion failed. unknown Id type.
+		}
 	}
 }

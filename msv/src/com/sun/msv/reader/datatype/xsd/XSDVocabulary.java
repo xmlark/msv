@@ -9,8 +9,6 @@
  */
 package com.sun.msv.reader.datatype.xsd;
 
-import com.sun.msv.grammar.IDType;
-import com.sun.msv.grammar.IDREFType;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.datatype.DataTypeVocabulary;
 import com.sun.msv.datatype.xsd.DatatypeFactory;
@@ -49,12 +47,5 @@ public class XSDVocabulary implements DataTypeVocabulary, java.io.Serializable {
 	
 	public void addType( XSDatatypeImpl type ) {
 		userDefinedTypes.put( type.getName(), type );
-	}
-	
-	public XSDVocabulary() {
-		// ID and IDREF are implemented in a different package.
-		addType( IDType.theInstance );
-		addType( IDREFType.theInstance );
-		addType( IDREFType.theIDREFSinstance );
 	}
 }

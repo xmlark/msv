@@ -108,6 +108,10 @@ public abstract class TREXBaseReader extends GrammarReader {
 		}
 		// <div>s in the <grammar> element is not available by default.
 		public State divInGrammar( State parent, StartTagInfo tag ) { return null; }
+		
+		public TREXGrammar createGrammar( ExpressionPool pool, TREXGrammar parent ) {
+			return new TREXGrammar(pool,parent);
+		}
 	}
 	public final StateFactory sfactory;
 	

@@ -67,10 +67,6 @@ public abstract class ExpressionWalker implements ExpressionVisitorVoid {
 		exp.exp.visit(this);
 	}
 	
-	public void onKey( KeyExp exp ) {
-		exp.exp.visit(this);
-	}
-	
 	public void onOneOrMore( OneOrMoreExp exp ) {
 		exp.exp.visit(this);
 	}

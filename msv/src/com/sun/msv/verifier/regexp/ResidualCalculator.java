@@ -120,11 +120,6 @@ public class ResidualCalculator implements ExpressionVisitorExpression {
 		else					return Expression.nullSet;
 	}
 	
-	public Expression onKey( KeyExp exp ) {
-		if(token.match(exp))	return Expression.epsilon;
-		else					return Expression.nullSet;
-	}
-	
 	public Expression onConcur( ConcurExp exp ) {
 		return pool.createConcur(
 			exp.exp1.visit(this), exp.exp2.visit(this) );

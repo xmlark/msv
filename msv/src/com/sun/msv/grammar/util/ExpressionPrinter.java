@@ -145,10 +145,6 @@ public class ExpressionPrinter implements ExpressionVisitor {
 		return "list["+exp.exp.visit(this)+"]";
 	}
 	
-	public Object onKey( KeyExp exp ) {
-		return "key["+exp.exp.visit(this)+"]";
-	}
-	
 	public Object onEpsilon() {
 		return "#epsilon";
 	}

@@ -123,11 +123,17 @@ public class TypeDetector extends Verifier {
 	public void startElement( String namespaceUri, String localName, String qName, Attributes atts )
 		throws SAXException {
 		
-		handler.startElement( namespaceUri, localName, qName );
-		
 		super.startElement( namespaceUri, localName, qName, atts );
 		
 		handler.endAttributePart();
+	}
+
+	protected void onNextAcceptorReady( StartTagInfo sti, Acceptor nextAcceptor ) throws SAXException {
+		/*
+			You cannot call handler.startElement before super.startElement invocation
+			because unconsumed text maybe processed here.
+		*/
+		handler.startElement( sti.namespaceURI, sti.localName, sti.qName );
 	}
 	
 	public void endElement( String namespaceUri, String localName, String qName )

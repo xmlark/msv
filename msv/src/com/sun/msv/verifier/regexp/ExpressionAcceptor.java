@@ -711,6 +711,11 @@ public abstract class ExpressionAcceptor implements Acceptor {
 			e = ch.exp1;
 		}
 		
+		if( e==Expression.nullSet )
+			// we are in the full panic mode.
+			// abandon diagnosis.
+			return null;
+		
 		if(!(e instanceof AttributeExp ))	throw new Error(e.toString());	//assertion
 		
 		NameClass nc = ((AttributeExp)e).nameClass;

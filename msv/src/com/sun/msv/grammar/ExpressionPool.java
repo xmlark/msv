@@ -139,6 +139,7 @@ public class ExpressionPool implements java.io.Serializable {
 	}
 	
 	public final Expression createList( Expression exp ) {
+        if(exp==Expression.nullSet) return exp;
 		return unify( new ListExp(exp) );
 	}
 	

@@ -49,6 +49,7 @@
 	<path id="XSDBatchTestDir">
 		<path refid="commonTestDir"/>
 		<pathelement path="${testRoot}/xmlschema"/>
+		<pathelement path="${testRoot}/xmlschema/contrib"/>
 		<pathelement path="${testRoot}/xmlschema/tutorialExamples"/>
 		<pathelement path="${testRoot}/xmlschema/identity" />
 	</path>

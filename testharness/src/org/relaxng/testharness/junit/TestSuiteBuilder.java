@@ -9,6 +9,7 @@
  */
 package org.relaxng.testharness.junit;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.xml.sax.InputSource;
@@ -19,33 +20,41 @@ import org.relaxng.testharness.reader.TestSuiteReader;
 /**
  * creates a JUnit TestSuite from the specified RELAX NG test suite.
  * 
+ * <p>
+ * By deriving this class, you can "filter" the test cases.
+ * 
  * @author
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TestSuiteBuilder
-{
+public class TestSuiteBuilder implements TestVisitor {
+
+	public TestSuiteBuilder( IValidator validator ) {
+		this.validator = validator;
+	}
+	
+	protected final IValidator validator;
+	
 	/**
 	 * parses the specified source as a RELAX NG test suite file,
 	 * and returns a JUnit TestSuite that runs all the tests contained
 	 * in it.
 	 */
-	public static TestSuite create( InputSource source, IValidator validator ) throws Exception {
+	public TestSuite create( InputSource source ) throws Exception {
 		
-		return create( TestSuiteReader.parse(source), validator );
+		return create( TestSuiteReader.parse(source) );
 	}
 	
 	/**
 	 * returns a JUnit TestSuite that runs all the tests contained
 	 * in the specified RELAX NG Test Suite.
 	 */
-	public static TestSuite create( RNGTestSuite suite, IValidator validator ) {
+	public TestSuite create( RNGTestSuite suite ) {
 		TestSuite jsuite = new TestSuite();
 		
-		for( int i=0; i<suite.validTestCases.length; i++ )
-			jsuite.addTest( create( suite.validTestCases[i], validator ) );
+		RNGTest[] tests = suite.getAllTests();
 		
-		for( int i=0; i<suite.invalidTestCases.length; i++ )
-			jsuite.addTest( create( suite.invalidTestCases[i], validator ) );
+		for( int i=0; i<tests.length; i++ )
+			jsuite.addTest( (Test)tests[i].visit(this) );
 		
 		return jsuite;
 	}
@@ -54,15 +63,16 @@ public class TestSuiteBuilder
 	 * returns a JUnit TestSuite that runs all the tests contained
 	 * in the specified RELAX NG test case.
 	 */
-	public static TestSuite create( final RNGValidTestCase testCase, final IValidator validator ) {
+	public TestSuite create( final RNGValidTestCase testCase ) {
 		TestSuite jsuite = new TestSuite();
 		
 		final ISchema[] schema = new ISchema[1];
 		
-		// TODO: specify the test name
+		String caseTitle = testCase.header.getTitle();
+		if(caseTitle==null)	caseTitle="";
 		
 		// parse the schema first
-		jsuite.addTest( new TestCase( testCase.pattern.getTitle() ){
+		jsuite.addTest( new TestCase( caseTitle ){
 			public void runTest() throws Exception {
 				// load schema
 				schema[0] = validator.parseSchema( testCase.pattern );
@@ -72,7 +82,7 @@ public class TestSuiteBuilder
 		
 		for( int i=0; i<testCase.validDocuments.length; i++ ) {
 			final XMLDocument instance = testCase.validDocuments[i];
-			jsuite.addTest( new TestCase( instance.getTitle() ){
+			jsuite.addTest( new TestCase( caseTitle+":v"+i ){
 				public void runTest() throws Exception {
 					// if the validator failed to parse the schema,
 					// skip this test.
@@ -86,7 +96,7 @@ public class TestSuiteBuilder
 		
 		for( int i=0; i<testCase.invalidDocuments.length; i++ ) {
 			final XMLDocument instance = testCase.invalidDocuments[i];
-			jsuite.addTest( new TestCase( instance.getTitle() ){
+			jsuite.addTest( new TestCase( caseTitle+":n"+i ){
 				public void runTest() throws Exception {
 					// if the validator failed to parse the schema,
 					// skip this test.
@@ -105,12 +115,15 @@ public class TestSuiteBuilder
 	 * returns a JUnit TestSuite that runs all the tests contained
 	 * in the specified RELAX NG test case.
 	 */
-	public static TestSuite create( final RNGInvalidTestCase testCase, final IValidator validator ) {
+	public TestSuite create( final RNGInvalidTestCase testCase ) {
 		TestSuite jsuite = new TestSuite();
+
+		String caseTitle = testCase.header.getTitle();
+		if(caseTitle==null)	caseTitle="";
 		
 		for( int i=0; i<testCase.patterns.length; i++ ) {
 			final XMLDocument instance = testCase.patterns[i];
-			jsuite.addTest( new TestCase( instance.getTitle() ){
+			jsuite.addTest( new TestCase( caseTitle+":"+i ){
 				public void runTest() throws Exception {
 					// load schema
 					ISchema schema = validator.parseSchema( instance );
@@ -121,4 +134,18 @@ public class TestSuiteBuilder
 		
 		return jsuite;
 	}
+	
+//
+// TestVisitor implementation
+//
+	public Object onValidTest( RNGValidTestCase test ) {
+		return create(test);
+	}
+	public Object onInvalidTest( RNGInvalidTestCase test ) {
+		return create(test);
+	}
+	public Object onSuite( RNGTestSuite suite ) {
+		return create(suite);
+	}
+
 }

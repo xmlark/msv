@@ -10,6 +10,8 @@
 package org.relaxng.testharness.model;
 
 import java.util.Map;
+import java.util.Vector;
+import java.util.Iterator;
 
 /**
  * RELAX NG Test Suite
@@ -17,14 +19,28 @@ import java.util.Map;
  * @author
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class RNGTestSuite {
+public class RNGTestSuite extends RNGTest {
 	
-	/** header */
-	public RNGHeader header;
+	/** tests in this suite. */
+	private final Vector tests = new Vector();
 	
-	/** test cases contained in this suite. */
-	public RNGValidTestCase[] validTestCases;
-	public RNGInvalidTestCase[] invalidTestCases;
+	/** add a new test to this suite. */
+	public void addTest( RNGTest test ) {
+		tests.add(test);
+	}
+	
+	/** iterates all tests in this suite. */
+	public Iterator iterateTests() {
+		return tests.iterator();
+	}
+	
+	/**
+	 * gets all tests in this suite.
+	 */
+	public RNGTest[] getAllTests() {
+		return (RNGTest[])tests.toArray(new RNGTest[tests.size()]);
+	}
+	
 	
 	/**
 	 * additional "resource"s found in the test suite.
@@ -43,5 +59,10 @@ public class RNGTestSuite {
 	 */
 	public void addResource( String name, XMLDocument resource ) {
 		resources.put(name,resource);
+	}
+
+	
+	public Object visit( TestVisitor visitor ) {
+		return visitor.onSuite(this);
 	}
 }

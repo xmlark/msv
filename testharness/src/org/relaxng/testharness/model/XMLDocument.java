@@ -31,7 +31,4 @@ public interface XMLDocument
 	
 	/** obtains the document as SAX events. */
 	void getAsSAX( ContentHandler handler ) throws SAXException;
-	
-	/** obtains the title of this document, if any. */
-	String getTitle();
 }

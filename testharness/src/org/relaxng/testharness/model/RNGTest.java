@@ -10,21 +10,18 @@
 package org.relaxng.testharness.model;
 
 /**
- * test case that consists of invalid RELAX NG patterns.
+ * base class of the RELAX NG test.
  * 
  * @author
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class RNGInvalidTestCase extends RNGTest {
-
-	/**
-	 * patterns to be tested.
-	 * 
-	 * All the patterns are invalid.
-	 */
-	public XMLDocument[] patterns;
+public abstract class RNGTest {
 	
-	public Object visit( TestVisitor visitor ) {
-		return visitor.onInvalidTest(this);
-	}
+	/** header */
+	public RNGHeader header;
+	
+	/**
+	 * visitor pattern support for RELAX NG tests.
+	 */
+	public abstract Object visit( TestVisitor visitor );
 }

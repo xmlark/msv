@@ -24,19 +24,15 @@ import org.relaxng.testharness.model.XMLDocument;
  */
 class XMLDocumentImpl implements XMLDocument
 {
-	XMLDocumentImpl( Document dom, String title ) {
+	XMLDocumentImpl( Document dom ) {
 		this.dom = dom;
-		this.title = title;
 	}
 	
 	private Document dom;
-	private String title;
 	
 	public Document getAsDOM() { return dom; }
 	
 	public void getAsSAX( ContentHandler handler ) throws SAXException {
 		SAXEventGenerator.parse( dom, handler );
 	}
-
-	public String getTitle() { return title; }
 }

@@ -36,6 +36,12 @@ public class TestSuiteReader {
 		
 		return new TestSuiteReader()._parse(source);
 	}
+
+	public static RNGTestSuite parse( InputSource source, DocumentBuilderFactory factory )
+			throws ParserConfigurationException,SAXException, IOException {
+		
+		return new TestSuiteReader(factory)._parse(source);
+	}
 	
 	
 	/** DOM factory. */
@@ -47,42 +53,49 @@ public class TestSuiteReader {
 		factory.setValidating(false);
 	}
 	
+	private TestSuiteReader( DocumentBuilderFactory factory ) {
+		this.factory = factory;
+	}
+	
+	
 	private RNGTestSuite _parse( InputSource source )
 			throws ParserConfigurationException,SAXException, IOException {
 		
 		// parse into a DOM tree.
 		Document dom = factory.newDocumentBuilder().parse(source);
-		Element root = dom.getDocumentElement();
-		
+		return parseTestSuite(dom.getDocumentElement());
+	}
+	
+	/**
+	 * parses &lt;testSuite> element into a RNGTestSuite object.
+	 */
+	private RNGTestSuite parseTestSuite( Element suiteElement ) {
 		RNGTestSuite suite = new RNGTestSuite();
 		
 		{// load test cases.
-			Vector valids = new Vector();
-			Vector invalids = new Vector();
 			
-			NodeList lst = root.getElementsByTagName("testCase");
+			NodeList lst = suiteElement.getChildNodes();
 			int len = lst.getLength();
 			for( int i=0; i<len; i++ ) {
-				Element testCaseNode = (Element)lst.item(i);
+				if( lst.item(i).getNodeType()!=Element.ELEMENT_NODE )
+					continue;
 				
-				if( testCaseNode.getElementsByTagName("validPattern").getLength()!=0 )
-					valids.add( parseValidTestCase(testCaseNode) );
-				else
-					invalids.add( parseInvalidTestCase(testCaseNode) );
+				Element e = (Element)lst.item(i);
+				
+				if(e.getTagName().equals("testCase")) {
+					if( e.getElementsByTagName("validPattern").getLength()!=0 )
+						suite.addTest( parseValidTestCase(e) );
+					else
+						suite.addTest( parseInvalidTestCase(e) );
+				}
+				if(e.getTagName().equals("testSuite"))
+					suite.addTest( parseTestSuite(e) );
+				if(e.getTagName().equals("resource"))
+					parseResource(suite, (Element)lst.item(i) );
 			}
-			
-			suite.validTestCases = (RNGValidTestCase[])valids.toArray(new RNGValidTestCase[0]);
-			suite.invalidTestCases = (RNGInvalidTestCase[])invalids.toArray(new RNGInvalidTestCase[0]);
 		}
 		
-		{// load resources
-			NodeList lst = root.getElementsByTagName("resource");
-			int len = lst.getLength();
-			for( int i=0; i<len; i++ )
-				parseResource(suite, (Element)lst.item(i) );
-		}
-		
-		suite.header = parseHeader(root);
+		suite.header = parseHeader(suiteElement);
 		
 		return suite;
 	}
@@ -144,8 +157,9 @@ public class TestSuiteReader {
 	 */
 	private RNGHeader parseHeader( Element item ) {
 		// currently, no header field is defined.
-		if( item.getElementsByTagName("header").getLength()>0 )
-			return new RNGHeader();
+		NodeList headers = item.getElementsByTagName("header");
+		if( headers.getLength()>0 )
+			return new RNGHeader( (Element)headers.item(0) );
 		else
 			return null;
 	}
@@ -157,15 +171,12 @@ public class TestSuiteReader {
 		NodeList lst = owner.getChildNodes();
 		int len = lst.getLength();
 		
-		String title = owner.getAttribute("name");
-		if(title.length()==0)	title=null;
-		
 		try {
 			Document dom = factory.newDocumentBuilder().newDocument();
 			for( int i=0; i<len; i++ )
 				if( lst.item(i).getNodeType() == owner.ELEMENT_NODE )
 					dom.appendChild( dom.importNode( lst.item(i), true ) );
-			return new XMLDocumentImpl(dom,title);
+			return new XMLDocumentImpl(dom);
 		} catch( ParserConfigurationException e ) {
 			// since we've already created one instance,
 			// it cannot fail.

@@ -28,7 +28,7 @@ public interface IValidator
 	 * If the validator rejects the pattern, it should return null.
 	 * 
 	 * @exception
-	 *		A thrown exception is considered as an error.
+	 *		Any exception is considered as an conformance violation.
 	 */
 	ISchema parseSchema( XMLDocument pattern ) throws Exception;
 	
@@ -40,7 +40,7 @@ public interface IValidator
 	 * If the validator judges otherwise, return false.
 	 * 
 	 * @exception
-	 *		A thrown exception is considered as an error.
+	 *		Any exception is considered as an conformance violation.
 	 */
 	boolean validate( ISchema schema, XMLDocument instance ) throws Exception;
 }

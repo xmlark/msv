@@ -15,7 +15,7 @@ package org.relaxng.testharness.model;
  * @author
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class RNGValidTestCase extends RNGTestCase {
+public class RNGValidTestCase extends RNGTest {
 	
 	/** pattern to be tested. */
 	public XMLDocument pattern;
@@ -25,4 +25,8 @@ public class RNGValidTestCase extends RNGTestCase {
 	
 	/** invalid documents. */
 	public XMLDocument[] invalidDocuments;
+
+	public Object visit( TestVisitor visitor ) {
+		return visitor.onValidTest(this);
+	}
 }

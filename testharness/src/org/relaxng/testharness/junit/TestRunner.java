@@ -37,8 +37,10 @@ public class TestRunner
 		
 		// collect test suites
 		TestSuite suite = new TestSuite();
+		TestSuiteBuilder builder = new TestSuiteBuilder(validator);
+		
 		for( int i=1; i<args.length; i++ )
-			suite.addTest( TestSuiteBuilder.create( new InputSource(args[i]), validator ) );
+			suite.addTest( builder.create( new InputSource(args[i]) ) );
 		
 		// run the test
 		junit.textui.TestRunner.run(suite);

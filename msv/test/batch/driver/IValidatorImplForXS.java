@@ -17,7 +17,7 @@ import com.sun.msv.verifier.identity.IDConstraintChecker;
 public class IValidatorImplForXS extends IValidatorImpl {
 
 	protected GrammarReader getReader() {
-		return new XMLSchemaReader( new DebugController(false,true), factory );;
+		return new XMLSchemaReader( createController(), factory );;
 	}
 	
 	protected IVerifier getVerifier( Grammar grammar ) {

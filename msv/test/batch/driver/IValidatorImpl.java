@@ -9,6 +9,7 @@ import com.sun.msv.verifier.IVerifier;
 import com.sun.msv.verifier.Verifier;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.reader.GrammarReader;
+import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.trex.ng.RELAXNGReader;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -48,7 +49,11 @@ public class IValidatorImpl implements IValidator
 	 * RELAX NG test harness can be used to test XML Schema, TREX, etc.
 	 */
 	protected GrammarReader getReader() {
-		return new RELAXNGReader( new DebugController(false,true), factory );;
+		return new RELAXNGReader( createController(), factory );;
+	}
+	
+	protected GrammarReaderController createController() {
+		return new DebugController(false,true);
 	}
 	
 	/**

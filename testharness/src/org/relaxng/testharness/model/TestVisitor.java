@@ -10,13 +10,13 @@
 package org.relaxng.testharness.model;
 
 /**
- * base class of two types of test cases.
+ * Visitor pattern support for RNGTest.
  * 
  * @author
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public abstract class RNGTestCase {
-	
-	/** header */
-	public RNGHeader header;
+public interface TestVisitor {
+	Object onValidTest( RNGValidTestCase test );
+	Object onInvalidTest( RNGInvalidTestCase test );
+	Object onSuite( RNGTestSuite suite );
 }

@@ -18,10 +18,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
 import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.helpers.XMLFilterImpl;
+import org.relaxng.datatype.DataType;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
+import java.util.Vector;
 import java.util.Enumeration;
 import java.io.IOException;
 import java.net.URL;
@@ -31,7 +33,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.util.StartTagInfo;
-import com.sun.msv.datatype.DataType;
 
 /**
  * base implementation of grammar readers that read grammar from SAX2 stream.
@@ -157,7 +158,7 @@ public abstract class GrammarReader
 	public DataType getBackwardCompatibleType( String typeName ) {
 		DataType dt = (DataType)deprecatedTypes.get(typeName);
 		if( dt!=null )
-			reportWarning( WRN_DEPRECATED_TYPENAME, typeName, dt.getName() );
+			reportWarning( WRN_DEPRECATED_TYPENAME, typeName, dt.displayName() );
 		return dt;
 	}
 	
@@ -495,14 +496,14 @@ public abstract class GrammarReader
 	// when the user uses enumeration over ID type,
 	// this method will be called.
 	// To make it work, simply allow everything.
-	public boolean onID( String token ) { return true; }
-	public void onIDREF( String token ) {}
+	public boolean onID( String symbolSpace, Object token ) { return true; }
+	public void onIDREF( String symbolSpace, Object token ) {}
 
 	/**
 	 * returns a persistent ValidationContextProvider.
 	 * this context provider is necessary to late-bind simple types. 
 	 */
-	public IDContextProvider getPersistentVCP() {
+/*	public IDContextProvider getPersistentVCP() {
 		// dump prefix->URI mapping into a map.
 		final Map prefixes = new java.util.HashMap();
 		Enumeration e = namespaceSupport.getDeclaredPrefixes();
@@ -524,6 +525,38 @@ public abstract class GrammarReader
 			public void onIDREF( String token ) {}
 		};
 	}
+*/	
+	
+	
+	
+	
+// back patching
+//===========================================
+/*
+	several things cannot be done at the moment when the declaration is seen.
+	These things have to be postponed until all the necessary information is
+	prepared.
+	(e.g., generating the expression that matches to <any />).
+	
+	those jobs are queued here and processed after the parsing is completed.
+	Note that there is no mechanism in this class to execute jobs.
+	The derived class has to decide its own timing to perform jobs.
+*/
+	
+	public static interface BackPatch {
+		/** do back-patching. */
+		void patch();
+		/** gets State object who has submitted this patch job. */
+		State getOwnerState();
+	}
+	
+	protected final Vector backPatchJobs = new Vector();
+	public void addBackPatchJob( BackPatch job ) {
+		backPatchJobs.add(job);
+	}
+	
+	
+	
 	
 
 // error related services

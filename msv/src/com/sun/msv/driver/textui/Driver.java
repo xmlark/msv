@@ -24,7 +24,6 @@ import com.sun.tranquilo.verifier.util.VerificationErrorHandlerImpl;
 import org.iso_relax.dispatcher.Dispatcher;
 import org.iso_relax.dispatcher.SchemaProvider;
 import org.iso_relax.dispatcher.impl.DispatcherImpl;
-//import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.*;
 import java.util.*;
 

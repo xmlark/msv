@@ -35,19 +35,48 @@ import java.util.Vector;
 
 
 /**
- * loads RELAX module, RELAX grammar, or TREX grammar
- * by automatically detecting the language used.
- *
+ * loads any supported grammar (except XML DTD)
+ * by automatically detecting the schema language.
+ * 
+ * <p>
+ * The static version of loadVGM/loadSchema methods provides easy-to-use ways to
+ * load a grammar.
+ * 
+ * <p>
+ * Another way to use GrammarLoader is
+ * 
+ * <ol>
+ *  <li>To instanciate an object of GrammarLoader
+ *  <li>call setXXX methods to configure the parameters
+ *  <li>call loadSchema/loadVGM methods (possibly multiple times) to
+ *      load grammars.
+ * </ol>
+ * 
+ * This approach will give you finer control.
+ * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class GrammarLoader
 {
+//
+// static utility methods
+//==============================
+//
+	/**
+	 * parses the specified schema and returns the result as a VGM.
+	 * 
+	 * This method is an utility method for those applications which
+	 * don't need AGM (e.g., a single thread application).
+	 * 
+	 * @return
+	 *		null if there was an error in the grammar.
+	 */
 	public static REDocumentDeclaration loadVGM( String url,
 		GrammarReaderController controller,
 		SAXParserFactory factory )
 		throws SAXException, ParserConfigurationException, java.io.IOException
 	{
-		Grammar g = _loadSchema(url,controller,factory);
+		Grammar g = loadSchema(url,controller,factory);
 		if(g!=null)		return new REDocumentDeclaration(g);
 		else			return null;
 	}
@@ -57,7 +86,7 @@ public class GrammarLoader
 		SAXParserFactory factory )
 		throws SAXException, ParserConfigurationException, java.io.IOException
 	{
-		Grammar g = _loadSchema(source,controller,factory);
+		Grammar g = loadSchema(source,controller,factory);
 		if(g!=null)		return new REDocumentDeclaration(g);
 		else			return null;
 	}
@@ -65,25 +94,31 @@ public class GrammarLoader
 
 	
 	/**
-	 * returns RELAXGrammar or TREXGrammar, depending on the language used.
+	 * parses the specified schema and returns the result as a Grammar object.
+	 * 
+	 * @return
+	 *		null if there was an error in the grammar.
 	 */
 	public static Grammar loadSchema( String url,
 		GrammarReaderController controller,
 		SAXParserFactory factory )
 		throws SAXException, ParserConfigurationException, java.io.IOException
 	{
-		return _loadSchema(url,controller,factory);
+		GrammarLoader loader = new GrammarLoader();
+		loader.setController(controller);
+		loader.setSAXParserFactory(factory);
+		return loader.loadSchema(url);
 	}
 	
-	/**
-	 * returns RELAXGrammar or TREXGrammar, depending on the language used.
-	 */
 	public static Grammar loadSchema( InputSource source,
 		GrammarReaderController controller,
 		SAXParserFactory factory )
 		throws SAXException, ParserConfigurationException, java.io.IOException
 	{
-		return _loadSchema(source,controller,factory);
+		GrammarLoader loader = new GrammarLoader();
+		loader.setController(controller);
+		loader.setSAXParserFactory(factory);
+		return loader.loadSchema(source);
 	}
 	
 	/**
@@ -93,20 +128,107 @@ public class GrammarLoader
 		GrammarReaderController controller )
 			throws SAXException, ParserConfigurationException, java.io.IOException
 	{
-		
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		factory.setNamespaceAware(true);
-		return _loadSchema(source,controller,factory);
+		GrammarLoader loader = new GrammarLoader();
+		loader.setController(controller);
+		return loader.loadSchema(source);
 	}
 	
-	private static Grammar _loadSchema( Object source,
-		final GrammarReaderController controller,
-		final SAXParserFactory factory )
-		throws SAXException, ParserConfigurationException, java.io.IOException
-	{
-		final ExpressionPool pool = new ExpressionPool();
+
+
+//
+// finer control can be achieved by using the following methods.
+//=================================================================
+	public GrammarLoader() {}
+	
+	private SAXParserFactory factory;
+	/**
+	 * sets the factory object which is used to create XML parsers
+	 * to parse schema files.
+	 * The factory must be configured to namespace aware.
+	 * 
+	 * <p>
+	 * If no SAXParserFactory is set, then the default parser is used.
+	 * (The parser that can be obtained by SAXParserFactory.newInstance()).
+	 */
+	public void setSAXParserFactory( SAXParserFactory factory ) {
+		this.factory = factory;
+	}
+	public SAXParserFactory getSAXParserFactory() {
+		if(factory==null) {
+			factory = SAXParserFactory.newInstance();
+			factory.setNamespaceAware(true);
+		}
+		return factory;
+	}
+	
+	private GrammarReaderController controller;
+	/**
+	 * sets the GrammarReaderController object that will control
+	 * various aspects of the parsing. If not set, no error report will be
+	 * done.
+	 */
+	public void setController( GrammarReaderController controller ) {
+		this.controller = controller;
+	}
+	public GrammarReaderController getController() {
+		if(controller==null)
+			controller = new GrammarReaderController() {
+				public void warning( Locator[] locs, String errorMessage ) {}
+				public void error( Locator[] locs, String errorMessage, Exception nestedException ) {}
+				public InputSource resolveEntity( String s, String p ) { return null; }
+			};
+		return controller;
+	}
+	
+	private ExpressionPool pool;
+	/**
+	 * sets the ExpressionPool object that will be used during the loading process.
+	 * If not set, a fresh one is used for each time the loadXXX method is called.
+	 */
+	public void setPool( ExpressionPool pool ) {
+		this.pool = pool;
+	}
+	public ExpressionPool getPool() {
+		if( pool==null)		return new ExpressionPool();
+		else				return pool;
+	}
+
+	
+	
+	
+	public Grammar loadSchema( InputSource source )
+		throws SAXException, ParserConfigurationException, java.io.IOException {
 		
-		final XMLReader parser = factory.newSAXParser().getXMLReader();
+		return _loadSchema(source);
+	}
+	
+	public Grammar loadSchema( String url )
+		throws SAXException, ParserConfigurationException, java.io.IOException {
+		
+		return _loadSchema(url);
+	}
+	
+	public REDocumentDeclaration loadVGM( String url )
+		throws SAXException, ParserConfigurationException, java.io.IOException {
+		
+		Grammar g = _loadSchema(url);
+		if(g==null)		return null;
+		else			return new REDocumentDeclaration(g);
+	}
+	
+	public REDocumentDeclaration loadVGM( InputSource source )
+		throws SAXException, ParserConfigurationException, java.io.IOException {
+		
+		Grammar g = _loadSchema(source);
+		if(g==null)		return null;
+		else			return new REDocumentDeclaration(g);
+	}
+	
+	
+	private Grammar _loadSchema( Object source )
+			throws SAXException, ParserConfigurationException, java.io.IOException {
+		
+		final XMLReader parser = getSAXParserFactory().newSAXParser().getXMLReader();
 		/*
 			Use a "sniffer" handler and decide which reader to use.
 			Once the schema language is detected, the appropriate reader
@@ -133,26 +255,29 @@ public class GrammarLoader
 				// sniff the XML and decide the reader to use.
 				if( localName.equals("module") )
 					// assume RELAX Core.
-					winner = new RELAXCoreReader(controller,factory,pool);
+					winner = new RELAXCoreReader(
+						getController(),getSAXParserFactory(),getPool());
 				else
 				if( localName.equals("schema") )
 					// assume W3C XML Schema
-					winner = new XMLSchemaReader(controller,factory,
-						new XMLSchemaReader.StateFactory(),pool);
+					winner = new XMLSchemaReader(
+						getController(), getSAXParserFactory(),
+						new XMLSchemaReader.StateFactory(), getPool() );
 				else
 				if( RELAXNSReader.RELAXNamespaceNamespace.equals(namespaceURI) )
 					// assume RELAX Namespace
-					winner = new RELAXNSReader(controller,factory,pool);
+					winner = new RELAXNSReader(
+						getController(),getSAXParserFactory(),getPool());
 				else
 				if( TREXGrammarReader.TREXNamespace.equals(namespaceURI)
 				||  namespaceURI.equals("") )
 					// assume TREX
-					winner = new TREXGrammarReader(controller,factory,
-						new TREXGrammarReader.StateFactory(),pool); 
+					winner = new TREXGrammarReader(getController(),getSAXParserFactory(),
+						new TREXGrammarReader.StateFactory(),getPool()); 
 				else
 					// otherwise assume RELAX NG
-					winner = new RELAXNGReader(controller,factory,
-						new RELAXNGReader.StateFactory(),pool);
+					winner = new RELAXNGReader(getController(),getSAXParserFactory(),
+						new RELAXNGReader.StateFactory(),getPool() );
 				
 				// simulate the start of the document.
 				winner.setDocumentLocator(locator);
@@ -166,7 +291,7 @@ public class GrammarLoader
 				parser.setContentHandler(winner);
 			}
 		});
-		parser.setErrorHandler(new GrammarReaderControllerAdaptor(controller));
+		parser.setErrorHandler(new GrammarReaderControllerAdaptor(getController()));
 		if( source instanceof String )	parser.parse( (String)source );
 		else							parser.parse( (InputSource)source );
 		

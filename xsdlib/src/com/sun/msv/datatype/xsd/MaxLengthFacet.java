@@ -52,8 +52,7 @@ public class MaxLengthFacet extends DataTypeWithValueConstraintFacet
 		int cnt = ((Discrete)concreteType).countLength(o);
 		if(cnt>maxLength)
 			return new DataTypeErrorDiagnosis( this, content, -1,
-				DataTypeErrorDiagnosis.ERR_MAXLENGTH,
-				new Integer(cnt), new Integer(maxLength) );
+				localize(ERR_MAXLENGTH, new Integer(cnt), new Integer(maxLength)) );
 		
 		return null;
 	}

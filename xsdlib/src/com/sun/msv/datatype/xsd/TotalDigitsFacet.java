@@ -50,7 +50,7 @@ class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet
 			return null;
 		
 		return new DataTypeErrorDiagnosis(this, content, -1,
-			DataTypeErrorDiagnosis.ERR_TOO_MUCH_PRECISION, new Integer(cnt), new Integer(precision) );
+			localize(ERR_TOO_MUCH_PRECISION, new Integer(cnt), new Integer(precision)) );
 	}
 	
 	/** counts the number of digits */

@@ -71,10 +71,10 @@ final class PatternFacet extends DataTypeWithLexicalConstraintFacet
 		
 		if( exps.length==1 )
 			return new DataTypeErrorDiagnosis( this, content, -1,
-				DataTypeErrorDiagnosis.ERR_PATTERN_1, exps[0] );
+				localize(ERR_PATTERN_1,exps[0]) );
 		else
 			return new DataTypeErrorDiagnosis( this, content, -1,
-				DataTypeErrorDiagnosis.ERR_PATTERN_MANY );
+				localize(ERR_PATTERN_MANY) );
 	}
 	
 	protected final boolean checkLexicalConstraint( String literal )

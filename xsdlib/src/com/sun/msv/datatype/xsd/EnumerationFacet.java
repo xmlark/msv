@@ -57,11 +57,11 @@ public class EnumerationFacet extends DataTypeWithValueConstraintFacet
 				r = "("+r+")";	// oh, don't tell me I should use StringBuffer.
 				
 				return new DataTypeErrorDiagnosis(this, content, -1,
-					DataTypeErrorDiagnosis.ERR_ENUMERATION_WITH_ARG, r );
+					localize(ERR_ENUMERATION_WITH_ARG, r) );
 			}
 		}
 		return new DataTypeErrorDiagnosis(this, content, -1,
-			DataTypeErrorDiagnosis.ERR_ENUMERATION );
+			localize(ERR_ENUMERATION) );
 	}
 
 }

@@ -47,6 +47,6 @@ public abstract class ConcreteType extends DataTypeImpl
 		if(checkFormat(content,context))	return null;
 		
 		return new DataTypeErrorDiagnosis(this,content,-1,
-			DataTypeErrorDiagnosis.ERR_INAPPROPRIATE_FOR_TYPE, getName() );
+			localize(ERR_INAPPROPRIATE_FOR_TYPE, getName()) );
 	}
 }

@@ -57,8 +57,7 @@ public class LengthFacet extends DataTypeWithValueConstraintFacet
 		int cnt = ((Discrete)concreteType).countLength(o);
 		if(cnt!=length)
 			return new DataTypeErrorDiagnosis( this, content, -1,
-				DataTypeErrorDiagnosis.ERR_LENGTH,
-				new Integer(cnt), new Integer(length) );
+				localize(ERR_LENGTH, new Integer(cnt), new Integer(length)) );
 		
 		return null;
 	}

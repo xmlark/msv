@@ -86,6 +86,44 @@ public abstract class DataTypeImpl implements DataType
 	abstract protected ConcreteType getConcreteType();
 	
 	
+
 	
+	public static String localize( String prop, Object[] args )
+	{
+		return java.text.MessageFormat.format(
+			java.util.ResourceBundle.getBundle("com.sun.tranquilo.grammar.trex.Messages").getString(prop),
+			args );
+	}
 	
+	public static String localize( String prop )
+	{ return localize( prop, null ); }
+	
+	public static String localize( String prop, Object arg1 )
+	{ return localize( prop, new Object[]{arg1} ); }
+
+	public static String localize( String prop, Object arg1, Object arg2 )
+	{ return localize( prop, new Object[]{arg1,arg2} ); }
+
+	public static final String ERR_INAPPROPRIATE_FOR_TYPE =
+		"DataTypeErrorDiagnosis.InappropriateForType";
+	public static final String ERR_TOO_MUCH_PRECISION =
+		"DataTypeErrorDiagnosis.TooMuchPrecision";
+	public static final String ERR_TOO_MUCH_SCALE =
+		"DataTypeErrorDiagnosis.TooMuchScale";
+	public static final String ERR_ENUMERATION =
+		"DataTypeErrorDiagnosis.Enumeration";
+	public static final String ERR_ENUMERATION_WITH_ARG =
+		"DataTypeErrorDiagnosis.Enumeration.Arg";
+	public static final String ERR_OUT_OF_RANGE =
+		"DataTypeErrorDiagnosis.OutOfRange";
+	public static final String ERR_LENGTH =
+		"DataTypeErrorDiagnosis.Length";
+	public static final String ERR_MINLENGTH =
+		"DataTypeErrorDiagnosis.MinLength";
+	public static final String ERR_MAXLENGTH =
+		"DataTypeErrorDiagnosis.MaxLength";
+	public static final String ERR_PATTERN_1 =
+		"DataTypeErrorDiagnosis.Pattern.1";
+	public static final String ERR_PATTERN_MANY =
+		"DataTypeErrorDiagnosis.Pattern.Many";
 }

@@ -91,7 +91,7 @@ public class DataTypeFactory
 		int n=0;
 		for( Iterator itr=memberTypes.iterator(); itr.hasNext(); n++ )
 		for( int i=0; i<m.length; i++ )
-			m[n] = (DataTypeImpl)itr.next();
+			m[i] = (DataTypeImpl)itr.next();
 		
 		return new UnionType(newTypeName,m);
 	}

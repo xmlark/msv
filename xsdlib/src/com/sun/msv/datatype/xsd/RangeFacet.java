@@ -40,7 +40,7 @@ abstract class RangeFacet extends DataTypeWithValueConstraintFacet
 		if( convertToValue(content,context)!=null )		return null;
 			
 		return new DataTypeErrorDiagnosis(this, content, -1,
-			DataTypeErrorDiagnosis.ERR_OUT_OF_RANGE, facetName, limitValue );
+			localize(ERR_OUT_OF_RANGE, facetName, limitValue) );
 	}
 	
 	

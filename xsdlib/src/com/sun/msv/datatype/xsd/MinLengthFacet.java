@@ -52,8 +52,7 @@ public class MinLengthFacet extends DataTypeWithValueConstraintFacet
 		int cnt = ((Discrete)concreteType).countLength(o);
 		if(cnt<minLength)
 			return new DataTypeErrorDiagnosis( this, content, -1,
-				DataTypeErrorDiagnosis.ERR_MINLENGTH,
-				new Integer(cnt), new Integer(minLength) );
+				localize(ERR_MINLENGTH,	new Integer(cnt), new Integer(minLength)) );
 		
 		return null;
 	}

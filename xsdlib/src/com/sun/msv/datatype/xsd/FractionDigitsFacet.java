@@ -49,8 +49,8 @@ class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet
 		if(cnt<=scale)		return null;
 		
 		return new DataTypeErrorDiagnosis( this, content, -1, 
-			DataTypeErrorDiagnosis.ERR_TOO_MUCH_SCALE,
-			new Integer(cnt), new Integer(scale) );
+			localize(ERR_TOO_MUCH_SCALE,
+			new Integer(cnt), new Integer(scale)) );
 	}
 	
 	final private int countScale( String literal )

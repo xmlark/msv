@@ -159,7 +159,7 @@ public class DatatypeFactory {
 			if( dataTypeName.equals("anyURI") )
 				add( builtinType, AnyURIType.theInstance );
 			else
-			if( dataTypeName.equals("entity") )
+			if( dataTypeName.equals("ENTITY") )
 				add( builtinType, EntityType.theInstance );
 			else
 			if( dataTypeName.equals("language") )

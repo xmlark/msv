@@ -205,13 +205,27 @@ public class RELAXNGReader extends TREXBaseReader {
 		 * 
 		 * If no vocabulary is known to have that namespace URI, then simply
 		 * return null without issuing an error message.
+		 * 
+		 * It is also possible to throw an exception to indicate
+		 * that the resolution was failed.
 		 */
-		public DataTypeLibrary getDataTypeLibrary( String namespaceURI ) {
+		public DataTypeLibrary getDataTypeLibrary( String namespaceURI ) throws Exception {
+			// We have the built-in support for XML Schema Part 2.
 			if( namespaceURI.equals(XSDVocabulary.XMLSchemaNamespace) )
 				return xsdlib;
 			if( namespaceURI.equals(XSDVocabulary.XMLSchemaNamespace2) )
 				return xsdlib;
-			return null;
+			
+			// check the property file.
+			String className;
+			try {
+				className = ResourceBundle.getBundle("RELAXNGDataTypeLibrary").getString(namespaceURI);
+			} catch( java.util.MissingResourceException e ) {
+				// our property file doesn't have a field corresponding to the URI.
+				return null;
+			}
+			
+			return (DataTypeLibrary)Class.forName(className).newInstance();
 		}
 		private final DataTypeLibrary xsdlib = new com.sun.msv.datatype.DataTypeLibraryImpl();
 	}
@@ -259,11 +273,15 @@ public class RELAXNGReader extends TREXBaseReader {
 	 * the user and returns null.
 	 */
 	public DataTypeLibrary resolveDataTypeLibrary( String uri ) {
-		DataTypeLibrary lib = getStateFactory().getDataTypeLibrary(uri);
-		if(lib!=null)		return lib;
+		try {
+			DataTypeLibrary lib = getStateFactory().getDataTypeLibrary(uri);
+			if(lib!=null)		return lib;
 		
-		// issue an error
-		reportError( ERR_UNKNOWN_DATATYPE_VOCABULARY, uri );
+			// issue an error
+			reportError( ERR_UNKNOWN_DATATYPE_VOCABULARY, uri );
+		} catch( Throwable e ) {
+			reportError( ERR_UNKNOWN_DATATYPE_VOCABULARY_1, uri, e.toString() );
+		}
 		return null;
 	}
 
@@ -397,4 +415,6 @@ public class RELAXNGReader extends TREXBaseReader {
 		"RELAXNGReader.InconsistentCombine";
 	public static final String ERR_REDEFINING_UNDEFINED = // arg:1
 		"RELAXNGReader.RedefiningUndefined";
+	public static final String ERR_UNKNOWN_DATATYPE_VOCABULARY_1 = // arg:2
+		"RELAXNGReader.UnknownDatatypeVocabulary1";
 }

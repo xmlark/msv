@@ -12,6 +12,11 @@ package com.sun.tranquilo.datatype;
 import junit.framework.*;
 import com.sun.tranquilo.datatype.conformance.DummyContextProvider;
 
+/**
+ * tests ListType.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class ListTypeTest extends TestCase
 {
 	public ListTypeTest( String name ) { super(name); }

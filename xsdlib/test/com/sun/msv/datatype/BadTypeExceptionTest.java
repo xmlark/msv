@@ -12,6 +12,11 @@ package com.sun.tranquilo.datatype;
 import junit.framework.*;
 import java.lang.reflect.*;
 
+/**
+ * tests BadTypeException.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class BadTypeExceptionTest extends TestCase
 {
 	public BadTypeExceptionTest( String name ) { super(name); }

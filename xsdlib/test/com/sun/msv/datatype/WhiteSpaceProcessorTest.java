@@ -11,6 +11,11 @@ package com.sun.tranquilo.datatype;
 
 import junit.framework.*;
 
+/**
+ * tests WhiteSpaceProcessor.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class WhiteSpaceProcessorTest extends TestCase
 {
 	public WhiteSpaceProcessorTest( String name ) { super(name); }

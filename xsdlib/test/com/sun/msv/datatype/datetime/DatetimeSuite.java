@@ -10,6 +10,11 @@
 package com.sun.tranquilo.datatype.datetime;
 import junit.framework.*;
 
+/**
+ * tests all test cases in this package.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class DatetimeSuite extends TestCase {    
 	
 	public DatetimeSuite(java.lang.String testName) {

@@ -11,6 +11,11 @@ package com.sun.tranquilo.datatype;
 
 import junit.framework.*;
 
+/**
+ * tests TotalDigitsFacet.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class TotalDigitsFacetTest extends TestCase
 {
 	public TotalDigitsFacetTest( String name ) { super(name); }

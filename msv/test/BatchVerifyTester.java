@@ -29,6 +29,8 @@ import com.sun.tranquilo.verifier.*;
  * 
  * Files that follow this naming convention are all tested. If any unexpected
  * result is found, main method returns non-0 exit code.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class BatchVerifyTester
 {

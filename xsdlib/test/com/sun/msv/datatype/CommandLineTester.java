@@ -16,7 +16,7 @@ import java.util.StringTokenizer;
 /**
  * command-line tester of datatype library.
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class CommandLineTester
 {

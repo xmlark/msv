@@ -24,6 +24,11 @@ import java.util.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
+/**
+ * multi-thread tester.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class Daemon implements Runnable
 {
 	public static void main( String args[] ) throws Exception

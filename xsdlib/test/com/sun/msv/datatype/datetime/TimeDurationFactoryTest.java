@@ -14,6 +14,11 @@ import java.math.BigDecimal;
 
 import junit.framework.*;
 
+/**
+ * tests TimeDurationFactory.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class TimeDurationFactoryTest extends TestCase {    
 	
 	public TimeDurationFactoryTest(java.lang.String testName) {

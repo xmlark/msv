@@ -15,6 +15,11 @@ import java.io.FileInputStream;
 import java.util.Iterator;
 import com.sun.tranquilo.datatype.*;
 
+/**
+ * conformance test runner.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class TestDriver implements ErrorReceiver
 {
 	public static void main (String args[]) throws Exception

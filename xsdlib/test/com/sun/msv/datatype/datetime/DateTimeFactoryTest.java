@@ -14,6 +14,11 @@ import java.math.BigDecimal;
 
 import junit.framework.*;
 
+/**
+ * tests DateTimeFactory.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class DateTimeFactoryTest extends TestCase {    
 	
 	public DateTimeFactoryTest(java.lang.String testName) {

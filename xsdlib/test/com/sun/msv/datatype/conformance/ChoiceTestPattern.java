@@ -11,7 +11,11 @@ package com.sun.tranquilo.datatype.conformance;
 
 import com.sun.tranquilo.datatype.*;
 
-/** choose one from child pattern */
+/**
+ * choose one from child pattern
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class ChoiceTestPattern implements TestPattern
 {
 	private final TestPattern[] children;

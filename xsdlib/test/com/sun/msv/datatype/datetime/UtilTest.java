@@ -14,6 +14,11 @@ import java.math.BigDecimal;
 import com.sun.tranquilo.datatype.Comparator;
 import junit.framework.*;
 
+/**
+ * tests Util.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class UtilTest extends TestCase
 {    
 	public UtilTest(String testName) { super(testName); }

@@ -15,7 +15,11 @@ import java.math.BigInteger;
 import junit.framework.*;
 
 /**
- * please explicitly test for every production rule whether empty string is allowed
+ * tests ISO8601Parser.
+ * 
+ * please explicitly test for every production rule whether empty string is allowed.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ISO8601ParserTest extends TestCase {    
 	

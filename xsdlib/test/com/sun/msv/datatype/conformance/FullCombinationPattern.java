@@ -11,7 +11,11 @@ package com.sun.tranquilo.datatype.conformance;
 
 import com.sun.tranquilo.datatype.*;
 
-/** test every possible combination of child patterns */
+/**
+ * test every possible combination of child patterns.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class FullCombinationPattern implements TestPattern
 {
 	private final TestPattern[] children;

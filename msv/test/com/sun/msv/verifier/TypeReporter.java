@@ -26,6 +26,10 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * dumps RELAX label assigned to each element.
+ * 
+ * Example of type-assignment.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TypeReporter extends DefaultHandler
 {

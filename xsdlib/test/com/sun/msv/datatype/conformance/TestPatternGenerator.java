@@ -12,6 +12,11 @@ package com.sun.tranquilo.datatype.conformance;
 import org.jdom.*;
 import java.util.List;
 
+/**
+ * parses XML representation of test pattern.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class TestPatternGenerator
 {
 	/**

@@ -20,6 +20,11 @@ import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.grammar.relax.*;
 import com.sun.tranquilo.grammar.*;
 
+/**
+ * loads a schema and creates test case for every test instances.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class SchemaSuite extends TestCase
 {
 	SchemaSuite( BatchVerifyTester parent, String schemaFileName )

@@ -15,6 +15,11 @@ import com.sun.tranquilo.datatype.Comparator;
 import junit.framework.*;
 import java.io.ByteArrayInputStream;
 
+/**
+ * tests BigTimeDurationValueType.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class BigTimeDurationValueTypeTest extends TestCase {    
 	
 	public BigTimeDurationValueTypeTest(String testName) {

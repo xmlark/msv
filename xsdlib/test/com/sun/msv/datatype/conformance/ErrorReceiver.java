@@ -13,6 +13,11 @@ import com.sun.tranquilo.datatype.DataType;
 import com.sun.tranquilo.datatype.BadTypeException;
 import com.sun.tranquilo.datatype.TypeIncubator;
 
+/**
+ * receives conformance test error.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 interface ErrorReceiver
 {
 	/**

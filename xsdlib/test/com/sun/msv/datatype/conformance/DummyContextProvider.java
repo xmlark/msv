@@ -11,6 +11,11 @@ package com.sun.tranquilo.datatype.conformance;
 
 import com.sun.tranquilo.datatype.ValidationContextProvider;
 
+/**
+ * dummy implementation of ValidationContextProvider.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 final public class DummyContextProvider implements ValidationContextProvider
 {
 	private DummyContextProvider() {}

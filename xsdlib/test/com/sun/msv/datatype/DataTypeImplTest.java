@@ -13,6 +13,11 @@ import junit.framework.*;
 
 import java.lang.reflect.*;
 
+/**
+ * tests DataTypeImpl.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class DataTypeImplTest extends TestCase
 {
 	public DataTypeImplTest( String name ) { super(name); }

@@ -12,6 +12,11 @@ package com.sun.tranquilo.datatype;
 import junit.framework.*;
 import com.sun.tranquilo.datatype.conformance.DummyContextProvider;
 
+/**
+ * tests UnionType.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class UnionTypeTest extends TestCase
 {
 	public UnionTypeTest( String name ) { super(name); }

@@ -19,6 +19,8 @@ import com.sun.tranquilo.datatype.*;
 
 /**
  * tests DataType.verify method with various types and various lexical values.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DataTypeTester
 {

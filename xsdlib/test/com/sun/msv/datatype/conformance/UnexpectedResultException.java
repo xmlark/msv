@@ -10,7 +10,12 @@
 package com.sun.tranquilo.datatype.conformance;
 
 import com.sun.tranquilo.datatype.*;
-	
+
+/**
+ * signals unexpected test result.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class UnexpectedResultException extends Exception
 {
 	public final DataType type;

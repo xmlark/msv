@@ -11,6 +11,11 @@ package com.sun.tranquilo.datatype.conformance;
 
 import com.sun.tranquilo.datatype.*;
 
+/**
+ * test pattern that corresponds with one test case.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class SimpleTestPattern implements TestPattern
 {
 	/** returns the number of test cases to be generated */

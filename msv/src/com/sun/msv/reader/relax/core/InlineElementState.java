@@ -16,18 +16,25 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.SimpleNameClass;
 import com.sun.tranquilo.grammar.relax.ElementRule;
 import com.sun.tranquilo.grammar.relax.TagClause;
-import com.sun.tranquilo.reader.ExpressionWithoutChildState;
+import com.sun.tranquilo.reader.State;
+import com.sun.tranquilo.reader.ExpressionState;
+import com.sun.tranquilo.reader.datatype.xsd.FacetStateParent;
+import com.sun.tranquilo.util.StartTagInfo;
 
 /**
  * parses &lt;element&gt; element.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class InlineElementState extends ExpressionWithoutChildState
+public class InlineElementState extends ExpressionState implements FacetStateParent
 {
 	protected TypeIncubator incubator;
 	
 	public TypeIncubator getIncubator() { return incubator; }
+	
+	protected State createChildState( StartTagInfo tag ) {
+		return ((RELAXCoreReader)reader).createFacetState(this,tag);	// facets
+	}
 	
 	protected void startSelf()
 	{

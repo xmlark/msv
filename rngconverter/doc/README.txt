@@ -1,5 +1,5 @@
 ======================================================================
-              README FILE FOR THE SUN RELAX NG CONVERTER
+                README FILE FOR SUN RELAX NG CONVERTER
                      Preview Version. June, 2001
                  Copyright (c) Sun Microsystems, 2001
 Document written by Kohsuke Kawaguchi (kohsuke.kawaguchi@eng.sun.com)
@@ -43,10 +43,16 @@ KNOWN LIMITATIONS
 * RELAX Core permits undeclared attributes to appear in instance
   documents. This semantics is not converted.
 
-* Identity constraints of W3C XML Schema are not converted.
+* Identity constraints of W3C XML Schema are not converted. the
+  semantics of "ID", "IDREF", and "IDREFS" should be properly converted.
 
 * It may fail to convert a datatype definition, especially if it is
   derived in very complex way with a lot of facets.
+
+* Schemas that consist of multiple files are converted into one big
+  RELAX NG grammar. This limitation can be used to parse modularized
+  RELAX NG grammar and creates single monolithic grammar.
+
 
 [1] Sun Multi-Schema Validator
      http://www.sun.com/xml/@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

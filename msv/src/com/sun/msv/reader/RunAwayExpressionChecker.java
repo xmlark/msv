@@ -101,9 +101,14 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 			for( ; i<sz; i++ ) {
 				if( refStack.elementAt(i) instanceof ReferenceExp ) {
 					ReferenceExp e = (ReferenceExp)refStack.elementAt(i);
+					if( e.name==null )	continue;	// skip anonymous ref.
+					
+					if( s.length()!=0 )	 s += " > ";
 					s += e.name;
-					if( i!=sz-1 )  s+= " > ";
-					locs.add(reader.getDeclaredLocationOf(e));
+					
+					Locator loc = reader.getDeclaredLocationOf(e);
+					if(loc==null)	continue;
+					locs.add(loc);
 				}
 			}
 				

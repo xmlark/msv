@@ -272,7 +272,9 @@ public class RELAXNGWriter implements GrammarWriter {
 					"xmlns",RELAXNGReader.RELAXNGNamespace,
 					"datatypeLibrary", XSDVocabulary.XMLSchemaNamespace });
 			else
-				start("grammar");
+				start("grammar", new String[]{
+					"xmlns",RELAXNGReader.RELAXNGNamespace,
+					"datatypeLibrary", XSDVocabulary.XMLSchemaNamespace });
 			
 			this.defaultNs = defaultNs;
 			
@@ -626,7 +628,7 @@ public class RELAXNGWriter implements GrammarWriter {
 		}
 	
 		public void onAnyString() {
-			element("anyString");
+			element("text");
 		}
 	
 		public void onInterleave( InterleaveExp exp ) {
@@ -760,9 +762,7 @@ public class RELAXNGWriter implements GrammarWriter {
 			if( dt instanceof DataTypeImpl ) {
 				DataTypeImpl dti = (DataTypeImpl)dt;
 					
-				if( dt instanceof ConcreteType
-				 && !(dt instanceof ListType)
-				 && !(dt instanceof UnionType) ) {
+				if( isPredefinedType(dt) ) {
 					// it's a pre-defined types.
 					element( "data", new String[]{"type",dti.getName()} );
 				} else {
@@ -796,7 +796,14 @@ public class RELAXNGWriter implements GrammarWriter {
 			Vector effectiveFacets = new Vector();
 			
 			DataType x = dt;
-			while( x instanceof DataTypeWithFacet ) {
+			while( x instanceof DataTypeWithFacet || x instanceof FinalComponent ) {
+				
+				if( x instanceof FinalComponent ) {
+					// skip FinalComponent
+					x = ((FinalComponent)x).baseType;
+					continue;
+				}
+				
 				String facetName = ((DataTypeWithFacet)x).facetName;
 				
 				if( facetName.equals(DataTypeImpl.FACET_ENUMERATION) ) {
@@ -806,14 +813,19 @@ public class RELAXNGWriter implements GrammarWriter {
 					return;
 				}
 				
-				if( appliedFacets.contains(facetName)
-				&& !appliedFacets.equals(DataTypeImpl.FACET_PATTERN) )
-					// find the same facet twice.
-					// pattern is allowed more than once.
-					break;
+				if( facetName.equals(DataTypeImpl.FACET_WHITESPACE) ) {
+					throw new UnsupportedOperationException("whiteSpace facet is not supported");
+//					throw new Error("ws"); // ((WhiteSpaceFacet)x).whiteSpace);
+				}
 				
-				appliedFacets.add(facetName);
-				effectiveFacets.add(x);
+				// find the same facet twice.
+				// pattern is allowed more than once.
+				if( !appliedFacets.contains(facetName)
+				||  appliedFacets.equals(DataTypeImpl.FACET_PATTERN) ) {
+				
+					appliedFacets.add(facetName);
+					effectiveFacets.add(x);
+				}
 				
 				x = ((DataTypeWithFacet)x).baseType;
 			}
@@ -828,103 +840,104 @@ public class RELAXNGWriter implements GrammarWriter {
 			// restriction.
 			
 			// so this must be one of the pre-defined types.
-			if(!(x instanceof ConcreteType ))	throw new Error();
+			if(!(x instanceof ConcreteType ))	throw new Error(x.getClass().getName());
+			
+			if( x instanceof com.sun.msv.grammar.relax.EmptyStringType ) {
+				// empty token will do.
+				start("value");
+				end("value");
+				return;
+			}
+			if( x instanceof com.sun.msv.grammar.relax.NoneType ) {
+				// "none" is equal to <notAllowed/>
+				element("notAllowed");
+				return;
+			}
+			
+			// attributes to be added to this <data> element.
+			Vector dataAtts = new Vector();
+			
+			// ID,IDREF are treated in a special manner.
+			if( x instanceof com.sun.msv.grammar.IDType ) {
+				start("data",new String[]{"type","NCName","key","XML_ID"});
+			}
+			else
+			if( x instanceof com.sun.msv.grammar.IDREFType ) {
+				start("data",new String[]{"type","NCName","keyref","XML_ID"});
+			}
+			else
+				start("data",new String[]{"type",x.displayName()});
 			
 			
-			// serialize applied facets
-			while( dt!=x ) {
-				DataTypeWithFacet dtf = (DataTypeWithFacet)dt;
+			// serialize effective facets
+			for( int i=effectiveFacets.size()-1; i>=0; i-- ) {
+				DataTypeWithFacet dtf = (DataTypeWithFacet)effectiveFacets.get(i);
+				
 				if( dtf instanceof LengthFacet ) {
-					element("xsd:length",new String[]{"value",
-						Long.toString(((LengthFacet)dtf).length) });
+					param("length",
+						Long.toString(((LengthFacet)dtf).length));
 				} else
 				if( dtf instanceof MinLengthFacet ) {
-					element("xsd:minLength",new String[]{"value",
-						Long.toString(((MinLengthFacet)dtf).minLength) });
+					param("minLength",
+						Long.toString(((MinLengthFacet)dtf).minLength));
 				} else
 				if( dtf instanceof MaxLengthFacet ) {
-					element("xsd:maxLength",new String[]{"value",
-						Long.toString(((MaxLengthFacet)dtf).maxLength) });
+					param("maxLength",
+						Long.toString(((MaxLengthFacet)dtf).maxLength));
 				} else
 				if( dtf instanceof PatternFacet ) {
+					String pattern = "";
 					PatternFacet pf = (PatternFacet)dtf;
-					for( int i=0; i<pf.exps.length; i++ )
-						element("xsd:pattern", new String[]{"value",
-							pf.patterns[i]} );
-				} else
-				if( dtf instanceof EnumerationFacet ) {
-					Object[] values = ((EnumerationFacet)dtf).values.toArray();
-					for( int i=0; i<values.length; i++ ) {
-						final Vector ns = new Vector();
-						
-						String lex = dtf.convertToLexicalValue( values[i],
-							new SerializationContext() {
-								public String getNamespacePrefix( String namespaceURI ) {
-									int cnt = ns.size()/2;
-//									try {
-//										handler.startPrefixMapping( "ns"+cnt, namespaceURI );
-										ns.add( "xmlns:ns"+cnt );
-										ns.add( namespaceURI );
-//									} catch( SAXException e ) {
-//										throw new SAXWrapper(e);
-//									}
-									return "ns"+cnt;
-								}
-							} );
-						
-						ns.add("value");
-						ns.add(lex);
-						
-						element("xsd:enumeration", (String[])ns.toArray(new String[0]) );
+					for( int j=0; j<pf.exps.length; j++ ) {
+						if( pattern.length()!=0 )	pattern += "|";
+						pattern += pf.patterns[j];
 					}
+					param("pattern",pattern);
 				} else
 				if( dtf instanceof TotalDigitsFacet ) {
-					element("xsd:totalDigits", new String[]{"value",
-						Long.toString(((TotalDigitsFacet)dtf).precision)} );
+					param("totalDigits",
+						Long.toString(((TotalDigitsFacet)dtf).precision));
 				} else
 				if( dtf instanceof FractionDigitsFacet ) {
-					element("xsd:fractionDigits", new String[]{"value",
-						Long.toString(((FractionDigitsFacet)dtf).scale)} );
+					param("fractionDigits",
+						Long.toString(((FractionDigitsFacet)dtf).scale));
 				} else
 				if( dtf instanceof RangeFacet ) {
-					element("xsd:"+dtf.facetName, new String[]{"value",
+					param(dtf.facetName,
 						dtf.convertToLexicalValue(
-							((RangeFacet)dtf).limitValue, null ) } );
+							((RangeFacet)dtf).limitValue, null ));
 					// we don't need to pass SerializationContext because it is only
 					// for QName.
 				} else
 				if( dtf instanceof WhiteSpaceFacet ) {
-					String value;
-					if( dtf.whiteSpace==WhiteSpaceProcessor.theCollapse )
-						value = "collapse";
-					else
-					if( dtf.whiteSpace==WhiteSpaceProcessor.theReplace )
-						value = "replace";
-					else
-					if( dtf.whiteSpace==WhiteSpaceProcessor.thePreserve )
-						value = "preserve";
-					else
-						throw new Error();	// undefined white space type.
-					
-					element("xsd:whiteSpace", new String[]{"value",value});
+					;	// do nothing.
 				} else
 					// undefined facet type
 					throw new Error();
-				
-				dt = ((DataTypeWithFacet)dt).baseType;
 			}
-
-			end("xsd:restriction");
+			
+			end("data");
 		}
 
+		protected void param( String name, String value ) {
+			start("param",new String[]{"name",name});
+			characters(value);
+			end("param");
+		}
+		
 		/**
-		 * returns true if the specified type is a built-in type
+		 * returns true if the specified type is a pre-defined XSD type
 		 * without any facet.
 		 */
-		protected boolean isBuiltinType( DataType x ) {
+		protected boolean isPredefinedType( DataType x ) {
 			return !(x instanceof DataTypeWithFacet
 				|| x instanceof UnionType
-				|| x instanceof ListType);
+				|| x instanceof ListType
+				|| x instanceof FinalComponent
+				|| x instanceof com.sun.msv.grammar.relax.EmptyStringType
+				|| x instanceof com.sun.msv.grammar.IDType
+				|| x instanceof com.sun.msv.grammar.IDREFType
+				|| x instanceof com.sun.msv.grammar.relax.NoneType);
 		}
 		
 		/**
@@ -1016,8 +1029,11 @@ public class RELAXNGWriter implements GrammarWriter {
 				ns.add("type");
 				ns.add(dt.getConcreteType().getName() );
 				
-				if( allowed )
-					element("value", (String[])ns.toArray(new String[0]) );
+				if( allowed ) {
+					start("value", (String[])ns.toArray(new String[0]) );
+					characters(lex);
+					end("value");
+				}
 			}
 
 			if( values.length>1 )

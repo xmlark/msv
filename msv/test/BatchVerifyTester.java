@@ -24,8 +24,8 @@ import com.sun.tranquilo.verifier.*;
 public class BatchVerifyTester
 {
 	protected SAXParserFactory factory =
-//		new org.apache.xerces.jaxp.SAXParserFactoryImpl();
-		new org.apache.crimson.jaxp.SAXParserFactoryImpl();
+		new org.apache.xerces.jaxp.SAXParserFactoryImpl();
+//		new org.apache.crimson.jaxp.SAXParserFactoryImpl();
 
 	
 	/** test target: "relax" or "trex" */

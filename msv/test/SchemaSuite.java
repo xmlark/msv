@@ -28,7 +28,7 @@ class SchemaSuite extends TestCase
 		TestSuite suite = new TestSuite();
 		suite.addTest(this);	// this object itself will load schema as a test.
 			
-		final String prefix = schemaFileName.substring(0, schemaFileName.lastIndexOf('.'));
+		final String prefix = schemaFileName.substring(0, schemaFileName.lastIndexOf('.')+1);
 
 		// gets test instances.			
 		String[] lst = parent.testDir.list( new FilenameFilter (){ 
@@ -120,12 +120,14 @@ class SchemaSuite extends TestCase
 				try
 				{
 					XMLReader r =parent.factory.newSAXParser().getXMLReader();
-					r.setContentHandler(
+					Verifier v =
 						new Verifier( docDecl,
-							new VerificationErrorHandlerImpl() )
-						);
+							new VerificationErrorHandlerImpl() );
+					r.setContentHandler(v);
 						
 					r.parse( new InputSource(parent.dir+fileName) );
+					
+					assert( v.isValid() );
 				}
 				catch( ValidityViolation _vv )
 				{
@@ -138,7 +140,7 @@ class SchemaSuite extends TestCase
 				if( xor( supposedToBeValid , vv==null ) )
 				{
 					if( vv!=null )		fail( vv.getMessage() );
-					else				fail();
+					else				fail( "should be invalid" );
 				}
 			}
 			catch( SAXException se )

@@ -36,7 +36,7 @@ public class Driver {
 		
 		// load a grammar.
 		Grammar g = GrammarLoader.loadSchema( args[0],
-			new com.sun.msv.driver.textui.DebugController(false),
+			new com.sun.msv.driver.textui.DebugController(false,false),
 			pf );
 		if( g==null ) {
 			System.out.println("failed to load the grammar");

@@ -9,12 +9,11 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
+import com.sun.msv.datatype.SerializationContext;
 import org.relaxng.datatype.ValidationContext;
 
-import com.sun.msv.datatype.SerializationContext;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * "decimal" type.

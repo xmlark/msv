@@ -9,11 +9,11 @@
  */
 package com.sun.msv.datatype.xsd;
 
+import org.relaxng.datatype.DatatypeException;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.relaxng.datatype.DatatypeException;
 
 /**
  * Datatype object factory.

@@ -9,11 +9,10 @@
  */
 package com.sun.msv.datatype.xsd.datetime;
 
+import com.sun.msv.datatype.xsd.Comparator;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-import com.sun.msv.datatype.xsd.Comparator;
 
 /**
  * tests BigTimeDurationValueType.

@@ -9,11 +9,11 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import java.util.Collection;
-import java.util.Set;
-
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
+
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * "enumeration" facets validator.

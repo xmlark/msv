@@ -8,11 +8,11 @@
  * 
  */
 package com.sun.msv.datatype.xsd.datetime;
-import java.math.BigDecimal;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import java.math.BigDecimal;
 
 /**
  * tests DateTimeFactory.

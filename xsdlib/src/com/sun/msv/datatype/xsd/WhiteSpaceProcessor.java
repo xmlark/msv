@@ -9,10 +9,10 @@
  */
 package com.sun.msv.datatype.xsd;
 
+import org.relaxng.datatype.DatatypeException;
+
 import java.io.InvalidObjectException;
 import java.io.Serializable;
-
-import org.relaxng.datatype.DatatypeException;
 
 /**
  * processes white space normalization

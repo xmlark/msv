@@ -9,9 +9,8 @@
  */
 package com.sun.msv.datatype.xsd.conformance;
 
-import org.relaxng.datatype.ValidationContext;
-
 import com.sun.msv.datatype.SerializationContext;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * dummy implementation of ValidationContextProvider.

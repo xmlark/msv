@@ -1,13 +1,12 @@
 package com.sun.msv.datatype.xsd.ngimpl;
 
+import com.sun.msv.datatype.xsd.TypeIncubator;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.XSDatatypeImpl;
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.DatatypeBuilder;
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
-
-import com.sun.msv.datatype.xsd.TypeIncubator;
-import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.datatype.xsd.XSDatatypeImpl;
 
 class DatatypeBuilderImpl implements DatatypeBuilder {
     

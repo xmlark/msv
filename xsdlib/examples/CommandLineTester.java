@@ -8,15 +8,15 @@
  * 
  */
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
-import org.relaxng.datatype.DatatypeException;
-
 import com.sun.msv.datatype.xsd.DatatypeFactory;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.datatype.xsd.TypeIncubator;
 import com.sun.msv.datatype.xsd.XSDatatype;
+import org.relaxng.datatype.DatatypeException;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 /**
  * command-line tester of datatype library.

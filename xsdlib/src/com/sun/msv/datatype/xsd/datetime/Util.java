@@ -9,11 +9,11 @@
  */
 package com.sun.msv.datatype.xsd.datetime;
 
+import com.sun.msv.datatype.xsd.Comparator;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.SimpleTimeZone;
-
-import com.sun.msv.datatype.xsd.Comparator;
 
 /**
  * date/time-related utility functions/variables.

@@ -9,15 +9,14 @@
  */
 package com.sun.msv.datatype.xsd.datetime;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import com.sun.msv.datatype.xsd.Comparator;
 import com.sun.msv.datatype.xsd.DateTimeType;
 import com.sun.msv.datatype.xsd.DateType;
 import com.sun.msv.datatype.xsd.DurationType;
 import com.sun.msv.datatype.xsd.GYearMonthType;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * tests BigDateTimeValueType.

@@ -9,10 +9,10 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import java.io.Serializable;
-
 import com.sun.msv.datatype.DatabindableDatatype;
 import com.sun.msv.datatype.SerializationContext;
+
+import java.io.Serializable;
 
 /**
  * Publicly accesible interface of W3C XML Schema datatype (simple type).

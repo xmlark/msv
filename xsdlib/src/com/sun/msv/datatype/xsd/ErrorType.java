@@ -9,9 +9,8 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import org.relaxng.datatype.ValidationContext;
-
 import com.sun.msv.datatype.SerializationContext;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * A dummy datatype that can be used to recover from errors.

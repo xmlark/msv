@@ -57,8 +57,8 @@
 
 package com.sun.msv.datatype.xsd.regex;
 
-import java.util.Vector;
 import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * This class represents a node in parse tree.

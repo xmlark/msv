@@ -9,12 +9,12 @@
  */
 package com.sun.msv.datatype.xsd.datetime;
 
+import com.sun.msv.datatype.xsd.Comparator;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
-import com.sun.msv.datatype.xsd.Comparator;
 
 /**
  * ITimeDurationValueType implementation that can hold all lexically legal

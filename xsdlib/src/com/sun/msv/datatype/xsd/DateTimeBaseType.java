@@ -9,16 +9,15 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import java.util.Calendar;
-
-import org.relaxng.datatype.ValidationContext;
-
 import com.sun.msv.datatype.SerializationContext;
 import com.sun.msv.datatype.xsd.datetime.CalendarFormatter;
 import com.sun.msv.datatype.xsd.datetime.CalendarParser;
 import com.sun.msv.datatype.xsd.datetime.IDateTimeValueType;
 import com.sun.msv.datatype.xsd.datetime.PreciseCalendarFormatter;
 import com.sun.msv.datatype.xsd.datetime.PreciseCalendarParser;
+import org.relaxng.datatype.ValidationContext;
+
+import java.util.Calendar;
 
 /**
  * base implementation of dateTime and dateTime-truncated types.

@@ -9,12 +9,11 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import java.util.StringTokenizer;
-
+import com.sun.msv.datatype.SerializationContext;
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 
-import com.sun.msv.datatype.SerializationContext;
+import java.util.StringTokenizer;
 
 /**
  * List type.

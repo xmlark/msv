@@ -9,9 +9,9 @@
  */
 package com.sun.msv.datatype.xsd.conformance;
 
-import java.util.List;
-
 import org.jdom.Element;
+
+import java.util.List;
 
 /**
  * parses XML representation of test pattern.

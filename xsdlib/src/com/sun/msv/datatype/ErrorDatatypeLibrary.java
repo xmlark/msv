@@ -9,12 +9,11 @@
  */
 package com.sun.msv.datatype;
 
+import com.sun.msv.datatype.xsd.StringType;
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.DatatypeBuilder;
 import org.relaxng.datatype.DatatypeLibrary;
 import org.relaxng.datatype.ValidationContext;
-
-import com.sun.msv.datatype.xsd.StringType;
 
 /**
  * Dummy <code>DatatypeLibrary</code> implementation which is used

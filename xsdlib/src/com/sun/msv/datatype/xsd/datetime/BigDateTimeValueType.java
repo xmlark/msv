@@ -9,11 +9,11 @@
  */
 package com.sun.msv.datatype.xsd.datetime;
 
+import com.sun.msv.datatype.xsd.Comparator;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
-
-import com.sun.msv.datatype.xsd.Comparator;
 
 /**
  * DateTimeValueType object that can hold all lexically valid dateTime value.

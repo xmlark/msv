@@ -1,7 +1,7 @@
 package com.sun.msv.datatype;
 
-import org.relaxng.datatype.ValidationContext;
 import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * Datatype interface that supports Java databinding.

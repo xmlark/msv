@@ -9,13 +9,12 @@
  */
 package com.sun.msv.datatype.xsd.datetime;
 
-import java.math.BigInteger;
-
+import com.sun.msv.datatype.xsd.Comparator;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import com.sun.msv.datatype.xsd.Comparator;
+import java.math.BigInteger;
 
 /**
  * tests Util.

@@ -9,11 +9,10 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import org.relaxng.datatype.ValidationContext;
-
 import com.sun.msv.datatype.SerializationContext;
 import com.sun.msv.datatype.xsd.datetime.BigTimeDurationValueType;
 import com.sun.msv.datatype.xsd.datetime.ITimeDurationValueType;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * "duration" type.

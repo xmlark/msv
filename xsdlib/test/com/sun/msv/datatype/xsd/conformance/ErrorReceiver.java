@@ -9,10 +9,9 @@
  */
 package com.sun.msv.datatype.xsd.conformance;
 
-import org.relaxng.datatype.DatatypeException;
-
 import com.sun.msv.datatype.xsd.TypeIncubator;
 import com.sun.msv.datatype.xsd.XSDatatype;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * receives conformance test error.

@@ -69,7 +69,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 				
 				Expression e;
 				
-				if( reader.isSchemaNamespace(reader.XMLSchemaNamespace) ) {
+				if( reader.isSchemaNamespace(s[0]) ) {
 					// datatypes of XML Schema part 2
 					e = reader.pool.createTypedString(reader.resolveBuiltinDataType(s[1]));
 				} else {

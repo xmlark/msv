@@ -12,6 +12,7 @@ package com.sun.msv.generator;
 import junit.framework.*;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Vector;
 import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
 
 /**
@@ -46,7 +47,7 @@ class GeneratorSuite extends TestCase {
 		final String pathName = parent.dir + File.separatorChar + schemaFileName;
 			
 		// load grammar
-		if( pathName.endsWith(".e"+parent.ext) )
+		if( pathName.endsWith(".e"+parent.ext) || pathName.indexOf(".nogen.")>=0 )
 			return;	// do nothing. This grammar is invalid.
 		
 		
@@ -63,23 +64,33 @@ class GeneratorSuite extends TestCase {
 			String example = parent.dir + File.separatorChar + lst[0];
 			
 			System.out.println("test for "+pathName + " with " + example);
+			Vector args = new Vector();
+			args.add("-seed");
+			args.add("0");
+			args.add("-n");
+			args.add("100");
+			args.add("-quiet");
+			args.add("-example");
+			args.add(example);
+			args.add(pathName);	// schema itself
+			args.add("NUL");	// output
+
+			if( parent.target.equals("dtd") )
+				args.add("-dtd");
+			
 			assert( "generator for "+pathName,
-				new Driver().run( new String[]{
-					"-seed","0",
-					"-n","100",
-					"-quiet",
-					"-example", example,
-					"-validate",pathName,
-					"NUL"/*throw output away*/}, System.out )==0 );
+				new Driver().run(
+					(String[])args.toArray(new String[0]),
+				System.out )==0 );
+			
+			args.add("-error");
+			args.add("10/100");
+			
 			assert( "generator for "+pathName,
-				new Driver().run( new String[]{
-					"-seed","0",
-					"-n","100",
-					"-quiet",
-					"-error","1/100",
-					"-example", example,
-					"-validate",pathName,
-					"NUL"/*throw output away*/}, System.out )==0 );
+				new Driver().run(
+					(String[])args.toArray(new String[0]),
+				System.out )==0 );
+			
 		} else {
 			System.out.println("test for "+pathName + " *** skipped" );
 		}

@@ -107,7 +107,7 @@ public class AnyElementState extends AnyState
 	}
 
 	protected NameClass getNameClassFrom( ReferenceExp exp ) {
-		return ((ElementDeclExp)exp).body.getNameClass();
+		return ((ElementDeclExp)exp).getElementExp().getNameClass();
 	}
 	
 }

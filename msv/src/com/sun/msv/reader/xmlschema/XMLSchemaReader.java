@@ -12,6 +12,7 @@ package com.sun.msv.reader.xmlschema;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.datatype.xsd.BooleanType;
 import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.DatatypeFactory;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
@@ -243,6 +244,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 	/** grammar object which is being under construction. */
 	protected final XMLSchemaGrammar grammar;
 	protected XMLSchemaSchema currentSchema;
+    
 	/**
 	 * XMLSchemaSchema object that has XMLSchemaNamespace as its target namespace.
 	 */
@@ -432,8 +434,6 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 		return defaultValue;
 	}
 	
-	private XSDVocabulary builtinTypes = new XSDVocabulary();
-	
 	/**
 	 * resolves built-in datatypes (URI: http://www.w3.org/2001/XMLSchema)
 	 * 
@@ -443,7 +443,26 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 	public XSDatatype resolveBuiltinDataType( String typeLocalName ) {
 		// datatypes of XML Schema part 2
 		try {
-			return (XSDatatype)builtinTypes.getType(typeLocalName);
+			return DatatypeFactory.getTypeByName(typeLocalName);
+		} catch( DatatypeException e ) {
+			return null;	// not found.
+		}
+	}
+	
+	/**
+	 * Gets a built-in datatype as SimpleTypeExp.
+	 * 
+	 * @return
+	 *		null if the type is not defined.
+	 */
+	public SimpleTypeExp resolveBuiltinSimpleType( String typeLocalName ) {
+		// datatypes of XML Schema part 2
+		try {
+            XSDatatype dt = DatatypeFactory.getTypeByName(typeLocalName);
+            SimpleTypeExp sexp = xsdSchema.simpleTypes.getOrCreate(typeLocalName);
+            if(!sexp.isDefined())
+                sexp.set( new XSDatatypeExp(dt,pool) );
+            return sexp;
 		} catch( DatatypeException e ) {
 			return null;	// not found.
 		}
@@ -772,7 +791,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 							if( com.sun.msv.driver.textui.Debug.debug )
 								System.out.println( c.name+"<-"+e.name );
 							c.substitutions.exp =
-								pool.createChoice( c.substitutions.exp, e.body );
+                                pool.createChoice( c.substitutions.exp, e.body );
 						} else {
 							if( com.sun.msv.driver.textui.Debug.debug )
 								System.out.println( c.name+"<-X-"+e.name );

@@ -86,12 +86,9 @@ public class ElementDeclState extends ExpressionWithChildState {
 				
 				Expression e=null;
 				
-				if( reader.isSchemaNamespace(s[0]) ) {
+				if( reader.isSchemaNamespace(s[0]) )
 					// datatypes of XML Schema part 2
-					Datatype dt = reader.resolveBuiltinDataType(s[1]);
-					if(dt!=null)
-						e = reader.pool.createData( dt, new StringPair(s[0],s[1]) );
-				}
+                    e = reader.resolveBuiltinSimpleType(s[1]);
 				
 				if(e==null) {
 					XMLSchemaSchema g = reader.getOrCreateSchema(s[0]/*uri*/);
@@ -168,7 +165,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 		ElementDeclExp decl;
 		if( isGlobal() ) {
 			decl = reader.currentSchema.elementDecls.getOrCreate(name);
-			if( decl.body!=null )
+			if( decl.getElementExp()!=null )
 				reader.reportError( 
 					new Locator[]{this.location,reader.getDeclaredLocationOf(decl)},
 					reader.ERR_DUPLICATE_ELEMENT_DEFINITION,
@@ -185,7 +182,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 			new SimpleNameClass(targetNamespace,name), contentType );
 		
 		// set the body.
-		decl.body = exp;
+		decl.setElementExp(exp);
 
 		// set identity constraints
 		exp.identityConstraints.addAll(idcs);

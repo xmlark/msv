@@ -9,7 +9,6 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import com.sun.msv.reader.xmlschema.*;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.util.Util;
 import java.io.IOException;

@@ -26,7 +26,7 @@ import java.util.Vector;
  * also matches to substituted element declarations.
  * 
  * <p>
- * <code>body</code> field contains an expression that matches
+ * The <code>body</code> field contains an expression that matches
  * only to this element declaration without no substituted element decls.
  * 
  * 
@@ -156,9 +156,20 @@ public class ElementDeclExp extends ReferenceExp
 	public ElementDeclExp substitutionAffiliation;
 	
 	/**
-	 * body.
+	 * The expression that represents the "body" of this expression.
+	 * Usually, this refers to XSElementExp, but not necessarily.
 	 */
-	public XSElementExp body;
+	public final ReferenceExp body = new ReferenceExp(null);
+        
+    private XSElementExp element;
+    
+    public void setElementExp( XSElementExp exp ) {
+        this.element = exp;
+        body.exp = exp;
+    }
+    
+    public XSElementExp getElementExp() { return element; }
+    
 	
 	/**
 	 * choices of all elements that can validly substitute this element.
@@ -172,7 +183,7 @@ public class ElementDeclExp extends ReferenceExp
 	 * This method is just a short cut for <code>self.contentModel</code>.
 	 */
 	public Expression getContentModel() {
-		return body.contentModel;
+		return element.contentModel;
 	}
 	
 	/** parent XMLSchemaSchema object to which this object belongs. */
@@ -313,7 +324,7 @@ public class ElementDeclExp extends ReferenceExp
 		final RuntimeException eureka = new RuntimeException();
 		final XMLSchemaTypeExp[] result = new XMLSchemaTypeExp[1];
 		try {
-			body.contentModel.visit( new ExpressionWalker(){
+			getContentModel().visit( new ExpressionWalker(){
 				public void onElement( ElementExp exp ) {}
 				public void onRef( ReferenceExp exp ) {
 					if(exp instanceof XMLSchemaTypeExp) {
@@ -335,7 +346,7 @@ public class ElementDeclExp extends ReferenceExp
 // Implementation details
 //=========================================
 	public boolean isDefined() {
-		return super.isDefined() && body!=null;
+		return super.isDefined() && element!=null;
 	}
 	
 }

@@ -1,4 +1,8 @@
 
+(RNG)	changed namespace URI.
+(RNG)	@datatypeLibrary supported. data/@type is modified to NCName.
+
+
 (DTD)   supports DTD.
 
 (both)  fixed a bug that a named type is not properly derived by restriction

@@ -14,10 +14,11 @@
 	<property name="testRoot" value="./testCases" />
 	<property name="commonTestDir" value="${testRoot}/suites/JepaX;${testRoot}/suites/NITF;${testRoot}/suites/errorRELAXGrammar/lrgErrRatio;${testRoot}/errorRELAXGrammar/smlErrRatio" />
 	<property name="RELAXBatchTestDir" value="${testRoot}/relax;${commonTestDir}" />
+	<property name="RELAXNGBatchTestDir" value="${testRoot}/relaxng;${commonTestDir}" />
 	<property name="TREXBatchTestDir" value="${testRoot}/trex;${commonTestDir}" />
 	<property name="DTDBatchTestDir" value="${commonTestDir}" />
 	<property name="XSDBatchTestDir"
-		value="${testRoot}/xmlschema;${testRoot}/xmlschema/tutorialExamples;${commonTestDir}" />
+		value="${testRoot}/xmlschema;${testRoot}/xmlschema/tutorialExamples;${commonTestDir};${testRoot}/xmlschema/identity" />
 
 
 	
@@ -64,13 +65,14 @@
 	<target name="test">
 		<antcall target="doTest">
 			<param name="testClasses" value="**/*Test.class" />
+			<param name="testClasses" value="**/*TestG.class" />
 		</antcall>
 	</target>
 	
 	<!-- run msv test suites -->
 	<target name="test_msv">
 		<antcall target="doTest">
-			<param name="testClasses" value="*Test.class" />
+			<param name="testClasses" value="batch/verifier/*Test.class" />
 		</antcall>
 		<antcall target="doTest">
 			<param name="testClasses" value="com/sun/msv/datatype/*Test.class" />
@@ -83,10 +85,16 @@
 	<!--  run generator test suites -->
 	<target name="test_generator">
 		<antcall target="doTest">
-			<param name="testClasses" value="**/generator/**/*Test.class" />
+			<param name="testClasses" value="**/generator/**/*TestG.class" />
 		</antcall>
 	</target>
 	
+	<!--  run writer test suites -->
+	<target name="test_writer">
+		<antcall target="doTest">
+			<param name="testClasses" value="batch/writer/**/*Test.class" />
+		</antcall>
+	</target>
 	
 	
 		<!-- internal task -->
@@ -96,12 +104,13 @@
 				please remove jaxp.jar from ant directory,
 				because it uses an old one, and this test needs the latest one
 			-->
-			<junit haltonfailure="yes" printsummary="yes" fork="yes"
-				haltonerror="yes">
+			<junit haltonfailure="no" printsummary="yes" fork="yes"
+				haltonerror="no">
 				<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
 				<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
 				<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
 				<sysproperty key="XSDBatchTestDir"		value="${XSDBatchTestDir}"/>
+				<sysproperty key="RELAXNGBatchTestDir"	value="${RELAXNGBatchTestDir}"/>
 				
   				<formatter type="plain" />
 				

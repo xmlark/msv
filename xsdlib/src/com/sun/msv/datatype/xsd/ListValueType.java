@@ -30,7 +30,7 @@ public class ListValueType implements java.io.Serializable
 		final int len = values.length;
 		if( len!=rhs.values.length )	return false;
 		for( int i=0; i<len; i++ )
-			if(!values[len].equals(rhs.values[len]))	return false;
+			if(!values[i].equals(rhs.values[i]))	return false;
 		
 		return true;
 	}
@@ -39,7 +39,7 @@ public class ListValueType implements java.io.Serializable
 		int h=1;
 		final int len = values.length;
 		for( int i=0; i<len; i++ )
-			h += values[len].hashCode();
+			h += values[i].hashCode();
 		
 		return h;
 	}

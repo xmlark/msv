@@ -44,7 +44,7 @@ class VerifierImpl extends org.iso_relax.verifier.impl.VerifierImpl
 	
 	
 	public void setErrorHandler( ErrorHandler handler ) {
-		reader.setErrorHandler(handler);
+		super.setErrorHandler(handler);
 		verifier.setErrorHandler(handler);
 	}
 	

@@ -136,7 +136,9 @@
 				<pathelement location="../msv/bin/" />
 				<pathelement location="../msv/src/" />
 				<pathelement location="../testharness/bin/" />
-				<pathelement location="${relaxng.jar}" />
+				<pathelement location="${relaxngDatatype.jar}" />
+				<pathelement location="${isorelax.jar}" />
+				<pathelement location="${resolver.jar}" />
 				<pathelement path="${java.class.path}" />
 				<!--include CatalogManager.properties into the class path -->
 				<pathelement path="${testRoot}"/>

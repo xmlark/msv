@@ -31,9 +31,7 @@ public class AttributeExp extends Expression implements NameClassAndExpression {
 	public final Expression exp;
 	public final Expression getContentModel() { return exp; }
 	
-	/** use ExpressionPool to create it from outside */
-	AttributeExp( NameClass nameClass, Expression exp ) {
-		// only PatternPool can create the instance
+	protected AttributeExp( NameClass nameClass, Expression exp ) {
 		super( hashCode( nameClass, exp, HASHCODE_ATTRIBUTE ) );
 		this.nameClass	= nameClass;
 		this.exp		= exp;

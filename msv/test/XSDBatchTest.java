@@ -9,11 +9,6 @@
  */
 import junit.framework.*;
 import java.util.StringTokenizer;
-import javax.xml.parsers.SAXParserFactory;
-import com.sun.msv.reader.GrammarReaderController;
-import com.sun.msv.reader.util.GrammarLoader;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
-import org.xml.sax.InputSource;
 
 /**
  * tests the entire RELAX test suite by using BatchVerifyTester.
@@ -22,22 +17,16 @@ import org.xml.sax.InputSource;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class XSDBatchTest
-{
-	public static class Loader implements BatchVerifyTester.Loader {
-		public TREXDocumentDeclaration load( InputSource is, GrammarReaderController controller, SAXParserFactory factory ) throws Exception {
-			return GrammarLoader.loadVGM(is,controller,factory);
-		}
-	}
-	
-	public static TestSuite suite()
-	{
+public class XSDBatchTest {
+	public static TestSuite suite() {
 		StringTokenizer tokens = new StringTokenizer( System.getProperty("XSDBatchTestDir"), ";" );
 		
 		TestSuite s = new TestSuite();
-		while( tokens.hasMoreTokens() )
-			s.addTest(
-				new BatchVerifyTester("xsd", tokens.nextToken(), ".xsd", new Loader() ).suite() );
+		while( tokens.hasMoreTokens() ) {
+			BatchVerifyTester t = new BatchVerifyTester();
+			t.init("xsd", tokens.nextToken(), ".xsd", BatchTester.genericLoader);
+			s.addTest( t.suite() );
+		}
 		
 		return s;
 	}

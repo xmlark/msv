@@ -69,18 +69,9 @@ class SchemaSuite extends TestCase {
 		// load grammar
 		if( pathName.endsWith(".e"+parent.ext) ) {
 			docDecl = parent.loader.load( is, new IgnoreController(), parent.factory );
-//			if( parent.target.equals("dtd")) {
-//				docDecl = GrammarLoader.loadVGM( is,
-//					new IgnoreController(), parent.factory );
-//			} else {
-//				docDecl = new TREXDocumentDeclaration(
-//					DTDReader.parse(is) );
-//			}
 			if( docDecl!=null )
 				fail("unexpected result");
 		} else {
-//			docDecl = GrammarLoader.loadVGM( is,
-//				new ThrowErrorController(), parent.factory );
 			docDecl = parent.loader.load( is, new ThrowErrorController(), parent.factory );
 			if( docDecl==null )
 				fail("unexpected result");	// unexpected result

@@ -10,6 +10,7 @@
 package com.sun.msv.grammar;
 
 import com.sun.msv.util.StringPair;
+import com.sun.msv.grammar.util.NameClassCollisionChecker;
 import com.sun.msv.grammar.util.NameClassSimplifier;
 
 /**
@@ -64,4 +65,9 @@ public abstract class NameClass implements java.io.Serializable {
 		return NameClassSimplifier.simplify(
 			new ChoiceNameClass(lhs,rhs) );
 	}
+    
+    /** Returns true if this name class doesn't accept anything. */
+    public boolean isNull() {
+        return new NameClassCollisionChecker().check(this,AnyNameClass.theInstance);
+    }
 }

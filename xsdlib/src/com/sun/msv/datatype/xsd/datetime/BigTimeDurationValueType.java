@@ -53,11 +53,19 @@ public class BigTimeDurationValueType implements ITimeDurationValueType
 		else		return o;
 	}
 	
+	/**
+	 * hash code has to be consistent with equals method.
+	 */
 	public int hashCode()
-	{// hashCode is very complex because it has to consistent with the behavior of equals method.
+	{
+		// 400Y = 365D*303 + 366D*97 = 146097D = 3506328 hours
+		// = 210379680 minutes
+		// and no other smaller years have their equivalent days.
+		
+		// hashCode is very complex because it has to consistent with the behavior of equals method.
 		return nullAsZero(day).multiply(Util.the24)
 			.add( nullAsZero(hour) ).multiply(Util.the60)
-				.add( nullAsZero(minute) ).hashCode();
+				.add( nullAsZero(minute) ).mod(Util.the210379680).hashCode();
 	}
 
 	public int compare( ITimeDurationValueType o )

@@ -11,6 +11,7 @@ package com.sun.tahiti.compiler.generator;
 
 import com.sun.msv.grammar.*;
 import com.sun.tahiti.compiler.Symbolizer;
+import com.sun.tahiti.compiler.Controller;
 import com.sun.tahiti.compiler.XMLWriter;
 import com.sun.tahiti.compiler.sm.MarshallerGenerator;
 import com.sun.tahiti.grammar.*;

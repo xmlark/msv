@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tahiti.compiler.generator;
+package com.sun.tahiti.compiler;
 
 import com.sun.msv.reader.GrammarReaderController;
 import org.xml.sax.Locator;

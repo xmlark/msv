@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tahiti.compiler.generator;
+package com.sun.tahiti.compiler;
 
 import com.sun.tahiti.grammar.TypeItem;
 import com.sun.msv.reader.GrammarReaderController;
@@ -15,8 +15,10 @@ import java.io.OutputStream;
 import java.io.IOException;
 
 /**
- * this interface will be implemented by the caller of the model generator
- * to control the process.
+ * this interface acts as a controller of various processings.
+ * 
+ * <p>
+ * Methods on the GrammarReaderController interface is used for error reporting.
  */
 public interface Controller extends GrammarReaderController {
 	/**

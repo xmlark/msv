@@ -11,7 +11,7 @@ package com.sun.tahiti.compiler.sm;
 
 import com.sun.tahiti.grammar.AnnotatedGrammar;
 import com.sun.tahiti.grammar.ClassItem;
-import com.sun.tahiti.compiler.generator.Controller;
+import com.sun.tahiti.compiler.Controller;
 import com.sun.tahiti.compiler.XMLWriter;
 import com.sun.tahiti.util.xml.DocumentFilter;
 import org.xml.sax.Parser;

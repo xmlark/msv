@@ -16,9 +16,9 @@
  * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
  * THIS SOFTWARE OR ITS DERIVATIVES.
  */
+package com.sun.tranquilo.datatype;
 
-
-package com.sun.xml.util;
+import com.sun.xml.util.XmlChars;
 
 /**
  * This class contains static methods used to determine whether identifiers
@@ -40,8 +40,9 @@ public class XmlNames
      */
     public static boolean isName (String value)
     {
-	if (value == null)
-	    return false;
+		if( value==null || value.length()==0 )
+			return false;
+	
 
 	char c = value.charAt (0);
 	if (!XmlChars.isLetter (c) && c != '_' && c != ':')
@@ -62,8 +63,8 @@ public class XmlNames
      */
     public static boolean isUnqualifiedName (String value)
     {
-	if (value == null || value.length() == 0)
-	    return false;
+		if (value == null || value.length() == 0)
+			return false;
 
 	char c = value.charAt (0);
 	if (!XmlChars.isLetter (c) && c != '_')
@@ -87,8 +88,8 @@ public class XmlNames
      */
     public static boolean isQualifiedName (String value)
     {
-	if (value == null)
-	    return false;
+		if (value == null || value.length() == 0)
+			return false;
 
         // [6] QName ::= (Prefix ':')? LocalPart
         // [7] Prefix ::= NCName
@@ -119,14 +120,16 @@ public class XmlNames
      *
      * @param token the string being tested
      */
-    public static boolean isNmtoken (String token)
+    public static boolean isNmtoken(String token)
     {
-	int	length = token.length ();
+		if (token == null || token.length() == 0)	return false;
 
-	for (int i = 0; i < length; i++)
-	    if (!XmlChars.isNameChar (token.charAt (i)))
-		return false;
-	return true;
+		int	length = token.length ();
+
+		for (int i = 0; i < length; i++)
+		    if (!XmlChars.isNameChar (token.charAt (i)))
+				return false;
+		return true;
     }
 
 
@@ -144,4 +147,9 @@ public class XmlNames
     {
 	return isNmtoken (token) && token.indexOf (':') < 0;
     }
+	
+	public static boolean isNCName( String token )
+	{
+		return isName(token) && token.indexOf(':') < 0;
+	}
 }

@@ -9,8 +9,6 @@
  */
 package com.sun.tranquilo.datatype;
 
-import com.sun.xml.util.XmlNames;
-
 /**
  * "NMTOKEN" type.
  * 

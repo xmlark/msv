@@ -9,8 +9,6 @@
  */
 package com.sun.tranquilo.datatype;
 
-import com.sun.xml.util.XmlNames;
-
 /**
  * "NCName" type.
  * 
@@ -25,7 +23,7 @@ public class NcnameType extends TokenType
 	
 	public Object convertToValue( String content, ValidationContextProvider context )
 	{
-		if(XmlNames.isNCNmtoken(content))	return content;
+		if(XmlNames.isNCName(content))		return content;
 		else								return null;
 	}
 }

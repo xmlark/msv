@@ -521,6 +521,15 @@
 		<!-- create a time stamp file -->
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
 		
+		<!-- creates light-weight binary jar -->
+		<jar	jarfile="${packageDir}/msv.light.jar"
+				manifest="./META-INF/MANIFEST.MF"
+				compress="false">
+			<fileset dir="${stageName}/src" includes="**/msv/**/*.properties" />
+			<fileset dir="temp" />
+			<fileset dir="c:\winnt\java\classes" includes="org/apache/xerces/utils/regex/*.*" />
+		</jar>
+		
 		<!-- creates binary jar -->
 		<jar	jarfile="${stageName}/msv.jar"
 				manifest="./META-INF/MANIFEST.MF"

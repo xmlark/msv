@@ -114,7 +114,9 @@
 	
 	<!-- generate XSDLib release -->
 	<target name="release">
-		<tstamp />
+    <tstamp>
+      <format property="YEAR" pattern="yyyy" locale="en"/>
+    </tstamp>
 		<property name="stageName" value="xsdlib-${DSTAMP}"/>
 		
 		<mkdir	dir="${stageName}/examples" />
@@ -134,6 +136,12 @@
 				package="msv/xsdlib/doc"
 				command="export -d ${stageName} ${cvsExportOpt}"
 				dest="." />
+    <replace dir="${stageName}">
+        <include name="**/*.html"/>
+        <include name="**/*.txt"/>
+        <replacefilter token="@@VERSION@@" value="${DSTAMP}" />
+        <replacefilter token="@@YEAR@@" value="${YEAR}" />
+    </replace>
 		
 		
 		<!-- copy regexp lib files into the source directory -->

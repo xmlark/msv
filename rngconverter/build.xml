@@ -68,7 +68,9 @@
 	
 	<!-- RELAX NG converter release -->
 	<target name="release">
-		<tstamp />
+		<tstamp>
+      <format property="YEAR" pattern="yyyy" locale="en"/>
+    </tstamp>
 		<property name="stageName" value="rngconv-${DSTAMP}"/>
 		
 		<delete	dir="${stageName}" />
@@ -86,6 +88,12 @@
 				package="msv/rngconverter/doc"
 				command="export -d ${stageName} ${cvsExportOpt}"
 				dest="." />
+    <replace dir="${stageName}">
+        <include name="**/*.html"/>
+        <include name="**/*.txt"/>
+        <replacefilter token="@@VERSION@@" value="${DSTAMP}" />
+        <replacefilter token="@@YEAR@@" value="${YEAR}" />
+    </replace>
 		
 		
 		<!-- compile files -->

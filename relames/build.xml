@@ -31,7 +31,10 @@
 	
 	<!-- create a distribution package -->
 	<target name="release">
-		<tstamp />
+		<tstamp>
+      <format property="YEAR" pattern="yyyy" locale="en"/>
+    </tstamp>
+    
 		<property name="stageName" value="relames-${DSTAMP}"/>
 		
 		<delete	dir="${stageName}" />

@@ -69,7 +69,9 @@
 	
 	<!-- generator release -->
 	<target name="release">
-		<tstamp />
+		<tstamp>
+      <format property="YEAR" pattern="yyyy" locale="en"/>
+    </tstamp>
 		<property name="stageName" value="xmlgen-${DSTAMP}"/>
 		
 		<delete	dir="${stageName}" />

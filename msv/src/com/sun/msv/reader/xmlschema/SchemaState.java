@@ -8,11 +8,13 @@ public class SchemaState extends SchemaIncludedState {
 		super(expectedTargetNamespace);
 	}
 	
+	private XMLSchemaSchema old;
+	
 	protected void onTargetNamespaceResolved( String targetNs ) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		
 		// sets new XMLSchemaGrammar object.
-		XMLSchemaSchema old = reader.currentSchema;
+		old = reader.currentSchema;
 		reader.currentSchema = reader.getOrCreateSchema(targetNs);
 		
 		if( reader.isSchemaDefined(reader.currentSchema) )  {
@@ -24,5 +26,11 @@ public class SchemaState extends SchemaIncludedState {
 		}
 		
 		reader.markSchemaAsDefined(reader.currentSchema);
+	}
+	
+	protected void endSelf() {
+		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
+		reader.currentSchema = old;
+		super.endSelf();
 	}
 }

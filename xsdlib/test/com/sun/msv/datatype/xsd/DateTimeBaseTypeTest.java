@@ -10,7 +10,6 @@
 package com.sun.msv.datatype.xsd;
 
 import java.util.Calendar;
-import java.util.TimeZone;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

@@ -12,12 +12,17 @@ package com.sun.msv.schmit;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xalan.extensions.XSLProcessorContext;
 import org.apache.xalan.templates.ElemExtensionCall;
+import org.apache.xpath.NodeSet;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -29,7 +34,6 @@ import com.sun.msv.grammar.Grammar;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.schmit.grammar.AnnotatedPattern;
 import com.sun.msv.schmit.reader.relaxng.SchmitRELAXNGReader;
-import com.sun.msv.schmit.util.ListNodeListImpl;
 
 /**
  * Extension element/function definitions for Xalan.
@@ -43,22 +47,35 @@ public class XalanExtension {
      * Stores {@link com.sun.msv.schmit.grammar.AnnotatedElementPattern}
      * for each Element node.
      */
-    private static final XalanNodeAssociationManager psvi =
+    private final XalanNodeAssociationManager psvi =
         XalanNodeAssociationManager.createInstance();
     
     /**
      * Stores {@link PSVIRecorder} for each document.
      */
-    private static final XalanNodeAssociationManager schema =
+    private final XalanNodeAssociationManager schema =
         XalanNodeAssociationManager.createInstance();
     
-   
+    /** Used as a node factory. */
+    private final Document document;
+    
+    
+    public XalanExtension(Document _document) {
+        this.document = _document;
+    }
+    
+    public XalanExtension() throws ParserConfigurationException {
+         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+         dbf.setNamespaceAware(true);
+         this.document = dbf.newDocumentBuilder().newDocument();
+     }
+    
     
     /**
      * <code>useSchema</code> extension element that
      * associates a schema to the input.
      */
-    public static void useSchema( XSLProcessorContext context, ElemExtensionCall call ) {
+    public void useSchema( XSLProcessorContext context, ElemExtensionCall call ) {
         try {
             // obtain the schema location
             String href = call.getAttribute("href");
@@ -96,23 +113,36 @@ public class XalanExtension {
     /**
      * Equivalent of the getDocumentElement method.
      */
-    private static Element getFirstElement( Document document ) {
+    private Element getFirstElement( Document document ) {
         for( Node n = document.getFirstChild(); n!=null; n=n.getNextSibling() )
             if( n.getNodeType()==Node.ELEMENT_NODE )
                 return (Element)n;
         return null;
     }
 
-    public static NodeList annotation( ExpressionContext context, NodeList list ) {
+    public NodeSet annotation( ExpressionContext context, NodeList list ) throws ParserConfigurationException {
         final ArrayList a = new ArrayList();
         
+        // put all the nodes under a dummy element so that the stylesheets
+         // can be written as "schmit:annotation(.)/@test" etc.
+        Element e = document.createElement("dummy");
+                
         for( int i=0; i<list.getLength(); i++ ) {
             Node n = list.item(i);
             AnnotatedPattern p = (AnnotatedPattern)psvi.get(n);
-        
-            if( p!=null )   a.addAll(p.getAnnotations());
+            
+            if( p==null )   continue;
+            
+            for( Iterator itr=p.getAnnotations().iterator(); itr.hasNext(); ) {
+                Node o = document.importNode( (Node)itr.next(), true );
+                if( o instanceof Attr )
+                    e.setAttributeNodeNS((Attr)o);
+                else
+                	e.appendChild( o );
+            }
+            
         }
-        
-        return new ListNodeListImpl(a);
+
+        return new NodeSet(e);
     }
 }

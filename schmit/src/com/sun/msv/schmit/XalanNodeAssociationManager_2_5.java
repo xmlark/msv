@@ -9,8 +9,8 @@
  */
 package com.sun.msv.schmit;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.ref.DTMNodeProxy;
@@ -45,7 +45,7 @@ final class XalanNodeAssociationManager_2_5 extends XalanNodeAssociationManager 
     }
     
     /** Actual data store. */
-    private final Map store = new WeakHashMap();
+    private final Map store = new HashMap();
     
     public Object get(Node key) {
         return store.get( new Key((DTMNodeProxy)key) );

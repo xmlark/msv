@@ -20,12 +20,6 @@ import org.w3c.dom.Node;
  * so I put this "dangerous" code into a separate class to isolate it
  * and make it pluggable.
  * 
- * <p>
- * This interface provides a "weak map" that allows the association
- * of schmit-specific objects to Xalan nodes. The implementation of
- * this interface needs to make sure that it won't use storage for
- * {@link Node}s that are no longer used.
- * 
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */

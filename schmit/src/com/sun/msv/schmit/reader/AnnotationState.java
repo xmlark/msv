@@ -28,6 +28,7 @@ public class AnnotationState extends State {
     private int depth=1;
     
     private final Document document;
+    private Element root;
     private Node currentParent;
 
     public AnnotationState( Document _document ) {
@@ -37,8 +38,7 @@ public class AnnotationState extends State {
     protected void startSelf() {
         super.startSelf();
         
-        currentParent = createElement( startTag.namespaceURI, startTag.qName, startTag.attributes );
-        document.appendChild(currentParent);
+        currentParent = root = createElement( startTag.namespaceURI, startTag.qName, startTag.attributes );
     }
 
     public final void startElement(String namespaceURI, String localName, String qName, Attributes atts) {
@@ -52,7 +52,7 @@ public class AnnotationState extends State {
     public final void endElement(String namespaceURI, String localName, String qName) {
         depth--;
         if (depth == 0) {
-            ((AnnotationParent)parentState).onEndAnnotation(document.getDocumentElement());
+            ((AnnotationParent)parentState).onEndAnnotation(root);
             reader.popState();
         }
 

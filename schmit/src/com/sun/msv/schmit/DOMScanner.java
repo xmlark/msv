@@ -22,11 +22,6 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * Visits a W3C DOM tree and generates SAX2 events from it.
  * 
- * <p>
- * This class is just intended to be used by {@link AbstractUnmarshallerImpl}.
- * The javax.xml.bind.helpers package is generally a wrong place to put
- * classes like this.
- *
  * @author <ul><li>Kohsuke Kawaguchi, Sun Microsystems, Inc.</li></ul>
  * @version $Revision$ $Date$
  */

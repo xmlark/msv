@@ -199,39 +199,11 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
 		else			return n.intValue();
 	}
 	
-	/** creates the equivalent Java TimeZone object from BigDateTimeValueType. */
-	protected java.util.TimeZone createJavaTimeZone( BigDateTimeValueType v ) {
-		if(v.getTimeZone()!=null)
-			return new SimpleTimeZone( v.getTimeZone().minutes*60*1000, "custom" );
-		else
-			// if the time zone is not present, assume the system default.
-			return SimpleTimeZone.getDefault();
-	}
-	
 	/** converts our DateTimeValueType to a java-friendly Date type. */
 	public final Object _createJavaObject( String literal, ValidationContext context ) {
-		IDateTimeValueType _v = (IDateTimeValueType)createValue(literal,context);
-		if(_v==null)	return null;
-		BigDateTimeValueType v = _v.getBigValue();
-		
-		// set fields of Calendar.
-		// In BigDateTimeValueType, the first day of the month is 0,
-		// where it is 1 in java.util.Calendar.
-		
-		Calendar cal = new java.util.GregorianCalendar(createJavaTimeZone(v));
-		cal.clear();	// reset all fields. This method does not reset the time zone.
-		
-		if( v.getYear()!=null )		cal.set( cal.YEAR, v.getYear().intValue() );
-		if( v.getMonth()!=null )	cal.set( cal.MONTH, v.getMonth().intValue() );
-		if( v.getDay()!=null )		cal.set( cal.DAY_OF_MONTH, v.getDay().intValue()+1/*offset*/ );
-		if( v.getHour()!=null )		cal.set( cal.HOUR_OF_DAY, v.getHour().intValue() );
-		if( v.getMinute()!=null )	cal.set( cal.MINUTE, v.getMinute().intValue() );
-		if( v.getSecond()!=null ) {
-			cal.set( cal.SECOND, v.getSecond().intValue() );
-			cal.set( cal.MILLISECOND, v.getSecond().movePointRight(3).intValue()%1000 );
-		}
-		
-		return cal;
+		IDateTimeValueType v = (IDateTimeValueType)createValue(literal,context);
+		if(v==null)	return null;
+        else            return v.toCalendar();
 	}
 
 	// since we've overrided the createJavaObject method, the serializeJavaObject method

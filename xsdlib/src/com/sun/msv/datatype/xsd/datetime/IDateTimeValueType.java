@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype.xsd.datetime;
 
+import java.util.Calendar;
+
 /**
  * Interface as value type of DateTimeType
  * 
@@ -33,4 +35,10 @@ public interface IDateTimeValueType extends java.io.Serializable {
 	 *  com.sun.msv.datatype/Comparator
 	 */
 	int compare( IDateTimeValueType rhs );
+    
+    /**
+     * Approximates the value represented by this object into a Calendar object.
+     * This conversion may lose accuracy.
+     */
+    Calendar toCalendar();
 }

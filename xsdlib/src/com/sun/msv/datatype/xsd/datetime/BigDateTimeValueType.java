@@ -11,6 +11,9 @@ package com.sun.msv.datatype.xsd.datetime;
 
 import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.SimpleTimeZone;
+
 import com.sun.msv.datatype.xsd.Comparator;
 
 /**
@@ -364,6 +367,40 @@ public class BigDateTimeValueType implements IDateTimeValueType {
 			return add( _rhs.getBigValue() );
 		}
 	}
+    
+    
+    public Calendar toCalendar() {
+        // set fields of Calendar.
+        // In BigDateTimeValueType, the first day of the month is 0,
+        // where it is 1 in java.util.Calendar.
+        
+        Calendar cal = new java.util.GregorianCalendar(createJavaTimeZone());
+        cal.clear();    // reset all fields. This method does not reset the time zone.
+        
+        if( getYear()!=null )     cal.set( cal.YEAR, getYear().intValue() );
+        if( getMonth()!=null )    cal.set( cal.MONTH, getMonth().intValue() );
+        if( getDay()!=null )      cal.set( cal.DAY_OF_MONTH, getDay().intValue()+1/*offset*/ );
+        if( getHour()!=null )     cal.set( cal.HOUR_OF_DAY, getHour().intValue() );
+        if( getMinute()!=null )   cal.set( cal.MINUTE, getMinute().intValue() );
+        if( getSecond()!=null ) {
+            cal.set( cal.SECOND, getSecond().intValue() );
+            cal.set( cal.MILLISECOND, getSecond().movePointRight(3).intValue()%1000 );
+        }
+        
+        return cal;
+    }
+    
+    /** creates the equivalent Java TimeZone object. */
+    protected java.util.TimeZone createJavaTimeZone() {
+        if(getTimeZone()!=null)
+            return new SimpleTimeZone( getTimeZone().minutes*60*1000, "custom" );
+        else
+            // if the time zone is not present, assume the system default.
+            return SimpleTimeZone.getDefault();
+    }
+    
+    
+     
 /*
 	public static void main( String[] args )
 	{

@@ -73,6 +73,9 @@ public class Driver {
 			if( args[i].equalsIgnoreCase("-crimson") )
 				factory = (SAXParserFactory)Class.forName("org.apache.crimson.jaxp.SAXParserFactoryImpl").newInstance();
 			else
+			if( args[i].equalsIgnoreCase("-oraclev2") )
+				factory = (SAXParserFactory)Class.forName("oracle.xml.jaxp.JXSAXParserFactory").newInstance();
+			else
 			if( args[i].equalsIgnoreCase("-verbose") )			verbose = true;
 			else
 			if( args[i].equalsIgnoreCase("-warning") )			warning = true;

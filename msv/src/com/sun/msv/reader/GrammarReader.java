@@ -155,7 +155,7 @@ public abstract class GrammarReader
 	 */
 	public final String[] splitQName( String qName ) {
 		int idx = qName.indexOf(':');
-		if(idx<0)	return new String[]{"",qName,qName};
+		if(idx<0)	return new String[]{prefixResolver.resolve(""),qName,qName};
 		
 		String uri = prefixResolver.resolve(qName.substring(0,idx));
 		if(uri==null)	return null;
@@ -419,7 +419,7 @@ public abstract class GrammarReader
 		 *		if no one refers it.
 		 */
 		public Locator[] getReferer( Object target ) {
-			// TODO: does anyone want to get all of the refer?
+			// TODO: does anyone want to get all of the referer?
 			if( impl.containsKey(target) ) {
 				ArrayList lst = (ArrayList)impl.get(target);
 				Locator[] locs = new Locator[lst.size()];

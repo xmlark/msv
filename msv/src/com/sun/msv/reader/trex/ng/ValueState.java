@@ -36,12 +36,17 @@ public class ValueState extends ExpressionWithoutChildState {
 		final String typeName = startTag.getAttribute("type");
 		Datatype type;
 		
-		if(typeName==null)
+		StringPair typeFullName;
+		
+		if(typeName==null) {
 			// defaults to built-in token type.
 			type = com.sun.msv.datatype.xsd.TokenType.theInstance;
-		else
+			typeFullName = new StringPair("","token");
+		} else {
 			type = reader.resolveDataType(typeName);
-
+			typeFullName = new StringPair(reader.datatypeLibURI,typeName);
+		}
+		
 		Object value = type.createValue(text.toString(),reader);
 		if( value==null ) {
 			// this is not a good value for this type.
@@ -50,7 +55,6 @@ public class ValueState extends ExpressionWithoutChildState {
 		}
 		
 		return reader.pool.createTypedString(
-			new ValueType( type, value ),
-			new StringPair(reader.datatypeLibURI,typeName) );
+			new ValueType( type, value ), typeFullName );
 	}
 }

@@ -11,6 +11,7 @@ package com.sun.msv.datatype.xsd.datetime;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.SimpleTimeZone;
 
 import com.sun.msv.datatype.xsd.Comparator;
 
@@ -19,7 +20,7 @@ import com.sun.msv.datatype.xsd.Comparator;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class Util {
+class Util {
     
     // frequently used constants
     protected static final BigInteger the4  = new BigInteger("4");
@@ -35,8 +36,8 @@ public class Util {
     protected static final BigDecimal decimal0 = new BigDecimal(BigInteger.ZERO,0);
     protected static final Integer int0 = new Integer(0);
                                                       
-    protected static TimeZone timeZonePos14 = TimeZone.create(14*60);
-    protected static TimeZone timeZoneNeg14 = TimeZone.create(-14*60);
+    protected static java.util.TimeZone timeZonePos14 = new SimpleTimeZone( 14*60*60*1000,"");
+    protected static java.util.TimeZone timeZoneNeg14 = new SimpleTimeZone(-14*60*60*1000,"");
         
 
     /** compare two objects

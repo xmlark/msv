@@ -9,16 +9,16 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import java.io.StringReader;
-import java.math.BigInteger;
 import java.util.Calendar;
 
 import org.relaxng.datatype.ValidationContext;
 
 import com.sun.msv.datatype.SerializationContext;
+import com.sun.msv.datatype.xsd.datetime.CalendarFormatter;
+import com.sun.msv.datatype.xsd.datetime.CalendarParser;
 import com.sun.msv.datatype.xsd.datetime.IDateTimeValueType;
-import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
-import com.sun.msv.datatype.xsd.datetime.TimeZone;
+import com.sun.msv.datatype.xsd.datetime.PreciseCalendarFormatter;
+import com.sun.msv.datatype.xsd.datetime.PreciseCalendarParser;
 
 /**
  * base implementation of dateTime and dateTime-truncated types.
@@ -36,35 +36,56 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
         return SimpleURType.theInstance;
     }
     
-    private static final ISO8601Parser getParser(String content) throws Exception {
-        return new ISO8601Parser(new StringReader(content));
-    }
-    
     protected final boolean checkFormat(String content, ValidationContext context) {
         // string derived types should use _createValue method to check its validity
         try {
-            runParserL(getParser(content));
+            CalendarParser.parse(getFormat(),content);
             return true;
-        } catch (Throwable e) {
+        } catch (IllegalArgumentException e) {
             return false;
         }
     }
-    
-    /** invokes the appropriate lexical parse method to check lexical format */
-    abstract protected void runParserL(ISO8601Parser p) throws Exception;
 
     public final Object _createValue(String content, ValidationContext context) {
         // for string, lexical space is value space by itself
         try {
-            return runParserV(getParser(content));
-        } catch (Throwable e) {
+            return PreciseCalendarParser.parse(getFormat(),content);
+        } catch (IllegalArgumentException e) {
             return null;
         }
     }
 
+    public final String convertToLexicalValue( Object value, SerializationContext context ) {
+        if(!(value instanceof IDateTimeValueType))
+            throw new IllegalArgumentException();
+        
+        return PreciseCalendarFormatter.format(getFormat(),(IDateTimeValueType)value);
+        
+    }
+        
+    /** converts our DateTimeValueType to a java-friendly Date type. */
+    public final Object _createJavaObject(String literal, ValidationContext context) {
+        return CalendarParser.parse(getFormat(),literal);
+    }
 
-    /** invokes the appropriate value creation method to obtain value object */
-    abstract protected IDateTimeValueType runParserV(ISO8601Parser p) throws Exception;
+    public final String serializeJavaObject(Object value, SerializationContext context) {
+        if(!(value instanceof Calendar))    throw new IllegalArgumentException();
+        
+        return CalendarFormatter.format( getFormat(), (Calendar)value );
+    }
+    
+    public Class getJavaObjectType() {
+        return Calendar.class;
+    }
+    
+    /**
+     * Formatting string passed to {@link CalendarParser#parse(String, String)}.
+     */
+    protected abstract String getFormat();
+    
+    
+    
+    
 
     /** compare two DateTimeValueType */
     public int compare(Object lhs, Object rhs) {
@@ -84,167 +105,5 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
             return NOT_ALLOWED;
     }
 
-    /**
-     * formats an integer into the year representation.
-     * That is, at least four digits and no year 0.
-     */
-    protected String formatYear(int year) {
-        String s;
-        if (year <= 0) // negative value
-            s = Integer.toString(1 - year);
-        else // positive value
-            s = Integer.toString(year);
-
-        while (s.length() < 4)
-            s = "0" + s;
-        if (year <= 0)
-            s = "-" + s;
-        return s;
-    }
-    
-    /**
-     * formats BigInteger into year representation.
-     * 
-     * That is, at least four digits and no year 0.
-     */
-    protected String formatYear(BigInteger year) {
-        String s;
-        if (year.signum() <= 0)
-            // negative value
-            s = year.negate().add(BigInteger.ONE).toString();
-        else
-            // positive value
-            s = year.toString();
-
-        while (s.length() < 4)
-            s = "0" + s;
-        if (year.signum() <= 0)
-            s = "-" + s;
-        return s;
-    }
-    
-    protected String formatTwoDigits(Integer v) {
-        return formatTwoDigits(v, 0);
-    }
-
-    /** formats Integer into two-character-wide string. */
-    protected String formatTwoDigits(Integer v, int offset) {
-        if (v == null)      return "00";
-        return formatTwoDigits(v.intValue() + offset);
-    }
-
-    protected String formatTwoDigits(int n) {
-        // n is always non-negative.
-        if (n < 10)     return "0" + n;
-        else            return Integer.toString(n);
-    }
-    
-    /** formats BigDecimal into two- -wide string. */
-    protected String formatSeconds(java.math.BigDecimal dec) {
-        if (dec == null)
-            return "00";
-        
-        // truncate unnecesary 0s.
-        while( dec.scale()>0 && dec.toString().endsWith("0") )
-            dec = dec.movePointLeft(1);
-
-        String s = dec.toString();
-        if (dec.compareTo(new java.math.BigDecimal("10")) < 0)
-            s = "0" + s;
-        return s;
-    }
-    
-    protected String formatSeconds(Calendar cal) {
-        StringBuffer result = new StringBuffer();
-        result.append(formatTwoDigits(cal.get(Calendar.SECOND)));
-        if (cal.isSet(Calendar.MILLISECOND)) { // milliseconds
-            int n = cal.get(Calendar.MILLISECOND);
-            if(n!=0) {
-                String ms = Integer.toString(n);
-                while (ms.length() < 3)
-                    ms = "0" + ms; // left 0 paddings.
-
-                result.append('.');
-                result.append(ms);
-            }
-        }
-        return result.toString();
-    }
-    
-    /** formats time zone specifier. */
-    protected String formatTimeZone(TimeZone tz) {
-        if (tz == null)
-            return ""; // no time zone
-        if (tz == TimeZone.ZERO )
-            return "Z"; // GMT
-
-        return (tz.minutes < 0 ? "-" : "+")
-            + formatTwoDigits(new Integer(Math.abs(tz.minutes / 60)))
-            + ":"
-            + formatTwoDigits(new Integer(Math.abs(tz.minutes) % 60));
-    }
-
-    /** formats time zone specifier. */
-    protected String formatTimeZone(Calendar cal) {
-        java.util.TimeZone tz = cal.getTimeZone();
-
-        // TODO: is it possible for the getTimeZone method to return null?
-        if (tz == null)      return "";
-        
-        // look for special instances
-        if(tz==TimeZone.JAVA_TIME_ZONE_MISSING) return "";
-        if(tz==TimeZone.JAVA_TIME_ZONE_ZERO)    return "Z";
-        
-        // otherwise print out normally.        
-        StringBuffer result = new StringBuffer();
-        int offset;
-        if (tz.inDaylightTime(cal.getTime())) {
-            offset = tz.getRawOffset() + (tz.useDaylightTime()?3600000:0);
-        } else {
-            offset = tz.getRawOffset();
-        }
-
-        if (offset >= 0)
-            result.append('+');
-        else {
-            result.append('-');
-            offset *= -1;
-        }
-
-        offset /= 60 * 1000; // offset is in milli-seconds
-
-        result.append(formatTwoDigits(offset / 60));
-        result.append(':');
-        result.append(formatTwoDigits(offset % 60));
-
-        return result.toString();
-    }
-
-    
-    
-    
-    /** converts Number to integer. null object is considered as 0 */
-    protected static int nullAsZero(Number n) {
-        if (n == null)      return 0;
-        else                return n.intValue();
-    }
-    
-    /** converts our DateTimeValueType to a java-friendly Date type. */
-    public Object _createJavaObject(String literal, ValidationContext context) {
-        IDateTimeValueType v = (IDateTimeValueType)createValue(literal, context);
-        if (v == null)
-            return null;
-        else
-            return v.toCalendar();
-    }
-
-    // since we've overrided the createJavaObject method, the serializeJavaObject method
-    // needs to be overrided, too.
-    public abstract String serializeJavaObject(Object value, SerializationContext context);
-    
-    public Class getJavaObjectType() {
-        return Calendar.class;
-    }
-    
     private static final long serialVersionUID = 1465669066779112677L;
 }

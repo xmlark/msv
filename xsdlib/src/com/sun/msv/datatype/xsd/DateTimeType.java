@@ -9,15 +9,6 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import java.util.Calendar;
-
-import org.relaxng.datatype.ValidationContext;
-
-import com.sun.msv.datatype.SerializationContext;
-import com.sun.msv.datatype.xsd.datetime.BigDateTimeValueType;
-import com.sun.msv.datatype.xsd.datetime.CalendarParser;
-import com.sun.msv.datatype.xsd.datetime.IDateTimeValueType;
-import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
 
 /**
  * "dateTime" type.
@@ -33,61 +24,11 @@ public class DateTimeType extends DateTimeBaseType {
     private DateTimeType() {
         super("dateTime");
     }
-
-    protected void runParserL( ISO8601Parser p ) throws Exception {
-        p.dateTimeTypeL();
-    }
-
-    protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception {
-        return p.dateTimeTypeV();
+    
+    protected final String getFormat() {
+        return "%Y-%M-%DT%h:%m:%s%z";
     }
     
-    public String convertToLexicalValue( Object value, SerializationContext context ) {
-        if(!(value instanceof IDateTimeValueType))
-            throw new IllegalArgumentException();
-        
-        BigDateTimeValueType bv = ((IDateTimeValueType)value).getBigValue();
-        return    formatYear(bv.getYear())+"-"+
-                formatTwoDigits(bv.getMonth(),1)+"-"+
-                formatTwoDigits(bv.getDay(),1)+"T"+
-                formatTwoDigits(bv.getHour())+":"+
-                formatTwoDigits(bv.getMinute())+":"+
-                formatSeconds(bv.getSecond())+
-                formatTimeZone(bv.getTimeZone());
-    }
-    
-    public String serializeJavaObject( Object value, SerializationContext context ) {
-        if(!(value instanceof Calendar))    throw new IllegalArgumentException();
-        Calendar cal = (Calendar)value;
-        
-        
-        StringBuffer result = new StringBuffer();
-
-        result.append(formatYear(cal.get(Calendar.YEAR)));
-        result.append('-');
-        result.append(formatTwoDigits(cal.get(Calendar.MONTH)+1));
-        result.append('-');
-        result.append(formatTwoDigits(cal.get(Calendar.DAY_OF_MONTH)));
-        result.append('T');
-        result.append(formatTwoDigits(cal.get(Calendar.HOUR_OF_DAY)));
-        result.append(':');
-        result.append(formatTwoDigits(cal.get(Calendar.MINUTE)));
-        result.append(':');
-        result.append(formatSeconds(cal));
-        result.append(formatTimeZone(cal));
-
-        return result.toString();
-    }
-
-    public Object _createJavaObject(String literal, ValidationContext context) {
-        // TODO: if this is promising, change DateTimeBaseType.
-        try {
-            return CalendarParser.parse("%Y-%M-%DT%h:%m:%s%z",literal);
-        } catch( IllegalArgumentException e ) {
-            return null;
-        }
-    }
-
     // serialization support
     private static final long serialVersionUID = 1;    
 }

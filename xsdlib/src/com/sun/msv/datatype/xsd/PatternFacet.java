@@ -13,11 +13,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Vector;
 
-import com.sun.msv.datatype.xsd.regex.ParseException;
-import com.sun.msv.datatype.xsd.regex.RegularExpression;
-
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
+
+import com.sun.msv.datatype.xsd.regex.ParseException;
+import com.sun.msv.datatype.xsd.regex.RegularExpression;
 
 /**
  * "pattern" facet validator

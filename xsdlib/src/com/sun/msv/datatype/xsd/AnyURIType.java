@@ -9,11 +9,10 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import com.sun.msv.datatype.xsd.regex.RegularExpression;
-
 import org.relaxng.datatype.ValidationContext;
 
 import com.sun.msv.datatype.SerializationContext;
+import com.sun.msv.datatype.xsd.regex.RegularExpression;
 
 /**
  * "anyURI" type.

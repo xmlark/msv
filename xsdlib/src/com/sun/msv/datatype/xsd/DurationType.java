@@ -9,12 +9,10 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import java.io.StringReader;
-
 import org.relaxng.datatype.ValidationContext;
 
 import com.sun.msv.datatype.SerializationContext;
-import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
+import com.sun.msv.datatype.xsd.datetime.BigTimeDurationValueType;
 import com.sun.msv.datatype.xsd.datetime.ITimeDurationValueType;
 
 /**
@@ -33,24 +31,20 @@ public final class DurationType extends BuiltinAtomicType implements Comparator 
     final public XSDatatype getBaseType() {
         return SimpleURType.theInstance;
     }
-
-    private final ISO8601Parser getParser( String content ) throws Exception {
-        return new ISO8601Parser( new StringReader( content ) );
-    }
     
     protected boolean checkFormat( String content, ValidationContext context ) {
         try {
-            getParser(content).durationTypeL();
+            new BigTimeDurationValueType(content);
             return true;
-        } catch( Throwable e ) {
+        } catch( IllegalArgumentException e ) {
             return false;
         }
     }
     
     public Object _createValue( String content, ValidationContext context ) {
         try {
-            return getParser(content).durationTypeV();
-        } catch( Throwable e ) {
+            return new BigTimeDurationValueType(content);
+        } catch( IllegalArgumentException e ) {
             return null;
         }
     }
@@ -80,10 +74,13 @@ public final class DurationType extends BuiltinAtomicType implements Comparator 
         if(!(value instanceof ITimeDurationValueType))
             throw new IllegalArgumentException();
         
-        return ((ITimeDurationValueType)value).getBigValue().toString();
+        return value.toString();
     }
 
+    
+    
+    
     // serialization support
-    private static final long serialVersionUID = 1;    
+    private static final long serialVersionUID = 1;
 }
 

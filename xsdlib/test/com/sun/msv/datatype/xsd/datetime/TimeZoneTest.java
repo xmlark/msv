@@ -36,33 +36,6 @@ public class TimeZoneTest extends TestCase {
         return new TestSuite(TimeZoneTest.class);
     }
 
-    /** Test of create method, of class com.sun.msv.datatype.datetime.TimeZone. */
-    public void testCreate() {
-        assertTrue(TimeZone.create(100).minutes == 100);
-
-        // range check
-        TimeZone.create(14 * 60);
-        try {
-            TimeZone.create(14 * 60 + 1);
-            fail();
-        } catch (IllegalArgumentException iae) {
-            ;
-        }
-        TimeZone.create(-14 * 60);
-        try {
-            TimeZone.create(-14 * 60 - 1);
-            fail();
-        } catch (IllegalArgumentException iae) {
-            ;
-        }
-    }
-
-    /** Test of hashCode method, of class com.sun.msv.datatype.datetime.TimeZone. */
-    public void testHashCode() {
-        assertEquals(TimeZone.create(50), TimeZone.create(50));
-        assertEquals(TimeZone.create(-123), TimeZone.create(-123));
-    }
-
     /** serializes o and then returns de-serialized object. */
     public Object freezeDry(Object o) throws Exception {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -81,8 +54,7 @@ public class TimeZoneTest extends TestCase {
     /** test serialization. */
     public void testSerialization() throws Exception {
         // ensure that serialization doesn't break
+        assertSame(TimeZone.MISSING, freezeDry(TimeZone.MISSING));
         assertSame(TimeZone.ZERO, freezeDry(TimeZone.ZERO));
-        assertSame(TimeZone.JAVA_TIME_ZONE_MISSING, freezeDry(TimeZone.JAVA_TIME_ZONE_MISSING));
-        assertSame(TimeZone.JAVA_TIME_ZONE_ZERO, freezeDry(TimeZone.JAVA_TIME_ZONE_ZERO));
     }
 }

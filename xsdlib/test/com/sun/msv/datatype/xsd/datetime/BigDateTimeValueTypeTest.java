@@ -9,13 +9,15 @@
  */
 package com.sun.msv.datatype.xsd.datetime;
 
-import java.io.StringReader;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import com.sun.msv.datatype.xsd.Comparator;
+import com.sun.msv.datatype.xsd.DateTimeType;
+import com.sun.msv.datatype.xsd.DateType;
+import com.sun.msv.datatype.xsd.DurationType;
+import com.sun.msv.datatype.xsd.GYearMonthType;
 
 /**
  * tests BigDateTimeValueType.
@@ -36,16 +38,28 @@ public class BigDateTimeValueTypeTest extends TestCase {
         return new TestSuite(BigDateTimeValueTypeTest.class);
     }
     
-    private ISO8601Parser getParser( String s ) throws Exception
-    {
-        return new ISO8601Parser(new StringReader(s));
-    }
-    
     /** Test of getBigValue method, of class com.sun.msv.datatype.datetime.BigDateTimeValueType. */
     public void testGetBigValue()  throws Exception
     {
-        BigDateTimeValueType t = (BigDateTimeValueType)getParser("2000-01").yearMonthTypeV();
+        BigDateTimeValueType t = parseYearMonth("2000-01");
         assertEquals( t, t.getBigValue() );
+    }
+    
+    private BigDateTimeValueType parseYearMonth(String s) {
+        return (BigDateTimeValueType)
+            GYearMonthType.theInstance.createValue(s,null);
+    }
+
+    private BigDateTimeValueType parseDateTime( String s ) {
+        return (BigDateTimeValueType)DateTimeType.theInstance.createValue(s,null);
+    }
+
+    private BigDateTimeValueType parseDate( String s ) {
+        return (BigDateTimeValueType)DateType.theInstance.createValue(s,null);
+    }
+    
+    private BigTimeDurationValueType parseDuration( String s ) {
+        return (BigTimeDurationValueType)DurationType.theInstance.createValue(s,null);
     }
     
     /** Test of compare method, of class com.sun.msv.datatype.datetime.BigDateTimeValueType. */
@@ -54,38 +68,37 @@ public class BigDateTimeValueTypeTest extends TestCase {
         // from examples of the spec
         int r;
         
-        r = getParser("2000-01-15T00:00:00").dateTimeTypeV().compare(
-            getParser("2000-02-15T00:00:00").dateTimeTypeV() );
+        r = parseDateTime("2000-01-15T00:00:00").compare(
+            parseDateTime("2000-02-15T00:00:00") );
         assertEquals( r, Comparator.LESS );
             
-        r = getParser("2000-01-15T12:00:00" ).dateTimeTypeV().compare(
-            getParser("2000-01-16T12:00:00Z").dateTimeTypeV() );
+        r = parseDateTime("2000-01-15T12:00:00" ).compare(
+            parseDateTime("2000-01-16T12:00:00Z") );
         assertEquals( r, Comparator.LESS );
             
-        r = getParser("2000-01-01T12:00:00" ).dateTimeTypeV().compare(
-            getParser("1999-12-31T23:00:00Z").dateTimeTypeV() );
+        r = parseDateTime("2000-01-01T12:00:00" ).compare(
+            parseDateTime("1999-12-31T23:00:00Z") );
         assertEquals( r, Comparator.UNDECIDABLE );
         
-        r = getParser("2000-01-16T12:00:00" ).dateTimeTypeV().compare(
-            getParser("2000-01-16T12:00:00Z").dateTimeTypeV() );
+        r = parseDateTime("2000-01-16T12:00:00" ).compare(
+            parseDateTime("2000-01-16T12:00:00Z") );
         assertEquals( r, Comparator.UNDECIDABLE );
             
-        r = getParser("2000-01-16T00:00:00" ).dateTimeTypeV().compare(
-            getParser("2000-01-16T12:00:00Z").dateTimeTypeV() );
+        r = parseDateTime("2000-01-16T00:00:00" ).compare(
+            parseDateTime("2000-01-16T12:00:00Z") );
         assertEquals( r, Comparator.UNDECIDABLE );
     }
     
     /** Test of normalize method, of class com.sun.msv.datatype.datetime.BigDateTimeValueType. */
     public void testNormalize() throws Exception
     {
-        BigDateTimeValueType v;
+        IDateTimeValueType v;
         
-        v = (BigDateTimeValueType)getParser("2000-03-04T23:00:00-03:00").dateTimeTypeV().normalize();
+        v = parseDateTime("2000-03-04T23:00:00-03:00").normalize();
         
         // equals method compares two by calling normalize,
         // so actually this cannot be said as a testing.
-        assertEquals( v,
-            getParser("2000-03-05T02:00:00Z").dateTimeTypeV() );
+        assertEquals( v, parseDateTime("2000-03-05T02:00:00Z") );
     }
     
     /** Test of add method, of class com.sun.msv.datatype.datetime.BigDateTimeValueType. */
@@ -95,17 +108,16 @@ public class BigDateTimeValueTypeTest extends TestCase {
         
         // from examples of Appendix.E of the spec.
         
-        v = getParser("2000-01-12T12:13:14Z").dateTimeTypeV().add(
-                getParser("P1Y3M5DT7H10M3.3S").durationTypeV() ).getBigValue();
-        assertEquals( v, getParser("2001-04-17T19:23:17.3Z").dateTimeTypeV() );
+        v = parseDateTime("2000-01-12T12:13:14Z").add(
+                parseDuration("P1Y3M5DT7H10M3.3S") ).getBigValue();
+        assertEquals( v, parseDateTime("2001-04-17T19:23:17.3Z") );
         
-        v = getParser("2000-01").yearMonthTypeV().add(
-                getParser("-P3M").durationTypeV() ).getBigValue();
-        assertEquals( v, getParser("1999-10").yearMonthTypeV() );
+        v = parseYearMonth("2000-01").add( parseDuration("-P3M") ).getBigValue();
+        assertEquals( v, parseYearMonth("1999-10") );
         
-        v = getParser("2000-01-12-05:00").dateTypeV().add(
-                getParser("PT33H").durationTypeV() ).getBigValue();
-        assertEquals( v, getParser("2000-01-13-05:00").dateTypeV() );
+        v = parseDate("2000-01-12-05:00").add(
+                parseDuration("PT33H") ).getBigValue();
+        assertEquals( v, parseDate("2000-01-13-05:00") );
     }
     
 }

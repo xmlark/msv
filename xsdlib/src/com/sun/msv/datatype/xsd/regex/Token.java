@@ -1081,7 +1081,7 @@ class Token implements java.io.Serializable {
 
         Token virama = Token.createRange();
         for (int i = 0;  i < Token.viramaString.length();  i ++) {
-            int ch = viramaString.charAt(i);
+            /*int ch =*/ viramaString.charAt(i);
             virama.addRange(i, i);
         }
 

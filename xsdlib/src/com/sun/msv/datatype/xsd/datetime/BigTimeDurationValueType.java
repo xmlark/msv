@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype.xsd.datetime;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -22,6 +24,9 @@ import com.sun.msv.datatype.xsd.Comparator;
  */
 public class BigTimeDurationValueType implements ITimeDurationValueType {
     
+    protected int signum;
+    
+    // all the fields should be positive
     protected BigInteger year;
     protected BigInteger month;
     protected BigInteger day;
@@ -49,7 +54,7 @@ public class BigTimeDurationValueType implements ITimeDurationValueType {
     }
     
     public String toString() {
-        return    ((year==null||year.signum()<0)?"-":"")+
+        return    (signum<0?"-":"")+
             "P"+nullAsZero(year).abs()+"Y"+
             nullAsZero(month)+"M"+
             nullAsZero(day)+"DT"+
@@ -122,67 +127,285 @@ public class BigTimeDurationValueType implements ITimeDurationValueType {
 
     public BigTimeDurationValueType getBigValue() { return this; }
 
+    /**
+     * All the fields should be positive and use the signum field to
+     * determine the sign.
+     */
     public BigTimeDurationValueType(
+        int signum,
         BigInteger year, BigInteger month, BigInteger day,
         BigInteger hour, BigInteger minute, BigDecimal second ) {
+        this.signum  = signum;
         this.year    = year!=null?year:BigInteger.ZERO;
         this.month    = month!=null?month:BigInteger.ZERO;
         this.day    = day!=null?day:BigInteger.ZERO;
         this.hour    = hour!=null?hour:BigInteger.ZERO;
         this.minute    = minute!=null?minute:BigInteger.ZERO;
-        this.second    = second!=null?second:new BigDecimal(0);
+        this.second    = second!=null?second:Util.decimal0;
     }
     
     public static BigTimeDurationValueType fromMinutes( int minutes )
     { return fromMinutes(Util.int2bi(minutes)); }
     public static BigTimeDurationValueType fromMinutes( BigInteger minutes )
-    { return new BigTimeDurationValueType(null,null,null,null,minutes,null); }
+    { return new BigTimeDurationValueType(minutes.signum(),null,null,null,null,minutes.abs(),null); }
 
 
     /**
-     * @return
+     * @return non-null positive value. use {@link #signum} for the sign.
      */
     public BigInteger getDay() {
         return day;
     }
 
     /**
-     * @return
+     * @return non-null positive value. use {@link #signum} for the sign.
      */
     public BigInteger getHour() {
         return hour;
     }
 
     /**
-     * @return
+     * @return non-null positive value. use {@link #signum} for the sign.
      */
     public BigInteger getMinute() {
         return minute;
     }
 
     /**
-     * @return
+     * @return non-null positive value. use {@link #signum} for the sign.
      */
     public BigInteger getMonth() {
         return month;
     }
 
     /**
-     * @return
+     * @return non-null positive value. use {@link #signum} for the sign.
      */
     public BigDecimal getSecond() {
         return second;
     }
 
     /**
-     * @return
+     * @return non-null positive value. use {@link #signum} for the sign.
      */
     public BigInteger getYear() {
         return year;
     }
 
+    /**
+     * Reads in the lexical duration format.
+     * 
+     * @param lexicalRepresentation
+     *      whitespace stripped lexical form.
+     */
+    public BigTimeDurationValueType(String lexicalRepresentation) throws IllegalArgumentException {
+        
+        final String s = lexicalRepresentation;
+        int[] idx = new int[1];
+        
+        boolean positive;
+        
+        if (s.charAt(idx[0]) == '-') {
+            idx[0]++;
+            positive = false;
+        } else {
+            positive = true;
+        }
+        
+        if (s.charAt(idx[0]++) != 'P') {
+            throw new IllegalArgumentException(s); //,idx[0]-1);
+        }
+        
+        // phase 1: chop the string into chunks
+        // (where a chunk is '<number><a symbol>'
+        //--------------------------------------
+        int dateLen = 0;
+        String[] dateParts = new String[3];
+        int[] datePartsIndex = new int[3];
+        while (s.length() != idx[0]
+                && isDigit(s.charAt(idx[0]))
+                && dateLen < 3) {
+            datePartsIndex[dateLen] = idx[0];
+            dateParts[dateLen++] = parsePiece(s, idx);
+        }
+        
+        if (s.length() != idx[0] && s.charAt(idx[0]++) != 'T') {
+            throw new IllegalArgumentException(s); // ,idx[0]-1);
+        }
+        
+        int timeLen = 0;
+        String[] timeParts = new String[3];
+        int[] timePartsIndex = new int[3];
+        while (s.length() != idx[0]
+                && isDigitOrPeriod(s.charAt(idx[0]))
+                && timeLen < 3) {
+            timePartsIndex[timeLen] = idx[0];
+            timeParts[timeLen++] = parsePiece(s, idx);
+        }
+        
+        if (s.length() != idx[0]) {
+            throw new IllegalArgumentException(s); // ,idx[0]);
+        }
+        if (dateLen == 0 && timeLen == 0) {
+            throw new IllegalArgumentException(s); // ,idx[0]);
+        }
+        
+        // phase 2: check the ordering of chunks
+        //--------------------------------------
+        organizeParts(s, dateParts, datePartsIndex, dateLen, "YMD");
+        organizeParts(s, timeParts, timePartsIndex, timeLen, "HMS");
+        
+        // parse into numbers
+        year = parseBigInteger(s, dateParts[0], datePartsIndex[0]);
+        month = parseBigInteger(s, dateParts[1], datePartsIndex[1]);
+        day = parseBigInteger(s, dateParts[2], datePartsIndex[2]);
+        hour = parseBigInteger(s, timeParts[0], timePartsIndex[0]);
+        minute = parseBigInteger(s, timeParts[1], timePartsIndex[1]);
+        second = parseBigDecimal(s, timeParts[2], timePartsIndex[2]);
+        
+        // null -> 0
+        year    = year!=null?year:BigInteger.ZERO;
+        month   = month!=null?month:BigInteger.ZERO;
+        day     = day!=null?day:BigInteger.ZERO;
+        hour    = hour!=null?hour:BigInteger.ZERO;
+        minute  = minute!=null?minute:BigInteger.ZERO;
+        second  = second!=null?second:Util.decimal0;
+        
+        if( getSignum(year)==0 && getSignum(month)==0 && getSignum(day)==0
+         && getSignum(hour)==0 && getSignum(minute)==0 && getSignum(second)==0) {
+            signum = 0;
+        } else
+        if (positive) {
+            signum = 1;
+        } else {
+            signum = -1;
+        }
+    }
+    
+    
+    private int getSignum( BigInteger i ) {
+        if( i == null ) return 0;
+        else            return i.signum();
+    }
+    
+    private int getSignum( BigDecimal i ) {
+        if( i == null ) return 0;
+        else            return i.signum();
+    }
+    
+    private static boolean isDigit(char ch) {
+        return '0' <= ch && ch <= '9';
+    }
+    
+    private static boolean isDigitOrPeriod(char ch) {
+        return isDigit(ch) || ch == '.';
+    }
+    
+    private static String parsePiece(String whole, int[] idx) throws IllegalArgumentException {
+        int start = idx[0];
+        while (idx[0] < whole.length()
+                && isDigitOrPeriod(whole.charAt(idx[0]))) {
+            idx[0]++;
+        }
+        if (idx[0] == whole.length()) {
+            throw new IllegalArgumentException(whole); // ,idx[0]);
+        }
+
+        idx[0]++;
+
+        return whole.substring(start, idx[0]);
+    }
+    
+    private static void organizeParts( String whole, String[] parts,
+                                       int[] partsIndex, int len, String tokens)
+    throws IllegalArgumentException {
+
+        int idx = tokens.length();
+        for (int i = len - 1; i >= 0; i--) {
+            int nidx =
+            tokens.lastIndexOf(
+                    parts[i].charAt(parts[i].length() - 1),
+                    idx - 1);
+            if (nidx == -1) {
+                throw new IllegalArgumentException(whole);
+                // ,partsIndex[i]+parts[i].length()-1);
+            }
+
+            for (int j = nidx + 1; j < idx; j++) {
+                parts[j] = null;
+            }
+            idx = nidx;
+            parts[idx] = parts[i];
+            partsIndex[idx] = partsIndex[i];
+        }
+        for (idx--; idx >= 0; idx--) {
+            parts[idx] = null;
+        }
+    }
+    
+    private static BigInteger parseBigInteger( String whole, String part, int index) throws IllegalArgumentException {
+        if (part == null) {
+            return null;
+        }
+        part = part.substring(0, part.length() - 1);
+        
+        // syntax error will cause NumberFormatException, which is IllegalArgumentException 
+        return new BigInteger(part);
+    }
+    
+    private static BigDecimal parseBigDecimal( String whole, String part, int index) throws IllegalArgumentException {
+        if (part == null) {
+            return null;
+        }
+        part = part.substring(0, part.length() - 1);
+        
+        // syntax error will cause NumberFormatException, which is IllegalArgumentException 
+        return new BigDecimal(part);
+    }
+    
+    
+    
     
 
     // serialization support
-    private static final long serialVersionUID = 1;    
+    private static final long serialVersionUID = 1;
+    
+    private void readObject( ObjectInputStream ois ) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+        
+        // read in the old format where there was no signum field
+        // and the most significant field was carrying the sign.
+        
+        switch( year.signum() ) {
+        case -1:    signum=-1; year=year.negate(); return;
+        case 1:     signum= 1; return;
+        }
+        
+        switch( month.signum() ) {
+        case -1:    signum=-1; month=month.negate(); return;
+        case 1:     signum= 1; return;
+        }
+        
+        switch( day.signum() ) {
+        case -1:    signum=-1; day=day.negate(); return;
+        case 1:     signum= 1; return;
+        }
+        
+        switch( hour.signum() ) {
+        case -1:    signum=-1; hour=hour.negate(); return;
+        case 1:     signum= 1; return;
+        }
+        
+        switch( minute.signum() ) {
+        case -1:    signum=-1; minute=minute.negate(); return;
+        case 1:     signum= 1; return;
+        }
+        
+        switch( second.signum() ) {
+        case -1:    signum=-1; second=second.negate(); return;
+        case 1:     signum= 1; return;
+        }
+        
+        signum = 0;
+    }
 }

@@ -12,7 +12,6 @@ package com.sun.msv.datatype.xsd.datetime;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
-import java.util.SimpleTimeZone;
 
 import com.sun.msv.datatype.xsd.Comparator;
 
@@ -82,9 +81,9 @@ public class BigDateTimeValueType implements IDateTimeValueType {
         return second;
     }
 
-    /** time zone specifier */
-    private TimeZone zone;
-    public TimeZone getTimeZone() {
+    /** time zone specifier. null if missing */
+    private java.util.TimeZone zone;
+    public java.util.TimeZone getTimeZone() {
         return zone;
     }
 
@@ -94,7 +93,7 @@ public class BigDateTimeValueType implements IDateTimeValueType {
      *  created object shares its date/time value component with the original one,
      *  so special care is necessary not to mutate those values.
      */
-    public BigDateTimeValueType(BigDateTimeValueType base, TimeZone newTimeZone) {
+    public BigDateTimeValueType(BigDateTimeValueType base, java.util.TimeZone newTimeZone) {
         this(base.year, base.month, base.day, base.hour, base.minute, base.second, newTimeZone);
     }
 
@@ -105,7 +104,7 @@ public class BigDateTimeValueType implements IDateTimeValueType {
         int hour,
         int minute,
         BigDecimal second,
-        TimeZone timeZone) {
+        java.util.TimeZone timeZone) {
         this(year, new Integer(month), new Integer(day), new Integer(hour), new Integer(minute), second, timeZone);
     }
 
@@ -116,7 +115,7 @@ public class BigDateTimeValueType implements IDateTimeValueType {
         Integer hour,
         Integer minute,
         BigDecimal second,
-        TimeZone timeZone) {
+        java.util.TimeZone timeZone) {
         this.year = year;
         this.month = month;
         this.day = day;
@@ -153,40 +152,7 @@ public class BigDateTimeValueType implements IDateTimeValueType {
      * of "dateTime" type.
      */
     public String toString() {
-        StringBuffer r = new StringBuffer();
-
-        if (year != null)
-            r.append(year);
-        r.append('-');
-        if (month != null)
-            r.append(month.intValue() + 1);
-        r.append('-');
-        if (day != null)
-            r.append(day.intValue() + 1);
-        r.append('T');
-        if (hour != null)
-            r.append(hour);
-        r.append(':');
-        if (minute != null)
-            r.append(minute);
-        r.append(':');
-        if (second != null)
-            r.append(second);
-
-        if (zone != null) {
-            if (zone.minutes == 0)
-                r.append('Z');
-            else {
-                if (zone.minutes < 0)
-                    r.append('-');
-                else
-                    r.append('+');
-                r.append(Math.abs(zone.minutes / 60));
-                r.append(Math.abs(zone.minutes % 60));
-            }
-        }
-
-        return new String(r);
+        return PreciseCalendarFormatter.format("%Y-%M-%DT%h:%m:%s%z",this);
     }
 
     public int hashCode() {
@@ -278,7 +244,7 @@ public class BigDateTimeValueType implements IDateTimeValueType {
     
     public IDateTimeValueType normalize() {
         // see if this object is already normalized
-        if (zone == null || zone==TimeZone.ZERO)
+        if (zone==TimeZone.ZERO || zone==null)
             return this;
 
         // see if there is cached normalized value
@@ -297,7 +263,8 @@ public class BigDateTimeValueType implements IDateTimeValueType {
         //         not going to be corrected in XML Schema 1.0
 
         // faster performance can be achieved by writing optimized inline addition code.
-        normalizedValue = this.add(BigTimeDurationValueType.fromMinutes(-zone.minutes));
+        normalizedValue = this.add(BigTimeDurationValueType.fromMinutes(
+            -zone.getRawOffset()/(60*1000)));
 
         ((BigDateTimeValueType)normalizedValue).zone = TimeZone.ZERO;
 
@@ -334,7 +301,7 @@ public class BigDateTimeValueType implements IDateTimeValueType {
             // big + big
             BigTimeDurationValueType rhs = (BigTimeDurationValueType)_rhs;
 
-            BigInteger[] quoAndMod = divideAndRemainder(Util.int2bi(this.month).add(rhs.month), Util.the12);
+            BigInteger[] quoAndMod = divideAndRemainder(Util.int2bi(this.month).add(signed(rhs,rhs.month)), Util.the12);
 
             BigInteger oyear;
             int omonth;
@@ -342,9 +309,9 @@ public class BigDateTimeValueType implements IDateTimeValueType {
             BigDecimal osecond;
 
             omonth = quoAndMod[1].intValue();
-            oyear = quoAndMod[0].add(nullAs0(this.year)).add(nullAs0(rhs.year));
+            oyear = quoAndMod[0].add(nullAs0(this.year)).add(signed(rhs,rhs.year));
 
-            BigDecimal sec = nullAs0(this.second).add(nullAs0(rhs.second));
+            BigDecimal sec = nullAs0(this.second).add(signed(rhs,rhs.second));
 
             // quo = floor((this.second+rhs.second)/60)
             //     = floor( (this.second+rhs.second)*10^scale / (60*10^scale) )
@@ -354,10 +321,10 @@ public class BigDateTimeValueType implements IDateTimeValueType {
 
             osecond = new BigDecimal(quoAndMod[1], sec.scale());
 
-            quoAndMod = divideAndRemainder(quoAndMod[0].add(Util.int2bi(this.minute)).add(rhs.minute), Util.the60);
+            quoAndMod = divideAndRemainder(quoAndMod[0].add(Util.int2bi(this.minute)).add(signed(rhs,rhs.minute)), Util.the60);
             ominute = quoAndMod[1].intValue();
 
-            quoAndMod = divideAndRemainder(quoAndMod[0].add(Util.int2bi(this.hour)).add(rhs.hour), Util.the24);
+            quoAndMod = divideAndRemainder(quoAndMod[0].add(Util.int2bi(this.hour)).add(signed(rhs,rhs.hour)), Util.the24);
             ohour = quoAndMod[1].intValue();
 
             int tempDays;
@@ -372,7 +339,7 @@ public class BigDateTimeValueType implements IDateTimeValueType {
                     tempDays = dayValue;
             }
 
-            BigInteger oday = rhs.day.add(quoAndMod[0]).add(Util.int2bi(tempDays));
+            BigInteger oday = signed(rhs,rhs.day).add(quoAndMod[0]).add(Util.int2bi(tempDays));
             while (true) {
                 int carry;
                 if (oday.signum() == -1) { // day<0
@@ -413,7 +380,17 @@ public class BigDateTimeValueType implements IDateTimeValueType {
             return add(_rhs.getBigValue());
         }
     }
-
+    
+    private BigInteger signed( BigTimeDurationValueType dur, BigInteger i ) {
+        if(dur.signum<0)    return i.negate();
+        else                return i;
+    }
+    
+    private BigDecimal signed( BigTimeDurationValueType dur, BigDecimal i ) {
+        if(dur.signum<0)    return i.negate();
+        else                return i;
+    }
+    
     public Calendar toCalendar() {
         // set fields of Calendar.
         // In BigDateTimeValueType, the first day of the month is 0,
@@ -441,14 +418,18 @@ public class BigDateTimeValueType implements IDateTimeValueType {
         return cal;
     }
 
-    /** creates the equivalent Java TimeZone object. */
+    /**
+     * Creates the equivalent Java TimeZone object.
+     * 
+     * @deprecated
+     *      use {@link #getTimeZone()}.
+     * @return
+     *      a non-null valid object.
+     */
     protected java.util.TimeZone createJavaTimeZone() {
-        if(zone==null)
-            return TimeZone.JAVA_TIME_ZONE_MISSING;
-        if(zone==TimeZone.ZERO)
-            return TimeZone.JAVA_TIME_ZONE_ZERO;
-            
-        return new SimpleTimeZone(zone.minutes * 60 * 1000, "custom");
+        java.util.TimeZone tz = getTimeZone();
+        if(tz==null)    return TimeZone.MISSING;
+        else            return tz;
     }
     
     

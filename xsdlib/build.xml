@@ -3,23 +3,6 @@
 	Ant build script for XSDLib.
 	
 	$Id$
-	
-	
-	
-	Tasks to help development
-	=========================
-	javacc
-		run JavaCC
-	binary
-		compile everything to the bin directory.
-	javadoc
-		run javadoc on the working copy. Useful to check the documentation
-		without actually creating a distribution package.
-	test
-		test core msv codes. parser, verifier and several related codes.
-	release
-		create a distribution package
-	
 -->
 <project name="xsdlib" basedir="." default="binary">
 	
@@ -31,12 +14,12 @@
 		<delete dir="dist" />
 		<delete dir="javadoc" />
 		<delete dir="temp" />
-		<!-- TODO: delete JavaCC generated files -->
 	</target>
 	
 	
 	<!-- compile Java source files -->
-	<target name="binary" depends="javacc">
+	<target name="binary"
+		description="compile everything to the bin directory">
 		<mkdir dir="./bin"/>
 		<javac
 			srcdir="./src:./test"
@@ -48,33 +31,9 @@
 	</target>
 	
 	
-		<!-- internal task -->
-		<target name="doJavacc">
-			<!-- check if javacc needs to run -->
-			<uptodate property="iso8601.uptodate"
-				targetfile="${src}/com/sun/msv/datatype/xsd/datetime/ISO8601Parser.java">
-				<srcfiles dir="${src}/com/sun/msv/datatype/xsd/datetime"
-					includes="ISO8601.jj"/>
-			</uptodate>
-			<antcall target="doJavacc.sub"/>
-		</target>
-		
-		<target name="doJavacc.sub" unless="iso8601.uptodate">
-			<javacc	target="${src}/com/sun/msv/datatype/xsd/datetime/ISO8601.jj"
-					outputdirectory="${src}/com/sun/msv/datatype/xsd/datetime"
-					javacchome="${javaCClib}"
-			/>
-		</target>
-	
-	<!-- run javacc -->
-	<target name="javacc">
-		<antcall target="doJavacc">
-			<param name="src" value="./src" />
-		</antcall>
-	</target>
-	
 	<!-- generate javadoc documentation from the working copy -->
-	<target name="javadoc">
+	<target name="javadoc"
+		description="build javadoc inside the workspace">
 		<mkdir dir="./javadoc"/>
 		<javadoc	locale="en_US"
 					packagenames="com.sun.msv.*"
@@ -147,12 +106,6 @@
         <replacefilter token="@@VERSION@@" value="${DSTAMP}" />
         <replacefilter token="@@YEAR@@" value="${YEAR}" />
     </replace>
-		
-		
-		<!-- run javacc -->
-		<antcall target="doJavacc">
-			<param name="src" value="dist/src" />
-		</antcall>
 		
 		
 		<!-- compile files -->

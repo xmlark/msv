@@ -9,8 +9,6 @@
  */
 package com.sun.msv.datatype.xsd.datetime;
 
-import java.io.StringReader;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -36,9 +34,8 @@ public class BigTimeDurationValueTypeTest extends TestCase {
         return new TestSuite(BigTimeDurationValueTypeTest.class);
     }
     
-    private ITimeDurationValueType get( String s ) throws Exception
-    {
-        return new ISO8601Parser(new StringReader(s)).durationTypeV();
+    private ITimeDurationValueType get( String s ) throws IllegalArgumentException {
+        return new BigTimeDurationValueType(s);
     }
     
     /** Test of hashCode method, of class com.sun.msv.datatype.datetime.BigTimeDurationValueType. */

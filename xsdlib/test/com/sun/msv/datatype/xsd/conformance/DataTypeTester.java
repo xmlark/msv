@@ -364,14 +364,4 @@ public class DataTypeTester
         "unsignedByte",
         "positiveInteger"
     };
-    
-    /** gets some built-in type randomly. */
-    private XSDatatype getRandomType(){
-        try {
-            return DatatypeFactory.getTypeByName(
-                builtinTypesList[ (int)(Math.random()*builtinTypesList.length) ] );
-        } catch( DatatypeException e ) {
-            throw new Error();    // assertion failed
-        }
-    }
 }

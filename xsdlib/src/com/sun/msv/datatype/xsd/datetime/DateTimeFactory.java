@@ -21,7 +21,7 @@ public class DateTimeFactory {
     
     public static IDateTimeValueType createFromDateTime(
         Number year, Integer month, Integer day,
-        Integer hour, Integer minute, Number mSecond, TimeZone zone ) {
+        Integer hour, Integer minute, Number mSecond, java.util.TimeZone zone ) {
 //        if( year instanceof Integer )
 //            return new SmallDateTimeValueType( ... );
         
@@ -43,12 +43,12 @@ public class DateTimeFactory {
     }
     
     public static IDateTimeValueType createFromDate(
-        Number year, Integer month, Integer day, TimeZone zone ) {
+        Number year, Integer month, Integer day, java.util.TimeZone zone ) {
         return createFromDateTime( year, month, day, null, null, null, zone );
     }
     
     public static IDateTimeValueType createFromTime(
-        Integer hour, Integer minute, Number mSecond, TimeZone zone ) {
+        Integer hour, Integer minute, Number mSecond, java.util.TimeZone zone ) {
         return createFromDateTime( null, null, null, hour, minute, mSecond, zone );
     }
 }

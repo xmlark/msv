@@ -46,7 +46,7 @@ public class DateTimeBaseTypeTest extends TestCase
         o = (Calendar)DateTimeType.theInstance.createJavaObject(
             "2001-01-02T03:04:05", null );
         // 
-        assertSame( com.sun.msv.datatype.xsd.datetime.TimeZone.JAVA_TIME_ZONE_MISSING,
+        assertSame( com.sun.msv.datatype.xsd.datetime.TimeZone.MISSING,
             o.getTimeZone() );
         
         // non-GMT.

@@ -35,10 +35,6 @@ public class QnameType extends BuiltinAtomicType implements Discrete {
     public boolean isContextDependent() {
         return true;
     }
-
-    private static String getNamespaceURI( String content, ValidationContext context ) {
-        return context.resolveNamespacePrefix( content.substring(0, content.indexOf(':')) );
-    }
     
     protected boolean checkFormat( String value, ValidationContext context ) {
         // [6] QName ::= (Prefix ':')? LocalPart

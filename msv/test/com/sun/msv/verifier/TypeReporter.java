@@ -14,7 +14,7 @@ import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.relax.ElementRule;
 import com.sun.msv.grammar.trex.typed.TypedElementPattern;
 import com.sun.msv.reader.trex.typed.TypedTREXGrammarInterceptor;
-import com.sun.msv.reader.trex.TREXGrammarReader;
+import com.sun.msv.reader.trex.classic.TREXGrammarReader;
 import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.verifier.VerifierFilter;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
@@ -125,7 +125,7 @@ public class TypeReporter extends DefaultHandler
 		if( filter.getVerifier().getLastCharacterType()!=null )
 		{
 			printIndent();
-			System.out.println("-- "+filter.getVerifier().getLastCharacterType().getName()+" --");
+			System.out.println("-- "+filter.getVerifier().getLastCharacterType().displayName()+" --");
 		}
 		indent--;
 		printIndent();

@@ -1,0 +1,7 @@
+com/sun/tranquilo/datatype/ASCII_CharStream.java
+com/sun/tranquilo/datatype/UriReferenceParser.java
+com/sun/tranquilo/datatype/UriReferenceParserConstants.java
+com/sun/tranquilo/datatype/UriReferenceParserTokenManager.java
+com/sun/tranquilo/datatype/TokenMgrError.java
+com/sun/tranquilo/datatype/Token.java
+com/sun/tranquilo/datatype/uriReference.jj

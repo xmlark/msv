@@ -1,0 +1,233 @@
+options {
+	STATIC					= false;
+	ERROR_REPORTING			= false;
+	OPTIMIZE_TOKEN_MANAGER	= true;
+	BUILD_PARSER			= true;
+	LOOKAHEAD				= 3;
+	FORCE_LA_CHECK			= false;
+}
+PARSER_BEGIN(ISO8601Parser)
+
+package com.sun.tranquilo.datatype;
+
+import java.io.*;
+import java.math.BigDecimal;
+
+public class ISO8601Parser
+{
+	public static void main(String args[]) throws Exception
+	{
+		String s = new BufferedReader( new InputStreamReader(System.in) ).readLine();
+		new ISO8601Parser(new ByteArrayInputStream(s.getBytes("UTF-8"))).dateTime();
+	}
+	public static DateValueType parseDate( String lexValue ) throws ConvertionException
+	{
+		try
+		{
+			return new ISO8601Parser(new ByteArrayInputStream(
+				lexValue.getBytes())).date();
+		}
+		catch( Exception e )
+		{
+			// TODO : provide diagnosis?
+			throw new ConvertionException();
+		}
+	}
+}
+
+PARSER_END(ISO8601Parser)
+
+/*
+	no clear BNF is given for timeDuration and rucurringTime of XML Schema Part.2
+	This is just my interpretation of the spec.
+
+	Non-terminals without a leading underscore are top-level rules
+	that matches respective datatype.
+*/
+TOKEN :
+{
+	<#digit			: ["0"-"9"] >
+|
+	<digits			: (<digit>)+ >
+}
+
+BigDecimal decimal() : { Token t1,t2; }
+{
+	t1=<digits> [ "." t2=<digits> ]
+	{
+		if(t2==null)	return new BigDecimal(t1.image);
+		else			return new BigDecimal(t1.image+"."+t2.image);
+	}
+}
+
+void duration() : {}
+{
+	["-"] "P"
+	(
+		_datePart() ["T" _timePart()]
+	|
+		"T" _timePart()
+	)
+	<EOF>
+}
+
+void _datePart() : { int y=0,m=0,d=0; }
+{
+	[y=intDigits() "Y"] [m=intDigits() "M"] d=intDigits() "D"
+|
+	[y=intDigits() "Y"] m=intDigits() "M"
+|
+	y=intDigits() "Y"
+}
+
+void _timePart() : {}
+{
+	[<digits> "H"] [<digits> "M"] decimal() "S"
+|
+	[<digits> "H"] <digits> "M"
+|
+	<digits> "H"
+}
+
+int intDigits() : { Token v; }
+{
+	v=<digits>
+	{
+		return Integer.parseInt(v.image);
+	}
+}
+
+
+/** digits that is
+		1) width of two
+		2) within [min,max] (inclusive)
+*/
+int _NN( int min, int max ) : { Token v; }
+{
+	v=<digits>
+	{
+		if(v.image.length()!=2)		throw new ParseException();
+		int r = Integer.parseInt(v.image);
+		if( r>max )		throw new ParseException();
+		if( r<min )		throw new ParseException();
+		return r;
+	}
+}
+
+/*	Time Zone Modifier
+
+	something like "-05:00" or "+09:00"
+*/
+void _timeZoneModifier() : {}
+{
+	"Z"
+|
+	("+"|"-") _NN(0,24)	":"	_NN(0,59)
+}
+
+/* time without time zone modifier */
+void _time() : { int HH,MM; BigDecimal SS; }
+{
+	HH=_NN(0,23) ":"		/* hour */
+	MM=_NN(0,59) ":"		/* minute */
+	SS=decimal()			/* second */
+}
+
+int _year() : { Token v; }
+{
+	("+"|"-")?
+	v=<digits>
+	{/* 0000 is prohibited. must be 4 digits or more */
+		final int length = v.image.length();
+		if(length<4)
+			// TODO : diagnosis message?
+			throw new ParseException();
+		if(length>4 && v.image.charAt(0)=='0' )
+			// TODO : is this really a violation?
+			throw new ParseException();
+		
+		int r = Integer.parseInt(v.image);
+		if(r==0)
+			throw new ParseException();
+		return r;
+	}
+}
+
+/* month without time zone modifier */
+void _month() : {}
+{
+	_NN(1,12)
+}
+
+/* day of month without time zone modifier */
+void _day() : {}
+{
+	_NN(1,31)
+}
+
+/* date without time zone modifier */
+void _date() : {}
+{
+	_year()
+	"-"
+	_month()
+	"-"
+	_day()				/* day */
+}
+
+void dateTime() : {}
+{
+	_date()	"T"	_time()
+	[ _timeZoneModifier() ]
+}
+
+void time() : {}
+{
+	_time()
+	[ _timeZoneModifier() ]
+}
+
+void date() : {}
+{
+	_date()
+	[ _timeZoneModifier() ]
+}
+
+void yearMonth() : {}
+{
+	_year()
+	"-"
+	_month()
+	[ _timeZoneModifier() ]
+}
+
+void year() : {}
+{
+	_year()
+	[ _timeZoneModifier() ]
+}
+
+void monthDay() : {}
+{
+	"--"
+	_month()
+	"-"
+	_day()
+	[ _timeZoneModifier() ]
+}
+
+void day() : {}
+{
+	"---"
+	_day()
+	[ _timeZoneModifier() ]
+}
+
+void month() : {}
+{
+	"--"
+	_month()
+	"--"
+	[ _timeZoneModifier() ]
+}
+

@@ -16,7 +16,10 @@
 			
 			<classpath path="../msv/bin" />
 			<classpath path="../xsdlib/bin" />
-			<classpath path="${xerces.jar}:${xalan.jar}:${relaxngDatatype.jar}:${isorelax.jar}"/>
+			<classpath path="${xerces.jar}" />
+			<classpath path="${xalan.jar}" />
+			<classpath path="${relaxngDatatype.jar}"/>
+			<classpath path="${isorelax.jar}"/>
 		</javac>
 	</target>
 	
@@ -47,6 +50,8 @@
 		<javac	srcdir="${stageName}/src" destdir="temp">
 			
 			<classpath path="../package/msv.jar"/>
+			<classpath path="${relaxngDatatype.jar}"/>
+			<classpath path="${isorelax.jar}"/>
 			<include name="**/*.java" />
 		</javac>
 		
@@ -80,6 +85,7 @@
 		<copy file="${relaxngDatatype.jar}" todir="${stageName}"/>
 		<copy file="${xalan.jar}" todir="${stageName}"/>
 		<copy file="${xerces.jar}" todir="${stageName}" />
+		<copy file="${xmlParserAPIs.jar}" todir="${stageName}" />
 		
 		<!-- creates distribution package -->
 		<zip	zipfile="../package/relames.${DSTAMP}.zip"

@@ -121,7 +121,7 @@ public class RelmesVerifier implements IVerifier {
 				testNode(super.dom);
 			} catch( TransformerException e ) {
 				getErrorHandler().error( new ValidityViolation(
-					null, "XPath error:"+e.getMessage() ) );
+					null, "XPath error:"+e.getMessage(), null ) );
 				schematronValid = false;
 			}
 		}
@@ -215,7 +215,7 @@ public class RelmesVerifier implements IVerifier {
 			
 			schematronValid = false;
 			getErrorHandler().error( new ValidityViolation(
-				src, action.document ));
+				src, action.document, null ));
 		}
 	}
 	

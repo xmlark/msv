@@ -86,7 +86,14 @@ public class AttributeToken extends Token
 		if(!exp.nameClass.accepts(namespaceURI,localName))	return false;
 		
 		// content model of the attribute must consume the value
-		if(docDecl.resCalc.calcResidual(exp.exp, value).isEpsilonReducible()) {
+		boolean satisfied = false;
+		if(value.literal.length()==0 && exp.exp.isEpsilonReducible())
+			satisfied = true;
+		else
+		if(docDecl.resCalc.calcResidual(exp.exp, value).isEpsilonReducible())
+			satisfied = true;
+		
+		if(satisfied) {
 			// store the expression who consumed this token.
 			if( !saturated || exp==matchedExp )		matchedExp=exp;
 			else									matchedExp=null;

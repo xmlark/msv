@@ -52,6 +52,9 @@ public class Verifier implements
 	/** this flag will be set to true if an error is found */
 	private boolean hadError;
 	
+	/** this flag will be set to true after endDocument method is called. */
+	private boolean isFinished;
+	
 	/** this set remembers every ID token encountered in this document */
 	private final Set ids = new java.util.HashSet();
 	/** this map remembers every IDREF token encountered in this document */
@@ -62,7 +65,7 @@ public class Verifier implements
 	 * 
 	 * This method may not be called before verification was completed.
 	 */
-	public final boolean isValid() { return !hadError; }
+	public final boolean isValid() { return !hadError && isFinished; }
 	
 	/** Schema object against which the validation will be done */
 	private final DocumentDeclaration docDecl;
@@ -327,6 +330,7 @@ public class Verifier implements
 		// reset everything
 		current = docDecl.createAcceptor();
 		hadError=false;
+		isFinished=false;
 		ids.clear();
 		idrefs.clear();
 	}
@@ -345,6 +349,7 @@ public class Verifier implements
 						locator, localizeMessage( ERR_UNSOLD_IDREF, new Object[]{idref} ) ) );
 			}
 		}
+		isFinished=true;
 	}
 
 	public void notationDecl( String name, String publicId, String systemId ) {}

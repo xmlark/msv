@@ -8,6 +8,7 @@ import com.sun.msv.driver.textui.DebugController;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.verifier.IVerifier;
 import com.sun.msv.verifier.Verifier;
+import com.sun.msv.verifier.ValidityViolation;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.GrammarReaderController;
@@ -81,7 +82,12 @@ public abstract class IValidatorImpl extends AbstractValidatorExImpl
 			if( error[0]==true )		return null;
 		}
 
-        parser.parse(source);
+        try {
+            parser.parse(source);
+        } catch( ValidityViolation vv ) {
+            System.out.println(vv.getMessage());
+            return null;
+        }
         
 		Grammar grammar = getGrammarFromReader(reader,file);
 		

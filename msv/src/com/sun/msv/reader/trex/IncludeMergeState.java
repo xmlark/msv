@@ -38,7 +38,7 @@ public class IncludeMergeState extends SimpleState {
 		}
 		else
 			// parse specified file
-			reader.switchSource(href,new RootMergedGrammarState());
+			reader.switchSource(this,href,new RootMergedGrammarState());
 		
 		super.endSelf();
 	}

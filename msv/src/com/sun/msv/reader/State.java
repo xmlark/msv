@@ -80,7 +80,8 @@ import com.sun.msv.util.StartTagInfo;
  */
 public abstract class State implements ContentHandler
 {
-	/** parent state of this state.
+	/**
+	 * parent state of this state.
 	 * 
 	 * In other words, the parent state is a state who is responsible
 	 * for the parent element of the current element.
@@ -93,28 +94,34 @@ public abstract class State implements ContentHandler
 	 */
 	protected State parentState;
 	
-	/** reader object who is the owner of this object.
-	 * 
+	/**
+	 * reader object who is the owner of this object.
 	 * This information is avaiable after init method is called.
 	 */
 	public GrammarReader reader;
 				
-	/** information of the start tag.
-	 * 
+	/**
+	 * information of the start tag.
 	 * This information is avaiable after init method is called.
 	 */
 	protected StartTagInfo startTag;
 	public StartTagInfo getStartTag() { return startTag; }
 	
-	/** Location of the start tag.
-	 * 
+	/**
+	 * Location of the start tag.
 	 * This information is avaiable after init method is called.
 	 */
 	protected Locator location;
 	public Locator getLocation() { return location; }
 	
-	protected final void init( GrammarReader reader, State parentState, StartTagInfo startTag )
-	{
+	/**
+	 * base URI for this state.
+	 * This information is avaiable after init method is called.
+	 */
+	protected String baseURI;
+	public String getBaseURI() { return baseURI; }
+	
+	protected final void init( GrammarReader reader, State parentState, StartTagInfo startTag ) {
 		// use of the constructor, which is usually the preferable way,
 		// is intentionally avoided for short hand.
 		// if we use the constructor to do the initialization, every derived class
@@ -126,6 +133,22 @@ public abstract class State implements ContentHandler
 		this.startTag = startTag;
 		if( reader.locator!=null )	// locator could be null, in case of the root state.
 		this.location = new LocatorImpl( reader.locator );
+		
+		// handle the xml:base attribute.
+		String base=null;
+		if( startTag!=null )
+			base = startTag.getAttribute("http://www.w3.org/XML/1998/namespace","base");
+		
+		if( parentState==null )
+			// this state is the root state and therefore we don't have locator.
+			this.baseURI = null;
+		else {
+			this.baseURI = parentState.baseURI;
+			if( this.baseURI==null )
+				this.baseURI = reader.locator.getSystemId();
+		}
+		if( base!=null )
+			this.baseURI = reader.combineURL( this.baseURI, base );
 		startSelf();
 	}
 	
@@ -136,8 +159,7 @@ public abstract class State implements ContentHandler
 	protected void startSelf() {}
 	
 
-	public void characters(char[] buffer, int from, int len )
-	{
+	public void characters(char[] buffer, int from, int len ) {
 		// both RELAX and TREX prohibits characters in their grammar.
 		for( int i=from; i<len; i++ )
 			switch(buffer[i])

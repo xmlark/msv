@@ -528,17 +528,17 @@ public class XMLSchemaReader extends GrammarReader {
 		return exp;
 	}
 
-	protected void switchSource( StartTagInfo startTag, State newRootState ) {
-		final String schemaLocation = startTag.getAttribute("schemaLocation");
+	protected void switchSource( State sourceState, State newRootState ) {
+		final String schemaLocation = sourceState.getStartTag().getAttribute("schemaLocation");
 
 		if(schemaLocation==null) {
 			// schemaLocation attribute is required.
-			reportError( ERR_MISSING_ATTRIBUTE, startTag.qName, "schemaLocation" );
+			reportError( ERR_MISSING_ATTRIBUTE, sourceState.getStartTag().qName, "schemaLocation" );
 			// recover by ignoring this element
 		}
 		else
 			// parse specified file
-			switchSource(schemaLocation, newRootState );
+			switchSource( sourceState, schemaLocation, newRootState );
 	}
 
 	

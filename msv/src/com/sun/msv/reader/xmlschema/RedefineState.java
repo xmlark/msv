@@ -31,7 +31,7 @@ public class RedefineState extends GlobalDeclState {
 		super.startSelf();
 	
 		// parse included grammar first.
-		reader.switchSource( startTag,
+		reader.switchSource( this,
 			new RootIncludedSchemaState(
 				reader.sfactory.schemaIncluded(this,reader.currentSchema.targetNamespace) ) );
 		

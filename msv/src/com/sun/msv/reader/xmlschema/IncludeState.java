@@ -21,7 +21,7 @@ public class IncludeState extends ChildlessState {
 	protected void startSelf() {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		super.startSelf();
-		reader.switchSource( startTag,
+		reader.switchSource( this,
 			new RootIncludedSchemaState(
 				reader.sfactory.schemaIncluded(this,reader.currentSchema.targetNamespace) ) );
 	}

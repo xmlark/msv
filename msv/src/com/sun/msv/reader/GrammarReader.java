@@ -223,19 +223,20 @@ public abstract class GrammarReader
 	private Stack includeStack = new Stack();
 	
 	/**
-	 * resolve relative URL to the absolute URL.
+	 * obtains InputSource for the specified url.
 	 * 
 	 * Also this method allows GrammarReaderController to redirect or
 	 * prohibit inclusion.
 	 * 
+	 * @param sourceState
+	 *		The base URI of this state is used to resolve the resource.
+	 * 
 	 * @return
 	 *		return null if an error occurs.
 	 */
-	public final InputSource resolveLocation( String url ) {
+	public final InputSource resolveLocation( State sourceState, String url ) {
 		// resolve a relative URL to an absolute one
-		try {
-			url = new URL( new URL(locator.getSystemId()), url ).toExternalForm();
-		} catch( MalformedURLException e ) {}
+		url = combineURL( sourceState.getBaseURI(), url );
 	
 		try {
 			InputSource source = controller.resolveEntity(null,url);
@@ -249,6 +250,17 @@ public abstract class GrammarReader
 			return null;
 		}
 	}
+
+	/**
+	 * converts the relative URL to the absolute one by using the specified base URL.
+	 */
+	public final String combineURL( String baseURL, String relativeURL ) {
+		try {
+			return new URL( new URL(baseURL), relativeURL ).toExternalForm();
+		} catch( MalformedURLException e ) {
+			return relativeURL;
+		}
+	}
 	
 	/**
 	 * switchs InputSource to the specified URL and
@@ -256,13 +268,15 @@ public abstract class GrammarReader
 	 * 
 	 * derived classes can use this method to realize semantics of 'include'.
 	 * 
+	 * @param sourceState
+	 *		this state is used to resolve the URL.
 	 * @param newState
 	 *		this state will parse top-level of new XML source.
 	 *		this state receives document element by its createChildState method.
 	 */
-	public void switchSource( String url, State newState ) {
+	public void switchSource( State sourceState, String url, State newState ) {
 		
-		final InputSource source = resolveLocation(url);
+		final InputSource source = resolveLocation(sourceState,url);
 		if(source==null)		return;	// recover by ignoring this.
 		
 		url = source.getSystemId();

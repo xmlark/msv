@@ -41,7 +41,7 @@ public class ImportState extends ChildlessState {
 			return;
 		
 		
-		reader.switchSource( startTag,
+		reader.switchSource( this,
 			new RootIncludedSchemaState(reader.sfactory.schemaHead(namespace)) );
 	}
 }

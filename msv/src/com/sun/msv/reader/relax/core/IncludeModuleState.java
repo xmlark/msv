@@ -32,7 +32,7 @@ public class IncludeModuleState extends ChildlessState
 		}
 		else
 		{
-			reader.switchSource(href,new RootModuleMergeState());
+			reader.switchSource(this,href,new RootModuleMergeState());
 		}
 	}
 }

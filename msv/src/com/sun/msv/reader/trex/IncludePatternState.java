@@ -40,7 +40,7 @@ public class IncludePatternState extends ExpressionWithoutChildState implements 
 		}
 		
 		
-		reader.switchSource(href,new RootIncludedPatternState(this));
+		reader.switchSource(this,href,new RootIncludedPatternState(this));
 		
 		// onEndChild method is called inside the above function call and
 		// included will be set.

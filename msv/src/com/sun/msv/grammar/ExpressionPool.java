@@ -268,142 +268,155 @@ public class ExpressionPool implements java.io.Serializable {
 	 * Special care has to be taken wrt threading.
 	 * This implementation allows get and put method to be called simulatenously.
 	 */
-	public final static class ClosedHash implements java.io.Serializable {
-		/** The hash table data. */
-		private Expression table[];
+    public final static class ClosedHash implements java.io.Serializable {
+        /** The hash table data. */
+        private Expression table[];
 
-		/** The total number of mappings in the hash table. */
-		private int count;
+        /** The total number of mappings in the hash table. */
+        private int count;
 
-		/**
-		 * The table is rehashed when its size exceeds this threshold.  (The
-		 * value of this field is (int)(capacity * loadFactor).)
-		 */
-		private int threshold;
+        /**
+         * The table is rehashed when its size exceeds this threshold.  (The
+         * value of this field is (int)(capacity * loadFactor).)
+         */
+        private int threshold;
 
-		/** The load factor for the hashtable. */
-		private static final float loadFactor = 0.3f;
-		private static final int initialCapacity = 191;
-		
-		/** the parent hash table.
-		 *  can be null. items in the parent hash table will be returned by
-		 *  get method.
-		 */
-		private final ClosedHash parent;
-		
-		public ClosedHash() { this(null); }
-		
-		public ClosedHash( ClosedHash parent ) {
-			table = new Expression[initialCapacity];
-			threshold = (int)(initialCapacity * loadFactor);
-			this.parent = parent;
-		}
+        /** The load factor for the hashtable. */
+        private static final float loadFactor = 0.3f;
+        private static final int initialCapacity = 191;
 
-		
-		public Expression get( int hash, Expression left, Expression right, Class type ) {
-			if( parent!=null ) {
-				Expression e = parent.get(hash,left,right,type);
-				if(e!=null)		return e;
-			}
-			
-			Expression tab[] = table;
-			int index = (hash & 0x7FFFFFFF) % tab.length;
-			
-			while(true) {
-				final Expression e = tab[index];
-				if( e==null )		return null;
-				if( e.hashCode()==hash && e.getClass()==type ) {
-					BinaryExp be = (BinaryExp)e;
-					if( be.exp1==left && be.exp2==right )
-						return be;
-				}
-				index = (index+1)%tab.length;
-			}
-		}
-		
-		public Expression get( int hash, Expression child, Class type ) {
-			if( parent!=null ) {
-				Expression e = parent.get(hash,child,type);
-				if(e!=null)		return e;
-			}
-			
-			Expression tab[] = table;
-			int index = (hash & 0x7FFFFFFF) % tab.length;
-			
-			while(true) {
-				final Expression e = tab[index];
-				if( e==null )		return null;
-				if( e.hashCode()==hash && e.getClass()==type ) {
-					UnaryExp ue = (UnaryExp)e;
-					if( ue.exp==child )		return ue;
-				}
-				index = (index+1)%tab.length;
-			}
-		}
-		public Expression get( Expression key ) {
-			if( parent!=null ) {
-				Expression e = parent.get(key);
-				if(e!=null)		return e;
-			}
-			
-			Expression tab[] = table;
-			int index = (key.hashCode() & 0x7FFFFFFF) % tab.length;
-			
-			while(true) {
-				final Expression e = tab[index];
-				if( e==null )		return null;
-				if( e.equals(key) )	return e;
-				index = (index+1)%tab.length;
-			}
-		}
+        /** the parent hash table.
+         *  can be null. items in the parent hash table will be returned by
+         *  get method.
+         */
+        private final ClosedHash parent;
 
-		/**
-		 * rehash.
-		 * 
-		 * It is possible for one thread to call get method
-		 * while another thread is performing rehash.
-		 * Keep this in mind.
-		 */
-		private void rehash() {
-			// create a new table first.
-			// meanwhile, other threads can safely access get method.
-			int oldCapacity = table.length;
-			Expression oldMap[] = table;
+        public ClosedHash() {
+            this(null);
+        }
 
-			int newCapacity = oldCapacity * 2 + 1;
-			Expression newMap[] = new Expression[newCapacity];
+        public ClosedHash(ClosedHash parent) {
+            table = new Expression[initialCapacity];
+            threshold = (int) (initialCapacity * loadFactor);
+            this.parent = parent;
+        }
 
-			for (int i = oldCapacity ; i-- > 0 ;)
-				if( oldMap[i]!=null ) {
-					int index = (oldMap[i].hashCode() & 0x7FFFFFFF) % newMap.length;
-					while(newMap[index]!=null)
-						index=(index+1)%newMap.length;
-					newMap[index] = oldMap[i];
-				}
-			
-			// threshold is not accessed by get method.
-			threshold = (int)(newCapacity * loadFactor);
-			// switch!
-			table = newMap;
-		}
+        public Expression get(int hash, Expression left, Expression right, Class type) {
+            if (parent != null) {
+                Expression e = parent.get(hash, left, right, type);
+                if (e != null)
+                    return e;
+            }
 
-		/**
-		 * put method. No two threads can call this method simulatenously,
-		 * and it's the caller's responsibility to enforce it.
-		 */
-		public void put(Expression newExp) {
-			if (count >= threshold)		rehash();
+            Expression tab[] = table;
+            int index = (hash & 0x7FFFFFFF) % tab.length;
 
-			Expression tab[] = table;
-			int index = (newExp.hashCode() & 0x7FFFFFFF) % tab.length;
-			
-			while(tab[index]!=null)
-				index=(index+1)%tab.length;
-			tab[index] = newExp;
-			
-			count++;
-		}
-	}
+            while (true) {
+                final Expression e = tab[index];
+                if (e == null)
+                    return null;
+                if (e.hashCode() == hash && e.getClass() == type) {
+                    BinaryExp be = (BinaryExp)e;
+                    if (be.exp1 == left && be.exp2 == right)
+                        return be;
+                }
+                index = (index + 1) % tab.length;
+            }
+        }
+
+        public Expression get(int hash, Expression child, Class type) {
+            if (parent != null) {
+                Expression e = parent.get(hash, child, type);
+                if (e != null)
+                    return e;
+            }
+
+            Expression tab[] = table;
+            int index = (hash & 0x7FFFFFFF) % tab.length;
+
+            while (true) {
+                final Expression e = tab[index];
+                if (e == null)
+                    return null;
+                if (e.hashCode() == hash && e.getClass() == type) {
+                    UnaryExp ue = (UnaryExp)e;
+                    if (ue.exp == child)
+                        return ue;
+                }
+                index = (index + 1) % tab.length;
+            }
+        }
+        public Expression get(Expression key) {
+            if (parent != null) {
+                Expression e = parent.get(key);
+                if (e != null)
+                    return e;
+            }
+
+            Expression tab[] = table;
+            int index = (key.hashCode() & 0x7FFFFFFF) % tab.length;
+
+            while (true) {
+                final Expression e = tab[index];
+                if (e == null)
+                    return null;
+                if (e.equals(key))
+                    return e;
+                index = (index + 1) % tab.length;
+            }
+        }
+
+        /**
+         * rehash.
+         * 
+         * It is possible for one thread to call get method
+         * while another thread is performing rehash.
+         * Keep this in mind.
+         */
+        private void rehash() {
+            // create a new table first.
+            // meanwhile, other threads can safely access get method.
+            int oldCapacity = table.length;
+            Expression oldMap[] = table;
+
+            int newCapacity = oldCapacity * 2 + 1;
+            Expression newMap[] = new Expression[newCapacity];
+
+            for (int i = oldCapacity; i-- > 0;)
+                if (oldMap[i] != null) {
+                    int index = (oldMap[i].hashCode() & 0x7FFFFFFF) % newMap.length;
+                    while (newMap[index] != null)
+                        index = (index + 1) % newMap.length;
+                    newMap[index] = oldMap[i];
+                }
+
+            // threshold is not accessed by get method.
+            threshold = (int) (newCapacity * loadFactor);
+            // switch!
+            table = newMap;
+        }
+
+        /**
+         * put method. No two threads can call this method simulatenously,
+         * and it's the caller's responsibility to enforce it.
+         */
+        public void put(Expression newExp) {
+            if (count >= threshold)
+                rehash();
+
+            Expression tab[] = table;
+            int index = (newExp.hashCode() & 0x7FFFFFFF) % tab.length;
+
+            while (tab[index] != null)
+                index = (index + 1) % tab.length;
+            tab[index] = newExp;
+
+            count++;
+        }
+        
+        // serialization support
+        private static final long serialVersionUID = -2924295970572669668L;
+    }
     
     // serialization support
     private static final long serialVersionUID = 1;    

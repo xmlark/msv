@@ -43,8 +43,7 @@ public abstract class IslandSchemaImpl implements IslandSchema
 	/** VGM to be used to create IslandVerifier. */
 	protected final TREXDocumentDeclaration docDecl;
 	
-	protected IslandSchemaImpl( TREXDocumentDeclaration docDecl )
-	{
+	protected IslandSchemaImpl( TREXDocumentDeclaration docDecl ) {
 		this.docDecl = docDecl;
 	}
 	
@@ -53,7 +52,7 @@ public abstract class IslandSchemaImpl implements IslandSchema
 		DeclImpl[] ri = new DeclImpl[rules.length];
 		System.arraycopy( rules,0, ri,0, rules.length );
 		
-		return new IslandVerifierImpl(
+		return new TREXIslandVerifier(
 			new RulesAcceptor( docDecl, ri ) );
 	}
 	
@@ -100,6 +99,11 @@ public abstract class IslandSchemaImpl implements IslandSchema
 			exps[i].exp = exps[i].exp.visit(binder);
 	}
 	
+	/**
+	 * replaces all ExternalElementExp and ExternalAttributeExp by actual definitions.
+	 * 
+	 * these two expressions forms the fundamental mechanism of schema interaction.
+	 */
 	public static class Binder
 		extends ExpressionCloner
 	{
@@ -146,7 +150,9 @@ public abstract class IslandSchemaImpl implements IslandSchema
 					// bind directly.
 					return ((DeclImpl)rule).exp;
 				}
-				return exp;
+				
+				// this looks like an ordinary ReferenceExp.
+				return exp.exp.visit(this);
 			} catch( SAXException e ) {
 				return exp;	// ignore this expcetion
 			}

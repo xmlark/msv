@@ -30,11 +30,11 @@ import java.util.Set;
 import java.util.Vector;
 
 /**
- * base implementation of IslandVerifier for Tranquilo VGM.
+ * IslandVerifier for RELAX Core and TREX.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class IslandVerifierImpl
+class TREXIslandVerifier
 	extends com.sun.tranquilo.verifier.Verifier
 	implements org.iso_relax.dispatcher.IslandVerifier
 {
@@ -55,7 +55,7 @@ class IslandVerifierImpl
 	 */
 	protected final Map rule2exp = new java.util.HashMap();
 	
-	IslandVerifierImpl( RulesAcceptor initialAcceptor ) {
+	TREXIslandVerifier( RulesAcceptor initialAcceptor ) {
 		super( null, null );		// quick hack.
 		current = initialAcceptor;
 	}

@@ -35,7 +35,7 @@ public class SchemaProviderImpl extends AbstractSchemaProviderImpl {
 	protected final TREXDocumentDeclaration docDecl;
 	
 	public IslandVerifier createTopLevelVerifier() {
-		return new IslandVerifierImpl(
+		return new TREXIslandVerifier(
 			new RulesAcceptor( docDecl, topLevel ) );
 	}
 	

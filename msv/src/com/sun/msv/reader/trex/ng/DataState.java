@@ -9,6 +9,7 @@
  */
 package com.sun.msv.reader.trex.ng;
 
+import com.sun.msv.datatype.ErrorDatatypeLibrary;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.TypedStringExp;
 import com.sun.msv.reader.State;
@@ -45,31 +46,17 @@ public class DataState extends ExpressionState implements ExpressionOwner {
 	protected void startSelf() {
 		final RELAXNGReader reader = (RELAXNGReader)this.reader;
 		super.startSelf();
-
-		if( startTag.containsAttribute("key") ) {
-			// since this attribute was allowed in early RELAX NG,
-			// it is useful to explicitly raise this as an error.
-			reader.reportError( reader.ERR_DISALLOWED_ATTRIBUTE, startTag.qName, "key" );
-		}
-		
-		if( startTag.containsAttribute("keyref") ) {
-			// since this attribute was allowed in early RELAX NG,
-			// it is useful to explicitly raise this as an error.
-			reader.reportError( reader.ERR_DISALLOWED_ATTRIBUTE, startTag.qName, "keyref" );
-		}
 		
 		final String localName = startTag.getCollapsedAttribute("type");
 		if( localName==null ) {
 			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "data", "type" );
 		} else {
 			// create a type incubator
-			if( reader.datatypeLib!=null ) {// an error is already reported if lib==null.
-				baseTypeName = new StringPair( reader.datatypeLibURI, localName );
-				 try {
-					typeBuilder = reader.datatypeLib.createDatatypeBuilder(localName);
-				 } catch( DatatypeException dte ) {
-					 reader.reportError( reader.ERR_UNDEFINED_DATATYPE_1, localName, dte.getMessage() );
-				 }
+			baseTypeName = new StringPair( reader.datatypeLibURI, localName );
+			try {
+				typeBuilder = reader.getCurrentDatatypeLibrary().createDatatypeBuilder(localName);
+			} catch( DatatypeException dte ) {
+				reader.reportError( reader.ERR_UNDEFINED_DATATYPE_1, localName, dte.getMessage() );
 			}
 		}
 		
@@ -77,15 +64,7 @@ public class DataState extends ExpressionState implements ExpressionOwner {
 			// if an error is encountered, then typeIncubator field is left null.
 			// In that case, set a dummy implementation so that the successive param
 			// statements are happy.
-			typeBuilder = new DatatypeBuilder(){
-				public Datatype createDatatype() {
-					return com.sun.msv.datatype.xsd.StringType.theInstance;
-				}
-				public void addParameter( String name, String value, ValidationContext context ) {
-					// do nothing.
-					// thereby accepts anything as a valid facet.
-				}
-			};
+			typeBuilder = ErrorDatatypeLibrary.theInstance;
 		}
 	}
 	

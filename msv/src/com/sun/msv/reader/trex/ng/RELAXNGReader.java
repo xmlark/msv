@@ -22,6 +22,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.relaxng.datatype.*;
 import org.iso_relax.verifier.Schema;
+import com.sun.msv.datatype.ErrorDatatypeLibrary;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
@@ -297,12 +298,8 @@ public class RELAXNGReader extends TREXBaseReader {
 	/** obtains a named DataType object referenced by a local name. */
 	public Datatype resolveDataType( String localName ) {
 		
-		if(datatypeLib==null)
-			// silently recover from an error
-			return com.sun.msv.datatype.xsd.StringType.theInstance;
-		
 		try {
-			return datatypeLib.createDatatype(localName);
+			return getCurrentDatatypeLibrary().createDatatype(localName);
 		} catch( DatatypeException dte ) {
 			reportError( ERR_UNDEFINED_DATATYPE_1, localName, dte.getMessage() );
 			return com.sun.msv.datatype.xsd.StringType.theInstance;
@@ -313,7 +310,7 @@ public class RELAXNGReader extends TREXBaseReader {
 	 * obtains the DataTypeLibrary that represents the specified namespace URI.
 	 * 
 	 * If the specified URI is undefined, then this method issues an error to
-	 * the user and returns null.
+	 * the user and must return a dummy datatype library.
 	 */
 	public DatatypeLibrary resolveDataTypeLibrary( String uri ) {
 		try {
@@ -325,7 +322,7 @@ public class RELAXNGReader extends TREXBaseReader {
 		} catch( Throwable e ) {
 			reportError( ERR_UNKNOWN_DATATYPE_VOCABULARY_1, uri, e.toString() );
 		}
-		return null;
+		return ErrorDatatypeLibrary.theInstance;
 	}
 
 	
@@ -350,7 +347,21 @@ public class RELAXNGReader extends TREXBaseReader {
 	 * In case of an error, this field may be set to null after issuing an error.
 	 * So care should be taken not to report the same error again.
 	 */
-	protected DatatypeLibrary datatypeLib = BuiltinDatatypeLibrary.theInstance;
+	private DatatypeLibrary datatypeLib = BuiltinDatatypeLibrary.theInstance;
+	
+	public DatatypeLibrary getCurrentDatatypeLibrary() {
+		if(datatypeLib==null) {
+			// load it.
+			// the resolution of the datatypeLibrary has to be delayed until
+			// it is actually used.
+			datatypeLib = resolveDataTypeLibrary(datatypeLibURI);
+			
+			// assertion failed
+			if(datatypeLib==null)	throw new Error();
+		}
+		return datatypeLib;
+	}
+	
 	/**
 	 * the namespace URI of the currently active datatype library.
 	 * The empty string indicates the built-in datatype library.
@@ -388,7 +399,13 @@ public class RELAXNGReader extends TREXBaseReader {
 		dtLibURIStack.push(datatypeLibURI);
 		if( d.getIndex("datatypeLibrary")!=-1 ) {
 			datatypeLibURI = d.getValue("datatypeLibrary");
-			datatypeLib = resolveDataTypeLibrary(datatypeLibURI);
+			datatypeLib = null;
+			
+			if( !Util.isAbsoluteURI(datatypeLibURI) )
+				reportError( ERR_NOT_ABSOLUTE_URI, datatypeLibURI );
+			if( datatypeLibURI.indexOf('#')>=0 )
+				reportError( ERR_FRAGMENT_IDENTIFIER, datatypeLibURI );
+				
 		}
 		
 		if( d.getIndex("ns")!=-1 ) {

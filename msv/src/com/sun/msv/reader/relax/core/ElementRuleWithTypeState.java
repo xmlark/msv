@@ -28,8 +28,7 @@ public class ElementRuleWithTypeState extends ElementRuleBaseState implements Fa
 	
 	public TypeIncubator getIncubator()	{ return incubator; }
 	
-	protected void startSelf()
-	{
+	protected void startSelf() {
 		super.startSelf();
 		
 		// existance of type attribute has already checked before
@@ -38,22 +37,18 @@ public class ElementRuleWithTypeState extends ElementRuleBaseState implements Fa
 			reader.resolveDataType( startTag.getAttribute("type") ) );
 	}
 	
-	protected Expression getContentModel()
-	{
-		try
-		{
+	protected Expression getContentModel() {
+		try {
 			return reader.pool.createTypedString( incubator.derive(null) );
-		}
-		catch( BadTypeException e )
-		{// derivation failed
+		} catch( BadTypeException e ) {
+			// derivation failed
 			reader.reportError( e, reader.ERR_BAD_TYPE, e.getMessage() );
 			// recover by using harmless expression. anything will do.
 			return Expression.anyString;
 		}
 	}
 	
-	protected State createChildState( StartTagInfo tag )
-	{
+	protected State createChildState( StartTagInfo tag ) {
 		State next = RELAXCoreReader.createFacetState(tag);
 		if(next!=null)		return next;			// facets
 		

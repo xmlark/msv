@@ -32,10 +32,8 @@ public class ElementRuleWithHedgeState extends ElementRuleBaseState implements E
 		contentModel = exp;
 	}
 	
-	protected Expression getContentModel()
-	{
-		if( contentModel==null )
-		{
+	protected Expression getContentModel() {
+		if( contentModel==null ) {
 			reader.reportError( reader.ERR_MISSING_CHILD_EXPRESSION );
 			// recover by assuming a harmless content model
 			return Expression.epsilon;	// anything will do.

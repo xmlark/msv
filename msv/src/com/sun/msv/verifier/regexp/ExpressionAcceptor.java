@@ -654,7 +654,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 			Expression[] children = ch.getChildren();					
 			for( int i=0; i<children.length; i++ ) {
 				if( children[i] instanceof ValueExp )
-					items.add( ((ValueExp)children[i]).value );
+					items.add( ((ValueExp)children[i]).value.toString() );
 				else
 					// this is a fairly complex expression
 					// that we can't provide diagnosis.

@@ -49,7 +49,7 @@ class SchemaWriterSuite extends batch.SchemaSuite {
 		is.setSystemId(pathName);
 			
 		// load grammar
-		Grammar g = parent.loader.load( is, new ThrowErrorController(), parent.factory );
+		Grammar g = parent.loader.load( is, new ThrowErrorController(parent.resolver), parent.factory );
 		if( g==null )
 			fail("failed to parse the original grammar");	// unexpected result
 		

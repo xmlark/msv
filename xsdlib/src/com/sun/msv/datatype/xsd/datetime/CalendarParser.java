@@ -29,6 +29,8 @@ public final class CalendarParser extends AbstractCalendarParser {
     
     private CalendarParser( String format, String value ) {
         super(format,value);
+        // erase all the fields to remove any trace of the current time.
+        cal.setTimeInMillis(0);
         cal.clear();
     }
     

@@ -36,7 +36,11 @@ public class PreciseCalendarFormatter extends AbstractCalendarFormatter {
     protected void formatYear(Object cal, StringBuffer buf) {
         BigDateTimeValueType bv = ((IDateTimeValueType)cal).getBigValue();
         BigInteger year = bv.getYear();
-        
+        if(year==null) {
+            buf.append("0000");
+            return;
+        }
+            
         String s;
         if (year.signum() <= 0) {
             // negative value

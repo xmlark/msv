@@ -48,7 +48,7 @@ public class UnionTypeTest extends TestCase
 	{
 		// this test is naive, and we need further systematic testing.
 		// but better something than nothing.
-		DataType u = createUnion(null,"integer","QName","yearMonth");
+		DataType u = createUnion(null,"integer","QName","gYearMonth");
 		
 		assert( u.verify("1520",DummyContextProvider.theInstance) );
 		assert( u.verify("foo:role",DummyContextProvider.theInstance) );

@@ -60,8 +60,6 @@
 	</wrongs>
 </case>
 
-<comment>
-
 <case name="test for token">
 	<value>&#x9;&#x9;</value>
 	<value>&#xA;</value>
@@ -174,7 +172,7 @@
 </case>
 
 
-<case name="test for uriReference">
+<case name="test for anyURI">
 	<value>http://www.swiftinc.co.jp/	</value>
 	<value>http://www.swiftinc.co.jp/mypage.html#fragment	</value>
 	<value>ftp://user:pwd@www.swiftinc.co.jp/?query=a+b-c	</value>
@@ -246,7 +244,7 @@
 	<!-- <scheme>:<opaque_part> -->
 	<value>		x56://-_.!*'();/?:@&amp;=+$, </value>
 	
-	<answer for="uriReference"	>oooo ooooooo oooooo  ooooooooo oooooooooo oooooooooo ooooooooo.  o</answer>
+	<answer for="anyURI"		>oooo ooooooo oooooo  ooooooooo oooooooooo oooooooooo ooooooooo.  o</answer>
 	
 	<facets><combination>
 		<choice>
@@ -456,7 +454,7 @@
 	<value   >99999999999999999999+05:00</value>
 	<value  > 999999999999999999999999999999999999999999999999999999999999999999</value>
 	
-	<answer for="year"		>ooooo oooooooo ooooo oo</answer>
+	<answer for="gYear"		>ooooo oooooooo ooooo oo</answer>
 
 	<facets><combination>
 		<combination mode="or">
@@ -593,15 +591,17 @@
 <case name="test for boolean">
 	<value>true</value>
 	<value>false</value>
+	<value>0</value>
+	<value>1</value>
 	
-	<answer for="boolean">oo</answer>
+	<answer for="boolean">oooo</answer>
 
 	<facets>
 		<!-- pattern is the only applicable facet -->
 		<combination mode="or">
-			<facet answer="o." name="pattern" value="tr.*" />
-			<facet answer=".o" name="pattern" value="f.*" />
-			<facet answer=".." name="pattern" value="f..." />
+			<facet answer="o..." name="pattern" value="tr.*" />
+			<facet answer=".o.." name="pattern" value="f.*" />
+			<facet answer="...." name="pattern" value="f..." />
 		</combination>
 
 	</facets>
@@ -609,8 +609,6 @@
 	<wrongs>
 		<value>True</value>
 		<value>FALSE</value>
-		<value>0</value>
-		<value>1</value>
 	</wrongs>
 </case>
 
@@ -683,16 +681,16 @@
 	<answer for="unsignedInt"			>..... ..... ....o ooooo  ooooo ooooo oooo. ..... ...</answer>
 	<answer for="unsignedShort"			>..... ..... ....o ooooo  ooooo ooo.. ..... ..... ...</answer>
 	<answer for="unsignedByte"			>..... ..... ....o ooooo  ooo.. ..... ..... ..... ...</answer>
-	<answer for="decimal"				>ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ooo</answer>
+	<answer for="number"				>ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ooo</answer>
 	
 	<facets><combination>
 		<choice>
-			<facet answer=				"..... ..... ooooo ooooo  oooo. ..... ..... ..... ooo" name="precision" value="3" />
-			<facet answer=				"..... ..... ooooo ooooo  ooooo ..... ..... ..... ooo" name="precision" value="4" />
-			<facet answer=				"..... ..ooo ooooo ooooo  ooooo oooo. ..... ..... ooo" name="precision" value="5" />
-			<facet answer=				"ooooo ooooo ooooo ooooo  ooooo ooooo ooooo oooo. ooo" name="precision" value="400" />
+			<facet answer=				"..... ..... ooooo ooooo  oooo. ..... ..... ..... ooo" name="totalDigits" value="3" />
+			<facet answer=				"..... ..... ooooo ooooo  ooooo ..... ..... ..... ooo" name="totalDigits" value="4" />
+			<facet answer=				"..... ..ooo ooooo ooooo  ooooo oooo. ..... ..... ooo" name="totalDigits" value="5" />
+			<facet answer=				"ooooo ooooo ooooo ooooo  ooooo ooooo ooooo oooo. ooo" name="totalDigits" value="400" />
 <!-- precision can be any positiveInteger, but no way to support this in Java -->
-			<facet answer=				"ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ooo" name="precision" value="99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999" />
+			<facet answer=				"ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ooo" name="totalDigits" value="99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999" />
 		</choice>
 		<combination mode="or">
 			<facet answer=				"..... ..... ..... ...o.  ....o ..... ..... ..... ..." name="pattern" value="1*" />
@@ -804,6 +802,5 @@
 		<value>0x123</value>
 	</wrongs>
 </case>
-</comment>
 
 </suite>

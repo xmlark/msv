@@ -24,12 +24,15 @@ public class BooleanType extends ConcreteType
 	
 	protected boolean checkFormat( String content, ValidationContextProvider context )
 	{
-		return "true".equals(content) || "false".equals(content);
+		return "true".equals(content) || "false".equals(content)
+			|| "0".equals(content) || "1".equals(content);
 	}
 	
 	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
 	{// for string, lexical space is value space by itself
 		if( lexicalValue.equals("true") )		return Boolean.TRUE;
+		if( lexicalValue.equals("1") )			return Boolean.TRUE;
+		if( lexicalValue.equals("0") )			return Boolean.FALSE;
 		if( lexicalValue.equals("false") )		return Boolean.FALSE;
 		return null;
 	}

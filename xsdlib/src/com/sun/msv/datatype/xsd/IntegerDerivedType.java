@@ -22,7 +22,7 @@ abstract class IntegerDerivedType extends ConcreteType implements Comparator
 	public final int isFacetApplicable( String facetName )
 	{
 		// TODO : should we allow scale facet, or not?
-		if( facetName.equals(FACET_PRECISION)
+		if( facetName.equals(FACET_TOTALDIGITS)
 		||	facetName.equals(FACET_PATTERN)
 		||	facetName.equals(FACET_ENUMERATION)
 		||	facetName.equals(FACET_MAXINCLUSIVE)

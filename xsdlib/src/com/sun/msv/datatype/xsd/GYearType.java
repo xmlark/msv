@@ -13,16 +13,16 @@ import com.sun.tranquilo.datatype.datetime.ISO8601Parser;
 import com.sun.tranquilo.datatype.datetime.IDateTimeValueType;
 
 /**
- * "year" type.
+ * "gYear" type.
  * 
- * See http://www.w3.org/TR/xmlschema-2/#year for the spec
+ * See http://www.w3.org/TR/xmlschema-2/#gYear for the spec
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class YearType extends DateTimeBaseType
+public class GYearType extends DateTimeBaseType
 {
-	public static final YearType theInstance = new YearType();
-	private YearType() { super("year"); }
+	public static final GYearType theInstance = new GYearType();
+	private GYearType() { super("gYear"); }
 
 	protected void runParserL( ISO8601Parser p ) throws Exception
 	{

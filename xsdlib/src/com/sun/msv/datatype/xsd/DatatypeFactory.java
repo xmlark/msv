@@ -128,21 +128,21 @@ public class DataTypeFactory
 
 			add( m, StringType.theInstance );
 			add( m, BooleanType.theInstance );
-			add( m, DecimalType.theInstance );
+			add( m, NumberType.theInstance );
 			add( m, FloatType.theInstance );
 			add( m, DoubleType.theInstance );
 			add( m, DurationType.theInstance );
 			add( m, DateTimeType.theInstance );
 			add( m, TimeType.theInstance );
 			add( m, DateType.theInstance );
-			add( m, YearMonthType.theInstance );
-			add( m, YearType.theInstance );
-			add( m, MonthDayType.theInstance );
-			add( m, DayType.theInstance );
-			add( m, MonthType.theInstance );
+			add( m, GYearMonthType.theInstance );
+			add( m, GYearType.theInstance );
+			add( m, GMonthDayType.theInstance );
+			add( m, GDayType.theInstance );
+			add( m, GMonthType.theInstance );
 			add( m, HexBinaryType.theInstance );
 			add( m, Base64BinaryType.theInstance );
-			add( m, UriReferenceType.theInstance );
+			add( m, AnyURIType.theInstance );
 	//		ID, IDREF
 			add( m, EntityType.theInstance );
 			add( m, QnameType.theInstance );

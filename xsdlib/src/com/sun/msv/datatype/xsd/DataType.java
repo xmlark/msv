@@ -111,16 +111,16 @@ public interface DataType extends Serializable,Cloneable
 
 
 	// well-known facet name constants
-	final static String	FACET_LENGTH		= "length";
-	final static String	FACET_MINLENGTH		= "minLength";
-	final static String	FACET_MAXLENGTH		= "maxLength";
-	final static String	FACET_PATTERN		= "pattern";
-	final static String	FACET_ENUMERATION	= "enumeration";
-	final static String	FACET_PRECISION		= "precision";
-	final static String	FACET_SCALE			= "scale";
-	final static String	FACET_MININCLUSIVE	= "minInclusive";
-	final static String	FACET_MAXINCLUSIVE	= "maxInclusive";
-	final static String	FACET_MINEXCLUSIVE	= "minExclusive";
-	final static String	FACET_MAXEXCLUSIVE	= "maxExclusive";
-	final static String	FACET_WHITESPACE	= "whiteSpace";
+	final static String	FACET_LENGTH			= "length";
+	final static String	FACET_MINLENGTH			= "minLength";
+	final static String	FACET_MAXLENGTH			= "maxLength";
+	final static String	FACET_PATTERN			= "pattern";
+	final static String	FACET_ENUMERATION		= "enumeration";
+	final static String	FACET_TOTALDIGITS		= "totalDigits";
+	final static String	FACET_FRACTIONDIGITS	= "fractionDigits";
+	final static String	FACET_MININCLUSIVE		= "minInclusive";
+	final static String	FACET_MAXINCLUSIVE		= "maxInclusive";
+	final static String	FACET_MINEXCLUSIVE		= "minExclusive";
+	final static String	FACET_MAXEXCLUSIVE		= "maxExclusive";
+	final static String	FACET_WHITESPACE		= "whiteSpace";
 }

@@ -10,30 +10,30 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * 'precision' facet.
+ * 'totalDigits' facet.
  *
  * this class holds these facet information and performs validation.
  * 
  * @author Kohsuke KAWAGUCHI
  */
-class PrecisionFacet extends DataTypeWithLexicalConstraintFacet
+class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet
 {
 	/** maximum number of total digits. */
 	protected final int		precision;
 
-	public PrecisionFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
+	public TotalDigitsFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException
 	{
-		super( typeName, baseType, FACET_PRECISION, facets );
+		super( typeName, baseType, FACET_TOTALDIGITS, facets );
 		
-		precision = facets.getPositiveInteger(FACET_PRECISION);
+		precision = facets.getPositiveInteger(FACET_TOTALDIGITS);
 		
 		// loosened facet check
-		DataTypeWithFacet o = baseType.getFacetObject(FACET_PRECISION);
-		if(o!=null && ((PrecisionFacet)o).precision < this.precision )
+		DataTypeWithFacet o = baseType.getFacetObject(FACET_TOTALDIGITS);
+		if(o!=null && ((TotalDigitsFacet)o).precision < this.precision )
 			throw new BadTypeException(
 				BadTypeException.ERR_LOOSENED_FACET,
-				FACET_PRECISION, o.getName() );
+				FACET_TOTALDIGITS, o.getName() );
 		
 		// consistency with scale is checked in DataTypeImpl.derive method.
 	}

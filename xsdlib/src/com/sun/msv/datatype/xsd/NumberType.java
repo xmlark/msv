@@ -13,16 +13,16 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
- * "decimal" type.
+ * "number" type.
  * 
- * See http://www.w3.org/TR/xmlschema-2/#decimal for the spec
+ * See http://www.w3.org/TR/xmlschema-2/#number for the spec
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class DecimalType extends ConcreteType implements Comparator
+public class NumberType extends ConcreteType implements Comparator
 {
-	public static final DecimalType theInstance = new DecimalType();
-	private DecimalType() { super("decimal"); }
+	public static final NumberType theInstance = new NumberType();
+	private NumberType() { super("number"); }
 	
 	/** constant */
 	private static final BigInteger the10 = new BigInteger("10");
@@ -111,8 +111,8 @@ public class DecimalType extends ConcreteType implements Comparator
 
 	public final int isFacetApplicable( String facetName )
 	{
-		if( facetName.equals(FACET_PRECISION)
-		||	facetName.equals(FACET_SCALE)
+		if( facetName.equals(FACET_TOTALDIGITS)
+		||	facetName.equals(FACET_FRACTIONDIGITS)
 		||	facetName.equals(FACET_PATTERN)
 		||	facetName.equals(FACET_ENUMERATION)
 		||	facetName.equals(FACET_MAXINCLUSIVE)

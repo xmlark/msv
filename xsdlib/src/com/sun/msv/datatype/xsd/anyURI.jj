@@ -4,22 +4,22 @@ options {
 	OPTIMIZE_TOKEN_MANAGER	= true;
 	BUILD_PARSER			= true;
 }
-PARSER_BEGIN(UriReferenceParser)
+PARSER_BEGIN(AnyURIParser)
 
 package com.sun.tranquilo.datatype;
 
 import java.io.*;
 
-public class UriReferenceParser
+public class AnyURIParser
 {
 	public static void main(String args[]) throws Exception
 	{
 		String s = new BufferedReader( new InputStreamReader(System.in) ).readLine();
-		new UriReferenceParser(new ByteArrayInputStream(s.getBytes("UTF-8"))).start();
+		new AnyURIParser(new ByteArrayInputStream(s.getBytes("UTF-8"))).start();
 	}
 }
 
-PARSER_END(UriReferenceParser)
+PARSER_END(AnyURIParser)
 
 /*
 	a Uniform Resource Identifier (URI) Reference as defined in

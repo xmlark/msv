@@ -171,10 +171,10 @@ public class TypeIncubator
 					exclusiveFacetPairs[i][0],
 					exclusiveFacetPairs[i][1] );
 		
-		if( contains(DataType.FACET_PRECISION) )
-			r = new PrecisionFacet		( newName, r, this );
-		if( contains(DataType.FACET_SCALE) )
-			r = new ScaleFacet			( newName, r, this );
+		if( contains(DataType.FACET_TOTALDIGITS) )
+			r = new TotalDigitsFacet	( newName, r, this );
+		if( contains(DataType.FACET_FRACTIONDIGITS) )
+			r = new FractionDigitsFacet	( newName, r, this );
 		if( contains(DataType.FACET_MININCLUSIVE) )
 			r = new MinInclusiveFacet	( newName, r, this );
 		if( contains(DataType.FACET_MAXINCLUSIVE) )
@@ -212,13 +212,13 @@ public class TypeIncubator
 			
 			
 			// check that scale <= precision
-			o1 = r.getFacetObject(DataType.FACET_SCALE);
-			o2 = r.getFacetObject(DataType.FACET_PRECISION);
+			o1 = r.getFacetObject(DataType.FACET_FRACTIONDIGITS);
+			o2 = r.getFacetObject(DataType.FACET_TOTALDIGITS);
 			
 			if( o1!=null && o2!=null
-			&& ((ScaleFacet)o1).scale > ((PrecisionFacet)o2).precision )
+			&& ((FractionDigitsFacet)o1).scale > ((TotalDigitsFacet)o2).precision )
 				throw reportFacetInconsistency(
-					newName, o1,DataType.FACET_SCALE, o2,DataType.FACET_PRECISION );
+					newName, o1,DataType.FACET_FRACTIONDIGITS, o2,DataType.FACET_TOTALDIGITS );
 			
 			// check that minInclusive <= maxInclusive
 			checkRangeConsistency( r, DataType.FACET_MININCLUSIVE, DataType.FACET_MAXINCLUSIVE );

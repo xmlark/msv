@@ -13,24 +13,24 @@ import com.sun.tranquilo.datatype.datetime.ISO8601Parser;
 import com.sun.tranquilo.datatype.datetime.IDateTimeValueType;
 
 /**
- * "yearMonth" type.
+ * "gMonth" type.
  * 
- * See http://www.w3.org/TR/xmlschema-2/#yearMonth for the spec
+ * See http://www.w3.org/TR/xmlschema-2/#gMonth for the spec
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class YearMonthType extends DateTimeBaseType
+public class GMonthType extends DateTimeBaseType
 {
-	public static final YearMonthType theInstance = new YearMonthType();
-	private YearMonthType() { super("yearMonth"); }
+	public static final GMonthType theInstance = new GMonthType();
+	private GMonthType() { super("gMonth"); }
 
 	protected void runParserL( ISO8601Parser p ) throws Exception
 	{
-		p.yearMonthTypeL();
+		p.monthTypeL();
 	}
 
 	protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception
 	{
-		return p.yearMonthTypeV();
+		return p.monthTypeV();
 	}
 }

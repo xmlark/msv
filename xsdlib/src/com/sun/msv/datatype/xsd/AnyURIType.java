@@ -12,16 +12,16 @@ package com.sun.tranquilo.datatype;
 import java.io.ByteArrayInputStream;
 
 /**
- * "uriReference" type.
+ * "anyURI" type.
  * 
- * See http://www.w3.org/TR/xmlschema-2/#uriReference for the spec
+ * See http://www.w3.org/TR/xmlschema-2/#anyURI for the spec
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class UriReferenceType extends ConcreteType implements Discrete
+public class AnyURIType extends ConcreteType implements Discrete
 {
-	public static final UriReferenceType theInstance = new UriReferenceType();
-	private UriReferenceType() { super("uriReference"); }
+	public static final AnyURIType theInstance = new AnyURIType();
+	private AnyURIType() { super("anyURI"); }
 	
 	protected boolean checkFormat( String content, ValidationContextProvider context )
 	{
@@ -44,8 +44,8 @@ public class UriReferenceType extends ConcreteType implements Discrete
 			
 			// By using UTF-8, non ascii characters will have bit image of 1XXXXXXX.
 			// thus these characters will be rejected by the parser as an error.
-			final UriReferenceParser parser =
-				new UriReferenceParser( new ByteArrayInputStream( content.getBytes("UTF8") ) );
+			final AnyURIParser parser =
+				new AnyURIParser( new ByteArrayInputStream( content.getBytes("UTF8") ) );
 			parser.start();
 		}
 		catch( Throwable e )

@@ -10,30 +10,30 @@
 package com.sun.tranquilo.datatype;
 
 /**
- * 'scale' facet.
+ * 'fractionDigits' facet.
  *
  * this class holds these facet information and performs validation.
  * 
  * @author Kohsuke KAWAGUCHI
  */
-class ScaleFacet extends DataTypeWithLexicalConstraintFacet
+class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet
 {
 	/** maximum number of fraction digits */
 	protected final int scale;
 
-	public ScaleFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
+	public FractionDigitsFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException
 	{
-		super( typeName, baseType, FACET_SCALE, facets );
+		super( typeName, baseType, FACET_FRACTIONDIGITS, facets );
 		
-		scale = facets.getNonNegativeInteger(FACET_SCALE);
+		scale = facets.getNonNegativeInteger(FACET_FRACTIONDIGITS);
 		
 		// loosened facet check
-		DataTypeWithFacet o = baseType.getFacetObject(FACET_SCALE);
-		if(o!=null && ((ScaleFacet)o).scale < this.scale )
+		DataTypeWithFacet o = baseType.getFacetObject(FACET_FRACTIONDIGITS);
+		if(o!=null && ((FractionDigitsFacet)o).scale < this.scale )
 			throw new BadTypeException(
 				BadTypeException.ERR_LOOSENED_FACET,
-				FACET_SCALE, o.getName() );
+				FACET_FRACTIONDIGITS, o.getName() );
 		
 		// consistency with precision is checked in DataTypeImpl.derive method.
 	}

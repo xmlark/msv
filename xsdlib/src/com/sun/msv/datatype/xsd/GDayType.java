@@ -13,24 +13,24 @@ import com.sun.tranquilo.datatype.datetime.ISO8601Parser;
 import com.sun.tranquilo.datatype.datetime.IDateTimeValueType;
 
 /**
- * "monthDay" type.
+ * "gDay" type.
  * 
- * See http://www.w3.org/TR/xmlschema-2/#monthDay for the spec
+ * See http://www.w3.org/TR/xmlschema-2/#gDay for the spec
  * 
- * @author Kohsuke KAWAGUCHI
+ * @author	Kohsuke Kawaguchi
  */
-public class MonthDayType extends DateTimeBaseType
+public class GDayType extends DateTimeBaseType
 {
-	public static final MonthDayType theInstance = new MonthDayType();
-	private MonthDayType() { super("monthDay"); }
+	public static final GDayType theInstance = new GDayType();
+	private GDayType() { super("gDay"); }
 
 	protected void runParserL( ISO8601Parser p ) throws Exception
 	{
-		p.monthDayTypeL();
+		p.dayTypeL();
 	}
 
 	protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception
 	{
-		return p.monthDayTypeV();
+		return p.dayTypeV();
 	}
 }

@@ -360,6 +360,7 @@ public class Driver {
 	public static final String ERR_LOAD_GRAMMAR =		"Driver.ErrLoadGrammar";
 	public static final String MSG_BAILOUT =			"Driver.BailOut";
 	public static final String MSG_FAILED_TO_IGNORE_EXTERNAL_DTD ="Driver.FailedToIgnoreExternalDTD";
+	public static final String MSG_WARNING_FOUND =		"Driver.WarningFound";
 //	public static final String MSG_SNIFF_SCHEMA =		"Driver.SniffSchema";
 //	public static final String MSG_UNKNOWN_SCHEMA =		"Driver.UnknownSchema";
 }

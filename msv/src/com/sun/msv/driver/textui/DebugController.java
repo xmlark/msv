@@ -19,15 +19,25 @@ import com.sun.msv.reader.GrammarReaderController;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class DebugController implements GrammarReaderController
-{
+public class DebugController implements GrammarReaderController {
+	
+	/** if true, warnings are reported. If false, not reported. */
 	private boolean displayWarning;
 	
-	public DebugController( boolean displayWarning ) { this.displayWarning = displayWarning; }
+	/** set to true after "there are warnings..." message is once printed. */
+	private boolean warningReported = false;
 	
-	public void warning( Locator[] loc, String errorMessage )
-	{
-		if(!displayWarning)	return;
+	public DebugController( boolean displayWarning ) {
+		this.displayWarning = displayWarning;
+	}
+	
+	public void warning( Locator[] loc, String errorMessage ) {
+		if(!displayWarning)	{
+			if( !warningReported )
+				System.out.println( Driver.localize(Driver.MSG_WARNING_FOUND) );
+			warningReported = true;
+			return;
+		}
 		
 		System.out.println(errorMessage);
 		
@@ -38,19 +48,15 @@ public class DebugController implements GrammarReaderController
 				printLocation(loc[i]);
 	}
 	
-	public void error( Locator[] loc, String errorMessage, Exception nestedException )
-	{
-		if( nestedException instanceof SAXException )
-		{
+	public void error( Locator[] loc, String errorMessage, Exception nestedException ) {
+		if( nestedException instanceof SAXException ) {
 			System.out.println("SAXException: " + nestedException.getLocalizedMessage() );
 			SAXException se = (SAXException)nestedException;
 			if(se.getException()!=null) {
 				System.out.println("  nested exception: " + se.getException().getLocalizedMessage() );
 				se.getException().printStackTrace(System.out);
 			}
-		}
-		else
-		{
+		} else {
 			System.out.println(errorMessage);
 		}
 		
@@ -61,13 +67,14 @@ public class DebugController implements GrammarReaderController
 				printLocation(loc[i]);
 	}
 	
-	private void printLocation( Locator loc )
-	{
+	private void printLocation( Locator loc ) {
 		System.out.println( "  "+
 			(loc.getLineNumber()+1)+":"+
 			loc.getColumnNumber()+"@"+
 			loc.getSystemId() );
 	}
 
-	public InputSource resolveEntity( String publicId, String systemId ) { return null; }
+	public InputSource resolveEntity( String publicId, String systemId ) {
+		return null;
+	}
 }

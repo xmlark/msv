@@ -66,7 +66,12 @@ public class DefineState extends com.sun.msv.reader.trex.DefineState {
 					// different combine method.
 					reader.reportError( new Locator[]{location, reader.getDeclaredLocationOf(baseExp)},
 								reader.ERR_INCONSISTENT_COMBINE, new Object[]{baseExp.name} );
-					return baseExp.exp;
+					
+					// reset the combine method to null
+					// to surpress excessive error messages.
+					info.combineMethod = null;
+					
+					return baseExp.exp;	// ignore the new pattern
 				}
 			}
 		}

@@ -17,10 +17,83 @@ import com.sun.msv.util.StringRef;
 import com.sun.msv.util.DatatypeRef;
 
 /**
+ * exposes a low-level validation engine interface.
+ * 
+ * <p>
  * represents a pseudo-automaton acceptor.
+ * this interface is used to validate content models.
  * 
- * this interface is used to verify content models.
+ * <h2>Perform Validation</h2>
+ * <p>
+ * To perform validation, call the createAcceptor method of the DocumentDeclaration
+ * interface to obtain an Acceptor for validating the document element.
  * 
+ * <pre>
+ * Acceptor a = vgm.createAcceptor();
+ * </pre>
+ * 
+ * <p>
+ * One acceptor is responsible for validating one element. So you also need
+ * some form of stack. If you are using a "push" interface like SAX, you need
+ * an explicit stack. If you are validating in "pull" fashion (like DOM), then
+ * you can use a recursion instead of an explicit stack.
+ * 
+ * <p>
+ * The following explanation assumes SAX-like interface.
+ * 
+ * <p>
+ * Now, get back to the story. Whenever you encounter a start tag, create a new
+ * acceptor, which validates the children of newly encountered element.
+ * 
+ * <pre>
+ * stack.push(a);
+ * a = a.createChildAcceptor( sti, null );
+ * </pre>
+ * 
+ * <p>
+ * If this start tag was unexpected, then this method returns null. See javadoc
+ * for more details.
+ * 
+ * <p>
+ * If you find an end tag, make sure that the acceptor is satisfied. An acceptor
+ * is said to be unsatisfied when it needs more elements/text to complete the content
+ * model. For example, if the content model is (A,B,C) and it only sees (A,B), then
+ * the acceptor is not satisfied because it needs to see C.
+ * 
+ * <pre>
+ * if(!a.isAcceptState(null))
+ *   ; // error because the acceptor is unsatisfied.
+ * Acceptor child = a;
+ * a = stack.pop();
+ * a.stepForward(child,null);
+ * </pre>
+ * 
+ * <p>
+ * Then, call the stepForward method of the parent acceptor and pass
+ * the child acceptor to it.
+ * 
+ * <p>
+ * Finally, whenever you see a text, call the stepForward method.
+ * If the text was unexpected or not allowed, then this method returns null.
+ * See the documentation for details.
+ * 
+ * <pre>
+ * a.stepForward("text",context,null,null);
+ * </pre>
+ * 
+ * 
+ * <p>
+ * In this way, you can better control the validation process.
+ * 
+ * <p>
+ * If you need even finer control of the validation process
+ * (e.g., you need to know the list of allowed elements/attributes),
+ * you may want to rely on the <code>regexp</code> implementation of VGM.
+ * see {@link com.sun.msv.verifier.regexp.REDocumentDeclaration} for detail.
+ * 
+ * 
+ * 
+ * @see DocumentDeclaration
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface Acceptor
@@ -98,11 +171,41 @@ public interface Acceptor
 	Object getOwnerType();
 	
 	
-	/** gets how this acceptor take care of characters.
+	/**
+	 * gets how this acceptor handles characters.
 	 * 
-	 * one of the constant value shown below.
+	 * <p>
+	 * This method makes it possible to optimize character handling.
+	 * For many elements of data-oriented schemas, characters are completely prohibited.
+	 * For example, In SVG, only handful elements are allowed to have #PCDATA and
+	 * all other elements have element-only content model. Also, for many elements of
+	 * document-oriented schemas, #PCDATA is allowed just about anywhere.
+	 * 
+	 * <p>
+	 * In the former case, this method returns {@link #STRING_PROHIBITED}.
+	 * In other words, this declares that any stepForward(String) method with
+	 * non-whitespace characters will always result in a failure.
+	 * The caller can then exploit this property of the content model and 
+	 * can immediately signal an error when it finds characters, or discard any
+	 * whitespace characters without keeping them in memory.
+	 * 
+	 * <p>
+	 * In the latter case, this method returns {@link #STRING_IGNORE}.
+	 * This declares that any stepForward(String) call does not change anything at all.
+	 * The caller can then exploit this property and discard any characeters it found.
+	 * 
+	 * <p>
+	 * If non of the above applies, or the implementation is simply not capable of
+	 * providing this information, then this method returns {@link #STRING_STRICT}.
+	 * In this case, the caller has to faithfully call the stepForward(String) method
+	 * for all characeters it found.
+	 * 
+	 * <p>
 	 * Although this method can be called anytime, it is intended to be called
 	 * only once when the acceptor is first created.
+	 * 
+	 * @return
+	 *		one of the three constant values shown below.
 	 */
 	int getStringCareLevel();
 
@@ -117,7 +220,7 @@ public interface Acceptor
 	 * character literals are allowed, but Acceptor doesn't care
 	 * its contents and where it is appeared.
 	 * 
-	 * Verifier doesn't need to call stepForward for literal.
+	 * The caller doesn't need to call stepForward for literal.
 	 * This mode is used for mixed contents.
 	 */
 	static final int STRING_IGNORE		= 0x01;

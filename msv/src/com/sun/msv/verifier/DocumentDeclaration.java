@@ -12,15 +12,19 @@ package com.sun.msv.verifier;
 /**
  * Represents a kind of "constraint" over XML document.
  * 
- * Usually, this is what people call schema.
- * Conceptually, this object is a collection of ElementDeclaration.
+ * Usually, this is what people call a schema.
+ * 
+ * <p>
+ * Call the {@link #createAcceptor()} method to start validation.
+ * 
+ * @see Acceptor
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface DocumentDeclaration
 {
-	/** creates a new Acceptor that will verify the document element.
-	 * 
+	/**
+	 * creates a new Acceptor that will validate the document element.
 	 * 
 	 * In RELAX, this concept is equivalent to &lt;topLevel&gt;
 	 * In TREX, this concept is equivalent to &lt;start&gt;

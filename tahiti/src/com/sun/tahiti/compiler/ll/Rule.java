@@ -12,6 +12,7 @@ package com.sun.tahiti.compiler.ll;
 import com.sun.msv.grammar.Expression;
 import com.sun.tahiti.compiler.XMLWriter;
 import com.sun.tahiti.compiler.Symbolizer;
+import java.util.Iterator;
 import java.util.Set;
 
 public class Rule {
@@ -106,13 +107,26 @@ public class Rule {
 				"id",symbolizer.getId(this)
 			});
 		
+		// TODO: check the disjointness of the interleave.
+		
 		writer.element("left",new String[]{"symbolRef",symbolizer.getId(left)});
 		
 		writer.start("right");
 		for( int i=0; i<right.length; i++ )
-			if( right[i]!=Expression.epsilon )
-				// we don't write epsilon explicitly.
-				writer.element("item",new String[]{"symbolRef",symbolizer.getId(right[i])});
+			// we don't write epsilon explicitly.
+			if( right[i]!=Expression.epsilon ) {
+				writer.start("item",new String[]{"symbolRef",symbolizer.getId(right[i])});
+				if( isInterleave && i!=0 ) {
+					// for <interleave>, we have to spit the filter definition.
+					// But we don't need a filter for the first one symbol.
+					writer.start("filter");
+					Iterator itr = FilterCalculator.calc(right[i]).iterator();
+					while(itr.hasNext())
+						writer.element("item",new String[]{"symbolRef",symbolizer.getId(itr.next())});
+					writer.end("filter");
+				}
+				writer.end("item");
+			}
 		
 		writer.end("right");
 		

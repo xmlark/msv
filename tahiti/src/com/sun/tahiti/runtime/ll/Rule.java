@@ -40,7 +40,7 @@ public class Rule {
 	 * Specifically, symbols that can appear in each branch must be disjoint.
 	 * See the documentation for details.
 	 */
-	public final LLParser.Filter[] filters;
+	public final Filter[]	filters;
 	
 	/**
 	 * If this field is false, then this rule is a ordinary sequence.
@@ -62,7 +62,7 @@ public class Rule {
 	}
 	
 	/** constructor for an interleave rule. */
-	public Rule( Object left, Object[] right, LLParser.Filter[] filters ) {
+	public Rule( Object left, Object[] right, Filter[] filters ) {
 		this.left=left; this.right=right;
 		this.filters = filters;
 		this.isInterleave = (filters!=null);

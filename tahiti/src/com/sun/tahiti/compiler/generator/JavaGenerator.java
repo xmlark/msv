@@ -171,7 +171,10 @@ class JavaGenerator
 			// use item type itself.
 			return new Container(){
 				public String getTypeStr() {
-					return fu.type.getTypeName();
+					if( fu.type.getPackageName().equals("java.lang") )
+						return fu.type.getBareName();
+					else
+						return fu.type.getTypeName();
 				}
 				public String getInitializer() {
 					return "null";

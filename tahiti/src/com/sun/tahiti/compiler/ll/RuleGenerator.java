@@ -141,7 +141,8 @@ public class RuleGenerator
 			public void onInterleave( InterleaveExp exp ){
 				if(visit(exp)) {
 					// add interleave rule.
-					rules.put( exp, new Rule( exp, new Expression[]{exp.exp1,exp.exp2}, true ) );
+					rules.put( exp, new Rule[]{
+						new Rule( exp, new Expression[]{exp.exp1,exp.exp2}, true ) } );
 					exp.exp1.visit(this);
 					exp.exp2.visit(this);
 				}

@@ -273,9 +273,41 @@ public class ]]></xsl:text>
 				<xsl:value-of select="@symbolRef"/>
 			</xsl:for-each>
 			<xsl:text> }</xsl:text>
+			
 			<xsl:if test="@interleave='true'">
-				<xsl:text>,**********</xsl:text>
+				<!-- generete filter -->
+				<xsl:text>, new Filter[]{</xsl:text>
+				<xsl:for-each select="right/item/filter">
+					<xsl:if test="position()!=1">
+						<xsl:text>,</xsl:text>
+					</xsl:if>
+					
+					<xsl:choose>
+						<xsl:when test="count(item)=0">
+							<xsl:text>Filter.emptyFilter</xsl:text>
+						</xsl:when>
+						
+						<xsl:when test="count(item)=1">
+							<xsl:text>new Filter.SimpleFilter(</xsl:text>
+							<xsl:value-of select="item/@symbolRef"/>
+							<xsl:text>)</xsl:text>
+						</xsl:when>
+						
+						<xsl:otherwise>
+							<xsl:text>new Filter.SetFilter(new Object[]{</xsl:text>
+							<xsl:for-each select="item">
+								<xsl:if test="position()!=1">
+									<xsl:text>,</xsl:text>
+								</xsl:if>
+								<xsl:value-of select="@symbolRef"/>
+							</xsl:for-each>
+							<xsl:text>})</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:for-each>
+				<xsl:text>}</xsl:text>
 			</xsl:if>
+			
 			<xsl:text>);</xsl:text>
 			<xsl:call-template name="CRLF"/>
 		</xsl:for-each>

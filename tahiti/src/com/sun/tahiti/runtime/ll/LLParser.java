@@ -109,10 +109,6 @@ public final class LLParser {
 	/** 入力トークン列 */
 	Packet[] inputs;
 	
-	interface Filter {
-		boolean rejects( Object symbol );
-	}
-		
 	/** トークン読み取り器 */
 	class InputReader {
 		
@@ -158,14 +154,17 @@ public final class LLParser {
 		/** consumes a token and returns a new token. */
 		public Packet consume() {
 			used[idx++] = true;
-			
+			skipFilteredToken();
+			return current();
+		}
+		
+		/** skips currently filtered tokens and find an available one. */
+		private void skipFilteredToken() {
 			// look for an unused token.
 			while( idx<inputs.length && (used[idx] || (filter!=null && filter.rejects(inputs[idx].symbol))) )
 				idx++;
 			
 			while( base<inputs.length && used[base] )	base++;
-			
-			return current();
 		}
 		/** consumes an attribute token. */
 		public void consumeAttribute( int idx ) {
@@ -180,6 +179,7 @@ public final class LLParser {
 		public void removeFilter() {
 			idx=base;
 			filter = filter.previous;
+			skipFilteredToken();
 		}
 		
 		/** creates a clone. */
@@ -372,6 +372,8 @@ LLparser:
 			
 			if( stackTop==null ) {
 				if( reader.attLen!=0 || current!=null ) {
+					if(Debug.debug)
+						System.out.println("stack is empty but there are unconsumed tokens");
 					// unconsumed attributes are left, or
 					// unconsumed tokens are left.
 					// That means we have to back track.
@@ -381,6 +383,13 @@ LLparser:
 				break;	// LR parser accepts the input
 			}
 			
+			if( stackTop.symbol==removeInterleaveSymbol ) {
+				if(Debug.debug)
+					System.out.println("removing an interleave filter");
+				reader.removeFilter();
+				popStack();
+				continue;
+			}
 			if( stackTop.symbol instanceof EndNonTerminalAction ) {
 				addAction( (Action)stackTop.symbol );
 				popStack();
@@ -539,9 +548,14 @@ LLparser:
 		if(Debug.debug) {
 			System.out.print("expanding a rule : ");
 			System.out.print( symbolToStr(stackTop.symbol) );
-			System.out.print(" -->");
-			for( int i=0; i<rule.right.length; i++ )
-				System.out.print( " "+symbolToStr(rule.right[i]) );
+			System.out.print(" --> ");
+			for( int i=0; i<rule.right.length; i++ ) {
+				if(i!=0) {
+					if( rule.isInterleave )	System.out.print(" & ");
+					else	System.out.print(" ");
+				}
+				System.out.print(symbolToStr(rule.right[i]) );
+			}
 			System.out.println();
 		}
 				
@@ -562,9 +576,16 @@ LLparser:
 		} else {
 			// if it's an interleave, push the  special token, too.
 			for( int j=rule.right.length-1; j>=0; j-- )	{
-				stackTop = new StackItem(removeInterleaveSymbol,null);
+				if(j!=rule.right.length-1)
+					stackTop = new StackItem(removeInterleaveSymbol,null);
 				stackTop = new StackItem(rule.right[j],receiver);
 			}
+			
+			// apply filters. Note that the number of filters are one less than
+			// the number of right hand side branches because we don't need a filter
+			// for the first one branch.
+			for( int j=rule.right.length-2; j>=0; j-- )
+				reader.applyFilter(rule.filters[j]);
 		}
 	}
 	

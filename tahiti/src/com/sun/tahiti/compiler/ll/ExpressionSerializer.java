@@ -211,7 +211,7 @@ class ExpressionSerializer {
 	
 		public void onSequence( SequenceExp exp )		{ onBinExp("group",exp); }
 		public void onChoice( ChoiceExp exp )			{ onBinExp("choice",exp); }
-		public void onInterleave( InterleaveExp exp)	{ onBinExp("interleve",exp); }
+		public void onInterleave( InterleaveExp exp)	{ onBinExp("interleave",exp); }
 	
 		private void onBinExp( String name, BinaryExp exp ) {
 			out.start(name);
@@ -241,5 +241,49 @@ class ExpressionSerializer {
 			// otherwise perform recursion.
 			exp.visit(serializer);
 		}
+	}
+
+	
+	/**
+	 * generates canonical XML representation of the name class.
+	 */
+	public static void serializeNameClass( NameClass nc, final XMLWriter out ) {
+		out.start("name");
+		nc.visit( new NameClassVisitor(){
+			public Object onChoice( ChoiceNameClass nc ) {
+				out.start("choice");
+				nc.nc1.visit(this);
+				nc.nc2.visit(this);
+				out.end("choice");
+				return null;
+			}
+			public Object onAnyName( AnyNameClass nc ) {
+				out.element("anyName");
+				return null;
+			}
+			public Object onNsName( NamespaceNameClass nc ) {
+				out.element("nsName",new String[]{"ns",nc.namespaceURI});
+				return null;
+			}
+			public Object onNot( NotNameClass nc ) {
+				out.start("not");
+				nc.child.visit(this);
+				out.end("not");
+				return null;
+			}
+			public Object onDifference(DifferenceNameClass nc) {
+				out.start("difference");
+				nc.nc1.visit(this);
+				nc.nc2.visit(this);
+				out.end("difference");
+				return null;
+			}
+			public Object onSimple(SimpleNameClass nc) {
+				out.element("name",
+					new String[]{"ns",nc.namespaceURI,"local",nc.localName});
+				return null;
+			}
+		});
+		out.end("name");
 	}
 }

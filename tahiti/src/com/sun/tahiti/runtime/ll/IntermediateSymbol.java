@@ -21,7 +21,7 @@ public final class IntermediateSymbol extends NonTerminalSymbol
 		this.identifier = identifier;
 	}
 	public String toString() {
-		return "I<"+identifier+">";
+		return identifier;
 	}
 	
 	/**

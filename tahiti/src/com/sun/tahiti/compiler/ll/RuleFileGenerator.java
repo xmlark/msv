@@ -264,7 +264,7 @@ public class RuleFileGenerator implements Symbolizer {
 					AttributeExp aexp = (AttributeExp)exp;
 					out.start( "attributeSymbol", new String[]{"id",(String)allNames.get(aexp)} );
 				
-					spitNameClass(aexp.getNameClass(),out);
+					ExpressionSerializer.serializeNameClass(aexp.getNameClass(),out);
 					out.start("content");
 					aexp.visit(eser.serializer);
 					out.end("content");
@@ -284,7 +284,7 @@ public class RuleFileGenerator implements Symbolizer {
 			for( int i=0; i<elms.length; i++ ) {
 				out.start("elementSymbol", new String[]{"id",(String)allNames.get(elms[i])} );
 			
-				spitNameClass(elms[i].getNameClass(),out);
+				ExpressionSerializer.serializeNameClass(elms[i].getNameClass(),out);
 				out.start("content");
 				elms[i].visit(eser.serializer);
 				out.end("content");
@@ -406,49 +406,6 @@ public class RuleFileGenerator implements Symbolizer {
 		return getNumberedName( "", 1, m );
 	}
 
-	
-	/**
-	 * generates canonical XML representation of the name class.
-	 */
-	private static void spitNameClass( NameClass nc, final XMLWriter out ) {
-		out.start("name");
-		nc.visit( new NameClassVisitor(){
-			public Object onChoice( ChoiceNameClass nc ) {
-				out.start("choice");
-				nc.nc1.visit(this);
-				nc.nc2.visit(this);
-				out.end("choice");
-				return null;
-			}
-			public Object onAnyName( AnyNameClass nc ) {
-				out.element("anyName");
-				return null;
-			}
-			public Object onNsName( NamespaceNameClass nc ) {
-				out.element("nsName",new String[]{"ns",nc.namespaceURI});
-				return null;
-			}
-			public Object onNot( NotNameClass nc ) {
-				out.start("not");
-				nc.child.visit(this);
-				out.end("not");
-				return null;
-			}
-			public Object onDifference(DifferenceNameClass nc) {
-				out.start("difference");
-				nc.nc1.visit(this);
-				nc.nc2.visit(this);
-				out.end("difference");
-				return null;
-			}
-			public Object onSimple(SimpleNameClass nc) {
-				out.element("name",
-					new String[]{"ns",nc.namespaceURI,"local",nc.localName});
-				return null;
-			}
-		});
-		out.end("name");
-	}
 	
 	/**
 	 * gets the source code representation of the specified string.

@@ -14,7 +14,9 @@ import com.sun.msv.util.StartTagInfo;
 public class SRELAXNGReader extends RELAXNGReader {
 
 	public static final String SchematronURI = "http://www.ascc.net/xml/schematron";
-
+    
+    public static final String RNG_PLUS_SCHEMATRON_URI =
+        RELAXNGReader.RELAXNGNamespace + "+" + SchematronURI;
 
 
 	

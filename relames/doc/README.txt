@@ -120,11 +120,41 @@ other RELAX NG processors will silently ignore all Schematron constraints.
 
 
 ----------------------------------------------------------------------
+USING FROM COMMAND LINE
+----------------------------------------------------------------------
+
+The jar file can be used as a command-line validation tool.
+Type as follows:
+
+    $ java -jar relames.jar
+
+To get the usage screen.
+
+
+
+
+----------------------------------------------------------------------
+USING FROM YOUR PROGRAM
+----------------------------------------------------------------------
+
+The schematron extension can be used through JARV API [5], which makes
+it very simple to use this library from your application.
+
+When you call the VerifierFactory.newInstance method, type as follows:
+
+VerifierFactory factory = VerifierFactory.newInstance(
+  "http://relaxng.org/ns/structure/1.0+http://www.ascc.net/xml/schematron");
+
+to create a verifier factory from this extension library.
+
+
+
+----------------------------------------------------------------------
 LIMITATION
 ----------------------------------------------------------------------
 
 - id() function works correctly only if Xerces or Crimson is used as
-  the DOM implementaion.
+  the DOM implementaion. This is because of the limitation in W3C DOM.
 
 
 
@@ -139,5 +169,7 @@ REFERENCES
       http://www.apache.org/
 [ 4] Xalan-Java
       http://xml.apache.org/xalan-j/
+[ 5] JARV API
+      http://iso-relax.sourceforge.net/JARV/
 ======================================================================
 END OF README

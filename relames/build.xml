@@ -21,6 +21,12 @@
 			<classpath path="${relaxngDatatype.jar}"/>
 			<classpath path="${isorelax.jar}"/>
 		</javac>
+    <!-- copy static resource files -->
+    <copy todir="bin">
+      <fileset dir="src">
+        <include name="META-INF/**/*"/>
+      </fileset>
+    </copy>
 	</target>
 	
 	<!-- create a distribution package -->
@@ -61,12 +67,13 @@
 		
 		<!-- creates binary jar -->
 		<jar	jarfile="${stageName}/relames.jar"
-				manifest="./MANIFEST.MF"
 				compress="false">
+				<!-- manifest="${stageName}/src/META-INF/MANIFEST.MF" -->
 				
 			<fileset dir="temp" />
 			<!-- resource files -->
 			<fileset dir="${stageName}/src" includes="**/*.properties" />
+			<fileset dir="${stageName}/src" includes="META-INF/**/*" />
 		</jar>
 		<delete dir="temp" />
 		

@@ -484,27 +484,7 @@ public class RELAXNGWriter implements GrammarWriter {
 	private void writeNameClass( NameClass src ) {
 		final String MAGIC = PossibleNamesCollector.MAGIC;
 		Set names = PossibleNamesCollector.calc(src);
-/*		
-		// simplify name class
-		Iterator itr = names.iterator();
-		while( itr.hasNext() ) {
-			StringPair name = (StringPair)itr.next();
-			if( name.namespaceURI==MAGIC && name.localName==MAGIC ) {
-				itr.remove();
-				continue;
-			}
-			if( name.localName==MAGIC
-				&&  nc.accepts(name.namespaceURI,MAGIC)==nc.accepts(MAGIC,MAGIC) ) {
-				itr.remove();
-				continue;
-			}
-			if( nc.accepts(name)==nc.accepts(name.namespaceURI,MAGIC) ) {
-				itr.remove();
-				continue;
-			}
-		}
 		
-*/		
 		// convert a name class to the canonical form.
 		StringPair[] values = (StringPair[])names.toArray(new StringPair[names.size()]);
 
@@ -545,59 +525,20 @@ public class RELAXNGWriter implements GrammarWriter {
 				r = AnyNameClass.theInstance;
 			else
 				r = new DifferenceNameClass( AnyNameClass.theInstance, r );
+		} else {
+			if(r==null) {
+				// this name class accepts nothing.
+				// by adding notAllowed to the content model, this element
+				// will match nothing.
+				element("anyName");
+				element("notAllowed");
+				return;
+			}
 		}
-		
-//		if(r==null)	{
-//			throw new Error("assertion failed:"+src+":"+names.size() );
-//		}
 		
 		r.visit(nameClassWriter);
 		
-/*		
-		Stack tags = new Stack();
-		
-		if( nc.accepts(MAGIC,MAGIC) ) {
-			tags.push("anyName");
-			start("anyName");
-			if( values.length!=0 ) {
-				tags.push("except");
-				start("except");
-			}
-		}
-		
-		
-		Set uriset = new HashSet();
-		for( int i=0; i<values.length; i++ )
-			uriset.add( values[i].namespaceURI );
-		
-		String[] uris = (String[])uriset.toArray(new String[uris.size()]);
-		if(uris.length>1 && tags.size()==0) {
-			tags.push("choice");
-			start("choice");
-		}
-		
-		for( int i=0; i<uris.length; i++ ) {
-			if( uris[i]==MAGIC )	continue;
-			
-			boolean needExcept = false;
-			
-			if( nc.accepts(uris[i],MAGIC)!=nc.accepts(MAGIC,MAGIC) ) {
-				tags.push("nsName");
-				start("nsName",new String[]{"ns",uris[i]});
-				needExcept = true;
-			}
-			
-			for( int j=0; j<values.length; j++ ) {
-				if( !values[i].namespaceURI.equals(uris[i]) )	continue;
-				if( values[i].localName==MAGIC )				continue;
-				
-				if(needExcept) {
-					
-				}
-			}
-		}
-		if( names.contains( new StringPair(MAGIC,MAGIC) ) )
-*/	}
+	}
 	
 	protected NameClassVisitor nameClassWriter = createNameClassWriter();
 	protected NameClassVisitor createNameClassWriter() {

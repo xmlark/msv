@@ -36,4 +36,11 @@ public final class LightStack {
 	public Object pop() {
 		return buf[--len];
 	}
+	
+	public boolean contains( Object o ) {
+		for( int i=0; i<len; i++ )
+			if( buf[i]==o )
+				return true;
+		return false;
+	}
 }

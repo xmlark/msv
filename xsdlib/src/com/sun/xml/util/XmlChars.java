@@ -359,7 +359,9 @@ public class XmlChars
 
 	  default:
 		// added a character ...
-	    return c == 0x0387;
+        // 212E is in the category So, so I don't know why this is
+        // a BaseChar. But the spec says so.
+	    return c == 0x0387 || c==0x212E;
 	}
     }
 

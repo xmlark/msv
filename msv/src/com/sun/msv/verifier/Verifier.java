@@ -88,8 +88,6 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	private final static int INITIAL_PANIC_LEVEL = 3;
 
 	public Verifier( DocumentDeclaration documentDecl, ErrorHandler errorHandler ) {
-		if(documentDecl==null)	throw new IllegalArgumentException();
-		
 		this.docDecl = documentDecl;
 		this.errorHandler = errorHandler;
 	}

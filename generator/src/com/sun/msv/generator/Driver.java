@@ -16,6 +16,7 @@ import java.util.*;
 import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.grammar.relax.*;
 import com.sun.tranquilo.grammar.*;
+import com.sun.tranquilo.relaxns.grammar.RELAXGrammar;
 import com.sun.tranquilo.driver.textui.DebugController;
 import com.sun.tranquilo.reader.util.GrammarLoader;
 import org.apache.xml.serialize.*;

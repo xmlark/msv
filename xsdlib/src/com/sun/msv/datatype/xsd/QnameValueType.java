@@ -13,7 +13,7 @@ package com.sun.msv.datatype.xsd;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class QnameValueType implements java.io.Serializable {
+public class QnameValueType implements java.io.Serializable {
 	String namespaceURI;
 	String localPart;
 	

@@ -21,7 +21,7 @@ public class TypedString implements DataType
 	/** this type only matches this string */
 	public final String value;
 	/** true indicates that whiteSpace should be preserved. */
-	protected final boolean preserveWhiteSpace;
+	public final boolean preserveWhiteSpace;
 	
 	public TypedString( String value, boolean preserveWhiteSpace )
 	{

@@ -68,23 +68,31 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 			}
 		}
 
-		if(vs==null || vs.size()<32) {
+		if(vs.size()<32) {
 			// we need more diversity. generate more.
 			
-			for( i=0; i<10; i++ ) {
+			for( i=0; i<100; i++ ) {
 				s = _generate(dt,context);
-				if( dt.verify(s,context) )
+				if( s!=null && dt.verify(s,context) ) {
+					// memorize generated values so that we can use them later.
+					vs.add(s);
 					break;	// this value is OK.
+				}
 			}
-			if(i==10)
-				// we retried 10 times but failed to generate a value.
-				// 'vs' is already used in the _generate method if necessary.
-				// So this situation is an absolute failure.
-				fail(dt);
+			if(i==100) {
+				if( vs.size()==0 )
+					// we retried 10 times but failed to generate a value.
+					// and no example is available.
+					// So this situation is an absolute failure.
+					fail(dt);
+				else
+					s = (String)vs.toArray()[random.nextInt(vs.size())];
+			}
+		} else {
+			// we have enough diversity. use it.
+			s = (String)vs.toArray()[random.nextInt(vs.size())];
 		}
 		
-		// memorize generated values so that we can use them later.
-		vs.add(s);
 		
 		return s;
 	}
@@ -172,8 +180,6 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 			return (String)vs.toArray()[random.nextInt(vs.size())];
 		
 		
-		fail(dt);
-		// fail will never return
 		return null;
 	}
 

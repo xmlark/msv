@@ -7,18 +7,23 @@
 	<property name="documentDir" value="./doc/javadoc"/>
 	<property name="packageDir" value="./package"/>
 	<property name="libDir" value="./lib"/>
-	<property name="javaCClib" value="C:\Progra~1\Development\JavaCC\bin\lib" />
+	<property name="javaCClib" value="./ref/javacc/bin/lib" />
 	<property name="cvsRoot" value=":local:/cygdrive/c/Program Files/Development/CVS Repository" />
 	
 	<!-- test directory where you put your files like "relaxNNN.rlx" -->
-	<property name="RELAXBatchTestDir" value="C:/work/relax;c:/work/NITF;c:/work/JepaX" />
-	<property name="TREXBatchTestDir" value="C:/work/trex;c:/work/NITF;c:/work/JepaX" />
+	<property name="testRoot" value="./testCases" />
+	<property name="commonTestDir" value="${testRoot}/JepaX;${testRoot}/relax/error/lrgErrRatio;${testRoot}/relax/error/smlErrRatio" />
+	<property name="RELAXBatchTestDir" value="${testRoot}/relax;${testRoot}/NITF;${commonTestDir}" />
+	<property name="TREXBatchTestDir" value="${testRoot}/trex;${testRoot}/NITF;${commonTestDir}" />
+	<property name="DTDBatchTestDir" value="${testRoot}/NITF;${commonTestDir}" />
+	<property name="XSDBatchTestDir"
+		value="${testRoot}/xmlschema/tutorialExamples;${commonTestDir}" />
 
 
 	
 	<!-- compile Java source files -->
 	<target name="binary" depends="javacc">
-		<javac srcdir="${sourceDir}" destdir="${buildDir}"/>
+		<javac srcdir="${sourceDir}:${testDir}" destdir="${buildDir}"/>
 	</target>
 	
 	
@@ -57,6 +62,8 @@
 		<junit haltonfailure="yes" printsummary="yes" fork="yes">
 			<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
 			<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
+			<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
+			<sysproperty key="XSDBatchTestDir"		value="${XSDBatchTestDir}"/>
 			
   			<formatter type="plain" />
 			
@@ -175,6 +182,8 @@
 				manifest="./META-INF/XSD.MANIFEST.MF"
 				compress="false">
 			<fileset dir="temp" />
+			<!-- resource files -->
+			<fileset dir="${stageName}/src" includes="**/*.properties" />
 		</jar>
 		<delete dir="temp" />
 		
@@ -284,6 +293,9 @@
 
 		<delete dir="temp" />
 		<delete dir="xerces" />
+
+<!-- temporarily, remove source codes -->
+		<delete dir="${stageName}/src" />
 		
 		
 		<!-- creates distribution package -->

@@ -92,7 +92,7 @@ public class Verifier implements
 	 */
 	private int panicLevel = 0;
 	
-	private final static int INITIAL_PANIC_LEVEL = 5;
+	private final static int INITIAL_PANIC_LEVEL = 3;
 
 	public Verifier( DocumentDeclaration documentDecl, VerificationErrorHandler errorHandler )
 	{
@@ -228,8 +228,11 @@ public class Verifier implements
 				errorHandler.onError(vv);
 			
 			if( errorHandler==null || next==null )
+			{
+				if( com.sun.tranquilo.driver.textui.Debug.debug )
+					System.out.println("-- unable to recover");
 				throw new ValidationUnrecoverableException(vv);
-			
+			}
 			panicLevel = INITIAL_PANIC_LEVEL;
 		}
 		else

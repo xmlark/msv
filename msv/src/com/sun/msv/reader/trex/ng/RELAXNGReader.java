@@ -38,6 +38,7 @@ import com.sun.msv.reader.trex.RootState;
 import com.sun.msv.reader.trex.NameClassChoiceState;
 import com.sun.msv.reader.trex.DivInGrammarState;
 import com.sun.msv.reader.trex.IncludePatternState;
+import com.sun.msv.reader.trex.TREXSequencedStringChecker;
 import com.sun.msv.reader.datatype.DataTypeVocabulary;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.LightStack;
@@ -431,13 +432,16 @@ public class RELAXNGReader extends TREXBaseReader {
 			checkRunawayExpression( grammar, new Stack(), new java.util.HashSet() );
 		} catch( AbortException e ) {;}
 		
-		super.wrapUp();
+		if( !hadError )
+			// make sure that there is no sequenced string.
+			// when run-away expression is found, calling this method results in
+			// stack overflow.
+			grammar.visit( new TREXSequencedStringChecker(this,true) );
 		
-		if(!hadError) {
+		if(!hadError)
 			// check RELAX NG contextual restrictions
 			RestrictionChecker.check(this);
 			// this algorithm does not work if there is a runaway expression
-		}
 	}
 	
 	

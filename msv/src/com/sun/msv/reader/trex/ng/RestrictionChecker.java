@@ -28,8 +28,6 @@ import java.util.Vector;
  * the constraint set out in the section 7.1.6. Also, a set is used to avoid
  * redundant checks.
  * 
- * <p>
- * 
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
@@ -52,11 +50,14 @@ public class RestrictionChecker {
 	private Expression errorContext;
 	
 	private void reportError( Expression exp, String errorMsg ) {
+		reportError(exp,errorMsg,null);
+	}
+	private void reportError( Expression exp, String errorMsg, Object[] args ) {
 		reader.reportError(
 			new Locator[]{
 				reader.getDeclaredLocationOf(exp),
 				reader.getDeclaredLocationOf(errorContext)
-			}, errorMsg, null );
+			}, errorMsg, args );
 	}
 	
 	/** Visited ElementExp/AttributeExps. */
@@ -68,11 +69,9 @@ public class RestrictionChecker {
 	/** Object that checks conflicting elements in interleave. */
 	private DuplicateElementsChecker elemDupChecker;
 	
-	/** A flag that indicates whether &lt;text/> was found or not.
-	 * 
-	 * This flag is used to detect &lt;text/> in both operands of &lt;interleave/>
-	 */
-	private boolean hasText;
+	/** Object that checks conflicting values in &lt;interleave> in &lt;list>. */
+	private final DuplicateValueChecker valueDupChecker = new DuplicateValueChecker();
+	
 /*
 	
 	content model checker
@@ -95,7 +94,6 @@ public class RestrictionChecker {
 			final Expression oldContext = errorContext;
 			final DuplicateAttributesChecker oldADC = attDupChecker;
 			final DuplicateElementsChecker oldEDC = elemDupChecker;
-			final boolean oldHasText = hasText;
 			
 			errorContext = exp;
 			attDupChecker = new DuplicateAttributesChecker();
@@ -109,7 +107,6 @@ public class RestrictionChecker {
 			errorContext = oldContext;
 			attDupChecker = oldADC;
 			elemDupChecker = oldEDC;
-			hasText = oldHasText;
 		}
 		public void onAttribute( AttributeExp exp ) {
 			if( !visitedExps.add(exp) )		return;
@@ -118,7 +115,6 @@ public class RestrictionChecker {
 			attDupChecker.add(exp);
 			
 			final Expression oldContext = errorContext;
-			final boolean oldHasText = hasText;
 			
 			errorContext = exp;
 			
@@ -126,7 +122,6 @@ public class RestrictionChecker {
 			
 			exp.exp.getExpandedExp(reader.pool).visit(inAttribute);
 			errorContext = oldContext;
-			hasText = oldHasText;
 		}
 		public void onList( ListExp exp ) {
 			exp.exp.visit(inList);
@@ -151,45 +146,14 @@ public class RestrictionChecker {
 			if(elemDupChecker==null)
 				super.onInterleave(exp);
 			else {
-				// elemDupChecker is null only for the top-level particle.
-				// in there, <text/> is prohibited so we only need to
-				// check "<text> in both operands of <interleave>" here.
-				final boolean oldHasText = hasText;
-				hasText = false;
-				
-				// process the first branch
 				int idx = elemDupChecker.start();
 				exp.exp1.visit(this);
 				elemDupChecker.endLeftBranch(idx);
-				
-				final boolean leftHasText = hasText;
-				hasText = false;
-				
-				// then the second
 				exp.exp2.visit(this);
 				elemDupChecker.endRightBranch();
-				
-				// see if there are <text/> in both operands
-				if( leftHasText && hasText ) {
-					reportError( exp, ERR_TEXT_IN_INTERLEAVE );
-					hasText = false;	// recover from the error
-				} else
-					hasText = hasText|oldHasText|leftHasText;
-					/*
-					we cannot simply overwrite oldHasText.
-					imagine a following scenario
-						<interleave>
-							<text/>
-							<interleave>
-								<text/>
-								<element X/>
-							</interleave>
-						</interleave>
-					*/
 			}
 		}
 		public void onAnyString() {
-			hasText = true;
 			super.onAnyString();
 		}
 	}
@@ -288,14 +252,26 @@ public class RestrictionChecker {
 		public void onData( DataExp exp ) {
 			reportError( exp, ERR_DATA_IN_INTERLEAVE_IN_LIST );
 		}
-		// TODO: value
+		public void onValue( ValueExp exp ) {
+			// check <value> in <interleave>, which can only happen
+			// inside <list>.
+			valueDupChecker.add(exp);
+		}
+		public void onInterleave( InterleaveExp exp ) {
+			int idx = valueDupChecker.start();
+			exp.exp1.visit(this);
+			valueDupChecker.endLeftBranch(idx);
+			exp.exp2.visit(this);
+			valueDupChecker.endRightBranch();
+		}
 	};
 	/**
 	 * Used to visit children of lists.
 	 */
 	private final ExpressionWalker inList = new ListChecker() {
 		public void onInterleave( InterleaveExp exp ) {
-			exp.visit(inInterleaveInList);
+			valueDupChecker.reset();
+			inInterleaveInList.onInterleave(exp);
 		}
 	};
 	
@@ -529,6 +505,87 @@ public class RestrictionChecker {
 		protected String getErrorMessage() { return ERR_DUPLICATE_ATTRIBUTES; }
 	}
 	
+	/**
+	 * Checks &lt;value>s in &lt;interleave> in &lt;list>.
+	 * 
+	 * The algorithm here is basically the same as DuplicateNameChecker.
+	 */
+	private class DuplicateValueChecker {
+		
+		/** ValueExps will be added into this array. */
+		protected ValueExp[] exps = new ValueExp[16];
+		/** Number of items in the atts array. */
+		protected int expsLen=0;
+
+		/** areas. */
+		protected int[] areas = new int[8];
+		protected int areaLen=0;
+		
+		/** Adds newly found value. */
+		public void add( ValueExp exp ) {
+			check(exp);	// perform duplication check
+			
+			// add it to the array
+			if(exps.length==expsLen) {
+				// expand buffer
+				ValueExp[] n = new ValueExp[expsLen*2];
+				System.arraycopy(exps,0,n,0,expsLen);
+				exps = n;
+			}
+			exps[expsLen++] = exp;
+		}
+		
+		/** Tests a new value against existing values. */
+		private void check( ValueExp exp ) {
+			// make sure that this new exp has the correct type name.
+			if( expsLen!=0 && !exps[0].getName().equals(exp.getName()) ) {
+				// datatype names are different
+				reportError( exp, 
+					ERR_DIFFERENT_VALUE_TYPES_IN_INTERLEAVE,
+					new Object[]{
+						exps[0].getName().localName,
+						exp.getName().localName} );
+				return;
+			}
+			
+			// check this value with all values in active areas
+			for( int i=0; i<areaLen; i+=2 )
+				for( int j=areas[i]; j<areas[i+1]; j++ )
+					check(exp,exps[j]);
+		}
+		
+		private void check( ValueExp v1, ValueExp v2 ) {
+			if( v1.dt.sameValue( v1.value, v2.value ) )
+				reportError( v1, ERR_SAME_VALUE_IN_INTERLEAVE );
+		}
+		
+		public int start() { return expsLen; }
+		
+		public void endLeftBranch( int start ) {
+			if( areas.length==areaLen ) {
+				// expand buffer
+				int[] n = new int[areaLen*2];
+				System.arraycopy(areas,0,n,0,areaLen);
+				areas = n;
+			}
+			// create an area
+			areas[areaLen++] = start;
+			areas[areaLen++] = expsLen;
+		}
+		
+		/** Removes an area */
+		public void endRightBranch() { areaLen-=2; }
+		
+		/**
+		 * Resets all stored expressions.
+		 * This is just an optimization to keep the array small
+		 * by purging unnecessary ValueExps.
+		 */
+		public void reset() {
+			if(areaLen!=0)	throw new Error();	// assertion failed
+			expsLen=0;
+		}
+	}
 	
 	
 // error messages
@@ -595,4 +652,10 @@ public class RestrictionChecker {
 		"RELAXNGReader.DuplicateAttributes";
 	private static final String ERR_DUPLICATE_ELEMENTS =
 		"RELAXNGReader.DuplicateElements";
+	
+	private static final String ERR_DIFFERENT_VALUE_TYPES_IN_INTERLEAVE =
+		"RELAXNGReader.DifferentValueTypesInInterleave";
+	private static final String ERR_SAME_VALUE_IN_INTERLEAVE =
+		"RELAXNGReader.SameValueInInterleave";
+	
 }

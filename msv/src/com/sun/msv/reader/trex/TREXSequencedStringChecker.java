@@ -27,20 +27,46 @@ import java.util.Map;
  * 
  * Also, TREX prohibits sequence of typed strings and elements.
  * 
+ * <p>
+ * In this checker, we introduce a function "f" that takes
+ * a string and computes the string-sensitivity of the pattern.
+ * 
+ * <p>
+ * "f" returns 3 bits of information. One is whether it contains
+ * elements. Another is whehter it contains text. And the last is
+ * whether it contains DataExp/ValueExp.
+ * 
+ * <p>
+ * "f" is computed recursively through the pattern.
+ * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class TREXSequencedStringChecker implements ExpressionVisitor
+public class TREXSequencedStringChecker implements ExpressionVisitor
 {
-	// each visitor method returns one of the following, or null.
-	private static final Object typedString = new Object();
-	private static final Object elements = new Object();
-	private static final Object both = new Object();
+	/**
+	 * If this flag is set to true, this class raises an error for
+	 * anyStrings in two branches of interleave.
+	 */
+	private final boolean rejectTextInInterleave;
+	
+	/** integer pool implementation. */
+	private static final Integer[] intPool = new Integer[]{
+			new Integer(0),new Integer(1),new Integer(2),new Integer(3),
+			new Integer(4),new Integer(5),new Integer(6),new Integer(7) };
+	
+	// 3 bit of information
+	private static final int HAS_ELEMENT = 4;
+	private static final int HAS_ANYSTRING = 2;
+	private static final int HAS_DATA = 1; // data or value.
+	
 	
 	private final TREXBaseReader reader;
-	TREXSequencedStringChecker( TREXBaseReader reader ) {
-		this.reader = reader;
-	}
 	
+	public TREXSequencedStringChecker( TREXBaseReader reader, boolean _rejectTextInInterleave ) {
+		this.reader = reader;
+		this.rejectTextInInterleave = _rejectTextInInterleave;
+	}
+
 	/**
 	 * set of checked Expressions.
 	 * 
@@ -74,7 +100,13 @@ class TREXSequencedStringChecker implements ExpressionVisitor
 		if(isError(l,r)) {
 			// where is the source of error?
 			reader.reportError( reader.ERR_INTERLEAVED_STRING );
-			return null;
+			return intPool[0];
+		}
+		if( rejectTextInInterleave
+		&&  (toInt(l)&HAS_ANYSTRING)!=0
+		&&  (toInt(r)&HAS_ANYSTRING)!=0 ) {
+			reader.reportError( reader.ERR_INTERLEAVED_ANYSTRING );
+			return intPool[0];
 		}
 		
 		return merge(l,r);
@@ -87,22 +119,24 @@ class TREXSequencedStringChecker implements ExpressionVisitor
 		if(isError(l,r)) {
 			// where is the source of error?
 			reader.reportError( reader.ERR_SEQUENCED_STRING );
-			return null;
+			return intPool[0];
 		}
 		
 		return merge(l,r);
 	}
 	
-	public Object onEpsilon() { return null; }
-	public Object onNullSet() { return null; }
-	public Object onData( DataExp exp )		{ return typedString; }
-	public Object onValue( ValueExp exp )	{ return typedString; }
-	public Object onList( ListExp exp )		{ return typedString; }
+	public Object onEpsilon() { return intPool[0]; }
+	public Object onNullSet() { return intPool[0]; }
+	public Object onData( DataExp exp )		{ return intPool[HAS_DATA]; }
+	public Object onValue( ValueExp exp )	{ return intPool[HAS_DATA]; }
+	// do not traverse contents of list.
+	public Object onList( ListExp exp )		{ return intPool[HAS_DATA]; }
+	public Object onAnyString()				{ return intPool[HAS_ANYSTRING]; }
 	
 	public Object onAttribute( AttributeExp exp ) {
 		if( checkedExps.add(exp) )
 			exp.exp.visit(this);
-		return null;
+		return intPool[0];
 	}
 	
 	public Object onElement( ElementExp exp ) {
@@ -111,22 +145,20 @@ class TREXSequencedStringChecker implements ExpressionVisitor
 			// this has to be done before checking content model
 			// otherwise it leads to the infinite recursion.
 			exp.contentModel.visit(this);
-		return elements;
+		return intPool[HAS_ELEMENT];
 	}
 	
+	private static final int toInt( Object o ) { return ((Integer)o).intValue(); }
+	
 	private static Object merge( Object o1, Object o2 ) {
-		if(o1==null)	return o2;
-		if(o2==null)	return o1;
-		if(o1==both || o2==both)	return both;
-		
-		if(o1!=o2)		return both;
-		else			return o1;	// o1==o2
+		return intPool[toInt(o1)|toInt(o2)];
 	}
+	/**
+	 * It is an error if a pattern with data is combined to other patterns.
+	 */
 	private static boolean isError( Object o1, Object o2 ) {
-		if( (o1==both || o1==typedString) && o2!=null )	return true;
-		if( (o2==both || o2==typedString) && o1!=null )	return true;
-		
-		return false;
+		return (toInt(o1)&HAS_DATA)!=0 && toInt(o2)!=0
+			|| (toInt(o2)&HAS_DATA)!=0 && toInt(o1)!=0;
 	}
 	
 	public Object onChoice( ChoiceExp exp ) {
@@ -139,16 +171,13 @@ class TREXSequencedStringChecker implements ExpressionVisitor
 	
 	public Object onOneOrMore( OneOrMoreExp exp ) {
 		Object o = exp.exp.visit(this);
-		if( o==both || o==typedString ) {
+		if( (toInt(o)&HAS_DATA) !=0 ) {
 			reader.reportError(reader.ERR_REPEATED_STRING);
-			return null;
+			return intPool[0];
 		}
 		return o;
 	}
 	
 	public Object onMixed( MixedExp exp )	{ return exp.exp.visit(this); }
 
-	
-	// anyString is the only string token that can be mixed with elements.
-	public Object onAnyString()				{ return elements; }
 }

@@ -158,14 +158,7 @@ public abstract class TREXBaseReader extends GrammarReader {
 	 * <p>
 	 * This method has to be called after the run-away expression check is done.
 	 */
-	public void wrapUp() {
-		
-		if( !hadError )
-			// make sure that there is no sequenced string.
-			// when run-away expression is found, calling this method results in
-			// stack overflow.
-			grammar.visit( new TREXSequencedStringChecker(this) );
-	}
+	public void wrapUp() {}
 	
 	
 // SAX event interception
@@ -218,4 +211,7 @@ public abstract class TREXBaseReader extends GrammarReader {
 		"TREXGrammarReader.SequencedString";
 	public static final String ERR_REPEATED_STRING =
 		"TREXGrammarReader.RepeatedString";
+	public static final String ERR_INTERLEAVED_ANYSTRING =
+		"TREXGrammarReader.InterleavedAnyString";
+		
 }

@@ -26,6 +26,7 @@ import com.sun.msv.reader.*;
 import com.sun.msv.reader.trex.TREXBaseReader;
 import com.sun.msv.reader.trex.IncludePatternState;
 import com.sun.msv.reader.trex.RootState;
+import com.sun.msv.reader.trex.TREXSequencedStringChecker;
 import com.sun.msv.reader.datatype.DataTypeVocabulary;
 import com.sun.msv.util.StartTagInfo;
 import org.relaxng.datatype.Datatype;
@@ -233,7 +234,11 @@ public class TREXGrammarReader extends TREXBaseReader {
 		// make sure that there is no recurisve patterns.
 		RunAwayExpressionChecker.check(this,grammar);
 		
-		super.wrapUp();
+		if( !hadError )
+			// make sure that there is no sequenced string.
+			// when run-away expression is found, calling this method results in
+			// stack overflow.
+			grammar.visit( new TREXSequencedStringChecker(this,false) );
 	}
 	
 	

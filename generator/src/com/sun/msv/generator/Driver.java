@@ -18,6 +18,7 @@ import com.sun.msv.grammar.trex.*;
 import com.sun.msv.grammar.relax.*;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.util.RefExpRemover;
 import com.sun.msv.verifier.Verifier;
 import com.sun.msv.verifier.VerificationErrorHandler;
 import com.sun.msv.verifier.util.*;

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package msv;
+package batch.driver;
 
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;

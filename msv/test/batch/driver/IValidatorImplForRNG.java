@@ -1,4 +1,4 @@
-package msv;
+package batch.driver;
 
 import com.sun.msv.reader.trex.ng.comp.RELAXNGCompReader;
 import com.sun.msv.grammar.Grammar;

@@ -1,4 +1,4 @@
-package msv;
+package batch.driver;
 
 import org.relaxng.testharness.validator.*;
 import org.relaxng.testharness.model.*;

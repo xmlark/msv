@@ -23,7 +23,7 @@ import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.resolver.tools.CatalogResolver;
-import msv.*;
+import batch.driver.*;
 import batch.model.DirectoryTestReader;
 
 /**

@@ -1,4 +1,4 @@
-package msv;
+package batch.driver;
 
 import org.relaxng.testharness.validator.*;
 import org.relaxng.testharness.model.XMLDocument;
@@ -57,24 +57,24 @@ public abstract class IValidatorImpl extends AbstractValidatorExImpl
 			pattern.getAsSAX(reader);
 		else {
 			Schema schema = getSchemaForSchema();
-			final boolean[] hadError = new boolean[1];
+			final boolean[] error = new boolean[1];
 			
 			// set up a pipe line so that the file will be validated by s4s
 			VerifierFilter filter = schema.newVerifier().getVerifierFilter();
 			filter.setErrorHandler( new ReportErrorHandler() {
 				public void error( SAXParseException e ) throws SAXException {
 					super.error(e);
-					hadError[0]=true;
+					error[0]=true;
 				}
 				public void fatalError( SAXParseException e ) throws SAXException {
 					super.fatalError(e);
-					hadError[0]=true;
+					error[0]=true;
 				}
 			});
 			filter.setContentHandler(reader);
 			pattern.getAsSAX((ContentHandler)filter);
 			
-			if( hadError[0]==true )		return null;
+			if( error[0]==true )		return null;
 		}
 		
 		Grammar grammar = getGrammarFromReader(reader,header);

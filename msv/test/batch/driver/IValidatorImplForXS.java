@@ -1,4 +1,4 @@
-package msv;
+package batch.driver;
 
 import com.sun.msv.verifier.identity.IDConstraintChecker;
 import com.sun.msv.driver.textui.ReportErrorHandler;

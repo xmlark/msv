@@ -1,4 +1,4 @@
-package msv;
+package batch.driver;
 
 import com.sun.msv.reader.relax.core.RELAXCoreReader;
 import com.sun.msv.reader.util.GrammarLoader;

@@ -1,4 +1,4 @@
-package msv;
+package batch.driver;
 
 import org.relaxng.testharness.validator.ISchema;
 import com.sun.msv.grammar.Grammar;

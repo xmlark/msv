@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<project name="rngTestHarness" basedir="." default="release">
+
+	<property name="cvsRoot" value=":local:/cygdrive/c/Program Files/Development/CVS Repository" />
+	<property name="cvsExportOpt" value="-D now" />	<!-- -r branch -->
+	
+	<!-- environment dependend -->
+	<property name="JUnitJar" value="c:/winnt/java/classes/junit.jar"/>
+	<property name="AntJar" value="c:/progra~1/development/ant/lib/ant.jar"/>
+	
+	<!-- create a distribution package -->
+	<target name="release">
+		<tstamp />
+		<property name="stageName" value="rngtsth-${DSTAMP}"/>
+		
+		<delete	dir="${stageName}" />
+		<mkdir	dir="${stageName}/src" />
+		
+		<!-- obtain source codes from cvs -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="rngtsth/src"
+				command="export -d . -D now"
+				dest="${stageName}/src/" />
+		<cvs	cvsRoot="${cvsRoot}"
+				package="rngtsth/doc"
+				command="export -d . -D now"
+				dest="${stageName}" />
+		<fixcrlf	srcdir="${stageName}"
+					cr="remove"
+					eof="remove"
+					includes="*.txt"/>
+		
+		<!-- compile files -->
+		<mkdir	dir="temp" />
+		<javac	srcdir="${stageName}/src"
+				destdir="temp">
+			<include name="**/*.java" />
+		</javac>
+		
+		<!-- javadoc -->
+		<mkdir		dir="${stageName}/javadoc" />
+		<javadoc	locale="en_US"
+					packagenames="org.relaxng.testharness.*"
+					sourcepath="${stageName}/src"
+					destdir="${stageName}/javadoc"
+					windowtitle="RELAX NG Conformance Test Suite  Test Harness"
+					public="yes"
+					author="yes"
+					>
+			<link href="http://java.sun.com/products/jdk/1.2/docs/api" />
+			<link href="http://xml.apache.org/apiDocs/" />
+		</javadoc>
+		
+		
+		<!-- create a time stamp file -->
+		<echo file="temp/version.properties">version=${DSTAMP}</echo>
+		
+		<!-- creates binary jar -->
+		<jar	jarfile="${stageName}/rngtsth.jar"
+				manifest="./MANIFEST.MF"
+				compress="false">
+			<fileset dir="temp" />
+			<!-- resource files -->
+			<fileset dir="${stageName}/src" includes="**/*.properties" />
+		</jar>
+		<delete dir="temp" />
+
+		
+		<!-- copy jar file to package dir -->
+		<copy file="${stageName}/rngtsth.jar" tofile="./package/rngtsth.jar" />
+		
+		
+		<!-- creates distribution package -->
+		<zip	zipfile="./package/rngtsth.${DSTAMP}.zip"
+				basedir="."
+				includes="${stageName}/**/*.*" />
+		
+		<delete	dir="${stageName}" />
+	</target>
+</project>

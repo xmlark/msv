@@ -12,6 +12,7 @@ package com.sun.msv.verifier.identity;
 import java.util.Vector;
 import java.util.Map;
 import java.util.Set;
+import com.sun.msv.util.LightStack;
 import com.sun.msv.verifier.IVerifier;
 import com.sun.msv.verifier.ValidityViolation;
 import com.sun.msv.verifier.Verifier;
@@ -61,9 +62,70 @@ public class IDConstraintChecker extends Verifier {
 		matchers.remove(matcher);
 	}
 	
-	/** map from IdentityConstraint to set of keys. */
-	protected final Map keyValues = new java.util.HashMap();
-
+	/**
+	 * a map from <code>SelectorMatcher</code> to set of <code>KeyValue</code>s.
+	 * 
+	 * One SelectorMatcher correponds to one scope of the identity constraint.
+	 */
+	private final Map keyValues = new java.util.HashMap();
+	
+	/**
+	 * a map from keyref <code>SelectorMatcher</code> to key/unique
+	 * <code>SelectorMatcher</code>.
+	 * 
+	 * Given a keyref scope, this map stores which key scope should it refer to.
+	 */
+	private final Map referenceScope = new java.util.HashMap();
+	
+	/**
+	 * a map from <code>IdentityConstraint</code> to a <code>LightStack</code> of
+	 * <code>SelectorMatcher</code>.
+	 * 
+	 * Each stack top keeps the currently active scope for the given IdentityConstraint.
+	 */
+	private final Map activeScopes = new java.util.HashMap();
+	protected SelectorMatcher getActiveScope( IdentityConstraint c ) {
+		LightStack s = (LightStack)activeScopes.get(c);
+		if(s==null)	return null;
+		if(s.size()==0)	return null;
+		return (SelectorMatcher)s.top();
+	}
+	protected void pushActiveScope( IdentityConstraint c, SelectorMatcher matcher ) {
+		LightStack s = (LightStack)activeScopes.get(c);
+		if(s==null)
+			activeScopes.put(c,s=new LightStack());
+		s.push(matcher);
+	}
+	protected void popActiveScope( IdentityConstraint c, SelectorMatcher matcher ) {
+		LightStack s = (LightStack)activeScopes.get(c);
+		if(s==null)
+			// since it's trying to pop, there must be a non-empty stack.
+			throw new Error();
+		if(s.pop()!=matcher)
+			// trying to pop a non-active scope.
+			throw new Error();
+	}
+		
+	
+	/**
+	 * adds a new KeyValue to the value set.
+	 * @return true		if this is a new value.
+	 */
+	protected boolean addKeyValue( SelectorMatcher scope, KeyValue value ) {
+		Set keys = (Set)keyValues.get(scope);
+		if(keys==null)
+			keyValues.put(scope, keys = new java.util.HashSet());
+		return keys.add(value);
+	}
+	/**
+	 * gets the all <code>KeyValue</code>s that were added within the specified scope.
+	 */
+	protected KeyValue[] getKeyValues( SelectorMatcher scope ) {
+		Set keys = (Set)keyValues.get(scope);
+		if(keys==null)
+			return new KeyValue[0];
+		return (KeyValue[])keys.toArray(new KeyValue[keys.size()]);
+	}
 	
 	
 	
@@ -76,24 +138,31 @@ public class IDConstraintChecker extends Verifier {
 		super.endDocument();
 		
 		// keyref check
-		IdentityConstraint[] constraints = 
-			(IdentityConstraint[])keyValues.keySet().toArray(new IdentityConstraint[0]);
-		for( int i=0; i<constraints.length; i++ )
-			if( constraints[i] instanceof KeyRefConstraint ) {
-				// obtain the two sets.
-				Set keys = (Set)keyValues.get( ((KeyRefConstraint)constraints[i]).key );
+		Map.Entry[] scopes = (Map.Entry[])
+			keyValues.entrySet().toArray(new Map.Entry[keyValues.size()]);
+		if(com.sun.msv.driver.textui.Debug.debug)
+			System.out.println("key/keyref check: there are "+keyValues.size()+" scope(s)");
+		
+		for( int i=0; i<scopes.length; i++ ) {
+			final SelectorMatcher key = (SelectorMatcher)scopes[i].getKey();
+			final Set value = (Set)scopes[i].getValue();
+			
+			if( key.idConst instanceof KeyRefConstraint ) {
+				// get the set of corresponding keys.
+				Set keys = (Set)keyValues.get( referenceScope.get(key) );
 				KeyValue[] keyrefs = (KeyValue[])
-					((Set)keyValues.get(constraints[i])).toArray(new KeyValue[0]);
+					value.toArray(new KeyValue[value.size()]);
 				
 				for( int j=0; j<keyrefs.length; j++ ) {
 					if( keys==null || !keys.contains(keyrefs[j]) )
 						// this keyref doesn't have a corresponding key.
 						reportError( keyrefs[j].locator, ERR_UNDEFINED_KEY,
 							new Object[]{
-								constraints[i].namespaceURI,
-								constraints[i].localName} );
+								key.idConst.namespaceURI,
+								key.idConst.localName} );
 				}
 			}
+		}
 	}
 	
 	protected void onNextAcceptorReady( StartTagInfo sti, Acceptor next ) throws SAXException {
@@ -115,6 +184,25 @@ public class IDConstraintChecker extends Verifier {
 					add( new SelectorMatcher( this,
 							(IdentityConstraint)exp.identityConstraints.get(i),
 							sti.namespaceURI, sti.localName ) );
+				
+				// SelectorMathcers will register themselves as active scopes 
+				// in their constructor.
+				
+				// augment the referenceScope field by adding newly introduced keyrefs.
+				for( int i=0; i<m; i++ ) {
+					IdentityConstraint c = (IdentityConstraint)
+						exp.identityConstraints.get(i);
+					if(c instanceof KeyRefConstraint) {
+						SelectorMatcher keyScope =
+							getActiveScope( ((KeyRefConstraint)c).key );
+						if(keyScope==null)
+							;	// there is no active scope of the key scope now.
+						
+						referenceScope.put(
+							getActiveScope(c),
+							keyScope );
+					}
+				}
 			}
 		}
 	}

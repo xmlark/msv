@@ -34,26 +34,27 @@ import java.util.Set;
  */
 public class FieldsMatcher extends MatcherBundle {
 	
-	/** identity constraint to which this object is matching. */
-	protected final IdentityConstraint idConst;
-	
 	/**
 	 * location of the start tag.
 	 * It is usually preferable as a source of error.
 	 */
 	protected final Locator startTag;
 	
+	/**
+	 * the parent SelectorMatcher.
+	 */
+	protected final SelectorMatcher selector;
 	
-	protected FieldsMatcher( IDConstraintChecker owner,
-					IdentityConstraint idConst, String namespaceURI, String localName ) throws SAXException {
-		super(owner);
+	protected FieldsMatcher( SelectorMatcher selector, String namespaceURI, String localName ) throws SAXException {
+		super(selector.owner);
 		
-		this.idConst = idConst;
+		this.selector = selector;
 		this.startTag = new LocatorImpl(owner.getLocator());
 		
-		children = new Matcher[idConst.fields.length];
-		for( int i=0; i<idConst.fields.length; i++ )
-			children[i] = new FieldMatcher(this,idConst.fields[i], namespaceURI,localName);
+		children = new Matcher[selector.idConst.fields.length];
+		for( int i=0; i<selector.idConst.fields.length; i++ )
+			children[i] = new FieldMatcher(
+				this,selector.idConst.fields[i], namespaceURI,localName);
 	}
 	
 	protected void onRemoved() throws SAXException {
@@ -63,7 +64,7 @@ public class FieldsMatcher extends MatcherBundle {
 		// while checking any unmatched fields.
 		for( int i=0; i<children.length; i++ )
 			if( (values[i]=((FieldMatcher)children[i]).value) == null ) {
-				if(!(idConst instanceof KeyConstraint))
+				if(!(selector.idConst instanceof KeyConstraint))
 					// some fields didn't match to anything.
 					// In case of KeyRef and Unique constraints,
 					// we can ignore this node.
@@ -74,34 +75,28 @@ public class FieldsMatcher extends MatcherBundle {
 					startTag,
 					owner.ERR_UNMATCHED_KEY_FIELD,
 					new Object[]{
-						idConst.namespaceURI,
-						idConst.localName,
+						selector.idConst.namespaceURI,
+						selector.idConst.localName,
 						new Integer(i+1)} );
 				return;
 			}
 
 		if( com.sun.msv.driver.textui.Debug.debug )
-			System.out.println("fields collected for "+idConst.localName);
+			System.out.println("fields collected for "+selector.idConst.localName);
 		
-		Set valueSet = (Set)owner.keyValues.get(idConst);
-		if(valueSet==null)
-			// create a new set.
-			owner.keyValues.put(idConst, valueSet = new java.util.HashSet() );
-			
 		KeyValue kv = new KeyValue(values,startTag);
-		
-		if( !valueSet.contains(kv) ) {
-			valueSet.add(kv);
+		if(owner.addKeyValue( selector, kv ))
 			return;
-		}
 		
-		if( idConst instanceof KeyRefConstraint )
+		// the same value already exists.
+		
+		if( selector.idConst instanceof KeyRefConstraint )
 			// multiple reference to the same key value.
 			// not a problem.
 			return;
 		
 		// find a value that collides with kv
-		Object[] items = valueSet.toArray();
+		Object[] items = owner.getKeyValues(selector);
 		int i;
 		for( i=0; i<values.length; i++ )
 			if( items[i].equals(kv) )
@@ -113,12 +108,12 @@ public class FieldsMatcher extends MatcherBundle {
 			startTag,
 			owner.ERR_NOT_UNIQUE,
 			new Object[]{
-				idConst.namespaceURI, idConst.localName} );
+				selector.idConst.namespaceURI, selector.idConst.localName} );
 		owner.reportError(
 			((KeyValue)items[i]).locator,
 			owner.ERR_NOT_UNIQUE_DIAG,
 			new Object[]{
-				idConst.namespaceURI, idConst.localName} );
+				selector.idConst.namespaceURI, selector.idConst.localName} );
 	}
 	
 }

@@ -64,7 +64,7 @@ public class FieldMatcher extends PathMatcher {
 	 */
 	protected void onElementMatched( String namespaceURI, String localName ) throws SAXException {
 		if( com.sun.msv.driver.textui.Debug.debug )
-			System.out.println("field match for "+ parent.idConst.localName );
+			System.out.println("field match for "+ parent.selector.idConst.localName );
 		
 		// this field matches this element.
 		// wait for the corresponding endElement call and
@@ -79,7 +79,7 @@ public class FieldMatcher extends PathMatcher {
 		String namespaceURI, String localName, String value, Datatype type ) throws SAXException {
 		
 		if( com.sun.msv.driver.textui.Debug.debug )
-			System.out.println("field match for "+ parent.idConst.localName );
+			System.out.println("field match for "+ parent.selector.idConst.localName );
 		
 		setValue( value, type );
 	}
@@ -142,8 +142,8 @@ public class FieldMatcher extends PathMatcher {
 		
 		owner.reportError( owner.ERR_DOUBLE_MATCH,
 			new Object[]{
-				parent.idConst.namespaceURI,
-				parent.idConst.localName,
+				parent.selector.idConst.namespaceURI,
+				parent.selector.idConst.localName,
 				new Integer(i+1)} );
 	}
 }

@@ -37,8 +37,21 @@ public class SelectorMatcher extends PathMatcher {
 				String namespaceURI, String localName ) throws SAXException {
 		super(owner, idConst.selectors );
 		this.idConst = idConst;
+		
+		// register this scope as active.
+		owner.pushActiveScope(idConst,this);
+		
+		if(com.sun.msv.driver.textui.Debug.debug) {
+			System.out.println("new id scope is available for {"+idConst.localName+"}");
+		}
 
 		super.start(namespaceURI,localName);
+	}
+
+	protected void onRemoved() throws SAXException {
+		super.onRemoved();
+		// this scope is no longer active.
+		owner.popActiveScope(idConst,this);
 	}
 
 	
@@ -47,7 +60,7 @@ public class SelectorMatcher extends PathMatcher {
 			System.out.println("find a match for a selector: "+idConst.localName);
 			
 		// this element matches the path.
-		owner.add( new FieldsMatcher(owner,idConst, namespaceURI,localName) );
+		owner.add( new FieldsMatcher(this, namespaceURI,localName) );
 	}
 	
 	protected void onAttributeMatched(
@@ -57,5 +70,5 @@ public class SelectorMatcher extends PathMatcher {
 		// selectors cannot contain attribute steps.
 		throw new Error();
 	}
-
+	
 }

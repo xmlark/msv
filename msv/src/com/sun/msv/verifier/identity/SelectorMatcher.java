@@ -11,6 +11,7 @@ package com.sun.msv.verifier.identity;
 
 import com.sun.msv.grammar.xmlschema.IdentityConstraint;
 import com.sun.msv.grammar.xmlschema.XPath;
+import org.relaxng.datatype.Datatype;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -27,66 +28,34 @@ import org.xml.sax.SAXException;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class SelectorMatcher extends MatcherBundle {
+public class SelectorMatcher extends PathMatcher {
 	
 	protected IdentityConstraint idConst;
 
 	SelectorMatcher(
 				IDConstraintChecker owner, IdentityConstraint idConst,
-				Attributes atts ) throws SAXException {
-		super(owner);
+				String namespaceURI, String localName ) throws SAXException {
+		super(owner, idConst.selectors );
 		this.idConst = idConst;
 
-		boolean signal = false;
-		
-		children = new SelectorPathMatcher[idConst.selectors.length];
-		for( int i=0; i<children.length; i++ ) {
-			SelectorPathMatcher m = new SelectorPathMatcher( idConst.selectors[i] );
-			m.testInitialMatch(atts);
-			children[i] = m;
-		}
-		
-		seeIfMatched(atts);
+		super.start(namespaceURI,localName);
 	}
+
 	
-	/**
-	 * checks children to see if anyone matches.
-	 * If it finds a match, then it invokes a FieldsMatcher.
-	 */
-	private void seeIfMatched( Attributes atts ) throws SAXException {
-		boolean signal = false;
-		
-		if( signalTargetNode ) {
-			signalTargetNode = false;
+	protected void onElementMatched( String namespaceURI, String localName ) throws SAXException {
+		if( com.sun.msv.driver.textui.Debug.debug )
+			System.out.println("find a match for a selector: "+idConst.localName);
 			
-			if( com.sun.msv.driver.textui.Debug.debug )
-				System.out.println("find a match for a selector: "+idConst.localName);
-			
-			// this element matches the path.
-			owner.add( new FieldsMatcher(owner,idConst,atts) );
-		}
+		// this element matches the path.
+		owner.add( new FieldsMatcher(owner,idConst, namespaceURI,localName) );
 	}
 	
-	protected void startElement( String namespaceURI, String localName, Attributes attributes )
-													throws SAXException {
-		super.startElement(namespaceURI,localName,attributes);
-		seeIfMatched(attributes);
-	}
-	
-	/**
-	 * a flag that indicates this element is a target node.
-	 * Sometimes more than one SelectorPathMatchers match the same element.
-	 * Therefore this field is necessary.
-	 */
-	protected boolean signalTargetNode;
+	protected void onAttributeMatched(
+		String namespaceURI, String localName, String value, Datatype type ) {
 		
-	private class SelectorPathMatcher extends PathMatcher {
-		SelectorPathMatcher( XPath path ) {
-			super( SelectorMatcher.this.owner, path );
-		}
-		protected void onMatched( String namespaceURI, String localName, Attributes attributes ) throws SAXException {
-			// this element is a target node.
-			signalTargetNode = true;
-		}
+		// assertion failed:
+		// selectors cannot contain attribute steps.
+		throw new Error();
 	}
+
 }

@@ -39,6 +39,10 @@ public class XSAcceptor extends SimpleAcceptor {
 		this._docDecl = docDecl;
 	}
 
+	public Acceptor createClone() {
+		return new XSAcceptor( _docDecl, getExpression(), owner, continuation );
+	}
+	
 	/**
 	 * holds the same value as the docDecl field, but this one has
 	 * already down casted to XSREDocDecl.

@@ -9,6 +9,7 @@
  */
 package com.sun.msv.verifier.regexp;
 
+import com.sun.msv.verifier.Acceptor;
 import com.sun.msv.verifier.regexp.ElementToken;
 import com.sun.msv.verifier.regexp.ExpressionAcceptor;
 import com.sun.msv.grammar.Expression;
@@ -52,5 +53,9 @@ public class SimpleAcceptor extends ContentModelAcceptor
 		super(docDecl,combined);
 		this.continuation	= continuation;
 		this.owner			= owner;
+	}
+	
+	public Acceptor createClone() {
+		return new SimpleAcceptor( docDecl, getExpression(), owner, continuation );
 	}
 }

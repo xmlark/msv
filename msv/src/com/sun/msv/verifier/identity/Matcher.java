@@ -9,6 +9,7 @@
  */
 package com.sun.msv.verifier.identity;
 
+import org.relaxng.datatype.Datatype;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -27,10 +28,9 @@ public abstract class Matcher {
 		this.owner = owner;
 	}
 	
-	protected abstract void startElement(
-		String namespaceURI, String localName, Attributes attributes ) throws SAXException;
-	
-	protected abstract void endElement() throws SAXException;
+	protected abstract void startElement( String namespaceURI, String localName ) throws SAXException;
+	protected abstract void onAttribute( String namespaceURI, String localName, String value, Datatype type ) throws SAXException;
+	protected abstract void endElement( Datatype type ) throws SAXException;
 	
 	protected void characters( char[] buf, int start, int len ) throws SAXException {
 		// do nothing by default.

@@ -43,8 +43,9 @@ public class FieldsMatcher extends MatcherBundle {
 	 */
 	protected final Locator startTag;
 	
+	
 	protected FieldsMatcher( IDConstraintChecker owner,
-					IdentityConstraint idConst, Attributes atts ) throws SAXException {
+					IdentityConstraint idConst, String namespaceURI, String localName ) throws SAXException {
 		super(owner);
 		
 		this.idConst = idConst;
@@ -52,7 +53,7 @@ public class FieldsMatcher extends MatcherBundle {
 		
 		children = new Matcher[idConst.fields.length];
 		for( int i=0; i<idConst.fields.length; i++ )
-			children[i] = new FieldMatcher(this,idConst.fields[i],atts);
+			children[i] = new FieldMatcher(this,idConst.fields[i], namespaceURI,localName);
 	}
 	
 	protected void onRemoved() throws SAXException {
@@ -61,7 +62,7 @@ public class FieldsMatcher extends MatcherBundle {
 		// copy matched values into "values" variable,
 		// while checking any unmatched fields.
 		for( int i=0; i<children.length; i++ )
-			if( (values[i]=((FieldMatcher)children[i]).matched) == null ) {
+			if( (values[i]=((FieldMatcher)children[i]).value) == null ) {
 				if(!(idConst instanceof KeyConstraint))
 					// some fields didn't match to anything.
 					// In case of KeyRef and Unique constraints,

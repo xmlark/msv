@@ -26,22 +26,18 @@ import com.sun.msv.util.DatatypeRef;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ComplexAcceptorBaseImpl extends ContentModelAcceptor
+public abstract class ComplexAcceptorBaseImpl extends ContentModelAcceptor
 {
 	protected final Expression[]	contents;
 	
 	public ComplexAcceptorBaseImpl(
-		REDocumentDeclaration docDecl,
-		Expression combined,
-		Expression[] contents )
-	{
+		REDocumentDeclaration docDecl, Expression combined, Expression[] contents ) {
 		super( docDecl, combined );
 		this.contents = contents;
 	}
 
 	/** eats string literal */
-	public final boolean stepForward( String literal, IDContextProvider context, StringRef refErr, DatatypeRef refType )
-	{
+	public final boolean stepForward( String literal, IDContextProvider context, StringRef refErr, DatatypeRef refType ) {
 		if(!super.stepForward(literal,context,refErr,refType))	return false;
 
 		final StringToken token = new StringToken(docDecl,literal,context);
@@ -54,8 +50,7 @@ public class ComplexAcceptorBaseImpl extends ContentModelAcceptor
 		return true;
 	}
 	
-	public final boolean stepForward( Acceptor child, StringRef errRef )
-	{
+	public final boolean stepForward( Acceptor child, StringRef errRef ) {
 		if(!super.stepForward(child,errRef))	return false;
 
 		final ResidualCalculator res = docDecl.resCalc;

@@ -11,6 +11,7 @@ package com.sun.msv.verifier.identity;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.relaxng.datatype.Datatype;
 import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.xmlschema.Field;
 
@@ -28,7 +29,7 @@ import com.sun.msv.grammar.xmlschema.Field;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class FieldMatcher extends MatcherBundle {
+public class FieldMatcher extends PathMatcher {
 	
 	protected Field field;
 	
@@ -36,7 +37,7 @@ public class FieldMatcher extends MatcherBundle {
 	 * the matched value. If this field is null, then it means
 	 * nothing is matched yet.
 	 */
-	protected String	matched;
+	protected Object	value;
 	
 	/** parent FieldsMatcher object. */
 	protected final FieldsMatcher parent;
@@ -49,53 +50,38 @@ public class FieldMatcher extends MatcherBundle {
 	 */
 	protected StringBuffer elementText = null;
 	
-	FieldMatcher( FieldsMatcher parent, Field field, Attributes atts ) throws SAXException {
-		super(parent.owner);
+	FieldMatcher( FieldsMatcher parent, Field field, String namespaceURI, String localName ) throws SAXException {
+		super( parent.owner, field.paths );
 		this.parent = parent;
 		
-		// create children
-		children = new Matcher[field.paths.length];
-		for( int i=0; i<field.paths.length; i++ ) {
-			FieldPathMatcher m = new FieldPathMatcher(field.paths[i]);
-			children[i] = m;
-			m.testInitialMatch(atts);
-		}
+		// test the initial match
+		super.start(namespaceURI,localName);
 	}
 
-	private class FieldPathMatcher extends PathMatcher {
-		FieldPathMatcher( Field.FieldPath path ) {
-			super(FieldMatcher.this.owner,path);
-		}
-		protected void onMatched( String namespaceURI, String localName, Attributes attributes ) throws SAXException {
-			if(matched!=null) {
-				// not the first match.
-				doubleMatchError();
-				return;
-			}
-			
-			if( com.sun.msv.driver.textui.Debug.debug )
-				System.out.println("field match for "+ parent.idConst.localName );
-			
-			NameClass attributeStep = ((Field.FieldPath)path).attributeStep;
-			
-			if( attributeStep==null ) {
-				// this field matches this element.
-				// wait for the corresponding endElement call and
-				// obtain text.
-				elementText = new StringBuffer();
-			} else {
-				// look for the attribute match
-				int len = attributes.getLength();
-				for( int i=0; i<len; i++ ) {
-					if( attributeStep.accepts(
-						attributes.getURI(i), attributes.getLocalName(i) ) ) {
-						// this field matches this attribute.
-						if(matched!=null)	doubleMatchError();
-						matched = attributes.getValue(i);
-					}
-				}
-			}
-		}
+
+	/**
+	 * this method is called when the element matches the XPath.
+	 */
+	protected void onElementMatched( String namespaceURI, String localName ) throws SAXException {
+		if( com.sun.msv.driver.textui.Debug.debug )
+			System.out.println("field match for "+ parent.idConst.localName );
+		
+		// this field matches this element.
+		// wait for the corresponding endElement call and
+		// obtain text.
+		elementText = new StringBuffer();
+	}
+
+	/**
+	 * this method is called when the attribute matches the XPath.
+	 */
+	protected void onAttributeMatched(
+		String namespaceURI, String localName, String value, Datatype type ) throws SAXException {
+		
+		if( com.sun.msv.driver.textui.Debug.debug )
+			System.out.println("field match for "+ parent.idConst.localName );
+		
+		setValue( value, type );
 	}
 	
 	protected void startElement( String namespaceURI, String localName, Attributes attributes ) 
@@ -111,15 +97,15 @@ public class FieldMatcher extends MatcherBundle {
 			// the current implementation choose the 2nd.
 			elementText = null;
 		}
-		super.startElement(namespaceURI,localName,attributes);
+		super.startElement(namespaceURI,localName);
 	}
 	
-	protected void endElement() throws SAXException {
-		super.endElement();
+	protected void endElement( Datatype type ) throws SAXException {
+		super.endElement(type);
 		// double match error is already checked in the corresponding
 		// startElement method.
 		if( elementText!=null ) {
-			matched = elementText.toString();
+			setValue( elementText.toString(), type );
 			elementText = null;
 		}
 	}
@@ -129,6 +115,17 @@ public class FieldMatcher extends MatcherBundle {
 		if( elementText!=null )
 			// collect text
 			elementText.append(buf,start,len);
+	}
+	
+	/** sets the value field. */
+	private void setValue( String lexical, Datatype type ) throws SAXException {
+		if(value!=null) {
+			// not the first match.
+			doubleMatchError();
+			return;
+		}
+		
+		value = type.createValue(lexical,owner);
 	}
 	
 	/** this field matches more than once. */

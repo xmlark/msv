@@ -12,10 +12,13 @@ package com.sun.msv.verifier.identity;
 import java.util.Vector;
 import java.util.Map;
 import java.util.Set;
+//import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.verifier.VerificationErrorHandler;
 import com.sun.msv.verifier.IVerifier;
 import com.sun.msv.verifier.ValidityViolation;
 import com.sun.msv.verifier.Verifier;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
+import com.sun.msv.verifier.regexp.StartTagInfoEx;
 import com.sun.msv.verifier.regexp.xmlschema.XSREDocDecl;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ElementExp;
@@ -24,6 +27,7 @@ import com.sun.msv.grammar.xmlschema.IdentityConstraint;
 import com.sun.msv.grammar.xmlschema.KeyRefConstraint;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.grammar.xmlschema.XMLSchemaTypeExp;
+import org.relaxng.datatype.Datatype;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
@@ -33,11 +37,7 @@ import org.xml.sax.Locator;
  * 
  * <p>
  * This class can be used in the same way as {@link Verifier}.
- * This class also checks XML Schema's identity constraint and handles
- * all xsi:*** attributes.
- * 
- * <p>
- * REDocumentDeclaration is the only supported VGM implementation.
+ * This class also checks XML Schema's identity constraint.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
@@ -54,16 +54,19 @@ public class IDConstraintChecker extends Verifier {
 	/** active mathcers. */
 	protected final Vector matchers = new Vector();
 	
-	/** map from IdentityConstraint to set of keys. */
-	protected final Map keyValues = new java.util.HashMap();
-	
 	protected void add( Matcher matcher ) {
 		matchers.add(matcher);
 	}
 	protected void remove( Matcher matcher ) {
 		matchers.remove(matcher);
 	}
+	
+	/** map from IdentityConstraint to set of keys. */
+	protected final Map keyValues = new java.util.HashMap();
 
+	
+	
+	
 	public void startDocument() {
 		super.startDocument();
 		keyValues.clear();
@@ -99,8 +102,10 @@ public class IDConstraintChecker extends Verifier {
 		
 		// call matchers
 		int len = matchers.size();
-		for( int i=0; i<len; i++ )
-			((Matcher)matchers.get(i)).startElement(namespaceUri,localName,atts);
+		for( int i=0; i<len; i++ ) {
+			Matcher m = (Matcher)matchers.get(i);
+			m.startElement(namespaceUri,localName);
+		}
 		
 		// introduce newly found identity constraints.
 		Object e = getCurrentElementType();
@@ -110,7 +115,27 @@ public class IDConstraintChecker extends Verifier {
 				int m = exp.identityConstraints.size();
 				for( int i=0; i<m; i++ )
 					add( new SelectorMatcher( this,
-							(IdentityConstraint)exp.identityConstraints.get(i), atts) );
+							(IdentityConstraint)exp.identityConstraints.get(i),
+							namespaceUri, localName ) );
+			}
+		}
+
+		// do not use "atts" variable. It contains xsi:*** attributes,
+		// which shouldn't be passed to matchers.
+		len = matchers.size();
+		final StartTagInfoEx sti = ((REDocumentDeclaration)docDecl).startTag;
+		int alen = sti.attributes.getLength();
+
+		// call matchers for attributes.
+		for( int i=0; i<len; i++ ) {
+			Matcher m = (Matcher)matchers.get(i);
+			for( int j=0; j<alen; j++ ) {
+				m.onAttribute(
+					sti.attributes.getURI(j),
+					sti.attributes.getLocalName(j),
+					sti.attributes.getValue(j),
+					// a hack to obtain the type of the attribute value.
+					sti.getToken(j).value.refType.types[0] );
 			}
 		}
 	}
@@ -130,13 +155,20 @@ public class IDConstraintChecker extends Verifier {
 								throws SAXException {
 		super.endElement(namespaceUri,localName,qName);
 		
+		// getLastCharacterType may sometimes return null. For example,
+		// 1) this element should be empty and there was only whitespace characters.
+		Datatype dt;
+		if( getLastCharacterType()==null )	dt = null;
+		else	dt = getLastCharacterType()[0];
+			
 		// call matchers
 		int len = matchers.size();
-		for( int i=len-1; i>=0; i-- )
+		for( int i=len-1; i>=0; i-- ) {
 			// Matcher may remove itself from the vector.
 			// Therefore, to make it work correctly, we have to
 			// enumerate Matcher in reverse direction.
-			((Matcher)matchers.get(i)).endElement();
+			((Matcher)matchers.get(i)).endElement( dt );
+		}
 	}
 	
 

@@ -170,6 +170,13 @@ public interface Acceptor
 	 */
 	Object getOwnerType();
 	
+	/**
+	 * clones this acceptor.
+	 * 
+	 * You can keep a "bookmark" of the acceptor by cloning it.
+	 * This is useful when you are trying to perform "partial validation".
+	 */
+	Acceptor createClone();
 	
 	/**
 	 * gets how this acceptor handles characters.

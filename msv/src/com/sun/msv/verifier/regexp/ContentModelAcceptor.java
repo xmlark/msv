@@ -27,7 +27,7 @@ import java.util.Iterator;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ContentModelAcceptor extends ExpressionAcceptor {
+public abstract class ContentModelAcceptor extends ExpressionAcceptor {
 	
 	protected ContentModelAcceptor(
 		REDocumentDeclaration docDecl, Expression exp ) {

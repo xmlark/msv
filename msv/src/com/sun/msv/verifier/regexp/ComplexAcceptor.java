@@ -18,8 +18,11 @@ import com.sun.msv.verifier.Acceptor;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class ComplexAcceptor extends ComplexAcceptorBaseImpl
-{
+public final class ComplexAcceptor extends ComplexAcceptorBaseImpl {
+	
+	/**
+	 * each item of this array should be considered as read-only.
+	 */
 	public final ElementExp[]	owners;
 	
 	public ComplexAcceptor(
@@ -31,6 +34,12 @@ public final class ComplexAcceptor extends ComplexAcceptorBaseImpl
 		this.owners = owners;
 	}
 
+	public Acceptor createClone() {
+		Expression[] models = new Expression[contents.length];
+		System.arraycopy(contents,0, models, 0, contents.length );
+		return new ComplexAcceptor( docDecl, getExpression(), models, owners );
+	}
+	
 	/**
 	 * collects satisfied ElementExps.
 	 * 

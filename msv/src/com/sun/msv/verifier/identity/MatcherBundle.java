@@ -11,6 +11,7 @@ package com.sun.msv.verifier.identity;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.relaxng.datatype.Datatype;
 
 /**
  * Base implementation of Matcher coordinator.
@@ -28,23 +29,30 @@ class MatcherBundle extends Matcher {
 	protected Matcher[] children;
 	/** depth. */
 	private int depth = 0;
+	protected final int getDepth() { return depth; }
 	
+	/**
+	 * the derived class must initialize the children field appropriately.
+	 */
 	protected MatcherBundle( IDConstraintChecker owner ) {
 		super(owner);
 	}
 	
-	protected void startElement(
-		String namespaceURI, String localName, Attributes attributes ) 
-		throws SAXException {
+	protected void startElement( String namespaceURI, String localName ) throws SAXException {
 		
 		depth++;
 		for( int i=0; i<children.length; i++ )
-			children[i].startElement(namespaceURI,localName,attributes);
+			children[i].startElement(namespaceURI,localName);
 	}
 	
-	protected void endElement() throws SAXException {
+	protected void onAttribute( String namespaceURI, String localName, String value, Datatype type ) throws SAXException {
 		for( int i=0; i<children.length; i++ )
-			children[i].endElement();
+			children[i].onAttribute(namespaceURI,localName,value,type);
+	}
+	
+	protected void endElement( Datatype type ) throws SAXException {
+		for( int i=0; i<children.length; i++ )
+			children[i].endElement(type);
 		if( depth-- == 0 ) {
 			// traversal complete.
 			owner.remove(this);

@@ -23,7 +23,11 @@ public class StartTagInfoEx extends StartTagInfo
 {
 	/** AttributeToken for every attribute. */
 	protected AttributeToken[] attTokens;
-	public AttributeToken getToken( int idx ) { return attTokens[idx]; }
+	public AttributeToken getToken( int idx ) {
+		if( idx>=attTokens.length )
+			throw new Error();
+		return attTokens[idx];
+	}
 	
 	private final REDocumentDeclaration	owner;
 	

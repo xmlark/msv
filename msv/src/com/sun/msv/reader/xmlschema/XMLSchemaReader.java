@@ -43,7 +43,6 @@ import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.grammar.xmlschema.XMLSchemaTypeExp;
 import com.sun.msv.reader.AbortException;
 import com.sun.msv.reader.ChoiceState;
-import com.sun.msv.reader.ExpressionState;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.IgnoreState;
@@ -568,7 +567,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
     
     
     
-    protected Expression interceptExpression( ExpressionState state, Expression exp ) {
+    protected Expression interceptExpression( State state, Expression exp ) {
         // process minOccurs/maxOccurs
         if( state instanceof SequenceState
         ||  state instanceof ChoiceState

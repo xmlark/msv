@@ -39,6 +39,8 @@ public class SchemaIncludedState extends GlobalDeclState {
 	
 	private String previousElementFormDefault;
 	private String previousAttributeFormDefault;
+	private String previousFinalDefault;
+	private String previousBlockDefault;
 	
 	/**
 	 * this flag is set to true to indicate all the contents of this element
@@ -88,6 +90,8 @@ public class SchemaIncludedState extends GlobalDeclState {
 		// process other attributes.
 		previousElementFormDefault = reader.elementFormDefault;
 		previousAttributeFormDefault = reader.attributeFormDefault;
+		previousFinalDefault = reader.finalDefault;
+		previousBlockDefault = reader.blockDefault;
 		
 		String form;
 		form = startTag.getDefaultedAttribute("elementFormDefault","unqualified");
@@ -108,6 +112,8 @@ public class SchemaIncludedState extends GlobalDeclState {
 				reader.reportError( reader.ERR_BAD_ATTRIBUTE_VALUE, "attributeFormDefault", form );
 		}
 		
+		reader.finalDefault = startTag.getAttribute("finalDefault");
+		reader.blockDefault = startTag.getAttribute("blockDefault");
 		
 	}
 
@@ -119,7 +125,9 @@ public class SchemaIncludedState extends GlobalDeclState {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		reader.elementFormDefault = previousElementFormDefault;
 		reader.attributeFormDefault = previousAttributeFormDefault;
-
+		reader.finalDefault = previousFinalDefault;
+		reader.blockDefault = previousBlockDefault;
+		
 		super.endSelf();
 	}
 }

@@ -158,11 +158,20 @@ public class XMLSchemaReader extends GrammarReader {
 	 */
 	public final ReferenceExp complexUrType;
 	
-	/** value of "attributeFormDefault" attribute. */
+	/** value of the "attributeFormDefault" attribute. */
 	protected String attributeFormDefault;
-	/** value of "elementFormDefault" attribute. */
+	/** value of the "elementFormDefault" attribute. */
 	protected String elementFormDefault;
-	
+	/**
+	 * value of the "finalDefault" attribute.
+	 * Set to null if the attribute was not specified.
+	 */
+	protected String finalDefault;
+	/**
+	 * value of the "blockDefault" attribute.
+	 * Set to null if the attribute was not specified.
+	 */
+	protected String blockDefault;
 	
 	/** grammar object which is being under construction. */
 	protected final XMLSchemaGrammar grammar;
@@ -251,11 +260,11 @@ public class XMLSchemaReader extends GrammarReader {
 		// complexContent/extension
 		protected State complexExt			(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new ComplexContentBodyState(decl,true); }
 
-		protected State simpleContent		(State parent,StartTagInfo tag)	{ return new SimpleContentState(); }
+		protected State simpleContent		(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new SimpleContentState(decl); }
 		// simpleContent/restriction
-		protected State simpleRst			(State parent,StartTagInfo tag)	{ return new SimpleContentBodyState(false); }
+		protected State simpleRst			(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new SimpleContentBodyState(decl,false); }
 		// simpleContent/extension
-		protected State simpleExt			(State parent,StartTagInfo tag)	{ return new SimpleContentBodyState(true); }
+		protected State simpleExt			(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new SimpleContentBodyState(decl,true); }
 	}
 	
 	public final StateFactory sfactory;
@@ -610,6 +619,10 @@ public class XMLSchemaReader extends GrammarReader {
 			detectUndefinedOnes( schema.groupDecls,			ERR_UNDEFINED_GROUP );
 // undefined simple types are checked by the back-patch job submitted by the resolveDatatype method.
 //			detectUndefinedOnes( schema.simpleTypes,		ERR_UNDEFINED_SIMPLE_TYPE );
+			
+			
+			// TODO: it is now possible to check that the derivation doesn't
+			// violate the final property of the parent type.
 			
 			// prepare top-level expression.
 			// TODO: make sure this is a correct implementation

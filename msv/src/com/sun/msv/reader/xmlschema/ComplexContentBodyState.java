@@ -96,6 +96,10 @@ public class ComplexContentBodyState extends SequenceState {
 											baseType.restrictions.exp,
 											parentDecl.selfWType );
 		
+		// set other fields of the ComplexTypeExp.
+		parentDecl.derivationMethod = extension?parentDecl.EXTENSION:parentDecl.RESTRICTION;
+		parentDecl.complexBaseType = baseType;
+		
 		return combineToBaseType( baseType, exp );
 	}
 

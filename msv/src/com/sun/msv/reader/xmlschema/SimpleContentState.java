@@ -22,6 +22,13 @@ import com.sun.msv.util.StartTagInfo;
  */
 public class SimpleContentState extends ExpressionWithChildState {
 	
+	/** ComplexType object that we are now constructing. */
+	protected ComplexTypeExp parentDecl;
+	
+	protected SimpleContentState( ComplexTypeExp decl ) {
+		this.parentDecl = decl;
+	}
+	
 	protected State createChildState( StartTagInfo tag ) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		
@@ -29,8 +36,8 @@ public class SimpleContentState extends ExpressionWithChildState {
 			// we have already parsed restriction/extension.
 			return null;
 		
-		if( tag.localName.equals("restriction") )	return reader.sfactory.simpleRst(this,tag);
-		if( tag.localName.equals("extension") )		return reader.sfactory.simpleExt(this,tag);
+		if( tag.localName.equals("restriction") )	return reader.sfactory.simpleRst(this,tag,parentDecl);
+		if( tag.localName.equals("extension") )		return reader.sfactory.simpleExt(this,tag,parentDecl);
 		
 		return super.createChildState(tag);
 	}

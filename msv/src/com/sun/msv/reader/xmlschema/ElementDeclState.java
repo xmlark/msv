@@ -238,15 +238,30 @@ public class ElementDeclState extends ExpressionWithChildState {
 				head.exp = reader.pool.createChoice( head.exp, decl );
 			}
 		}
-			
-		// TODO: @block
-		if( startTag.containsAttribute("block") )
-			reader.reportWarning( reader.ERR_UNIMPLEMENTED_FEATURE,
-				"block attribute for <element>" );
-		// TODO: @final
-		if( startTag.containsAttribute("final") )
-			reader.reportWarning( reader.ERR_UNIMPLEMENTED_FEATURE,
-				"final attribute for <element>" );
+		
+		String block = startTag.getAttribute("block");
+		if(block==null)		block = reader.blockDefault;
+		if(block!=null) {
+			if( block.indexOf("#all")>=0 )
+				decl.block |= decl.RESTRICTION|decl.EXTENSION|decl.SUBSTITUTION;
+			if( block.indexOf("extension")>=0 )
+				decl.block |= decl.EXTENSION;
+			if( block.indexOf("restriction")>=0 )
+				decl.block |= decl.RESTRICTION;
+			if( block.indexOf("substitution")>=0 )
+				decl.block |= decl.SUBSTITUTION;
+		}
+		
+		String finalValue = startTag.getAttribute("final");
+		if(finalValue==null)	finalValue = reader.finalDefault;
+		if(finalValue!=null) {
+			if( finalValue.indexOf("#all")>=0 )
+				decl.finalValue |= decl.RESTRICTION|decl.EXTENSION|decl.SUBSTITUTION;
+			if( finalValue.indexOf("extension")>=0 )
+				decl.finalValue |= decl.EXTENSION;
+			if( finalValue.indexOf("restriction")>=0 )
+				decl.finalValue |= decl.RESTRICTION;
+		}
 		
 		return decl;
 	}

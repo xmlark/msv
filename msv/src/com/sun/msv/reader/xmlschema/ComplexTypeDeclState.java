@@ -55,6 +55,28 @@ public class ComplexTypeDeclState extends RedefinableDeclState {
 						new Object[]{name} );
 			}
 		}
+		
+		// set the final attribute to ComplexTypeExp.
+		decl.finalValue = parseFinalValue( "final", reader.finalDefault );
+		decl.block		= parseFinalValue( "block", reader.blockDefault );
+	}
+	
+	/**
+	 * parses the value of the block/finel attribute.
+	 */
+	private int parseFinalValue( String attName, String defaultValue ) {
+		int r = 0;
+		String value = startTag.getAttribute(attName);
+		if( value==null )	value = defaultValue;
+		if( value!=null ) {
+			if( value.indexOf("#all")>=0 )
+				r |= ComplexTypeExp.RESTRICTION|ComplexTypeExp.EXTENSION;
+			if( value.indexOf("extension")>=0 )
+				r |= ComplexTypeExp.EXTENSION;
+			if( value.indexOf("restriction")>=0 )
+				r |= ComplexTypeExp.RESTRICTION;
+		}
+		return r;
 	}
 	
 	protected State createChildState( StartTagInfo tag ) {
@@ -62,7 +84,7 @@ public class ComplexTypeDeclState extends RedefinableDeclState {
 		
 		// simpleContent, ComplexContent, group, all, choice, and sequence
 		// are allowed only when we haven't seen type definition.
-		if(tag.localName.equals("simpleContent") )	return reader.sfactory.simpleContent(this,tag);
+		if(tag.localName.equals("simpleContent") )	return reader.sfactory.simpleContent(this,tag,decl);
 		if(tag.localName.equals("complexContent") )	return reader.sfactory.complexContent(this,tag,decl);
 		State s = reader.createModelGroupState(this,tag);
 		if(s!=null)		return s;
@@ -118,10 +140,6 @@ public class ComplexTypeDeclState extends RedefinableDeclState {
 		if( startTag.containsAttribute("block") )
 			reader.reportWarning( reader.ERR_UNIMPLEMENTED_FEATURE,
 				"block attribute for <complexType>" );
-		// TODO: @final
-		if( startTag.containsAttribute("final") )
-			reader.reportWarning( reader.ERR_UNIMPLEMENTED_FEATURE,
-				"final attribute for <complexType>" );
 		
 		String mixed = startTag.getAttribute("mixed");
 		if( "true".equals(mixed) )

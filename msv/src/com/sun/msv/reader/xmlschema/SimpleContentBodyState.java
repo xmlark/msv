@@ -14,6 +14,7 @@ import com.sun.msv.datatype.xsd.TypeIncubator;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.SequenceState;
 import com.sun.msv.reader.GrammarReader;
@@ -33,8 +34,12 @@ public class SimpleContentBodyState extends SequenceState
 	implements FacetStateParent,TypeOwner {
 	
 	protected final boolean extension;
+
+	/** ComplexType object that we are now constructing. */
+	protected ComplexTypeExp parentDecl;
 	
-	protected SimpleContentBodyState( boolean extension ) {
+	protected SimpleContentBodyState( ComplexTypeExp parentDecl, boolean extension ) {
+		this.parentDecl = parentDecl;
 		this.extension = extension;
 	}
 	
@@ -106,6 +111,8 @@ public class SimpleContentBodyState extends SequenceState
 			// recover by pretending some expression
 			typedStr = Expression.nullSet;
 		} else {
+			parentDecl.derivationMethod = extension?parentDecl.EXTENSION:parentDecl.RESTRICTION;
+			
 			if(lateBinding) {
 				// in case of the late-binding
 				final ReferenceExp r = new ReferenceExp(null);
@@ -126,7 +133,8 @@ public class SimpleContentBodyState extends SequenceState
 
 	private Expression getDatatypeExp() {
 		try {
-			return reader.pool.createTypedString( incubator.derive(null) );
+			return reader.pool.createTypedString(
+				parentDecl.simpleBaseType = incubator.derive(null) );
 		} catch( DatatypeException e ) {
 			// derivation failed
 			reader.reportError( e, reader.ERR_BAD_TYPE, e.getMessage() );

@@ -111,7 +111,7 @@ public class XMLSchemaSchema implements java.io.Serializable {
 		{ return (ElementDeclExp)super._get(name); }
 
 		protected ReferenceExp createReference( String name )
-		{ return new ElementDeclExp(name); }
+		{ return new ElementDeclExp(XMLSchemaSchema.this,name); }
 	}
 	/** map from attribute declaration name to AttributeDeclExp object */
 	public final ElementDeclContainer elementDecls = new ElementDeclContainer();

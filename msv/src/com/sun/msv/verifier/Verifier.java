@@ -162,7 +162,17 @@ public class Verifier extends AbstractVerifier implements IVerifier {
     }
     
     public void startElement(String namespaceUri, String localName, String qName, Attributes atts) throws SAXException {
-    
+        
+        // work gracefully with misconfigured parsers that don't support namespaces,
+        // or other sources that produce broken SAX events.
+        if( namespaceUri==null )
+            namespaceUri="";
+        if( localName==null || localName.length()==0 )
+            localName=qName;
+        if( qName==null || qName.length()==0 )
+            qName=localName;
+        
+        
         super.startElement(namespaceUri, localName, qName, atts);
     
         if (com.sun.msv.driver.textui.Debug.debug)
@@ -254,6 +264,21 @@ public class Verifier extends AbstractVerifier implements IVerifier {
     
     protected Datatype[] feedAttribute(Acceptor child, String uri, String localName, String qName, String value)
         throws SAXException {
+        
+        // work gracefully with misconfigured parsers that don't support namespaces,
+        // or other sources that produce broken SAX events.
+        if( uri==null )
+            uri="";
+        if( localName==null || localName.length()==0 )
+            localName=qName;
+        if( qName==null || qName.length()==0 )
+            qName=localName;
+        
+        // ignore xmlns:* attributes, which could be a part of Attributes
+        // in some SAX events.
+        if( qName.startsWith("xmlns:") || qName.equals("xmlns") )
+            return new Datatype[0];
+        
         if (com.sun.msv.driver.textui.Debug.debug)
             System.out.println("-- processing attribute: @" + qName);
     
@@ -276,7 +301,17 @@ public class Verifier extends AbstractVerifier implements IVerifier {
     }
     
     public void endElement(String namespaceUri, String localName, String qName) throws SAXException {
-    
+        
+        // work gracefully with misconfigured parsers that don't support namespaces,
+        // or other sources that produce broken SAX events.
+        if( namespaceUri==null )
+            namespaceUri="";
+        if( localName==null || localName.length()==0 )
+            localName=qName;
+        if( qName==null || qName.length()==0 )
+            qName=localName;
+        
+        
         if (com.sun.msv.driver.textui.Debug.debug)
             System.out.println(
                 "\n-- endElement(" + qName + ")" + locator.getLineNumber() + ":" + locator.getColumnNumber());

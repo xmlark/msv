@@ -779,9 +779,9 @@ public abstract class ExpressionAcceptor implements Acceptor
 				if( texp instanceof NGTypedStringExp ) {
 					NGTypedStringExp ntexp = (NGTypedStringExp)texp;
 					if( ntexp.keyName!=null
-						&& !token.context.onID( ntexp.keyName, ntexp.dt.createValue(token.literal,token.context) ) ) {
+						&& !token.context.onID( ntexp.keyName.namespaceURI, ntexp.keyName.localName, ntexp.dt.createValue(token.literal,token.context) ) ) {
 							
-						if( ntexp.keyName.length()==0 )
+						if( ntexp.keyName.localName.length()==0 )
 							// empty key name indicates that this is an ID.
 							return docDecl.localizeMessage( docDecl.DIAG_BAD_KEY_VALUE,
 								token.literal.trim() );

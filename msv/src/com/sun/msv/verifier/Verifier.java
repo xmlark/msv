@@ -17,8 +17,9 @@ import java.util.Map;
 import java.util.Iterator;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.IDContextProvider;
-import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
+import com.sun.msv.util.StringPair;
+import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.DatatypeRef;
 
 /**
@@ -137,10 +138,11 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	public void startElement( String namespaceUri, String localName, String qName, Attributes atts )
 		throws SAXException {
 		
+		super.startElement(namespaceUri,localName,qName,atts);
+		
 		if( com.sun.msv.driver.textui.Debug.debug )
 			System.out.println("\n-- startElement("+qName+")" + locator.getLineNumber()+":"+locator.getColumnNumber() );
 		
-		namespaceSupport.pushContext();
 		verifyText();		// verify PCDATA first.
 		
 
@@ -186,7 +188,6 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		if( com.sun.msv.driver.textui.Debug.debug )
 			System.out.println("\n-- endElement("+qName+")" + locator.getLineNumber()+":"+locator.getColumnNumber() );
 		
-		namespaceSupport.popContext();
 		verifyText();
 
 		if( !current.isAcceptState(null) && panicLevel==0 ) {
@@ -214,6 +215,8 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		}
 		else
 			panicLevel = Math.max( panicLevel-1, 0 );
+		
+		super.endElement( namespaceUri, localName, qName );
 	}
 	
 	/**
@@ -278,7 +281,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		// ID/IDREF check
 		Iterator itr = idrefs.keySet().iterator();
 		while( itr.hasNext() ) {
-			String symbolSpace = (String)itr.next();
+			StringPair symbolSpace = (StringPair)itr.next();
 			
 			Set refs = (Set)idrefs.get(symbolSpace);
 			Set keys = (Set)ids.get(symbolSpace);
@@ -289,7 +292,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 				while( jtr.hasNext() ) {
 					Object idref = jtr.next();
 					if(keys==null || !keys.contains(idref)) {
-						if( symbolSpace.length()==0 )
+						if( symbolSpace.localName.length()==0 && symbolSpace.namespaceURI.length()==0 )
 							onError( null, localizeMessage( ERR_UNSOLD_IDREF, new Object[]{idref} ) );
 						else
 							onError( null, localizeMessage( ERR_UNSOLD_KEYREF, new Object[]{idref,symbolSpace} ) );

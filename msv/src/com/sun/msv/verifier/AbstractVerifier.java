@@ -19,6 +19,7 @@ import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.IDContextProvider;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
+import com.sun.msv.util.StringPair;
 import com.sun.msv.util.DatatypeRef;
 
 /**
@@ -41,7 +42,7 @@ public abstract class AbstractVerifier implements
 	protected Locator locator;
 	public final Locator getLocator() { return locator; }
 	
-	/** this set remembers every ID token encountered in this document */
+	/** this map remembers every ID token encountered in this document */
 	protected final Map ids = new java.util.HashMap();
 	/** this map remembers every IDREF token encountered in this document */
 	protected final Map idrefs = new java.util.HashMap();
@@ -52,10 +53,25 @@ public abstract class AbstractVerifier implements
 	public void skippedEntity(String p) {}
 	public void processingInstruction(String name,String data) {}
 	
+	private boolean contextPushed = false;
 	public void startPrefixMapping( String prefix, String uri ) {
+		if( !contextPushed ) {
+			namespaceSupport.pushContext();
+			contextPushed = true;
+		}
 		namespaceSupport.declarePrefix( prefix, uri );
 	}
 	public void endPrefixMapping( String prefix )	{}
+	
+	public void startElement( String namespaceUri, String localName, String qName, Attributes atts ) throws SAXException {
+		if( !contextPushed )
+			namespaceSupport.pushContext();
+		contextPushed = false;
+	}
+	
+	public void endElement( String namespaceUri, String localName, String qName ) throws SAXException {
+		namespaceSupport.popContext();
+	}
 	
 	protected void init() {
 		ids.clear();
@@ -95,14 +111,16 @@ public abstract class AbstractVerifier implements
 		return notations.contains(notationName);
 	}
 	
-	public void onIDREF( String symbolSpace, Object token )	{
-		Set tokens = (Set)idrefs.get(symbolSpace);
-		if(tokens==null)	idrefs.put(symbolSpace,tokens = new java.util.HashSet());
+	public void onIDREF( String uri, String local, Object token )	{
+		StringPair name = new StringPair(uri,local);
+		Set tokens = (Set)idrefs.get(name);
+		if(tokens==null)	idrefs.put(name,tokens = new java.util.HashSet());
 		tokens.add(token);
 	}
-	public boolean onID( String symbolSpace, Object token ) {
-		Set tokens = (Set)ids.get(symbolSpace);
-		if(tokens==null)	ids.put(symbolSpace,tokens = new java.util.HashSet());
+	public boolean onID( String uri, String local, Object token ) {
+		StringPair name = new StringPair(uri,local);
+		Set tokens = (Set)ids.get(name);
+		if(tokens==null)	ids.put(name,tokens = new java.util.HashSet());
 		
 		if( tokens.contains(token) )	return false;	// not unique.
 		tokens.add(token);

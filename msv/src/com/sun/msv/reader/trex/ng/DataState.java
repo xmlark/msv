@@ -82,21 +82,42 @@ public class DataState extends ExpressionState {
 		final String typeName = startTag.getAttribute("type")+"-derived";
 		
 		try {
-			String key = startTag.getAttribute("key");
-			String keyref = startTag.getAttribute("keyref");
-			if( key==null && keyref==null )
+			String keyQName = startTag.getAttribute("key");
+			String keyrefQName = startTag.getAttribute("keyref");
+			if( keyQName==null && keyrefQName==null )
 				// avoid NGTypedStringExp if possible.
 				// it's good for other applications,
 				// and TypedStringExps are sharable.
 				return reader.pool.createTypedString(
 					typeBuilder.createDatatype(), typeName );
-			else {
-				NGTypedStringExp exp = new NGTypedStringExp(
-					typeBuilder.createDatatype(), typeName, key, keyref, baseTypeName );
-				reader.keyKeyrefs.add(exp);
-				reader.setDeclaredLocationOf(exp);	// memorize the location.
-				return exp;
+			
+			String[] key = null;
+			String[] keyref = null;
+			if( keyQName!=null ) {
+				key = reader.splitQName(keyQName);
+				if( key!=null ) {
+					reader.reportError( reader.ERR_UNDECLARED_PREFIX, keyQName );
+					return Expression.nullSet;
+				}
 			}
+			if( keyrefQName!=null ) {
+				keyref = reader.splitQName(keyrefQName);
+				if( keyref!=null ) {
+					reader.reportError( reader.ERR_UNDECLARED_PREFIX, keyrefQName );
+					return Expression.nullSet;
+				}
+			}
+			
+			
+			
+			NGTypedStringExp exp = new NGTypedStringExp(
+				typeBuilder.createDatatype(), typeName, 
+				key   !=null?new StringPair(key[0],key[1]):null,
+				keyref!=null?new StringPair(keyref[0],keyref[1]):null, baseTypeName );
+			reader.keyKeyrefs.add(exp);
+			reader.setDeclaredLocationOf(exp);	// memorize the location.
+			return exp;
+			
 		} catch( DatatypeException dte ) {
 			reader.reportError( reader.ERR_INVALID_PARAMETERS, dte.getMessage() );
 			// recover by returning something.

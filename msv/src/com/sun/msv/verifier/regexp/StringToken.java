@@ -48,7 +48,7 @@ public class StringToken extends Token {
 		this.refType = refType;
 		this.ignorable = literal.trim().length()==0;
 		
-		if( ignorable )	refType.types = ignoredType;
+		if( ignorable && refType!=null )	refType.types = ignoredType;
 	}
 	
 	/** TypedStringExp can consume this token if its datatype can accept this string */
@@ -152,7 +152,7 @@ public class StringToken extends Token {
 
 	private void assignType( Datatype dt ) {
 		if(saturated) {
-			if(refType.types[0]!=dt || refType.types.length!=1)
+			if(refType.types!=null && (refType.types[0]!=dt || refType.types.length!=1))
 				// different types are assigned. roll back to null
 				refType.types=null;
 		} else {

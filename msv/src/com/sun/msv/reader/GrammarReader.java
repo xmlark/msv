@@ -464,9 +464,12 @@ public abstract class GrammarReader
 	
 // SAX events interception
 //============================================
+	private boolean contextPushed = false;
 	public void startElement( String a, String b, String c, Attributes d ) throws SAXException
 	{
-		namespaceSupport.pushContext();
+		if(!contextPushed)
+			namespaceSupport.pushContext();
+		contextPushed = false;
 		super.startElement(a,b,c,d);
 	}
 	public void endElement( String a, String b, String c ) throws SAXException
@@ -481,10 +484,16 @@ public abstract class GrammarReader
 	}
 	public void startPrefixMapping(String prefix, String uri ) throws SAXException
 	{
-		super.startPrefixMapping(prefix,uri);
+		if( !contextPushed ) {
+			namespaceSupport.pushContext();
+			contextPushed = true;
+		}
 		namespaceSupport.declarePrefix(prefix,uri);
+		super.startPrefixMapping(prefix,uri);
 	}
-	public void endPrefixMapping(String prefix) {}
+	public void endPrefixMapping(String prefix) throws SAXException {
+		super.endPrefixMapping(prefix);
+	}
 
 
 	
@@ -508,8 +517,8 @@ public abstract class GrammarReader
 	// when the user uses enumeration over ID type,
 	// this method will be called.
 	// To make it work, simply allow everything.
-	public boolean onID( String symbolSpace, Object token ) { return true; }
-	public void onIDREF( String symbolSpace, Object token ) {}
+	public boolean onID( String uri, String local, Object token ) { return true; }
+	public void onIDREF( String uri, String local, Object token ) {}
 
 	/**
 	 * returns a persistent ValidationContextProvider.

@@ -10,15 +10,23 @@ class TestDriver implements ErrorReceiver
 {
 	public static void main (String args[]) throws Exception
 	{
-		// reads test case file
-		Document doc = new SAXBuilder().build(
-			TestDriver.class.getResourceAsStream("DataTypeTest.xml") );
+		try
+		{
+			// reads test case file
+			Document doc = new SAXBuilder().build(
+				TestDriver.class.getResourceAsStream("DataTypeTest.xml") );
 
-		DataTypeTester tester = new DataTypeTester(System.out,new TestDriver());
-		// perform test for each "case" item
-		Iterator itr = doc.getRootElement().getChildren("case").iterator();
-		while(itr.hasNext())
-			tester.run( (Element)itr.next() );
+			DataTypeTester tester = new DataTypeTester(System.out,new TestDriver());
+			// perform test for each "case" item
+			Iterator itr = doc.getRootElement().getChildren("case").iterator();
+			while(itr.hasNext())
+				tester.run( (Element)itr.next() );
+		}
+		catch(JDOMException e)
+		{
+			e.printStackTrace();
+			System.err.println(e.getMessage());
+		}
     }
 	
 	public boolean report( UnexpectedResultException exp )
@@ -27,15 +35,15 @@ class TestDriver implements ErrorReceiver
 		System.err.println("type name            : "+exp.baseTypeName);
 		System.err.println("tested instance      : \""+exp.testInstance+"\"");
 		System.err.println("supposed to be valid : "+exp.supposedToBeValid);
-		System.err.println("verify method        : "+exp.type.verify(exp.testInstance,null) );
-		System.err.println("diagnose method      : "+(exp.type.diagnose(exp.testInstance,null)==null) );
+		System.err.println("verify method        : "+exp.type.verify(exp.testInstance,DummyContextProvider.theInstance) );
+		System.err.println("diagnose method      : "+(exp.type.diagnose(exp.testInstance,DummyContextProvider.theInstance)==null) );
 		
 		if( exp.testCase.facets.isEmpty() )
 			System.err.println("facets: none");
 		else
 			exp.testCase.facets.dump(System.err);
 
-		DataTypeErrorDiagnosis err = exp.type.diagnose(exp.testInstance,null);
+		DataTypeErrorDiagnosis err = exp.type.diagnose(exp.testInstance,DummyContextProvider.theInstance);
 		
 		if( err!=null && err.message!=null )
 			System.err.println("diagnosis: " + err.message);
@@ -43,7 +51,7 @@ class TestDriver implements ErrorReceiver
 			System.err.println("diagnosis: N/A");
 		
 		// do it again (for trace purpose)
-		exp.type.verify(exp.testInstance,null);
+		exp.type.verify(exp.testInstance,DummyContextProvider.theInstance);
 		
 		return false;
 	}

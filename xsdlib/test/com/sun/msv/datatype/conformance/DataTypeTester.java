@@ -4,7 +4,7 @@
 package com.sun.tranquilo.datatype.conformance;
 
 import org.jdom.*;
-import java.util.List;
+import java.util.*;
 import java.io.PrintStream;
 import com.sun.tranquilo.datatype.*;
 
@@ -56,13 +56,13 @@ public class DataTypeTester
 			TestPatternGenerator.parse(
 				(Element)facetElement.getChildren().get(0));
 		
-		{// perform test for each type specified
+		{
 			List lst = testCase.getChildren("answer");
 			for( int i=0; i<lst.size(); i++ )
 			{
 				Element item = (Element)lst.get(i);
-				pattern.reset();
 				
+				// perform test as a single type
 				DataType t = DataTypeFactory.getTypeByName(item.getAttributeValue("for"));
 				if(t==null)
 				{
@@ -71,9 +71,19 @@ public class DataTypeTester
 				testDataType(
 					t,
 					values, wrongValues,
-					new BaseAnswerWrapper(item.getText(),pattern)
-						// wrap it by intrisic restriction of this datatype
+					new BaseAnswerWrapper(item.getText(),pattern,true/*AND merge*/),
+						// wrap it by intrisic restriction due to this datatype
+					false
 					);
+
+// TODO : we need more systematic approach here
+				// perform test as an union type (completeness only)
+//				DataType u = DataTypeFactory.deriveByUnion(null,
+//					new DataType[]{ t, getRandomType(), getRandomType() } );
+//				testDataType(
+//					u, values, new String[0]/*no explicitly wrong values to test*/,
+//					new BaseAnswerWrapper(item.getText(), pattern, true ),
+//					true );
 			}
 		}
 	}
@@ -95,14 +105,21 @@ public class DataTypeTester
 	 * @param pattern
 	 *		test pattern generator that iterates a combination of facets
 	 *		and its predicted result.
+	 * @param completenessOnly
+	 *		true indicates test is only performed for completeness; that is,
+	 *		make sure that answer is 'o' for those which is marked as 'o'.
+	 *		this flag is used to test union types.
 	 */
 	public void testDataType(
 		DataType baseType,
-		String[] values, String[] wrongs, TestPattern pattern )
+		String[] values, String[] wrongs, TestPattern pattern,
+		boolean completenessOnly )
 		throws Exception
 	{
 		out.println("  testing " + baseType.getName() +
 			" (total "+pattern.totalCases()+" patterns)" );
+		
+		pattern.reset();
 		
 		long cnt=0;
 		
@@ -117,7 +134,7 @@ public class DataTypeTester
 			DataType typeObj=null;
 			try
 			{
-				typeObj = baseType.derive("anonymous",  testCase.facets, null );
+				typeObj = baseType.derive("anonymous",  testCase.facets, DummyContextProvider.theInstance );
 			}
 			catch( BadTypeException bte )
 			{
@@ -137,13 +154,27 @@ public class DataTypeTester
 				// test each value and see what happens
 				for( int i=0; i<values.length; i++ )
 				{
-					boolean v = typeObj.verify(values[i],null);
-					boolean d = (typeObj.diagnose(values[i],null)==null);
+					boolean v = typeObj.verify(values[i],DummyContextProvider.theInstance);
+					boolean d;
+					
+					try
+					{
+						d = (typeObj.diagnose(values[i],DummyContextProvider.theInstance)==null);
+					}
+					catch( UnsupportedOperationException uoe )
+					{
+						d = v;
+					}
 					
 					if(v && d && answer.charAt(i)=='o')
 						continue;	// as predicted
 					if(!v && !d && answer.charAt(i)=='.')
 						continue;	// as predicted
+					
+					if(completenessOnly && answer.charAt(i)=='.' && v==d )
+						continue;	// do not report error if
+									// the validator accepts things that
+									// may not be accepted.
 					
 					// dump error messages
 					if( !err.report( new UnexpectedResultException(
@@ -158,8 +189,8 @@ public class DataTypeTester
 
 				// test each wrong values and makes sure that they are rejected.
 				for( int i=0; i<wrongs.length; i++ )
-					if( typeObj.verify(wrongs[i],null)
-					||  typeObj.diagnose(wrongs[i],null)==null )
+					if( typeObj.verify(wrongs[i],DummyContextProvider.theInstance)
+					||  typeObj.diagnose(wrongs[i],DummyContextProvider.theInstance)==null )
 					{
 						if( !err.report( new UnexpectedResultException(
 							typeObj, baseType.getName(),
@@ -180,10 +211,66 @@ public class DataTypeTester
 		out.println("  " + cnt + " cases tested");
 	}
 	
+	public static final String[] builtinTypesList =
+	new String[]{
+		"string",
+		"boolean",
+		"decimal",
+		"float",
+		"double",
+		"duration",
+		"dateTime",
+		"time",
+		"date",
+		"yearMonth",
+		"year",
+		"monthDay",
+		"day",
+		"month",
+		"hexBinary",
+		"base64Binary",
+		"uriReference",
+		"ID",
+		"IDREF",
+		"ENTITY",
+		"QName",
+		"normalizedString",
+		"token",
+		"language",
+		"IDREFS",
+		"ENTITIES",
+		"NMTOKEN",
+		"NMTOKENS",
+		"Name",
+		"NCName",
+		"NOTATION",
+		"integer",
+		"nonPositiveInteger",
+		"negativeInteger",
+		"long",
+		"int",
+		"short",
+		"byte",
+		"nonNegativeInteger",
+		"unsignedLong",
+		"unsignedInt",
+		"unsignedShort",
+		"unsignedByte",
+		"positiveInteger"
+	};
+	
+	/** gets some built-in type randomly. */
+	private DataType getRandomType()
+	{
+		return DataTypeFactory.getTypeByName(
+			builtinTypesList[ (int)(Math.random()*builtinTypesList.length) ] );
+	}
+	
 	static class BaseAnswerWrapper implements TestPattern
 	{
 		private final TestPattern core;
 		private final String baseAnswer;
+		private final boolean mergeMode;	// true:AND false:OR
 		
 		/** returns the number of test cases to be generated */
 		public long totalCases() { return core.totalCases(); }
@@ -198,7 +285,7 @@ public class DataTypeTester
 			TestCase tc = new TestCase(baseAnswer);
 			try
 			{
-				tc.merge(core.get(),true);
+				tc.merge(core.get(),mergeMode);
 			}catch(BadTypeException bte) { throw new IllegalStateException(); } // not possible
 			return tc;
 		}
@@ -208,10 +295,11 @@ public class DataTypeTester
 
 		public boolean hasMore() { return core.hasMore(); }
 		
-		BaseAnswerWrapper( String baseAnswer, TestPattern base )
+		BaseAnswerWrapper( String baseAnswer, TestPattern base, boolean andMerge )
 		{
 			this.core = base;
 			this.baseAnswer = TestPatternGenerator.trimAnswer(baseAnswer);
+			this.mergeMode = andMerge;
 		}
 	}
 }

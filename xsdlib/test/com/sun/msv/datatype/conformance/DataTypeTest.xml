@@ -1,7 +1,75 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- $Id$ -->
 <suite>
-<comment>
+
+
+
+<case name="test for QName">
+	<!--
+		test suite provides ValidationContextProvideder that
+		resolves prefixes as follows:
+		
+		foo     -> http://foo.examples.com/
+		bar     -> http://bar.examples.com/
+		baz     -> http://bar.examples.com/
+		emp     -> http://empty.examples.com/
+		<empty> -> http://empty.examples.com/
+	-->
+	
+	<value>  foo:head </value>
+	<value > foo:mod</value>
+	<value  >bar:role</value>
+	<value>  baz:role  </value>
+	<value > ascii </value>
+	
+	<answer for="QName"				>ooooo</answer>
+	
+	<comment><!-- semantics of "length" for QName is unclear. -->
+		<choice>
+			<!-- length -->
+			<facet	answer=			"o.oo."	name="length"	value="8" />
+			<facet	answer=			"....o"	name="length"	value="5" />
+			
+			<!-- min/maxLength -->
+			<combination>
+				<choice>
+					<facet answer=	"ooooo"	name="minLength"	value="5" />
+					<facet answer=	"oooo."	name="minLength"	value="6" />
+				</choice>
+				<choice>
+					<facet answer=	"o.ooo"	name="maxLength"	value="7" />
+					<facet answer=	"ooooo"	name="maxLength"	value="8" />
+				</choice>
+			</combination>
+		</choice>
+	</comment>
+	
+	<facets><combination>
+		
+		<!-- pattern -->
+		<combination mode="or">
+			<facet answer=			"oo..."	name="pattern"	value="foo:.*" />
+			<facet answer=			"..oo."	name="pattern"	value="ba.:.*" />
+		</combination>
+		
+		<!-- enumeration -->
+		<combination mode="or">
+			<facet answer=			"..oo." name="enumeration" value="bar:role" />
+			<facet answer=			"....o" name="enumeration" value="emp:ascii" />
+		</combination>
+	</combination></facets>
+	
+	<wrongs>
+		<value>:foo</value>
+		<value>foo:</value>
+		<value>not:a:qname</value>
+		<value>unknown:prefix</value>
+		<value>12345</value>	<!-- not even a Name -->
+		<value>:</value>
+		<value>-joe</value>
+	</wrongs>
+</case>
+
 
 <case name="test for string">
 	<value></value>
@@ -10,7 +78,7 @@
 	<value>&#x10005;&#x10009;</value>
 	
 	<value>$#"</value>
-	<value>日本�?/value>	<!-- "the Japanese" in kanji. length 3 -->
+	<value>日本�?</value>	<!-- "the Japanese" in kanji. length 3 -->
 	<value>lame</value>
 	<value>label</value>
 	
@@ -258,7 +326,7 @@
 		<value>1</value>
 	</wrongs>
 </case>
-</comment>
+
 
 <case name="test for integer and its derived types">
 	<value>-9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999</value>
@@ -398,7 +466,6 @@
 </case>
 
 <comment>
-
 <case name="test of float/double (incomplete)">
 	<value>-INF</value>
 	<value>-999999999999999999999999999999999999999999999999999999999999999e99999999999999999999999999999999</value> <!-- way beyond the possible range of double, but valid -->

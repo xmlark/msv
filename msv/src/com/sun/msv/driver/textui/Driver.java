@@ -27,10 +27,11 @@ public class Driver
 		boolean dump=false;
 		boolean relax=true;
 		boolean verbose = false;
+		boolean dtdValidation=false;
 		
 		if( args.length==0 )
 		{
-			System.out.println("usage: java -jar tranquilo.jar (-relax|-trex) [-xerces|-crimson] [-dump] [-debug] [-verbose] <grammar file> <instance file> ...");
+			System.out.println( localize(MSG_USAGE) );
 			return;
 		}
 		
@@ -39,6 +40,8 @@ public class Driver
 			if( args[i].equalsIgnoreCase("-relax") )			relax = true;
 			else
 			if( args[i].equalsIgnoreCase("-trex") )				relax = false;
+			else
+			if( args[i].equalsIgnoreCase("-dtd") )				dtdValidation = true;
 			else
 			if( args[i].equalsIgnoreCase("-dump") )				dump = true;
 			else
@@ -56,7 +59,7 @@ public class Driver
 			{
 				if( args[i].charAt(0)=='-' )
 				{
-					System.err.println("unrecognized option:"+args[i]);
+					System.err.println(localize(MSG_UNRECOGNIZED_OPTION,args[i]));
 					return;
 				}
 				
@@ -72,9 +75,12 @@ public class Driver
 			factory = new org.apache.xerces.jaxp.SAXParserFactoryImpl();
 		
 		if( verbose )
-			System.out.println("Using "+factory.getClass().getName());
+			System.out.println( localize( MSG_PARSER, factory.getClass().getName()) );
+		
 		factory.setNamespaceAware(true);
-		factory.setValidating(false);
+		factory.setValidating(dtdValidation);
+		if( dtdValidation && verbose )
+			System.out.println( localize( MSG_DTDVALIDATION ) );
 		
 		InputSource is = new InputSource(new java.io.FileInputStream(grammarName));
 		is.setSystemId(new File(grammarName).getAbsolutePath());
@@ -90,7 +96,7 @@ public class Driver
 			TREXDocumentDeclaration docDecl;
 		
 			final long stime = System.currentTimeMillis();
-			System.out.println( "start parsing a grammar" );
+			System.out.println( localize(MSG_START_PARSING_GRAMMAR) );
 		
 			if(relax)
 			{
@@ -102,20 +108,20 @@ public class Driver
 
 			long parsingTime = System.currentTimeMillis();
 			if( verbose )
-				System.out.println( "parsing took "+(parsingTime-stime)+"ms" );
+				System.out.println( localize( MSG_PARSING_TIME, new Long(parsingTime-stime) ) );
 			
 			
 			for( int i=0; i<fileNames.size(); i++ )
 			{
 				final String fileName = (String)fileNames.elementAt(i);
-				System.out.println("validating " + fileName );
+				System.out.println( localize( MSG_VALIDATING, fileName) );
 				InputSource xml = new InputSource(new java.io.FileInputStream(fileName));
 				xml.setSystemId(fileName);
 				verify( docDecl, xml );
 			}
 			
 			if( verbose )
-				System.out.println( "validation took "+(System.currentTimeMillis()-parsingTime)+"ms" );
+				System.out.println( localize( MSG_VALIDATION_TIME, new Long(System.currentTimeMillis()-parsingTime) ) );
 		}
 	}
 	
@@ -129,7 +135,7 @@ public class Driver
 
 		if( g==null )
 		{
-			System.out.println("failed to load a grammar");
+			System.out.println(localize(ERR_LOAD_GRAMMAR));
 			System.exit(-1);
 		}
 		return g;
@@ -148,7 +154,7 @@ public class Driver
 		
 		if( g==null )
 		{
-			System.err.println("failed to load a grammar");
+			System.out.println(localize(ERR_LOAD_GRAMMAR));
 			System.exit(-1);
 		}
 		return g;
@@ -211,7 +217,7 @@ public class Driver
 		}
 		catch( com.sun.tranquilo.verifier.ValidationUnrecoverableException vv )
 		{
-			System.out.println("bailing out");
+			System.out.println(localize(MSG_BAILOUT));
 		}
 		catch( SAXException se )
 		{
@@ -223,20 +229,33 @@ public class Driver
 				se.printStackTrace();
 		}
 		
-		if( v.isValid() )	System.out.println("document is valid");
-		else				System.out.println("document is NOT valid");
+		if( v.isValid() )	System.out.println(localize(MSG_VALID));
+		else				System.out.println(localize(MSG_INVALID));
 	}
 
-	public static String localizeMessage( String propertyName, Object[] args )
+	public static String localize( String propertyName, Object[] args )
 	{
 		String format = java.util.ResourceBundle.getBundle(
 			"com.sun.tranquilo.driver.textui.Messages").getString(propertyName);
 	    return java.text.MessageFormat.format(format, args );
 	}
-	public static String localizeMessage( String prop )
-	{ return localizeMessage(prop,null); }
-	public static String localizeMessage( String prop, Object arg1 )
-	{ return localizeMessage(prop,new Object[]{arg1}); }
-	public static String localizeMessage( String prop, Object arg1, Object arg2 )
-	{ return localizeMessage(prop,new Object[]{arg1,arg2}); }
+	public static String localize( String prop )
+	{ return localize(prop,null); }
+	public static String localize( String prop, Object arg1 )
+	{ return localize(prop,new Object[]{arg1}); }
+	public static String localize( String prop, Object arg1, Object arg2 )
+	{ return localize(prop,new Object[]{arg1,arg2}); }
+	
+	public static final String MSG_DTDVALIDATION =		"Driver.DTDValidation";
+	public static final String MSG_PARSER =				"Driver.Parser";
+	public static final String MSG_USAGE =				"Driver.Usage";
+	public static final String MSG_UNRECOGNIZED_OPTION ="Driver.UnrecognizedOption";
+	public static final String MSG_START_PARSING_GRAMMAR="Driver.StartParsingGrammar";
+	public static final String MSG_PARSING_TIME =		"Driver.ParsingTime";
+	public static final String MSG_VALIDATING =			"Driver.Validating";
+	public static final String MSG_VALIDATION_TIME =	"Driver.ValidationTime";
+	public static final String MSG_VALID =				"Driver.Valid";
+	public static final String MSG_INVALID =			"Driver.Invalid";
+	public static final String ERR_LOAD_GRAMMAR =		"Driver.ErrLoadGrammar";
+	public static final String MSG_BAILOUT =			"Driver.BailOut";
 }

@@ -21,7 +21,7 @@ public class ReportErrorHandler implements VerificationErrorHandler
 	private void print( ValidityViolation vv, String prop )
 	{
 		System.out.println(
-			Driver.localizeMessage( prop, new Object[]{
+			Driver.localize( prop, new Object[]{
 				new Integer(vv.locator.getLineNumber()), 
 				new Integer(vv.locator.getColumnNumber()),
 				vv.locator.getSystemId(),
@@ -33,7 +33,7 @@ public class ReportErrorHandler implements VerificationErrorHandler
 	{
 		if( counter++ < 20 )	return;
 		
-		System.out.println( Driver.localizeMessage(MSG_TOO_MANY_ERRORS) );
+		System.out.println( Driver.localize(MSG_TOO_MANY_ERRORS) );
 		throw new ValidationUnrecoverableException(vv);
 	}
 	

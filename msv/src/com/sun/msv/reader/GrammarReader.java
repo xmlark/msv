@@ -643,6 +643,8 @@ public abstract class GrammarReader
 		"GrammarReader.XMLParserFactoryException";
 	public static final String ERR_CHARACTERS =		// arg:1
 		"GrammarReader.Characters";
+	public static final String ERR_DISALLOWED_ATTRIBUTE = // arg:2
+		"GrammarReader.DisallowedAttribute";
 	public static final String ERR_MISSING_ATTRIBUTE = // arg:2
 		"GrammarReader.MissingAttribute";
 	public static final String ERR_BAD_ATTRIBUTE_VALUE = // arg:2

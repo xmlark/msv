@@ -10,7 +10,8 @@
 package com.sun.msv.reader.util;
 
 import com.sun.msv.reader.relax.core.RELAXCoreReader;
-import com.sun.msv.reader.trex.TREXGrammarReader;
+import com.sun.msv.reader.trex.classic.TREXGrammarReader;
+import com.sun.msv.reader.trex.ng.RELAXNGReader;
 import com.sun.msv.reader.xmlschema.XMLSchemaReader;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
@@ -90,16 +91,18 @@ public class GrammarLoader
 		
 		RELAXNSReader relaxNs = new RELAXNSReader(controller,factory,pool);
 		RELAXCoreReader relaxCore = new RELAXCoreReader(controller,factory,pool);
+		RELAXNGReader relaxNg = new RELAXNGReader(controller,factory,new RELAXNGReader.StateFactory(),pool);
 		TREXGrammarReader trex = new TREXGrammarReader(controller,factory,new TREXGrammarReader.StateFactory(),pool);
 		XMLSchemaReader xmlSchema = new XMLSchemaReader(controller,factory,new XMLSchemaReader.StateFactory(),pool);
 		
 		XMLReader parser = factory.newSAXParser().getXMLReader();
-		Sniffer sniffer = new Sniffer(relaxNs,relaxCore,trex,xmlSchema,parser);
+		Sniffer sniffer = new Sniffer(relaxNs,relaxCore,relaxNg,trex,xmlSchema,parser);
 		parser.setContentHandler(sniffer);
 		parser.setErrorHandler(new GrammarReaderControllerAdaptor(controller));
 		if( source instanceof String )	parser.parse( (String)source );
 		else							parser.parse( (InputSource)source );
 		
+		if(sniffer.winner==relaxNg)		return relaxNg.getResult();
 		if(sniffer.winner==relaxNs)		return relaxNs.getResult();
 		if(sniffer.winner==relaxCore)	return relaxCore.getResult();
 		if(sniffer.winner==trex)		return trex.getResult();
@@ -112,18 +115,23 @@ public class GrammarLoader
 	{
 		Sniffer(
 			RELAXNSReader relaxNs, RELAXCoreReader relaxCore,
+			RELAXNGReader relaxNg,
 			TREXGrammarReader trex, XMLSchemaReader xmlSchema,
 			XMLReader parser ) {
 			
-			super(trex,new ForkContentHandler(xmlSchema,new ForkContentHandler(relaxCore,relaxNs)));
+			super(trex,
+				new ForkContentHandler(xmlSchema,
+					new ForkContentHandler(relaxNg,
+						new ForkContentHandler(relaxCore,relaxNs))));
 			this.relaxCore = relaxCore;
 			this.relaxNs = relaxNs;
+			this.relaxNg = relaxNg;
 			this.trex = trex;
 			this.xmlSchema = xmlSchema;
 			this.parser = parser;
 		}
 		
-		private final ContentHandler relaxCore,relaxNs,trex,xmlSchema;
+		private final ContentHandler relaxCore,relaxNs,relaxNg,trex,xmlSchema;
 		private final XMLReader parser;
 
 		protected ContentHandler winner;
@@ -137,11 +145,17 @@ public class GrammarLoader
 			if( localName.equals("schema") )
 				winner = xmlSchema; // assume XML Schema
 			else
+			if( RELAXNSReader.RELAXNamespaceNamespace.equals(namespaceURI) )
+				winner = relaxNs;
+			else
+			if( RELAXNGReader.RELAXNGNamespace.equals(namespaceURI) )
+				winner = relaxNg;
+			else
 			if( TREXGrammarReader.TREXNamespace.equals(namespaceURI)
 			||  namespaceURI.equals("") )
 				winner = trex;
 			else
-				winner = relaxNs;	// otherwise assume RELAX namespace
+				winner = relaxNg;	// otherwise assume RELAX NG
 			
 			winner.startElement(namespaceURI,localName,qName,atts);
 			// redirect all successive events to the winner.

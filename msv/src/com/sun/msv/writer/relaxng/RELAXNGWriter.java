@@ -13,6 +13,7 @@ import org.relaxng.datatype.*;
 import org.relaxng.datatype.DataType;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.TypedString;
+import com.sun.msv.grammar.relaxng.ValueType;
 import com.sun.msv.datatype.*;
 import com.sun.msv.reader.trex.ng.RELAXNGReader;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
@@ -759,6 +760,37 @@ public class RELAXNGWriter implements GrammarWriter {
 					
 				end("value");
 				return;
+			}
+			
+			if( dt instanceof ValueType ) {
+				ValueType vt = (ValueType)dt;
+				
+				if( vt.baseType instanceof DataTypeImpl ) {
+					DataTypeImpl base = (DataTypeImpl)vt.baseType;
+					
+					final Vector ns = new Vector();
+						
+					String lex = base.convertToLexicalValue( vt.value, 
+					new SerializationContext() {
+						public String getNamespacePrefix( String namespaceURI ) {
+							int cnt = ns.size()/2;
+								ns.add( "xmlns:ns"+cnt );
+								ns.add( namespaceURI );
+							return "ns"+cnt;
+						}
+					});
+					
+					if( base!=TokenType.theInstance ) {
+						// if the type is token, we don't need @type.
+						ns.add("type");
+						ns.add(base.getName());
+					}
+					
+					start("value",(String[])ns.toArray(new String[0]));
+					characters(lex);
+					end("value");
+					return;
+				}
 			}
 			
 			if( dt instanceof DataTypeImpl ) {

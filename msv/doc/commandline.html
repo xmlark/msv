@@ -1,7 +1,7 @@
 <HTML>
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
-	<TITLE>Tranquilo Readme</TITLE>
+	<TITLE>Usage Guide For Sun's Multi-Schema Validator</TITLE>
 	<style>
 		.title
 		{
@@ -19,61 +19,61 @@
 	</style>
 </HEAD>
 <BODY>
-<P ALIGN=center STYLE="MARGIN-BOTTOM: 0in"><B>USAGE GUIDE&nbsp;FOR Tranquilo
-Verifier<BR>Preview Version.1 April,2001<BR><BR>Copyright (c) Sun
+<P ALIGN=center>
+<B>USAGE GUIDE FOR SUN'S MULTI-SCHEMA VALIDATOR<BR>
+Preview Version.1 April,2001<BR><BR>Copyright &copy; Sun
 Microsystems, 2001</B></P>
-<P STYLE="MARGIN-BOTTOM: 0in"><BR>
-</P>
-<P ALIGN=right>Document written by <A href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke
-KAWAGUCHI</A> <BR>
+<P><BR></P>
+<P ALIGN=right>Document written by <A href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</A> <BR>
 $Id$ 
 </P>
-<P>Sun Tranquilo Verifier  is  a Java tool to validate XML documents with
-a schema. It supports RELAX Namespace, RELAX Core, and TREX.</P>
+<P>Sun's Multi-Schema Validator(MSV) is  a Java tool to validate XML documents against XML schemata. It supports RELAX Namespace, RELAX Core, TREX, XML DTDs, and a subset of XML Schema Part 1.</P>
+
 <H1>Usage</H1>
 <P>
   To validate XML documents with a RELAX grammar/module, do as follows
 </P>
-<PRE>$ java -jar tranquilo.jar MySchema.rxg MyDocument1.xml MyDocument2.xml ...</PRE>
+<PRE>$ java -jar msv.jar MySchema.rxg MyDocument1.xml MyDocument2.xml ...</PRE>
 <P>
   If you'd like to use TREX,
 </P>
-<PRE>$ java -jar tranquilo.jar MySchema.trex MyDocument1.xml MyDocument2.xml</PRE>
+<PRE>$ java -jar msv.jar MySchema.trex MyDocument1.xml MyDocument2.xml</PRE>
 <P>
   Or if you'd like to use XML Schema,
 </P>
-<PRE>$ java -jar tranquilo.jar MySchema.xsd MyDocument1.xml MyDocument2.xml</PRE>
+<PRE>$ java -jar msv.jar MySchema.xsd MyDocument1.xml MyDocument2.xml</PRE>
 <P>
-  Tranquilo will detect the schema language regardless of its file extension.
+  MSV will detect the schema language regardless of its file extension.
 </P>
 <P>
   However, you have to add <code>-dtd</code> switch to use DTD.
 </P>
-<PRE>$ java -jar tranquilo.jar -dtd my.dtd MyDocument1.xml MyDocument2.xml</PRE>
+<PRE>$ java -jar msv.jar -dtd my.dtd MyDocument1.xml MyDocument2.xml</PRE>
 <P>
   Some environment supports wild card for filenames, while others don't
   (e.g., "jview" VM from Microsoft).
   You can also use URL instead of filename. 
 </P>
 <P>
-  If the schema contains some errors, you will see messages like this.
+  If the schema contains errors, you will see messages like this.
 </P>
 <PRE>
 start parsing a grammar.
-the following hedgeRules form a infinite recursion ( y &gt; z &gt; y )
+the following hedgeRules form an infinite recursion ( y &gt; z &gt; y )
   18:23@file:///c:/work/relax/relax024.e.rlx
   14:23@file:///c:/work/relax/relax024.e.rlx
 failed to load a grammar.
 </PRE>
-<P>"18:23@XYZ" indicates that the error is related with line 18, column 23 of file XYZ.</P>
+<P>"18:23@XYZ" indicates that the error is located at line 18, column 23 of file XYZ.</P>
 <P>If the document is valid, you will see messages like this.</P>
 <PRE>
 start parsing a grammar.
 validating c:\work\relax\relax001.v00.xml
 the document is valid.
 </PRE>
-<P>Alternatively, if the&nbsp;document has some errors, you 
-will see messages like this.</P>
+<P>
+	Alternatively, if the document has errors, you will see messages like this.
+</P>
 <PRE>
 start parsing a grammar.
 validating c:\work\relax\relax001.n02.xml
@@ -89,8 +89,8 @@ might want to look around to find the actual error.</P>
 
 <H1>Options</H1>
 <P>Command line tool has several other options. You can see the list of 
-available options by invoking Tranquilo without any arguments.</P>
-<PRE>$ java -jar tranquilo.jar</PRE>
+available options by invoking MSV without any arguments.</P>
+<PRE>$ java -jar msv.jar</PRE>
 
 <DL>
 	<DT>-warning</DT>
@@ -100,7 +100,7 @@ available options by invoking Tranquilo without any arguments.</P>
 	</DD>
 	<DT>-loose</DT>
 	<DD>
-		This switch prevents Tranquilo to resolve external resources
+		This switch prevents MSV from resolving external resources
 		(such as external DTD referenced from documents, or external entities).
 	</DD>
 </DL>
@@ -117,20 +117,31 @@ available options by invoking Tranquilo without any arguments.</P>
 	</LI>
 	<LI>
 		In general, handling of XML namespace is different from
-		normal DTD validators. As a result, Tranquilo may validate documents
-		that other DTD validators reject. If there is such a danger,
-		Tranquilo always reports a warning.
+		most DTD validators. As a result, MSV may validate documents
+		that other DTD validators reject. When this is the case,
+		MSV always issues a warning.
 	</LI>
 </OL>
 
 <H2>TREX</H2>
 <P>
-	This implementation fully conforms to the current specification.
+	This implementation fully conforms to
+	<a href="http://thaiopensource.com/trex/spec.html">
+		the current specification (2001-02-13 version).
+	</a>
 </P>
 
 <H2>RELAX Core</H2>
 <P>
-	This implementation fully conforms to the current specification.
+	This implementation fully conforms to the current JIS TR specification.
+	(
+	<a href="http://www.egroups.co.jp/files/reldeve/JISTRtranslation.pdf">
+		English
+	</a>,
+	<a href="http://www.y-adagio.com/public/standards/tr_relax_c/toc.htm">
+		Japanese
+	</a>
+	)
 </P>
 
 <H2>RELAX Namespace</H2>
@@ -144,8 +155,8 @@ available options by invoking Tranquilo without any arguments.</P>
 <OL>
 	<LI>
 		<A href="http://www.w3.org/TR/xmlschema-1/#concepts-schemaConstraints">
-		"Schema component constraints" and "schema representation constraints"
-		</A> are not fully enforced. In other words, Tranquilo accepts schemata
+		"Schema component constraints" and "Schema representation constraints"
+		</A> are not fully enforced. In other words, MSV accepts schemata
 		that are rejected by other conforming processors.
 	</LI>
 	<LI>
@@ -172,12 +183,12 @@ available options by invoking Tranquilo without any arguments.</P>
 	<LI>
 		<A href="http://www.w3.org/TR/xmlschema-1/#conformance-missing">
 		"Missing sub-components" </A> are treated as immediate error.
-		The present author believes this behavior better serves the majority.
+		This behavior better serves the majority of users.
 	</LI>
 	<LI>
 		Default values are ignored. In fact,
-		no infoset contribution is supported: Tranquilo validates documents,
-		but it doesn't touch documents. PSVI is also not supported.
+		no infoset contribution is supported: MSV validates documents,
+		but it doesn't augment them. PSVI is also not supported.
 	</LI>
 </OL>
 

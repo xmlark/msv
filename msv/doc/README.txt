@@ -1,15 +1,15 @@
 ======================================================================
-          README FILE FOR THE SUN TRANQUILO MULTI VERIFIER
+          README FILE FOR SUN'S MULTI-SCHEMA VALIDATOR
                     Preview Version. 1st May, 2001
                  Copyright (c) Sun Microsystems, 2001
 Document written by Kohsuke Kawaguchi (kohsuke.kawaguchi@eng.sun.com)
                                                     $Revision$
 ======================================================================
 
-Sun Tranquilo Verifier  is  a Java tool to validate XML documents with
-a schema. It supports DTD, RELAX Namespace, RELAX Core, TREX, and the
-subset of XML Schema part 1. This product includes software developed
-by the Apache Software Foundation [1].
+Sun's Multi-Schema Validator is  a Java tool to validate XML documents
+against an XML schema. It supports DTD, RELAX Namespace, RELAX Core,
+TREX, and a subset of XML Schema part 1. This product includes
+software developed by the Apache Software Foundation [1].
 
 ----------------------------------------------------------------------
 OVERVIEW
@@ -18,37 +18,37 @@ OVERVIEW
 This tool is:
 
 * a command line tool that can read XML documents and validate them
-  with a schema (DTD/RELAX/TREX/XML Schema). If any error is found,
+  against a schema (DTD/RELAX/TREX/XML Schema). If an error is found,
   error messages are provided.
 
-* a library that can be incorporated into Java application as a
+* a library that can be incorporated into Java applications as a
   validator.
 
-For the formar usage, see commandline.html for detail.
-For the latter usage, see developer.html for detail.
+See commandline.html for details on how to use it from the command line.
+See developer.html for details on how to use it as a library.
 
 
 ----------------------------------------------------------------------
 CURRENT STATUS
 ----------------------------------------------------------------------
 
-This preview version implements
+This preview version implements:
 
 1. XML DTD [2]
 
-2. RELAX Core [3], based on the specification of JIS:TR X 0029:2000 [4]
-   and additional enhancements based on the discussion held at the
+2. RELAX Core [3], based on the JIS:TR X 0029:2000 [4] specification,
+   and additional enhancements based on discussions held at the
    mailing list relstdj [5], reluserj [6], and reldeve [7].
 
 3. RELAX Namespace [3], based on the draft 2001-03-11 version [8] and
-   additional enhancements based on the discussion held at the same
+   additional enhancements based on discussions held at the same
    mailing list.
 
 4. TREX [9], based on the draft [10] (2001-02-13 version) and the 
-  reference implementation [11]. Only datatype vocabulary available is
+  reference implementation [11]. The only datatype vocabulary available is
   W3C XML Schema Part 2 PR [12].
 
-5. Limited subset of W3C XML Schema Part 1 PR [13].
+5. A limited subset of W3C XML Schema Part 1 PR [13].
    See commandline.html for details of limitations.
 
 6. W3C XML Schema Part 2 PR [12] as a datatype vocabulary.

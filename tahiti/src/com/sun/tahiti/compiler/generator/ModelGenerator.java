@@ -12,6 +12,7 @@ package com.sun.tahiti.compiler.generator;
 import com.sun.msv.grammar.*;
 import com.sun.tahiti.compiler.Symbolizer;
 import com.sun.tahiti.compiler.Controller;
+import com.sun.tahiti.compiler.java.ClassSerializer;
 import com.sun.tahiti.grammar.*;
 
 public interface ModelGenerator
@@ -28,7 +29,7 @@ public interface ModelGenerator
 	};
 	public static final ModelGenerator javaGenerator = new ModelGenerator() {
 		public void generate( AnnotatedGrammar grammar, Symbolizer symbolizer, Controller controller ) throws Exception {
-			new JavaGenerator(grammar,symbolizer,controller).generate();
+			new ClassSerializer(grammar,symbolizer,controller).generate();
 		}
 	};
 }

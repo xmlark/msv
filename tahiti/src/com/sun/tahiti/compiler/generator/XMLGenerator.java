@@ -81,7 +81,8 @@ class XMLGenerator
 				new String[]{"name",type.getSuperType().getTypeName()});
 		
 		writeType( type, out );
-		
+
+/*		marshaller is now placed in a different file
 		if( type instanceof ClassItem ) {
 			// put a marshaller.
 			try {
@@ -93,7 +94,7 @@ class XMLGenerator
 				controller.error( null, "SAX exception", e );
 			}
 		}
-				
+*/				
 		out.end("class");
 	}
 	

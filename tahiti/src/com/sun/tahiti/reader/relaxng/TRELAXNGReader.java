@@ -67,6 +67,7 @@ public class TRELAXNGReader extends RELAXNGReader implements TahitiGrammarReader
 			// in the final wrap up.
 			if( tag.localName.equals("element") ) {
 //			if( exp instanceof ElementExp ) {
+/*
 				ElementExp eexp = (ElementExp)exp;
 				// add a ClassItem between the ElementExp and the content model.
 				ClassItem t = annGrammar.createClassItem( decideName(state,exp,"class"), eexp.contentModel );
@@ -75,6 +76,11 @@ public class TRELAXNGReader extends RELAXNGReader implements TahitiGrammarReader
 				t.isTemporary = true;	// this flag indicates that this class item is a temporary one.
 				
 				return eexp;
+*/
+				// to make marshalling easy, ClassItem is generated above the ElementExp
+				ClassItem t = annGrammar.createClassItem( decideName(state,exp,"class"), exp );
+				t.isTemporary = true;
+				return t;
 			} else {
 				// if this element has the t:name attribute, store that
 				// information by using a ReferenceExp. This information
@@ -113,6 +119,10 @@ public class TRELAXNGReader extends RELAXNGReader implements TahitiGrammarReader
 			The following code is a quick hack to prevent this situation by removing
 			temporary ClassItem if it is the immediate child of the user-defined class.
 			 */
+			/*
+				We changed the code and now temporary class items are generated
+				*above* elements. So now this code is unnecessary.
+			*/
 /* TODO:
 	we have to think in much broader view.
 	This could be done as a part of temporary class item removal.

@@ -11,9 +11,9 @@ package com.sun.tahiti.compiler.sm;
 
 import com.sun.tahiti.grammar.AnnotatedGrammar;
 import com.sun.tahiti.grammar.ClassItem;
-import com.sun.tahiti.compiler.Controller;
 import com.sun.tahiti.compiler.XMLWriter;
 import com.sun.tahiti.util.xml.DocumentFilter;
+import com.sun.msv.reader.GrammarReaderController;
 import org.xml.sax.Parser;
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.SAXException;
@@ -27,7 +27,7 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class MarshallerSerializer {
 	
-	public static void serialize( AnnotatedGrammar grammar, Controller controller,
+	public static void serialize( AnnotatedGrammar grammar, GrammarReaderController controller,
 				DocumentHandler handler ) throws SAXException,ParserConfigurationException,IOException {
 		
 		final XMLWriter out = new XMLWriter(handler);

@@ -18,7 +18,6 @@ import java.io.FileOutputStream;
 import java.util.Map;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
 import com.sun.tahiti.compiler.Controller;
@@ -31,6 +30,8 @@ import com.sun.tahiti.compiler.Symbolizer;
 import com.sun.tahiti.grammar.TypeItem;
 import com.sun.tahiti.grammar.util.SuperClassBodyRemover;
 import com.sun.tahiti.grammar.AnnotatedGrammar;
+import com.sun.tahiti.util.xml.DOMBuilder;
+import com.sun.tahiti.util.xml.XSLTUtil;
 import com.sun.msv.reader.GrammarReaderController;
 import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xml.serialize.OutputFormat;
@@ -139,7 +140,7 @@ public class Driver
 				new FileOutputStream( new File( outDir, "grammar.xml" ) ),
 				new OutputFormat("xml",null,true) );
 		} else {
-			TransformerHandler xsltEngine = getTransformer(
+			TransformerHandler xsltEngine = XSLTUtil.getTransformer(
 				Driver.class.getResourceAsStream("grammar2java.xsl"));
 			xsltEngine.setResult( new StreamResult(
 				new FileOutputStream( getJavaFile(outDir,g.grammarName)) ));
@@ -154,6 +155,19 @@ public class Driver
 		Symbolizer symbolizer =
 			RuleSerializer.serialize( g, rules, grammarReceiver );
 
+	
+	// generate marshallers
+	//-----------------------------------------
+		if( out==xml ) {
+			System.err.println("generating marshallers...");
+			DocumentHandler marshallerReceiver = null;
+			marshallerReceiver = new XMLSerializer(
+				new FileOutputStream( new File( outDir, "marshaller.xml" ) ),
+				new OutputFormat("xml",null,true) );
+			MarshallerSerializer.serialize( g, grammarController, marshallerReceiver );
+		}
+		// the marshaller file is unnecessary when we are generating Java files.
+		
 
 	// generate class definitions
 	//-----------------------------------------
@@ -181,37 +195,13 @@ public class Driver
 		}
 		
 		generator.generate( g, symbolizer, controller );
-		
 
-	// generate marshaller
-	//-----------------------------------------
-		System.err.println("generating marshallers...");
-		DocumentHandler marshallerReceiver = null;
-		if( out==xml ) {
-			marshallerReceiver = new XMLSerializer(
-				new FileOutputStream( new File( outDir, "marshaller.xml" ) ),
-				new OutputFormat("xml",null,true) );
-		} else {
-//			TransformerHandler xsltEngine = getTransformer(
-//				Driver.class.getResourceAsStream("grammar2java.xsl"));
-//			xsltEngine.setResult( new StreamResult(
-//				new FileOutputStream( getJavaFile(outDir,g.grammarName)) ));
-//			
-//			grammarReceiver = new com.sun.msv.writer.ContentHandlerAdaptor(xsltEngine);
-			marshallerReceiver = new XMLSerializer( System.out, new OutputFormat("xml",null,true));
-		}
-		MarshallerSerializer.serialize( g, controller, marshallerReceiver );
-		
+	
 		System.err.println("done.");
 		return 0;
 	}
-	
-	/** gets an XSLT engine. */
-	private static TransformerHandler getTransformer( java.io.InputStream src ) throws Exception {
 		
-		SAXTransformerFactory xsltFactory = new org.apache.xalan.processor.TransformerFactoryImpl();
-		return xsltFactory.newTransformerHandler(new StreamSource(src));
-	}
+
 	
 	/**
 	 * gets a File object from the specified Java class name.

@@ -7,27 +7,33 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tahiti.compiler.generator;
+package com.sun.tahiti.compiler.java;
 
 import com.sun.msv.grammar.*;
 import com.sun.tahiti.compiler.Symbolizer;
 import com.sun.tahiti.compiler.Controller;
+import com.sun.tahiti.compiler.XMLWriter;
+import com.sun.tahiti.compiler.sm.MarshallerGenerator;
 import com.sun.tahiti.grammar.*;
 import com.sun.tahiti.grammar.util.Multiplicity;
 import com.sun.tahiti.reader.NameUtil;
 import com.sun.tahiti.util.text.Formatter;
-import java.util.Iterator;
+import com.sun.tahiti.util.xml.XSLTUtil;
+import com.sun.tahiti.util.xml.DOMBuilder;
+import com.sun.tahiti.util.xml.DOMVisitor;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Iterator;
+import java.util.Map;
 import java.text.MessageFormat;
 
 /**
  * produces Java source codes of the object model.
  */
-class JavaGenerator
+public class ClassSerializer
 {
-	JavaGenerator( AnnotatedGrammar grammar, Symbolizer symbolizer, Controller controller ) {
+	public ClassSerializer( AnnotatedGrammar grammar, Symbolizer symbolizer, Controller controller ) {
 		this.grammar = grammar;
 		this.symbolizer = symbolizer;
 		this.controller = controller;
@@ -44,7 +50,7 @@ class JavaGenerator
 	private final String grammarClassName;
 	private final String grammarShortClassName;
 		
-	void generate() throws IOException {
+	public void generate() throws IOException {
 		// collect all ClassItems.
 		
 		ClassItem[] types = grammar.getClasses();
@@ -94,7 +100,7 @@ class JavaGenerator
 	/**
 	 * writes the body of a ClassItem.
 	 */
-	private void writeClass( TypeItem type, PrintWriter out ) {
+	private void writeClass( TypeItem type, final PrintWriter out ) {
 
 		// one 
 		ClassItem citm = null;
@@ -109,8 +115,13 @@ class JavaGenerator
 			out.println(format("package {0};\n",packageName));
 		
 		out.println("import com.sun.tahiti.runtime.ll.NamedSymbol;");
+		out.println("import com.sun.tahiti.runtime.sm.Marshaller;");
 		out.println(format("import {0};",grammarClassName));
 		out.println();
+		
+
+	// class name and the base class definitions
+	//-------------------------------------------
 		
 		out.print(format("public {0} {1}",
 			citm!=null?"class":"interface",	type.getBareName() ));
@@ -131,25 +142,27 @@ class JavaGenerator
 		
 		out.println(" {");
 		out.println();
+
+		
+		
+	// prepare field serializers
+	//----------------------------------------
+		FieldUse[] fields = (FieldUse[])type.fields.values().toArray(new FieldUse[0]);
+		FieldSerializer[] fieldSerializers = new FieldSerializer[fields.length];
+
+		// a map from field name to FieldSerializer.
+		final Map fsMap = new java.util.HashMap();
+		
+		for( int i=0; i<fields.length; i++ ) {
+			fieldSerializers[i] = getFieldSerializer(fields[i]);
+			fsMap.put( fields[i].name, fieldSerializers[i] );
+		}
+			
 		
 	// generate fields
 	//----------------------------------------
-		Iterator itr = type.fields.keySet().iterator();
-		while( itr.hasNext() ) {
-			String fieldName = (String)itr.next();
-			FieldUse fu = (FieldUse)type.fields.get(fieldName);
+		for( int i=0; i<fields.length; i++ ) {
 			
-			Container cont = getContainer(fu);
-			
-			
-/*		// simple version: public field
-			out.println(format("\tpublic {0} {1} = {2};\n",
-				new Object[]{
-					cont.getTypeStr(),
-					fu.name,
-					cont.getInitializer() }));
-*/			
-		// complex version: protected field with accessor method
 			out.println(Formatter.format(
 				"\n"+
 				"//\n"+
@@ -164,10 +177,10 @@ class JavaGenerator
 				"		return <%2>;\n"+
 				"	}\n",
 				new Object[]{
-					NameUtil.xmlNameToJavaName( "class", fu.name ),
-					cont.getTypeStr(),
-					fu.name,
-					cont.getInitializer(),
+					NameUtil.xmlNameToJavaName( "class", fields[i].name ),
+					fieldSerializers[i].getTypeStr(),
+					fields[i].name,
+					fieldSerializers[i].getInitializer(),
 				}));
 		}
 		
@@ -181,24 +194,22 @@ class JavaGenerator
 				"\t * This method is called to unmarshall objects from XML.\n"+
 				"\t */");
 			out.println("\tpublic void setField( NamedSymbol name, Object item ) throws Exception {");
-			itr = type.fields.keySet().iterator();
-			while( itr.hasNext() ) {
-				String fieldName = (String)itr.next();
-				FieldUse fu = (FieldUse)type.fields.get(fieldName);
-
-				Container cont = getContainer(fu);
+			for( int i=0; i<fields.length; i++ ) {
+				
+				FieldUse fu = fields[i];
+				FieldSerializer fs = fieldSerializers[i];
 				
 				out.print("\t\tif( ");
 				FieldItem[] fi = fu.getItems();
-				for( int i=0; i<fi.length; i++ ) {
-					if(i!=0)
+				for( int j=0; j<fi.length; j++ ) {
+					if(j!=0)
 						out.print(" || ");
 					out.print(format("name=={0}.{1}",
 						grammarShortClassName,
-						symbolizer.getId(fi[i])));
+						symbolizer.getId(fi[j])));
 				}
 				out.println(" ) {");
-				out.println("\t\t\t"+cont.setField(fu.name,"item"));
+				out.println("\t\t\t"+fs.setField("item"));
 				out.println("\t\t\treturn;");
 				out.println("\t\t}");
 			}
@@ -208,30 +219,88 @@ class JavaGenerator
 				out.println("\t\tthrow new Error();//assertion failed.this is not possible");
 			out.println("\t}");
 		}
+
+	// generate the marshaller
+	//------------------------------------------
+		if( citm!=null ) {
+			try {
+				// TODO: ideally, a marshaller should be produced as a separate class,
+				// to minimize dependency between the marshaller and the unmarshaller.
+				// however, since we have only one marshaller at this moment,
+				// we will create it here.
+				
+/*				TransformerHandler xsltEngine = XSLTUtil.getTransformer(
+					JavaGenerator.class.getResourceAsStream("marshaller2java.xsl"));
+				xsltEngine.setResult( new StreamResult(out) );
+				XMLWriter writer = XMLWriter.fromContentHandler(xsltEngine);
+		
+				// call MarshallerGenerator to have it produce marshaller.
+				// generated marshaller will be then transformed into Java source code
+				// by using XSLT.
+				xsltEngine.startDocument();
+				MarshallerGenerator.write( citm, writer, controller );
+				xsltEngine.endDocument();
+*/
+				// get DOM representation of the marshaller
+				DOMBuilder builder = new DOMBuilder();
+				XMLWriter writer = XMLWriter.fromContentHandler(builder);
+				writer.handler.startDocument();
+				MarshallerGenerator.write( citm, writer, controller );
+				writer.handler.endDocument();
+				
+				// produce a source code fragment from DOM.
+				MarshallerSerializer.write( fsMap, out, builder.getDocument() );
+				
+			} catch( MarshallerGenerator.Abort a ) {
+				// generation of the marshaller is aborted.
+				out.println(
+					"\t// Tahiti fails to produce a marshaller for this class.\n"+
+					"\t// You have to implement one by yourself if you need it.\n"+
+					"\tpublic void marshall( Marshaller out ) {\n"+
+					"\t\tthrow new UnsupportedOperationException();\n"+
+					"\t}\n");
+			} catch( Exception e ) {
+				controller.error( null, e.getMessage(), e );
+				// TODO: what shall I do if an error happens.
+			}
+		} else {
+			// in case of an interface, produce a signature.
+			out.println("\tvoid marshall( Marshaller out );\n");
+		}
+		
+		
 		
 		out.println("}");
 		out.flush();
 		out.close();
 	}
 		
-	private interface Container {
-		String getTypeStr();
-		String getInitializer();
-		String setField( String fieldName, String objName );
-	}
-	
-	private Container getContainer( final FieldUse fu ) {
+	private FieldSerializer getFieldSerializer( final FieldUse fu ) {
 		if( fu.multiplicity.isAtMostOnce() )
 			// use item type itself.
-			return new Container(){
+			return new FieldSerializer(){
 				public String getTypeStr() {
 					return toPrintName(fu.type);
 				}
 				public String getInitializer() {
 					return "null";
 				}
-				public String setField( String fieldName, String objName ) {
-					return format("this.{0}=({1}){2};",fieldName,getTypeStr(),objName);
+				public String setField( String objName ) {
+					return format("this.{0}=({1}){2};",fu.name,getTypeStr(),objName);
+				}
+				public String hasMoreToken() {
+					// TODO: this code becomes wrong if we allow primitive types
+					// as the type.
+					return format("{0}!=null", fu.name );
+				}
+				public String marshall() {
+					if( fu.type instanceof ClassItem || fu.type instanceof InterfaceItem )
+						return format("{0}.marshall(out);", fu.name );
+					else
+						return format("out.data({0});", fu.name );
+				}
+				public String marshallerInitializer() {
+					return null;
 				}
 			};
 /*
@@ -251,15 +320,31 @@ class JavaGenerator
 		}
 */		
 		// otherwise use Vector
-		return new Container(){
+		return new FieldSerializer(){
 			public String getTypeStr() {
 				return "java.util.Vector";
 			}
 			public String getInitializer() {
 				return "new java.util.Vector()";
 			}
-			public String setField( String fieldName, String objName ) {
-				return format("this.{0}.add({1});",fieldName,objName);
+			public String setField( String objName ) {
+				return format("this.{0}.add({1});",fu.name,objName);
+			}
+			public String marshallerInitializer() {
+				return format("int idx_{0}=0; int len_{0}={0}.size();", fu.name );
+			}
+			public String hasMoreToken() {
+				// TODO: this code becomes wrong if we allow primitive types
+				// as the type.
+				return format("idx_{0}!=len_{0}", fu.name );
+			}
+			public String marshall() {
+				if( fu.type instanceof ClassItem || fu.type instanceof InterfaceItem )
+					return format("(({0}){1}.get(idx_{1})).marshall(out);",
+						toPrintName(fu.type), fu.name );
+				else
+					return format("out.data(({0}){1}.get(idx_{1}));",
+						toPrintName(fu.type), fu.name );
 			}
 		};
 	}

@@ -23,7 +23,7 @@ public abstract class TypeItem extends JavaItem implements Type {
 	
 	public final Set interfaces = new java.util.HashSet();
 	
-	// a map of field name to FieldUse
+	/** a map of field name to FieldUse */
 	public final Map fields = new java.util.HashMap();
 	public FieldUse getFieldUse( String name ) {
 		FieldUse r = (FieldUse)fields.get(name);

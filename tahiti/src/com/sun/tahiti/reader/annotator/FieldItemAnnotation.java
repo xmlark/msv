@@ -55,7 +55,7 @@ class FieldItemAnnotation
 			super(g.getPool());
 			this.owner = owner;
 			this.grammar = g;
-			names.push("value");	// if no other name is available, this name will be used.
+			names.push("content");	// if no other name is available, "content" is used.
 		}
 		
 		/**
@@ -109,12 +109,7 @@ class FieldItemAnnotation
 			if( exp instanceof PrimitiveItem
 			||  exp instanceof InterfaceItem
 			||  exp instanceof ClassItem )
-				return  new FieldItem( decideName(), exp );
-//			{
-//				String name = decideName();
-//				System.out.println("added "+name+" field for "+exp);
-//				return new FieldItem(name,exp);
-//			}
+				return  new FieldItem( decideName(exp.exp), exp );
 			
 			if( exp instanceof IgnoreItem
 			||  exp instanceof SuperClassItem
@@ -165,6 +160,25 @@ class FieldItemAnnotation
 			NameClass nc = exp.getNameClass();
 			if( nc instanceof SimpleNameClass )
 				name = ((SimpleNameClass)nc).localName;
+			
+			// if this is the direct child of the owner, do not push it to
+			// the name stack.
+			/*
+			Consider the following case. Typically, a ClassItem is created on <element>.
+			In this case, ClassItem's exp field is an ElementExp.
+			
+			<tahiti:classItem name="Foo">
+			  <element name="foo">
+			    <group>
+			      <tahiti:classItem name="First">
+			        <element name="FirstName">
+			           ....
+			
+			In cases like this, it's silly to use "foo" as the name of children.
+			So don't push it to the name stack.
+			*/
+			if( exp==owner.exp )
+				name = null;
 			
 			if(name!=null)	names.push(name);
 			Expression body = exp.getContentModel().visit(this);
@@ -306,7 +320,7 @@ class FieldItemAnnotation
 				return r;
 				
 			} else {
-				String fieldName = decideName();
+				String fieldName = decideName(null);
 				
 				/*
 				if we don't have any branch with FieldItem, then we just need
@@ -407,7 +421,7 @@ class FieldItemAnnotation
 			if there is no FieldItem in it, treat everything as a big sequence
 			by enclosing everything into one big FieldItem.
 			*/
-			return new FieldItem( decideName(), expanded );
+			return new FieldItem( decideName(null), expanded );
 		}
 		
 		/**
@@ -417,9 +431,18 @@ class FieldItemAnnotation
 		 * this method modifies the stack top so that fields that
 		 * are added later will have different names.
 		 */
-		private String decideName() {
-
-			final String name = (String)names.pop();
+		private String decideName( Expression hint ) {
+			String name=null;
+			
+			// use hint if available.
+			if( hint!=null && hint instanceof NameClassAndExpression ) {
+				NameClass nc = ((NameClassAndExpression)hint).getNameClass();
+				if( nc instanceof SimpleNameClass )
+					name = ((SimpleNameClass)nc).localName;
+			}
+			
+			if( name==null )
+				name = (String)names.pop();
 			
 			// the value of name must be the form of "xxxxxNNN" where 
 			// NNN is digits.

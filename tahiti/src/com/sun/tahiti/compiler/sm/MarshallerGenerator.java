@@ -31,11 +31,14 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 	/**
 	 * generates a marshaller for the given ClassItem.
 	 * 
+	 * Note that this method does NOT call the startDocument/endDocument events
+	 * of the handler.
+	 * 
 	 * <p>
-	 * This method throws an exception if it finds impossible to generate
+	 * This method throws an Abort exception if it finds impossible to generate
 	 * a marshaller.
 	 */
-	static void write( final ClassItem cls, final XMLWriter out,
+	public static void write( final ClassItem cls, final XMLWriter out,
 				final GrammarReaderController controller ) {
 		
 		cls.exp.visit(new MarshallerGenerator(cls,out,controller));
@@ -123,7 +126,75 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 		Expression otherwise = null;
 		Expression undecidable = null;
 					
+		if( currentField!=null ) {
+			/*
+			if
+				"this choice is contained in a FieldItem"
+			and
+			(
+				(
+					"the multiplicity of this field in this ClassItem is at most one"
+						and
+					"all the branches are either JavaItem or epsilon"
+				)
+					or
+				"all the branches are JavaItem"
+			)
+			
+			then we can produce a simple marshaller.
+			
+			this works for choices of <value>s/<data>s.
+			*/
+			boolean hasEpsilonEdge = false;
+			boolean fail = false;
+			
+			for( int i=0; i<children.length; i++ ) {
+				if( children[i] instanceof InterfaceItem
+				||  children[i] instanceof ClassItem
+				||  children[i] instanceof PrimitiveItem)
+					continue;	// these are JavaItems.
+				
+				if( (children[i] instanceof IgnoreItem && children[i].isEpsilonReducible() )
+				||  children[i]==Expression.epsilon ) {
+					hasEpsilonEdge = true;
+					continue;
+				}
+				
+				// otherwise, this simple short cut doesn't work
+				fail = true;
+				break;
+			}
+			
+			if( !fail && hasEpsilonEdge
+			&&  !owner.getFieldUse(currentField.name).multiplicity.isAtMostOnce() )
+				// if there is an epsilon-edge, then the entire field must be (0,1)/(1,1)
+				// multiplicity.
+				fail = true;
+			
+			if(!fail) {
+				// all check done. the short-cut can be used.
+				if( hasEpsilonEdge ) {
+					out.start("choice");
+					out.start("option",new String[]{"if",currentField.name});
+					out.element("marshall",
+						new String[]{"fieldName", currentField.name });
+					out.end("option");
+					out.start("otherwise");
+					out.element("epsilon");
+					out.end("otherwise");
+					out.end("choice");
+				} else {
+					out.element("marshall",
+						new String[]{"fieldName", currentField.name });
+				}
+				return;
+			}
+		}
+		
+			
+			
 		out.start("choice");
+		
 		for( int i=0; i<children.length; i++ ) {
 			String uniqueField = calcUniqueField( owner.exp, children[i] );
 						
@@ -165,7 +236,10 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 		// this branch should be expanded if any other choices fail.
 		out.start("otherwise");
 		if(otherwise!=null)		otherwise.visit(this);
+		else
 		if(undecidable!=null)	undecidable.visit(this);
+		else
+			out.element("notPossible");
 		out.end("otherwise");
 						
 		out.end("choice");
@@ -257,13 +331,15 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 		out.end(tag);
 	}
 				
+	public void onList( ListExp exp ) {
+		out.start("list");
+		exp.exp.visit(this);
+		out.end("list");
+	}
+				
 				
 	// expressions that do not affect the marshaller.
 	public void onRef( ReferenceExp exp ) {
-		exp.exp.visit(this);
-	}
-				
-	public void onList( ListExp exp ) {
 		exp.exp.visit(this);
 	}
 				

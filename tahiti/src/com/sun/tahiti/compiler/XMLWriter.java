@@ -9,9 +9,11 @@
  */
 package com.sun.tahiti.compiler;
 
+import org.xml.sax.ContentHandler;
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.helpers.AttributeListImpl;
 import org.xml.sax.SAXException;
+import com.sun.msv.writer.ContentHandlerAdaptor;
 
 /**
  * helper class for generating XML through {@link DocumentHandler}.
@@ -22,6 +24,11 @@ public class XMLWriter {
 	
 	public XMLWriter( DocumentHandler handler ) {
 		this.handler = handler;
+	}
+	
+	/** creates a new XMLWriter from a ContentHandler. */
+	public static XMLWriter fromContentHandler( ContentHandler handler ) {
+		return new XMLWriter( new ContentHandlerAdaptor(handler) );
 	}
 	
 // primitive write methods

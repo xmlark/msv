@@ -37,7 +37,7 @@ import java.util.Iterator;
  * 
  *  <li>Any ClassItem that can be reached from more than one ClassItem (or the top
  *		level expression) cannot be	removed. Counting a reference from the top
- *		level expression is very important. Otherwise a ClassItem will be removed
+ *		level expression is important. Otherwise a ClassItem will be removed
  *		if it is the only one ClassItem in the entire grammar.
  * </ol>
  */

@@ -2,6 +2,120 @@
 <!-- $Id$ -->
 <suite>
 
+<comment>
+
+<case name="test for token">
+	<value>&#x9;&#x9;</value>
+	<value>&#xA;</value>
+	<value>&#xD;</value>
+	<value>&#xA;&#xD;</value>
+	<value>oridinary string</value>
+	<value>&#x10005;&#x10009;</value>	<!-- length 2 characters -->
+	
+	<value>  more   space  </value>
+	<value>  	
+		tab and   returns
+		</value>
+	
+	<answer for="token"	>oooooo oo</answer>
+	
+	<facets><combination>
+		
+		<choice>
+			<!-- length test -->
+			<facet answer=			"oooo.. .." name="length" value="0" />
+			<facet answer=			"...... o." name="length" value="10" />
+			<facet answer=			"...... .o" name="length" value="15" />
+			<!-- min/maxLength -->
+			<combination>
+				<choice>
+					<facet answer=	"....oo oo" name="minLength" value="2" />
+					<facet answer=	"....o. oo" name="minLength" value="5" />
+				</choice>
+				<choice>
+					<facet answer=	"oooo.o .." name="maxLength" value="9" />
+					<facet answer=	"oooo.o o." name="maxLength" value="10" />
+					<facet answer=	"oooooo oo" name="maxLength" value="20" />
+				</choice>
+			</combination>
+		</choice>
+		
+		<!-- enumeration -->
+		<combination mode="or">
+			<facet			answer=	"oooo.. .." name="enumeration" value=" " />
+			<facet			answer=	"oooo.. .." name="enumeration" value="&#x9;" />
+			<facet			answer=	"oooo.. .." name="enumeration" value="&#xD;&#xA;" />
+			<facet			answer=	"...... o." name="enumeration" value="more space" />
+		</combination>
+		
+		<!-- pattern -->
+		<combination mode="or">
+			<facet			answer=	"...... .." name="pattern" value="[\t\r\n]+" />	<!-- pattern must be checked after whitespace normalization -->
+			<facet			answer=	"oooo.. .." name="pattern" value="" />
+		</combination>
+	</combination></facets>
+	
+	<wrongs />	<!-- nothing can be wrong as token -->
+</case>
+
+
+
+
+<case name="test for normalizedString">
+	<value>&#x9;&#x9;</value>	<!-- two tabs -->
+	<value>&#xA;</value>
+	<value>&#xD;</value>
+	<value>&#xA;&#xD;</value>
+	<value>oridinary string</value>
+	<value>&#x10005;&#x10009;</value>	<!-- length 2 characters -->
+	
+	<value>  more   space  </value>
+	<value>  	
+		tab and   returns
+		</value>
+	
+	<answer for="normalizedString"	>oooooo oo</answer>
+	
+	<facets><combination>
+		
+		<choice>
+			<!-- length test -->
+			<facet answer=			".oo... .." name="length" value="1" />
+			<facet answer=			"o..o.o .." name="length" value="2" />
+			<!-- min/maxLength -->
+			<combination>
+				<choice>
+					<facet answer=	"oooooo oo" name="minLength" value="0" />
+					<facet answer=	"....o. oo" name="minLength" value="5" />
+				</choice>
+				<choice>
+					<facet answer=	".oo... .." name="maxLength" value="1" />
+					<facet answer=	"oooo.o .." name="maxLength" value="10" />
+					<facet answer=	"oooooo oo" name="maxLength" value="99" />
+				</choice>
+			</combination>
+		</choice>
+		
+		<!-- enumeration -->
+		<combination mode="or">
+			<facet			answer=	".oo... .." name="enumeration" value=" " />
+			<facet			answer=	".oo... .." name="enumeration" value="&#x9;" />
+			<facet			answer=	"o..o.. .." name="enumeration" value="&#xD;&#xA;" />
+			<facet			answer=	"...... .." name="enumeration" value="more space" /> <!-- make sure that whitespace!=collapse -->
+		</combination>
+		
+		<!-- pattern -->
+		<combination mode="or">
+			<facet			answer=	".oo... .." name="pattern" value=" " />	<!-- pattern must be checked after whitespace normalization -->
+			<facet			answer=	"...... .." name="pattern" value="\r" />
+			<facet			answer=	"oooo.. oo" name="pattern" value=" .*" />
+		</combination>
+	</combination></facets>
+	
+	<wrongs />	<!-- nothing can be wrong as normalizedString -->
+</case>
+
+
 <case name="test for uriReference">
 	<value>http://www.swiftinc.co.jp/	</value>
 	<value>http://www.swiftinc.co.jp/mypage.html#fragment	</value>
@@ -120,7 +234,6 @@
 	</wrongs>
 </case>
 
-<comment>
 <case name="test for QName">
 	<!--
 		test suite provides ValidationContextProvideder that

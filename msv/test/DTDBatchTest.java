@@ -9,6 +9,7 @@
  */
 import junit.framework.*;
 import java.io.File;
+import java.net.URL;
 import java.util.StringTokenizer;
 import javax.xml.parsers.SAXParserFactory;
 import com.sun.msv.reader.GrammarReaderController;
@@ -28,9 +29,20 @@ import org.xml.sax.InputSource;
  */
 public class DTDBatchTest {
 
+	protected static String toURL( String path ) throws Exception {
+		path = new File(path).getAbsolutePath();
+		if (File.separatorChar != '/')
+			path = path.replace(File.separatorChar, '/');
+		if (!path.startsWith("/"))
+			path = "/" + path;
+//		if (!path.endsWith("/") && isDirectory())
+//			path = path + "/";
+		return new URL("file", "", path).toExternalForm();
+	}
+	
 	public static class Loader implements BatchVerifyTester.Loader {
 		public TREXDocumentDeclaration load( InputSource is, GrammarReaderController controller, SAXParserFactory factory ) throws Exception {
-			is.setSystemId( new File(is.getSystemId()).toURL().toExternalForm() );
+			is.setSystemId( toURL(is.getSystemId()) );
 			Grammar g = DTDReader.parse(is,controller,"",new TREXPatternPool() );
 			if(g==null)		return null;
 			return new TREXDocumentDeclaration(g);

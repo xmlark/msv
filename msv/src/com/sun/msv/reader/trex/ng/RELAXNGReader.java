@@ -21,6 +21,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.relaxng.datatype.*;
+import org.relaxng.datatype.helpers.DatatypeLibraryLoader;
 import org.iso_relax.verifier.Schema;
 import com.sun.msv.datatype.ErrorDatatypeLibrary;
 import com.sun.msv.grammar.*;
@@ -255,17 +256,13 @@ public class RELAXNGReader extends TREXBaseReader {
 				return compatibilityLib;
 			}
 			
-			// check the property file.
-			String className;
-			try {
-				className = ResourceBundle.getBundle("RELAXNGDataTypeLibrary").getString(namespaceURI);
-			} catch( java.util.MissingResourceException e ) {
-				// our property file doesn't have a field corresponding to the URI.
-				return null;
-			}
+			// search the implementation from the classpath
+			if(loader==null)
+				loader = new DatatypeLibraryLoader();
 			
-			return (DatatypeLibrary)Class.forName(className).newInstance();
+			return loader.createDatatypeLibrary(namespaceURI);
 		}
+		private DatatypeLibraryFactory loader;
 		private DatatypeLibrary xsdlib;
 		private DatatypeLibrary compatibilityLib;
 	}

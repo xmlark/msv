@@ -237,12 +237,21 @@ public class DTDReader implements DTDEventListener {
             contentModel = Expression.nullSet;    // initial set up.
         if( type==CONTENT_MODEL_ANY )
             // if ANY is used, then refer to the special hedgeRule.
-            contentModel = grammar.pool.createZeroOrMore(
-                grammar.namedPatterns.getOrCreate("$  all  $") );
+            contentModel = grammar.pool.createZeroOrMore(getAnyExp());
         if( type==CONTENT_MODEL_EMPTY )
             contentModel = Expression.epsilon;
     }
     
+    
+    /**
+     * Gets the expression that corresponds to the "ANY".
+     * <p>
+     * Its defeinition will be later filled by the choice of all elements.
+     */
+    protected final ReferenceExp getAnyExp() {
+        return grammar.namedPatterns.getOrCreate("$  all  $");
+    }
+
     public void endContentModel( String elementName, short type ) {
         if( contentModel==null )
             // assertion failed.
@@ -541,7 +550,7 @@ public class DTDReader implements DTDEventListener {
         // set this allExp as the content model of "all" hedgeRule.
         // this special hedgeRule is used to implement ANY content model,
         // and this hedgeRule is also exported.
-        grammar.namedPatterns.getOrCreate("$  all  $").exp = allExp;
+        getAnyExp().exp = allExp;
         
         // also this allExp is used as top-level expression.
         grammar.exp = allExp;

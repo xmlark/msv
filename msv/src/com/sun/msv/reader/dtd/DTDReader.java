@@ -37,9 +37,14 @@ import java.util.Set;
 import java.util.Iterator;
 
 /**
- * constructs {@link RELAXModule} object that exactly matches to
+ * constructs {@link TREXGrammar} object that exactly matches to
  * the parsed DTD.
  * 
+ * <p>
+ * Each element declaration will have its own ReferenceExp by the name
+ * of the element.
+ * 
+ * <p>
  * Note that this class does NOT extend GrammarReader, because DTD
  * is not written in XML format.
  * 
@@ -47,8 +52,7 @@ import java.util.Iterator;
  */
 public class DTDReader implements DTDEventListener {
 	
-	public DTDReader( GrammarReaderController controller, 
-		String targetNamespace, ExpressionPool pool ) {
+	public DTDReader( GrammarReaderController controller, ExpressionPool pool ) {
 		this.controller = controller;
 		grammar = new TREXGrammar(pool);
 	}
@@ -56,22 +60,21 @@ public class DTDReader implements DTDEventListener {
 	public static TREXGrammar parse( InputSource source,
 		GrammarReaderController controller ) {
 		
-		return parse( source, controller, "", new ExpressionPool() );
+		return parse( source, controller, new ExpressionPool() );
 	}
 	
 	public static TREXGrammar parse( InputSource source,
 		GrammarReaderController controller,
-		String targetNamespace, ExpressionPool pool ) {
+		ExpressionPool pool ) {
 		
 		try {
-			DTDReader reader = new DTDReader(controller,targetNamespace,pool);
+			DTDReader reader = new DTDReader(controller,pool);
 			DTDParser parser = new DTDParser();
 			parser.setDtdHandler(reader);
 			parser.setEntityResolver(controller);
 			parser.parse(source);
 		
-			if( reader.hadError )	return null;
-			else					return reader.grammar;
+			return reader.getResult();
 		} catch( SAXParseException e ) {
 			return null;	// this error was already handled by GrammarReaderController
 		} catch( Exception e ) {
@@ -197,7 +200,18 @@ public class DTDReader implements DTDEventListener {
 	
 	
 	protected final TREXGrammar grammar;
-
+	/**
+	 * Obtains the parsed grammar object.
+	 * 
+	 * @return
+	 *		null if there was an error. Otherwise a parsed grammar
+	 *		object will be returned.
+	 */
+	public TREXGrammar getResult() {
+		if(hadError)	return null;
+		else			return grammar;
+	}
+		
 	protected Locator locator;
 	
 	public void setDocumentLocator( Locator loc ) {
@@ -249,14 +263,18 @@ public class DTDReader implements DTDEventListener {
 			contentModel = Expression.epsilon;
 			break;
 		case CONTENT_MODEL_MIXED:
-			if( contentModel == Expression.nullSet )
+			if( contentModel != Expression.nullSet )
+    			contentModel = grammar.pool.createMixed(
+	    			grammar.pool.createZeroOrMore(contentModel));
+            else
 				// this happens when mixed content model is #PCDATA only.
-				contentModel = Expression.epsilon;
-			contentModel = grammar.pool.createMixed(
-				grammar.pool.createZeroOrMore(contentModel));
+				contentModel = Expression.anyString;
 			break;
 		}
 		
+        // memorize the location
+        setDeclaredLocationOf( grammar.namedPatterns.getOrCreate(elementName) );
+        
 		// memorize parsed content model.
 		elementDecls.put( elementName, contentModel );
 		contentModel = null;
@@ -412,10 +430,29 @@ public class DTDReader implements DTDEventListener {
 			attributeDecls.put(elementName,attList);
 		}
 		
-		
-		// create DataType that validates attribute value.
+        Expression body = createAttributeBody(
+            elementName,attributeName,attributeType,enums,
+            attributeUse,defaultValue);
+	
+        AttModel am = new AttModel( body, attributeUse==USE_REQUIRED );
+        setDeclaredLocationOf(am);
+        
+		// add it to the list.
+		attList.put( attributeName, am );
+    }
+        
+    /**
+     * Creates an attribute body from the declaration
+     * found in the DTD.
+     */
+    protected Expression createAttributeBody(
+        String elementName, String attributeName, String attributeType,
+        String[] enums, short attributeUse, String defaultValue )
+            throws SAXException {
+        
+		// create Datatype that validates attribute value.
 		XSDatatype dt = (XSDatatype)dtdTypes.get(attributeType);
-		if(dt==null)	throw new Error(attributeType);
+		if(dt==null)	throw new InternalError(attributeType);
 		
 		try {
 			if(enums!=null) {
@@ -429,60 +466,88 @@ public class DTDReader implements DTDEventListener {
 				// in case of #FIXED, derive a datatype with default value as 
 				// an enumeration value.
 				TypeIncubator incubator = new TypeIncubator(dt);
-				incubator.add( XSDatatype.FACET_ENUMERATION, defaultValue, false, null );
+				incubator.addFacet( XSDatatype.FACET_ENUMERATION, defaultValue, false, null );
 				dt = incubator.derive(null);
 			}
 		} catch( DatatypeException e ) {
 			throw new SAXParseException(
 				e.getMessage(), locator, e );
 		}
-		
-		// add it to the list.
-		attList.put( attributeName,
-			new AttModel(grammar.pool.createData(dt), attributeUse==USE_REQUIRED ) );
+        
+        return grammar.pool.createData(dt);
 	}
 
-    public void endDTD() throws SAXException {
-		// perform final wrap-up.
+	/**
+	 * Creates an element declaration in the grammar object
+	 * by using the parsed result.
+	 * 
+	 * @return
+	 *		ReferenceExp that corresponds to the created element declaration.
+	 */
+	protected ReferenceExp createElementDeclaration( String elementName ) {
+		final Map attList = (Map)attributeDecls.get(elementName);
 		
-		// this variable will be the choice of all elements.
+		
+		Expression contentModel = Expression.epsilon;
+		
+		if(attList!=null) {
+			// create AttributeExps and append it to tag.
+			Iterator jtr = attList.keySet().iterator();
+			while( jtr.hasNext() ) {
+				String attName = (String)jtr.next();
+				AttModel model = (AttModel)attList.get(attName);
+						
+				// wrap it by AttributeExp.
+				Expression exp = grammar.pool.createAttribute(
+					getNameClass(attName,true), model.value );
+		
+				// apply attribute use.
+				// unless USE_REQUIRED, the attribute is optional.
+				if( !model.required )
+					exp = grammar.pool.createOptional(exp);
+		
+				// append it to attribute list.
+				contentModel = grammar.pool.createSequence( contentModel, exp );
+			}
+		}
+			
+		ReferenceExp er = grammar.namedPatterns.getOrCreate(elementName);
+		er.exp = new ElementPattern(
+			getNameClass(elementName,false), 
+			grammar.pool.createSequence(contentModel,
+				(Expression)elementDecls.get(elementName) ) );
+        
+        // copy the declared location
+        declaredLocations.put( er.exp, getDeclaredLocationOf(er) );
+        
+		return er;
+	}
+	
+	/**
+	 * Creates element declarations from the parsed result.
+	 * 
+	 * @return
+	 *		An expression that corresponds to the choice of all
+	 *		element declarations. This will be used to implement "ANY".
+	 */
+	protected Expression createElementDeclarations() {
 		Expression allExp = Expression.nullSet;
 		
 		// create declarations
 		Iterator itr = elementDecls.keySet().iterator();
 		while( itr.hasNext() ) {
-			final String elementName = (String)itr.next();
-			final Map attList = (Map)attributeDecls.get(elementName);
-
-			Expression contentModel = Expression.epsilon;
-				
-			if(attList!=null) {
-				// create AttributeExps and append it to tag.
-				Iterator jtr = attList.keySet().iterator();
-				while( jtr.hasNext() ) {
-					String attName = (String)jtr.next();
-					AttModel model = (AttModel)attList.get(attName);
-						
-					// wrap it by AttributeExp.
-					Expression exp = grammar.pool.createAttribute(
-						getNameClass(attName,true), model.value );
-		
-					// apply attribute use.
-					// unless USE_REQUIRED, the attribute is optional.
-					if( !model.required )
-						exp = grammar.pool.createOptional(exp);
-		
-					// append it to attribute list.
-					contentModel = grammar.pool.createSequence( contentModel, exp );
-				}
-			}
-			
-			ReferenceExp er = grammar.namedPatterns.getOrCreate(elementName);
-			er.exp = new ElementPattern( getNameClass(elementName,false), 
-				grammar.pool.createSequence(contentModel,
-					(Expression)elementDecls.get(elementName) ) );
-			allExp = grammar.pool.createChoice( allExp, er );
+			Expression exp = createElementDeclaration( (String)itr.next() );
+			allExp = grammar.pool.createChoice( allExp, exp );
 		}
+		
+		return allExp;
+	}
+	
+    public void endDTD() throws SAXException {
+		// perform final wrap-up.
+		
+		final Expression allExp = createElementDeclarations();
+		
 		
 		// set this allExp as the content model of "all" hedgeRule.
 		// this special hedgeRule is used to implement ANY content model,
@@ -526,6 +591,33 @@ public class DTDReader implements DTDEventListener {
 		controller.warning( getLocation(e), e.getMessage() );
     }
 	
+    
+    
+
+    
+	/** this map remembers where ReferenceExps are defined,
+	 * and where user defined types are defined.
+	 * 
+	 * some ReferenceExp can be defined
+	 * in more than one location.
+	 * In those cases, the last one is always memorized.
+	 * This behavior is essential to correctly implement
+	 * TREX constraint that no two &lt;define&gt; is allowed in the same file.
+	 */
+	private final Map declaredLocations = new java.util.HashMap();
+	
+	public void setDeclaredLocationOf( Object o ) {
+		declaredLocations.put(o, new LocatorImpl(locator) );
+	}
+	public Locator getDeclaredLocationOf( Object o ) {
+		return (Locator)declaredLocations.get(o);
+	}
+    
+    
+    
+    
+    
+    
 	
 // validation context provider methods
 //----------------------------------------

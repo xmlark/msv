@@ -29,7 +29,8 @@ class DataTypeBuilderImpl implements DataTypeBuilder {
 		return baseType;
 	}
 	
-	public void add( String name, String value, ValidationContext context ) {
+	public void add( String name, String value, ValidationContext context ) 
+			throws DataTypeException {
 		throw new DataTypeException(
 			localize(ERR_PARAMETER_UNSUPPORTED,null));
 	}

@@ -1,6 +1,6 @@
 ======================================================================
             README FILE FOR SUN MULTI-SCHEMA XML VALIDATOR
-                      Preview Version July, 2001
+                   Preview Version September, 2001
                  Copyright (c) Sun Microsystems, 2001
 Document written by Kohsuke Kawaguchi (kohsuke.kawaguchi@eng.sun.com)
                                                     $Revision$
@@ -55,6 +55,8 @@ This preview version implements:
    See commandline.html for details of limitations.
 
 7. W3C XML Schema Part 2 PR [12] as a datatype vocabulary.
+
+For limitations, see commandline.html.
 
 
 ----------------------------------------------------------------------

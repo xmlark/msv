@@ -170,6 +170,7 @@ the document is NOT valid.
 <ol>
 	<li><p>Attribute declarations of the form of <code>xmlns:***</code> are ignored. All namespace declarations within the instance document are also ignored.</p></li>
 	<li><p>In general, MSV handles XML namespaces differently from most DTD validators. As a result, MSV may validate documents that other DTD validators reject. When this is the case, MSV always issues a warning.</p></li>
+	<li><p>Strictly speaking, MSV cannot replace XML parser's DTD validation because DTD validation affects lot of other things. For example, DTD validation in XML parser can expand entity references and provides default attribute values; DTD validation by MSV doesn't do those things.
 </ol>
 </blockquote>
 
@@ -180,7 +181,7 @@ the document is NOT valid.
 
 <h3>RELAX NG</h3>
 <blockquote>
-<p>This implementation attempts to fully implement the spec. But it must be considered as an experimental implementation because no official spec is available at the moment of the writing. W3C XML Schema Part 2 is the only one datatype vocabulary supported.</p>
+<p>This implementation attempts to fully implement the spec (Aug,11,2001 version). W3C XML Schema Part 2 is the only one datatype vocabulary supported. <code>ID</code>,<code>IDREF</code>, and <code>IDREFS</code> types implement the cross-reference semantics.</p>
 </blockquote>
 
 <h3>RELAX Core</h3>
@@ -197,34 +198,9 @@ the document is NOT valid.
 <h3>W3C XML Schema Part 1</h3>
 <blockquote>
 <ol>
-	<li><p>The identity constraint is only partially implemented. Specifically, keys are not considered as typed data. They are compared by their lexical values.</p></li>
-	<li><p><a href="http://www.w3.org/TR/xmlschema-1/#concepts-schemaConstraints"> "Schema component constraints" and "Schema representation constraints" </a> are not fully enforced. In other words, MSV accepts schemata that are rejected by other conforming processors.</p></li>
-	<li><p>Forward reference of <a href="http://www.w3.org/TR/xmlschema-1/#Simple_Type_Definitions">simple type</a> is not supported. Therefore, the following schema cannot be used.</p>
-		<hr>
-		<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
-			<tr>
-				<td bgcolor="#eeeeee">
-<pre>&lt;xmp&gt;
-&lt;xs:simpletype name="foo"&gt;
- &lt;xs:restriction base="bar"&gt;
-  &lt;xs:fractiondigits value="2"/&gt;
- &lt;/xs:restriction&gt;
-&lt;/xs:simpletype&gt;
-
-&lt;xs:simpletype name="bar"&gt;
- &lt;xs:restriction base="xs:decimal"&gt;
-  &lt;xs:totaldigits value="5" /&gt;
- &lt;/xs:restriction&gt;
-&lt;/xs:simpletype&gt;
-		&lt;/xmp&gt;</pre>
-				</td>
-			</tr>
-		</table>
-		<hr>
-	</li>
+	<li><p><a href="http://www.w3.org/TR/xmlschema-1/#concepts-schemaConstraints"> "Schema component constraints" and "Schema representation constraints" </a> are not fully enforced. In other words, MSV accepts schemata that are rejected by other conforming processors.</p><p>Unimplemented checks include (but not limited to) <a href="http://www.w3.org/TR/xmlschema-1/#cos-nonambig">"UPA constraint"</a> and <a href="http://www.w3.org/TR/xmlschema-1/#cos-particle-restrict">"Particle Valid Restriction"</a></li>
 	<li><p><a href="http://www.w3.org/TR/xmlschema-1/#conformance-missing"> "Missing sub-components" </a> are treated as immediate errors. This behavior better serves the majority of users.</p></li>
 	<li><p>Default values are ignored. In fact, no infoset contribution is supported: MSV validates documents, but it doesn't augment them. Post Schema-Validation Infoset (PSVI) is also not supported.</p></li>
-	<li><p><code>block</code> and <code>final</code> attributes of <code>element</code> and <code>complexType</code> are not supported. If present, they are ignored with warnings.</p></li>
 </ol>
 </blockquote>
 

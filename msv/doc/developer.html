@@ -132,9 +132,10 @@ h4 {  font-style: italic; color: #000099}
 import org.iso_relax.verifier.*;
 import javax.xml.parsers.SAXParserFactory;
 
-void f( SAXParserFactory pf )
+void f()
 {
   // parser factory has to be configured to be namespace aware.
+  SAXParserFactory pf = SAXParserFactory.newInstance();
   pf.setNamespaceAware( true );
 
   // create a VerifierFactory
@@ -142,12 +143,6 @@ void f( SAXParserFactory pf )
 
   // load a RELAX schema (or whatever schema you like)
   Verifier verifier = factory.newVerifier( new File("foo.rxg") );
-
-  try {
-    if( !verifier.isFeature(FEATURE_FILTER) )
-      return;  // this verifier doesn't support getVerifierFilter method.
-  } catch( org.xml.SAXNotRecognizedException e )
-  {  return; } // this verifier doesn't support getVerifierFilter method.
 
   // obtain XMLFilter
   VerifierFilter filter = verifier.getVerifierFilter();
@@ -160,6 +155,10 @@ void f( SAXParserFactory pf )
     // if the execution reaches here, the document was valid
   } catch( ValidityViolation vv ) {
     // the document was not valid
+    // ValidityViolation extends SAXException, so this catch clause
+    // is not mandatory.
+  } catch( SAXException e ) {
+    // other generic exceptions
   }
 }
 </pre>
@@ -206,7 +205,8 @@ void f()
 </table>
 <hr>
 <p>
-Either way, you can reuse the same verifier object as many times as you want.
+Either way, you can reuse the same verifier object as many times as you want,
+as long as it's a single thread.
 </p>
 </blockquote>
 
@@ -278,7 +278,7 @@ TREXGrammar loadRELAXNG( String schemaFileNameOrURL )
 <pre>
 TREXGrammar loadRELAXNG( String schemaFileNameOrURL )
 {
-  RELAXNGReader reader = new RELAXNGGrammar( factory, new IgnoreController() );
+  RELAXNGReader reader = new RELAXNGReader( factory, new IgnoreController() );
 
   XMLReader xmlParser = new YourFavoriteXMLReader();
 

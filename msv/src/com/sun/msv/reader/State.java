@@ -159,6 +159,10 @@ public abstract class State implements ContentHandler
 	 */
 	protected void startSelf() {}
 	
+    
+    public static void assert( boolean b ) {
+        if(!b)  throw new InternalError();
+    }
 
 	public void characters(char[] buffer, int from, int len ) {
 		// both RELAX and TREX prohibits characters in their grammar.

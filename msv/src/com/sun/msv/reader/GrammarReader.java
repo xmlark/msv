@@ -15,6 +15,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.LocatorImpl;
 import org.xml.sax.helpers.XMLFilterImpl;
 import org.relaxng.datatype.Datatype;
@@ -422,6 +423,17 @@ public abstract class GrammarReader
 			reportError( ERR_IO_EXCEPTION,
 				new Object[]{e.getMessage()},
 				e, new Locator[]{errorSource} );
+        } catch( final SAXParseException e ) {
+            // error location information is available
+			reportError( ERR_SAX_EXCEPTION,
+				new Object[]{e.getMessage()},
+				e, new Locator[]{
+                    new Locator(){
+                        public String getSystemId() { return e.getSystemId(); }
+                        public String getPublicId() { return e.getPublicId(); }
+                        public int getLineNumber()  { return e.getLineNumber(); }
+                        public int getColumnNumber(){ return e.getColumnNumber(); }
+                    }} );
 		} catch( SAXException e ) {
 			// this means that a runtime exception was thrown by the reader
 			// rethrow it.

@@ -58,20 +58,17 @@ public abstract class SimpleState extends State
 		return reader.isGrammarElement(tag);
 	}
 	
-	public void startElement( String namespaceURI, String localName, String qName, Attributes atts )
-	{
+	public void startElement( String namespaceURI, String localName, String qName, Attributes atts ) {
 		final StartTagInfo tag = new StartTagInfo(
 			namespaceURI,localName,qName,new AttributesImpl(atts),null);
 		// we have to copy Attributes, otherwise it will be mutated by SAX parser
 			
-		if( isGrammarElement(tag) )
-		{
+		if( isGrammarElement(tag) ) {
 			// this is a grammar element.
 			// creates appropriate child state for it.
 			
 			State nextState = createChildState(tag);
-			if(nextState!=null)
-			{
+			if(nextState!=null) {
 				reader.pushState(nextState,this,tag);
 				return;
 			}
@@ -79,13 +76,10 @@ public abstract class SimpleState extends State
 			// unacceptable element
 			reader.reportError(GrammarReader.ERR_MALPLACED_ELEMENT, tag.qName );
 			// try to recover from error by just ignoring it.
-		}
-		else
-		{
+		} else {
 			// usually, foreign elements are silently ignored.
 			// However, for the document element, we have to report an error
-			if( parentState==null )
-			{
+			if( parentState==null ) {
 				reader.reportError(GrammarReader.ERR_MALPLACED_ELEMENT, tag.qName );
 				// probably user is using a wrong namespace.
 				reader.reportError(GrammarReader.WRN_MAYBE_WRONG_NAMESPACE, tag.namespaceURI );
@@ -100,25 +94,21 @@ public abstract class SimpleState extends State
 	abstract protected State createChildState( StartTagInfo tag );
 	
 		
-	public final void endElement( String namespaceURI, String localName, String qName )
-	{
+	public final void endElement( String namespaceURI, String localName, String qName ) {
 		// while processing endSelf, error should be reported for its start tag.
 		Locator prevLoc = reader.locator;
-		try
-		{
+		try {
 			reader.locator = this.location;
 			endSelf();
-		}
-		finally
-		{
+		} finally {
 			reader.locator = prevLoc;
 		}
 		
 		reader.popState();
 	}
 	
-	public final void endDocument()
-	{// top-level state receives endDocument event instead of endElement event.
+	public final void endDocument() {
+        // top-level state receives endDocument event instead of endElement event.
 		endSelf();
 		reader.popState();
 	}

@@ -332,9 +332,9 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 
 		protected State simpleContent		(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new SimpleContentState(decl); }
 		// simpleContent/restriction
-		protected State simpleRst			(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new SimpleContentBodyState(decl,false); }
+		protected State simpleRst			(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new SimpleContentRestrictionState(decl); }
 		// simpleContent/extension
-		protected State simpleExt			(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new SimpleContentBodyState(decl,true); }
+		protected State simpleExt			(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new SimpleContentExtensionState(decl); }
 	}
 	
 	public final StateFactory sfactory;
@@ -464,6 +464,10 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 		return false;
 	}
 	
+    
+    /**
+     * Resolves a simple type name into the corresponding XSDatatypeExp object.
+     */
 	public XSDatatypeExp resolveXSDatatype( String typeQName ) {
 		
 		final String[] r = splitQName(typeQName);
@@ -485,16 +489,13 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 			// consult the externally defined types.
 		}
 
-		final SimpleTypeExp sexp = getOrCreateSchema(r[0]/*uri*/).simpleTypes.
-			getOrCreate(r[1]/*local name*/);
+		final SimpleTypeExp sexp = getOrCreateSchema(r[0]).simpleTypes.
+			getOrCreate(r[1]);
 		backwardReference.memorizeLink(sexp);
 				 
-        XSDatatypeExp e = sexp.getType();
-        if(e!=null)     return e;
-
-		// the specified datatype is not defined at this moment.
-		// it is either a forward reference, or an undefined type.
-		// return a late-bind datatype object to support forward references.
+        // simple type might be re-defined later.
+        // therefore, we always need a late-binding datatype,
+        // even if the datatype is defined already.
 		
         return new XSDatatypeExp(r[1],this,new XSDatatypeExp.Renderer(){
             public XSDatatype render( XSDatatypeExp.RenderingContext context ) {
@@ -952,7 +953,9 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 		"XMLSchemaReader.UndefinedComplexType";
 	public static final String ERR_UNDEFINED_SIMPLE_TYPE =
 		"XMLSchemaReader.UndefinedSimpleType";
-	public static final String ERR_UNDEFINED_ELEMENT_DECL =
+    public static final String ERR_UNDEFINED_COMPLEX_OR_SIMPLE_TYPE =
+		"XMLSchemaReader.UndefinedComplexOrSimpleType";
+    public static final String ERR_UNDEFINED_ELEMENT_DECL =
 		"XMLSchemaReader.UndefinedElementDecl";
 	public static final String ERR_UNDEFINED_GROUP =
 		"XMLSchemaReader.UndefinedGroup";
@@ -982,6 +985,8 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 		"XMLSchemaReader.BadXPath";
 	public static final String ERR_UNDEFINED_KEY = // arg:1
 		"XMLSchemaReader.UndefinedKey";
+    public static final String ERR_INVALID_BASETYPE_FOR_SIMPLECONTENT = // arg:1
+		"XMLSchemaReader.InvalidBasetypeForSimpleContent";
 	public static final String ERR_KEY_FIELD_NUMBER_MISMATCH = // arg:2
 		"XMLSchemaReader.KeyFieldNumberMismatch";
 	public static final String ERR_KEYREF_REFERRING_NON_KEY = // arg:1

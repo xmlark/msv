@@ -673,7 +673,7 @@ public class ]]></xsl:text>
 	</xsl:template>
 	
 	<xsl:template match="typedString" mode="exp">
-		<xsl:text>pool.createTypedString(</xsl:text>
+		<xsl:text>pool.createData(</xsl:text>
 		<xsl:value-of select="@dataSymbolRef"/>
 		<xsl:text>,emptyName)</xsl:text>
 	</xsl:template>

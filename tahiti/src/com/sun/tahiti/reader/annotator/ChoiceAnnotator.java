@@ -332,7 +332,7 @@ class ChoiceAnnotator
 			Expression expanded = pool.createInterleave(
 					pool.createZeroOrMore(
 						new PrimitiveItem( StringType.theInstance,
-							pool.createTypedString(StringType.theInstance) )),
+							pool.createData(StringType.theInstance) )),
 					exp.exp );
 			
 			try {

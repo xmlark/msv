@@ -103,7 +103,13 @@ public abstract class MultiplicityCounter implements ExpressionVisitor
 		return m;
 	}
 	
-	public Object onTypedString( TypedStringExp exp ) {
+	public Object onData( DataExp exp ) {
+		Multiplicity m = isChild(exp);
+		if(m==null) m=Multiplicity.zero;
+		return m;
+	}
+	
+	public Object onValue( ValueExp exp ) {
 		Multiplicity m = isChild(exp);
 		if(m==null) m=Multiplicity.zero;
 		return m;

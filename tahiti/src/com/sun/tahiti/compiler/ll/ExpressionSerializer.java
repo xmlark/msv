@@ -65,7 +65,10 @@ class ExpressionSerializer {
 		// never be possible. because <notAllowed/> is removed.
 		public void onNullSet()						{ throw new Error(); }
 	
-		public void onTypedString( TypedStringExp exp )	{
+		public void onData( DataExp exp )	{
+			if(onExpr(exp))		assignId(exp);
+		}
+		public void onValue( ValueExp exp ) {
 			if(onExpr(exp))		assignId(exp);
 		}
 	
@@ -174,7 +177,12 @@ class ExpressionSerializer {
 		// never be possible. because <notAllowed/> is removed.
 		public void onNullSet()					{ throw new Error(); }
 	
-		public void onTypedString( TypedStringExp exp )	{
+		public void onData( DataExp exp )	{
+			out.element("typedString",
+				new String[]{"dataSymbolRef",symbolizer.getId(exp)});
+		}
+	
+		public void onValue( ValueExp exp )	{
 			out.element("typedString",
 				new String[]{"dataSymbolRef",symbolizer.getId(exp)});
 		}

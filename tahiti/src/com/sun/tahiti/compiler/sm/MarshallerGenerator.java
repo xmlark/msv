@@ -426,8 +426,11 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 	public void onNullSet() {
 		throw new Error();
 	}
-	public void onTypedString( TypedStringExp exp ) {
-		// A TypedStringExp should have been wrapped by a PrimitiveItem.
+		// DataExp/ValuExp should have been wrapped by a PrimitiveItem.
+	public void onData( DataExp exp ) {
+		throw new Error();
+	}
+	public void onValue( ValueExp exp ) {
 		throw new Error();
 	}
 	
@@ -561,7 +564,8 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 			// these primitives should not be used.
 			public void onMixed( MixedExp exp ) { throw new Error(); }
 			public void onConcur( ConcurExp exp ) { throw new Error(); }
-			public void onTypedString( TypedStringExp exp ) { throw new Error(); }
+			public void onData( DataExp exp ) { throw new Error(); }
+			public void onValue( ValueExp exp ) { throw new Error(); }
 			public void onNullSet() { throw new Error(); }
 			public void onAnyString() { throw new Error(); }
 		});

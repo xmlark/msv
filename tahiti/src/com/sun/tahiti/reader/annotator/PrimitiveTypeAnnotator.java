@@ -1,7 +1,6 @@
 package com.sun.tahiti.reader.annotator;
 
 import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.relaxng.ValueType;
 import com.sun.msv.datatype.DatabindableDatatype;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.util.StringPair;
@@ -70,27 +69,25 @@ class PrimitiveTypeAnnotator extends ExpressionCloner {
 	
 	public Expression onAnyString() {
 		return new PrimitiveItem( StringType.theInstance,
-			pool.createTypedString(
-				StringType.theInstance,
-				new StringPair("","string") ) );
+			pool.createData(StringType.theInstance) );
 	}
 	
-	public Expression onTypedString( TypedStringExp exp ) {
+	public Expression onValue( ValueExp exp ) { return onDataOrValue(exp); }
+	public Expression onData( DataExp exp ) { return onDataOrValue(exp); }
+		
+	private Expression onDataOrValue( DataOrValueExp exp ) {
 			
 		if( primitiveItems.containsKey(exp) )
 			// if this exp is already wrapped, use it instead of creating another one.
 			// this will reduce the size of the LL grammar for data-binding.
 			return (Expression)primitiveItems.get(exp);
 		else {
-			Datatype dt;
 			// if this is the first time, wrap it and memorize it.
-			if(exp.dt instanceof ValueType)
-				dt = ((ValueType)exp.dt).baseType;
-			else
-				dt = exp.dt;
+			Datatype dt = exp.getType();
 			
 			PrimitiveItem p = new PrimitiveItem(
-				(dt instanceof DatabindableDatatype)?(DatabindableDatatype)dt:null,exp);
+				(dt instanceof DatabindableDatatype)?(DatabindableDatatype)dt:null,
+				(Expression)exp);
 			primitiveItems.put( exp, p );
 			return p;
 		}

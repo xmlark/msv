@@ -20,7 +20,7 @@ import com.sun.msv.grammar.*;
 class Util
 {
 	public static boolean isTerminalSymbol( Expression exp ) {
-		return	exp instanceof TypedStringExp
+		return	exp instanceof DataOrValueExp
 			||	exp==Expression.anyString
 			||	exp==Expression.epsilon;
 	}

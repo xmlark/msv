@@ -82,7 +82,8 @@ public class TElementDeclState extends ElementDeclState {
 			// do not touch those primitives.
 			public Expression onRef( ReferenceExp exp ) { return exp; }
 			public Expression onList( ListExp exp ) { return exp; }
-			public Expression onTypedString( TypedStringExp exp ) { return exp; }
+			public Expression onData( DataExp exp ) { return exp; }
+			public Expression onValue( ValueExp exp ) { return exp; }
 			public Expression onMixed( MixedExp exp ) { return exp; }
 			public Expression onEpsilon() { return Expression.epsilon; }
 			public Expression onAnyString() { return Expression.anyString; }

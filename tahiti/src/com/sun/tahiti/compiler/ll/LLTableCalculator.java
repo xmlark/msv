@@ -139,7 +139,10 @@ public class LLTableCalculator
 				// we don't add epsilon to FIRST.
 				return;
 			}
-			public void onTypedString( TypedStringExp exp ) {
+			public void onData( DataExp exp ) {
+				r.add(exp);
+			}
+			public void onValue( ValueExp exp ) {
 				r.add(exp);
 			}
 			public void onNullSet() {

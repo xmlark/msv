@@ -259,7 +259,11 @@ class RelationNormalizer {
 			// anyString should have been completely removed.
 			throw new Error();
 		}
-		public Expression onTypedString( TypedStringExp exp ) {
+		public Expression onData( DataExp exp ) {
+			multiplicity = Multiplicity.zero;
+			return exp;
+		}
+		public Expression onValue( ValueExp exp ) {
 			multiplicity = Multiplicity.zero;
 			return exp;
 		}

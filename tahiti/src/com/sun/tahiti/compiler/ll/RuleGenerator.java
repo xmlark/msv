@@ -168,13 +168,10 @@ public class RuleGenerator
 				}
 			}
 			
-			public void onTypedString( TypedStringExp exp ) {
-				// this is a terminal symbol.
-			}
-			
-			public void onAnyString() {
-				// this is a terminal symbol
-			}
+			// these are terminal symbols
+			public void onData( DataExp exp ) {}
+			public void onValue( ValueExp exp ) {}
+			public void onAnyString()			{}
 			
 			public void onOneOrMore( OneOrMoreExp exp ) {
 				if(visit(exp)) {
@@ -310,7 +307,7 @@ public class RuleGenerator
 						&& isActionlessNonTerminal(right[0])
 						// and A is a non-terminal
 						&& !(	right[0] instanceof NameClassAndExpression
-							||	right[0] instanceof TypedStringExp) )
+							||	right[0] instanceof DataOrValueExp) )
 							candidates.add(right[j]);
 						else
 							candidates.remove(right[j]);

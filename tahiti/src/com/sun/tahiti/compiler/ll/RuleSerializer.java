@@ -118,10 +118,16 @@ public class RuleSerializer implements Symbolizer {
 						super.onAttribute(exp);
 					}
 				}
-				public void onTypedString( TypedStringExp exp ) {
+				public void onData( DataExp exp ) {
 					if(!datatypes.containsKey(exp)) {
 						datatypes.put(exp,computeName(exp.dt,datatypes));
-						super.onTypedString(exp);
+						super.onData(exp);
+					}
+				}
+				public void onValue( ValueExp exp ) {
+					if(!datatypes.containsKey(exp)) {
+						datatypes.put(exp,computeName(exp.dt,datatypes));
+						super.onValue(exp);
 					}
 				}
 				public void onOther( OtherExp exp ) {
@@ -173,7 +179,7 @@ public class RuleSerializer implements Symbolizer {
 			
 			final ElementExp[] elms = (ElementExp[])elements.keySet().toArray(new ElementExp[0]);
 			final AttributeExp[] atts = (AttributeExp[])attributes.keySet().toArray(new AttributeExp[0]);
-			final TypedStringExp[] dts = (TypedStringExp[])datatypes.keySet().toArray(new TypedStringExp[0]);
+			final DataOrValueExp[] dts = (DataOrValueExp[])datatypes.keySet().toArray(new DataOrValueExp[0]);
 			final ClassItem[] cis = (ClassItem[])classes.keySet().toArray(new ClassItem[0]);
 			final FieldItem[] fis = (FieldItem[])fields.keySet().toArray(new FieldItem[0]);
 			final PrimitiveItem[] pis = (PrimitiveItem[])primitives.keySet().toArray(new PrimitiveItem[0]);
@@ -184,8 +190,8 @@ public class RuleSerializer implements Symbolizer {
 				out.start( "dataSymbol", new String[]{
 					"id",(String)allNames.get(dts[i])});
 				
-				out.element("library", dts[i].name.namespaceURI );
-				out.element("name", dts[i].name.localName );
+				out.element("library", dts[i].getName().namespaceURI );
+				out.element("name", dts[i].getName().localName );
 				
 				out.end("dataSymbol");
 				

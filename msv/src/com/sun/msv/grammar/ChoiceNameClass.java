@@ -32,6 +32,6 @@ public class ChoiceNameClass extends NameClass {
 	}
 	
 	public String toString() {
-		return "%choice("+nc1+")";
+		return '('+nc1.toString()+'|'+nc2.toString()+')';
 	}
 }

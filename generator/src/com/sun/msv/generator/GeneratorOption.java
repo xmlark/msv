@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.generator;
+package com.sun.msv.generator;
 
 import java.util.Random;
 import com.sun.msv.grammar.trex.TREXPatternPool;

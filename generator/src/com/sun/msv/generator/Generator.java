@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.generator;
+package com.sun.msv.generator;
 
 import org.w3c.dom.*;
 import org.xml.sax.ContentHandler;
@@ -62,26 +62,36 @@ public class Generator implements TREXPatternVisitorVoid
 	public static void generate( Expression exp, Document emptyDoc, GeneratorOption opts ) {
 		Generator g;
 		
-		do {
-			while( emptyDoc.getFirstChild()!=null ) // delete any existing children
-				emptyDoc.removeChild( emptyDoc.getFirstChild() );
+		for( int i=0; i<10; i++ ) {
+			// make it empty.
+			while( emptyDoc.hasChildNodes())
+				emptyDoc.removeChild(emptyDoc.getFirstChild());
 			
-			g = new Generator(exp,emptyDoc,opts);
-			exp.visit(g);
-			// if error ratio is specified and no error is generated, do it again.
-		}while( !g.errorGenerated && opts.errorSpecified() );
+			do {
+				while( emptyDoc.getFirstChild()!=null ) // delete any existing children
+					emptyDoc.removeChild( emptyDoc.getFirstChild() );
+				
+				g = new Generator(exp,emptyDoc,opts);
+				exp.visit(g);
+				// if error ratio is specified and no error is generated, do it again.
+			}while( !g.errorGenerated && opts.errorSpecified() );
 		
 		
-		Object[] ids = g.ids.toArray();
+			Object[] ids = g.ids.toArray();
+			if( ids.length==0 && g.idrefs.size()!=0 )
+				continue;	// IDREF is generated but no ID is generated.
+							// try again.
 		
-		// patch IDREF.
-		Iterator itr = g.idrefs.iterator();
-		while( itr.hasNext() ) {
-			if( ids.length==0 )	throw new Error("no ID");
-			
-			Text node = (Text)itr.next();
-			node.setData( (String)ids[opts.random.nextInt(ids.length)] );
+			// patch IDREF.
+			Iterator itr = g.idrefs.iterator();
+			while( itr.hasNext() ) {
+				Text node = (Text)itr.next();
+				node.setData( (String)ids[opts.random.nextInt(ids.length)] );
+			}
+			return;
 		}
+		
+		throw new Error("no ID");
 	}
 	
 	protected Generator( Expression exp, Document emptyDoc, GeneratorOption opts ) {
@@ -146,7 +156,6 @@ public class Generator implements TREXPatternVisitorVoid
 		// generate XML fragment for each child.
 		for( int i=0; i<vec.size(); i++ ) {
 			node = domDoc.createElement("dummy");
-			
 			((Expression)vec.get(i)).visit(this);
 			
 			vec.set(i,node);
@@ -160,6 +169,17 @@ public class Generator implements TREXPatternVisitorVoid
 			if(!e.hasChildNodes()) {
 				// this one has no more child.
 				vec.remove(idx);
+				
+				// copy attributes
+				// order of copy is significant because removing an attribute
+				// will change the index of the rest.
+				NamedNodeMap m = e.getAttributes();
+				for( int i=m.getLength()-1; i>=0; i-- ) {
+					Attr a = (Attr)m.item(i);
+					e.removeAttributeNode(a);
+					((Element)node).setAttributeNode(a);
+				}
+				
 				continue;
 			}
 			node.appendChild( e.getFirstChild() );

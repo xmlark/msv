@@ -7,14 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.generator;
+package com.sun.msv.generator;
 
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.TREXNameClassVisitor;
 import com.sun.msv.grammar.trex.DifferenceNameClass;
 import com.sun.msv.util.StringPair;
-//import java.util.Vector;
-//import java.util.Stack;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Random;

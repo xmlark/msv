@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.generator;
+package com.sun.msv.generator;
 
 import com.sun.msv.datatype.*;
 import java.util.Random;
@@ -80,6 +80,8 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		if( dt.getClass()==NormalizedStringType.class )	return generateString();
 		if( dt.getClass()==NmtokenType.class )	return generateNMTOKEN();
 		if( dt.getClass()==NcnameType.class )	return generateNCName();
+		if( dt.getClass()==NumberType.class )	return generateDecimal();
+		if( dt.getClass()==BooleanType.class )	return generateBoolean();
 		
 		if( dt instanceof FinalComponent )	// ignore final component
 			return generate( ((FinalComponent)dt).baseType );
@@ -89,6 +91,8 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		
 		if( dt instanceof com.sun.msv.grammar.trex.TypedString )
 			return ((com.sun.msv.grammar.trex.TypedString)dt).value;
+		
+		
 		
 		// getting desparate...
 		
@@ -106,6 +110,9 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 			}
 			
 			DataType baseType = dti.getConcreteType();
+			
+			if( baseType.getClass()==ListType.class )	return generateList(dti);
+			
 			if( baseType!=dti ) {
 				for( int i=0; i<10; i++ ) {
 					String s = generate(baseType);
@@ -121,7 +128,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		
 		
 		
-		throw new Error("unsupported datatype: " + dt.displayName() );
+		throw new Error("unable to generate value for this datatype: " + dt.displayName() );
 	}
 	
 	protected String generateNMTOKEN() {
@@ -141,6 +148,28 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		return r;
 	}
 	
+	protected String generateList(DataTypeImpl dti) {
+		ListType base = (ListType)dti.getConcreteType();
+		LengthFacet lf = (LengthFacet)dti.getFacetObject(dti.FACET_LENGTH);
+		int n;	// compute # of items into this value.
+		
+		if(lf!=null) {
+			n = lf.length;
+		} else {
+			MaxLengthFacet xlf = (MaxLengthFacet)dti.getFacetObject(dti.FACET_MAXLENGTH);
+			int max = (xlf!=null)?xlf.maxLength:16;
+			MinLengthFacet nlf = (MinLengthFacet)dti.getFacetObject(dti.FACET_MINLENGTH);
+			int min = (nlf!=null)?nlf.minLength:0;
+			
+			n = random.nextInt(max-min)+min;
+		}
+		
+		String s="";
+		for( int i=0; i<n; i++ )
+			s += " " + generate(base.itemType) + " ";
+		return s;
+	}
+	
 	protected String generateNCName() {
 		String r;
 		do {
@@ -149,6 +178,20 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		return r;
 	}
 	
+	protected String generateDecimal() {
+		return random.nextLong()+"."+random.nextInt(1000);
+	}
+		
+	protected String generateBoolean() {
+		switch(random.nextInt(4)) {
+		case 0:		return "true";
+		case 1:		return "false";
+		case 2:		return "0";
+		case 3:		return "1";
+		default:	throw new Error();
+		}
+	}
+		
 	protected String generateString() {
 		// string
 		int len = random.nextInt(16);

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.generator;
+package com.sun.msv.generator;
 
 import com.sun.msv.datatype.DataType;
 

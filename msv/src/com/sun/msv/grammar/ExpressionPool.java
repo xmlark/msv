@@ -7,27 +7,36 @@ import com.sun.tranquilo.datatype.DataType;
  * Creates a new Expression by combining existing expressions.
  * 
  * all expressions are memorized and unified so that every subexpression
- * will be shared and reused.
+ * will be shared and reused. Optimization will be done transparently.
+ * For example, createChoice(P,P) will result in P. createSequence(P,nullSet)
+ * will result in nullSet.
  * 
- * Although this unification is essential, but this is also the performance
+ * Furthermore, associative operators are grouped to the right.
+ * createChoice( (P|Q), R ) will be P|(Q|R).
+ * 
+ * <P>
+ * Although this unification is essential, this is also the performance
  * bottle neck. In particular, createChoice and createSequence are two most
  * commonly called methods.
  * 
  * For example, when validating a DocBook XML (150KB) twice against
  * DocBook.trex(237KB), createChoice is called 63000 times and createSequence
- * called 23000 times. (the third is createOptional method and 1560 times.)
- * 
+ * called 23000 times. (the third is createOptional method and only 1560 times.)
  * And they took more than 10% of validation time, which is the worst
  * time-consuming method.
  */
 public class ExpressionPool
 {
-	public Expression createAttribute( NameClass nameClass, Expression content )
+	public final Expression createAttribute( NameClass nameClass, Expression content )
 	{
 		return unify(new AttributeExp(nameClass,content));
 	}
 	
-	public Expression createChoice( Expression left, Expression right )
+	public final Expression createEpsilon() { return Expression.epsilon; }
+	public final Expression createNullSet() { return Expression.nullSet; }
+	public final Expression createAnyString() { return Expression.anyString; }
+	
+	public final Expression createChoice( Expression left, Expression right )
 	{
 		if( left==Expression.nullSet )		return right;
 		if( right==Expression.nullSet )		return left;
@@ -63,16 +72,14 @@ public class ExpressionPool
 				Expression.hashCode(left,right,Expression.HASHCODE_CHOICE),
 				left, right, ChoiceExp.class );
 		if(o==null)
-		{
-			o = new ChoiceExp(left,right);
-			expTable.put(o);
-			return o;
-		}
+			// different thread may possibly be doing the same thing at the same time.
+			// so we have to call unify method, too synchronize update.
+			return unify( new ChoiceExp(left,right) );
 		else
 			return o;
 	}
 	
-	public Expression createOneOrMore( Expression child )
+	public final Expression createOneOrMore( Expression child )
 	{
 		if( child == Expression.epsilon
 		||  child == Expression.anyString
@@ -83,23 +90,23 @@ public class ExpressionPool
 		return unify(new OneOrMoreExp(child));
 	}
 	
-	public Expression createZeroOrMore( Expression child )
+	public final Expression createZeroOrMore( Expression child )
 	{
 		return createOptional(createOneOrMore(child));
 	}
 	
-	public Expression createOptional( Expression child )
+	public final Expression createOptional( Expression child )
 	{
 		// optimization will be done in createChoice method.
 		return createChoice(child,Expression.epsilon);
 	}
 	
-	public Expression createTypedString( DataType dt )
+	public final Expression createTypedString( DataType dt )
 	{
 		return unify( new TypedStringExp(dt) );
 	}
 	
-	public Expression createMixed( Expression body )
+	public final Expression createMixed( Expression body )
 	{
 		if( body==Expression.nullSet )		return Expression.nullSet;
 		if( body==Expression.epsilon )		return Expression.anyString;
@@ -107,7 +114,7 @@ public class ExpressionPool
 		return unify( new MixedExp(body) );
 	}
 	
-	public Expression createSequence( Expression left, Expression right )
+	public final Expression createSequence( Expression left, Expression right )
 	{
 		if( left ==Expression.nullSet
 		||	right==Expression.nullSet )	return Expression.nullSet;
@@ -127,19 +134,32 @@ public class ExpressionPool
 				Expression.hashCode(left,right,Expression.HASHCODE_SEQUENCE),
 				left, right, SequenceExp.class );
 		if(o==null)
-		{
-			o = new SequenceExp(left,right);
-			expTable.put(o);
-			return o;
-		}
+			return unify( new SequenceExp(left,right) );
 		else
 			return o;
 	}
 	
 	
+	/** hash table that contains all expressions currently known to this table. */
+	private final ClosedHash expTable;
 	
-//	private final Hashtable expTable = new Hashtable();
-	private final ClosedHash expTable = new ClosedHash();
+	/**
+	 * creates new expression pool as a child pool of the given parent pool.
+	 * 
+	 * <P>
+	 * Every expression memorized in the parent pool can be retrieved, but update
+	 * operations are only performed upon the child pool.
+	 * In this way, the parent pool can be shared among the multiple threads without
+	 * interfering performance.
+	 * 
+	 * <P>
+	 * Furthermore, you can throw away a child pool after a certain time period to
+	 * prevent it from eating up memory.
+	 */
+	public ExpressionPool( ExpressionPool parent )	{ expTable = new ClosedHash(parent.expTable); }
+	public ExpressionPool()							{ expTable = new ClosedHash(); }
+	
+	
 	
 	/**
 	 * unifies expressions.
@@ -150,17 +170,22 @@ public class ExpressionPool
 	 * 
 	 * If it's not registered, then register it and return it.
 	 */
-	protected Expression unify( Expression exp )
+	protected final Expression unify( Expression exp )
 	{
-		// TODO: make sure that this is thread-safe
+		// call of get method need not be synchronized.
+		// the implementation guarantee that simulatenous calls to get & put
+		// will work correctly.
 		Object o = expTable.get(exp);
+		
 		if(o==null)
 		{// expression may not be registered. So try it again with lock
 			synchronized(expTable)
 			{
 				o = expTable.get(exp);
 				if(o==null)
-				{// expression is not registered.
+				{
+					// this check prevents two same expressions to be added simultaneously.
+					// expression is not registered.
 					expTable.put( exp );
 					return exp;
 				}
@@ -172,121 +197,163 @@ public class ExpressionPool
 	}
 
 
-public final static class ClosedHash
-{
 	/**
-	 * The hash table data.
+	 * expression cache by closed hash.
+	 * 
+	 * Special care has to be taken wrt threading.
+	 * This implementation allows get and put method to be called simulatenously.
 	 */
-	private Expression table[];
-
-	/**
-	 * The total number of mappings in the hash table.
-	 */
-	private int count;
-
-	/**
-	 * The table is rehashed when its size exceeds this threshold.  (The
-	 * value of this field is (int)(capacity * loadFactor).)
-	 */
-	private int threshold;
-
-	/**
-	 * The load factor for the hashtable.
-	 */
-	private static final float loadFactor = 0.3f;
-	private static final int initialCapacity = 191;
-	
-	public ClosedHash()
+	public final static class ClosedHash
 	{
-		table = new Expression[initialCapacity];
-		threshold = (int)(initialCapacity * loadFactor);
-	}
+		/** The hash table data. */
+		private Expression table[];
 
-	
-	public Expression get( int hash, Expression left, Expression right, Class type )
-	{
-		Expression tab[] = table;
-		int index = (hash & 0x7FFFFFFF) % tab.length;
+		/** The total number of mappings in the hash table. */
+		private int count;
+
+		/**
+		 * The table is rehashed when its size exceeds this threshold.  (The
+		 * value of this field is (int)(capacity * loadFactor).)
+		 */
+		private int threshold;
+
+		/** The load factor for the hashtable. */
+		private static final float loadFactor = 0.3f;
+		private static final int initialCapacity = 191;
 		
-		while(true)
+		/** the parent hash table.
+		 *  can be null. items in the parent hash table will be returned by
+		 *  get method.
+		 */
+		private final ClosedHash parent;
+		
+		public ClosedHash() { this(null); }
+		
+		public ClosedHash( ClosedHash parent )
 		{
-			final Expression e = tab[index];
-			if( e==null )		return null;
-			if( e.hashCode()==hash && e.getClass()==type )
-			{
-				BinaryExp be = (BinaryExp)e;
-				if( be.exp1==left && be.exp2==right )
-					return be;
-			}
-			index = (index+1)%tab.length;
+			table = new Expression[initialCapacity];
+			threshold = (int)(initialCapacity * loadFactor);
+			this.parent = parent;
 		}
-	}
-	public Expression get( int hash, Expression child, Class type )
-	{
-		Expression tab[] = table;
-		int index = (hash & 0x7FFFFFFF) % tab.length;
+
 		
-		while(true)
+		public Expression get( int hash, Expression left, Expression right, Class type )
 		{
-			final Expression e = tab[index];
-			if( e==null )		return null;
-			if( e.hashCode()==hash && e.getClass()==type )
+			if( parent!=null )
 			{
-				UnaryExp ue = (UnaryExp)e;
-				if( ue.exp==child )		return ue;
+				Expression e = parent.get(hash,left,right,type);
+				if(e!=null)		return e;
 			}
-			index = (index+1)%tab.length;
+			
+			Expression tab[] = table;
+			int index = (hash & 0x7FFFFFFF) % tab.length;
+			
+			while(true)
+			{
+				final Expression e = tab[index];
+				if( e==null )		return null;
+				if( e.hashCode()==hash && e.getClass()==type )
+				{
+					BinaryExp be = (BinaryExp)e;
+					if( be.exp1==left && be.exp2==right )
+						return be;
+				}
+				index = (index+1)%tab.length;
+			}
 		}
-	}
-	public Expression get( Expression key )
-	{
-		Expression tab[] = table;
-		int index = (key.hashCode() & 0x7FFFFFFF) % tab.length;
-		
-		while(true)
+		public Expression get( int hash, Expression child, Class type )
 		{
-			final Expression e = tab[index];
-			if( e==null )		return null;
-			if( e.equals(key) )	return e;
-			index = (index+1)%tab.length;
-		}
-	}
-
-	private void rehash()
-	{
-		int oldCapacity = table.length;
-		Expression oldMap[] = table;
-
-		int newCapacity = oldCapacity * 2 + 1;
-		Expression newMap[] = new Expression[newCapacity];
-
-		threshold = (int)(newCapacity * loadFactor);
-		table = newMap;
-
-		for (int i = oldCapacity ; i-- > 0 ;)
-			if( oldMap[i]!=null )
+			if( parent!=null )
 			{
-				int index = (oldMap[i].hashCode() & 0x7FFFFFFF) % newMap.length;
-				while(newMap[index]!=null)
-					index=(index+1)%newMap.length;
-				newMap[index] = oldMap[i];
+				Expression e = parent.get(hash,child,type);
+				if(e!=null)		return e;
 			}
+			
+			Expression tab[] = table;
+			int index = (hash & 0x7FFFFFFF) % tab.length;
+			
+			while(true)
+			{
+				final Expression e = tab[index];
+				if( e==null )		return null;
+				if( e.hashCode()==hash && e.getClass()==type )
+				{
+					UnaryExp ue = (UnaryExp)e;
+					if( ue.exp==child )		return ue;
+				}
+				index = (index+1)%tab.length;
+			}
+		}
+		public Expression get( Expression key )
+		{
+			if( parent!=null )
+			{
+				Expression e = parent.get(key);
+				if(e!=null)		return e;
+			}
+			
+			Expression tab[] = table;
+			int index = (key.hashCode() & 0x7FFFFFFF) % tab.length;
+			
+			while(true)
+			{
+				final Expression e = tab[index];
+				if( e==null )		return null;
+				if( e.equals(key) )	return e;
+				index = (index+1)%tab.length;
+			}
+		}
+
+		/**
+		 * rehash.
+		 * 
+		 * It is possible for one thread to call get method
+		 * while another thread is performing rehash.
+		 * Keep this in mind.
+		 */
+		private void rehash()
+		{
+			// create a new table first.
+			// meanwhile, other threads can safely access get method.
+			int oldCapacity = table.length;
+			Expression oldMap[] = table;
+
+			int newCapacity = oldCapacity * 2 + 1;
+			Expression newMap[] = new Expression[newCapacity];
+
+			for (int i = oldCapacity ; i-- > 0 ;)
+				if( oldMap[i]!=null )
+				{
+					int index = (oldMap[i].hashCode() & 0x7FFFFFFF) % newMap.length;
+					while(newMap[index]!=null)
+						index=(index+1)%newMap.length;
+					newMap[index] = oldMap[i];
+				}
+			
+			// threshold is not accessed by get method.
+			threshold = (int)(newCapacity * loadFactor);
+			// switch!
+			table = newMap;
+		}
+
+		/**
+		 * put method. No two threads can call this method simulatenously,
+		 * and it's the caller's responsibility to enforce it.
+		 */
+		public void put(Expression newExp)
+		{
+			if (count >= threshold)		rehash();
+
+			Expression tab[] = table;
+			int index = (newExp.hashCode() & 0x7FFFFFFF) % tab.length;
+			
+			while(tab[index]!=null)
+				index=(index+1)%tab.length;
+			tab[index] = newExp;
+			
+			count++;
+		}
+
 	}
 
-	public void put(Expression newExp)
-	{
-		if (count >= threshold)		rehash();
-
-		Expression tab[] = table;
-		int index = (newExp.hashCode() & 0x7FFFFFFF) % tab.length;
-		
-		while(tab[index]!=null)
-			index=(index+1)%tab.length;
-		tab[index] = newExp;
-		
-		count++;
-	}
-
-}
-	
 }

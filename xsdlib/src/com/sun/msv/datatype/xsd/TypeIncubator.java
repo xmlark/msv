@@ -35,6 +35,8 @@ public class TypeIncubator
 	public TypeIncubator( DataType baseType )
 	{
 		this.baseType = (DataTypeImpl)baseType;
+		if( baseType==null )
+			throw new IllegalArgumentException();
 	}
 	
 	

@@ -1,4 +1,4 @@
-package com.sun.tranquilo.datatype.test;
+package com.sun.tranquilo.datatype.conformance;
 
 import com.sun.tranquilo.datatype.BadTypeException;
 import com.sun.tranquilo.datatype.Facets;

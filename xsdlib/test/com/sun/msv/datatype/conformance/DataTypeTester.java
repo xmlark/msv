@@ -1,7 +1,7 @@
 /*
  * $Id$
 */
-package com.sun.tranquilo.datatype.test;
+package com.sun.tranquilo.datatype.conformance;
 
 import org.jdom.*;
 import java.util.List;

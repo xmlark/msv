@@ -1,4 +1,4 @@
-package com.sun.tranquilo.datatype.test;
+package com.sun.tranquilo.datatype.conformance;
 
 import org.jdom.*;
 import org.jdom.input.SAXBuilder;

@@ -1,4 +1,4 @@
-package com.sun.tranquilo.datatype.test;
+package com.sun.tranquilo.datatype.conformance;
 
 public interface TestPattern
 {

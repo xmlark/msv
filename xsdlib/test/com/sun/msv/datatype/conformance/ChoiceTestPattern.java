@@ -1,4 +1,4 @@
-package com.sun.tranquilo.datatype.test;
+package com.sun.tranquilo.datatype.conformance;
 
 /** choose one from child pattern */
 class ChoiceTestPattern implements TestPattern

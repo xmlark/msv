@@ -26,7 +26,7 @@ public class FactoryLoaderTester extends JARVTester
 		new TheFactoryImplTester().run(args);
 	}
 	
-	protected VerifierFactory getFactory(String language) {
+	protected VerifierFactory getFactory(String language) throws Exception {
 		return VerifierFactory.newInstance(language);
 	}
 }

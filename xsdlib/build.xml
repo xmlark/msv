@@ -91,19 +91,19 @@
 	
 	
 	
-	<!-- XSDLib -->
-	<property name="tests"
-		value="../xsdlib/bin/com/sun/msv/datatype/**/*Test.class"/>
-	
-	
+	<!-- test the working directory -->
 	<target name="test">
-		<ant antfile="../shared/ant.test.xml" target="test_xsdlib">
-			<property name="tests" value="${tests}"/>
-		</ant>
+		<ant antfile="../shared/ant.test.xml" target="test" />
 	</target>
-	<target name="test_package">
-		<ant antfile="../shared/ant.test.xml" target="test_xsdlib_package">
-			<property name="tests" value="${tests}"/>
+	
+	
+	
+	
+	
+	<!-- test the distribution package -->
+	<target name="test_release">
+		<ant antfile="../shared/ant.test.xml" target="test_release">
+			<property name="testJar" value="../package/xsdlib.jar"/>
 		</ant>
 	</target>
 	

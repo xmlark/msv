@@ -120,9 +120,7 @@
 				<userinput>role="none"</userinput> is an instruction to the compiler
 				not to generate a class for the particular pattern.
 				Since the compiler usually maps &lt;element&gt; patterns to Java classes,
-				<userinput>role="none"</userinput> is frequently used on &lt;element> patterns.
-			</para><para>
-				Consider the following grammar:
+				<userinput>role="none"</userinput> is usually used on &lt;element> patterns.
 			</para>
 			<para>
 				Sometimes the compiler generates Java classes that look unnecessary.

@@ -13,8 +13,9 @@ import java.text.MessageFormat;
 import java.util.ResourceBundle;
 import java.util.Map;
 import java.util.Stack;
-import java.io.IOException;
+//import java.io.IOException;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -37,6 +38,7 @@ public class TREXGrammarReader extends GrammarReader
 	/** loads TREX pattern */
 	public static TREXGrammar parse( String grammarURL,
 		SAXParserFactory factory, GrammarReaderController controller )
+		throws SAXException,ParserConfigurationException
 	{
 		TREXGrammarReader reader = new TREXGrammarReader(controller,factory,new TREXPatternPool());
 		reader.guardedParse(grammarURL);
@@ -48,6 +50,7 @@ public class TREXGrammarReader extends GrammarReader
 	/** loads TREX pattern */
 	public static TREXGrammar parse( InputSource grammar,
 		SAXParserFactory factory, GrammarReaderController controller )
+		throws SAXException,ParserConfigurationException
 	{
 		TREXGrammarReader reader = new TREXGrammarReader(controller,factory,new TREXPatternPool());
 		reader.guardedParse(grammar);
@@ -60,6 +63,7 @@ public class TREXGrammarReader extends GrammarReader
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
 		TREXPatternPool pool )
+		throws SAXException,ParserConfigurationException
 	{
 		super(controller,parserFactory,pool,new RootState());
 	}

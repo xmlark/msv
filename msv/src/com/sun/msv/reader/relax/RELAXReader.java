@@ -42,7 +42,7 @@ public class RELAXReader extends GrammarReader
 	/** loads RELAX grammar */
 	public static RELAXGrammar parse( String moduleURL,
 		SAXParserFactory factory, GrammarReaderController controller, ExpressionPool pool )
-//		throws SAXException,ParserConfigurationException
+		throws SAXException,ParserConfigurationException
 	{
 		RELAXReader reader = new RELAXReader(controller,factory,pool);
 		reader.guardedParse(moduleURL);
@@ -54,6 +54,7 @@ public class RELAXReader extends GrammarReader
 	/** loads RELAX grammar */
 	public static RELAXGrammar parse( InputSource module,
 		SAXParserFactory factory, GrammarReaderController controller, ExpressionPool pool )
+		throws SAXException,ParserConfigurationException
 	{
 		RELAXReader reader = new RELAXReader(controller,factory,pool);
 		reader.guardedParse(module);
@@ -67,6 +68,7 @@ public class RELAXReader extends GrammarReader
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
 		ExpressionPool pool )
+		throws SAXException,ParserConfigurationException
 	{
 		super(controller,parserFactory,pool,new RootState());
 		grammar = new RELAXGrammar(pool);

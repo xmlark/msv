@@ -59,8 +59,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 	 *		if errRef is null and this expression cannot accept given start tag.
 	 *		if errRef is non-null and error recovery is not possible.
 	 */
-	public Acceptor createChildAcceptor( StartTagInfo tag, StringRef errRef )
-	{
+	public Acceptor createChildAcceptor( StartTagInfo tag, StringRef errRef ) {
 		final CombinedChildContentExpCreator cccc = docDecl.cccec;
 		
 		// instead of creating a new object, reuse it

@@ -14,6 +14,13 @@ import org.xml.sax.Locator;
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.AttributeList;
 
+/**
+ * SAX DocumentHandler event interceptor.
+ * 
+ * This object acts as a filter to DocumentHandler events.
+ * Derived class should override methods of interest and
+ * perform somethings.
+ */
 public class DocumentFilter implements DocumentHandler
 {
 	public DocumentHandler next;

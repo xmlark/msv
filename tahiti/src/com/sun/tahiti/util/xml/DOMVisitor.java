@@ -1,3 +1,12 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.tahiti.util.xml;
 
 import org.w3c.dom.Document;
@@ -6,7 +15,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 
 /**
- * visits all DOM elements in the order of SAX.
+ * visits all DOM elements in the depth-first order (in-order).
  */
 public abstract class DOMVisitor
 {

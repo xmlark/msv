@@ -94,6 +94,11 @@ public class TREXGrammarReader extends TREXBaseReader {
 	 */
 	protected String currentGrammarURI;
 	
+	
+	protected TREXGrammar getGrammar() {
+		return grammar;
+	}
+	
 	/** Namespace URI of TREX */
 	public static final String TREXNamespace = "http://www.thaiopensource.com/trex";
 
@@ -127,10 +132,11 @@ public class TREXGrammarReader extends TREXBaseReader {
 	 * parsing behavior can be customized by implementing custom StateFactory.
 	 */
 	public static class StateFactory extends TREXBaseReader.StateFactory {
-		public State concur		( State parent, StartTagInfo tag ) { return new ConcurState(); }
-		public State anyString	( State parent, StartTagInfo tag ) { return new AnyStringState(); }
-		public State string		( State parent, StartTagInfo tag ) { return new StringState(); }
-		public State data		( State parent, StartTagInfo tag ) { return new DataState(); }
+		public State concur		( State parent, StartTagInfo tag )	{ return new ConcurState(); }
+		public State anyString	( State parent, StartTagInfo tag )	{ return new AnyStringState(); }
+		public State string		( State parent, StartTagInfo tag )	{ return new StringState(); }
+		public State data		( State parent, StartTagInfo tag )	{ return new DataState(); }
+		public State define		( State parent, StartTagInfo tag )	{ return new DefineState(); }
 	}
 	protected StateFactory getStateFactory() {
 		return (StateFactory)super.sfactory;

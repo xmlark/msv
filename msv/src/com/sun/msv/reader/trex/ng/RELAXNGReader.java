@@ -86,6 +86,27 @@ public class RELAXNGReader extends TREXBaseReader {
 	    return MessageFormat.format(format, args );
 	}
 	
+	protected TREXGrammar getGrammar() {
+		return grammar;
+	}
+	
+	/**
+	 * a map from ReferenceExps to strings that represents the combine method.
+	 * (e.g., "choice", "interleave".)
+	 * 
+	 * This map is used to ensure that a named pattern is combined in the consistent way.
+	 */
+	protected final Map combineMethodMap = new java.util.HashMap();
+	
+	/**
+	 * a set that contains all ReferenceExps that have their head declarations.
+	 * A head declaration is a define element without the combine attribute.
+	 * It is an error that two head declarations share the same name.
+	 * This set is used to detect this error.
+	 */
+	protected final Set headRefExps = new java.util.HashSet();
+	
+	
 	/** Namespace URI of RELAX NG */
 	public static final String RELAXNGNamespace = "http://www.relaxng.org/";
 
@@ -102,6 +123,13 @@ public class RELAXNGReader extends TREXBaseReader {
 		public State data			( State parent, StartTagInfo tag ) { return new DataState(); }
 		public State dataParam		( State parent, StartTagInfo tag ) { return new DataParamState(); }
 		public State value			( State parent, StartTagInfo tag ) { return new ValueState(); }
+		public State define			( State parent, StartTagInfo tag ) { return new DefineState(); }
+		/**
+		 * gets DataTypeLibrary object that is specified by the namespace URI.
+		 * 
+		 * If no vocabulary is known to have that namespace URI, then simply
+		 * return null without issuing an error message.
+		 */
 		public DataTypeLibrary getDataTypeLibrary( String namespaceURI ) {
 			if( namespaceURI.equals(XSDVocabulary.XMLSchemaNamespace) )
 				return xsdlib;
@@ -118,7 +146,6 @@ public class RELAXNGReader extends TREXBaseReader {
 	public State createExpressionChildState( State parent, StartTagInfo tag ) {
 		
 		if(tag.localName.equals("text"))		return getStateFactory().text(parent,tag);
-//		if(tag.localName.equals("string"))		return getStateFactory().string(parent,tag);
 		if(tag.localName.equals("data"))		return getStateFactory().data(parent,tag);
 		if(tag.localName.equals("value"))		return getStateFactory().value(parent,tag);
 
@@ -258,4 +285,8 @@ public class RELAXNGReader extends TREXBaseReader {
 		"RELAXNGReader.UnrecognizedLocalTypeName1";
 	public static final String ERR_INCONSISTENT_KEY_TYPE = // arg:1
 		"RELAXNGReader.InconsistentKeyType";
+	public static final String ERR_INCONSISTENT_COMBINE = // arg:1
+		"RELAXNGReader.InconsistentCombine";
+	public static final String ERR_REDEFINING_UNDEFINED = // arg:1
+		"RELAXNGReader.RedefiningUndefined";
 }

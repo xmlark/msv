@@ -77,7 +77,7 @@ public abstract class TREXBaseReader extends GrammarReader {
 	 * creates various State object, which in turn parses grammar.
 	 * parsing behavior can be customized by implementing custom StateFactory.
 	 */
-	public static class StateFactory {
+	public static abstract class StateFactory {
 		public State nsName		( State parent, StartTagInfo tag ) { return new NameClassNameState(); }
 		public State nsAnyName	( State parent, StartTagInfo tag ) { return new NameClassAnyNameState(); }
 		public State nsNsName	( State parent, StartTagInfo tag ) { return new NameClassNsNameState(); }
@@ -90,22 +90,18 @@ public abstract class TREXBaseReader extends GrammarReader {
 		public State group		( State parent, StartTagInfo tag ) { return new SequenceState(); }
 		public State interleave	( State parent, StartTagInfo tag ) { return new InterleaveState(); }
 		public State choice		( State parent, StartTagInfo tag ) { return new ChoiceState(); }
-//		public State concur		( State parent, StartTagInfo tag ) { return new ConcurState(); }
 		public State optional	( State parent, StartTagInfo tag ) { return new OptionalState(); }
 		public State zeroOrMore	( State parent, StartTagInfo tag ) { return new ZeroOrMoreState(); }
 		public State oneOrMore	( State parent, StartTagInfo tag ) { return new OneOrMoreState(); }
 		public State mixed		( State parent, StartTagInfo tag ) { return new MixedState(); }
 		public State ref		( State parent, StartTagInfo tag ) { return new RefState(); }
 		public State empty		( State parent, StartTagInfo tag ) { return new EmptyState(); }
-//		public State anyString	( State parent, StartTagInfo tag ) { return new AnyStringState(); }
-//		public State string		( State parent, StartTagInfo tag ) { return new StringState(); }
-//		public State data		( State parent, StartTagInfo tag ) { return new DataState(); }
 		public State notAllowed	( State parent, StartTagInfo tag ) { return new NullSetState(); }
 		public State includePattern( State parent, StartTagInfo tag ) { return new IncludePatternState(); }
 		public State includeGrammar( State parent, StartTagInfo tag ) { return new IncludeMergeState(); }
 		public State grammar	( State parent, StartTagInfo tag ) { return new GrammarState(); }
 		public State start		( State parent, StartTagInfo tag ) { return new StartState(); }
-		public State define		( State parent, StartTagInfo tag ) { return new DefineState(); }
+		public abstract State define( State parent, StartTagInfo tag );
 	}
 	public final StateFactory sfactory;
 	

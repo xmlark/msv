@@ -133,7 +133,9 @@
   
   <!-- generate MSV release -->
   <target name="release">
-    <tstamp />
+    <tstamp>
+      <format property="YEAR" pattern="yyyy" locale="en"/>
+    </tstamp>
     <property name="stageName" value="msv-${DSTAMP}" />
     
     <delete  dir="${stageName}" />
@@ -161,6 +163,12 @@
         package="msv/msv/doc"
         command="export -d ${stageName} ${cvsExportOpt}"
         dest="." />
+    <replace dir="./doc">
+        <include name="${stageName}/**/*.html"/>
+        <include name="${stageName}/**/*.txt"/>
+        <replacefilter token="@@VERSION@@" value="${DSTAMP}" />
+        <replacefilter token="@@YEAR@@" value="${YEAR}" />
+    </replace>
     
     <!-- obtain contrib files -->
     <cvs  cvsRoot="${cvsRoot}"
@@ -195,7 +203,7 @@
     <copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
     <copy file="${isorelax.jar}" tofile="${stageName}/isorelax.jar" />
     <copy file="${xerces.jar}" tofile="${stageName}/xercesImpl.jar" />
-    <copy file="${xmlParserAPIs.jar}" tofile="${stageName}/xmlParserAPIs.jar}" />
+    <copy file="${xmlParserAPIs.jar}" tofile="${stageName}/xmlParserAPIs.jar" />
 
     
     <!-- create a time stamp file -->

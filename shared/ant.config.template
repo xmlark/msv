@@ -11,28 +11,46 @@ cvsRoot = \
 cvsExportOpt = \
 	-D now
 
-rngInterfaceSource = \
-	../../relaxng/datatype/java/src
 	
 
 #
-# Environment dependend values
+# Third party libraries
 #
+
+
+# JavaCC is available at http://www.webgain.com/products/java_cc/
 javaCClib = \
 	c:/program files/development/javacc/bin/lib
 
-junir.jar = \
-	c:/winnt/java/classes/junit.jar
 
+#
+# JUnit and Ant are maintained at Apache Jakarta Project.
+# (http://jakarta.apache.org/)
+#
+junit.jar = \
+	c:/winnt/java/classes/junit.jar
 ant.jar = \
 	c:/progra~1/development/ant/lib/ant.jar
 
+#
+# RELAX NG Datatype interface can be obtained from
+# "RELAX NG SourceForge project"
+# (http://relaxng.sourceforge.net/)
+#
 relaxngDatatype.jar = \
 	../../relaxng/datatype/java/relaxngDatatype.jar
+rngInterfaceSource = \
+	../../relaxng/datatype/java/src
 
+#
+# ISO RELAX project is at http://iso-relax.sourceforge.net/
+#
 isorelax.jar = \
 	c:/winnt/java/classes/isorelax.jar
 
+#
+# Xerces and Xalan are from Apache XML Project.
+#
 xerces.source = \
 	C:/Program Files/Development/Xerces/src
 

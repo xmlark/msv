@@ -34,7 +34,7 @@
 			debug="on"
 			optimize="off">
 			
-			<classpath path="../package/xsdlib.jar"/>
+			<classpath path="../xsdlib/bin"/>
 			<classpath path="../testharness/bin"/>
 		</javac>
 	</target>
@@ -138,7 +138,7 @@
 			<classpath path="${java.class.path}"/>
 			<classpath path="${relaxngDatatype.jar}"/>
 			<classpath path="${isorelax.jar}"/>
-			<classpath path="package/xsdlib.jar"/>
+			<classpath path="../package/xsdlib.jar"/>
 			
 			<include name="**/*.java" />
 		</javac>
@@ -200,11 +200,11 @@
 		<!-- compile sample files -->
 		<javac	srcdir="${stageName}/examples">
 			
-			<classpath path="${stageName}/msv.jar"/>
-			<classpath path="${java.class.path}"/>
+			<classpath path="../package/msv.jar"/>
+			<classpath path="../package/xsdlib.jar"/>
 			<classpath path="${relaxngDatatype.jar}"/>
 			<classpath path="${isorelax.jar}"/>
-			<classpath path="../package/xsdlib.jar"/>
+			<classpath path="${java.class.path}"/>
 			
 			<include name="**/*.java" />
 		</javac>

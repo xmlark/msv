@@ -3,7 +3,7 @@ package batch.generator;
 import junit.framework.*;
 import batch.model.TestSuiteCreator;
 import org.relaxng.testharness.model.*;
-import msv.ISchemaImpl;
+import batch.driver.ISchemaImpl;
 import java.util.Iterator;
 import com.sun.msv.generator.*;
 

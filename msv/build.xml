@@ -188,7 +188,12 @@
 			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
 			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
 		</javadoc>
-		
+
+		<!-- delete the source! -->		
+		<delete>
+			<fileset dir="${stageName}/src" excludes="**/CommandLineTester.java" />
+		</delete>
+
 		<!-- creates distribution package -->
 		<zip	zipfile="${packageDir}/xsdlib.${DSTAMP}.zip"
 				basedir="."

@@ -14,11 +14,6 @@ import com.sun.msv.reader.State;
 import com.sun.msv.reader.SimpleState;
 import com.sun.msv.reader.ExpressionOwner;
 import com.sun.msv.grammar.Expression;
-//import com.sun.msv.grammar.ExpressionPool;
-//import com.sun.msv.grammar.ReferenceContainer;
-//import com.sun.msv.grammar.ReferenceExp;
-//import org.xml.sax.Locator;
-//import java.util.Iterator;
 
 /**
  * invokes State object that parses the document element.

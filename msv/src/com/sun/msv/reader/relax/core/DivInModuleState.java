@@ -52,7 +52,8 @@ public class DivInModuleState extends SimpleState implements ExpressionOwner, Ty
 			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "simpleType", "name" );
 			return;	// recover by ignoring this declaration
 		}
-
-		// type is memorized by XSDVocabulary. just let it go.
+		
+		// memorize this type.
+		getReader().module.userDefinedTypes.addType(type);
 	}
 }

@@ -49,7 +49,6 @@ public class DOMDecorator {
 		int cnt=1;
 		String[] uris = (String[])usedURIs.toArray(new String[0]);
 		for( int i=0; i<uris.length; i++ ) {
-			if( uris[i].equals(defaultNs) )	continue;
 			
 			String prefix;
 			do {
@@ -71,13 +70,15 @@ public class DOMDecorator {
 					e.setPrefix((String)uri2prefix.get(e.getNamespaceURI()));
 			}
 			public void onAttr( Attr a ) {
-				if("".equals(a.getNamespaceURI()))
+				String uri = a.getNamespaceURI();
+				if("".equals(uri))
 					return;	// do nothing.
 				
-				if(a.getNamespaceURI().equals(XMLNS_URI))
+				if(uri.equals(XMLNS_URI))
 					return;	// don't touch xmlns declarations.
 				
-				a.setPrefix((String)uri2prefix.get(a.getNamespaceURI()) );
+				String prefix = (String)uri2prefix.get(uri);
+				a.setPrefix(prefix);
 			}
 		});
 	}

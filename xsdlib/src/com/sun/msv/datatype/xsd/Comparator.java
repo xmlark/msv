@@ -6,7 +6,7 @@ package com.sun.tranquilo.datatype;
  * Those datatypes which has order relation must implement this interface.
  * RangeFacet uses this interface to do its job.
  */
-interface Comparator
+public interface Comparator
 {
 	static final int LESS			= -1;	// lhs < rhs
 	static final int EQUAL			= 0;	// lhs = rhs

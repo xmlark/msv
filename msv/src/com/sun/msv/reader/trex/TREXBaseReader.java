@@ -64,8 +64,8 @@ public abstract class TREXBaseReader extends GrammarReader {
 	protected TREXGrammar grammar;
 	/** obtains parsed grammar object only if parsing was successful. */
 	public final TREXGrammar getResult() {
-		if(hadError)	return null;
-		else			return grammar;
+		if(controller.hadError())	return null;
+		else			            return grammar;
 	}
 	public Grammar getResultAsGrammar() {
 		return getResult();

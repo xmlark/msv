@@ -72,7 +72,7 @@ public abstract class SimpleState extends State
 				reader.pushState(nextState,this,tag);
 				return;
 			}
-				
+            
 			// unacceptable element
 			reader.reportError(GrammarReader.ERR_MALPLACED_ELEMENT, tag.qName );
 			// try to recover from error by just ignoring it.

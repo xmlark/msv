@@ -15,6 +15,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.LocatorImpl;
+import org.xml.sax.SAXException;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -164,7 +165,7 @@ public abstract class State implements ContentHandler
         if(!b)  throw new InternalError();
     }
 
-	public void characters(char[] buffer, int from, int len ) {
+	public void characters(char[] buffer, int from, int len ) throws SAXException {
 		// both RELAX and TREX prohibits characters in their grammar.
 		for( int i=from; i<len; i++ )
 			switch(buffer[i])
@@ -180,11 +181,11 @@ public abstract class State implements ContentHandler
 	
 // unused handlers
 //----------------------------		
-	public void processingInstruction( String target, String data ) {}
-	public void ignorableWhitespace(char[] buffer, int from, int len ) {}
-	public void skippedEntity( String name ) {}
-	public final void startDocument() {}
+	public void processingInstruction( String target, String data ) throws SAXException {}
+	public void ignorableWhitespace(char[] buffer, int from, int len ) throws SAXException {}
+	public void skippedEntity( String name ) throws SAXException {}
+	public final void startDocument() throws SAXException {}
 	public void setDocumentLocator( Locator loc ) {}
-	public void startPrefixMapping(String prefix, String uri ) {}
-	public void endPrefixMapping(String prefix) {}
+	public void startPrefixMapping(String prefix, String uri ) throws SAXException {}
+	public void endPrefixMapping(String prefix) throws SAXException {}
 }

@@ -133,8 +133,8 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
 
 	/** obtains parsed grammar object only if parsing was successful. */
 	public final RELAXModule getResult() {
-		if(hadError)	return null;
-		else			return module;
+		if(controller.hadError())	return null;
+		else			            return module;
 	}
 	public final Grammar getResultAsGrammar() {
 		return getResult();

@@ -440,13 +440,13 @@ public class RELAXNGReader extends TREXBaseReader {
 			checkRunawayExpression( grammar, new Stack(), new java.util.HashSet() );
 		} catch( AbortException e ) {;}
 		
-		if( !hadError )
+		if( !controller.hadError() )
 			// make sure that there is no sequenced string.
 			// when run-away expression is found, calling this method results in
 			// stack overflow.
 			grammar.visit( new TREXSequencedStringChecker(this,true) );
 		
-		if(!hadError)
+		if( !controller.hadError() )
 			// check RELAX NG contextual restrictions
 			restrictionChecker.check();
 			// this algorithm does not work if there is a runaway expression

@@ -18,6 +18,7 @@ import com.sun.msv.datatype.xsd.NormalizedStringType;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.datatype.xsd.IDType;
 import com.sun.msv.datatype.xsd.IDREFType;
+import com.sun.msv.reader.Controller;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.scanner.dtd.DTDEventListener;
 import com.sun.msv.scanner.dtd.DTDParser;
@@ -53,7 +54,7 @@ import java.util.Iterator;
 public class DTDReader implements DTDEventListener {
 	
 	public DTDReader( GrammarReaderController controller, ExpressionPool pool ) {
-		this.controller = controller;
+		this.controller = new Controller(controller);
 		grammar = new TREXGrammar(pool);
 	}
 	
@@ -83,7 +84,7 @@ public class DTDReader implements DTDEventListener {
 		}
 	}
 	
-	protected final GrammarReaderController controller;
+	protected final Controller controller;
 	
 	protected static final Map dtdTypes = createDTDTypes();
 	

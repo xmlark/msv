@@ -66,7 +66,7 @@ public abstract class GrammarReader
 	public Locator locator;
 	
 	/** this object receives errors and warnings */
-	public final GrammarReaderController controller;
+	public final Controller controller;
 	
 	/** Reader may create another SAXParser from this factory */
 	public final SAXParserFactory parserFactory;
@@ -86,12 +86,12 @@ public abstract class GrammarReader
 	
 	/** constructor that should be called from parse method. */
 	protected GrammarReader(
-		GrammarReaderController controller,
+		GrammarReaderController _controller,
 		SAXParserFactory parserFactory,
 		ExpressionPool pool,
 		State initialState ) {
 		
-		this.controller = controller;
+		this.controller = new Controller(_controller);
 		this.parserFactory = parserFactory;
 		if( !parserFactory.isNamespaceAware() )
 			throw new IllegalArgumentException("parser factory must be namespace-aware");
@@ -102,7 +102,7 @@ public abstract class GrammarReader
 	/**
 	 * gets the parsed AGM.
 	 * 
-	 * Should any error happens, this method returns null.
+	 * Should any error happens, this method should returns null.
 	 * 
 	 * derived classes should implement type-safe getGrammar method,
 	 * along with this method.
@@ -158,6 +158,44 @@ public abstract class GrammarReader
 		prefixResolver = ((ChainPrefixResolver)prefixResolver).previous;
 		super.endPrefixMapping(prefix);
 	}
+    
+    /**
+     * Iterates Map.Entry objects which has the prefix as key and
+     * the namespace URI as value.
+     */
+    public Iterator iterateInscopeNamespaces() {
+        return new Iterator() {
+            private PrefixResolver resolver = proceed(prefixResolver);
+            public Object next() {
+                final ChainPrefixResolver cpr = (ChainPrefixResolver)resolver;
+                resolver = proceed(cpr.previous);
+                
+                return new Map.Entry() {
+                    public Object getKey() { return cpr.prefix; }
+                    public Object getValue() { return cpr.uri; }
+                    public Object setValue(Object o) { throw new UnsupportedOperationException(); }
+                };
+            }
+            public boolean hasNext() {
+                return resolver instanceof ChainPrefixResolver;
+            }
+            private PrefixResolver proceed( PrefixResolver resolver ) {
+                while(true) {
+                    if(!(resolver instanceof ChainPrefixResolver))
+                        return resolver;    // reached at the end
+                
+                    ChainPrefixResolver cpr = (ChainPrefixResolver)resolver;
+                    if(resolveNamespacePrefix(cpr.prefix)==cpr.uri)
+                        return resolver;    // this resolver is in-scope
+                    
+                    resolver = cpr.previous;
+                }
+            }
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
 	
 	
 	/**
@@ -314,23 +352,16 @@ public abstract class GrammarReader
 	 *		The base URI of this state is used to resolve the resource.
 	 * 
 	 * @return
-	 *		return null if an error occurs.
+	 *		always return non-null valid object
 	 */
-	public final InputSource resolveLocation( State sourceState, String url ) {
+	public final InputSource resolveLocation( State sourceState, String url )
+        throws IOException, SAXException {
 		// resolve a relative URL to an absolute one
 		url = combineURL( sourceState.getBaseURI(), url );
 	
-		try {
-			InputSource source = controller.resolveEntity(null,url);
-			if(source==null)	return new InputSource(url);	// default handling
-			else				return source;
-		} catch( IOException ie ) {
-			reportError( ie, ERR_IO_EXCEPTION );
-			return null;
-		} catch( SAXException se ) {
-			reportError( se, ERR_SAX_EXCEPTION );
-			return null;
-		}
+		InputSource source = controller.resolveEntity(null,url);
+		if(source==null)	return new InputSource(url);	// default handling
+		else				return source;
 	}
 
 	/**
@@ -364,10 +395,16 @@ public abstract class GrammarReader
 			// we cannot handle them properly.
 			reportError( ERR_FRAGMENT_IDENTIFIER, url );
 		
-		final InputSource source = resolveLocation(sourceState,url);
-		if(source==null)		return;	// recover by ignoring this.
-		
-        switchSource( source, newState );
+        try {
+            switchSource(
+    		    resolveLocation(sourceState,url), newState );
+        } catch( IOException e ) {
+            // recover by ignoring this.
+            controller.error(e,locator);
+        } catch( SAXException e ) {
+            // recover by ignoring this.
+            controller.error(e,locator);
+        }
     }
     
     public void switchSource( InputSource source, State newState ) {
@@ -421,34 +458,18 @@ public abstract class GrammarReader
 			if( source instanceof InputSource )		reader.parse((InputSource)source);
 			if( source instanceof String )			reader.parse((String)source);
 		} catch( ParserConfigurationException e ) {
-			reportError( ERR_XMLPARSERFACTORY_EXCEPTION,
-				new Object[]{e.getMessage()},
-				e, new Locator[]{errorSource} );
+            controller.error(e,errorSource);
 		} catch( IOException e ) {
-			reportError( ERR_IO_EXCEPTION,
-				new Object[]{e.getMessage()},
-				e, new Locator[]{errorSource} );
-        } catch( final SAXParseException e ) {
-            // error location information is available
-			reportError( ERR_SAX_EXCEPTION,
-				new Object[]{e.getMessage()},
-				e, new Locator[]{
-                    new Locator(){
-                        public String getSystemId() { return e.getSystemId(); }
-                        public String getPublicId() { return e.getPublicId(); }
-                        public int getLineNumber()  { return e.getLineNumber(); }
-                        public int getColumnNumber(){ return e.getColumnNumber(); }
-                    }} );
+            controller.error(e,errorSource);
+        } catch( SAXParseException e ) {
+            controller.error(e);
 		} catch( SAXException e ) {
 			// this means that a runtime exception was thrown by the reader
 			// rethrow it.
 			if(e.getException() instanceof RuntimeException)
 				throw (RuntimeException)e.getException();
 
-			// TODO: when this can happen?
-			reportError( ERR_SAX_EXCEPTION,
-				new Object[]{e.getMessage()},
-				e, new Locator[]{errorSource} );
+            controller.error( e, errorSource );
 		}
 	}
 	
@@ -672,13 +693,6 @@ public abstract class GrammarReader
 //========================================================
 	
 	
-	/** this flag is set to true if reportError method is called.
-	 * 
-	 * Derived classes must check this flag to determine whether the parsing
-	 * was successful or not.
-	 */
-	public boolean hadError = false;
-	
 	public final void reportError( String propertyName )
 	{ reportError( propertyName, null, null, null ); }
 	public final void reportError( String propertyName, Object arg1 )
@@ -723,9 +737,7 @@ public abstract class GrammarReader
 	}
 	
 	/** reports an error to the controller */
-	public final void reportError( String propertyName, Object[] args, Exception nestedException, Locator[] errorLocations )
-	{
-		hadError = true;
+	public final void reportError( String propertyName, Object[] args, Exception nestedException, Locator[] errorLocations ) {
 		controller.error(
 			prepareLocation(errorLocations),
 			localizeMessage(propertyName,args), nestedException );
@@ -733,8 +745,7 @@ public abstract class GrammarReader
 	
 	
 	/** reports a warning to the controller */
-	public final void reportWarning( String propertyName, Object[] args, Locator[] locations )
-	{
+	public final void reportWarning( String propertyName, Object[] args, Locator[] locations ) {
 		controller.warning( prepareLocation(locations),
 							localizeMessage(propertyName,args) );
 	}
@@ -746,12 +757,12 @@ public abstract class GrammarReader
 	
 	public static final String ERR_MALPLACED_ELEMENT =	// arg:1
 		"GrammarReader.MalplacedElement";
-	public static final String ERR_IO_EXCEPTION =	// arg:1
-		"GrammarReader.IOException";
-	public static final String ERR_SAX_EXCEPTION =	// arg:1
-		"GrammarReader.SAXException";
-	public static final String ERR_XMLPARSERFACTORY_EXCEPTION =	// arg:1
-		"GrammarReader.XMLParserFactoryException";
+//	public static final String ERR_IO_EXCEPTION =	// arg:1
+//		"GrammarReader.IOException";
+//	public static final String ERR_SAX_EXCEPTION =	// arg:1
+//		"GrammarReader.SAXException";
+//	public static final String ERR_XMLPARSERFACTORY_EXCEPTION =	// arg:1
+//		"GrammarReader.XMLParserFactoryException";
 	public static final String ERR_CHARACTERS =		// arg:1
 		"GrammarReader.Characters";
 	public static final String ERR_DISALLOWED_ATTRIBUTE = // arg:2

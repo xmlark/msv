@@ -147,7 +147,7 @@ public class RELAXNGCompReader extends RELAXNGReader {
 	public void wrapUp() {
 		super.wrapUp();
 		
-		if(!hadError) {
+		if(!controller.hadError()) {
 			// do not check the compatibilities if some errors
 			// are already reported.
 			

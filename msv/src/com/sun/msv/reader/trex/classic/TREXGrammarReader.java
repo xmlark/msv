@@ -236,7 +236,7 @@ public class TREXGrammarReader extends TREXBaseReader implements XSDatatypeResol
 		// make sure that there is no recurisve patterns.
 		RunAwayExpressionChecker.check(this,grammar);
 		
-		if( !hadError )
+		if( !controller.hadError() )
 			// make sure that there is no sequenced string.
 			// when run-away expression is found, calling this method results in
 			// stack overflow.

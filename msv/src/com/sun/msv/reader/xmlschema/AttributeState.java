@@ -173,7 +173,7 @@ public class AttributeState extends ExpressionWithChildState {
 			else {
 				// sometimes, because of the error recovery,
 				// exp can be something other than an AttributeExp.
-				if( !reader.hadError )	throw new Error();
+				if( !reader.controller.hadError() )	throw new Error();
 			}
 			
 			// TODO: @use is prohibited in global

@@ -13,6 +13,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.InputSource;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import java.io.IOException;
 
 /**

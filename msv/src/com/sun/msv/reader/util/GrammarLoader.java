@@ -14,6 +14,7 @@ import com.sun.msv.reader.relax.core.RELAXCoreReader;
 import com.sun.msv.reader.trex.classic.TREXGrammarReader;
 import com.sun.msv.reader.trex.ng.comp.RELAXNGCompReader;
 import com.sun.msv.reader.xmlschema.XMLSchemaReader;
+import com.sun.msv.reader.Controller;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
@@ -264,22 +265,22 @@ public class GrammarLoader
 		return factory;
 	}
 	
-	private GrammarReaderController controller;
+	private Controller controller;
 	/**
 	 * sets the GrammarReaderController object that will control
 	 * various aspects of the parsing. If not set, no error report will be
 	 * done.
 	 */
 	public void setController( GrammarReaderController controller ) {
-		this.controller = controller;
+		this.controller = new Controller(controller);
 	}
-	public GrammarReaderController getController() {
+	public Controller getController() {
 		if(controller==null)
-			controller = new GrammarReaderController() {
+			controller = new Controller(new GrammarReaderController() {
 				public void warning( Locator[] locs, String errorMessage ) {}
 				public void error( Locator[] locs, String errorMessage, Exception nestedException ) {}
 				public InputSource resolveEntity( String s, String p ) { return null; }
-			};
+			});
 		return controller;
 	}
 	
@@ -425,9 +426,7 @@ public class GrammarLoader
 			private ContentHandler setupPipeline( Schema schema ) throws SAXException {
 				try {
 					Verifier v = schema.newVerifier();
-					v.setErrorHandler( new GrammarReaderControllerAdaptor(
-						reader[0],getController()) );
-							
+					v.setErrorHandler(getController());
 					VerifierFilter filter = v.getVerifierFilter();
 					filter.setContentHandler(reader[0]);
 					return (ContentHandler)filter;
@@ -505,11 +504,13 @@ public class GrammarLoader
 				parser.setContentHandler(winner);
 			}
 		});
-		parser.setErrorHandler(new GrammarReaderControllerAdaptor(null,getController()));
+
+		parser.setErrorHandler(getController());
 		if( source instanceof String )	parser.parse( (String)source );
 		else							parser.parse( (InputSource)source );
 		
-		return reader[0].getResultAsGrammar();
+        if(getController().hadError())  return null;
+		else            return reader[0].getResultAsGrammar();
 	}
 	
 	

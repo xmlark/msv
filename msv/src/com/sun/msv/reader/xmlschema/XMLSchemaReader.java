@@ -245,8 +245,8 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 	public final Map parsedFiles = new java.util.HashMap();
 	
 	public final XMLSchemaGrammar getResult() {
-		if(hadError)	return null;
-		else			return grammar;
+		if(controller.hadError())	return null;
+		else			            return grammar;
 	}
 	public Grammar getResultAsGrammar() {
 		return getResult();
@@ -761,7 +761,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 			
 				recursiveSubstBuffer.clear();
 				
-				if(!hadError) {
+				if(!controller.hadError()) {
 					// set the substitution group
 					// this process is skipped if an error is already found.
 					// the above check is added because I'm not confident
@@ -793,7 +793,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 			}
 		}
 		
-		if( hadError )	return;
+		if( controller.hadError() )	return;
 		// undefined expressions may interfare with runaway expression check.
 		
 		// runaway expression check
@@ -804,7 +804,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 		//-----------------------------------------
 		// this process traverses the whole grammar, so runaway check has to
 		// be done before this process.
-		if(!hadError)
+		if(!controller.hadError())
 			grammar.topLevel.visit( new AttributeWildcardComputer(this) );
 		
 	}

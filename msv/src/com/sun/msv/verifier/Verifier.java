@@ -71,6 +71,10 @@ public class Verifier implements
 	/** this map remembers every IDREF token encountered in this document */
 	private final Set idrefs = new java.util.HashSet();
 	
+	/** an object used to store start tag information.
+	 * the same object is reused. */
+	private final StartTagInfo sti = new StartTagInfo(null,null,null,null,null);
+	
 	/**
 	 * checks if the document was valid.
 	 * 
@@ -172,7 +176,7 @@ public class Verifier implements
 		// push context
 		stack = new Context( stack, current, stringCareLevel, panicLevel );
 		
-		StartTagInfo sti = new StartTagInfo(namespaceUri, localName, qName, atts, this );
+		sti.reinit(namespaceUri, localName, qName, atts, this );
 
 		// get Acceptor that will be used to validate the contents of this element.
 		Acceptor next = current.createChildAcceptor(sti,null);
@@ -283,7 +287,9 @@ public class Verifier implements
 			text.append(buf,start,len);
 	}
 	public void ignorableWhitespace( char[] buf, int start, int len ) {
-		if( stringCareLevel!=Acceptor.STRING_IGNORE )
+		if( stringCareLevel!=Acceptor.STRING_IGNORE
+		&&  stringCareLevel!=Acceptor.STRING_PROHIBITED )
+			// white space is allowed even if the current mode is STRING_PROHIBITED.
 			text.append(buf,start,len);
 	}
 	public void setDocumentLocator( Locator loc ) {

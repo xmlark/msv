@@ -120,8 +120,9 @@ public class BatchVerifyTester
 		
 		// each schema will have its own suite.
 		TestSuite suite = new TestSuite();
-		for( int i=0; i<schemas.length; i++ )
-			suite.addTest( new SchemaSuite(this,schemas[i]).suite() );
+		if( schemas!=null )
+			for( int i=0; i<schemas.length; i++ )
+				suite.addTest( new SchemaSuite(this,schemas[i]).suite() );
 		return suite;
 	}
 

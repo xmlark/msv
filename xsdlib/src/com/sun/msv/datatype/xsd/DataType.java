@@ -82,6 +82,17 @@ public interface DataType extends Serializable,Cloneable
 	 * @returns true if this type is an atom type
 	 */
 	boolean isAtomType();
+	
+	/** checks if this type is declared as final for the specified kind of derivation.
+	 * 
+	 * @param derivationType
+	 *		one of pre-defined values
+	 */
+	boolean isFinal( int derivationType );
+	
+	public static final int DERIVATION_BY_RESTRICTION		= 0x01;
+	public static final int DERIVATION_BY_LIST				= 0x02;
+	public static final int DERIVATION_BY_UNION				= 0x04;
 
 	/**
 	 * indicates the specified facet is applicable to this type.

@@ -525,6 +525,8 @@ public abstract class GrammarReader
 		"GrammarReader.Abstract.MoreThanOneChildType";
 	public static final String ERR_MISSING_CHILD_TYPE = // arg:none
 		"GrammarReader.Abstract.MissingChildType";
+	public static final String ERR_ILLEGAL_FINAL_VALUE =
+		"GrammarReader.IllegalFinalValue";
 	public static final String ERR_RUNAWAY_EXPRESSION = // arg:1
 		"GrammarReader.Abstract.RunAwayExpression";
 	public static final String ERR_MISSING_TOPLEVEL	= // arg:0

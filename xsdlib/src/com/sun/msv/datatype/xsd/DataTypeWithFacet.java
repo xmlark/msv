@@ -95,6 +95,11 @@ abstract class DataTypeWithFacet extends DataTypeImpl
 		return concreteType.isAtomType();
 	}
 	
+	final public boolean isFinal( int derivationType )
+	{
+		return baseType.isFinal(derivationType);
+	}
+	
 	final protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context )
 	{
 		// if base type complains, pass it through.

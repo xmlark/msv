@@ -48,6 +48,10 @@ public class BadTypeException extends Exception
 	
 	public static final String ERR_INVALID_ITEMTYPE =
 		"BadTypeException.InvalidItemType";
+	public static final String ERR_INVALID_MEMBER_TYPE =
+		"BadTypeException.InvalidMemberType";
+	public static final String ERR_INVALID_BASE_TYPE =
+		"BadTypeException.InvalidBaseType";
 	public static final String ERR_INVALID_WHITESPACE_VALUE =
 		"WhiteSpaceProcessor.InvalidWhiteSpaceValue";
 	public static final String ERR_PARSE_ERROR = "PatternFacet.ParseError";
@@ -82,5 +86,4 @@ public class BadTypeException extends Exception
 		"BadTypeException.NotApplicableFacet";
 	public static final String ERR_EMPTY_UNION =
 		"BadTypeException.EmptyUnion";
-
 }

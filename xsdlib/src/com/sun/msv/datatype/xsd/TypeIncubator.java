@@ -118,6 +118,9 @@ public class TypeIncubator
 	public DataType derive( String newName )
 		throws BadTypeException
 	{
+		if( baseType.isFinal(DataType.DERIVATION_BY_RESTRICTION) )
+			throw new BadTypeException(BadTypeException.ERR_INVALID_BASE_TYPE, baseType.getName() );
+		
 		// if no facet is specified, no need to create another object.
 		if( isEmpty() )	return baseType;
 		

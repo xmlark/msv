@@ -35,6 +35,11 @@ public abstract class ConcreteType extends DataTypeImpl
 	{// all but ListType are atom types.
 		return true;
 	}
+	
+	public boolean isFinal( int derivationType )
+	{// allow derivation by default.
+		return false;
+	}
 
 	// default implementation for concrete type. somewhat shabby.
 	protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context)

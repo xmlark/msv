@@ -26,8 +26,8 @@ final class ListType extends ConcreteType implements Discrete
 	{
 		super(newTypeName);
 		
-		// derivation by list is not applicable to ListType
-		if(itemType.getConcreteType() instanceof ListType)
+		if(itemType.isFinal( DERIVATION_BY_LIST ))
+			// derivation by list is not applicable
 			throw new BadTypeException( BadTypeException.ERR_INVALID_ITEMTYPE );
 		
 		this.itemType = itemType;
@@ -38,6 +38,13 @@ final class ListType extends ConcreteType implements Discrete
 
 	// list type is not an atom type.
 	public final boolean isAtomType() { return false; }
+
+	public final boolean isFinal( int derivationType )
+	{
+		// cannot derive by list from list.
+		if(derivationType==DERIVATION_BY_LIST)	return true;
+		return false;
+	}
 	
 	public final int isFacetApplicable( String facetName )
 	{

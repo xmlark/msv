@@ -27,6 +27,10 @@ final public class UnionType extends ConcreteType
 		if(memberTypes.length==0)
 			throw new BadTypeException(BadTypeException.ERR_EMPTY_UNION);
 		
+		for( int i=0; i<memberTypes.length; i++ )
+			if( memberTypes[i].isFinal(DERIVATION_BY_UNION) )
+				throw new BadTypeException(BadTypeException.ERR_INVALID_MEMBER_TYPE, memberTypes[i].getName() );
+		
 		this.memberTypes = memberTypes;
 	}
 	

@@ -394,7 +394,7 @@ public class RestrictionChecker {
 		protected abstract void check( NameClassAndExpression exp );
 		
 		public int start() {
-			return areaLen;
+			return expsLen;
 		}
 		
 		public void endLeftBranch( int start ) {

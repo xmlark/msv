@@ -228,6 +228,13 @@ public class TREXGrammarReader extends TREXBaseReader {
 
 
 	
+	public void wrapUp() {
+		
+		// make sure that there is no recurisve patterns.
+		RunAwayExpressionChecker.check(this,grammar);
+		
+		super.wrapUp();
+	}
 	
 	
 	/**

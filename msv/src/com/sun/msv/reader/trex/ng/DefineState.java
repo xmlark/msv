@@ -21,6 +21,42 @@ import org.xml.sax.Locator;
  */
 public class DefineState extends com.sun.msv.reader.trex.DefineState {
 	
+	private RELAXNGReader.RefExpParseInfo prevNamedPattern;
+	private boolean previousDirectRefernce;
+	
+	protected void startSelf() {
+		final RELAXNGReader reader = (RELAXNGReader)this.reader;
+		super.startSelf();
+		
+		// update the currentNamedPattern field.
+		prevNamedPattern = reader.currentNamedPattern;	// push
+		previousDirectRefernce = reader.directRefernce;
+		
+		reader.directRefernce = true;
+		
+		ReferenceExp exp = getReference();
+		if(exp==null)
+			//abort. there was an error in this declaration
+			reader.currentNamedPattern = null;
+		else {
+			reader.currentNamedPattern = reader.getRefExpParseInfo(exp);
+			
+			if(reader.currentNamedPattern.redefinition!=
+				reader.currentNamedPattern.notBeingRedefined )
+				// if this pattern is being redefined,
+				// we must not augument RefParseInfo.refs from this pattern.
+				reader.currentNamedPattern = null;
+		}
+	}
+	
+	protected void endSelf() {
+		final RELAXNGReader reader = (RELAXNGReader)this.reader;
+		reader.currentNamedPattern = prevNamedPattern;	// pop
+		reader.directRefernce = previousDirectRefernce;
+		
+		super.endSelf();
+	}
+	
 	/**
 	 * combines two expressions into one as specified by the combine parameter,
 	 * and returns a new expression.

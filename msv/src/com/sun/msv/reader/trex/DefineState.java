@@ -28,7 +28,6 @@ public abstract class DefineState extends SequenceState {
 			// name attribute is required.
 			reader.reportError( reader.ERR_MISSING_ATTRIBUTE,
 				"ref","name");
-			// recover by returning something that can be interpreted as Pattern
 			return null;
 		}
 		

@@ -27,8 +27,7 @@ public class RefState extends ExpressionWithoutChildState {
 	
 	protected boolean parentRef;
 	
-	protected Expression makeExpression()
-	{
+	protected Expression makeExpression() {
 		final String name = startTag.getCollapsedAttribute("name");
 		
 		if(name==null) {
@@ -52,7 +51,15 @@ public class RefState extends ExpressionWithoutChildState {
 		}
 		
 		ReferenceExp r = grammar.namedPatterns.getOrCreate(name);
-		reader.backwardReference.memorizeLink(r);
+		wrapUp(r);
 		return r;
 	}
+	
+	/**
+	 * Performs the final wrap-up.
+	 */
+	protected void wrapUp( ReferenceExp r ) {
+		reader.backwardReference.memorizeLink(r);
+	}
+
 }

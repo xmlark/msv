@@ -13,6 +13,8 @@ import java.text.MessageFormat;
 import java.util.ResourceBundle;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
+import java.util.Iterator;
 import java.util.Vector;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -33,7 +35,6 @@ import com.sun.msv.reader.*;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.reader.trex.TREXBaseReader;
 import com.sun.msv.reader.trex.RootState;
-import com.sun.msv.reader.trex.RefState;
 import com.sun.msv.reader.trex.NameClassChoiceState;
 import com.sun.msv.reader.trex.DivInGrammarState;
 import com.sun.msv.reader.trex.IncludePatternState;
@@ -137,10 +138,10 @@ public class RELAXNGReader extends TREXBaseReader {
 		return grammar;
 	}
 	
-	/** map from ReferenceExps to RefExpParseInfos. */
+	/** Map from ReferenceExps to RefExpParseInfos. */
 	private final Map refExpParseInfos = new java.util.HashMap();
 	
-	/** gets RefExpParseInfo object for the specified ReferenceExp. */
+	/** Gets RefExpParseInfo object for the specified ReferenceExp. */
 	protected RefExpParseInfo getRefExpParseInfo( ReferenceExp exp ) {
 		RefExpParseInfo r = (RefExpParseInfo)refExpParseInfos.get(exp);
 		if(r==null)
@@ -149,40 +150,91 @@ public class RELAXNGReader extends TREXBaseReader {
 	}
 	
 	/**
+	 * Info about the current ReferenceExp object which is being defined.
+	 * This field is maintained by DefineState.
+	 * <p>
+	 * This field is set to null when there is an error, or the pattern being
+	 * defined is being re-defined.
+	 * 
+	 * <p>
+	 * This is a part of the process of the recursive self reference error detection.
+	 */
+	protected RefExpParseInfo currentNamedPattern = null;
+	
+	/**
+	 * Flag to indicate whether we saw &lt;element> or not. If we don't see
+	 * any &lt;element> between &lt;define>/&lt;start> and &lt;ref>/&lt;parentRef>,
+	 * then that reference will go to <code>currentNamedPattern.refs</code>.
+	 * 
+	 * <p>
+	 * This is a part of the process of the recursive self reference error detection.
+	 */
+	protected boolean directRefernce = true;
+	
+	/**
 	 * information necessary to correctly parse pattern definitions.
 	 */
 	protected static class RefExpParseInfo {
 		/**
-		 * this field is set to true once the head declaration is found.
+		 * This field is set to true once the head declaration is found.
 		 * A head declaration is a define element without the combine attribute.
 		 * It is an error that two head declarations share the same name.
 		 */
 		public boolean haveHead = false;
 		
 		/**
-		 * the combine method which is used to combine this pattern.
+		 * The combine method which is used to combine this pattern.
 		 * this field is set to null if combine attribute is not yet used.
 		 */
-		public String combineMethod;
+		public String combineMethod = null;
 		
 		public static class RedefinitionStatus {}
+		/**
+		 * This named pattern is not being redefined.
+		 * So it will be a part of the grammar.
+		 */
 		public static RedefinitionStatus notBeingRedefined = new RedefinitionStatus();
+		/**
+		 * This named pattern is being redefined. So even if we'll see some
+		 * &lt;define> with this name, it will not be a part of the grammar.
+		 * This state means that we don't yet see the definition of the original.
+		 * We need to issue an error if the pattern is redefined but there is no original
+		 * in the included grammar.
+		 */
 		public static RedefinitionStatus originalNotFoundYet = new RedefinitionStatus();
+		/**
+		 * The same as {@link originalNotFoundYet}, but we saw the original definition.
+		 */
 		public static RedefinitionStatus originalFound = new RedefinitionStatus();
 		
 		/**
-		 * current redefinition status.
+		 * Current redefinition status.
 		 */
 		public RedefinitionStatus redefinition = notBeingRedefined;
 		
 		/**
-		 * copy the contents of rhs into this object.
+		 * Copies the contents of rhs into this object.
 		 */
 		public void set( RefExpParseInfo rhs ) {
 			this.haveHead = rhs.haveHead;
 			this.combineMethod = rhs.combineMethod;
 			this.redefinition = rhs.redefinition;
 		}
+		
+		/**
+		 * ReferenceExps which are referenced from this pattern directly
+		 * (without having ElementExp in between.)
+		 * 
+		 * <p>
+		 * This is used to detect recursive self reference errors.
+		 */
+		public final Vector directRefs = new Vector();
+		
+		/**
+		 * ReferenceExps which are referenced from this pattern indirectly
+		 * (with ElementExp in between.)
+		 */
+		public final Vector indirectRefs = new Vector();
 	}
 	
 	/** Namespace URI of RELAX NG */
@@ -213,19 +265,10 @@ public class RELAXNGReader extends TREXBaseReader {
 		public State externalRef	( State parent, StartTagInfo tag ) { return new IncludePatternState(); }
 		public State divInGrammar	( State parent, StartTagInfo tag ) { return new DivInGrammarState(); }
 		public State dataExcept		( State parent, StartTagInfo tag ) { return new ChoiceState(); }
-		
-		public State ref		( State parent, StartTagInfo tag ) {
-			if( tag.containsAttribute("parent") ) {
-				// this might be a TREX user...
-				// provide an error message.
-				parent.reader.reportError( ERR_DISALLOWED_ATTRIBUTE, "ref", "parent");
-				return new TerminalState(Expression.nullSet);	// recovery
-			}
-			return new RefState(false);	// always local reference
-		}
-		public State parentRef	( State parent, StartTagInfo tag ) {
-			return new RefState(true);	// parent reference
-		}
+		public State element		( State parent, StartTagInfo tag ) { return new ElementState(); }
+		public State grammar		( State parent, StartTagInfo tag ) { return new GrammarState(); }
+		public State ref		( State parent, StartTagInfo tag )		{ return new RefState(false); }
+		public State parentRef	( State parent, StartTagInfo tag )		{ return new RefState(true); }
 
 		/**
 		 * gets DataTypeLibrary object that is specified by the namespace URI.
@@ -324,8 +367,71 @@ public class RELAXNGReader extends TREXBaseReader {
 	
 	
 	
+	
+	private static class AbortException extends Exception {}
+	
+	private void checkRunawayExpression(
+		ReferenceExp node, Stack items, Set visitedExps ) throws AbortException {
+																					
+		if( !visitedExps.add(node) )
+			return;		// this ReferenceExp has already been processed.
+		items.push(node);
+		
+		// test direct references
+		Iterator itr = getRefExpParseInfo(node).directRefs.iterator();
+		while( itr.hasNext() ) {
+			ReferenceExp child = (ReferenceExp)itr.next();
+			
+			int idx = items.lastIndexOf(child);
+			if(idx!=-1) {
+				// find a cycle.
+				
+				String s = "";
+				Vector locs = new Vector();
+			
+				for( ; idx<items.size(); idx++ ) {
+					ReferenceExp e = (ReferenceExp)items.get(idx);
+					if( e.name==null )	continue;	// skip anonymous ref.
+					
+					if( s.length()!=0 )	 s += " > ";
+					s += e.name;
+					
+					Locator loc = getDeclaredLocationOf(e);
+					if(loc==null)	continue;
+					locs.add(loc);
+				}
+				
+				s += " > " + child.name;
+				
+				reportError(
+					(Locator[])locs.toArray(new Locator[locs.size()]),
+					ERR_RUNAWAY_EXPRESSION, new Object[]{s} );
+				
+				throw new AbortException();
+			}
+			
+			checkRunawayExpression( child, items, visitedExps );
+		}
+
+		// test indirect references
+		Stack empty = new Stack();
+		itr = getRefExpParseInfo(node).indirectRefs.iterator();
+		while( itr.hasNext() )
+			checkRunawayExpression( (ReferenceExp)itr.next(), empty, visitedExps );
+		
+		items.pop();
+	}
+	
+	
 	public void wrapUp() {
+		
+		// checks the runaway expression
+		try {
+			checkRunawayExpression( grammar, new Stack(), new java.util.HashSet() );
+		} catch( AbortException e ) {;}
+		
 		super.wrapUp();
+		
 		if(!hadError) {
 			// check RELAX NG contextual restrictions
 			RestrictionChecker.check(this);

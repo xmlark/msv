@@ -154,11 +154,11 @@ public abstract class TREXBaseReader extends GrammarReader {
 	/**
 	 * performs final wrap-up.
 	 * This method is called from the RootState object, after the parsing is completed.
+	 * 
+	 * <p>
+	 * This method has to be called after the run-away expression check is done.
 	 */
 	public void wrapUp() {
-		
-		// make sure that there is no recurisve patterns.
-		RunAwayExpressionChecker.check(this,grammar);
 		
 		if( !hadError )
 			// make sure that there is no sequenced string.

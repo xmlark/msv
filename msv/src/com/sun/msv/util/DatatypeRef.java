@@ -10,11 +10,10 @@
 package com.sun.msv.util;
 
 /**
- * reference to {@link com.sun.msv.datatype.DataType}
+ * reference to {@link org.relaxng.datatype.DataType}
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class DataTypeRef
-{
-	public org.relaxng.datatype.DataType type = null;
+public class DataTypeRef {
+	public org.relaxng.datatype.DataType[] types = null;
 }

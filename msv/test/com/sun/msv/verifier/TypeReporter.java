@@ -13,6 +13,8 @@ import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.relax.ElementRule;
 import com.sun.msv.grammar.trex.typed.TypedElementPattern;
+import com.sun.msv.grammar.trex.ElementPattern;
+import com.sun.msv.grammar.util.ExpressionPrinter;
 import com.sun.msv.reader.trex.typed.TypedTREXGrammarInterceptor;
 import com.sun.msv.reader.trex.classic.TREXGrammarReader;
 import com.sun.msv.reader.util.GrammarLoader;
@@ -23,7 +25,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.XMLFilter;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
-
+import org.relaxng.datatype.DataType;
 
 /**
  * dumps RELAX label assigned to each element.
@@ -102,8 +104,8 @@ public class TypeReporter extends DefaultHandler
 		
 		Object o = filter.getVerifier().getCurrentElementType();
 		
-		if( o instanceof ElementRule )
-		{// for RELAX
+		if( o instanceof ElementRule ) {
+			// for RELAX
 			ElementRule er = (ElementRule)o;
 			if( er.getParent()==null )
 				System.out.println("##inline");
@@ -111,9 +113,14 @@ public class TypeReporter extends DefaultHandler
 				System.out.println(er.getParent().name);
 			return;
 		}
-		if( o instanceof TypedElementPattern )
-		{// for TREX
+		if( o instanceof TypedElementPattern ) {
+			// for typed TREX
 			System.out.println( ((TypedElementPattern)o).label );
+			return;
+		}
+		if( o instanceof ElementPattern ) {
+			System.out.println( ExpressionPrinter.printContentModel(
+				((ElementPattern)o).contentModel ) ); 
 			return;
 		}
 		
@@ -122,10 +129,14 @@ public class TypeReporter extends DefaultHandler
 	
 	public void endElement( String namespaceUri, String localName, String qName )
 	{
-		if( filter.getVerifier().getLastCharacterType()!=null )
-		{
+		DataType[] types = filter.getVerifier().getLastCharacterType();
+		if( types!=null ) {
+			String r="";
+			for( int i=0; i<types.length; i++ )
+				r+=types[i].displayName()+" ";
+			
 			printIndent();
-			System.out.println("-- "+filter.getVerifier().getLastCharacterType().displayName()+" --");
+			System.out.println("-- "+r+" --");
 		}
 		indent--;
 		printIndent();

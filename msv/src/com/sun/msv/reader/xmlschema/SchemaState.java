@@ -11,6 +11,8 @@ public class SchemaState extends SchemaIncludedState {
 	private XMLSchemaSchema old;
 	
 	protected void onTargetNamespaceResolved( String targetNs ) {
+		super.onTargetNamespaceResolved(targetNs);
+		
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		
 		// sets new XMLSchemaGrammar object.

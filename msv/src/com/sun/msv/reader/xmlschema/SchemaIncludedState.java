@@ -1,5 +1,10 @@
 package com.sun.tranquilo.reader.xmlschema;
 
+import java.util.Set;
+import com.sun.tranquilo.reader.State;
+import com.sun.tranquilo.reader.IgnoreState;
+import com.sun.tranquilo.util.StartTagInfo;
+
 public class SchemaIncludedState extends GlobalDeclState {
 	
 	/**
@@ -20,6 +25,18 @@ public class SchemaIncludedState extends GlobalDeclState {
 	
 	private String previousElementFormDefault;
 	private String previousAttributeFormDefault;
+	
+	/**
+	 * this flag is set to true to indicate all the contents of this element
+	 * will be skipped (due to the double inclusion).
+	 */
+	private boolean ignoreContents = false;
+	
+	protected State createChildState( StartTagInfo tag ) {
+		if( ignoreContents	)		return new IgnoreState();
+		else						return super.createChildState(tag);
+	}
+
 	
 	protected void startSelf() {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
@@ -42,7 +59,18 @@ public class SchemaIncludedState extends GlobalDeclState {
 		}
 
 		onTargetNamespaceResolved(targetNs);
+
+		// check double inclusion.
+		Set s = (Set)reader.parsedFiles.get(targetNs);
+		if(s==null)
+			reader.parsedFiles.put( targetNs, s = new java.util.HashSet() );
 		
+		if( s.contains(this.location.getSystemId()) )
+			// this file is already included. So skip processing it.
+			ignoreContents = true;
+		else
+			s.add(this.location.getSystemId());
+
 		// process other attributes.
 		previousElementFormDefault = reader.elementFormDefault;
 		previousAttributeFormDefault = reader.attributeFormDefault;
@@ -70,7 +98,8 @@ public class SchemaIncludedState extends GlobalDeclState {
 	}
 
 	/** does something useful with determined target namespace. */
-	protected void onTargetNamespaceResolved( String targetNs ) {}
+	protected void onTargetNamespaceResolved( String targetNs ) {
+	}
 	
 	protected void endSelf() {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;

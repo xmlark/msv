@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Iterator;
 import java.text.MessageFormat;
 import org.xml.sax.Locator;
+import org.xml.sax.InputSource;
 
 public class XMLSchemaReader extends GrammarReader {
 	
@@ -95,7 +96,19 @@ public class XMLSchemaReader extends GrammarReader {
 	/** grammar object which is being under construction. */
 	protected final XMLSchemaGrammar grammar;
 	protected XMLSchemaSchema currentSchema;
-
+	
+	/**
+	 * tables that store all SystemIds that we've read.
+	 * 
+	 * map from target namespace URI to set of system ids.
+	 * This field is used to prevent double inclusion.
+	 * 
+	 * Strictly speaking, comparision based on system id is not enough.
+	 * The spec calls for <i>"the necessity of establishing identity
+	 * component by component"</i> (section 4.2.1, last note).
+	 */
+	public final Map parsedFiles = new java.util.HashMap();
+	
 	public final XMLSchemaGrammar getResult() {
 		if(hadError)	return null;
 		else			return grammar;
@@ -133,8 +146,8 @@ public class XMLSchemaReader extends GrammarReader {
 		
 		protected State simpleType			(State parent,StartTagInfo tag)	{ return new SimpleTypeState(); }
 		protected State all					(State parent,StartTagInfo tag)	{ return new AllState(); }
-		protected State choice				(State parent,StartTagInfo tag)	{ return new ChoiceState(); }
-		protected State sequence			(State parent,StartTagInfo tag)	{ return new SequenceState(); }
+		protected State choice				(State parent,StartTagInfo tag)	{ return new ChoiceState(true); }
+		protected State sequence			(State parent,StartTagInfo tag)	{ return new SequenceState(true); }
 		protected State group				(State parent,StartTagInfo tag)	{ return new GroupState(); }
 		protected State complexTypeDecl		(State parent,StartTagInfo tag)	{ return new ComplexTypeDeclState(); }
 		protected State attribute			(State parent,StartTagInfo tag)	{ return new AttributeState(); }
@@ -443,6 +456,7 @@ public class XMLSchemaReader extends GrammarReader {
 			// parse specified file
 			switchSource(schemaLocation, newRootState );
 	}
+
 	
 	
 	/**

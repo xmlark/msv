@@ -8,10 +8,10 @@ import com.sun.tranquilo.grammar.relax.*;
 import com.sun.tranquilo.grammar.*;
 import com.sun.tranquilo.reader.trex.TREXGrammarReader;
 import com.sun.tranquilo.reader.relax.RELAXReader;
-import org.apache.xerces.parsers.SAXParser;
 import com.sun.tranquilo.verifier.*;
 import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
 import com.sun.tranquilo.verifier.util.VerificationErrorHandlerImpl;
+import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.*;
 import java.util.*;
 
@@ -45,10 +45,10 @@ public class Driver
 			if( args[i].equalsIgnoreCase("-debug") )			Debug.debug = true;
 			else
 			if( args[i].equalsIgnoreCase("-xerces") )
-				factory = new org.apache.xerces.jaxp.SAXParserFactoryImpl();
+				factory = (SAXParserFactory)Class.forName("org.apache.xerces.jaxp.SAXParserFactoryImpl").newInstance();
 			else
 			if( args[i].equalsIgnoreCase("-crimson") )
-				factory = new org.apache.crimson.jaxp.SAXParserFactoryImpl();
+				factory = (SAXParserFactory)Class.forName("org.apache.crimson.jaxp.SAXParserFactoryImpl").newInstance();
 			else
 			if( args[i].equalsIgnoreCase("-verbose") )
 				verbose = true;

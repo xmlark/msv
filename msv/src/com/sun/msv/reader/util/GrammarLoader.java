@@ -429,6 +429,7 @@ public class GrammarLoader
                 try {
                     Verifier v = schema.newVerifier();
                     v.setErrorHandler(getController());
+                    v.setEntityResolver(getController());
                     VerifierFilter filter = v.getVerifierFilter();
                     filter.setContentHandler(reader[0]);
                     return (ContentHandler)filter;
@@ -508,6 +509,7 @@ public class GrammarLoader
         });
 
         parser.setErrorHandler(getController());
+        parser.setEntityResolver(getController());
         if( source instanceof String )    parser.parse( (String)source );
         else                            parser.parse( (InputSource)source );
         

@@ -97,9 +97,9 @@ public abstract class PathMatcher extends Matcher {
 	protected void startElement( String namespaceURI, String localName, Attributes attributes )
 													throws SAXException {
 		if(currentDepth==activeSteps.length-1) {
-			// expand buffer
+			// if the buffer is used up, expand buffer
 			boolean[][] newBuf = new boolean[currentDepth*2][];
-			System.arraycopy( activeSteps, 0, newBuf, 0, currentDepth );
+			System.arraycopy( activeSteps, 0, newBuf, 0, activeSteps.length );
 			activeSteps = newBuf;
 		}
 		currentDepth++;

@@ -22,7 +22,7 @@ import org.relaxng.datatype.helpers.StreamingValidatorImpl;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TypedString implements DatabindableDatatype {
+public class TypedString implements DatabindableDatatype, java.io.Serializable {
 	
 	/** this type only matches this string */
 	public final String value;

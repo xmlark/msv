@@ -555,21 +555,22 @@ LLparser:
 		// since we are trying to expand the non-terminal which is
 		// currently at the top of the stack,
 		// the non-terminal of the rule must be equal to the stack top.
-		assert( rule.left==stackTop.symbol );
+//		assert( rule.left==stackTop.symbol );
+		Object left = stackTop.symbol;
 		
 		// compute the action when this rule is "reduced".
 		// (when information are propagated from right to left).
 		// this object will receive the value of the right hand side
 		Receiver receiver;
 		
-		if( rule.left instanceof NameClassAndExpression ) {
+		if( left instanceof NameClassAndExpression ) {
 			// LLAttributeExp and LLElementExp are pseudo non-terminals
 			// and therefore don't have an action.
 			receiver = stackTop.receiver;
 		} else {
 			// other true non-terminals may have their own actions.
-			assert( isNonTerminal(rule.left) );
-			receiver = ((NonTerminalSymbol)rule.left).createReceiver(stackTop.receiver);
+			assert( isNonTerminal(left) );
+			receiver = ((NonTerminalSymbol)left).createReceiver(stackTop.receiver);
 		}
 		
 		if(debug!=null) {
@@ -589,7 +590,7 @@ LLparser:
 				
 		popStack();
 		
-		if(!(rule.left instanceof IntermediateSymbol)) {
+		if(!(left instanceof IntermediateSymbol)) {
 			// We shouldn't insert Start/EndNonTerminalAction
 			// when we are expanding intermediate rules.
 			addAction( new StartNonTerminalAction(receiver) );

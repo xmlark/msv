@@ -81,7 +81,17 @@ public class TRELAXNGReader extends RELAXNGReader implements TahitiGrammarReader
 				return eexp;
 */
 				// to make marshalling easy, ClassItem is generated above the ElementExp
-				ClassItem t = annGrammar.createClassItem( decideName(state,exp,"class"), exp );
+				
+				// calculate the unique name to avoid name conflicts.
+				String baseName = decideName(state,exp,"class");
+				if( annGrammar.classes.containsKey(baseName) ) {
+					int cnt = 2;
+					while( annGrammar.classes.containsKey(baseName+cnt) )
+						cnt++;
+					baseName += cnt;
+				}
+				
+				ClassItem t = annGrammar.createClassItem( baseName, exp );
 				t.isTemporary = true;
 				return t;
 			} else {

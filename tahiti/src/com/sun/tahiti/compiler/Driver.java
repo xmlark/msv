@@ -21,6 +21,7 @@ import javax.xml.transform.stream.StreamResult;
 import com.sun.tahiti.compiler.Controller;
 import com.sun.tahiti.compiler.ControllerImpl;
 import com.sun.tahiti.compiler.generator.ModelGenerator;
+import com.sun.tahiti.compiler.ll.Rules;
 import com.sun.tahiti.compiler.ll.RuleSerializer;
 import com.sun.tahiti.compiler.ll.RuleGenerator;
 import com.sun.tahiti.compiler.sm.MarshallerSerializer;
@@ -159,7 +160,7 @@ public class Driver
 			grammarReceiver = new com.sun.msv.writer.ContentHandlerAdaptor(xsltEngine);
 		}
 
-		Map rules = RuleGenerator.create(grammar);
+		Rules rules = RuleGenerator.create(grammar);
 		
 		Symbolizer symbolizer =
 			RuleSerializer.serialize( grammar, rules, grammarReceiver );

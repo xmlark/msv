@@ -65,6 +65,14 @@ class TemporaryClassItemRemover {
 			if( !((ClassItem)itr.next()).isTemporary )
 				itr.remove();
 		
+		if(debug!=null) {
+			itr = cs.iterator();
+			while( itr.hasNext() ) {
+				ClassItem ci = (ClassItem)itr.next();
+				debug.println( " "+ci.getTypeName()+" will be removed" );
+			}
+		}
+		
 		// run the second pass and remove unnecessary class items.
 		grammar.topLevel = grammar.topLevel.visit(
 			new Pass2( grammar.getPool(), cs ) );
@@ -238,6 +246,9 @@ class TemporaryClassItemRemover {
 	
 		public Expression onOther( OtherExp exp ) {
 			if( targets.contains(exp) ) {
+				if(debug!=null)
+					debug.println( " "+((ClassItem)exp).getTypeName()+": found and removed");
+				
 				// this temporary class item is unnecessary. remove it.
 				// but don't forget to recurse its descendants.
 				return exp.exp.visit(this);

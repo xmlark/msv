@@ -66,6 +66,8 @@ class XMLGenerator
 				
 		outHandler.setDocumentLocator( new LocatorImpl() );
 		outHandler.startDocument();
+		outHandler.processingInstruction("xml-stylesheet",
+			"type='text/xsl' href='classFileDebug.xsl'");
 		writeClass( type, out );
 		outHandler.endDocument();
 	}
@@ -85,20 +87,37 @@ class XMLGenerator
 		
 		writeType( type, out );
 
-/*		marshaller is now placed in a different file
-		if( type instanceof ClassItem ) {
-			// put a marshaller.
-			try {
-				byte[] marshaller = MarshallerGenerator.write( (ClassItem)type, controller );
-				if( marshaller!=null ) {
-					
-				}
-			} catch( SAXException e ) {
-				controller.error( null, "SAX exception", e );
-			}
-		}
-*/				
+		
+		// output miscellaneous information which may be useful.
+		out.start("info");
+		out.start("derivedTypes");
+		writeDerivedTypes("class",type,grammar.iterateClasses(),out);
+		writeDerivedTypes("interface",type,grammar.iterateInterfaces(),out);
+		out.end("derivedTypes");
+		out.end("info");
+		
+		
 		out.end("class");
+	}
+
+	/** writes derived types of the specified type. */
+	private void writeDerivedTypes( String tagName, TypeItem current, Iterator itr, XMLWriter out ) {
+		while( itr.hasNext() ) {
+			TypeItem type = (TypeItem)itr.next();
+			
+			boolean isDerived = false;
+			
+			if(type.getSuperType()==current)
+				isDerived = true;
+			
+			Type[] itfs = type.getInterfaces();
+			for( int i=0; i<itfs.length; i++ )
+				if( itfs[i]==current )
+					isDerived = true;
+			
+			if(isDerived)
+				out.element(tagName, new String[]{"name",type.getTypeName()});
+		}
 	}
 	
 	/**

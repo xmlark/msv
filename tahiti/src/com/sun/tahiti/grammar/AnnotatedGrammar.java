@@ -78,6 +78,9 @@ public final class AnnotatedGrammar implements Grammar
 	
 	/** creates a new ClassItem. */
 	public ClassItem createClassItem( String typeFullName, Expression body ) {
+		// type name must be unique.
+		assert(!classes.containsKey(typeFullName));
+		
 		ClassItem o = new ClassItem(typeFullName,body);
 		classes.put(typeFullName,o);
 		return o;
@@ -85,6 +88,9 @@ public final class AnnotatedGrammar implements Grammar
 	
 	/** creates a new InterfaceItem. */
 	public InterfaceItem createInterfaceItem( String typeFullName, Expression body ) {
+		// type name must be unique.
+		assert(!interfaces.containsKey(typeFullName));
+		
 		InterfaceItem o = new InterfaceItem(typeFullName,body);
 		interfaces.put(typeFullName,o);
 		return o;

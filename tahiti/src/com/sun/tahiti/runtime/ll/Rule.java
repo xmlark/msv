@@ -18,11 +18,6 @@ package com.sun.tahiti.runtime.ll;
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class Rule {
-	/** 
-	 * The non-terminal symbol that forms the left hand side of the rule.
-	 * 'A' in the above example.
-	 */
-	public final Object			left;
 	
 	/**
 	 * The symbol sequence that forms the right hand side of the rule.
@@ -60,13 +55,13 @@ public class Rule {
 	public final Rule[]			selfArray;
 	
 	/** constructor for a normal rule. */
-	public Rule( Object left, Object[] right ) {
-		this(left,right,null);
+	public Rule( Object[] right ) {
+		this(right,null);
 	}
 	
 	/** constructor for an interleave rule. */
-	public Rule( Object left, Object[] right, Filter[] filters ) {
-		this.left=left; this.right=right;
+	public Rule( Object[] right, Filter[] filters ) {
+		this.right=right;
 		this.filters = filters;
 		this.isInterleave = (filters!=null);
 		selfArray = new Rule[]{this};

@@ -108,7 +108,7 @@ public class ParserTable
 				
 				for( int i=0; i<rules.length; i++ ) {
 					writer.element("rule",
-						new String[]{"ref",symbolizer.getId(rules[i])});
+						new String[]{"no",symbolizer.getId(rules[i])});
 				}
 					
 				if( term!=Expression.epsilon )

@@ -12,8 +12,8 @@ package com.sun.tahiti.grammar;
 import com.sun.msv.grammar.OtherExp;
 
 /**
- * the base class of all special ReferenceExps
- * that are used to annotate data-binding information
+ * the base class of all special OtherExps
+ * that are used to annotate tahiti data-binding information
  * to AGM.
  * 
  * @author

@@ -142,7 +142,9 @@ public class ClassSerializer
 		
 		out.println("import com.sun.tahiti.runtime.ll.NamedSymbol;");
 		out.println("import com.sun.tahiti.runtime.sm.Marshaller;");
-		out.println(format("import {0};",grammarClassName));
+		// if the grammar class is placed under some package
+		if(!grammarClassName.equals(grammarShortClassName))
+			out.println(format("import {0};",grammarClassName));
 		out.println();
 		
 		

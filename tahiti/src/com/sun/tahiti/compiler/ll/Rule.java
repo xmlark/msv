@@ -18,12 +18,12 @@ import java.util.Set;
 /**
  * a production rule of context-free grammar (CFG).
  * 
+ * Rule object is unified.
+ * 
  * @author
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class Rule {
-	
-	public Expression		left;
+public final class Rule {
 	
 	/**
 	 * right-hand side of the rules.
@@ -35,8 +35,49 @@ public class Rule {
 	
 	public boolean			isInterleave;
 	
-	public Rule( Expression left, Expression[] right ) {
-		this(left,right,false);
+	public Rule( Expression[] right, boolean isInterleave ) {
+		this.right = right;
+		this.isInterleave = isInterleave;
+		
+		assert(right!=null);
+		for( int i=0; i<right.length; i++ )
+			assert( right[i]!=null );
+	}
+	
+	/**
+	 * creates a deep copy.
+	 */
+	public Rule copy() {
+		Expression[] r = new Expression[right.length];
+		System.arraycopy(right,0,r,0,right.length);
+		return new Rule(r,isInterleave);
+	}
+	
+	/**
+	 * two Rules are considered equal if their contents are exactly the same.
+	 */
+	public boolean equals( Object o ) {
+		if(!(o instanceof Rule))		return false;
+		Rule rhs = (Rule)o;
+		
+		// compare the contents of the array
+		if( this.right.length!=rhs.right.length )	return false;
+		for( int i=0; i<this.right.length; i++ )
+			if( this.right[i]!=rhs.right[i] )
+				return false;
+		
+		// compare the interleave property
+		if( this.isInterleave!=rhs.isInterleave )
+			return false;
+		
+		return true;
+	}
+	
+	public int hashCode() {
+		int hashCode = 0;
+		for( int i=0; i<right.length; i++ )
+			hashCode ^= right[i].hashCode();
+		return hashCode;
 	}
 	
 	/**
@@ -52,63 +93,49 @@ public class Rule {
 		return true;
 	}
 	
-	public Rule( Expression left, Expression[] right, boolean isInterleave ) {
-		this.left = left;
-		this.right = right;
-		this.isInterleave = isInterleave;
-		
-		assert(left!=null);
-		assert(right!=null);
-		for( int i=0; i<right.length; i++ )
-			assert( right[i]!=null );
-	}
-	
-	/** creates a deep-copy of this object. */
-	public Rule copy() {
-		Expression[] e = new Expression[right.length];
-		System.arraycopy( right, 0, e, 0, right.length );
-		return new Rule(left,e,isInterleave);
-	}
-	
 	/**
-	 * replaces the idx-th symbol of the right field by the definition
-	 * of the specified rule.
+	 * computes a new rule object by replacing the idx-th symbol of
+	 * the right field by the definition of the specified rule.
 	 * 
 	 * This method checks the interleaving property of two rules and
-	 * returns false if such a replacement is impossible.
+	 * returns null if such a replacement is impossible.
 	 */
 	public boolean replaceRight( int idx, Rule replace ) {
+		
+		boolean interleave;
 		
 		// if the length of the right hand side is just 1,
 		// (i.e., A -> B), then we can change the interleaveness of the rule.
 		if(replace.right.length==1)
-			replace.isInterleave = this.isInterleave;
+			interleave = this.isInterleave;
+		else
 		if(this.right.length==1)
-			this.isInterleave = replace.isInterleave;
-				
-		// if one is an interleaving rule and the other is a normal rule,
-		// then we can't rewrite rules.
-		if( replace.isInterleave==this.isInterleave ) {
-			
-			int rlen = replace.right.length;
-			if(rlen==1 && replace.right[0]==Expression.epsilon)
-				rlen=0;	// coerce epsilon
-			
-			Expression[] seq = new Expression[right.length+rlen-1];
-			
-			if(seq.length==0)
-				seq = new Expression[]{Expression.epsilon};
-			else {
-				System.arraycopy( right, 0, seq, 0, idx );
-				System.arraycopy( replace.right, 0, seq, idx, rlen );
-				System.arraycopy( right, idx+1, seq, idx+rlen, right.length-(idx+1) );
-			}
-			
-			right = seq;
-			return true;
-		}
+			interleave = replace.isInterleave;
+		else
+		if(this.isInterleave!=replace.isInterleave)
+			// if one is an interleaving rule and the other is a normal rule,
+			// then we can't rewrite rules.
+			return false;
+		else
+			interleave = this.isInterleave;
 		
-		return false;
+		int rlen = replace.right.length;
+		if(rlen==1 && replace.right[0]==Expression.epsilon)
+			rlen=0;	// coerce epsilon
+			
+		Expression[] seq = new Expression[right.length+rlen-1];
+			
+		if(seq.length==0)
+			seq = new Expression[]{Expression.epsilon};
+		else {
+			System.arraycopy( right, 0, seq, 0, idx );
+			System.arraycopy( replace.right, 0, seq, idx, rlen );
+			System.arraycopy( right, idx+1, seq, idx+rlen, right.length-(idx+1) );
+		}
+			
+		this.right = seq;
+		this.isInterleave = interleave;
+		return true;
 	}
 	
 	/**
@@ -117,7 +144,6 @@ public class Rule {
 	 */
 	public String toString( Symbolizer symbolizr ) {
 		StringBuffer buf = new StringBuffer();
-		buf.append( symbolizr.getId(left) );
 		buf.append( " --> ");
 		if(isInterleave)
 			buf.append("(interleave) ");
@@ -135,12 +161,10 @@ public class Rule {
 		writer.start("rule",
 			new String[]{
 				"interleave",isInterleave?"true":"false",
-				"id",symbolizer.getId(this)
+				"no",symbolizer.getId(this)
 			});
 		
 		// TODO: check the disjointness of the interleave.
-		
-		writer.element("left",new String[]{"symbolRef",symbolizer.getId(left)});
 		
 		writer.start("right");
 		for( int i=0; i<right.length; i++ )

@@ -26,67 +26,39 @@ public class LLTableCalculator
 	// private use only. call the calc method.
 	private LLTableCalculator() {}
 	
-	// actual type: non-terminal -> Rule[]
-	private final Map rules = new java.util.HashMap();
+	private Rules rules;
 
 	// actual type:  Non-terminal -> ( terminal -> set(Rule) )
 	final ParserTable table = new ParserTable();
 	
 	/**
 	 * @param allRules
-	 *		all rules in this grammar (actual type:  non-terminal -> Rule[] )
+	 *		all rules in this grammar.
 	 * @param startSymbol
 	 *		ElementExp or AttributeExp which is used as the start symbol.
 	 */
-	public static ParserTable calc( Expression startSymbol, Map allRules, ExpressionPool pool, Symbolizer symbolizer ) {
+	public static ParserTable calc( Expression startSymbol, Rules allRules, ExpressionPool pool, Symbolizer symbolizer ) {
 		return new LLTableCalculator()._calc(startSymbol,allRules,pool,symbolizer);
 	}
 	
-	private ParserTable _calc( Expression startSymbol, Map allRules, final ExpressionPool pool, Symbolizer symbolizer ) {
+	private ParserTable _calc( Expression startSymbol, Rules allRules, final ExpressionPool pool, Symbolizer symbolizer ) {
 	/*
 	Step.1
 	======	
 		compute all rules reachable from the current start symbol,
 		and store them into the "rules" field.
 	*/
-		{
-			Set workQueue = new java.util.HashSet();
-			workQueue.add(startSymbol);
-			while(!workQueue.isEmpty()) {
-				// get the first one in the queue.
-				Expression symbol = (Expression)workQueue.iterator().next();
-				workQueue.remove(symbol);
-				
-				Rule[] r = (Rule[])allRules.get(symbol);
-				assert(r!=null);
-				
-				rules.put(symbol,r);
-				
-				for( int i=0; i<r.length; i++ ) {
-					for( int j=0; j<r[i].right.length; j++ ) {
-						Expression e = r[i].right[j];
-						if(!Util.isTerminalSymbol(e)
-						&& !rules.containsKey(e)
-						&& !(e instanceof NameClassAndExpression)) {
-							// recursively add rules reachable from this rule
-							// but do not recurse into ElementExp/AttributeExp.
-							workQueue.add(e);
-							assert( e!=null );
-						}
-					}
-				}
-			}
-		}
+		rules = allRules.removeUnreachableRules(startSymbol,false);
 		
 	/*
 	Step.3
 	======	
 		compute ParserTable[A,a] and store them into the "parserTable" field.
 	*/
-		// for each rule...
-		for( Iterator itr=rules.keySet().iterator(); itr.hasNext(); ) {
+		// for each "X->rule"...
+		for( Iterator itr=rules.iterateKeys(); itr.hasNext(); ) {
 			final Expression nonTerminal = (Expression)itr.next();
-			Rule[] rs = (Rule[])rules.get(nonTerminal);
+			Rule[] rs = rules.getAll(nonTerminal);
 			
 			if( rs.length==1 )  {
 				// if there is only one rule to expand, the only possible action is

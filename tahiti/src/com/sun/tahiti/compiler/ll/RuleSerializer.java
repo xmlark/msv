@@ -51,7 +51,7 @@ public class RuleSerializer implements Symbolizer {
 	 * @return
 	 *		return a symbolizer that is necessary to serialize class definitions.
 	 */
-	public static Symbolizer serialize( AnnotatedGrammar grammar, Map rules, DocumentHandler outHandler ) throws SAXException {
+	public static Symbolizer serialize( AnnotatedGrammar grammar, Rules rules, DocumentHandler outHandler ) throws SAXException {
 		RuleSerializer gen = new RuleSerializer();
 		gen._serialize( grammar, rules, outHandler );
 		return gen;
@@ -73,7 +73,7 @@ public class RuleSerializer implements Symbolizer {
 		return s;
 	}
 	
-	private void _serialize( AnnotatedGrammar grammar, Map rules, DocumentHandler outHandler ) throws SAXException {
+	private void _serialize( AnnotatedGrammar grammar, Rules rules, DocumentHandler outHandler ) throws SAXException {
 		
 		// add pre-defined special symbols.
 		allNames.put( Expression.epsilon, "epsilon" );
@@ -211,7 +211,7 @@ public class RuleSerializer implements Symbolizer {
 			
 			{// generate intermediate symbols.
 				int cnt=1;
-				for( Iterator itr = rules.keySet().iterator(); itr.hasNext(); ) {
+				for( Iterator itr = rules.iterateKeys(); itr.hasNext(); ) {
 					Expression symbol = (Expression)itr.next();
 					if(!allNames.containsKey(symbol)) {
 						out.element( "intermediateSymbol", new String[]{"id","T"+cnt});
@@ -223,22 +223,36 @@ public class RuleSerializer implements Symbolizer {
 			
 			{// write all rules
 				int rcounter = 0;
-				Iterator itr = rules.keySet().iterator();
+				Iterator itr = rules.iterateKeys();
 				while(itr.hasNext()) {
 					Expression nonTerminal = (Expression)itr.next();
-					out.start("rules",
-						new String[]{"nonTerminal",getId(nonTerminal)});
+					Rule[] rs = rules.getAll(nonTerminal);
 					
-					Rule[] rs = (Rule[])rules.get(nonTerminal);
 					for( int j=0; j<rs.length; j++ ) {
-						// name this rule.
-						allNames.put( rs[j], "r"+(rcounter++) );
-						// write this rule
-						rs[j].write(out,this);
+						if(allNames.get(rs[j])==null) {
+							// name this rule.
+							allNames.put( rs[j], Integer.toString(rcounter++) );
+							// write this rule
+							rs[j].write(out,this);
+						}
 					}
-					
-					out.end("rules");
 				}
+			}
+			
+			{// write non-term -> rule relationship
+				out.start("rulesList");
+				Iterator itr = rules.iterateKeys();
+				while(itr.hasNext()) {
+					Expression symbol = (Expression)itr.next();
+					out.start("nonTerminal",
+						new String[]{"id",getId(symbol)});
+					Rule[] rs = rules.getAll(symbol);
+					for( int i=0; i<rs.length; i++ )
+						out.element("rule",new String[]{"no",getId(rs[i])});
+					
+					out.end("nonTerminal");
+				}
+				out.end("rulesList");
 			}
 	
 		// generate a source code that constructs the grammar.

@@ -4,6 +4,8 @@
 		<xsl:apply-templates/>
 	</xsl:template>
 	
+	<xsl:variable name="allRules" select="/grammar/rules/rule"/>
+	
 	<xsl:template match="grammar">
 		<html>
 			<body>
@@ -16,18 +18,16 @@
 							<td>rule body</td>
 						</tr>
 					</thead>
-					<xsl:for-each select="rules">
-						<xsl:for-each select="rule">
-							<tr><td>
-								<a name="{@id}">
-									<xsl:value-of select="@id"/>
-								</a>
-							</td><td>
-								<a name="{../@nonTerminal}">
-									<xsl:apply-templates select="."/>
-								</a>
-							</td></tr>
-						</xsl:for-each>
+					<xsl:for-each select="$allRules">
+						<tr><td>
+							<a name="{@id}">
+								<xsl:value-of select="@id"/>
+							</a>
+						</td><td>
+							<a name="{../@nonTerminal}">
+								<xsl:apply-templates select="."/>
+							</a>
+						</td></tr>
 					</xsl:for-each>
 				</table>
 				
@@ -63,14 +63,15 @@
 						<xsl:variable name="context" select="."/>
 						
 						<!-- for all distinct rules -->
-						<xsl:for-each select="/grammar/rules/rule">
-							<xsl:variable name="actions" select="$context/action[rule/@ref=current()/@id]"/>
+						<xsl:for-each select="$allRules">
+							<xsl:variable name="actions"
+								select="$context/action[*/rule/@ref=current()/@id]"/>
 							
 							<xsl:if test="count($actions)!=0">
 								<tr><td style="padding-right: 2em">
 									<xsl:apply-templates select="."/><br/>
 								</td><td>
-									<xsl:for-each select="$actions">
+									<xsl:for-each select="$actions/*[rule/@ref=current()/@id]">
 										<xsl:if test="position()!=1">
 											<xsl:text>, </xsl:text>
 										</xsl:if>
@@ -79,7 +80,14 @@
 											<xsl:if test="count(rule)>1">
 												<xsl:attribute name="style">color:red</xsl:attribute>
 											</xsl:if>
-											<xsl:value-of select="@token"/>
+											<xsl:choose>
+												<xsl:when test="@id">
+													<xsl:value-of select="@id"/>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:text>otherwise</xsl:text>
+												</xsl:otherwise>
+											</xsl:choose>
 										</span>
 									</xsl:for-each>
 								</td></tr>

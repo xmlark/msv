@@ -168,21 +168,11 @@ public class ]]></xsl:text>
 
 	<!--  rule definitions -->
 	<!--===================-->
-		<xsl:for-each select="rules/rule">
-			<!-- rule itself -->
-			<!--
-				Some version of javac gives an error
-					Grammar.java:176: Blank final variable 'r**' may not have been initialized. It mu
-					st be assigned a value in an initializer, or in every constructor.
-					        private static final Rule r**;
-				To workaround this problem, remove final.
-			-->
-			<xsl:text>	private static /*final*/ Rule </xsl:text>
-			<xsl:value-of select="@id"/>
-			<xsl:text>;</xsl:text>
-			<xsl:call-template name="CRLF"/>
-		</xsl:for-each>
+		<xsl:text>	// all rules</xsl:text>
 		<xsl:call-template name="CRLF"/>
+		<xsl:text>	private static final Rule[] rules = new Rule[</xsl:text>
+		<xsl:value-of select="count(rule)"/>
+		<xsl:text>];</xsl:text>
 		<xsl:call-template name="CRLF"/>
 	
 	
@@ -277,13 +267,11 @@ public class ]]></xsl:text>
 	<!--      create bare rules       -->
 	<!--==============================-->
 		<!-- this can be done only after we create attribute symbols -->
-		<xsl:for-each select="rules/rule">
+		<xsl:for-each select="rule">
 			<!-- rule itself -->
-			<xsl:text>			</xsl:text>
-			<xsl:value-of select="@id"/>
-			<xsl:text> = new Rule( </xsl:text>
-			<xsl:value-of select="left/@symbolRef"/>
-			<xsl:text>, new Object[]{ </xsl:text>
+			<xsl:text>			rules[</xsl:text>
+			<xsl:value-of select="@no"/>
+			<xsl:text>] = new Rule( new Object[]{ </xsl:text>
 			<xsl:for-each select="right/item">
 				<xsl:if test="position()!=1">
 					<xsl:text>,</xsl:text>
@@ -441,7 +429,9 @@ public class ]]></xsl:text>
 						<xsl:if test="position()!=1">
 							<xsl:text>,</xsl:text>
 						</xsl:if>
-						<xsl:value-of select="@ref"/>
+						<xsl:text>rules[</xsl:text>
+						<xsl:value-of select="@no"/>
+						<xsl:text>]</xsl:text>
 					</xsl:for-each>
 					<xsl:text>}</xsl:text>
 					<xsl:text>;</xsl:text>
@@ -476,8 +466,9 @@ public class ]]></xsl:text>
 										if an action consists of only one rule, we don't use
 										a separate field
 									-->
-									<xsl:value-of select="rule/@ref"/>
-									<xsl:text>.selfArray</xsl:text>
+									<xsl:text>rules[</xsl:text>
+									<xsl:value-of select="rule/@no"/>
+									<xsl:text>].selfArray</xsl:text>
 								</xsl:otherwise>
 							</xsl:choose>
 							<xsl:text>;</xsl:text>
@@ -485,8 +476,9 @@ public class ]]></xsl:text>
 						</xsl:for-each>
 						<xsl:if test="otherwise">
 							<xsl:text>				return </xsl:text>
-							<xsl:value-of select="otherwise/rule/@ref"/>
-							<xsl:text>.selfArray;</xsl:text>
+							<xsl:text>rules[</xsl:text>
+							<xsl:value-of select="otherwise/rule/@no"/>
+							<xsl:text>].selfArray;</xsl:text>
 							<xsl:call-template name="CRLF"/>
 						</xsl:if>
 						<xsl:text>			}</xsl:text>
@@ -499,9 +491,9 @@ public class ]]></xsl:text>
 					<xsl:otherwise>
 						<xsl:text>			if( top==</xsl:text>
 						<xsl:value-of select="@stackTop"/>
-						<xsl:text> ) return </xsl:text>
-						<xsl:value-of select="otherwise/rule/@ref"/>
-						<xsl:text>.selfArray;</xsl:text>
+						<xsl:text> ) return rules[</xsl:text>
+						<xsl:value-of select="otherwise/rule/@no"/>
+						<xsl:text>].selfArray;</xsl:text>
 						<xsl:call-template name="CRLF"/>
 					</xsl:otherwise>
 				</xsl:choose>

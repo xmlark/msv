@@ -38,7 +38,7 @@ public class RuleGenerator
 	 *		<code>map.get(x)=={r1,r2,...}<code> then
 	 *		<code>r1.left==r2.left==x</code>.
 	 */
-	public static Map create( Grammar g ) {
+	public static Rules create( Grammar g ) {
 		return new RuleGenerator()._create(g);
 	}
 	
@@ -47,11 +47,9 @@ public class RuleGenerator
 	
 	
 	/**
-	 * This map will receive the production rules.
-	 * this will be a map from Expression to Rule[].
-	 * That is, a map from X to X->abcd.
+	 * the production rules.
 	 */
-	private Map rules = new java.util.HashMap();
+	private Rules rules = new Rules();
 	
 	/**
 	 * pool object that can be used to create Expressions during this process.
@@ -61,7 +59,7 @@ public class RuleGenerator
 	/** grammar object that we are dealing with. */
 	private Grammar g;
 	
-	private Map _create( Grammar g ) {
+	private Rules _create( Grammar g ) {
 		pool = g.getPool();
 		this.g = g;
 		
@@ -69,14 +67,14 @@ public class RuleGenerator
 			
 			public void onElement( ElementExp exp ) {
 				if(visit(exp)) {
-					addRule( exp, new Expression[]{exp.contentModel} );
+					rules.add( exp, exp.contentModel );
 					exp.contentModel.visit(this);
 				}
 			}
 		
 			public void onAttribute( AttributeExp exp ) {
 				if(visit(exp)) {
-					addRule( exp, new Expression[]{exp.exp} );
+					rules.add( exp, exp.exp );
 					exp.exp.visit(this);
 				}
 			}
@@ -125,9 +123,8 @@ public class RuleGenerator
 					Note that the modified rules look concise, but actually
 					it is not always a good choice.
 					*/
-					rules.put( exp, new Rule[]{
-						new Rule( exp, new Expression[]{exp.exp1} ),
-						new Rule( exp, new Expression[]{exp.exp2} ) } );
+					rules.add( exp, exp.exp1 );
+					rules.add( exp, exp.exp2 );
 					exp.exp1.visit(this);
 					exp.exp2.visit(this);
 				}
@@ -140,7 +137,7 @@ public class RuleGenerator
 			
 			public void onSequence( SequenceExp exp ) {
 				if(visit(exp)) {
-					addRule( exp, new Expression[]{exp.exp1,exp.exp2} );
+					rules.add( exp, new Expression[]{exp.exp1,exp.exp2}, false );
 					exp.exp1.visit(this);
 					exp.exp2.visit(this);
 				}
@@ -148,8 +145,7 @@ public class RuleGenerator
 			public void onInterleave( InterleaveExp exp ){
 				if(visit(exp)) {
 					// add interleave rule.
-					rules.put( exp, new Rule[]{
-						new Rule( exp, new Expression[]{exp.exp1,exp.exp2}, true ) } );
+					rules.add( exp, new Expression[]{exp.exp1,exp.exp2}, true );
 					exp.exp1.visit(this);
 					exp.exp2.visit(this);
 				}
@@ -167,14 +163,14 @@ public class RuleGenerator
 			
 			public void onList( ListExp exp ) {
 				if(visit(exp)) {
-					addRule( exp, new Expression[]{exp.exp} );
+					rules.add( exp, exp.exp );
 					exp.exp.visit(this);
 				}
 			}
 			
 			public void onKey( KeyExp exp ) {
 				if(visit(exp)) {
-					addRule( exp, new Expression[]{exp.exp} );
+					rules.add( exp, exp.exp );
 					exp.exp.visit(this);
 				}
 			}
@@ -195,11 +191,10 @@ public class RuleGenerator
 						// if item is epsilon-reducible, then createZeroOrMore returns
 						// the same expression as exp. This case has to be treated
 						// differently.
-						rules.put( exp, new Rule[]{
-							new Rule( exp, new Expression[]{Expression.epsilon} ),
-							new Rule( exp, new Expression[]{item,intermediate} ) } );
+						rules.add( exp, Expression.epsilon );
+						rules.add( exp, new Expression[]{item,intermediate}, false );
 					} else {
-						addRule( exp, new Expression[]{item,intermediate} );
+						rules.add( exp, new Expression[]{item,intermediate}, false );
 					}
 					item.visit(this);
 					// this will create rules for the "intermediate"
@@ -209,14 +204,14 @@ public class RuleGenerator
 			
 			public void onRef( ReferenceExp exp ) {
 				if(visit(exp)) {
-					addRule( exp, new Expression[]{exp.exp} );
+					rules.add( exp, exp.exp );
 					exp.exp.visit(this);
 				}
 			}
 			
 			public void onOther( OtherExp exp ) {
 				if(visit(exp)) {
-					addRule( exp, new Expression[]{exp.exp} );
+					rules.add( exp, exp.exp );
 					exp.exp.visit(this);
 				}
 			}
@@ -230,12 +225,7 @@ public class RuleGenerator
 			 * assumes that visited expressions have associated production rules.
 			 */
 			private boolean visit( Expression exp ) {
-				return !rules.containsKey(exp);
-			}
-			
-			/** helper method to add a single production rule. */
-			private void addRule( Expression left, Expression[] right ) {
-				rules.put( left, new Rule[]{ new Rule(left,right) } );
+				return !rules.contains(exp);
 			}
 		});
 
@@ -260,19 +250,20 @@ public class RuleGenerator
 		// a map from Expression to Expression[]
 		Map redundantSymbols = new java.util.HashMap();
 		
-		for( Iterator itr=rules.values().iterator(); itr.hasNext(); ) {
-			Rule[] rs = (Rule[])itr.next();
+		for( Iterator itr=rules.iterateKeys(); itr.hasNext(); ) {
+			final Expression left = (Expression)itr.next();
+			final Rule[] rs = rules.getAll(left);
 			
 			// if this rule is in the form of "A:=xyz" and this is the only rule
 			// which has A as the left hand side,
 			if( rs.length==1 ) {
 				
 				// if this rule does not have associated action.
-				if( isActionlessNonTerminal(rs[0].left)
+				if( isActionlessNonTerminal(left)
 				// and A is a pure non-terminal
-				&&  !(rs[0].left instanceof NameClassAndExpression) ) {
+				&&  !(left instanceof NameClassAndExpression) ) {
 					
-					redundantSymbols.put( rs[0].left, rs[0] );
+					redundantSymbols.put( left, rs[0] );
 				}
 			}
 		}
@@ -281,7 +272,7 @@ public class RuleGenerator
 		rewriteRules( redundantSymbols );
 		
 		// clean-up.
-		removeUnreachableRules();
+		rules = rules.removeUnreachableRules(g.getTopLevel(),true);
 
 		
 		
@@ -312,14 +303,14 @@ public class RuleGenerator
 			Set occuredSymbols = new java.util.HashSet();
 			Set candidates = new java.util.HashSet();
 			
-			for( Iterator itr=rules.values().iterator(); itr.hasNext(); ) {
-				Rule[] rs = (Rule[])itr.next();
+			for( Iterator itr=rules.iterateKeys(); itr.hasNext(); ) {
+				final Expression left = (Expression)itr.next();
+				Rule[] rs = rules.getAll(left);
 				
 				for( int i=0; i<rs.length; i++ ) {
 					Expression[] right = rs[i].right;
 					for( int j=0; j<right.length; j++ ) {
-						if(
-							j==0	// if this is the left most symbol,
+						if( j==0	// if this is the left most symbol,
 						&& !occuredSymbols.contains(right[0])	// and this is the first occurence,
 						
 						// ... and if this rule does not have associated action.
@@ -337,50 +328,49 @@ public class RuleGenerator
 			
 			// candidates will hold all such redundant symbols.
 			// now rewrite the rules.
-			Map result = new java.util.HashMap();
+			Rules result = new Rules();
 			
-			for( Iterator itr=rules.values().iterator(); itr.hasNext(); ) {
-				Rule[] rs = (Rule[])itr.next();
+			for( Iterator itr=rules.iterateKeys(); itr.hasNext(); ) {
+				final Expression left = (Expression)itr.next();
+				Rule[] rs = rules.getAll(left);
 				
 				for( int i=0; i<rs.length; i++ ) {
-					// this rule (rs[i]) has the redundant symbol as the
-					// left most symbol of the right hand side.
-					while( candidates.contains(rs[i].right[0]) ) {
-						// obtain the definitions of the redundant symbols.
-						Rule[] definitions = (Rule[])rules.get(rs[i].right[0]);
-						assert( definitions!=null );
+					
+					// TODO: originally this was written to recursively
+					// expand rules.
+					if( !candidates.contains(rs[i].right[0]) )
+						result.add(left,rs[i]);
+					else {
+						// this rule (rs[i]) has the redundant symbol as the
+						// left most symbol of the right hand side.
 						
-						// expand rules.
-						// (image)
-						// rs:              +++x++++++   (x is rs[i])
-						// definitions:     ---
-						// expandedRs:      +++---++++++
-						Rule[] expandedRs = new Rule[rs.length + definitions.length -1];
-						System.arraycopy( rs, 0, expandedRs, 0, i );
-						System.arraycopy( rs, i+1, expandedRs, i+definitions.length, rs.length-(i+1) );
+						// obtain the definitions of the redundant symbols.
+						Rule[] definitions = rules.getAll(rs[i].right[0]);
+						if(debug!=null)
+							assert( definitions!=null && definitions.length!=0 );
+						
+						Rule[] rewritten = new Rule[definitions.length];
+						
 						int j;
 						for( j=0; j<definitions.length; j++ ) {
-							expandedRs[i+j] = rs[i].copy();
-							if(!expandedRs[i+j].replaceRight(0,definitions[j]))
-								break;	// we've failed to rewrite the rule.
+							// the rewriting may be failed at the later point.
+							rewritten[j] = rs[i].copy();
+							if(!rewritten[j].replaceRight( 0, definitions[j] ))
+								break;
 						}
-						if( j==definitions.length )
-							// we've successfully rewrote all rules.
-							rs = expandedRs;
+						if(j!=definitions.length)
+							// we've failed to rewrite the rule.
+							// do not touch rs[i]
+							result.add(left,rs[i]);
 						else
-							// we've failed to rewrite this rules.
-							// abandon optimization for rs[i].
-							break;
+							// add rewritten rules.
+							result.addAll(left,rewritten);
 					}
 				}
-				
-				// store the result to the "result" variable.
-				result.put( rs[0].left, rs );
 			}
 			
-			rules = result;
 			// clean-up.
-			removeUnreachableRules();
+			rules = result.removeUnreachableRules(g.getTopLevel(),true);
 		}
 		
 		
@@ -409,62 +399,27 @@ public class RuleGenerator
 				X -> \epsilon
 		*/
 		{
-			Iterator nonTerms = rules.keySet().iterator();
+			Iterator nonTerms = rules.iterateKeys();
 			while( nonTerms.hasNext() ) {
-				Rule[] rs = (Rule[])rules.get(nonTerms.next());
-				boolean modified = false;
+				Expression left = (Expression)nonTerms.next();
+				Iterator/* of Rule*/ jtr = rules.get(left).iterator();
 				
-				for( int i=rs.length-1; i>=0; i-- ) {
-					if(/*rs[i].right.length==1 &&*/ rs[i].right[0]==rs[i].left) {
+				while( jtr.hasNext() ) {
+					final Rule r = (Rule)jtr.next();
+					if( r.right.length==1 && r.right[0]==left ) {
 						// this rule is the form of "X->X"
 						if(debug!=null)
 							debug.println("removing self-recursive rule");
-						Rule[] buf = new Rule[rs.length-1];
-						System.arraycopy(rs,0,buf,0,i);
-						System.arraycopy(rs,i+1,buf,i,rs.length-(i+1));
-						rs = buf;
-						modified = true;
+						jtr.remove();
 					}
 				}
-				
-				if(modified)
-					rules.put(rs[0].left,rs);
 			}
 		}
 		
+		rules.intern();
 		return rules;
 	}
 
-	/** remove unreachable rules from the rules field. */
-	private void removeUnreachableRules() {
-		Map result = new java.util.HashMap();
-		
-		Set workQueue = new java.util.HashSet();
-		workQueue.add(g.getTopLevel());
-		while(!workQueue.isEmpty()) {
-			// get the first one in the queue.
-			Expression symbol = (Expression)workQueue.iterator().next();
-			workQueue.remove(symbol);
-				
-			Rule[] rs = (Rule[])rules.get(symbol);
-			assert(rs!=null);
-				
-			result.put(symbol,rs);
-				
-				
-			for( int i=0; i<rs.length; i++ ) {
-				for( int j=0; j<rs[i].right.length; j++ ) {
-					Expression e = rs[i].right[j];
-					if(!Util.isTerminalSymbol(e) && !result.containsKey(e)) {
-						// recursively add rules reachable from this rule
-						workQueue.add(e);
-						assert( e!=null );
-					}
-				}
-			}
-		}
-		rules = result;
-	}
 	
 	/**
 	 * rewrite the entire rules by replacing redundant symbols by
@@ -475,8 +430,9 @@ public class RuleGenerator
 	 *		in rules are replaced by its definitions.
 	 */
 	private void rewriteRules( Map redundantSymbols ) {
-		for( Iterator itr=rules.values().iterator(); itr.hasNext(); ) {
-			final Rule[] rs = (Rule[])itr.next();
+		for( Iterator itr=rules.iterateKeys(); itr.hasNext(); ) {
+			final Expression symbol = (Expression)itr.next();
+			final Rule[] rs = rules.getAll(symbol);
 			for( int i=0; i<rs.length; i++ )
 				rewriteRule( rs[i], redundantSymbols );
 		}

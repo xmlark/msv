@@ -35,7 +35,7 @@ import java.util.Iterator;
  */
 class FieldItemAnnotation
 {
-	private static java.io.PrintStream debug = null;
+	private static java.io.PrintStream debug = System.out;
 	
 	public static void annotate( AnnotatedGrammar g ) {
 		
@@ -43,8 +43,11 @@ class FieldItemAnnotation
 		
 		// process all class items.
 		ClassItem[] classes = g.getClasses();
-		for( int i=0; i<classes.length; i++ )
+		for( int i=0; i<classes.length; i++ ) {
+			if(debug!=null)
+				debug.println(" adding field item for "+ classes[i].getTypeName());
 			classes[i].exp = classes[i].exp.visit(ann.new Annotator(g,classes[i]));
+		}
 	}
 	
 	private FieldItemAnnotation() {}
@@ -142,6 +145,8 @@ class FieldItemAnnotation
 			||	exp instanceof FieldItem )
 				return exp;
 			
+			// unknown OtherExps.
+			assert(!(exp instanceof JavaItem));
 			return exp.exp.visit(this);
 		}
 
@@ -212,6 +217,139 @@ class FieldItemAnnotation
 			
 			return body;
 		}
+
+		/**
+		 * <p>
+		 * For other live but not complex branches, if a branch doesn't contain
+		 * FieldItems, then it is wrapped by a FieldItem. Since FieldItem cannot be
+		 * wrapped by a FieldItem, we cannot wrap a branch by a FieldItem if
+		 * it contains FieldItem. This case happens only when a user explicitly
+		 * annotate a part of the grammar like this:
+		 * 
+		 * <PRE><XMP>
+		 * <choice>
+		 *   <group>
+		 *     <element name="A"/>
+		 *     <element name="B"/>
+		 *   </group>
+		 *   <group>
+		 *     &lt;!-- explicit annotation -->
+		 *     <ref name="X" t:role="field"/>
+		 *	   ...
+		 *   </group>
+		 * </choice>
+		 * </XMP></PRE>
+		 * 
+		 * In this case, we recursively process that branch (since that branch may
+		 * contains other bare ClassItems.)
+		 * 
+		 * <p>
+		 * All 
+		 */		
+		public Expression onChoice( ChoiceExp exp ) {
+			
+			// check whether there is only one meaningul branch, or more than one of them.
+			Expression[] b = exp.getChildren();
+			boolean[] fieldlessBranch = new boolean[b.length];
+			int numLiveBranch = 0;
+			
+			boolean bBranchWithField = false;
+			final boolean[] bBranchWithPrimitive = new boolean[1];
+
+			if(debug!=null) {
+				debug.println( "Processing Choice: " + ExpressionPrinter.printContentModel(exp) );
+				debug.println("checking each branch");
+			}
+			
+			for( int i=0; i<b.length; i++ ) {
+				final boolean[] hasChildFieldItem = new boolean[1];
+
+				// compute the multiplicity of the all child JavaItems and 
+				// also compute whether this branch has FieldItem in it.
+				Multiplicity m = Multiplicity.calc( b[i],
+					new MultiplicityCounter(){
+						protected Multiplicity isChild( Expression exp ) {
+							if(exp instanceof FieldItem)	hasChildFieldItem[0] = true;
+							if(exp instanceof PrimitiveItem)	bBranchWithPrimitive[0] = true;
+							
+							if(exp instanceof IgnoreItem)	return Multiplicity.zero;
+							if(exp instanceof JavaItem)		return Multiplicity.one;
+							else						return null;
+						}
+					});
+
+				if(debug!=null) {
+					debug.println( "  Branch: " + ExpressionPrinter.printContentModel(b[i]) );
+					debug.println( "    multiplicity:"+m+"  hasChildFieldItem:"+hasChildFieldItem[0] );
+				}
+				
+				if(m.isZero())
+					continue;		// do nothing for this branch.
+				
+				numLiveBranch++;
+				
+				if( !hasChildFieldItem[0] ) {
+					// memorize that this branch is fieldless.
+					fieldlessBranch[i] = true;
+					continue;
+				}
+				
+				bBranchWithField = true;
+				
+				// this branch has a FieldItem. perform recursion.
+				b[i] = b[i].visit(this);
+			}
+			
+			if( numLiveBranch<=1 ) {
+				// there is only one meaningful branch.
+				// this happens for patterns like <optional>.
+				
+				// visit all unvisited branch
+				for( int i=0; i<b.length; i++ )
+					if( fieldlessBranch[i] )
+						b[i] = b[i].visit(this);
+				
+				Expression r = Expression.nullSet;
+				for( int i=0; i<b.length; i++ )
+					r = pool.createChoice( r, b[i] );
+			
+				return r;
+				
+			} else {
+				
+				/*
+				if we don't have any branch with FieldItem, then we just need
+				one FieldItem to cover the entire branches.
+				
+				TODO:(?) actually this would be done better. Even if there are 
+				branches with FieldItems, one created FieldItem can cover all
+				FieldItem-less branches, and then that FieldItem and other
+				branches can be combined. But is it an improvement?
+				*/
+				
+				final String fieldName = decideName(exp);
+				
+				Expression r = Expression.nullSet;
+				for( int i=0; i<b.length; i++ ) {
+					if( bBranchWithField && fieldlessBranch[i] )
+						b[i] = new FieldItem( fieldName, b[i] );
+					
+					r = pool.createChoice( r, b[i] );
+				}
+				
+				if( !bBranchWithField )
+					// there was no branch with FieldItem.
+					// add a FieldItem in here.
+					r = new FieldItem( fieldName, r );
+				
+				return r;
+			}
+		}
+		
+		
+		
+		
+		
 		
 		/**
 		 * decides a name to be used as the field name.

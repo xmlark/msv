@@ -170,36 +170,9 @@ class ChoiceAnnotator
 		 * 
 		 * <p>
 		 * is a complex branch. If a branch is complex, then it is wrapped by a 
-		 * ClassItem, then a FieldItem. Wrapping by a ClassItem makes its
+		 * ClassItem. Wrapping by a ClassItem makes its
 		 * multiplicity (1,1). This ensures that every branch has the multiplicity
 		 * of at-most-one.
-		 * 
-		 * <p>
-		 * For other live but not complex branches, if a branch doesn't contain
-		 * FieldItems, then it is wrapped by a FieldItem. Since FieldItem cannot be
-		 * wrapped by a FieldItem, we cannot wrap a branch by a FieldItem if
-		 * it contains FieldItem. This case happens only when a user explicitly
-		 * annotate a part of the grammar like this:
-		 * 
-		 * <PRE><XMP>
-		 * <choice>
-		 *   <group>
-		 *     <element name="A"/>
-		 *     <element name="B"/>
-		 *   </group>
-		 *   <group>
-		 *     &lt;!-- explicit annotation -->
-		 *     <ref name="X" t:role="field"/>
-		 *	   ...
-		 *   </group>
-		 * </choice>
-		 * </XMP></PRE>
-		 * 
-		 * In this case, we recursively process that branch (since that branch may
-		 * contains other bare ClassItems.)
-		 * 
-		 * <p>
-		 * All 
 		 */
 		public Expression onChoice( ChoiceExp exp ) {
 			

@@ -164,6 +164,8 @@ public class REDocumentDeclaration implements DocumentDeclaration
 		"Diagnosis.BadLiteral.Separator";
 	public static final String DIAG_BAD_LITERAL_MORE =
 		"Diagnosis.BadLiteral.More";
+	public static final String DIAG_BAD_LITERAL_GENERIC =
+		"Diagnosis.BadLiteral.Generic";
 	public static final String DIAG_SIMPLE_NAMECLASS =
 		"Diagnosis.SimpleNameClass";
 	public static final String DIAG_NAMESPACE_NAMECLASS =

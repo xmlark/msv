@@ -799,8 +799,9 @@ public abstract class ExpressionAcceptor implements Acceptor {
 				// this literal is invalid.
 				if( de.getMessage()!=null )
 					return de.getMessage();	// return the diagnosis.
-				// unable to dianogse.
-				return null;
+				
+				// we don't know the exact reason, but the value was wrong.
+				return docDecl.localizeMessage( docDecl.DIAG_BAD_LITERAL_GENERIC, null );
 			}
 		} else {
 			// there are multiple candidates.
@@ -839,6 +840,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		
 		// unable to diagnose the reason of error.
 		return null;
+		
 		// TODO: ID/IDREF violation diagnosis.
 /*					
 				// now the literal is valid.

@@ -21,8 +21,7 @@ public class TimeDurationFactoryTest extends TestCase {
 	
 	/** Test of create method, of class com.sun.tranquilo.datatype.datetime.TimeDurationFactory. */
 	public void testCreate() {
-		System.out.println("testCreate");
-		// Add your test code here.
+		// TODO: Add your test code here.
 	}
 	
 }

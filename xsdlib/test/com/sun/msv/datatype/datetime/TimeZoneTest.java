@@ -16,21 +16,32 @@ public class TimeZoneTest extends TestCase {
 	}
 	
 	/** Test of create method, of class com.sun.tranquilo.datatype.datetime.TimeZone. */
-	public void testCreate() {
-		System.out.println("testCreate");
-		// Add your test code here.
+	public void testCreate()
+	{
+		assertSame( TimeZone.create(0), TimeZone.GMT );
+		assert( TimeZone.create(100).minutes==100 );
+		
+		// range check
+		TimeZone.create(14*60);
+		try
+		{
+			TimeZone.create(14*60+1);
+			fail();
+		}
+		catch( IllegalArgumentException iae ) {;}
+		TimeZone.create(-14*60);
+		try
+		{
+			TimeZone.create(-14*60-1);
+			fail();
+		}
+		catch( IllegalArgumentException iae ) {;}	
 	}
 	
 	/** Test of hashCode method, of class com.sun.tranquilo.datatype.datetime.TimeZone. */
-	public void testHashCode() {
-		System.out.println("testHashCode");
-		// Add your test code here.
+	public void testHashCode()
+	{
+		assertEquals( TimeZone.create(50), TimeZone.create(50) );
+		assertEquals( TimeZone.create(-123), TimeZone.create(-123) );
 	}
-	
-	/** Test of equals method, of class com.sun.tranquilo.datatype.datetime.TimeZone. */
-	public void testEquals() {
-		System.out.println("testEquals");
-		// Add your test code here.
-	}
-	
 }

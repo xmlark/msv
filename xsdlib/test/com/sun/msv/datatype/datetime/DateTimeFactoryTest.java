@@ -19,22 +19,12 @@ public class DateTimeFactoryTest extends TestCase {
 		return new TestSuite(DateTimeFactoryTest.class);
 	}
 	
-	/** Test of createFromDateTime method, of class com.sun.tranquilo.datatype.datetime.DateTimeFactory. */
-	public void testCreateFromDateTime() {
-		System.out.println("testCreateFromDateTime");
-		// Add your test code here.
+	public static void testCreateFromTime()
+	{
+		// 1 second
+		IDateTimeValueType sec1 = DateTimeFactory.
+			createFromTime(null,null,new Integer(1000),null);
+		assertEquals( sec1,
+					  new BigDateTimeValueType(null, null, null, null, null, new BigDecimal("1"), null ) );
 	}
-	
-	/** Test of createFromDate method, of class com.sun.tranquilo.datatype.datetime.DateTimeFactory. */
-	public void testCreateFromDate() {
-		System.out.println("testCreateFromDate");
-		// Add your test code here.
-	}
-	
-	/** Test of createFromTime method, of class com.sun.tranquilo.datatype.datetime.DateTimeFactory. */
-	public void testCreateFromTime() {
-		System.out.println("testCreateFromTime");
-		// Add your test code here.
-	}
-	
 }

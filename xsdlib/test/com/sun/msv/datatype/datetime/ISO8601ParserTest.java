@@ -1,12 +1,13 @@
 package com.sun.tranquilo.datatype.datetime;
+
 import java.io.*;
-
 import java.math.BigDecimal;
-
 import java.math.BigInteger;
-
 import junit.framework.*;
 
+/**
+ * please explicitly test for every production rule whether empty string is allowed
+ */
 public class ISO8601ParserTest extends TestCase {    
 	
 	public ISO8601ParserTest(java.lang.String testName) {
@@ -21,262 +22,171 @@ public class ISO8601ParserTest extends TestCase {
 		return new TestSuite(ISO8601ParserTest.class);
 	}
 	
-	/** Test of secondL method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testSecondL() {
-		System.out.println("testSecondL");
-		// Add your test code here.
+	public static ISO8601Parser getParser( String content ) throws Exception
+	{
+		return new ISO8601Parser( new ByteArrayInputStream( content.getBytes("UTF8") ) );
 	}
 	
-	/** Test of secondV method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testSecondV() {
-		System.out.println("testSecondV");
-		// Add your test code here.
+	interface LV
+	{
+		void L( ISO8601Parser p ) throws Exception;
+		void V( ISO8601Parser p ) throws Exception;
 	}
 	
-	/** Test of durationTypeL method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testDurationTypeL() {
-		System.out.println("testDurationTypeL");
-		// Add your test code here.
+	/** generic test runner */
+	public static void run( String[] allowed, String[] prohibited, LV test )
+		throws Exception
+	{
+		for( int i=0; i<allowed.length; i++ )
+		{
+			test.L(getParser(allowed[i]));
+			test.V(getParser(allowed[i]));
+		}
+		for( int i=0; i<prohibited.length; i++ )
+		{
+			try
+			{
+				test.L(getParser(prohibited[i]));
+				fail();
+			} catch( Throwable e ) {;}
+			try
+			{
+				test.V(getParser(prohibited[i]));
+				fail();
+			} catch( Throwable e ) {;}
+		}
 	}
 	
-	/** Test of durationTypeV method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testDurationTypeV() {
-		System.out.println("testDurationTypeV");
-		// Add your test code here.
+	public void testSecond() throws Exception
+	{
+		run(
+			new String[]{"52","00.00000009"},
+			new String[]{"5",".192",""},
+			new LV(){
+			 	public void L( ISO8601Parser p ) throws Exception { p.secondL(); }
+			 	public void V( ISO8601Parser p ) throws Exception { p.secondV(); }
+			 } );
 	}
 	
-	/** Test of datePartL method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testDatePartL() {
-		System.out.println("testDatePartL");
-		// Add your test code here.
+	public void testDatePart() throws Exception
+	{
+		run(
+			new String[]{"5Y","600M","9250D"},
+			new String[]{"","Y","5D6M"},
+			new LV(){
+			 	public void L( ISO8601Parser p ) throws Exception { p.datePartL(); }
+			 	public void V( ISO8601Parser p ) throws Exception { p.datePartV(true); }
+			 } );
 	}
 	
-	/** Test of datePartV method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testDatePartV() {
-		System.out.println("testDatePartV");
-		// Add your test code here.
+	public void testTimePart() throws Exception
+	{
+		run(
+			new String[]{"5H","600M","9250S","1235.22S","5H2S"},
+			new String[]{"","Y","5S6M"},
+			new LV(){
+			 	public void L( ISO8601Parser p ) throws Exception { p.timePartL(); }
+			 	public void V( ISO8601Parser p ) throws Exception { p.timePartV(true); }
+			 } );
 	}
 	
-	/** Test of timePartL method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testTimePartL() {
-		System.out.println("testTimePartL");
-		// Add your test code here.
+	public void testIntDigits() throws Exception
+	{
+		assertEquals( 1000, getParser("1000").intDigits(false).intValue() );
+		assertEquals( -1000, getParser("1000").intDigits(true).intValue() );
+		assertEquals( "10000000000000000000", getParser("10000000000000000000").intDigits(false).toString() );
+		assertEquals( "-10000000000000000000", getParser("10000000000000000000").intDigits(true).toString() );
+		
+		try {
+			getParser("").intDigits(true);
+			fail();
+		}catch(Exception e) {;}
 	}
 	
-	/** Test of timePartV method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testTimePartV() {
-		System.out.println("testTimePartV");
-		// Add your test code here.
+	public void testDecimalDigits() throws Exception
+	{
+		ISO8601Parser p;
+		
+		p = getParser("10.25");
+		p.decimalDigits(false);
+		assertEquals( p.mSecond.intValue(), 10250 );	// milli seconds
+		
+		p = getParser("90");
+		p.decimalDigits(false);
+		assertEquals( p.mSecond.intValue(), 90000 );	// milli seconds
+		
+		p = getParser("0.00001");
+		p.decimalDigits(false);
+		assertEquals( p.mSecond, new BigDecimal("0.01") );	// milli seconds
 	}
 	
-	/** Test of intDigits method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testIntDigits() {
-		System.out.println("testIntDigits");
-		// Add your test code here.
-	}
-	
-	/** Test of decimalDigits method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testDecimalDigits() {
-		System.out.println("testDecimalDigits");
-		// Add your test code here.
-	}
-	
-	/** Test of NN method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
 	public void testNN() {
 		System.out.println("testNN");
 		// Add your test code here.
 	}
 	
-	/** Test of timeZoneModifierL method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testTimeZoneModifierL() {
-		System.out.println("testTimeZoneModifierL");
-		// Add your test code here.
-	}
-	
-	/** Test of timeZoneModifierV method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testTimeZoneModifierV() {
+	public void testTimeZoneModifier() {
 		System.out.println("testTimeZoneModifierV");
 		// Add your test code here.
 	}
 	
-	/** Test of timeL method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testTimeL() {
+	public void testTime() {
 		System.out.println("testTimeL");
 		// Add your test code here.
 	}
 	
-	/** Test of timeV method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testTimeV() {
-		System.out.println("testTimeV");
-		// Add your test code here.
-	}
-	
-	/** Test of yearL method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testYearL() {
+	public void testYear() {
 		System.out.println("testYearL");
 		// Add your test code here.
 	}
 	
-	/** Test of yearV method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testYearV() {
-		System.out.println("testYearV");
-		// Add your test code here.
-	}
-	
-	/** Test of month method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
 	public void testMonth() {
 		System.out.println("testMonth");
 		// Add your test code here.
 	}
 	
-	/** Test of day method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testDay() {
-		System.out.println("testDay");
-		// Add your test code here.
-	}
-	
-	/** Test of dateL method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testDateL() {
-		System.out.println("testDateL");
-		// Add your test code here.
-	}
-	
-	/** Test of dateV method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testDateV() {
+	public void testDate() {
 		System.out.println("testDateV");
 		// Add your test code here.
 	}
 	
-	/** Test of dateTimeTypeL method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testDateTimeTypeL() {
-		System.out.println("testDateTimeTypeL");
-		// Add your test code here.
-	}
-	
-	/** Test of dateTimeTypeV method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testDateTimeTypeV() {
+	public void testDateTimeType() {
 		System.out.println("testDateTimeTypeV");
 		// Add your test code here.
 	}
 	
-	/** Test of timeTypeL method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testTimeTypeL() {
-		System.out.println("testTimeTypeL");
-		// Add your test code here.
-	}
-	
-	/** Test of timeTypeV method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testTimeTypeV() {
+	public void testTimeType() {
 		System.out.println("testTimeTypeV");
 		// Add your test code here.
 	}
 	
-	/** Test of dateTypeL method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testDateTypeL() {
-		System.out.println("testDateTypeL");
-		// Add your test code here.
-	}
-	
-	/** Test of dateTypeV method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testDateTypeV() {
+	public void testDateType() {
 		System.out.println("testDateTypeV");
 		// Add your test code here.
 	}
 	
-	/** Test of yearMonthTypeL method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testYearMonthTypeL() {
-		System.out.println("testYearMonthTypeL");
-		// Add your test code here.
-	}
-	
-	/** Test of yearMonthTypeV method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testYearMonthTypeV() {
+	public void testYearMonthType() {
 		System.out.println("testYearMonthTypeV");
 		// Add your test code here.
 	}
 	
-	/** Test of yearTypeL method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testYearTypeL() {
-		System.out.println("testYearTypeL");
-		// Add your test code here.
-	}
-	
-	/** Test of yearTypeV method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testYearTypeV() {
+	public void testYearType() {
 		System.out.println("testYearTypeV");
 		// Add your test code here.
 	}
 	
-	/** Test of monthDayTypeL method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testMonthDayTypeL() {
+	public void testMonthDayType() {
 		System.out.println("testMonthDayTypeL");
 		// Add your test code here.
 	}
 	
-	/** Test of monthDayTypeV method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testMonthDayTypeV() {
-		System.out.println("testMonthDayTypeV");
-		// Add your test code here.
-	}
-	
-	/** Test of dayTypeL method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testDayTypeL() {
+	public void testDayType() {
 		System.out.println("testDayTypeL");
 		// Add your test code here.
 	}
 	
-	/** Test of dayTypeV method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testDayTypeV() {
-		System.out.println("testDayTypeV");
-		// Add your test code here.
-	}
-	
-	/** Test of monthTypeL method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testMonthTypeL() {
+	public void testMonthType() {
 		System.out.println("testMonthTypeL");
 		// Add your test code here.
 	}
-	
-	/** Test of monthTypeV method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testMonthTypeV() {
-		System.out.println("testMonthTypeV");
-		// Add your test code here.
-	}
-	
-	/** Test of ReInit method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testReInit() {
-		System.out.println("testReInit");
-		// Add your test code here.
-	}
-	
-	/** Test of getNextToken method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testGetNextToken() {
-		System.out.println("testGetNextToken");
-		// Add your test code here.
-	}
-	
-	/** Test of getToken method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testGetToken() {
-		System.out.println("testGetToken");
-		// Add your test code here.
-	}
-	
-	/** Test of generateParseException method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testGenerateParseException() {
-		System.out.println("testGenerateParseException");
-		// Add your test code here.
-	}
-	
-	/** Test of enable_tracing method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testEnable_tracing() {
-		System.out.println("testEnable_tracing");
-		// Add your test code here.
-	}
-	
-	/** Test of disable_tracing method, of class com.sun.tranquilo.datatype.datetime.ISO8601Parser. */
-	public void testDisable_tracing() {
-		System.out.println("testDisable_tracing");
-		// Add your test code here.
-	}
-	
 }

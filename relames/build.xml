@@ -9,7 +9,10 @@
 	<!-- environment dependend -->
 	<property name="JUnitJar" value="c:/winnt/java/classes/junit.jar"/>
 	<property name="AntJar" value="c:/progra~1/development/ant/lib/ant.jar"/>
-	<property name="msvJar" value="../tranquilo/package/msv.light.jar"/>
+	<property name="msv.jar" value="../tranquilo/package/msv.jar"/>
+	<property name="xsdlib.jar" value="../tranquilo/package/xsdlib.jar"/>
+	<property name="relaxngDatatype.jar"	value="../relaxng/datatype/java/relaxngDatatype.jar"/>
+	<property name="isorelax.jar"			value="c:/winnt/java/classes/isorelax.jar"/>
 	
 	<!-- create a distribution package -->
 	<target name="release">
@@ -35,40 +38,27 @@
 		
 		<!-- compile files -->
 		<mkdir	dir="temp" />
-		<javac	srcdir="${stageName}/src"
-				destdir="temp"
-				classpath="${msvJar}">
+		<javac	srcdir="${stageName}/src" destdir="temp">
+			
+			<classpath path="${msv.jar}"/>
 			<include name="**/*.java" />
 		</javac>
 		
 		<!-- create a time stamp file -->
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
-
-		<!-- creates light-weight jar -->
-		<jar	jarfile="${stageName}/relames.light.jar"
-				manifest="./MANIFEST.MF"
-				compress="false">
-			<fileset dir="temp" />
-			<!-- resource files -->
-			<fileset dir="${stageName}/src" includes="**/*.properties" />
-		</jar>
 		
-		<!-- unzip related jars -->
-		<unzip src="c:/winnt/java/classes/xalan.jar" dest="temp"/>
-		<unzip src="${msvJar}" dest="temp"/>
-		<!-- remove meta files contained in those jars -->
-		<delete dir="temp/META-INF"/>
 		
 		<!-- creates binary jar -->
 		<jar	jarfile="${stageName}/relames.jar"
 				manifest="./MANIFEST.MF"
 				compress="false">
+				
 			<fileset dir="temp" />
 			<!-- resource files -->
 			<fileset dir="${stageName}/src" includes="**/*.properties" />
 		</jar>
 		<delete dir="temp" />
-
+		
 		
 		<!-- copy jar file to package dir -->
 		<copy file="${stageName}/relames.jar" tofile="./package/relames.jar" />
@@ -76,6 +66,14 @@
 		
 		<!-- remove source codes -->
 		<delete dir="${stageName}/src"/>
+		
+		<!-- copy related jars -->
+		<copy file="${msv.jar}" todir="${stageName}"/>
+		<copy file="${xsdlib.jar}" todir="${stageName}"/>
+		<copy file="${isorelax.jar}" todir="${stageName}"/>
+		<copy file="${relaxngDatatype.jar}" todir="${stageName}"/>
+		<copy file="c:/winnt/java/classes/xalan.jar" todir="${stageName}"/>
+		<copy file="c:\winnt\java\classes\xerces.jar" todir="${stageName}" />
 		
 		<!-- creates distribution package -->
 		<zip	zipfile="./package/relames.${DSTAMP}.zip"

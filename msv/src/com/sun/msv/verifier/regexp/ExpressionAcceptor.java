@@ -522,7 +522,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 				if( ncc instanceof NamespaceNameClass )
 				{
 					s.add( docDecl.localizeMessage(
-						docDecl.DIAG_NOT_NAMESPACE_NAMECLASS, ((NamespaceNameClass)nc).namespaceURI ) );
+						docDecl.DIAG_NOT_NAMESPACE_NAMECLASS, ((NamespaceNameClass)ncc).namespaceURI ) );
 					continue;
 				}
 			}

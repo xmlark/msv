@@ -65,8 +65,19 @@ public class SuiteTester {
 	 * creates a JUnit TestSuite that tests given suite file.
 	 */
 	public TestSuite createTestSuiteFromFile( File suiteFile ) throws Exception {
+		// there is a bug in Xerces DOM implementation
+		// that causees "DOM03 namespace error". Use crimson to avoid this problem.
+		// Ideally, this method should be
+		// return builder.create(
+		//		new InputSource( new FileInputStream(suiteFile) ) );
+		
+		javax.xml.parsers.DocumentBuilderFactory factory = new org.apache.crimson.jaxp.DocumentBuilderFactoryImpl();
+		factory.setNamespaceAware(true);
+		factory.setValidating(false);
+		
 		return builder.create(
-			new InputSource( new FileInputStream(suiteFile) ) );
+			TestSuiteReader.parse(
+				new InputSource( new FileInputStream(suiteFile) ), factory ) );
 	}
 	
 	/**

@@ -9,6 +9,7 @@
  */
 package com.sun.msv.datatype.xsd;
 
+import com.sun.msv.datatype.SerializationContext;
 import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
 import com.sun.msv.datatype.xsd.datetime.IDateTimeValueType;
 import com.sun.msv.datatype.xsd.datetime.BigDateTimeValueType;
@@ -80,6 +81,22 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator {
 	}
 
 	/**
+	 * formats an integer into the year representation.
+	 * That is, at least four digits and no year 0.
+	 */
+	protected String formatYear( int year ) {
+		String s;
+		if( year<=0 )	// negative value
+			s = Integer.toString(1-year);
+		else			// positive value
+			s = Integer.toString(year);
+		
+		while(s.length()<4)			s = "0"+s;
+		if( year<=0 )				s = "-"+s;
+		return s;
+	}
+	
+	/**
 	 * formats BigInteger into year representation.
 	 * 
 	 * That is, at least four digits and no year 0.
@@ -124,6 +141,19 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator {
 		return s;
 	}
 	
+	protected String formatSeconds( Calendar cal ) {
+		StringBuffer result = new StringBuffer();
+		result.append(formatTwoDigits(cal.get(cal.SECOND)));
+		if( cal.isSet(cal.MILLISECOND) ) {// milliseconds
+			String ms = Integer.toString(cal.get(cal.MILLISECOND));
+			while(ms.length()<3)	ms = "0"+ms;	// left 0 paddings.
+			
+			result.append('.');
+			result.append(ms);
+		}
+		return result.toString();
+	}
+	
 	/** formats time zone specifier. */
 	protected String formatTimeZone( TimeZone tz ) {
 		if(tz==null)		return "";	// no time zone
@@ -133,7 +163,27 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator {
 			formatTwoDigits(new Integer(Math.abs(tz.minutes/60)))+":"+
 			formatTwoDigits(new Integer(Math.abs(tz.minutes)%60));
 	}
-	
+
+	/** formats time zone specifier. */
+	protected String formatTimeZone( Calendar cal ) {
+		// TODO: is it possible for the getTimeZone method to return null?
+		if( cal.getTimeZone()==null ) return "";
+		
+		StringBuffer result = new StringBuffer();
+		int offset = cal.getTimeZone().getRawOffset();
+		if(offset>=0)	result.append('+');
+		else {
+			result.append('-');
+			offset *= -1;
+		}
+			
+		result.append(formatTwoDigits(offset/60));
+		result.append(':');
+		result.append(formatTwoDigits(offset%60));
+		
+		return result.toString();
+	}
+
 	
 	
 	
@@ -176,6 +226,10 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator {
 		
 		return cal;
 	}
+
+	// since we've overrided the createJavaObject method, the serializeJavaObject method
+	// needs to be overrided, too.
+	public abstract String serializeJavaObject( Object value, SerializationContext context );
 	
 	public Class getJavaObjectType() {
 		return Calendar.class;

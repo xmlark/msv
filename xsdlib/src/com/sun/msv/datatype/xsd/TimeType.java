@@ -12,6 +12,7 @@ package com.sun.msv.datatype.xsd;
 import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
 import com.sun.msv.datatype.xsd.datetime.IDateTimeValueType;
 import com.sun.msv.datatype.xsd.datetime.BigDateTimeValueType;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.SimpleTimeZone;
 import org.relaxng.datatype.ValidationContext;
@@ -47,5 +48,24 @@ public class TimeType extends DateTimeBaseType {
 				formatTwoDigits(bv.getMinute())+":"+
 				formatSeconds(bv.getSecond())+
 				formatTimeZone(bv.getTimeZone());
+	}
+
+	
+	public String serializeJavaObject( Object value, SerializationContext context ) {
+		if(!(value instanceof Calendar))	throw new IllegalArgumentException();
+		Calendar cal = (Calendar)value;
+		
+		
+		StringBuffer result = new StringBuffer();
+
+		result.append(formatTwoDigits(cal.get(cal.HOUR_OF_DAY)));
+		result.append(':');
+		result.append(formatTwoDigits(cal.get(cal.MINUTE)));
+		result.append(':');
+		result.append(formatSeconds(cal));
+		
+		result.append(formatTimeZone(cal));
+		
+		return result.toString();
 	}
 }

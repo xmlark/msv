@@ -81,17 +81,6 @@ public class QnameType extends ConcreteType implements Discrete {
 		return new QnameValueType(uri,localPart);
 	}
 	
-	public String convertToLexicalValue( Object o, SerializationContext context ) {
-		if(!( o instanceof QnameValueType ))
-			throw new UnsupportedOperationException();
-		
-		QnameValueType v = (QnameValueType)o;
-		
-		String prefix = context.getNamespacePrefix(v.namespaceURI);
-		if(prefix==null)	return v.localPart;
-		else				return prefix+":"+v.localPart;
-	}
-	
 	public final int isFacetApplicable( String facetName ) {
 		if( facetName.equals(FACET_PATTERN)
 		||	facetName.equals(FACET_ENUMERATION)
@@ -113,6 +102,30 @@ public class QnameType extends ConcreteType implements Discrete {
 				UnicodeUtil.countLength( v.localPart );
 	}
 
+	
+	public String convertToLexicalValue( Object o, SerializationContext context ) {
+		if(!( o instanceof QnameValueType ))
+			throw new UnsupportedOperationException();
+		
+		QnameValueType v = (QnameValueType)o;
+		
+		return serialize(v.namespaceURI,v.localPart,context);
+	}
+
+	public String serializeJavaObject( Object value, SerializationContext context ) {
+		if(!(value instanceof String[]))	throw new IllegalArgumentException();
+		String[] input = (String[])value;
+		if( input.length!=2 )				throw new IllegalArgumentException();
+		
+		return serialize(input[0],input[1],context);
+	}
+	
+	private String serialize( String uri, String local, SerializationContext context ) {
+		String prefix = context.getNamespacePrefix(uri);
+		if(prefix==null)	return local;
+		else				return prefix+":"+local;
+	}
+	
 	public Object createJavaObject( String literal, ValidationContext context ) {
 		QnameValueType v = (QnameValueType)createValue(literal,context);
 		if(v==null)		return null;

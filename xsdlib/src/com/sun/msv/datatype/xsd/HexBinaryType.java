@@ -68,18 +68,26 @@ public class HexBinaryType extends BinaryBaseType {
 
 		return true;
 	}
-	
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
-		if(!(value instanceof BinaryValueType))
+
+	public String serializeJavaObject( Object value, SerializationContext context ) {
+		if(!(value instanceof byte[]))
 			throw new IllegalArgumentException();
-		
-		byte[] data = ((BinaryValueType)value).rawData;
+
+		byte[] data = (byte[])value;
 		StringBuffer r = new StringBuffer(data.length*2);
 		for( int i=0; i<data.length; i++ ) {
 			r.append( encode(data[i]>>4) );
 			r.append( encode(data[i]&0xF) );
 		}
 		return r.toString();
+	}
+
+	
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
+		if(!(value instanceof BinaryValueType))
+			throw new IllegalArgumentException();
+		
+		return serializeJavaObject( ((BinaryValueType)value).rawData, context );
 	}
 	
 	public char encode( int ch ) {

@@ -59,7 +59,13 @@ public class TypedString implements DatabindableDatatype, java.io.Serializable {
 		else
 			throw new IllegalArgumentException();
 	}
-	
+	public String serializeJavaObject( Object obj, SerializationContext context ) {
+		if( value instanceof String ) {
+			if( this.value.equals(obj) )	return value;
+			else							return null;	// invalid
+		} else
+			throw new IllegalArgumentException();
+	}
 	public boolean isValid( String literal, ValidationContext context ) {
 		return createValue(literal,context)!=null;
 	}

@@ -29,6 +29,29 @@ public interface DatabindableDatatype extends org.relaxng.datatype.Datatype {
 	Object createJavaObject( String literal, ValidationContext context );
 	
 	/**
+	 * converts a value object back to the lexical representation.
+	 * 
+	 * <p>
+	 * This method is a kind of the "reverse" function of the createJavaObject method.
+	 * 
+	 * @param context
+	 *		The context object is used to obtain information necessary to
+	 *		serialize the value object. For example, QName type uses the context
+	 *		to encode the URI into a prefix.
+	 * 
+	 * @exception IllegalArgumentException
+	 *		If the type of the specified value object is not recognized,
+	 *		this exception is thrown. For example, if you pass
+	 *		a <code>String<code> object to the serializeJavaObject method of
+	 *		the "positiveInteger" type, this exception is thrown.
+	 * 
+	 * @return	null
+	 *		if the given object is invalid with respect to this datatype.
+	 */
+	String serializeJavaObject( Object value, SerializationContext context )
+		throws IllegalArgumentException;
+	
+	/**
 	 * gets the type of the objects that are created by the createJavaObject method.
 	 */
 	Class getJavaObjectType();

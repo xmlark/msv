@@ -36,6 +36,9 @@ public class IntegerType extends IntegerDerivedType {
 		return new BigInteger(o.toString());
 	}
 	
+	// the default implementation of the serializeJavaObject method works correctly.
+	// so there is no need to override it here.
+	
 	public Class getJavaObjectType() {
 		return BigInteger.class;
 	}

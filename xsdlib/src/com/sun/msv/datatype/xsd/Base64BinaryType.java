@@ -144,42 +144,50 @@ public class Base64BinaryType extends BinaryBaseType {
 	protected char encode( int i ) {
 		return encodeMap[i&0x3F];
 	}
-	
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
-		if(!(value instanceof BinaryValueType))
+
+	public String serializeJavaObject( Object value, SerializationContext context ) {
+		if(!(value instanceof byte[]))
 			throw new IllegalArgumentException();
 		
-		BinaryValueType v = (BinaryValueType)value;
-		StringBuffer r = new StringBuffer(v.rawData.length*4/3); /* rough estimate*/
+		byte[] input = (byte[])value;
 		
-		for( int i=0; i<v.rawData.length; i+=3 ) {
-			switch( v.rawData.length-i ) {
+		StringBuffer r = new StringBuffer(input.length*4/3); /* rough estimate*/
+		
+		for( int i=0; i<input.length; i+=3 ) {
+			switch( input.length-i ) {
 			case 1:
-				r.append( encode(v.rawData[i]>>2) );
-				r.append( encode(((v.rawData[i])&0x3)<<4) );
+				r.append( encode(input[i]>>2) );
+				r.append( encode(((input[i])&0x3)<<4) );
 				r.append("==");
 				break;
 			case 2:
-				r.append( encode(v.rawData[i]>>2) );
+				r.append( encode(input[i]>>2) );
 				r.append( encode(
-							((v.rawData[i]&0x3)<<4) |
-							((v.rawData[i+1]>>4)&0xF)) );
-				r.append( encode((v.rawData[i+1]&0xF)<<2) );
+							((input[i]&0x3)<<4) |
+							((input[i+1]>>4)&0xF)) );
+				r.append( encode((input[i+1]&0xF)<<2) );
 				r.append("=");
 				break;
 			default:
-				r.append( encode(v.rawData[i]>>2) );
+				r.append( encode(input[i]>>2) );
 				r.append( encode(
-							((v.rawData[i]&0x3)<<4) |
-							((v.rawData[i+1]>>4)&0xF)) );
+							((input[i]&0x3)<<4) |
+							((input[i+1]>>4)&0xF)) );
 				r.append( encode(
-							((v.rawData[i+1]&0xF)<<2)|
-							((v.rawData[i+2]>>6)&0x3)) );
-				r.append( encode(v.rawData[i+2]&0x3F) );
+							((input[i+1]&0xF)<<2)|
+							((input[i+2]>>6)&0x3)) );
+				r.append( encode(input[i+2]&0x3F) );
 				break;
 			}
 		}
 		
 		return r.toString();
+	}
+	
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
+		if(!(value instanceof BinaryValueType))
+			throw new IllegalArgumentException();
+		
+		return serializeJavaObject( ((BinaryValueType)value).rawData, context );
 	}
 }

@@ -185,6 +185,9 @@ public class LateBindDatatype implements XSDatatype {
 	public Object createJavaObject( String value, ValidationContext context ) {
 		throw new Error();
 	}
+	public String serializeJavaObject( Object value, SerializationContext context ) {
+		throw new Error();
+	}
 	public String displayName() {
 		throw new Error();
 	}

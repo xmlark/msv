@@ -16,7 +16,7 @@ import com.sun.msv.datatype.SerializationContext;
 import org.relaxng.datatype.ValidationContext;
 
 /**
- * Publicly accesible interface of XSD Datatype.
+ * Publicly accesible interface of W3C XML Schema datatype (simple type).
  *
  * This interface provides additional information which is not covered by
  * {@link org.relaxng.datatype.Datatype} interface.
@@ -35,27 +35,35 @@ public interface XSDatatype extends
 
 	/**
 	 * gets the displayable name of this type.
-	 * This method always return something.
+	 * This method always return something. It is useful to provide a message to the user.
 	 */
 	String displayName();
 	
 	/**
 	 * converts value object back to the corresponding value in the lexical space.
 	 * 
-	 * This method does the reverse operation of convertToValueObject.
+	 * <p>
+	 * This method does the reverse operation of the convertToValueObject method.
 	 * The returned string is not necessarily the canonical representation.
 	 * 
 	 * Also note that the implementation may accept invalid values without throwing
 	 * IllegalArgumentException. To make sure that the result is actually a valid
-	 * representation, call the verify method.
+	 * representation, call the isValid method.
+	 * 
+	 * <p>
+	 * Be careful not to confuse this method with
+	 * The serializeJavaObject method, which is defined in
+	 * the {@link DatabindableDatatype} method.
 	 * 
 	 * @param context
-	 *		Context information provider that might be used for conversion.
-	 *		Currently, this object is used only for QName, but may be extended
+	 *		Context information that will be possibly used for the conversion.
+	 *		Currently, this object is used only by QName, but may be extended
 	 *		in the future.
 	 * 
 	 * @exception IllegalArgumentException
-	 *		if the given object does not belong to the value space of this datatype.
+	 *		if the type of the given object is not the expected one.
+	 *		For example, this exception is thrown if you pass a BigInteger object
+	 *		to the "gYear" type.
 	 */
 	String convertToLexicalValue( Object valueObject, SerializationContext context ) throws IllegalArgumentException;
 
@@ -65,7 +73,7 @@ public interface XSDatatype extends
 	/**
 	 * checks if this type is an atom type.
 	 * 
-	 * List, union, and types derived from them are not atom types.
+	 * List, union, and types derived from them are NOT atom types.
 	 * Other types are atom types.
 	 *
 	 * @returns true if this type is an atom type
@@ -76,7 +84,7 @@ public interface XSDatatype extends
 	 * checks if this type is declared as final for the specified kind of derivation.
 	 * 
 	 * @param derivationType
-	 *		one of pre-defined values
+	 *		one of pre-defined values (DERIVATION_BY_XXX).
 	 */
 	boolean isFinal( int derivationType );
 	

@@ -13,6 +13,7 @@ import com.sun.msv.datatype.SerializationContext;
 import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
 import com.sun.msv.datatype.xsd.datetime.IDateTimeValueType;
 import com.sun.msv.datatype.xsd.datetime.BigDateTimeValueType;
+import java.util.Calendar;
 
 /**
  * "gYearMonth" type.
@@ -42,5 +43,21 @@ public class GYearMonthType extends DateTimeBaseType {
 		return	formatYear(bv.getYear())+"-"+
 				formatTwoDigits(bv.getMonth(),1)+
 				formatTimeZone(bv.getTimeZone());
+	}
+
+	
+	public String serializeJavaObject( Object value, SerializationContext context ) {
+		if(!(value instanceof Calendar))	throw new IllegalArgumentException();
+		Calendar cal = (Calendar)value;
+		
+		
+		StringBuffer result = new StringBuffer();
+
+		result.append(formatYear(cal.get(cal.YEAR)));
+		result.append('-');
+		result.append(formatTwoDigits(cal.get(cal.MONTH)));
+		result.append(formatTimeZone(cal));
+		
+		return result.toString();
 	}
 }

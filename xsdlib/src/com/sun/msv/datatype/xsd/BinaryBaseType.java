@@ -10,6 +10,7 @@
 package com.sun.msv.datatype.xsd;
 
 import org.relaxng.datatype.ValidationContext;
+import com.sun.msv.datatype.SerializationContext;
 
 /**
  * base implementation for "hexBinary" and "base64Binary" types.
@@ -41,6 +42,10 @@ abstract class BinaryBaseType extends ConcreteType implements Discrete {
 		// return byte[]
 		else			return v.rawData;
 	}
+	
+	// since we've overrided the createJavaObject method, the serializeJavaObject method
+	// needs to be overrided, too.
+	public abstract String serializeJavaObject( Object value, SerializationContext context );
 	
 	public Class getJavaObjectType() {
 		return byte[].class;

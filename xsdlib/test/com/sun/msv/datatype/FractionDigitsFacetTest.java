@@ -21,5 +21,6 @@ public class FractionDigitsFacetTest extends TestCase
 		assertEquals( 1, FractionDigitsFacet.countScale("5.9") );
 		assertEquals( 1, FractionDigitsFacet.countScale("99925.900") );
 		assertEquals( 5, FractionDigitsFacet.countScale("6.0000400") );
+		assertEquals( 5, FractionDigitsFacet.countScale("6.0030400") );
 	}
 }

@@ -45,7 +45,7 @@
 		<mkdir dir="./javadoc"/>
 		<javadoc	locale="en_US"
 					packagenames="com.sun.msv.*"
-					sourcepath="./src;${rngInterfaceSource}"
+					sourcepath="./src"
 					classpath="${java.class.path}"
 					destdir="javadoc"
 					windowtitle="Internal Use Only --- Sun Multi Schema XML Validator"
@@ -59,6 +59,8 @@
 				packagelistLoc="../shared/ExternalPackageLists/XML" />
 			<link offline="true" href="http://iso-relax.sourceforge.net/apiDoc/"
 				packagelistLoc="../shared/ExternalPackageLists/ISO-RELAX" />
+			<link offline="true" href="http://relaxng.sourceforge.net/datatype/java/apiDocs/"
+				packagelistLoc="../shared/ExternalPackageLists/RELAXNG" />
 		</javadoc>
 	</target>
 	
@@ -170,8 +172,8 @@
 		<!-- creates javadoc -->
 		<mkdir		dir="${stageName}/javadoc" />
 		<javadoc	locale="en_US"
-					packagenames="com.sun.msv.*,org.relaxng.datatype.*"
-					sourcepath="${stageName}/src:${rngInterfaceSource}:temp_xsdlibsrc"
+					packagenames="com.sun.msv.*"
+					sourcepath="${stageName}/src:temp_xsdlibsrc"
 					destdir="${stageName}/javadoc"
 					windowtitle="Sun Multi Schema XML Validator"
 					overview="${stageName}/src/com/sun/msv/overview.html"
@@ -190,6 +192,8 @@
 			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
 			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
 			<link offline="true" href="http://iso-relax.sourceforge.net/apiDoc/" packagelistLoc="ExternalPackageLists\ISO-RELAX" />
+			<link offline="true" href="http://relaxng.sourceforge.net/datatype/java/apiDocs/"
+				packagelistLoc="../shared/ExternalPackageLists/RELAXNG" />
 		</javadoc>
 		<delete dir="${stageName}" includes="**/*.vsd">
 			<!-- remove Visio files from release package -->

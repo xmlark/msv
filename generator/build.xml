@@ -119,8 +119,8 @@
 		<!-- creates javadoc -->
 		<mkdir		dir="${stageName}/javadoc" />
 		<javadoc	locale="en_US"
-					packagenames="com.sun.msv.generator.*,org.relaxng.datatype.*"
-					sourcepath="${stageName}/src:${rngInterfaceSource}"
+					packagenames="com.sun.msv.generator.*"
+					sourcepath="${stageName}/src"
 					destdir="${stageName}/javadoc"
 					windowtitle="Sun XML Generator"
 					public="yes"
@@ -130,6 +130,10 @@
 				packagelistLoc="../shared/ExternalPackageLists/CoreAPI" />
 			<link offline="true" href="http://xml.apache.org/apiDocs/"
 				packagelistLoc="../shared/ExternalPackageLists/XML" />
+			<link offline="true" href="http://xml.apache.org/apiDocs/"
+				packagelistLoc="../shared/ExternalPackageLists/XML" />
+			<link offline="true" href="http://relaxng.sourceforge.net/datatype/java/apiDocs/"
+				packagelistLoc="../shared/ExternalPackageLists/RELAXNG" />
 		</javadoc>
 
 		

@@ -11,10 +11,10 @@ package com.sun.msv.verifier.jarv;
 
 import org.iso_relax.verifier.*;
 import com.sun.msv.grammar.trex.TREXGrammar;
-import com.sun.msv.grammar.trex.TREXPatternPool;
+import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.reader.trex.TREXGrammarReader;
 import com.sun.msv.reader.util.IgnoreController;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.SAXParserFactory;
@@ -61,7 +61,7 @@ public class TREXFactoryImpl extends FactoryImpl
 		try
 		{
 			return new VerifierImpl(
-				new TREXDocumentDeclaration(g),
+				new REDocumentDeclaration(g),
 				factory.newSAXParser().getXMLReader() );
 		}
 		catch( javax.xml.parsers.ParserConfigurationException pce )

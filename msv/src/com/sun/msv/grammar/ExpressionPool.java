@@ -139,6 +139,41 @@ public class ExpressionPool {
 		else
 			return o;
 	}
+
+	public final Expression createConcur( Expression left, Expression right ) {
+		if( left==Expression.nullSet || right==Expression.nullSet )	return Expression.nullSet;
+		if( left==Expression.epsilon ) {
+			if( right.isEpsilonReducible() )	return Expression.epsilon;
+			else								return Expression.nullSet;
+		}
+		if( right==Expression.epsilon ) {
+			if( left.isEpsilonReducible() )		return Expression.epsilon;
+			else								return Expression.nullSet;
+		}
+		
+		// associative operators are grouped to the right
+		if( left instanceof ConcurExp ) {
+			final ConcurExp c = (ConcurExp)left;
+			return createConcur( c.exp1, createConcur(c.exp2, right) );
+		}
+		
+		return unify(new ConcurExp(left,right));
+	}
+	
+	public final Expression createInterleave( Expression left, Expression right ) {
+		if( left == Expression.epsilon )	return right;
+		if( right== Expression.epsilon )	return left;
+		if( left == Expression.nullSet
+		||  right== Expression.nullSet )	return Expression.nullSet;
+		
+		// associative operators are grouped to the right
+		if( left instanceof InterleaveExp ) {
+			final InterleaveExp i = (InterleaveExp)left;
+			return createInterleave( i.exp1, createInterleave(i.exp2, right) );
+		}
+		
+		return unify(new InterleaveExp(left,right));
+	}
 	
 	
 	/** hash table that contains all expressions currently known to this table. */

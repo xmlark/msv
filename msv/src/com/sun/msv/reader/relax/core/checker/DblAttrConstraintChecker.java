@@ -84,6 +84,8 @@ public class DblAttrConstraintChecker implements RELAXExpressionVisitorVoid
 	public void onRef( ReferenceExp exp )			{;}
 	
 	// those methods should also never be called in case of RELAX.
+	public void onConcur( ConcurExp exp )			{;}
+	public void onInterleave( InterleaveExp exp )	{;}
 	public void onElement( ElementExp exp )			{;}
 	public void onOneOrMore( OneOrMoreExp exp )		{ exp.exp.visit(this); }
 	public void onMixed( MixedExp exp )				{ exp.exp.visit(this); }

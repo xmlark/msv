@@ -18,10 +18,10 @@ import com.sun.msv.reader.ExpressionWithChildState;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class AllState extends ExpressionWithChildState {
-	// TODO: only element is allowed in all
+	// TODO: nothing but element is allowed inside <all/>
 	protected Expression castExpression( Expression exp, Expression child ) {
 		// first one.
 		if( exp==null )		return child;
-		return ((XMLSchemaReader)reader).getPool().createInterleave(exp,child);
+		return reader.pool.createInterleave(exp,child);
 	}
 }

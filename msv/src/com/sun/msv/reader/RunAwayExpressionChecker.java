@@ -64,14 +64,16 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 		exp.exp.visit(this);
 		leave(exp);
 	}
-	public void onChoice( ChoiceExp exp )			{ binaryVisit(exp); }
-	public void onOneOrMore( OneOrMoreExp exp )		{ unaryVisit(exp); }
-	public void onMixed( MixedExp exp )				{ unaryVisit(exp); }
-	public void onEpsilon()							{}
-	public void onNullSet()							{}
-	public void onAnyString()						{}
-	public void onSequence( SequenceExp exp )		{ binaryVisit(exp); }
-	public void onTypedString( TypedStringExp exp )	{}
+	public void onConcur( ConcurExp exp )				{ binaryVisit(exp);	}
+	public void onInterleave( InterleaveExp exp )		{ binaryVisit(exp);	}
+	public void onSequence( SequenceExp exp )			{ binaryVisit(exp); }
+	public void onChoice( ChoiceExp exp )				{ binaryVisit(exp); }
+	public void onOneOrMore( OneOrMoreExp exp )			{ unaryVisit(exp); }
+	public void onMixed( MixedExp exp )					{ unaryVisit(exp); }
+	public void onEpsilon()								{}
+	public void onNullSet()								{}
+	public void onAnyString()							{}
+	public void onTypedString( TypedStringExp exp )		{}
 	
 	protected final void binaryVisit( BinaryExp exp ) {
 		enter(exp);

@@ -19,7 +19,7 @@ import com.sun.msv.relaxns.verifier.IslandSchemaImpl;
 import com.sun.msv.relaxns.grammar.DeclImpl;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -35,7 +35,7 @@ public class TREXIslandSchema extends IslandSchemaImpl
 	
 	public TREXIslandSchema( TREXGrammar grammar )
 	{
-		super( new TREXDocumentDeclaration( grammar ) );
+		super( new REDocumentDeclaration( grammar ) );
 
 		this.grammar = grammar;
 		
@@ -48,29 +48,7 @@ public class TREXIslandSchema extends IslandSchemaImpl
 	
 	public void bind( SchemaProvider provider, ErrorHandler handler )
 	{
-		Binder binder = new TREXBinder(provider,handler,docDecl.getPool());
+		Binder binder = new Binder(provider,handler,docDecl.pool);
 		bind( grammar.namedPatterns, binder );
-	}
-	
-	protected class TREXBinder
-		extends Binder
-		implements TREXPatternVisitorExpression
-	{
-		protected TREXBinder(SchemaProvider provider,ErrorHandler errorHandler,ExpressionPool pool)
-		{
-			super(provider,errorHandler,pool);
-		}
-		
-		public Expression onInterleave( InterleavePattern exp )
-		{
-			return ((TREXPatternPool)pool).createInterleave(
-				exp.exp1.visit(this), exp.exp2.visit(this) );
-		}
-		
-		public Expression onConcur( ConcurPattern exp )
-		{
-			return ((TREXPatternPool)pool).createConcur(
-				exp.exp1.visit(this), exp.exp2.visit(this) );
-		}
 	}
 }

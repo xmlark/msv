@@ -42,8 +42,8 @@ public class TREXGrammar implements Grammar {
 	public Expression start;
 	public Expression getTopLevel() { return start; }
 	
-	/** TREXPatternPool that is associated with this grammar */
-	public final TREXPatternPool pool;
+	/** ExpressionPool that is associated with this grammar */
+	public final ExpressionPool pool;
 	public ExpressionPool getPool() { return pool; }
 	
 	/** in case of nested grammar, this variable points to the parent grammar.
@@ -70,11 +70,11 @@ public class TREXGrammar implements Grammar {
 	 *		this object is used to resolve &lt;ref&gt; element with parent
 	 *		attribute.
 	 */
-	public TREXGrammar( TREXPatternPool pool, TREXGrammar parentGrammar ) {
+	public TREXGrammar( ExpressionPool pool, TREXGrammar parentGrammar ) {
 		this.pool = pool;
 		this.parentGrammar = parentGrammar;
 	}
 	
-	public TREXGrammar( TREXPatternPool pool )	{ this(pool,null); }
-	public TREXGrammar() { this(new TREXPatternPool(),null); }
+	public TREXGrammar( ExpressionPool pool )	{ this(pool,null); }
+	public TREXGrammar() { this(new ExpressionPool(),null); }
 }

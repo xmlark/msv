@@ -13,12 +13,12 @@ import com.sun.msv.datatype.DataType;
 import com.sun.msv.datatype.StringType;
 import com.sun.msv.datatype.BooleanType;
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.ChoiceNameClass;
-import com.sun.msv.grammar.trex.TREXPatternPool;
 import com.sun.msv.grammar.trex.ElementPattern;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
@@ -31,7 +31,7 @@ import com.sun.msv.reader.ChoiceState;
 import com.sun.msv.reader.ExpressionState;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.GrammarReaderController;
-import com.sun.msv.reader.trex.TREXRunAwayExpressionChecker;
+import com.sun.msv.reader.RunAwayExpressionChecker;
 import com.sun.msv.reader.datatype.xsd.FacetState;
 import com.sun.msv.reader.datatype.xsd.SimpleTypeState;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
@@ -76,14 +76,14 @@ public class XMLSchemaReader extends GrammarReader {
 	public XMLSchemaReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory ) {
-		this( controller, parserFactory, new StateFactory(), new TREXPatternPool() );
+		this( controller, parserFactory, new StateFactory(), new ExpressionPool() );
 	}
 	
 	public XMLSchemaReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
 		StateFactory stateFactory,
-		TREXPatternPool pool ) {
+		ExpressionPool pool ) {
 		
 		super(controller,parserFactory,pool,new RootState(stateFactory.schemaHead(null)));
 		this.sfactory = stateFactory;
@@ -295,10 +295,6 @@ public class XMLSchemaReader extends GrammarReader {
 	/** namespace URI of XML Schema declarations. */
 	public static final String XMLSchemaNamespace = "http://www.w3.org/2001/XMLSchema";
 	public static final String XMLSchemaNamespace_old = "http://www.w3.org/2000/10/XMLSchema";
-	
-	public final TREXPatternPool getPool() {
-		return (TREXPatternPool)pool;
-	}
 	
 	private boolean issuedOldNamespaceWarning = false;
 	
@@ -616,7 +612,7 @@ public class XMLSchemaReader extends GrammarReader {
 		// undefined expressions may interfare with runaway expression check.
 		
 		// runaway expression check
-		TREXRunAwayExpressionChecker.check( this, grammar.topLevel );
+		RunAwayExpressionChecker.check( this, grammar.topLevel );
 		
 	}
 	

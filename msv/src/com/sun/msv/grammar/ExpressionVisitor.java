@@ -50,4 +50,6 @@ public interface ExpressionVisitor {
 	Object onAnyString();
 	Object onSequence( SequenceExp exp );
 	Object onTypedString( TypedStringExp exp );
+	Object onConcur( ConcurExp p );
+	Object onInterleave( InterleaveExp p );
 }

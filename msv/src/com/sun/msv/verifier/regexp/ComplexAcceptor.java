@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.verifier.regexp.trex;
+package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.datatype.ValidationContextProvider;
 import com.sun.msv.grammar.Expression;
@@ -24,7 +24,7 @@ public final class ComplexAcceptor extends ComplexAcceptorBaseImpl
 	public final ElementExp[]	owners;
 	
 	public ComplexAcceptor(
-		TREXDocumentDeclaration docDecl,
+		REDocumentDeclaration docDecl,
 		Expression combined,
 		Expression[] contentModels, ElementExp[] owners )
 	{

@@ -24,6 +24,6 @@ public class InterleaveState extends ExpressionWithChildState
 		// first one.
 		if( exp==null )		return child;
 		
-		return ((TREXGrammarReader)reader).getPool().createInterleave(exp,child);
+		return reader.pool.createInterleave(exp,child);
 	}
 }

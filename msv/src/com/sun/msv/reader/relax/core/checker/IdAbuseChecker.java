@@ -149,8 +149,11 @@ public class IdAbuseChecker implements RELAXExpressionVisitorVoid
 	public void onAnyString()					{}
 	public void onSequence( SequenceExp exp )	{}
 	public void onTypedString( TypedStringExp exp )	{ throw new Error(); }
-	public void onAttPool( AttPoolClause exp )			{ exp.exp.visit(this); }
-	public void onTag( TagClause exp )					{ throw new Error(); }
-	public void onElementRules( ElementRules exp )		{ throw new Error(); }
-	public void onHedgeRules( HedgeRules exp )			{ throw new Error(); }
+	public void onAttPool( AttPoolClause exp )		{ exp.exp.visit(this); }
+	public void onTag( TagClause exp )				{ throw new Error(); }
+	public void onElementRules( ElementRules exp )	{ throw new Error(); }
+	public void onHedgeRules( HedgeRules exp )		{ throw new Error(); }
+	public void onInterleave( InterleaveExp exp )	{ throw new Error(); }
+	public void onConcur( ConcurExp exp )			{ throw new Error(); }
+
 }

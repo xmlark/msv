@@ -1,7 +1,6 @@
 package com.sun.msv.writer.trex;
 
 import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.trex.*;
 
 /**
  * Visits all reachable expressions but do nothing.
@@ -9,7 +8,7 @@ import com.sun.msv.grammar.trex.*;
  * Note that unless the derived class do something, this implementation
  * will recurse infinitely.
  */
-public abstract class VisitorBase implements TREXPatternVisitorVoid {
+public abstract class VisitorBase implements ExpressionVisitorVoid {
 		
 	public void onRef( ReferenceExp exp ) {
 		exp.exp.visit(this);
@@ -24,11 +23,11 @@ public abstract class VisitorBase implements TREXPatternVisitorVoid {
 	public void onAnyString() {}
 	public void onTypedString( TypedStringExp exp ) {}
 		
-	public void onInterleave( InterleavePattern exp ) {
+	public void onInterleave( InterleaveExp exp ) {
 		onBinExp(exp);
 	}
 		
-	public void onConcur( ConcurPattern exp ) {
+	public void onConcur( ConcurExp exp ) {
 		onBinExp(exp);
 	}
 			

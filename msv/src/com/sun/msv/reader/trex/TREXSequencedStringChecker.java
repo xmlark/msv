@@ -28,7 +28,7 @@ import java.util.Set;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class TREXSequencedStringChecker implements TREXPatternVisitor
+class TREXSequencedStringChecker implements ExpressionVisitor
 {
 	private static final Object typedString = new Object();
 	private static final Object elements = new Object();
@@ -51,7 +51,7 @@ class TREXSequencedStringChecker implements TREXPatternVisitor
 		return exp.exp.visit(this);
 	}
 	
-	public Object onInterleave( InterleavePattern exp )
+	public Object onInterleave( InterleaveExp exp )
 	{
 		Object l = exp.exp1.visit(this);
 		Object r = exp.exp2.visit(this);
@@ -125,7 +125,7 @@ class TREXSequencedStringChecker implements TREXPatternVisitor
 		return merge( exp.exp1.visit(this), exp.exp2.visit(this) );
 	}
 	
-	public Object onConcur( ConcurPattern exp )
+	public Object onConcur( ConcurExp exp )
 	{
 		return merge( exp.exp1.visit(this), exp.exp2.visit(this) );
 	}

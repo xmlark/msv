@@ -19,7 +19,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
 import org.xml.sax.ErrorHandler;
 import com.sun.msv.grammar.*;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.relaxns.grammar.DeclImpl;
 import com.sun.msv.relaxns.grammar.ExternalElementExp;
 import com.sun.msv.relaxns.grammar.ExternalAttributeExp;
@@ -41,9 +41,9 @@ public abstract class IslandSchemaImpl implements IslandSchema
 	protected final Map attributesDecls = new java.util.HashMap();
 	
 	/** VGM to be used to create IslandVerifier. */
-	protected final TREXDocumentDeclaration docDecl;
+	protected final REDocumentDeclaration docDecl;
 	
-	protected IslandSchemaImpl( TREXDocumentDeclaration docDecl ) {
+	protected IslandSchemaImpl( REDocumentDeclaration docDecl ) {
 		this.docDecl = docDecl;
 	}
 	

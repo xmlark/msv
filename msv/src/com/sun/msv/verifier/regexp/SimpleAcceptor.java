@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.verifier.regexp.trex;
+package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.verifier.regexp.ElementToken;
 import com.sun.msv.verifier.regexp.ExpressionAcceptor;
@@ -42,7 +42,7 @@ public final class SimpleAcceptor extends ContentModelAcceptor
 	public final Object getOwnerType()	{ return owner; }
 
 	public SimpleAcceptor(
-		TREXDocumentDeclaration docDecl,
+		REDocumentDeclaration docDecl,
 		Expression combined,
 		ElementExp owner,
 		Expression continuation )

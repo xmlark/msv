@@ -28,6 +28,8 @@ public class AttributeFreeMarker implements ExpressionVisitorBoolean
 	protected final void mark( Expression exp ) { exp.visit(this); }
 	
 	public boolean onAttribute( AttributeExp exp )	{ return false; }
+	public boolean onInterleave( InterleaveExp exp ){ return onBinExp(exp); }
+	public boolean onConcur( ConcurExp exp )		{ return onBinExp(exp); }
 	public boolean onChoice( ChoiceExp exp )		{ return onBinExp(exp); }
 	public boolean onElement( ElementExp exp )		{ return true; }
 	public boolean onOneOrMore( OneOrMoreExp exp )	{ return onUnaryExp(exp); }

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.verifier.regexp.trex;
+package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ElementExp;
@@ -31,7 +31,7 @@ import java.util.Iterator;
 public class ContentModelAcceptor extends ExpressionAcceptor
 {
 	protected ContentModelAcceptor(
-		TREXDocumentDeclaration docDecl, Expression exp )
+		REDocumentDeclaration docDecl, Expression exp )
 	{
 		super(docDecl,exp);
 	}
@@ -69,8 +69,7 @@ public class ContentModelAcceptor extends ExpressionAcceptor
 			// in this special case, combined child pattern and primitive patterns are the same.
 			// therefore we don't need to keep track of primitive patterns.
 			return new SimpleAcceptor(
-				(TREXDocumentDeclaration)docDecl,
-				combined,
+				docDecl, combined,
 				(primitives==null)?null:primitives.owner,
 				continuation );
 		}
@@ -98,9 +97,7 @@ public class ContentModelAcceptor extends ExpressionAcceptor
 			i++;
 		}
 		
-		return new ComplexAcceptor(
-			(TREXDocumentDeclaration)docDecl,
-			combined, contents, owners );
+		return new ComplexAcceptor( docDecl, combined, contents, owners );
 	}
 	
 	// ContentModelAcceptor does not support type-assignment.

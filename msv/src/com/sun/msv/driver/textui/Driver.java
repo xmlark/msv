@@ -11,18 +11,18 @@ package com.sun.msv.driver.textui;
 
 import javax.xml.parsers.*;
 import java.io.File;
-import com.sun.msv.grammar.trex.util.TREXPatternPrinter;
 import com.sun.msv.grammar.xmlschema.*;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.grammar.relax.*;
 import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.util.ExpressionPrinter;
 import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.reader.dtd.DTDReader;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
 import com.sun.msv.relaxns.verifier.SchemaProviderImpl;
 import com.sun.msv.verifier.*;
 import com.sun.msv.verifier.identity.IDConstraintChecker;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.verifier.util.VerificationErrorHandlerImpl;
 import org.iso_relax.dispatcher.Dispatcher;
 import org.iso_relax.dispatcher.SchemaProvider;
@@ -127,7 +127,7 @@ public class Driver {
 			// other XML-based grammars: GrammarLoader will detect the language.
 		try {
 			if(dtdAsSchema) {
-				grammar = DTDReader.parse(is,new DebugController(warning,false),"",new TREXPatternPool());
+				grammar = DTDReader.parse(is,new DebugController(warning,false),"",new ExpressionPool());
 			} else {
 				grammar = GrammarLoader.loadSchema(is,new DebugController(warning,false),factory);
 			}
@@ -172,10 +172,10 @@ public class Driver {
 		else
 		if( grammar instanceof XMLSchemaGrammar )
 			// use verifier+identity constraint checker.
-			verifier = new XMLSchemaVerifier( new TREXDocumentDeclaration(grammar) );
+			verifier = new XMLSchemaVerifier( new REDocumentDeclaration(grammar) );
 		else
 			// validate normally by using Verifier.
-			verifier = new SimpleVerifier( new TREXDocumentDeclaration(grammar) );
+			verifier = new SimpleVerifier( new REDocumentDeclaration(grammar) );
 		
 		for( int i=0; i<fileNames.size(); i++ )	{
 			
@@ -212,16 +212,16 @@ public class Driver {
 	
 	public static void dumpTREX( TREXGrammar g ) throws Exception {
 		System.out.println("*** start ***");
-		System.out.println(TREXPatternPrinter.printFragment(g.start));
+		System.out.println(ExpressionPrinter.printFragment(g.start));
 		System.out.println("*** others ***");
 		System.out.print(
-			TREXPatternPrinter.fragmentInstance.printRefContainer(
+			ExpressionPrinter.fragmentInstance.printRefContainer(
 				g.namedPatterns ) );
 	}
 	
 	public static void dumpXMLSchema( XMLSchemaGrammar g ) throws Exception {
 		System.out.println("*** top level ***");
-		System.out.println(TREXPatternPrinter.printFragment(g.topLevel));
+		System.out.println(ExpressionPrinter.printFragment(g.topLevel));
 		
 		Iterator itr = g.schemata.values().iterator();
 		while(itr.hasNext()) {
@@ -237,37 +237,37 @@ public class Driver {
 		for( int i=0; i<es.length; i++ ) {
 			ElementDeclExp exp = (ElementDeclExp)es[i];
 			System.out.println( exp.name + "  : " +
-				TREXPatternPrinter.printContentModel(exp.self.contentModel) );
+				ExpressionPrinter.printContentModel(exp.self.contentModel) );
 		}
 		
 		System.out.println("*** complex types ***");
 		System.out.print(
-			TREXPatternPrinter.contentModelInstance.printRefContainer(
+			ExpressionPrinter.contentModelInstance.printRefContainer(
 				s.complexTypes ) );
 	}
 	
 	public static void dumpRELAXModule( RELAXModule m ) throws Exception {
 		
 		System.out.println("*** top level ***");
-		System.out.println(TREXPatternPrinter.printFragment(m.topLevel));
+		System.out.println(ExpressionPrinter.printFragment(m.topLevel));
 		
 		System.out.println("\n $$$$$$[ " + m.targetNamespace + " ]$$$$$$");
 		
 		System.out.println("*** elementRule ***");
 		System.out.print(
-			TREXPatternPrinter.fragmentInstance.printRefContainer(
+			ExpressionPrinter.fragmentInstance.printRefContainer(
 				m.elementRules ) );
 		System.out.println("*** hedgeRule ***");
 		System.out.print(
-			TREXPatternPrinter.fragmentInstance.printRefContainer(
+			ExpressionPrinter.fragmentInstance.printRefContainer(
 				m.hedgeRules ) );
 		System.out.println("*** attPool ***");
 		System.out.print(
-			TREXPatternPrinter.fragmentInstance.printRefContainer(
+			ExpressionPrinter.fragmentInstance.printRefContainer(
 				m.attPools ) );
 		System.out.println("*** tag ***");
 		System.out.print(
-			TREXPatternPrinter.fragmentInstance.printRefContainer(
+			ExpressionPrinter.fragmentInstance.printRefContainer(
 				m.tags ) );
 	}
 

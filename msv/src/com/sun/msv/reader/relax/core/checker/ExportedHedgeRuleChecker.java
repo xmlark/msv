@@ -52,6 +52,11 @@ public final class ExportedHedgeRuleChecker implements RELAXExpressionVisitorBoo
 	public boolean onTypedString( TypedStringExp exp )	{ return true; }
 	public boolean onAttPool( AttPoolClause exp )		{ throw new Error(); }	// should never be called
 	public boolean onTag( TagClause exp )				{ throw new Error(); }	// should never be called
+
+	// these two shall never be called in case of RELAX.
+	public boolean onInterleave( InterleaveExp exp )	{ throw new Error(); }
+	public boolean onConcur( ConcurExp exp )			{ throw new Error(); }
+	
 	public boolean onElementRules( ElementRules exp )
 	{
 		if(exp.ownerModule==module)		return true;

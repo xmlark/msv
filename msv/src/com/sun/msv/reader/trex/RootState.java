@@ -37,7 +37,7 @@ public class RootState extends SimpleState implements ExpressionOwner
 		{// other pattern element is specified.
 			// create wrapper grammar
 			final TREXGrammarReader reader = (TREXGrammarReader)this.reader;
-			reader.grammar = new TREXGrammar( reader.getPool(), null );
+			reader.grammar = new TREXGrammar( reader.pool, null );
 			simple = true;
 		}
 		

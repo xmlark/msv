@@ -59,7 +59,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 	 */
 	public Acceptor createChildAcceptor( StartTagInfo tag, StringRef errRef )
 	{
-		final CombinedChildContentExpCreator cccc = docDecl.getCombinedChildContentExp();
+		final CombinedChildContentExpCreator cccc = docDecl.cccec;
 		final StartTagInfoEx sti = new StartTagInfoEx(tag,docDecl);
 		
 		// obtains fully combined child content pattern
@@ -78,11 +78,11 @@ public abstract class ExpressionAcceptor implements Acceptor
 		if( com.sun.msv.driver.textui.Debug.debug )
 		{
 			System.out.println("accept start tag <"+ sti.qName+">. combined content pattern is");
-			System.out.println(com.sun.msv.grammar.trex.util.TREXPatternPrinter.printContentModel(e.content));
+			System.out.println(com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(e.content));
 			
 			if( e.continuation!=null )
 				System.out.println("continuation is:\n"+
-					com.sun.msv.grammar.trex.util.TREXPatternPrinter.printContentModel(e.continuation)
+					com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(e.continuation)
 					);
 			else
 				System.out.println("no continuation");
@@ -100,21 +100,21 @@ public abstract class ExpressionAcceptor implements Acceptor
 	
 	protected boolean stepForward( Token token, StringRef errRef )
 	{
-		Expression residual = docDecl.getResidualCalculator().calcResidual(
+		Expression residual = docDecl.resCalc.calcResidual(
 			expression, token );
 		
 		// if token is ignorable, make expression as so.
 		if( token.isIgnorable() )
-			residual = docDecl.getPool().createChoice( residual, expression );
+			residual = docDecl.pool.createChoice( residual, expression );
 		else
 			residual = residual;
 		
 		if( com.sun.msv.driver.textui.Debug.debug )
 		{
 			System.out.println("residual of stepForward("+token+")");
-			System.out.print(com.sun.msv.grammar.trex.util.TREXPatternPrinter.printContentModel(expression));
+			System.out.print(com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(expression));
 			System.out.print("   ->   ");
-			System.out.println(com.sun.msv.grammar.trex.util.TREXPatternPrinter.printContentModel(residual));
+			System.out.println(com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(residual));
 		}
 		
 		if( residual==Expression.nullSet )
@@ -156,7 +156,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 		{// successful transition
 			if( com.sun.msv.driver.textui.Debug.debug )
 				System.out.println("stepForwardByCont. :  " +
-					com.sun.msv.grammar.trex.util.TREXPatternPrinter.printContentModel(continuation));
+					com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(continuation));
 			expression = continuation;
 			return true;
 		}
@@ -187,7 +187,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 		if(ot==null)	expression.verifierTag = ot = new OptimizationTag();
 		
 		if(ot.stringCareLevel==ot.STRING_NOTCOMPUTED)
-			ot.stringCareLevel = docDecl.getStringCareLevelCalculator().calc(expression);
+			ot.stringCareLevel = StringCareLevelCalculator.calc(expression);
 		
 		return ot.stringCareLevel;
 	}
@@ -207,7 +207,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 		if(exp1==null || exp1==Expression.nullSet)	return exp2;
 		if(exp2==null || exp2==Expression.nullSet)	return exp1;
 		
-		return docDecl.getPool().createChoice(exp1,exp2);
+		return docDecl.pool.createChoice(exp1,exp2);
 	}
 	
 	/**
@@ -228,42 +228,42 @@ public abstract class ExpressionAcceptor implements Acceptor
 	 */
 	private final Acceptor createRecoveryAcceptors()
 	{
-		final CombinedChildContentExpCreator cccc = docDecl.getCombinedChildContentExp();
+		final CombinedChildContentExpCreator cccc = docDecl.cccec;
 		
 		// cccc leaves attributes. so we have to "remove" them.
 		// note the difference between pruning and removing.
 		// pruning replaces unconsumed attributes by nullSet, whereas removing
 		// replaces them by epsilon.
 		// since we are in error recovery, removing is what we want here.
-		final AttributeRemover ar = docDecl.getAttributeRemover();
+		final AttributeRemover ar = docDecl.attRemover;
 		
 		CombinedChildContentExpCreator.ExpressionPair combinedEoC =
 			cccc.get( expression, null, false, false );
 		
 		// get residual of EoC.
-		Expression eocr = docDecl.getResidualCalculator().calcResidual( expression, AnyElementToken.theInstance );
+		Expression eocr = docDecl.resCalc.calcResidual( expression, AnyElementToken.theInstance );
 		
 		CombinedChildContentExpCreator.ExpressionPair combinedEoC_EoCR =
 			cccc.continueGet( eocr, null, false, false );
 			// append result to the previous result.
 
 		// alter this.expression for error recovery
-		this.expression = docDecl.getPool().createChoice( this.expression, eocr );
+		this.expression = docDecl.pool.createChoice( this.expression, eocr );
 		
 		Expression continuation = mergeContinuation( combinedEoC.continuation, combinedEoC_EoCR.continuation );
 		if( continuation==null || continuation==Expression.nullSet )
 			continuation = this.expression;
 				
 		Expression contentModel =
-			docDecl.getPool().createChoice(combinedEoC.content,combinedEoC_EoCR.content);
+			docDecl.pool.createChoice(combinedEoC.content,combinedEoC_EoCR.content);
 		contentModel = contentModel.visit(ar);
 		
 		if( com.sun.msv.driver.textui.Debug.debug )
 		{
 			System.out.println("content model of recovery acceptor:"+
-				com.sun.msv.grammar.trex.util.TREXPatternPrinter.printContentModel(contentModel) );
+				com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(contentModel) );
 			System.out.println("continuation of recovery acceptor:"+
-				com.sun.msv.grammar.trex.util.TREXPatternPrinter.printSmallest(continuation) );
+				com.sun.msv.grammar.util.ExpressionPrinter.printSmallest(continuation) );
 		}
 		
 		// by passing null as elements of concern and
@@ -274,7 +274,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 	
 	protected Acceptor recover( StartTagInfoEx sti, StringRef errRef )
 	{
-		final CombinedChildContentExpCreator cccc = docDecl.getCombinedChildContentExp();
+		final CombinedChildContentExpCreator cccc = docDecl.cccec;
 		
 		// get combined expression before feeding attributes.
 		Expression e = cccc.get(expression,sti,false,true).content;
@@ -282,7 +282,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 		if( com.sun.msv.driver.textui.Debug.debug )
 		{
 			System.out.print("content model by tag name only:");
-			System.out.println(com.sun.msv.grammar.trex.util.TREXPatternPrinter.printContentModel(e));
+			System.out.println(com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(e));
 		}
 		
 		if( e==Expression.nullSet )
@@ -331,7 +331,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 			// so let's see what attribute is wrong.
 			for( int i=0; i<sti.attTokens.length; i++ ) {
 				
-				Expression r = docDecl.getAttributeFeeder().feed(
+				Expression r = docDecl.attFeeder.feed(
 					e, sti.attTokens[i], ignoreUndeclaredAttributes );
 				if( r!=Expression.nullSet ) {
 					e = r;
@@ -342,7 +342,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 				// its value may be wrong.
 				// try feeding wild card and see if it's accepted.
 				AttributeRecoveryToken rtoken = sti.attTokens[i].createRecoveryAttToken();
-				r = docDecl.getAttributeFeeder().feed(
+				r = docDecl.attFeeder.feed(
 					e, rtoken, ignoreUndeclaredAttributes );
 					
 				if( r==Expression.nullSet )
@@ -704,7 +704,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 			// TODO: reduce strength by converting concur to choice?
 			return null;
 		
-		e = e.visit(docDecl.getAttributePicker());
+		e = e.visit(docDecl.attPicker);
 				
 		if( e.isEpsilonReducible() )	throw new Error();	// assertion
 		// if attribute expression is epsilon reducible, then
@@ -761,7 +761,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 		// this residual corresponds to the expression we get
 		// when we replace thie unexpected token by one of expected tokens.
 		Expression recoveryResidual
-			= docDecl.getResidualCalculator().calcResidual(expression,srt);
+			= docDecl.resCalc.calcResidual(expression,srt);
 		
 		if( recoveryResidual==Expression.nullSet )
 		{
@@ -774,7 +774,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 		//  (1) ignore this token
 		//  (2) replace this token by a valid token.
 		// by the following choice implements both of them.
-		expression = docDecl.getPool().createChoice( expression, recoveryResidual );
+		expression = docDecl.pool.createChoice( expression, recoveryResidual );
 		
 		// TODO: check if expressions are complex
 		if( srt.failedTypes.size()==1 )
@@ -802,7 +802,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 	 * It basically provides what we were expected.
 	 */
 	protected String diagnoseUncompletedContent() {
-		final CombinedChildContentExpCreator cccc = docDecl.getCombinedChildContentExp();
+		final CombinedChildContentExpCreator cccc = docDecl.cccec;
 		cccc.get( expression, null, false, false );
 		
 		Set s = new java.util.HashSet();	// this set will receive possible tag names.

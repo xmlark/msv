@@ -12,7 +12,7 @@ package com.sun.msv.relaxns.verifier;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.verifier.Acceptor;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.datatype.ValidationContextProvider;
 import com.sun.msv.relaxns.grammar.DeclImpl;
 import com.sun.msv.util.StringRef;
@@ -27,7 +27,7 @@ import org.iso_relax.dispatcher.ElementDecl;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RulesAcceptor
-	extends com.sun.msv.verifier.regexp.trex.ComplexAcceptorBaseImpl
+	extends com.sun.msv.verifier.regexp.ComplexAcceptorBaseImpl
 {
 	protected final DeclImpl[]		owners;
 	
@@ -50,10 +50,10 @@ public class RulesAcceptor
 	}
 	
 	public RulesAcceptor(
-		TREXDocumentDeclaration docDecl,
+		REDocumentDeclaration docDecl,
 		DeclImpl[] rules )
 	{
-		super( docDecl, createCombined(docDecl.getPool(),rules), getContents(rules) );
+		super( docDecl, createCombined(docDecl.pool,rules), getContents(rules) );
 		owners = rules;
 	}
 	

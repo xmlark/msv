@@ -18,13 +18,13 @@ import com.sun.msv.relaxns.verifier.IslandSchemaImpl;
 import com.sun.msv.relaxns.grammar.DeclImpl;
 import com.sun.msv.relaxns.grammar.ExternalElementExp;
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.relax.RELAXModule;
 import com.sun.msv.grammar.relax.ElementRules;
 import com.sun.msv.grammar.relax.HedgeRules;
 import com.sun.msv.grammar.relax.AttPoolClause;
-import com.sun.msv.grammar.trex.TREXPatternPool;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import java.util.Set;
 import java.util.Iterator;
 
@@ -42,7 +42,7 @@ public class RELAXIslandSchema extends IslandSchemaImpl
 
 	public RELAXIslandSchema( RELAXModule module, Set pendingAnyOtherElements )
 	{
-		super( new TREXDocumentDeclaration(module) );
+		super( new REDocumentDeclaration(module) );
 		this.module = module;
 		this.pendingAnyOtherElements = pendingAnyOtherElements;
 		
@@ -81,7 +81,7 @@ public class RELAXIslandSchema extends IslandSchemaImpl
 			pendingAnyOtherElements = null;
 		}
 		
-		Binder binder = new Binder(provider,handler,docDecl.getPool());
+		Binder binder = new Binder(provider,handler,docDecl.pool);
 		bind( module.elementRules, binder );
 		bind( module.hedgeRules, binder );
 		bind( module.attPools, binder );

@@ -77,6 +77,20 @@ public class ElementsOfConcernCollector implements ExpressionVisitor
 			exp.exp2.visit(this);
 		return null;
 	}
+
+	public final Object onConcur( ConcurExp exp )
+	{
+		exp.exp1.visit(this);
+		exp.exp2.visit(this);
+		return null;
+	}
+	
+	public final Object onInterleave( InterleaveExp exp )
+	{
+		exp.exp1.visit(this);
+		exp.exp2.visit(this);
+		return null;
+	}
 	
 	public final Object onTypedString( TypedStringExp exp )	{ return null; }
 }

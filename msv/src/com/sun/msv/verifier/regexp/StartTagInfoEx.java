@@ -29,10 +29,10 @@ public class StartTagInfoEx extends StartTagInfo
 		attTokens = new AttributeToken[attributes.getLength()];
 		for( int i=0; i<attTokens.length; i++ )
 			attTokens[i] = new AttributeToken(
-				docDecl.getPool(),
+				docDecl.pool,
 				attributes.getURI(i),
 				attributes.getLocalName(i),
 				attributes.getValue(i),
-				context, docDecl.getResidualCalculator() );
+				context, docDecl.resCalc );
 	}
 }

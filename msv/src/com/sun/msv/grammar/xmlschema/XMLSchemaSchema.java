@@ -12,7 +12,6 @@ package com.sun.msv.grammar.xmlschema;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
-import com.sun.msv.grammar.trex.TREXPatternPool;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.ReferenceExp;
 import java.util.Map;
@@ -42,7 +41,7 @@ public class XMLSchemaSchema {
 	public final String targetNamespace;
 	
 	/** pool object which was used to construct this grammar. */
-	public final TREXPatternPool pool;
+	public final ExpressionPool pool;
 	
 	/** choice of all global element declarations. */
 	public Expression topLevel;

@@ -12,7 +12,6 @@ package com.sun.msv.grammar.xmlschema;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
-import com.sun.msv.grammar.trex.TREXPatternPool;
 import java.util.Map;
 
 /**
@@ -23,15 +22,15 @@ import java.util.Map;
 public class XMLSchemaGrammar implements Grammar {
 
 	public XMLSchemaGrammar() {
-		this( new TREXPatternPool() );
+		this( new ExpressionPool() );
 	}
 	
-	public XMLSchemaGrammar( TREXPatternPool pool ) {
+	public XMLSchemaGrammar( ExpressionPool pool ) {
 		this.pool = pool;
 	}
 	
 	/** pool object which was used to construct this grammar. */
-	protected final TREXPatternPool pool;
+	protected final ExpressionPool pool;
 	public final ExpressionPool getPool() {
 		return pool;
 	}

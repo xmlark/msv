@@ -11,7 +11,6 @@ package com.sun.msv.reader.trex;
 
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ReferenceExp;
-import com.sun.msv.grammar.trex.TREXPatternPool;
 import com.sun.msv.reader.SequenceState;
 import org.xml.sax.Locator;
 
@@ -75,10 +74,10 @@ public class DefineState extends SequenceState
 					ref.exp = exp;
 				else
 				if( combine.equals("interleave") )
-					ref.exp = ((TREXPatternPool)reader.pool).createInterleave( ref.exp, exp );
+					ref.exp = reader.pool.createInterleave( ref.exp, exp );
 				else
 				if( combine.equals("concur") )
-					ref.exp = ((TREXPatternPool)reader.pool).createConcur( ref.exp, exp );
+					ref.exp = reader.pool.createConcur( ref.exp, exp );
 				else
 					reader.reportError( TREXGrammarReader.ERR_BAD_COMBINE, combine );
 					// recover by ignoring this definition

@@ -15,11 +15,11 @@ import com.sun.msv.reader.xmlschema.XMLSchemaReader;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
 import com.sun.msv.relaxns.reader.RELAXNSReader;
+import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.relax.RELAXModule;
-import com.sun.msv.grammar.trex.TREXPatternPool;
 import com.sun.msv.grammar.trex.TREXGrammar;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
@@ -37,23 +37,23 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class GrammarLoader
 {
-	public static TREXDocumentDeclaration loadVGM( String url,
+	public static REDocumentDeclaration loadVGM( String url,
 		GrammarReaderController controller,
 		SAXParserFactory factory )
 		throws SAXException, ParserConfigurationException, java.io.IOException
 	{
 		Grammar g = _loadSchema(url,controller,factory);
-		if(g!=null)		return new TREXDocumentDeclaration(g);
+		if(g!=null)		return new REDocumentDeclaration(g);
 		else			return null;
 	}
 	
-	public static TREXDocumentDeclaration loadVGM( InputSource source,
+	public static REDocumentDeclaration loadVGM( InputSource source,
 		GrammarReaderController controller,
 		SAXParserFactory factory )
 		throws SAXException, ParserConfigurationException, java.io.IOException
 	{
 		Grammar g = _loadSchema(source,controller,factory);
-		if(g!=null)		return new TREXDocumentDeclaration(g);
+		if(g!=null)		return new REDocumentDeclaration(g);
 		else			return null;
 	}
 	
@@ -86,7 +86,7 @@ public class GrammarLoader
 		SAXParserFactory factory )
 		throws SAXException, ParserConfigurationException, java.io.IOException
 	{
-		TREXPatternPool pool = new TREXPatternPool();
+		ExpressionPool pool = new ExpressionPool();
 		
 		RELAXNSReader relaxNs = new RELAXNSReader(controller,factory,pool);
 		RELAXCoreReader relaxCore = new RELAXCoreReader(controller,factory,pool);

@@ -165,6 +165,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 	public final ExpressionPair continueGet( Expression combinedPattern, StartTagInfoEx info,
 		boolean feedAttributes, boolean checkTagName )
 	{
+		foundConcur = false;
 		this.tagInfo = info;
 		this.feedAttributes = feedAttributes;
 		this.checkTagName = checkTagName;
@@ -235,19 +236,48 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 	 * Apparently this is a bad design, but this design gives us better performance.
 	 */
 	protected final int numElementsOfConcern() { return numElements; }
-	
-	/**
-	 * checks if the number of elements of concern is only one.
-	 * If more than one elements of concern was found in the previous call to
-	 * get method, this method returns null.
-	 * Otherwise, returns the ElementExp, which is the only element of concern.
-	 */
-//	public final ElementExp isSingle()
-//	{
-//		if( result.next==null )		return result.owner;
-//		else						return null;
-//	}
 
+	/**
+	 * a flag that indicates that we have 'concur' element to combine
+	 * elements of concern.
+	 * 
+	 * If 'concur' is used, we have to keep track of combined child content
+	 * expression to detect errors. If 'concur' is not used, then
+	 * keeping track of all primitive child content expressions are enough
+	 * to detect errors.
+	 */
+	private boolean foundConcur;
+
+	public Object onConcur( ConcurExp exp )
+	{
+		foundConcur = true;
+		ExpressionPair p1 = (ExpressionPair)exp.exp1.visit(this);
+		ExpressionPair p2 = (ExpressionPair)exp.exp2.visit(this);
+		
+		return new ExpressionPair(
+			pool.createConcur(p1.content,p2.content),
+			pool.createConcur(p1.continuation,p2.continuation) );
+	}
+	public Object onInterleave( InterleaveExp exp )
+	{
+		ExpressionPair p1 = (ExpressionPair)exp.exp1.visit(this);
+		ExpressionPair p2 = (ExpressionPair)exp.exp2.visit(this);
+		
+		if(p2.content==Expression.nullSet)
+			return new ExpressionPair( p1.content,
+				pool.createInterleave(p1.continuation,exp.exp2) );
+		
+		if(p1.content==Expression.nullSet)
+			return new ExpressionPair( p2.content,
+				pool.createInterleave(p2.continuation,exp.exp1) );
+
+		// now the situation is (A,X)^(A,Y).
+		// so the continuation after eating A will be X^Y.
+		return new ExpressionPair(
+			pool.createChoice( p1.content, p2.content ),
+			pool.createInterleave( p1.continuation, p2.continuation ) );
+	}
+	
 	/**
 	 * checks if the result of 'get' method is not the union of all
 	 * elements of concern.
@@ -261,7 +291,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 	 *			the union of all elements of concern.
 	 *		false if otherwise.
 	 */
-	public boolean isComplex() { return false; }
+	public final boolean isComplex() { return foundConcur; }
 
 	
 	private static final ExpressionPair nullPair = new ExpressionPair(Expression.nullSet,Expression.nullSet);

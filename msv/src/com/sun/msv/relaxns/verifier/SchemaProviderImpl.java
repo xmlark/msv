@@ -19,8 +19,8 @@ import com.sun.msv.relaxns.grammar.RELAXGrammar;
 import com.sun.msv.relaxns.grammar.DeclImpl;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ReferenceExp;
-import com.sun.msv.grammar.trex.TREXPatternPool;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import java.util.Iterator;
 
 /**
@@ -32,7 +32,7 @@ public class SchemaProviderImpl extends AbstractSchemaProviderImpl {
 	
 	private final RELAXGrammar grammar;
 	private final DeclImpl[] topLevel;
-	protected final TREXDocumentDeclaration docDecl;
+	protected final REDocumentDeclaration docDecl;
 	
 	public IslandVerifier createTopLevelVerifier() {
 		return new TREXIslandVerifier(
@@ -46,7 +46,7 @@ public class SchemaProviderImpl extends AbstractSchemaProviderImpl {
 	 * the application should not call bind method.
 	 */
 	public SchemaProviderImpl( RELAXGrammar grammar ) {
-		this( grammar, new TREXDocumentDeclaration(grammar) ); 
+		this( grammar, new REDocumentDeclaration(grammar) ); 
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class SchemaProviderImpl extends AbstractSchemaProviderImpl {
 		return new SchemaProviderImpl( g );
 	}
 	
-	public SchemaProviderImpl( RELAXGrammar grammar, TREXDocumentDeclaration docDecl ) {
+	public SchemaProviderImpl( RELAXGrammar grammar, REDocumentDeclaration docDecl ) {
 		this.grammar = grammar;
 		this.docDecl = docDecl;
 		this.topLevel = new DeclImpl[]{new DeclImpl("##start",grammar.topLevel)};

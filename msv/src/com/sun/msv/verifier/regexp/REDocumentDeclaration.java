@@ -14,6 +14,7 @@ import com.sun.msv.verifier.DocumentDeclaration;
 import com.sun.msv.verifier.regexp.ExpressionAcceptor;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
 import java.util.Map;
 
 /**
@@ -24,37 +25,52 @@ import java.util.Map;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public abstract class REDocumentDeclaration implements DocumentDeclaration
+public class REDocumentDeclaration implements DocumentDeclaration
 {
-	/** obtains an ExpressionPool that can be used to play with expressions */
-	public abstract ExpressionPool	getPool();
+	protected final Expression topLevel;
 	
-	/** obtains a thread-local copy of ResidualCalculator */
-	public abstract ResidualCalculator getResidualCalculator();
+	/** ExpressionPool object that this VGM uses. */
+	public final ExpressionPool pool;
 	
-	/** obtains a thread-local copy of CombinedChildContentExpCreator */
-	public abstract CombinedChildContentExpCreator getCombinedChildContentExp();
+	public REDocumentDeclaration( Grammar grammar ) {
+		this( grammar.getTopLevel(), grammar.getPool() );
+	}
 	
-	/** obtains a thread-local copy of AttributeFeeder */
-	public abstract AttributeFeeder getAttributeFeeder();
+	public REDocumentDeclaration( Expression topLevel, ExpressionPool pool ) {
+		this.topLevel = topLevel;
+		this.pool = pool;
+		
+		resCalc		= new ResidualCalculator(pool);
+		attFeeder	= new AttributeFeeder(this);
+		attPicker	= new AttributePicker(pool);
+		attPruner	= new AttributePruner(pool);
+		attRemover	= new AttributeRemover(pool);
+		cccec		= new CombinedChildContentExpCreator(pool,attFeeder);
+		ecc			= new ElementsOfConcernCollector();
+	}
+	
+	
+	// thread local objects.
+	// for these function objects, one per a thread is enough.
+	protected final ResidualCalculator				resCalc;
+	protected final CombinedChildContentExpCreator	cccec;
+	protected final AttributeFeeder					attFeeder;
+	protected final AttributePruner					attPruner;
+	protected final AttributePicker					attPicker;
+	protected final AttributeRemover				attRemover;
+	protected final ElementsOfConcernCollector		ecc;
+								  
+	
 
-	/** obtains a thread-local copy of AttributePruner */
-	public abstract AttributePruner getAttributePruner();
-
-	/** obtains a thread-local copy of AttributeRemover */
-	public abstract AttributeRemover getAttributeRemover();
-
-	/** obtains a thread-local copy of AttributePicker */
-	public abstract AttributePicker getAttributePicker();
-
-	/** obtains a thread-local copy of ElementsOfConcernCollector */
-	public abstract ElementsOfConcernCollector getElementsOfConcernCollector();
+	public Acceptor createAcceptor()
+	{
+		// top-level Acceptor cannot have continuation.
+		return new SimpleAcceptor(this, topLevel, null, Expression.epsilon);
+	}
 	
-	/** obtains a thread-local copy of StringCareLevelCalculator */
-	public abstract StringCareLevelCalculator getStringCareLevelCalculator();
 	
-	/** obtains a thread-local copy of AttributeFreeMarker */
-	public abstract AttributeFreeMarker getAttributeFreeMarker();
+	
+	
 	
 	public String localizeMessage( String propertyName, Object[] args )
 	{

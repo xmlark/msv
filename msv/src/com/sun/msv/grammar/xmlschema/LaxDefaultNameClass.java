@@ -13,7 +13,7 @@ import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.grammar.NameClassVisitor;
-import com.sun.msv.grammar.trex.DifferenceNameClass;
+import com.sun.msv.grammar.DifferenceNameClass;
 import com.sun.msv.util.StringPair;
 import java.util.Set;
 

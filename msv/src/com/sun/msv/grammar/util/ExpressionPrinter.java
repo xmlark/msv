@@ -18,7 +18,8 @@ import com.sun.msv.grammar.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public abstract class ExpressionPrinter implements ExpressionVisitor {
+public class ExpressionPrinter implements ExpressionVisitor {
+	
 	
 	/** in this mode, reference to other expression is
 	 * one of the terminal symbol of stringnization.
@@ -33,6 +34,24 @@ public abstract class ExpressionPrinter implements ExpressionVisitor {
 	 * Suitable to dump the content model of element declarations.
 	 */
 	public final static int CONTENTMODEL = 0x002;
+
+	
+	
+	// singleton access
+	public static ExpressionPrinter fragmentInstance = new ExpressionPrinter(FRAGMENT);
+	public static ExpressionPrinter contentModelInstance = new ExpressionPrinter(CONTENTMODEL);
+	public static ExpressionPrinter smallestInstance = new ExpressionPrinter(CONTENTMODEL|FRAGMENT);
+	
+	public static String printFragment(Expression exp) {
+		return (String)exp.visit(fragmentInstance);
+	}
+	public static String printContentModel(Expression exp) {
+		return (String)exp.visit(contentModelInstance);
+	}
+	public static String printSmallest(Expression exp) {
+		return (String)exp.visit(smallestInstance);
+	}
+	
 	
 	/** this flag controls how expression will be stringnized */
 	protected final int mode;
@@ -96,6 +115,13 @@ public abstract class ExpressionPrinter implements ExpressionVisitor {
 			
 		return printBinary(exp,"|");
 	}
+
+	public Object onConcur( ConcurExp exp ) {
+		return printBinary(exp,"&");
+	}
+	public Object onInterleave( InterleaveExp exp ){
+		return printBinary(exp,"^");
+	}
 	
 	public Object onElement( ElementExp exp ) {
 		if( (mode&CONTENTMODEL)!=0 )
@@ -132,4 +158,9 @@ public abstract class ExpressionPrinter implements ExpressionVisitor {
 	public Object onTypedString( TypedStringExp exp ) {
 		return "$"+exp.dt.displayName();
 	}	
+
+	public Object onRef( ReferenceExp exp ) {
+		if( (mode&FRAGMENT)!=0 )		return "{"+exp.name+"}";
+		else							return exp.exp.visit(this);
+	}
 }

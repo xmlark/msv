@@ -93,18 +93,32 @@ public class AttributePicker implements ExpressionVisitorExpression
 		return exp.exp.visit(this);
 	}
 	
-	public Expression onSequence( SequenceExp exp )
-	{
+	public Expression onSequence( SequenceExp exp ) {
 		Expression ex1 = exp.exp1.visit(this);
 		Expression ex2 = exp.exp2.visit(this);
 		
-		if(ex1.isEpsilonReducible())
-		{
+		if(ex1.isEpsilonReducible()) {
 			if(ex2.isEpsilonReducible())	return Expression.epsilon;
 			else							return ex2;
 		}
 		else
 			return ex1;
+	}
+	
+	public Expression onInterleave( InterleaveExp exp ) {
+		Expression ex1 = exp.exp1.visit(this);
+		Expression ex2 = exp.exp2.visit(this);
+		
+		if(ex1.isEpsilonReducible()) {
+			if(ex2.isEpsilonReducible())	return Expression.epsilon;
+			else							return ex2;
+		} else
+			return ex1;
+	}
+	
+	public Expression onConcur( ConcurExp exp ) {
+		// abandon concur.
+		return Expression.epsilon;
 	}
 	
 	public Expression onChoice( ChoiceExp exp )

@@ -20,10 +20,10 @@ import com.sun.msv.relaxns.grammar.ExternalElementExp;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.verifier.regexp.ElementToken;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
-import com.sun.msv.verifier.regexp.trex.ContentModelAcceptor;
-import com.sun.msv.verifier.regexp.trex.ComplexAcceptor;
-import com.sun.msv.verifier.regexp.trex.SimpleAcceptor;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
+import com.sun.msv.verifier.regexp.ContentModelAcceptor;
+import com.sun.msv.verifier.regexp.ComplexAcceptor;
+import com.sun.msv.verifier.regexp.SimpleAcceptor;
 import com.sun.msv.util.StringRef;
 import java.util.Map;
 import java.util.Set;
@@ -227,7 +227,7 @@ class TREXIslandVerifier
 		// change current Acceptor to a new Acceptor.
 		// this new Acceptor is made to accept those satisfied rules only.
 		current = new ComplexAcceptor(
-			(TREXDocumentDeclaration)docDecl,
+			(REDocumentDeclaration)docDecl,
 			(ruleSet.length==0)?Expression.nullSet:Expression.epsilon,
 			epsilons, exps );
 

@@ -24,14 +24,11 @@ public class AttributeFeeder implements ExpressionVisitorExpression {
 	protected final REDocumentDeclaration	docDecl;
 	protected final ExpressionPool			pool;
 	
-	private final AttributeFreeMarker		marker;
-	
 	private Token							token;
 		
 	protected AttributeFeeder( REDocumentDeclaration docDecl ) {
 		this.docDecl	= docDecl;
-		this.pool		= docDecl.getPool();
-		this.marker		= docDecl.getAttributeFreeMarker();
+		this.pool		= docDecl.pool;
 	}
 
 	/** computes a residual without any attribute nodes,
@@ -53,7 +50,7 @@ public class AttributeFeeder implements ExpressionVisitorExpression {
 		}
 		
 		// prune unused attributes
-		return docDecl.getAttributePruner().prune(exp);
+		return docDecl.attPruner.prune(exp);
 	}
 	
 	public final Expression feed( Expression exp, AttributeToken token, boolean ignoreUndeclaredAttribute ) {
@@ -129,4 +126,13 @@ public class AttributeFeeder implements ExpressionVisitorExpression {
 	public Expression onTypedString( TypedStringExp exp ) {
 		return Expression.nullSet;
 	}
+	public Expression onConcur( ConcurExp exp ) {
+		return pool.createConcur( exp.exp1.visit(this), exp.exp2.visit(this) );
+	}
+	public Expression onInterleave( InterleaveExp exp ) {
+		return pool.createChoice(
+			pool.createInterleave( exp.exp1.visit(this), exp.exp2 ),
+			pool.createInterleave( exp.exp1, exp.exp2.visit(this) ) );
+	}
+
 }

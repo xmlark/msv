@@ -11,7 +11,6 @@ package com.sun.msv.relaxns.reader.relax;
 
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
-import com.sun.msv.grammar.trex.TREXPatternPool;
 import com.sun.msv.grammar.relax.RELAXModule;
 import com.sun.msv.reader.relax.core.RELAXCoreReader;
 import com.sun.msv.reader.GrammarReaderController;

@@ -13,6 +13,7 @@ import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.reader.State;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.trex.TREXGrammar;
+import com.sun.msv.reader.RunAwayExpressionChecker;
 
 /**
  * parses &lt;grammar&gt; element.
@@ -41,7 +42,7 @@ class GrammarState extends MergeGrammarState
 		super.startSelf();
 		
 		previousGrammar = getReader().grammar;
-		newGrammar = new TREXGrammar( getReader().getPool(), previousGrammar );
+		newGrammar = new TREXGrammar( reader.pool, previousGrammar );
 		getReader().grammar = newGrammar;
 	}
 
@@ -61,7 +62,7 @@ class GrammarState extends MergeGrammarState
 		}
 		
 		// make sure that there is no recurisve patterns.
-		TREXRunAwayExpressionChecker.check( getReader(), grammar.start );
+		RunAwayExpressionChecker.check( getReader(), grammar.start );
 		if( !reader.hadError )
 			// make sure that there is no sequenced string.
 			// when run-away expression is found, calling this method results in

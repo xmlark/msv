@@ -27,4 +27,6 @@ public interface ExpressionVisitorBoolean {
 	boolean onAnyString();
 	boolean onSequence( SequenceExp exp );
 	boolean onTypedString( TypedStringExp exp );
+	boolean onConcur( ConcurExp p );
+	boolean onInterleave( InterleaveExp p );
 }

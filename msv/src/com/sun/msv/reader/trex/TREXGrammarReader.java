@@ -60,7 +60,7 @@ public class TREXGrammarReader
 	public TREXGrammarReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory) {
-		this(controller,parserFactory,new StateFactory(),new TREXPatternPool());
+		this(controller,parserFactory,new StateFactory(),new ExpressionPool());
 	}
 	
 	/** full constructor */
@@ -68,7 +68,7 @@ public class TREXGrammarReader
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
 		StateFactory stateFactory,
-		TREXPatternPool pool ) {
+		ExpressionPool pool ) {
 		
 		super(controller,parserFactory,pool,new RootState());
 		this.sfactory = stateFactory;
@@ -139,11 +139,6 @@ public class TREXGrammarReader
 	private Stack nsStack = new Stack();
 	/** target namespace: currently active 'ns' attribute */
 	protected String targetNamespace ="";
-	
-	
-	protected TREXPatternPool getPool() {
-		return (TREXPatternPool)super.pool;
-	}
 	
 	
 	/**

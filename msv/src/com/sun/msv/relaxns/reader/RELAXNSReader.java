@@ -16,8 +16,8 @@ import com.sun.msv.datatype.DataType;
 import com.sun.msv.reader.relax.RELAXReader;
 import com.sun.msv.reader.*;
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.relax.RELAXModule;
-import com.sun.msv.grammar.trex.TREXPatternPool;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.relaxns.grammar.ExternalElementExp;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
@@ -42,7 +42,7 @@ public class RELAXNSReader
 	
 	/** loads RELAX grammar */
 	public static RELAXGrammar parse( String moduleURL,
-		SAXParserFactory factory, GrammarReaderController controller, TREXPatternPool pool )
+		SAXParserFactory factory, GrammarReaderController controller, ExpressionPool pool )
 	{
 		RELAXNSReader reader = new RELAXNSReader(controller,factory,pool);
 		reader.parse(moduleURL);
@@ -52,7 +52,7 @@ public class RELAXNSReader
 
 	/** loads RELAX grammar */
 	public static RELAXGrammar parse( InputSource module,
-		SAXParserFactory factory, GrammarReaderController controller, TREXPatternPool pool )
+		SAXParserFactory factory, GrammarReaderController controller, ExpressionPool pool )
 	{
 		RELAXNSReader reader = new RELAXNSReader(controller,factory,pool);
 		reader.parse(module);
@@ -63,7 +63,7 @@ public class RELAXNSReader
 	public RELAXNSReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
-		TREXPatternPool pool )
+		ExpressionPool pool )
 	{
 		super(controller,parserFactory,new StateFactory(),pool,new RootGrammarState());
 		grammar = new RELAXGrammar(pool);
@@ -104,13 +104,13 @@ public class RELAXNSReader
 		try {
 			if( language.equals( RELAXCoreNamespace ) )	// RELAX Core
 				return new com.sun.msv.relaxns.reader.relax.RELAXCoreIslandSchemaReader(
-					controller,parserFactory,(TREXPatternPool)pool,expectedTargetNamespace);
+					controller,parserFactory,(ExpressionPool)pool,expectedTargetNamespace);
 			if( language.equals( com.sun.msv.reader.trex.TREXGrammarReader.TREXNamespace ) ) // TREX
 				return new com.sun.msv.relaxns.reader.trex.TREXIslandSchemaReader(
 					new com.sun.msv.reader.trex.TREXGrammarReader(
 						controller,parserFactory,
 						new com.sun.msv.reader.trex.TREXGrammarReader.StateFactory(),
-						(TREXPatternPool)pool) );
+						pool) );
 
 		} catch( javax.xml.parsers.ParserConfigurationException e ) {
 			reportError( e, ERR_XMLPARSERFACTORY_EXCEPTION, e.getMessage() );

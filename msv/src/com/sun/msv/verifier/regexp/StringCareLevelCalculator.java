@@ -23,9 +23,17 @@ import com.sun.msv.verifier.Acceptor;
  */
 public class StringCareLevelCalculator implements ExpressionVisitorBoolean
 {
+	protected StringCareLevelCalculator(){}
+	
+	/** singleton instance. */
+	protected static final StringCareLevelCalculator theInstance = new StringCareLevelCalculator();
+	
 	// those expressions which are sensitive about string must return true
-	public boolean onAttribute( AttributeExp exp )		{ return false; }
+	public boolean onSequence( SequenceExp exp )		{ return exp.exp1.visit(this)||exp.exp2.visit(this); }
+	public boolean onInterleave( InterleaveExp exp )	{ return exp.exp1.visit(this)||exp.exp2.visit(this); }
+	public boolean onConcur( ConcurExp exp )			{ return exp.exp1.visit(this)||exp.exp2.visit(this); }
 	public boolean onChoice( ChoiceExp exp )			{ return exp.exp1.visit(this)||exp.exp2.visit(this); }
+	public boolean onAttribute( AttributeExp exp )		{ return false; }
 	public boolean onElement( ElementExp exp )			{ return false; }
 	public boolean onOneOrMore( OneOrMoreExp exp )		{ return exp.exp.visit(this); }
 	public boolean onMixed( MixedExp exp )				{ return true; }
@@ -33,16 +41,15 @@ public class StringCareLevelCalculator implements ExpressionVisitorBoolean
 	public boolean onEpsilon()							{ return false; }
 	public boolean onNullSet()							{ return false; }
 	public boolean onAnyString()						{ return true; }
-	public boolean onSequence( SequenceExp exp )		{ return exp.exp1.visit(this)||exp.exp2.visit(this); }
 	public boolean onTypedString( TypedStringExp exp )	{ return true; }
 
-	public int calc( Expression exp )
+	public static int calc( Expression exp )
 	{
 		// if and only if the top-level element is mixed,
 		// it can ignores strings.
 		if( exp instanceof MixedExp )	return Acceptor.STRING_IGNORE;
 		
-		if( exp.visit(this) )
+		if( exp.visit(theInstance) )
 			// somebody claims that string is necessary.
 			return Acceptor.STRING_STRICT;
 		else

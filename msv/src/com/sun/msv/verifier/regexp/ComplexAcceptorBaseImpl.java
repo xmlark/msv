@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.verifier.regexp.trex;
+package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.datatype.ValidationContextProvider;
 import com.sun.msv.grammar.Expression;
@@ -31,7 +31,7 @@ public class ComplexAcceptorBaseImpl extends ContentModelAcceptor
 	protected final Expression[]	contents;
 	
 	public ComplexAcceptorBaseImpl(
-		TREXDocumentDeclaration docDecl,
+		REDocumentDeclaration docDecl,
 		Expression combined,
 		Expression[] contents )
 	{
@@ -45,7 +45,7 @@ public class ComplexAcceptorBaseImpl extends ContentModelAcceptor
 		if(!super.stepForward(literal,context,refErr,refType))	return false;
 
 		final StringToken token = new StringToken(literal,context);
-		final ResidualCalculator res = docDecl.getResidualCalculator();
+		final ResidualCalculator res = docDecl.resCalc;
 
 		// some may become invalid, but at least one always remain valid
 		for( int i=0; i<contents.length; i++ )
@@ -58,7 +58,7 @@ public class ComplexAcceptorBaseImpl extends ContentModelAcceptor
 	{
 		if(!super.stepForward(child,errRef))	return false;
 
-		final ResidualCalculator res = docDecl.getResidualCalculator();
+		final ResidualCalculator res = docDecl.resCalc;
 		Token token;
 		
 		if( child instanceof SimpleAcceptor ) {

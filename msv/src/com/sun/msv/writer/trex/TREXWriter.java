@@ -10,7 +10,7 @@
 package com.sun.msv.writer.trex;
 
 import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.trex.*;
+import com.sun.msv.grammar.trex.TypedString;
 import com.sun.msv.datatype.*;
 import com.sun.msv.reader.trex.TREXGrammarReader;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
@@ -323,7 +323,7 @@ public class TREXWriter {
 	 * find an element or attribute, then use its namespace URI.
 	 */
 	protected String sniffDefaultNs( Expression exp ) {
-		return (String)exp.visit( new TREXPatternVisitor(){
+		return (String)exp.visit( new ExpressionVisitor(){
 			public Object onElement( ElementExp exp ) {
 				return sniff(exp.getNameClass());
 			}
@@ -342,10 +342,10 @@ public class TREXWriter {
 			public Object onSequence( SequenceExp exp ) {
 				return onBinExp(exp);
 			}
-			public Object onInterleave( InterleavePattern exp ) {
+			public Object onInterleave( InterleaveExp exp ) {
 				return onBinExp(exp);
 			}
-			public Object onConcur( ConcurPattern exp ) {
+			public Object onConcur( ConcurExp exp ) {
 				return onBinExp(exp);
 			}
 			public Object onBinExp( BinaryExp exp ) {
@@ -458,8 +458,8 @@ public class TREXWriter {
 
 	
 	
-	protected TREXNameClassVisitor nameClassWriter = createNameClassWriter();
-	protected TREXNameClassVisitor createNameClassWriter() {
+	protected NameClassVisitor nameClassWriter = createNameClassWriter();
+	protected NameClassVisitor createNameClassWriter() {
 		return new NameClassWriter();
 	}
 	protected PatternWriter patternWriter = createPatternWriter();
@@ -470,7 +470,7 @@ public class TREXWriter {
 	
 	
 	/** visits NameClass and writes its XML representation. */
-	protected class NameClassWriter implements TREXNameClassVisitor {
+	protected class NameClassWriter implements NameClassVisitor {
 		public Object onAnyName(AnyNameClass nc) {
 			element("anyName");
 			return null;
@@ -546,7 +546,7 @@ public class TREXWriter {
 	
 	/** visits Expression and writes its XML representation. */
 	protected class PatternWriter
-		implements TREXPatternVisitorVoid {
+		implements ExpressionVisitorVoid {
 		
 		public void onRef( ReferenceExp exp ) {
 			String uniqueName = (String)exp2name.get(exp);
@@ -587,7 +587,7 @@ public class TREXWriter {
 		 * this will sometimes makes content model smaller.
 		 */
 		public Expression simplify( Expression exp ) {
-			return exp.visit( new TREXPatternCloner(grammar.getPool()){
+			return exp.visit( new ExpressionCloner(grammar.getPool()){
 				public Expression onRef( ReferenceExp exp ) {
 					if( exp2name.containsKey(exp) )
 						// this ReferenceExp will be written as a named pattern.
@@ -618,12 +618,12 @@ public class TREXWriter {
 			element("anyString");
 		}
 	
-		public void onInterleave( InterleavePattern exp ) {
-			visitBinExp("interleave", exp, InterleavePattern.class );
+		public void onInterleave( InterleaveExp exp ) {
+			visitBinExp("interleave", exp, InterleaveExp.class );
 		}
 	
-		public void onConcur( ConcurPattern exp ) {
-			visitBinExp("interleave", exp, ConcurPattern.class );
+		public void onConcur( ConcurExp exp ) {
+			visitBinExp("concur", exp, ConcurExp.class );
 		}
 	
 		protected void onOptional( Expression exp ) {

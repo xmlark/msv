@@ -11,10 +11,10 @@ package com.sun.msv.verifier.jarv;
 
 import org.iso_relax.verifier.*;
 import com.sun.msv.grammar.relax.RELAXModule;
-import com.sun.msv.grammar.trex.TREXPatternPool;
+import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.reader.relax.core.RELAXCoreReader;
 import com.sun.msv.reader.util.IgnoreController;
-import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.SAXParserFactory;
@@ -33,7 +33,7 @@ public class RELAXCoreFactoryImpl extends FactoryImpl
 		throws VerifierConfigurationException,
 			   SAXException
 	{
-		TREXPatternPool pool = new TREXPatternPool();
+		ExpressionPool pool = new ExpressionPool();
 		RELAXModule m = RELAXCoreReader.parse(uri,factory,new IgnoreController(),pool);
 		if(m==null)		return null;	// load failure
 		return getVerifier(m);
@@ -43,7 +43,7 @@ public class RELAXCoreFactoryImpl extends FactoryImpl
 		throws VerifierConfigurationException,
 			   SAXException
 	{
-		TREXPatternPool pool = new TREXPatternPool();
+		ExpressionPool pool = new ExpressionPool();
 		RELAXModule m = RELAXCoreReader.parse(source,factory,new IgnoreController(),pool);
 		if(m==null)		return null;	// load failure
 		return getVerifier(m);
@@ -62,7 +62,7 @@ public class RELAXCoreFactoryImpl extends FactoryImpl
 	{
 		try {
 			return new VerifierImpl(
-				new TREXDocumentDeclaration(m),
+				new REDocumentDeclaration(m),
 				factory.newSAXParser().getXMLReader() );
 		} catch( javax.xml.parsers.ParserConfigurationException pce ) {
 			throw new VerifierConfigurationException(pce);

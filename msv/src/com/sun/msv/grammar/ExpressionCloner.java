@@ -45,6 +45,14 @@ public abstract class ExpressionCloner implements ExpressionVisitorExpression {
 		if(exp.exp1==np1 && exp.exp2==np2)	return exp;
 		else								return pool.createSequence(np1,np2);
 	}
+	public Expression onConcur( ConcurExp exp ) {
+		return pool.createConcur(
+			exp.exp1.visit(this), exp.exp2.visit(this));
+	}
+	public Expression onInterleave( InterleaveExp exp ) {
+		return pool.createInterleave(
+			exp.exp1.visit(this), exp.exp2.visit(this));
+	}
 	
 			
 	public Expression onEpsilon()	{ return Expression.epsilon; }

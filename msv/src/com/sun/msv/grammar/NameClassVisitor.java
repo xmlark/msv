@@ -21,4 +21,5 @@ public interface NameClassVisitor {
 	Object onSimple( SimpleNameClass nc );
 	Object onNsName( NamespaceNameClass nc );
 	Object onNot( NotNameClass nc );
+	Object onDifference( DifferenceNameClass nc );
 }

@@ -24,6 +24,7 @@ public class ElementDeclCollector implements ExpressionVisitorVoid
 	public void onAnyString() {}
 	public void onNullSet() {}
 	public void onTypedString( TypedStringExp exp ) {}
+	public void onList( ListExp exp ) {}
 	
 	public void onBinExp( BinaryExp exp )
 	{

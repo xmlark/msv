@@ -70,6 +70,7 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 	public void onChoice( ChoiceExp exp )				{ binaryVisit(exp); }
 	public void onOneOrMore( OneOrMoreExp exp )			{ unaryVisit(exp); }
 	public void onMixed( MixedExp exp )					{ unaryVisit(exp); }
+	public void onList( ListExp exp )					{ unaryVisit(exp); }
 	public void onEpsilon()								{}
 	public void onNullSet()								{}
 	public void onAnyString()							{}

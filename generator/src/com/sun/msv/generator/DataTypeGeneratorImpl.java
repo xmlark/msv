@@ -10,6 +10,8 @@
 package com.sun.msv.generator;
 
 import com.sun.msv.datatype.*;
+import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.ValidationContext;
 import java.util.Random;
 import java.util.Map;
 import java.util.Set;
@@ -49,7 +51,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 	 */
 	protected Set tokens;
 
-	public String generate( DataType dt, ContextProvider context ) {
+	public String generate( DataType dt, ContextProviderImpl context ) {
 		String s=null; int i;
 
 		// obtain previously generated values.
@@ -62,7 +64,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 			while(itr.hasNext()) {
 				String token = (String)itr.next();
 				try {// we have to be able to verify this without depending on the context.
-					if(dt.verify(token,null))
+					if(dt.allows(token,null))
 						vs.add(token);
 				}catch(Exception e){}
 			}
@@ -75,7 +77,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 			
 			for( i=0; i<100; i++ ) {
 				s = _generate(dt,context);
-				if( s!=null && dt.verify(s,context) ) {
+				if( s!=null && dt.allows(s,context) ) {
 					// memorize generated values so that we can use them later.
 					vs.add(s);
 					break;	// this value is OK.
@@ -103,13 +105,13 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 	 * actual generation.
 	 * this method can return an invalid value.
 	 */
-	protected String _generate( DataType dt, ContextProvider context ) {
+	protected String _generate( DataType dt, ContextProviderImpl context ) {
 		if( dt instanceof AnyURIType ) {
 			// anyURI
 			String r;
 			do {
 				r = generateString();	// any string should work
-			}while(!dt.verify(r,context));
+			}while(!dt.allows(r,context));
 			return r;
 		}
 		
@@ -167,7 +169,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 				Object[] items = e.values.toArray();
 				for( int i=0; i<10; i++ ) {
 					try {
-						return dt.convertToLexicalValue(items[random.nextInt(items.length)],context);
+						return dti.convertToLexicalValue(items[random.nextInt(items.length)],context);
 					} catch( Exception x ) { ; }
 				}
 			}
@@ -213,13 +215,13 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		return r;
 	}
 	
-	protected String generateUnion(UnionType ut, ContextProvider context ) {
+	protected String generateUnion(UnionType ut, ContextProviderImpl context ) {
 		try {
 			return generate( ut.memberTypes[random.nextInt(ut.memberTypes.length)], context );
 		} catch( GenerationException ge ) { return null; }
 	}
 		
-	protected String generateList(DataTypeImpl dti, ContextProvider context) {
+	protected String generateList(DataTypeImpl dti, ContextProviderImpl context) {
 		try {
 			ListType base = (ListType)dti.getConcreteType();
 			LengthFacet lf = (LengthFacet)dti.getFacetObject(dti.FACET_LENGTH);

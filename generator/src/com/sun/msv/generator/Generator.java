@@ -11,6 +11,7 @@ package com.sun.msv.generator;
 
 import org.w3c.dom.*;
 import org.xml.sax.ContentHandler;
+import org.relaxng.datatype.ValidationContext;
 import com.sun.msv.datatype.NmtokenType;
 import com.sun.msv.datatype.StringType;
 import com.sun.msv.grammar.*;
@@ -236,6 +237,27 @@ public class Generator implements ExpressionVisitorVoid
 			exp.exp ).visit(this);
 	}
 	
+	public void onList( ListExp exp ) {
+		Node oldNode = node;
+		
+		Element child = domDoc.createElement("dummy");
+		node = child;
+		
+		// generate children
+		exp.exp.visit(this);
+		
+		// several TextNode should have been appended to Element.
+		// so copy them to the parent with separators.
+		Node text;
+		while( (text = node.getFirstChild())!=null ) {
+			// append a delimiter
+			oldNode.appendChild( domDoc.createTextNode(" ") );
+			// append a token
+			node.removeChild(text);
+			oldNode.appendChild(text);
+		}
+	}
+	
 	public void onRef( ReferenceExp exp ) {
 		exp.exp.visit(this);
 	}
@@ -361,14 +383,14 @@ public class Generator implements ExpressionVisitorVoid
 	
 	public void onTypedString( TypedStringExp exp ) {
 		String value;
-		if( "ID".equals(exp.dt.getName()) ) {
+		if( "ID".equals(exp.dt.displayName()) ) {
 			do {
 				value = opts.dtGenerator.generate(NmtokenType.theInstance,getContext());
 			}while( ids.contains(value) );
 			ids.add(value);
 		}
 		else
-		if( "IDREF".equals(exp.dt.getName()) || "IDREFS".equals(exp.dt.getName()) ) {
+		if( "IDREF".equals(exp.dt.displayName()) || "IDREFS".equals(exp.dt.displayName()) ) {
 			Node n = domDoc.createTextNode("{TmpIDRef}");
 			node.appendChild(n);
 			idrefs.add(n); // memorize this node so that we can patch it later.
@@ -384,7 +406,7 @@ public class Generator implements ExpressionVisitorVoid
 		throw new Error("concur is not supported");
 	}
 	
-	protected ContextProvider getContext() {
+	protected ContextProviderImpl getContext() {
 		Node n = node;
 		while(!(n instanceof Element) && n!=null) {
 			if(n instanceof Attr)
@@ -393,7 +415,7 @@ public class Generator implements ExpressionVisitorVoid
 				n = n.getParentNode();
 		}
 		if(n==null)		throw new Error();	// impossible
-		return new ContextProvider((Element)n);
+		return new ContextProviderImpl((Element)n);
 	}
 	
 	/** generaets a name that satisfies given NameClass */

@@ -39,6 +39,11 @@ public abstract class ExpressionCloner implements ExpressionVisitorExpression {
 		if(exp.exp==body)		return exp;
 		else					return pool.createMixed( body );
 	}
+	public Expression onList( ListExp exp ) {
+		Expression body = exp.exp.visit(this);
+		if(exp.exp==body)		return exp;
+		else					return pool.createList( body );
+	}
 	public Expression onSequence( SequenceExp exp ) {
 		Expression np1 = exp.exp1.visit(this);
 		Expression np2 = exp.exp2.visit(this);

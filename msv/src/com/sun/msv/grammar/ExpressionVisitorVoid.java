@@ -21,6 +21,7 @@ public interface ExpressionVisitorVoid {
 	void onElement( ElementExp exp );
 	void onOneOrMore( OneOrMoreExp exp );
 	void onMixed( MixedExp exp );
+	void onList( ListExp exp );
 	void onRef( ReferenceExp exp );
 	void onEpsilon();
 	void onNullSet();

@@ -13,6 +13,7 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.ElementExp;
 import com.sun.tranquilo.verifier.*;
 import com.sun.tranquilo.verifier.regexp.ExpressionAcceptor;
+import com.sun.tranquilo.verifier.regexp.ElementToken;
 import com.sun.tranquilo.verifier.regexp.StartTagInfoEx;
 import com.sun.tranquilo.verifier.regexp.CombinedChildContentExpCreator;
 import com.sun.tranquilo.datatype.ValidationContextProvider;

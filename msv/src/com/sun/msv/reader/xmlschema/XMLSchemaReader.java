@@ -116,15 +116,6 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 		super(controller,parserFactory,pool,new RootState(stateFactory.schemaHead(null)));
 		this.sfactory = stateFactory;
 		
-		nilExpression = pool.createSequence(
-			// TODO: @nil preserves whiteSpace, or not?
-			// @nil
-			pool.createAttribute(
-				new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace,"nil"),
-				pool.createData( BooleanType.theInstance ) ),
-			// content must be empty
-			Expression.epsilon );
-		
 		// by putting them into ReferenceExp, # of expressions usually gets smaller
 		// because createSequence are right-associative and any attempt to extend
 		// this sequence will end up creating new SequenceExps.
@@ -135,18 +126,12 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 			pool.createSequence(
 			pool.createOptional(
 				pool.createAttribute(
-					new ChoiceNameClass(
-						new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace,"schemaLocation"),
-						new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace_old,"schemaLocation")
-					)
+					new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace,"schemaLocation")
 				)
 			),
 			pool.createOptional(
 				pool.createAttribute(
-					new ChoiceNameClass(
-						new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace,"noNamespaceSchemaLocation"),
-						new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace_old,"noNamespaceSchemaLocation")
-					)
+					new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace,"noNamespaceSchemaLocation")
 				)
 			)
 		);
@@ -208,9 +193,6 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 	
 	
 	
-	
-	/** content model that matches to the use of "nil". */
-	public final Expression nilExpression;
 	
 	/**
 	 * content model that matches to

@@ -1,4 +1,9 @@
 
+(RELAX)	When obsoleted type names like "uriReference" is used, Tranquilo
+		now reports a warning but pretend as if it saw a correct type.
+(both)	"Panic mode" is implemented: Tranquilo suppress excessive
+		error messages.
+(dt)	Updated datatype library to catch up with PR version of XML Schema.
 (both)  Fixed a bug that makes validation a little bit slower
 		and that sometimes interferes with type-assignment.
 (both)	Added "optimistic" type-assignment mechanism for Verifier.

@@ -7,7 +7,7 @@ Document written by Kohsuke Kawaguchi (kohsuke.kawaguchi@eng.sun.com)
 ======================================================================
 
 Sun XML Generator is a Java tool to generate various XML instances from
-several kinds of schemata. It supports DTD, RELAX Namespace, RELAX Core,
+several kinds of schemas. It supports DTD, RELAX Namespace, RELAX Core,
 TREX, and a subset of W3C XML Schema Part 1. This release includes
 software developed by the Apache Software Foundation [1].
 
@@ -33,7 +33,7 @@ CURRENT STATUS
 ----------------------------------------------------------------------
 
 This release relies on Sun Multi Schema Validator[2] for parsing
-schemata. Therefore, any limitation that applies to MSV will apply to
+schemas. Therefore, any limitation that applies to MSV will apply to
 this release.
 
 

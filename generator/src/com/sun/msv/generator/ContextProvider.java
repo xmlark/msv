@@ -85,7 +85,7 @@ final public class ContextProvider
 		
 		// not found. try parent
 		if( e.getParentNode() instanceof Element )
-			return findPredeclaredPrefix( (Element)e.getParentNode(), prefix );
+			return resolvePrefix( (Element)e.getParentNode(), prefix );
 		return null;	// not found
 	}
 }

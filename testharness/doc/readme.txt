@@ -39,5 +39,22 @@ Your classpath must include junit.jar, msv.jar and msvDriver.jar.
 
 
 
+----------------------------------------------------------------------
+WRITING AN ADAPTOR
+----------------------------------------------------------------------
+
+This framework provides the core functionality to parse test suite
+files and perform tests by them.  However, to use this framework with
+your own RELAX NG processor, you need to write an "driver", which
+bridges the framework and the processor.
+
+To implement a driver, you need to write two classes that implements
+the org.relaxng.testharness.validator.IValidator interface and
+the org.relaxng.testharness.validator.ISchema interface. 
+
+See msvDriver-src.zip for an example. It should be easy if the processor
+supports SAX or DOM based input.
+
+
 ======================================================================
 END OF README

@@ -113,7 +113,7 @@ public class DatatypeFactory {
 	 * @return
 	 *		A non-null valid datatype object.
 	 */
-	public static XSDatatype getTypeByName( String dataTypeName ) throws DatatypeException {
+	public synchronized static XSDatatype getTypeByName( String dataTypeName ) throws DatatypeException {
 		XSDatatype dt = (XSDatatype)builtinType.get(dataTypeName);
 		if(dt!=null)	return dt;
 		

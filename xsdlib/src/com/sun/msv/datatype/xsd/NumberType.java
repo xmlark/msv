@@ -13,16 +13,17 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
- * "number" type.
+ * "decimal" type.
  * 
- * See http://www.w3.org/TR/xmlschema-2/#number for the spec
+ * See http://www.w3.org/TR/xmlschema-2/#decimal for the spec.
+ * It was once known as "number" type.
  * 
  * @author	Kohsuke Kawaguchi
  */
 public class NumberType extends ConcreteType implements Comparator
 {
 	public static final NumberType theInstance = new NumberType();
-	private NumberType() { super("number"); }
+	private NumberType() { super("decimal"); }
 	
 	/** constant */
 	private static final BigInteger the10 = new BigInteger("10");

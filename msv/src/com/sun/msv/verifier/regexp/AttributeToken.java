@@ -81,7 +81,7 @@ public class AttributeToken extends Token
 		return new AttributeRecoveryToken( docDecl, namespaceURI, localName, qName, value );
 	}
 	
-	boolean match( AttributeExp exp ) {
+	public boolean match( AttributeExp exp ) {
 		// Attribute name must meet the constraint of NameClass
 		if(!exp.nameClass.accepts(namespaceURI,localName))	return false;
 		

@@ -13,6 +13,7 @@ import com.sun.msv.datatype.DatabindableDatatype;
 import com.sun.msv.driver.textui.DebugController;
 import com.sun.msv.grammar.AttributeExp;
 import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.util.ExpressionPrinter;
 import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.verifier.DocumentDeclaration;
@@ -78,7 +79,7 @@ public class PSVIDump implements TypedContentHandler {
 			System.out.print("  ");
 	}
 
-	
+	private ExpressionPool pool = new ExpressionPool();
 	
 //	
 // TypedContentHandler callbacks
@@ -105,7 +106,8 @@ public class PSVIDump implements TypedContentHandler {
 		// this parameter tells you the type assigned to this attribute.
 		
 		// for starter, use ExpressionPrinter to print a content model.
-		System.out.println( ExpressionPrinter.printContentModel(type.exp) );
+		System.out.println( ExpressionPrinter.printContentModel(
+			type.exp.getExpandedExp(pool)) );
 	}
 	
 	public void endAttributePart() {
@@ -146,7 +148,8 @@ public class PSVIDump implements TypedContentHandler {
 		// this parameter tells you the type assigned to this element.
 		
 		// for starter, use ExpressionPrinter to print a content model.
-		System.out.println( ExpressionPrinter.printContentModel(type.contentModel) );
+		System.out.println( ExpressionPrinter.printContentModel(
+			type.contentModel.getExpandedExp(pool)) );
 	}
 	
 	

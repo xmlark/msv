@@ -90,7 +90,7 @@ public class XSAcceptor extends SimpleAcceptor {
 		// xsi:*** attribute is ignored.
 		// TODO: maybe we should issue an error for unrecognized xsi:*** attributes.
 		if( token.namespaceURI.equals(XSINamespace) ) {
-			token.matchedExp = _docDecl.xsiAttExp;
+			token.match(_docDecl.xsiAttExp);
 			return true;
 		}
 		return super.onAttribute( token, refErr );

@@ -21,7 +21,7 @@ public abstract class RangeFacet extends DataTypeWithValueConstraintFacet {
 	public final Object limitValue;
 
 	protected RangeFacet( String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets )
-		throws BadTypeException {
+		throws DatatypeException {
 		super(typeName,baseType,facetName,facets);
 		limitValue = facets.getFacet(facetName);
 	}

@@ -117,11 +117,11 @@ public class CommandLineTester
 			
 				help();
 			}
-			catch( BadTypeException bte )
+			catch( DatatypeException bte )
 			{// this exception happens in cases like:
 				// 1. unapplicable facet is added ("minInclusive" for string, etc.)
 				// 2. 
-				System.out.println("BadTypeException: " +bte.getMessage() );
+				System.out.println("DatatypeException: " +bte.getMessage() );
 			}
 			catch( java.util.NoSuchElementException nse )
 			{// error in command line parsing.

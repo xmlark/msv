@@ -25,7 +25,7 @@ public class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 	public final int scale;
 
 	public FractionDigitsFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
-		throws BadTypeException {
+		throws DatatypeException {
 		super( typeName, baseType, FACET_FRACTIONDIGITS, facets );
 		
 		scale = facets.getNonNegativeInteger(FACET_FRACTIONDIGITS);
@@ -33,9 +33,8 @@ public class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 		// loosened facet check
 		DataTypeWithFacet o = baseType.getFacetObject(FACET_FRACTIONDIGITS);
 		if(o!=null && ((FractionDigitsFacet)o).scale < this.scale )
-			throw new BadTypeException(
-				BadTypeException.ERR_LOOSENED_FACET,
-				FACET_FRACTIONDIGITS, o.displayName() );
+			throw new DatatypeException( localize( ERR_LOOSENED_FACET,
+				FACET_FRACTIONDIGITS, o.displayName() ) );
 		
 		// consistency with precision is checked in XSDatatypeImpl.derive method.
 	}

@@ -89,7 +89,7 @@ class TestDriver implements ErrorReceiver
 		return false;
 	}
 
-	public boolean reportTestCaseError( XSDatatype baseType, TypeIncubator incubator, BadTypeException e ) {
+	public boolean reportTestCaseError( XSDatatype baseType, TypeIncubator incubator, DatatypeException e ) {
 /*
 		System.err.println("---- warning ----");
 		System.err.println("test case error");

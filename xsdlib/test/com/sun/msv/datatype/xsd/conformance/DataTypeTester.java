@@ -162,7 +162,7 @@ public class DataTypeTester
 			{
 				typeObj = ti.derive("anonymous");
 			}
-			catch( BadTypeException bte )
+			catch( DatatypeException bte )
 			{
 				err.reportTestCaseError(baseType,ti,bte);
 			}

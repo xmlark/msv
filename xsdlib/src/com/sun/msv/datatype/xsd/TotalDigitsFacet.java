@@ -24,7 +24,7 @@ public class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 	public final int		precision;
 
 	public TotalDigitsFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
-		throws BadTypeException {
+		throws DatatypeException {
 		super( typeName, baseType, FACET_TOTALDIGITS, facets );
 		
 		precision = facets.getPositiveInteger(FACET_TOTALDIGITS);
@@ -32,9 +32,8 @@ public class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 		// loosened facet check
 		DataTypeWithFacet o = baseType.getFacetObject(FACET_TOTALDIGITS);
 		if(o!=null && ((TotalDigitsFacet)o).precision < this.precision )
-			throw new BadTypeException(
-				BadTypeException.ERR_LOOSENED_FACET,
-				FACET_TOTALDIGITS, o.displayName() );
+			throw new DatatypeException( localize( ERR_LOOSENED_FACET,
+				FACET_TOTALDIGITS, o.displayName() ) );
 		
 		// consistency with scale is checked in XSDatatypeImpl.derive method.
 	}

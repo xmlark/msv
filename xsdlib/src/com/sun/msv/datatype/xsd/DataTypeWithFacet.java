@@ -39,13 +39,13 @@ public abstract class DataTypeWithFacet extends XSDatatypeImpl
 	
 	/** constructor for facets other than WhiteSpaceFacet */
 	DataTypeWithFacet( String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets )
-		throws BadTypeException {
+		throws DatatypeException {
 		this( typeName, baseType, facetName, facets, baseType.whiteSpace );
 	}
 	
 	/** constructor for WhiteSpaceFacet */
 	DataTypeWithFacet( String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets, WhiteSpaceProcessor whiteSpace )
-		throws BadTypeException {
+		throws DatatypeException {
 		super(typeName, whiteSpace);
 		this.baseType = baseType;
 		this.facetName = facetName;
@@ -59,9 +59,9 @@ public abstract class DataTypeWithFacet extends XSDatatypeImpl
 		{
 		case APPLICABLE:	return;	// this facet is applicable to this type. no problem.
 		case NOT_ALLOWED:
-			throw new BadTypeException( BadTypeException.ERR_NOT_APPLICABLE_FACET, facetName );
+			throw new DatatypeException( localize(ERR_NOT_APPLICABLE_FACET, facetName) );
 		case FIXED:
-			throw new BadTypeException( BadTypeException.ERR_OVERRIDING_FIXED_FACET, facetName );
+			throw new DatatypeException( localize(ERR_OVERRIDING_FIXED_FACET, facetName) );
 		}
 	}
 	

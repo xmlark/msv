@@ -26,13 +26,12 @@ public final class ListType extends ConcreteType implements Discrete {
 	/**
 	 * derives a new datatype from atomic datatype by list
 	 */
-	public ListType( String newTypeName, XSDatatypeImpl itemType )
-		throws BadTypeException {
+	public ListType( String newTypeName, XSDatatypeImpl itemType ) throws DatatypeException {
 		super(newTypeName);
 		
 		if(itemType.isFinal( DERIVATION_BY_LIST ))
 			// derivation by list is not applicable
-			throw new BadTypeException( BadTypeException.ERR_INVALID_ITEMTYPE );
+			throw new DatatypeException( localize(ERR_INVALID_ITEMTYPE) );
 		
 		this.itemType = itemType;
 	}

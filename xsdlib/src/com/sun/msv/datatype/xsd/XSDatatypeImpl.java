@@ -122,6 +122,10 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 	public static String localize( String prop, Object arg1, Object arg2 ) {
 		return localize( prop, new Object[]{arg1,arg2} );
 	}
+	public static String localize( String prop, Object arg1, Object arg2, Object arg3 ) {
+		return localize( prop, new Object[]{arg1,arg2,arg3} );
+	}
+	
 	
 	public static final String ERR_INAPPROPRIATE_FOR_TYPE =
 		"DataTypeErrorDiagnosis.InappropriateForType";
@@ -145,4 +149,42 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 		"DataTypeErrorDiagnosis.Pattern.1";
 	public static final String ERR_PATTERN_MANY =
 		"DataTypeErrorDiagnosis.Pattern.Many";
+
+
+	
+	public static final String ERR_INVALID_ITEMTYPE =
+		"BadTypeException.InvalidItemType";
+	public static final String ERR_INVALID_MEMBER_TYPE =
+		"BadTypeException.InvalidMemberType";
+	public static final String ERR_INVALID_BASE_TYPE =
+		"BadTypeException.InvalidBaseType";
+	public static final String ERR_INVALID_WHITESPACE_VALUE =
+		"WhiteSpaceProcessor.InvalidWhiteSpaceValue";
+	public static final String ERR_PARSE_ERROR = "PatternFacet.ParseError";
+	
+	public static final String ERR_INVALID_VALUE_FOR_THIS_TYPE =
+		"EnumerationFacet.InvalidValueForThisType";
+	public final static String ERR_FACET_MUST_BE_NON_NEGATIVE_INTEGER =
+		"BadTypeException.FacetMustBeNonNegativeInteger";
+	public final static String ERR_FACET_MUST_BE_POSITIVE_INTEGER =
+		"BadTypeException.FacetMustBePositiveInteger";
+	public final static String ERR_OVERRIDING_FIXED_FACET =
+		"BadTypeException.OverridingFixedFacet";
+	public final static String ERR_INCONSISTENT_FACETS_1 =
+		"InconsistentFacets.1";
+	public final static String ERR_INCONSISTENT_FACETS_2 =
+		"InconsistentFacets.2";
+	public final static String ERR_X_AND_Y_ARE_EXCLUSIVE =
+		"XAndYAreExclusive";
+	public final static String ERR_LOOSENED_FACET =
+		"LoosenedFacet";
+	public final static String ERR_SCALE_IS_GREATER_THAN_PRECISION =
+		"PrecisionScaleFacet.ScaleIsGraterThanPrecision";
+	public static final String ERR_DUPLICATE_FACET =
+		"BadTypeException.DuplicateFacet";
+	public static final String ERR_NOT_APPLICABLE_FACET =
+		"BadTypeException.NotApplicableFacet";
+	public static final String ERR_EMPTY_UNION =
+		"BadTypeException.EmptyUnion";
+
 }

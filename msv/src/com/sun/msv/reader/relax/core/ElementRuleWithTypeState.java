@@ -9,9 +9,8 @@
  */
 package com.sun.msv.reader.relax.core;
 
-//import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.DatatypeException;
 import com.sun.msv.reader.State;
-import com.sun.msv.datatype.xsd.BadTypeException;
 import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.datatype.xsd.TypeIncubator;
 import com.sun.msv.grammar.Expression;
@@ -41,7 +40,7 @@ public class ElementRuleWithTypeState extends ElementRuleBaseState implements Fa
 	protected Expression getContentModel() {
 		try {
 			return reader.pool.createTypedString( incubator.derive(null) );
-		} catch( BadTypeException e ) {
+		} catch( DatatypeException e ) {
 			// derivation failed
 			reader.reportError( e, reader.ERR_BAD_TYPE, e.getMessage() );
 			// recover by using harmless expression. anything will do.

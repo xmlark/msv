@@ -21,7 +21,7 @@ import org.relaxng.datatype.ValidationContext;
 public class WhiteSpaceFacet extends DataTypeWithFacet {
 	
 	WhiteSpaceFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
-		throws BadTypeException {
+		throws DatatypeException {
 		super(typeName, baseType, FACET_WHITESPACE, facets,
 			WhiteSpaceProcessor.get( (String)facets.getFacet(FACET_WHITESPACE)) );
 		
@@ -31,9 +31,8 @@ public class WhiteSpaceFacet extends DataTypeWithFacet {
 			d=baseType.getFacetObject(FACET_WHITESPACE);
 			if(d==null)	d = getConcreteType();
 			
-			throw new BadTypeException(
-				BadTypeException.ERR_LOOSENED_FACET,
-				FACET_WHITESPACE, d.displayName() );
+			throw new DatatypeException( localize(
+				ERR_LOOSENED_FACET,	FACET_WHITESPACE, d.displayName() ));
 		}
 		
 		// consistency with minLength/maxLength is checked in XSDatatypeImpl.derive method.

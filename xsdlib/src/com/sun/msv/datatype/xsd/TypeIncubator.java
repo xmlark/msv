@@ -48,15 +48,16 @@ public class TypeIncubator {
 	 *		when given facet is already specified
 	 */
 	public void add( String name, String strValue, boolean fixed,
-					 ValidationContext context )
-		throws BadTypeException {
+					 ValidationContext context ) throws DatatypeException {
 		// checks applicability of the facet
 		switch( baseType.isFacetApplicable(name) ) {
 		case XSDatatypeImpl.APPLICABLE:	break;
 		case XSDatatypeImpl.FIXED:
-			throw new BadTypeException( BadTypeException.ERR_OVERRIDING_FIXED_FACET, name );
+			throw new DatatypeException( XSDatatypeImpl.localize(
+				XSDatatypeImpl.ERR_OVERRIDING_FIXED_FACET, name ) );
 		case XSDatatypeImpl.NOT_ALLOWED:
-			throw new BadTypeException( BadTypeException.ERR_NOT_APPLICABLE_FACET, name );
+			throw new DatatypeException( XSDatatypeImpl.localize(
+				XSDatatypeImpl.ERR_NOT_APPLICABLE_FACET, name ) );
 		default:
 			throw new Error();
 		}
@@ -66,9 +67,9 @@ public class TypeIncubator {
 		if( isValueFacet(name) ) {
 			value = baseType.createValue(strValue,context);
 			if(value==null)
-				throw new BadTypeException(
-					BadTypeException.ERR_INVALID_VALUE_FOR_THIS_TYPE,
-					strValue, baseType.displayName() );
+				throw new DatatypeException( XSDatatypeImpl.localize(
+					XSDatatypeImpl.ERR_INVALID_VALUE_FOR_THIS_TYPE,
+					strValue, baseType.displayName() ) );
 		}
 		else
 			value = strValue;
@@ -87,8 +88,8 @@ public class TypeIncubator {
 			fi.fixed |= fixed;
 		} else {
 			if( impl.containsKey(name) )
-				throw new BadTypeException(
-					BadTypeException.ERR_DUPLICATE_FACET, name );
+				throw new DatatypeException( XSDatatypeImpl.localize(
+					XSDatatypeImpl.ERR_DUPLICATE_FACET, name ) );
 			impl.put(name, new FacetInfo(value,fixed));
 		}
 	}
@@ -114,10 +115,11 @@ public class TypeIncubator {
 	 *		For example, not applicable facets are applied, or enumeration
 	 *		has invalid values, ... things like that.
 	 */
-	public XSDatatypeImpl derive( String newName )
-		throws BadTypeException {
-		if( baseType.isFinal(XSDatatypeImpl.DERIVATION_BY_RESTRICTION) )
-			throw new BadTypeException(BadTypeException.ERR_INVALID_BASE_TYPE, baseType.displayName() );
+	public XSDatatypeImpl derive( String newName ) throws DatatypeException {
+		
+		if( baseType.isFinal(XSDatatype.DERIVATION_BY_RESTRICTION) )
+			throw new DatatypeException( XSDatatypeImpl.localize(
+				XSDatatypeImpl.ERR_INVALID_BASE_TYPE, baseType.displayName() ) );
 		
 		if( isEmpty() ) {
 			// if no facet is specified, and user wants anonymous type,
@@ -172,10 +174,10 @@ public class TypeIncubator {
 		for( int i=0; i<exclusiveFacetPairs.length; i++ )
 			if( contains( exclusiveFacetPairs[i][0])
 			&&  contains( exclusiveFacetPairs[i][1]) )
-				throw new BadTypeException(
-					BadTypeException.ERR_X_AND_Y_ARE_EXCLUSIVE,
+				throw new DatatypeException( XSDatatypeImpl.localize(
+					XSDatatypeImpl.ERR_X_AND_Y_ARE_EXCLUSIVE,
 					exclusiveFacetPairs[i][0],
-					exclusiveFacetPairs[i][1] );
+					exclusiveFacetPairs[i][1] ) );
 		
 		if( contains(XSDatatypeImpl.FACET_TOTALDIGITS) )
 			r = new TotalDigitsFacet	( newName, r, this );
@@ -247,8 +249,7 @@ public class TypeIncubator {
 	 *		when two facets are inconsistent
 	 */
 	private static void checkRangeConsistency( XSDatatypeImpl newType,
-		String facetName1, String facetName2 )
-		throws BadTypeException {
+		String facetName1, String facetName2 ) throws DatatypeException {
 		
 		DataTypeWithFacet o1 = newType.getFacetObject(facetName1);
 		DataTypeWithFacet o2 = newType.getFacetObject(facetName2);
@@ -267,7 +268,7 @@ public class TypeIncubator {
 	 *
 	 * this method is only useful for reporting facet consistency violation.
 	 */
-	private static BadTypeException reportFacetInconsistency(
+	private static DatatypeException reportFacetInconsistency(
 		String newName,
 		DataTypeWithFacet o1, String facetName1,
 		DataTypeWithFacet o2, String facetName2 ) {
@@ -279,21 +280,21 @@ public class TypeIncubator {
 
 		if(o1typeName.equals(o2typeName))
 			// o1typeName==o2typeName==newName
-			return new BadTypeException(
-				BadTypeException.ERR_INCONSISTENT_FACETS_1,
-				facetName1, facetName2 );
+			return new DatatypeException( XSDatatypeImpl.localize(
+				XSDatatypeImpl.ERR_INCONSISTENT_FACETS_1,
+				facetName1, facetName2 ) );
 		
 		if(o1typeName.equals(newName))
 			// o2 must be specified in somewhere in the derivation chain
-			return new BadTypeException(
-				BadTypeException.ERR_INCONSISTENT_FACETS_2,
-				facetName1,  o2.displayName(), facetName2 );
+			return new DatatypeException( XSDatatypeImpl.localize(
+				XSDatatypeImpl.ERR_INCONSISTENT_FACETS_2,
+				facetName1,  o2.displayName(), facetName2 ) );
 		
 		if(o2typeName.equals(newName))
 			// vice versa
-			return new BadTypeException(
-				BadTypeException.ERR_INCONSISTENT_FACETS_2,
-				facetName2,  o1.displayName(), facetName1 );
+			return new DatatypeException( XSDatatypeImpl.localize(
+				XSDatatypeImpl.ERR_INCONSISTENT_FACETS_2,
+				facetName2,  o1.displayName(), facetName1 ) );
 		
 		// this is not possible
 		// because facet consistency check is done by every derivation.
@@ -347,8 +348,7 @@ public class TypeIncubator {
 	 * @exception BadTypeException
 	 *		if the parameter cannot be parsed as a positive integer
 	 */
-	public int getPositiveInteger( String facetName )
-		throws BadTypeException {
+	public int getPositiveInteger( String facetName ) throws DatatypeException {
 		try {
 			// TODO : is this implementation correct?
 			int value = Integer.parseInt((String)getFacet(facetName));
@@ -363,9 +363,8 @@ public class TypeIncubator {
 			} catch(NumberFormatException ee) {;}
 		}
 		
-		throw new BadTypeException(
-			BadTypeException.ERR_FACET_MUST_BE_POSITIVE_INTEGER,
-			facetName );
+		throw new DatatypeException( XSDatatypeImpl.localize(
+			XSDatatypeImpl.ERR_FACET_MUST_BE_POSITIVE_INTEGER, facetName ) );
 	}
 	
 	/**
@@ -377,17 +376,15 @@ public class TypeIncubator {
 	 * @exception BadTypeException
 	 *		if the parameter cannot be parsed as a non-negative integer
 	 */
-	public int getNonNegativeInteger( String facetName )
-		throws BadTypeException {
+	public int getNonNegativeInteger( String facetName ) throws DatatypeException {
 		try {
 			// TODO : is this implementation correct? Can I use Integer.parseInt?
 			int value = Integer.parseInt((String)getFacet(facetName));
 			if( value>=0 )		return value;
 		} catch( NumberFormatException e ) { ; }
 		
-		throw new BadTypeException(
-			BadTypeException.ERR_FACET_MUST_BE_NON_NEGATIVE_INTEGER,
-			facetName );
+		throw new DatatypeException( XSDatatypeImpl.localize(
+			XSDatatypeImpl.ERR_FACET_MUST_BE_NON_NEGATIVE_INTEGER, facetName ) );
 	}
 	
 	/** checks if the specified facet was added to this map  */

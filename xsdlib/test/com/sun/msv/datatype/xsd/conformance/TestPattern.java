@@ -8,7 +8,9 @@
  * 
  */
 package com.sun.msv.datatype.xsd.conformance;
+
 import com.sun.msv.datatype.xsd.*;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * test pattern interface.
@@ -27,7 +29,7 @@ public interface TestPattern
 	 * 
 	 * @return answer
 	 */
-	String get(TypeIncubator ti) throws BadTypeException;
+	String get(TypeIncubator ti) throws DatatypeException;
 	
 	/** generate next test case */
 	void next();

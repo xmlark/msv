@@ -22,7 +22,7 @@ public class MaxLengthFacet extends DataTypeWithValueConstraintFacet
 	public final int maxLength;
 	
 	protected MaxLengthFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
-		throws BadTypeException {
+		throws DatatypeException {
 		super(typeName,baseType,FACET_MAXLENGTH,facets);
 	
 		maxLength = facets.getNonNegativeInteger(FACET_MAXLENGTH);
@@ -30,9 +30,8 @@ public class MaxLengthFacet extends DataTypeWithValueConstraintFacet
 		// loosened facet check
 		DataTypeWithFacet o = baseType.getFacetObject(FACET_MAXLENGTH);
 		if(o!=null && ((MaxLengthFacet)o).maxLength < this.maxLength )
-			throw new BadTypeException(
-				BadTypeException.ERR_LOOSENED_FACET,
-				FACET_MAXLENGTH, o.displayName() );
+			throw new DatatypeException( localize( ERR_LOOSENED_FACET,
+				FACET_MAXLENGTH, o.displayName() ) );
 		
 		// consistency with minLength is checked in XSDatatypeImpl.derive method.
 	}

@@ -9,7 +9,6 @@
  */
 package com.sun.msv.reader.dtd;
 
-import com.sun.msv.datatype.xsd.BadTypeException;
 import com.sun.msv.datatype.xsd.TypeIncubator;
 import com.sun.msv.datatype.xsd.DatatypeFactory;
 import com.sun.msv.datatype.xsd.XSDatatype;
@@ -24,6 +23,7 @@ import com.sun.msv.scanner.dtd.InputEntity;
 import com.sun.msv.grammar.relax.*;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.dtd.*;
+import org.relaxng.datatype.DatatypeException;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.Locator;
@@ -110,7 +110,7 @@ public class DTDReader implements DTDEventListener {
 			m.put( DTDParser.TYPE_NOTATION, StringType.theInstance );
 		
 			return m;
-		} catch( BadTypeException e ) {
+		} catch( DatatypeException e ) {
 			// assertion failed. we know these derivations are safe.
 			throw new Error();
 		}
@@ -424,7 +424,7 @@ public class DTDReader implements DTDEventListener {
 				incubator.add( XSDatatype.FACET_ENUMERATION, defaultValue, false, null );
 				dt = incubator.derive(null);
 			}
-		} catch( BadTypeException e ) {
+		} catch( DatatypeException e ) {
 			throw new SAXParseException(
 				e.getMessage(), locator, e );
 		}

@@ -10,6 +10,7 @@
 package com.sun.msv.datatype.xsd;
 
 import org.relaxng.datatype.ValidationContext;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * base class for facets which constrain value space.
@@ -20,7 +21,7 @@ abstract class DataTypeWithValueConstraintFacet extends DataTypeWithFacet {
 	
 	DataTypeWithValueConstraintFacet(
 		String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets )
-		throws BadTypeException {
+		throws DatatypeException {
 	
 		super( typeName, baseType, facetName, facets );
 	}

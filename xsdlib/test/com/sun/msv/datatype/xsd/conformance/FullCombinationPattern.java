@@ -10,6 +10,7 @@
 package com.sun.msv.datatype.xsd.conformance;
 
 import com.sun.msv.datatype.xsd.*;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * test every possible combination of child patterns.
@@ -57,7 +58,7 @@ class FullCombinationPattern implements TestPattern
 		noMore=false;
 	}
 
-	public String get( TypeIncubator ti ) throws BadTypeException
+	public String get( TypeIncubator ti ) throws DatatypeException
 	{
 		String answer=null;
 		for( int i=0; i<children.length; i++ )
@@ -109,7 +110,7 @@ class FullCombinationPattern implements TestPattern
 	
 		public void reset() { base.reset();mode=0; }
 	
-		public String get( TypeIncubator ti ) throws BadTypeException
+		public String get( TypeIncubator ti ) throws DatatypeException
 		{
 			switch(mode)
 			{

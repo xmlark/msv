@@ -25,7 +25,7 @@ public class LengthFacet extends DataTypeWithValueConstraintFacet {
 	public final int length;
 	
 	protected LengthFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
-		throws BadTypeException {
+		throws DatatypeException {
 		super(typeName,baseType,FACET_LENGTH,facets);
 	
 		length = facets.getNonNegativeInteger(FACET_LENGTH);
@@ -33,9 +33,8 @@ public class LengthFacet extends DataTypeWithValueConstraintFacet {
 		// loosened facet check
 		DataTypeWithFacet o = baseType.getFacetObject(FACET_LENGTH);
 		if(o!=null && ((LengthFacet)o).length != this.length )
-			throw new BadTypeException(
-				BadTypeException.ERR_LOOSENED_FACET,
-				FACET_LENGTH, o.displayName() );
+			throw new DatatypeException(
+				localize(ERR_LOOSENED_FACET, FACET_LENGTH, o.displayName() ) );
 		
 		// consistency with minLength/maxLength is checked in XSDatatypeImpl.derive method.
 	}

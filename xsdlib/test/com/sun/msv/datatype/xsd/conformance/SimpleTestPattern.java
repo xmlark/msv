@@ -9,8 +9,8 @@
  */
 package com.sun.msv.datatype.xsd.conformance;
 
-import com.sun.msv.datatype.xsd.BadTypeException;
 import com.sun.msv.datatype.xsd.TypeIncubator;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * test pattern that corresponds with one test case.
@@ -26,7 +26,7 @@ class SimpleTestPattern implements TestPattern
 	public void reset() { idx=0; }
 	
 	/** get the current test case */
-	public String get( TypeIncubator incubator ) throws BadTypeException
+	public String get( TypeIncubator incubator ) throws DatatypeException
 	{
 		switch(idx)
 		{

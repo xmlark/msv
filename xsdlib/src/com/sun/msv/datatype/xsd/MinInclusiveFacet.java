@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype.xsd;
 
+import org.relaxng.datatype.DatatypeException;
+
 /**
  * 'minInclusive' facet
  * 
@@ -16,7 +18,7 @@ package com.sun.msv.datatype.xsd;
  */
 public class MinInclusiveFacet extends RangeFacet {
 	protected MinInclusiveFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
-		throws BadTypeException {
+		throws DatatypeException {
 		super( typeName, baseType, FACET_MININCLUSIVE, facets );
 	}
 	

@@ -9,7 +9,6 @@
  */
 package com.sun.msv.reader.relax.core;
 
-import com.sun.msv.datatype.xsd.BadTypeException;
 import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.datatype.xsd.TypeIncubator;
 import com.sun.msv.grammar.Expression;
@@ -18,6 +17,7 @@ import com.sun.msv.reader.ExpressionState;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.datatype.xsd.FacetStateParent;
 import com.sun.msv.util.StartTagInfo;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * parses &lt;attribute&gt; element.
@@ -66,7 +66,7 @@ public class AttributeState extends ExpressionState implements FacetStateParent
 				exp = reader.pool.createOptional(exp);
 			
 			return exp;
-		} catch( BadTypeException e ) {
+		} catch( DatatypeException e ) {
 			// derivation failed
 			reader.reportError( e, reader.ERR_BAD_TYPE, e.getMessage() );
 			// recover by using harmless expression. anything will do.

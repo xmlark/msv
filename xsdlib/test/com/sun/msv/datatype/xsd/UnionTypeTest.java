@@ -11,6 +11,7 @@ package com.sun.msv.datatype.xsd;
 
 import junit.framework.*;
 import com.sun.msv.datatype.xsd.conformance.DummyContextProvider;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * tests UnionType.
@@ -31,7 +32,7 @@ public class UnionTypeTest extends TestCase
 
 	private UnionType createUnion( String newName,
 		XSDatatype type1, XSDatatype type2, XSDatatype type3 )
-			throws BadTypeException
+			throws DatatypeException
 	{
 		return (UnionType)DatatypeFactory.deriveByUnion(
 			newName, new XSDatatypeImpl[]{
@@ -42,7 +43,7 @@ public class UnionTypeTest extends TestCase
 	
 	private UnionType createUnion( String newName,
 		String type1, String type2, String type3 )
-			throws BadTypeException
+			throws DatatypeException
 	{
 		return createUnion( newName,
 			DatatypeFactory.getTypeByName(type1),
@@ -51,14 +52,14 @@ public class UnionTypeTest extends TestCase
 	}
 	
 	/** test get method */
-	public void testIsAtomType() throws BadTypeException
+	public void testIsAtomType() throws DatatypeException
 	{
 		// union is not an atom
 		assert(!createUnion( "test", "string", "integer", "QName" ).isAtomType());
 	}
 	
 	/** test verify method */
-	public void testVerify() throws BadTypeException
+	public void testVerify() throws DatatypeException
 	{
 		// this test is naive, and we need further systematic testing.
 		// but better something than nothing.
@@ -70,7 +71,7 @@ public class UnionTypeTest extends TestCase
 	}
 	
 	/** test convertToObject method */
-	public void testConvertToObject() throws BadTypeException
+	public void testConvertToObject() throws DatatypeException
 	{
 		XSDatatype tf = DatatypeFactory.getTypeByName("float");
 		XSDatatype td = DatatypeFactory.getTypeByName("date");

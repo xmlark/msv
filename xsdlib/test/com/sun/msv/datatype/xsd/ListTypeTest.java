@@ -11,6 +11,7 @@ package com.sun.msv.datatype.xsd;
 
 import junit.framework.*;
 import com.sun.msv.datatype.xsd.conformance.DummyContextProvider;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * tests ListType.
@@ -29,27 +30,25 @@ public class ListTypeTest extends TestCase
 		return new TestSuite(ListTypeTest.class);
 	}
 
-	private ListType createList( String newName, XSDatatype itemType )
-		throws BadTypeException
+	private ListType createList( String newName, XSDatatype itemType ) throws DatatypeException
 	{
 		return (ListType)DatatypeFactory.deriveByList(newName,itemType);
 	}
 	
-	private ListType createList( String newName, String itemType )
-		throws BadTypeException
+	private ListType createList( String newName, String itemType ) throws DatatypeException
 	{
 		return createList( newName, DatatypeFactory.getTypeByName(itemType) );
 	}
 	
 	/** test get method */
-	public void testIsAtomType() throws BadTypeException
+	public void testIsAtomType() throws DatatypeException
 	{
 		// list is not an atom
 		assert(!createList( "test", "string" ).isAtomType());
 	}
 	
 	/** test verify method */
-	public void testVerify() throws BadTypeException
+	public void testVerify() throws DatatypeException
 	{
 		// this test is naive, and we need further systematic testing.
 		// but better something than nothing.
@@ -67,7 +66,7 @@ public class ListTypeTest extends TestCase
 	}
 	
 	/** test convertToObject method */
-	public void testConvertToObject() throws BadTypeException
+	public void testConvertToObject() throws DatatypeException
 	{
 		XSDatatype t = createList("myTest", "string" );
 

@@ -47,7 +47,7 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
 	 *		There patterns are considered as an 'OR' set.
 	 */
 	public PatternFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
-		throws BadTypeException {
+		throws DatatypeException {
 		super( typeName, baseType, FACET_PATTERN, facets );
 		
 		
@@ -65,9 +65,8 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
 			}
 		} catch( ParseException pe ) {
 			// in case regularExpression is not a correct pattern
-			throw new BadTypeException(
-				BadTypeException.ERR_PARSE_ERROR,
-				pe.getMessage() );
+			throw new DatatypeException( localize( ERR_PARSE_ERROR,
+				pe.getMessage() ) );
 		}
 		
 		// loosened facet check is almost impossible for pattern facet.

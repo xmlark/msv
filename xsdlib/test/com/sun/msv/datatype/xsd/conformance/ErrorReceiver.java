@@ -10,8 +10,8 @@
 package com.sun.msv.datatype.xsd.conformance;
 
 import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.datatype.xsd.BadTypeException;
 import com.sun.msv.datatype.xsd.TypeIncubator;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * receives conformance test error.
@@ -33,5 +33,5 @@ interface ErrorReceiver
 	 * return true to abort test
 	 */
 	boolean reportTestCaseError( XSDatatype baseType, TypeIncubator incubator,
-		BadTypeException e );
+		DatatypeException e );
 }

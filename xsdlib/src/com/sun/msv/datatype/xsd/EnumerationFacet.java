@@ -21,7 +21,7 @@ import org.relaxng.datatype.ValidationContext;
  */
 public class EnumerationFacet extends DataTypeWithValueConstraintFacet {
 	protected EnumerationFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
-		throws BadTypeException {
+		throws DatatypeException {
 		super(typeName,baseType,FACET_ENUMERATION,facets);
 		values = new java.util.HashSet( facets.getVector(FACET_ENUMERATION) );
 	}

@@ -11,6 +11,7 @@ package com.sun.msv.datatype.xsd;
 
 import java.io.Serializable;
 import java.io.InvalidObjectException;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * processes white space normalization
@@ -38,14 +39,14 @@ public abstract class WhiteSpaceProcessor implements Serializable {
 	 * returns a WhiteSpaceProcessor object if "whiteSpace" facet is specified.
 	 * Otherwise returns null.
 	 */
-	protected static WhiteSpaceProcessor get( String name )
-		throws BadTypeException {
+	protected static WhiteSpaceProcessor get( String name ) throws DatatypeException {
 		name = theCollapse.process(name);
 		if( name.equals("preserve") )		return thePreserve;
 		if( name.equals("collapse") )		return theCollapse;
 		if( name.equals("replace") )		return theReplace;
 		
-		throw new BadTypeException( BadTypeException.ERR_INVALID_WHITESPACE_VALUE, name );
+		throw new DatatypeException( XSDatatypeImpl.localize(
+			XSDatatypeImpl.ERR_INVALID_WHITESPACE_VALUE, name ));
 	}
 	
 	/** returns true if the specified char is a white space character. */
@@ -58,7 +59,7 @@ public abstract class WhiteSpaceProcessor implements Serializable {
 		// return the singleton instead of deserialized object.
 		try {
 			return get(getName());
-		} catch( BadTypeException bte ) {
+		} catch( DatatypeException bte ) {
 			throw new InvalidObjectException("Unknown Processing Mode");
 		}
 	}

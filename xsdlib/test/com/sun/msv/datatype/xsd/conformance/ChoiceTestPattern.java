@@ -10,6 +10,7 @@
 package com.sun.msv.datatype.xsd.conformance;
 
 import com.sun.msv.datatype.xsd.*;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * choose one from child pattern
@@ -46,7 +47,7 @@ class ChoiceTestPattern implements TestPattern
 	}
 
 	/** get the current test case */
-	public String get( TypeIncubator ti ) throws BadTypeException
+	public String get( TypeIncubator ti ) throws DatatypeException
 	{
 		return children[idx].get(ti);
 	}

@@ -55,7 +55,7 @@ public class DatatypeFactory {
 	 *		For example, when you try to derive a type from non-atom type.
 	 */
 	public static XSDatatype deriveByList( String newTypeName, XSDatatype itemType )
-		throws BadTypeException {
+		throws DatatypeException {
 		return new ListType(newTypeName,(XSDatatypeImpl)itemType);
 	}
 	
@@ -74,14 +74,14 @@ public class DatatypeFactory {
 	 * @exception BadTypeException
 	 *		this exception is thrown when the derivation is illegal.
 	 */
-	public static XSDatatype deriveByUnion( String newTypeName, XSDatatypeImpl[] memberTypes )
-		throws BadTypeException {
+	public static XSDatatype deriveByUnion( String newTypeName, XSDatatype[] memberTypes )
+		throws DatatypeException {
 		
 		return new UnionType(newTypeName,memberTypes);
 	}
 	
 	public static XSDatatype deriveByUnion( String newTypeName, Collection memberTypes )
-		throws BadTypeException {
+		throws DatatypeException {
 		XSDatatypeImpl[] m = new XSDatatypeImpl[memberTypes.size()];
 		int n=0;
 		for( Iterator itr=memberTypes.iterator(); itr.hasNext(); n++ )

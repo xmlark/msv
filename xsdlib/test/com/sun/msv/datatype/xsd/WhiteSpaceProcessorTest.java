@@ -11,6 +11,7 @@ package com.sun.msv.datatype.xsd;
 
 import junit.framework.*;
 import java.io.*;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * tests WhiteSpaceProcessor.
@@ -30,7 +31,7 @@ public class WhiteSpaceProcessorTest extends TestCase
 	}
 	
 	/** test get method */
-	public void testGet() throws BadTypeException
+	public void testGet() throws DatatypeException
 	{
 		assertSame( "whitespace in parameter must be allowed",
 			WhiteSpaceProcessor.get("preserve"),
@@ -48,11 +49,11 @@ public class WhiteSpaceProcessorTest extends TestCase
 		{
 			WhiteSpaceProcessor.get("unknown");
 			fail("should throw exception");
-		}catch(BadTypeException e){;}
+		}catch(DatatypeException e){;}
 	}
 	
 	/** test behavior of preserve */
-	public void testPreserve() throws BadTypeException
+	public void testPreserve() throws DatatypeException
 	{
 		WhiteSpaceProcessor target = WhiteSpaceProcessor.get("preserve");
 		
@@ -66,7 +67,7 @@ public class WhiteSpaceProcessorTest extends TestCase
 	}
 	
 	/** tests behavior of replace */
-	public void testReplace() throws BadTypeException
+	public void testReplace() throws DatatypeException
 	{
 		WhiteSpaceProcessor target = WhiteSpaceProcessor.get("replace");
 		
@@ -82,7 +83,7 @@ public class WhiteSpaceProcessorTest extends TestCase
 	}
 
 	/** tests behavior of collapse */
-	public void testCollapse() throws BadTypeException
+	public void testCollapse() throws DatatypeException
 	{
 		WhiteSpaceProcessor target = WhiteSpaceProcessor.get("collapse");
 		

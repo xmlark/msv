@@ -22,18 +22,21 @@ final public class UnionType extends ConcreteType {
 	/**
 	 * derives a new datatype from atomic datatypes by union
 	 */
-	public UnionType( String newTypeName, XSDatatypeImpl[] memberTypes )
-		throws BadTypeException {
+	public UnionType( String newTypeName, XSDatatype[] memberTypes ) throws DatatypeException {
 		super(newTypeName);
-		
+
 		if(memberTypes.length==0)
-			throw new BadTypeException(BadTypeException.ERR_EMPTY_UNION);
+			throw new DatatypeException(localize(ERR_EMPTY_UNION));
 		
-		for( int i=0; i<memberTypes.length; i++ )
-			if( memberTypes[i].isFinal(DERIVATION_BY_UNION) )
-				throw new BadTypeException(BadTypeException.ERR_INVALID_MEMBER_TYPE, memberTypes[i].displayName() );
+		XSDatatypeImpl[] m = new XSDatatypeImpl[memberTypes.length];
+		System.arraycopy( memberTypes, 0, m, 0, memberTypes.length );
 		
-		this.memberTypes = memberTypes;
+		for( int i=0; i<m.length; i++ )
+			if( m[i].isFinal(DERIVATION_BY_UNION) )
+				throw new DatatypeException(localize(
+					ERR_INVALID_MEMBER_TYPE, m[i].displayName() ));
+		
+		this.memberTypes = m;
 	}
 	
 	/** member types */

@@ -10,6 +10,7 @@
 package com.sun.msv.datatype.xsd;
 
 import junit.framework.*;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * tests FinalComponent.
@@ -28,7 +29,7 @@ public class FinalComponentTest extends TestCase
 		return new TestSuite(FinalComponentTest.class);
 	}
 	
-	public void testDerivationByRestriction() throws BadTypeException
+	public void testDerivationByRestriction() throws DatatypeException
 	{
 		TypeIncubator inc = new TypeIncubator(
 			new FinalComponent(
@@ -40,10 +41,10 @@ public class FinalComponentTest extends TestCase
 			inc.derive("test");
 			fail("should throw Exception here");
 		}
-		catch( BadTypeException bte ) {;}
+		catch( DatatypeException bte ) {;}
 	}
 	
-	public void testDerivationByList() throws BadTypeException
+	public void testDerivationByList()
 	{
 		try
 		{
@@ -54,21 +55,21 @@ public class FinalComponentTest extends TestCase
 						);
 			fail("should throw Exception here");
 		}
-		catch( BadTypeException bte ) {;}
+		catch( DatatypeException bte ) {;}
 	}
 
-	public void testDerivationByUnion() throws BadTypeException
+	public void testDerivationByUnion()
 	{
 		try
 		{
 			DatatypeFactory.deriveByUnion("intermediate",
-			  new XSDatatypeImpl[]{
+			  new XSDatatype[]{
 					new FinalComponent(
 						StringType.theInstance,
 						XSDatatype.DERIVATION_BY_UNION ),
 					NumberType.theInstance } );
 			fail("should throw Exception here");
 		}
-		catch( BadTypeException bte ) {;}
+		catch( DatatypeException bte ) {;}
 	}
 }

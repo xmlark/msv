@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype.xsd;
 
+import org.relaxng.datatype.DatatypeException;
+
 /**
  * 'maxInclusive' facet
  * 
@@ -16,7 +18,7 @@ package com.sun.msv.datatype.xsd;
  */
 public class MaxInclusiveFacet extends RangeFacet {
 	protected MaxInclusiveFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
-		throws BadTypeException {
+		throws DatatypeException {
 		super( typeName, baseType, FACET_MAXINCLUSIVE, facets );
 	}
 	

@@ -2,8 +2,8 @@ package com.sun.msv.datatype.xsd.ngimpl;
 
 import org.relaxng.datatype.*;
 import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.XSDatatypeImpl;
 import com.sun.msv.datatype.xsd.TypeIncubator;
-import com.sun.msv.datatype.xsd.BadTypeException;
 
 class DatatypeBuilderImpl implements DatatypeBuilder {
 	
@@ -18,7 +18,8 @@ class DatatypeBuilderImpl implements DatatypeBuilder {
 		
 		if( name.equals(XSDatatype.FACET_ENUMERATION) )
 			// the enumeration facet is not allowed for RELAX NG.
-			throw new BadTypeException( BadTypeException.ERR_NOT_APPLICABLE_FACET, name );
+			throw new DatatypeException(
+				XSDatatypeImpl.localize(XSDatatypeImpl.ERR_NOT_APPLICABLE_FACET, name) );
 			
 		
 		incubator.add( name, value, false, context );
@@ -30,7 +31,7 @@ class DatatypeBuilderImpl implements DatatypeBuilder {
 			incubator = new TypeIncubator(incubator.derive(null));
 	}
 	
-	public Datatype createDatatype() throws BadTypeException {
+	public Datatype createDatatype() throws DatatypeException {
 		return incubator.derive(null);
 	}
 }

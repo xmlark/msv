@@ -10,7 +10,6 @@
 package com.sun.msv.reader.xmlschema;
 
 import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.datatype.xsd.BadTypeException;
 import com.sun.msv.datatype.xsd.TypeIncubator;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.Expression;
@@ -19,6 +18,7 @@ import com.sun.msv.reader.SequenceState;
 import com.sun.msv.reader.datatype.TypeOwner;
 import com.sun.msv.reader.datatype.xsd.FacetStateParent;
 import com.sun.msv.util.StartTagInfo;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * used to parse restriction/extension element as a child of &lt;simpleContent&gt; element.
@@ -97,7 +97,7 @@ public class SimpleContentBodyState extends SequenceState
 			}
 
 			return reader.pool.createSequence( typedStr, exp );
-		} catch( BadTypeException e ) {
+		} catch( DatatypeException e ) {
 			// derivation failed
 			reader.reportError( e, reader.ERR_BAD_TYPE, e.getMessage() );
 			// recover by using harmless expression. anything will do.

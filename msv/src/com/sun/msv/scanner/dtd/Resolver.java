@@ -260,8 +260,6 @@ public class Resolver implements EntityResolver
     /**
      * Creates an input source from a given file, autodetecting
      * the character encoding.
-     *
-     * @param uri the URI (system ID) for the entity
      */
     static public InputSource createInputSource (File file)
     throws IOException

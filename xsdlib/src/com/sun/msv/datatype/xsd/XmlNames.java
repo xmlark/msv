@@ -139,7 +139,7 @@ public class XmlNames
      * These are like XML "name tokens" but they may not contain the
      * "colon" character.
      *
-     * @see #isNmtoken
+     * @see #isNmtoken(String)
      *
      * @param token the string being tested
      */

@@ -353,7 +353,7 @@ final class RangeToken extends Token implements java.io.Serializable {
     }
 
     /**
-     * @param tok Ignore whether it is NRANGE or not.
+     * @param token Ignore whether it is NRANGE or not.
      */
     protected void intersectRanges(Token token) {
         RangeToken tok = (RangeToken)token;

@@ -53,13 +53,13 @@ import com.sun.msv.grammar.util.ExpressionWalker;
  *   <td>
  *    target namespace
  *   </td><td>
- *    the {@link #getTargetNamespace} method.
+ *    the {@link #getTargetNamespace()} method.
  *   </td>
  *  </tr><tr>
  *   <td>
  *    type definition
  *   </td><td>
- *    {@link getTypeDefinition()} method.
+ *    {@link #getTypeDefinition()} method.
  *   </td>
  *  </tr><tr>
  *   <td>
@@ -71,7 +71,7 @@ import com.sun.msv.grammar.util.ExpressionWalker;
  *   <td>
  *    value constraint
  *   </td><td>
- *    <b>To be implemented</b>.  Accessible through the {@link body} field.
+ *    <b>To be implemented</b>.  Accessible through the {@link #body} field.
  *   </td>
  *  </tr><tr>
  *   <td>
@@ -84,7 +84,7 @@ import com.sun.msv.grammar.util.ExpressionWalker;
  *    identity constraints
  *   </td><td>
  *    The <code>identityConstraints</code> field of the {@link XSElementExp},
- *      which in turn can be obtained throught the {@link body} field.
+ *      which in turn can be obtained throught the {@link #body} field.
  *   </td>
  *  </tr><tr>
  *   <td>
@@ -108,7 +108,7 @@ import com.sun.msv.grammar.util.ExpressionWalker;
  *   <td>
  *    abstract
  *   </td><td>
- *    the {@link #isAbstract} method.
+ *    the {@link #isAbstract()} method.
  *   </td>
  *  </tr><tr>
  *   <td>

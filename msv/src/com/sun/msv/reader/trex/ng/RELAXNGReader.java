@@ -208,7 +208,7 @@ public class RELAXNGReader extends TREXBaseReader {
          */
         public static RedefinitionStatus originalNotFoundYet = new RedefinitionStatus();
         /**
-         * The same as {@link originalNotFoundYet}, but we saw the original definition.
+         * The same as {@link #originalNotFoundYet}, but we saw the original definition.
          */
         public static RedefinitionStatus originalFound = new RedefinitionStatus();
         

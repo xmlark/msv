@@ -20,7 +20,6 @@ import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.grammar.xmlschema.ElementDeclExp;
 import com.sun.msv.grammar.xmlschema.IdentityConstraint;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
-import com.sun.msv.grammar.xmlschema.ElementDeclExp.XSElementExp;
 import com.sun.msv.reader.ExpressionWithChildState;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.State;

@@ -28,7 +28,7 @@ import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
  * the <code>exp</code> field contains the reference to the body field,
  * if this complex type is not abstract. If abstract, then nullSet is set.
  * You shouldn't directly manipulate the exp field. Instead, you should use
- * the {@link #setAbstract} method to do it.
+ * the {@link #setAbstract(boolean)} method to do it.
  * 
  * <p>
  * Note: The runtime type substitution
@@ -59,13 +59,13 @@ import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
  *   <td>
  *    target namespace
  *   </td><td>
- *    the {@link #getTargetNamespace} method.
+ *    the {@link #getTargetNamespace()} method.
  *   </td>
  *  </tr><tr>
  *   <td>
  *    abstract
  *   </td><td>
- *    the {@link #isAbstract} method.
+ *    the {@link #isAbstract()} method.
  *   </td>
  *  </tr><tr>
  *   <td>

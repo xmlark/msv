@@ -318,7 +318,7 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
          *        to the getBody method. This context object is responsible for
          *        detecting recursive references.
          * 
-         * @exception
+         * @exception DatatypeException
          *        If an error occurs during rendering, the renderer should throw
          *        a DatatypeException instead of trying to report an error by itself.
          *        The caller of this method will report an error message to the appropriate

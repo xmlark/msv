@@ -17,7 +17,8 @@ package com.sun.msv.grammar.util;
  * is non empty.
  * 
  * <p>
- * The same thing can be computed by using the {@link NameClass#intersection} method,
+ * The same thing can be computed by using the
+ * {@link com.sun.msv.grammar.NameClass#intersection(NameClass, NameClass)} method,
  * but generally this method is faster.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>

@@ -14,10 +14,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import com.sun.msv.verifier.ValidationUnrecoverableException;
-import com.sun.msv.verifier.ValidityViolation;
 
 /**
- * {@link VerificationErrorHandler} that reports all errors and warnings.
+ * {@link ErrorHandler} that reports all errors and warnings.
  * 
  * SAX parse errors are also handled.
  * 
@@ -53,14 +52,6 @@ public class ReportErrorHandler implements ErrorHandler {
                 spe.getLocalizedMessage()} ) );
     }
     
-    private void print( ValidityViolation vv, String prop ) {
-        System.out.println(
-            Driver.localize( prop, new Object[]{
-                new Integer(vv.getLineNumber()), 
-                new Integer(vv.getColumnNumber()),
-                vv.getSystemId(),
-                vv.getMessage()} ) );
-    }
     
     private void countCheck( SAXParseException e )
         throws ValidationUnrecoverableException    {

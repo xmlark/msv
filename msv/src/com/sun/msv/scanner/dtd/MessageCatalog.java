@@ -203,17 +203,6 @@ abstract public class MessageCatalog {
     return bundle.getString (messageId);
     }
 
-    private String packagePrefix (String messageId)
-    {
-    String    temp = getClass ().getName ();
-    int    index = temp.lastIndexOf ('.');
-
-    if (index == -1)    // "ClassName"
-        temp = "";
-    else            // "some.package.ClassName"
-        temp = temp.substring (0, index);
-    return temp + '/' + messageId;
-    }
 
 
     /**

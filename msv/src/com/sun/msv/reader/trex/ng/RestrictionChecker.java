@@ -604,8 +604,6 @@ public class RestrictionChecker {
         "RELAXNGReader.DataInStart";
     private static final String ERR_ONEORMORE_IN_START =
         "RELAXNGReader.OneOrMoreInStart";
-    private static final String ERR_TEXT_IN_INTERLEAVE =
-        "RELAXNGReader.TextInInterleave";
     private static final String ERR_DATA_IN_INTERLEAVE_IN_LIST =
         "RELAXNGReader.DataInInterleaveInList";
     private static final String ERR_VALUE_IN_INTERLEAVE_IN_LIST =

@@ -31,7 +31,6 @@ import com.sun.msv.relaxns.grammar.RELAXGrammar;
  */
 public class SchemaProviderImpl extends AbstractSchemaProviderImpl {
     
-    private final RELAXGrammar grammar;
     private final DeclImpl[] topLevel;
     /** top-level expression as AGM. */
     private final Expression topLevelExp;
@@ -64,7 +63,7 @@ public class SchemaProviderImpl extends AbstractSchemaProviderImpl {
      * the application should not call bind method.
      */
     public SchemaProviderImpl( RELAXGrammar grammar ) {
-        this.grammar = grammar;
+//        this.grammar = grammar;
         this.pool = grammar.pool;
         this.topLevelExp = grammar.topLevel;
         this.topLevel = new DeclImpl[]{new DeclImpl("##start",grammar.topLevel)};

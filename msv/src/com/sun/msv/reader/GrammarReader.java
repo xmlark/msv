@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Stack;
 import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -331,12 +330,6 @@ public abstract class GrammarReader
         
         pendingIncludes = pendingIncludes.previousContext;
     }
-    /** stores all URL of grammars currently being parsed.
-     * 
-     * say "foo.rlx" includes "bar.rlx" and "bar.rlx" include "joe.rlx".
-     * Then this stack hold "foo.rlx","bar.rlx","joe.rlx" when parsing "joe.rlx".
-     */
-    private Stack includeStack = new Stack();
     
     /**
      * obtains InputSource for the specified url.

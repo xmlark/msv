@@ -28,7 +28,7 @@ public abstract class ReferenceContainer implements java.io.Serializable {
      * 
      * Usually, this method is only necessary for some kind of grammar loader.
      * If you are programming an application over MSV,
-     * {@link _get} method is probably what you need.
+     * {@link #_get(String)} method is probably what you need.
      */
     public final ReferenceExp _getOrCreate( String name ) {
         Object o = impl.get(name);

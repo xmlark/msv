@@ -19,7 +19,7 @@ package com.sun.msv.datatype.xsd;
  * constraint.
  * 
  * <p>
- * One can call the {@link #getIdType} method to enforce the cross-reference
+ * One can call the {@link #getIdType()} method to enforce the cross-reference
  * semantics.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>

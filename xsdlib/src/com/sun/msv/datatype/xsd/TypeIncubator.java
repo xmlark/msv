@@ -313,7 +313,7 @@ public class TypeIncubator {
      * check (min,max) facet specification and makes sure that
      * they are consistent
      * 
-     * @exception BadTypeException
+     * @exception DatatypeException
      *        when two facets are inconsistent
      */
     private static void checkRangeConsistency(XSDatatypeImpl newType, String facetName1, String facetName2)
@@ -429,7 +429,7 @@ public class TypeIncubator {
      * the behavior is undefined when the specified facetName doesn't exist
      * in this map.
      * 
-     * @exception BadTypeException
+     * @exception DatatypeException
      *        if the parameter cannot be parsed as a positive integer
      */
     public int getPositiveInteger(String facetName) throws DatatypeException {
@@ -460,7 +460,7 @@ public class TypeIncubator {
      * the behavior is undefined when the specified facetName doesn't exist
      * in this map.
      * 
-     * @exception BadTypeException
+     * @exception DatatypeException
      *        if the parameter cannot be parsed as a non-negative integer
      */
     public int getNonNegativeInteger(String facetName) throws DatatypeException {

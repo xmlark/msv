@@ -22,7 +22,7 @@ public abstract class NameClassWithChildState extends NameClassState implements 
 {
     /**
      * name class object that is being created.
-     * See {@link castNameClass} and {@link annealNameClass} methods
+     * See {@link #castNameClass(NameClass, NameClass)} and {@link #annealNameClass(NameClass)} methods
      * for how a pattern will be created.
      */
     protected NameClass nameClass = null;

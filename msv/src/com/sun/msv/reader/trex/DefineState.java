@@ -26,7 +26,7 @@ public abstract class DefineState extends SimpleState implements ExpressionOwner
 
     /**
      * expression object that is being created.
-     * See {@link castPattern} and {@link annealPattern} methods
+     * See {@link #castPattern} and {@link #annealPattern} methods
      * for how will a pattern be created.
      */
     protected Expression exp = null; // or Expression.epsilon if <define /> is allowed.

@@ -114,7 +114,7 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
      * @param stateFactory
      *        this object creates all parsing state object.
      *        Parsing behavior can be modified by changing this object.
-     * @param expectedNamespace
+     * @param expectedTargetNamespace
      *        expected value of 'targetNamespace' attribute.
      *        If this value is null, then the module must have 'targetNamepsace'
      *        attribute. If this value is non-null and module doesn't have

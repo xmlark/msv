@@ -207,7 +207,6 @@ class TREXIslandVerifier
     private String lastNamaespaceUri;
     private String lastLocalName;
     private String lastQName;
-    private ElementDecl[] candidates;
     
     public void endChildIsland( String childURI, ElementDecl[] ruleSet ) throws SAXException
     {

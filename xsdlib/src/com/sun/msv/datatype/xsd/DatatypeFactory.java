@@ -49,7 +49,7 @@ public class DatatypeFactory {
      *        in this package or derived from types implemented in this package.
      *        You cannot use your own DataType implementation here.
      *
-     * @exception BadTypeException
+     * @exception DatatypeException
      *        this exception is thrown when the derivation is illegal.
      *        For example, when you try to derive a type from non-atom type.
      */
@@ -82,7 +82,7 @@ public class DatatypeFactory {
      * @param memberTypes
      *        Types of the union member. It can be any type that implements DataType.
      *
-     * @exception BadTypeException
+     * @exception DatatypeException
      *        this exception is thrown when the derivation is illegal.
      */
     public static XSDatatype deriveByUnion( String nsUri, String newTypeName, XSDatatype[] memberTypes )

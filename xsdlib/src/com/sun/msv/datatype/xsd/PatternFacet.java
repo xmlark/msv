@@ -46,12 +46,6 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
 
     
     
-    /**
-     * @param regularExpressions
-     *        Vector of XMLSchema-compiliant regular expression
-     *        (see http://www.w3.org/TR/xmlschema-2/#dt-regex )
-     *        There patterns are considered as an 'OR' set.
-     */
     public PatternFacet( String nsUri, String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
         throws DatatypeException {
         super( nsUri, typeName, baseType, FACET_PATTERN, facets.isFixed(FACET_PATTERN) );

@@ -67,8 +67,8 @@ public class XmlChars
     /**
      * Returns true if the character is allowed to be a non-initial
      * character in names according to the XML recommendation.
-     * @see #isNCNameChar
-     * @see #isLetter
+     * @see #isNCNameChar(char)
+     * @see #isLetter(char)
      */
     public static boolean isNameChar (char c)
     {
@@ -92,8 +92,8 @@ public class XmlChars
      * Namespaces proposed recommendation.  Except for precluding
      * the colon (used to separate names from their scopes) these
      * characters are just as allowed by the XML recommendation.
-     * @see #isNameChar
-     * @see #isLetter
+     * @see #isNameChar(char)
+     * @see #isLetter(char)
      */
     public static boolean isNCNameChar (char c)
     {
@@ -152,8 +152,8 @@ public class XmlChars
      * start with Letters or a few other characters, but other characters
      * in names must only satisfy the <em>isNameChar</em> predicate.
      *
-     * @see #isNameChar
-     * @see #isNCNameChar
+     * @see #isNameChar(char)
+     * @see #isNCNameChar(char)
      */
     public static boolean isLetter (char c)
     {

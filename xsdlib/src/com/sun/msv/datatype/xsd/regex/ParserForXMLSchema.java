@@ -201,7 +201,7 @@ class ParserForXMLSchema extends RegexParser {
      * cc-normal-c      ::= <any character except [, ], \>
      * from-to-range    ::= cc-normal-c '-' cc-normal-c
      *
-     * @param useNrage Ignored.
+     * @param useNrange Ignored.
      * @return This returns no NrageToken.
      */
     protected RangeToken parseCharacterClass(boolean useNrange) throws ParseException {

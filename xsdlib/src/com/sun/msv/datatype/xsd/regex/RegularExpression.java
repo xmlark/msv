@@ -1355,9 +1355,7 @@ public class RegularExpression implements java.io.Serializable {
         return true;
     }
 
-/**
- * @see java.lang.String#regionMatches
- */
+    // @see java.lang.String#regionMatches
     private static final boolean regionMatchesIgnoreCase(char[]  target, int offset, int limit,
                                                          String part, int partlen) {
         if (offset < 0)  return false;
@@ -2722,9 +2720,7 @@ public class RegularExpression implements java.io.Serializable {
         return true;
     }
 
-    /**
-     * @see java.lang.String#regionMatches
-     */
+    // @see java.lang.String#regionMatches
     private static final boolean regionMatchesIgnoreCase(CharacterIterator  target, int offset, int limit,
                                                          String part, int partlen) {
         if (offset < 0)  return false;
@@ -2954,7 +2950,6 @@ public class RegularExpression implements java.io.Serializable {
     /**
      * This option redefines <span class="REGEX"><kbd>\d \D \w \W \s \S</kbd></span>.
      *
-     * @see #RegularExpression(java.lang.String,int)
      * @see #setPattern(java.lang.String,int)
      * @see #UNICODE_WORD_BOUNDARY
      */
@@ -2969,7 +2964,6 @@ public class RegularExpression implements java.io.Serializable {
      * <p>By this option, the engine checks word boundaries with the method of
      * 'Unicode Regular Expression Guidelines' Revision 4.
      *
-     * @see #RegularExpression(java.lang.String,int)
      * @see #setPattern(java.lang.String,int)
      */
     static final int UNICODE_WORD_BOUNDARY = 1<<6; // "w"
@@ -3000,7 +2994,7 @@ public class RegularExpression implements java.io.Serializable {
      * Creates a new RegularExpression instance.
      *
      * @param regex A regular expression
-     * @exception org.apache.xerces.utils.regex.ParseException <VAR>regex</VAR> is not conforming to the syntax.
+     * @exception ParseException <VAR>regex</VAR> is not conforming to the syntax.
      */
     public RegularExpression(String regex) throws ParseException {
         this.setPattern(regex, null);
@@ -3011,7 +3005,7 @@ public class RegularExpression implements java.io.Serializable {
      *
      * @param regex A regular expression
      * @param options A String consisted of "i" "m" "s" "u" "w" "," "X"
-     * @exception org.apache.xerces.utils.regex.ParseException <VAR>regex</VAR> is not conforming to the syntax.
+     * @exception ParseException <VAR>regex</VAR> is not conforming to the syntax.
      */
     public RegularExpression(String regex, String options) throws ParseException {
         this.setPattern(regex, options);

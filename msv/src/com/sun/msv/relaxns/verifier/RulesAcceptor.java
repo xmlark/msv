@@ -20,7 +20,7 @@ import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 /**
  * Acceptor that is used to validate root node of the island.
  * 
- * This object receives {@link RuleImpl}s and validates them.
+ * This object receives {@link DeclImpl}s and validates them.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
@@ -68,7 +68,7 @@ public class RulesAcceptor
     /**
      * collects satisfied ElementDeclImpls.
      * 
-     * @see com.sun.msv.verifier.regexp.trex.ComplexAcceptor#getSatisfiedOwners
+     * @see com.sun.msv.verifier.regexp.ComplexAcceptor#getSatisfiedOwners()
      */
     ElementDecl[] getSatisfiedElementDecls() {
         int cnt=0;

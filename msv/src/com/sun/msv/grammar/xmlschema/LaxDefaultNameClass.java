@@ -43,7 +43,7 @@ import com.sun.msv.util.StringPair;
 public class LaxDefaultNameClass extends NameClass {
     
     /**
-     * @param base
+     * @param _base
      *        this name class accepts a name if
      *        <ol>
      *         <li>it's in the 'base" name class and

@@ -26,7 +26,7 @@ public class RELAXGrammar implements Grammar {
      * map from namespace URI to IslandSchema.
      * All modules are stored in this map.
      * 
-     * @see IslandSchema
+     * @see org.iso_relax.dispatcher.IslandSchema
      */
     public final Map moduleMap = new java.util.HashMap();
     

@@ -13,7 +13,7 @@ package com.sun.msv.datatype.xsd;
 /**
  * "gMonth" type.
  * 
- * type of the value object is {@link IDateTimeValueType}.
+ * type of the value object is {@link com.sun.msv.datatype.xsd.datetime.IDateTimeValueType}.
  * See http://www.w3.org/TR/xmlschema-2/#gMonth for the spec
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>

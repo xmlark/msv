@@ -108,7 +108,9 @@ public class RELAXNSReader
 			if( language.equals( com.sun.tranquilo.reader.trex.TREXGrammarReader.TREXNamespace ) ) // TREX
 				return new com.sun.tranquilo.relaxns.reader.trex.TREXIslandSchemaReader(
 					new com.sun.tranquilo.reader.trex.TREXGrammarReader(
-						controller,parserFactory,(TREXPatternPool)pool) );
+						controller,parserFactory,
+						new com.sun.tranquilo.reader.trex.TREXGrammarReader.StateFactory(),
+						(TREXPatternPool)pool) );
 
 		} catch( javax.xml.parsers.ParserConfigurationException e ) {
 			reportError( e, ERR_XMLPARSERFACTORY_EXCEPTION, e.getMessage() );

@@ -42,7 +42,14 @@
 		</javac>
 	</target>
 	
-	
+	<target name="jar" description="make a jar file out of the bin/ directory">
+		<jar	jarfile="xmlgen.jar"
+				manifest="./MANIFEST.MF"
+				compress="${compress}">
+			<fileset dir="src" includes="**/*.properties" />
+			<fileset dir="bin" includes="**/*.*" />
+		</jar>
+	</target>
 	
 	
 	
@@ -99,6 +106,7 @@
 		<!-- compile files -->
 		<mkdir	dir="temp" />
 		<javac	srcdir="dist/src"
+				debug="on"
 				destdir="temp">
 			
 			<classpath path="../package/msv.jar"/>

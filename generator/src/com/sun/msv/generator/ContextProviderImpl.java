@@ -53,6 +53,10 @@ final public class ContextProviderImpl
 		// this implementation is not a problem.
 		return true;
 	}
+	public boolean isNotation( String name ) {
+		// accept anything.
+		return true;
+	}
 	
 	public static final String XMLNS_URI = "http://www.w3.org/2000/xmlns/";
 	

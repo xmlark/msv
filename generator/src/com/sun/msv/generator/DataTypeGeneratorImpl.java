@@ -9,8 +9,8 @@
  */
 package com.sun.msv.generator;
 
-import com.sun.msv.datatype.*;
-import org.relaxng.datatype.DataType;
+import com.sun.msv.datatype.xsd.*;
+import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.ValidationContext;
 import java.util.Random;
 import java.util.Map;
@@ -51,7 +51,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 	 */
 	protected Set tokens;
 
-	public String generate( DataType dt, ContextProviderImpl context ) {
+	public String generate( Datatype dt, ContextProviderImpl context ) {
 		String s=null; int i;
 
 		// obtain previously generated values.
@@ -64,7 +64,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 			while(itr.hasNext()) {
 				String token = (String)itr.next();
 				try {// we have to be able to verify this without depending on the context.
-					if(dt.allows(token,null))
+					if(dt.isValid(token,null))
 						vs.add(token);
 				}catch(Exception e){}
 			}
@@ -77,7 +77,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 			
 			for( i=0; i<100; i++ ) {
 				s = _generate(dt,context);
-				if( s!=null && dt.allows(s,context) ) {
+				if( s!=null && dt.isValid(s,context) ) {
 					// memorize generated values so that we can use them later.
 					vs.add(s);
 					break;	// this value is OK.
@@ -105,13 +105,13 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 	 * actual generation.
 	 * this method can return an invalid value.
 	 */
-	protected String _generate( DataType dt, ContextProviderImpl context ) {
+	protected String _generate( Datatype dt, ContextProviderImpl context ) {
 		if( dt instanceof AnyURIType ) {
 			// anyURI
 			String r;
 			do {
 				r = generateString();	// any string should work
-			}while(!dt.allows(r,context));
+			}while(!dt.isValid(r,context));
 			return r;
 		}
 		
@@ -161,16 +161,16 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 			com.sun.msv.grammar.relaxng.ValueType t =
 				(com.sun.msv.grammar.relaxng.ValueType)dt;
 			
-			if( t.baseType instanceof DataTypeImpl )
-				return ((DataTypeImpl)t.baseType).convertToLexicalValue(t.value,context);
+			if( t.baseType instanceof XSDatatypeImpl )
+				return ((XSDatatypeImpl)t.baseType).convertToLexicalValue(t.value,context);
 		}
 		
 		
 		// getting desparate...
 		
-		if( dt instanceof DataTypeImpl ) {
+		if( dt instanceof XSDatatypeImpl ) {
 			// if it contains EnumerationFacet, we can try that.
-			DataTypeImpl dti = (DataTypeImpl)dt;
+			XSDatatypeImpl dti = (XSDatatypeImpl)dt;
 			EnumerationFacet e = (EnumerationFacet)dti.getFacetObject( dti.FACET_ENUMERATION );
 			if(e!=null) {
 				Object[] items = e.values.toArray();
@@ -181,7 +181,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 				}
 			}
 			
-			DataType baseType = dti.getConcreteType();
+			XSDatatype baseType = dti.getConcreteType();
 			
 			if( baseType instanceof ListType )
 				return generateList(dti,context);
@@ -201,8 +201,11 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		return null;
 	}
 
-	protected void fail( DataType dt ) {
-		throw new GenerationException("unable to generate value for this datatype: " + dt.displayName() );
+	protected void fail( Datatype dt ) {
+		
+		throw new GenerationException("unable to generate value for this datatype: " +
+			(( dt instanceof XSDatatype )?((XSDatatype)dt).displayName():dt.toString()) );
+		
 	}
 
 	protected String generateNMTOKEN() {
@@ -228,7 +231,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		} catch( GenerationException ge ) { return null; }
 	}
 		
-	protected String generateList(DataTypeImpl dti, ContextProviderImpl context) {
+	protected String generateList(XSDatatypeImpl dti, ContextProviderImpl context) {
 		try {
 			ListType base = (ListType)dti.getConcreteType();
 			LengthFacet lf = (LengthFacet)dti.getFacetObject(dti.FACET_LENGTH);

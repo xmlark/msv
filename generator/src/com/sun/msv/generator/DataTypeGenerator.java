@@ -9,7 +9,7 @@
  */
 package com.sun.msv.generator;
 
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -18,7 +18,7 @@ import org.relaxng.datatype.ValidationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface DataTypeGenerator {
-	String generate( DataType dt, ContextProviderImpl context );
+	String generate( Datatype dt, ContextProviderImpl context );
 	
 	public static class GenerationException extends RuntimeException {
 		public GenerationException( String msg ) {

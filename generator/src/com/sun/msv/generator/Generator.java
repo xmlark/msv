@@ -12,8 +12,8 @@ package com.sun.msv.generator;
 import org.w3c.dom.*;
 import org.xml.sax.ContentHandler;
 import org.relaxng.datatype.ValidationContext;
-import com.sun.msv.datatype.NmtokenType;
-import com.sun.msv.datatype.StringType;
+import com.sun.msv.datatype.xsd.NmtokenType;
+import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.*;
 import com.sun.msv.util.StringPair;
 import com.sun.msv.grammar.util.ExpressionPrinter;
@@ -383,14 +383,15 @@ public class Generator implements ExpressionVisitorVoid
 	
 	public void onTypedString( TypedStringExp exp ) {
 		String value;
-		if( "ID".equals(exp.dt.displayName()) ) {
+		if( exp.dt==com.sun.msv.grammar.IDType.theInstance ) {
 			do {
 				value = opts.dtGenerator.generate(NmtokenType.theInstance,getContext());
 			}while( ids.contains(value) );
 			ids.add(value);
 		}
 		else
-		if( "IDREF".equals(exp.dt.displayName()) || "IDREFS".equals(exp.dt.displayName()) ) {
+		if( exp.dt==com.sun.msv.grammar.IDREFType.theInstance
+		||  exp.dt==com.sun.msv.grammar.IDREFType.theIDREFSinstance ) {
 			Node n = domDoc.createTextNode("{TmpIDRef}");
 			node.appendChild(n);
 			idrefs.add(n); // memorize this node so that we can patch it later.

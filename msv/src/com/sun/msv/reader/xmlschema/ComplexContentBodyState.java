@@ -42,7 +42,7 @@ public class ComplexContentBodyState extends SequenceState {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		
 		State s;
-		if( super.exp==null ) {
+		if( super.exp==Expression.epsilon ) {
 			// model group must be the first expression child.
 			s = reader.createModelGroupState(this,tag);
 			if(s!=null )	return s;
@@ -51,6 +51,11 @@ public class ComplexContentBodyState extends SequenceState {
 		// attribute, attributeGroup, and anyAttribtue can be specified
 		// after content model is given.
 		return reader.createAttributeState(this,tag);
+	}
+
+	protected Expression initialExpression() {
+		// if nothing is specified, then empty
+		return Expression.epsilon;
 	}
 	
 	protected Expression annealExpression( Expression exp ) {

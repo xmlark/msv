@@ -43,7 +43,7 @@ public class ComplexContentState extends ExpressionWithChildState {
 		
 		return super.createChildState(tag);
 	}
-
+	
 	protected Expression castExpression( Expression halfCastedExpression, Expression newChildExpression ) {
 		if( halfCastedExpression!=null )
 			// assertion failed.

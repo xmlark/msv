@@ -181,7 +181,9 @@
     <copy file="../package/xsdlib.jar" tofile="${stageName}/xsdlib.jar" />
     <copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
     <copy file="${isorelax.jar}" tofile="${stageName}/isorelax.jar" />
-    <copy file="${xerces.jar}" tofile="${stageName}/xerces.jar" />
+    <copy file="${xerces.jar}" tofile="${stageName}/xercesImpl.jar" />
+    <copy file="${xmlParserAPIs.jar}" tofile="${stageName}/xmlParserAPIs.jar}" />
+
     
     <!-- create a time stamp file -->
     <echo file="temp/version.properties">version=${DSTAMP}</echo>

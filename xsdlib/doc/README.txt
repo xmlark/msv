@@ -9,16 +9,9 @@ Sun XML Datatypes Library, Sun's Java[tm] technology implementation of
 W3C's XML Schema Part 2 (http://www.w3.org/TR/xmlschema-2/), is
 intended for use with applications that incorporate XML Schema Part 2.
 
-This preview version implements the proposed recommendation version
-(http://www.w3.org/TR/2001/PR-xmlschema-2-20010316/) of the W3C XML
-Schema Part 2 Datatype. Being a proposed recommendation means that it
-is subject to change. In fact, many important changes were made after
-the October 24, 2000 version, and many changes may be made before it
-becomes a recommendation. So developers should be forewarned about
-possible future changes, including (but of course not limited to):
-
-    * Change/addition/removal of type names
-    * Change/addition/removal of facets
+This preview version implements the recommendation version
+(http://www.w3.org/TR/2001/PR-xmlschema-2-20010330/) of the W3C XML
+Schema Part 2 Datatype.
 
 This product includes software developed by the Apache Software
 Foundation (http://www.apache.org/).
@@ -49,9 +42,7 @@ KNOWN LIMITATIONS
    generic implementation. com.sun.tranquilo.datatype.DataTypeFactory
    does not recognize these three types.
 
-3. "NOTATION" type is not implemented.
-   com.sun.tranquilo.datatype.DataTypeFactory does not recognize this
-   type.
+3. "NOTATION" type validates like the "token" type.
 
 4. "length", "minLength", and "maxLength" facets are effectively
    limited to the value 2147483647. Values above this limit are

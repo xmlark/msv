@@ -15,7 +15,6 @@ import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.InputSource;
 import junit.framework.*;
 import com.sun.msv.verifier.*;
-import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.dtd.DTDReader;
 import com.sun.msv.reader.util.GrammarLoader;
@@ -54,7 +53,7 @@ public abstract class BatchTester
 	public String ext;
 	
 	public static interface Loader {
-		REDocumentDeclaration load(
+		Grammar load(
 			InputSource source, GrammarReaderController controller, SAXParserFactory factory )
 			throws Exception;
 	}
@@ -62,11 +61,11 @@ public abstract class BatchTester
 	
 	/** DTD loader. */
 	public static final Loader dtdLoader = new Loader(){
-		public REDocumentDeclaration load( InputSource is, GrammarReaderController controller, SAXParserFactory factory ) throws Exception {
+		public Grammar load( InputSource is, GrammarReaderController controller, SAXParserFactory factory ) throws Exception {
 			is.setSystemId( toURL(is.getSystemId()) );
 			Grammar g = DTDReader.parse(is,controller,"",new ExpressionPool() );
 			if(g==null)		return null;
-			return new REDocumentDeclaration(g);
+			return g;
 		}
 		protected String toURL( String path ) throws Exception {
 			path = new File(path).getAbsolutePath();
@@ -81,8 +80,8 @@ public abstract class BatchTester
 	};
 	/** RELAX/TREX/XSD loader. */
 	public static final Loader genericLoader = new Loader(){
-		public REDocumentDeclaration load( InputSource is, GrammarReaderController controller, SAXParserFactory factory ) throws Exception {
-			return GrammarLoader.loadVGM(is,controller,factory);
+		public Grammar load( InputSource is, GrammarReaderController controller, SAXParserFactory factory ) throws Exception {
+			return GrammarLoader.loadSchema(is,controller,factory);
 		}
 	};
 	
@@ -115,6 +114,9 @@ public abstract class BatchTester
 		else
 		if( av[0].equals("trex") )
 			init( av[0], av[1], ".trex", genericLoader );
+		else
+		if( av[0].equals("rng") )
+			init( av[0], av[1], ".rng", genericLoader );
 		else
 		if( av[0].equals("xsd") )
 			init( av[0], av[1], ".xsd", genericLoader );

@@ -352,18 +352,14 @@ public class RuleFileGenerator implements Symbolizer {
 	}
 	
 	private static String computeName( ClassItem cls, Map m ) {
-		String name = cls.getTypeName();
-		int idx = name.lastIndexOf('.');
-		if(idx>=0)	name = name.substring(idx+1);
+		String name = cls.getBareName();
 		
 		if(!m.containsValue(name))		return name;
 		return getNumberedName( name, 2, m );
 	}
 
 	private static String computeName( PrimitiveItem pitm, Map m ) {
-		String name = pitm.type.getTypeName();
-		int idx = name.lastIndexOf('.');
-		if(idx>=0)	name = name.substring(idx+1);
+		String name = pitm.type.getBareName();
 		
 		if(!m.containsValue(name))		return name;
 		return getNumberedName( name, 2, m );

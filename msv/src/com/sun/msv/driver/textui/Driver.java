@@ -26,10 +26,11 @@ public class Driver
 		String grammarName = null;
 		boolean dump=false;
 		boolean relax=true;
+		boolean verbose = false;
 		
 		if( args.length==0 )
 		{
-			System.out.println("usage: java -jar tranquilo.jar (-relax|-trex) [-xerces|-crimson] [-dump] [-debug] <grammar file> <instance file> ...");
+			System.out.println("usage: java -jar tranquilo.jar (-relax|-trex) [-xerces|-crimson] [-dump] [-debug] [-verbose] <grammar file> <instance file> ...");
 			return;
 		}
 		
@@ -49,6 +50,9 @@ public class Driver
 			if( args[i].equalsIgnoreCase("-crimson") )
 				factory = new org.apache.crimson.jaxp.SAXParserFactoryImpl();
 			else
+			if( args[i].equalsIgnoreCase("-verbose") )
+				verbose = true;
+			else
 			{
 				if( args[i].charAt(0)=='-' )
 				{
@@ -67,7 +71,8 @@ public class Driver
 		if( factory==null )
 			factory = new org.apache.xerces.jaxp.SAXParserFactoryImpl();
 		
-		System.out.println("Using "+factory.getClass().getName());
+		if( verbose )
+			System.out.println("Using "+factory.getClass().getName());
 		factory.setNamespaceAware(true);
 		factory.setValidating(false);
 		
@@ -85,7 +90,7 @@ public class Driver
 			TREXDocumentDeclaration docDecl;
 		
 			final long stime = System.currentTimeMillis();
-			System.out.println( "start parsing" );
+			System.out.println( "start parsing a grammar" );
 		
 			if(relax)
 			{
@@ -96,8 +101,9 @@ public class Driver
 				docDecl = new TREXDocumentDeclaration(loadTREX(is));
 
 			long parsingTime = System.currentTimeMillis();
-			System.out.println( "parsing took "+(parsingTime-stime)+"ms" );
-			System.out.println( "start validation" );
+			if( verbose )
+				System.out.println( "parsing took "+(parsingTime-stime)+"ms" );
+			
 			
 			for( int i=0; i<fileNames.size(); i++ )
 			{
@@ -108,7 +114,8 @@ public class Driver
 				verify( docDecl, xml );
 			}
 			
-			System.out.println( "validation took "+(System.currentTimeMillis()-parsingTime)+"ms" );
+			if( verbose )
+				System.out.println( "validation took "+(System.currentTimeMillis()-parsingTime)+"ms" );
 		}
 	}
 	
@@ -219,44 +226,17 @@ public class Driver
 		if( v.isValid() )	System.out.println("document is valid");
 		else				System.out.println("document is NOT valid");
 	}
-	
-	/* manually construct TREX pattern
-	public static void main( String[] args ) throws Exception
+
+	public static String localizeMessage( String propertyName, Object[] args )
 	{
-		TREXPatternPool pool = new TREXPatternPool();
-		
-		TREXGrammar grammar = new TREXGrammar(pool);
-		grammar.start = 
-			pool.createElement( new SimpleNameClass("","root"),
-				pool.createChoice(
-					Pattern.anyString,
-					pool.createOneOrMore(
-						pool.createElement( new SimpleNameClass("","item"),
-							Pattern.epsilon )
-						)
-					)
-				);
-		
-		SAXParser p = new SAXParser();
-		
-		Verifier v = new Verifier( new REDocumentDeclaration(grammar) );
-		
-		p.setDTDHandler(v);
-		p.setContentHandler(v);
-		
-		try
-		{
-			p.parse( new InputSource(new java.io.FileInputStream("c:\\test.xml")) );
-		}
-		catch( SAXException se )
-		{
-			if(se.getException()!=null)
-			{
-				se.getException().printStackTrace();
-			}
-			else
-				se.printStackTrace();
-		}
+		String format = java.util.ResourceBundle.getBundle(
+			"com.sun.tranquilo.driver.textui.Messages").getString(propertyName);
+	    return java.text.MessageFormat.format(format, args );
 	}
-	*/
+	public static String localizeMessage( String prop )
+	{ return localizeMessage(prop,null); }
+	public static String localizeMessage( String prop, Object arg1 )
+	{ return localizeMessage(prop,new Object[]{arg1}); }
+	public static String localizeMessage( String prop, Object arg1, Object arg2 )
+	{ return localizeMessage(prop,new Object[]{arg1,arg2}); }
 }

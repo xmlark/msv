@@ -25,8 +25,8 @@ public class RELAXBatchTest
 
 	public static void main( String[] av ) throws Exception
 	{
-		TestRunner.factory.setNamespaceAware(true);
-		TestRunner.factory.setValidating(false);
+		Driver.factory.setNamespaceAware(true);
+		Driver.factory.setValidating(false);
 		
 		final String dir = "c:\\work\\relax\\";
 		final File testDir = new File( dir );
@@ -54,7 +54,7 @@ public class RELAXBatchTest
 			is.setSystemId(schemaFileName);
 			
 			g = RELAXReader.parse(
-					is, TestRunner.factory,
+					is, Driver.factory,
 					new DebugController(),
 					new TREXPatternPool() );
 			
@@ -79,7 +79,7 @@ public class RELAXBatchTest
 					ValidityViolation vv=null;
 					try
 					{
-						XMLReader r =TestRunner.factory.newSAXParser().getXMLReader();
+						XMLReader r =Driver.factory.newSAXParser().getXMLReader();
 						r.setContentHandler(
 							new Verifier(
 								new TREXDocumentDeclaration(

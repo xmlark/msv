@@ -950,7 +950,7 @@
 	<answer for="unsignedInt"			>..... ..... ....o ooooo  ooooo ooooo oooo. ..... ...</answer>
 	<answer for="unsignedShort"			>..... ..... ....o ooooo  ooooo ooo.. ..... ..... ...</answer>
 	<answer for="unsignedByte"			>..... ..... ....o ooooo  ooo.. ..... ..... ..... ...</answer>
-	<answer for="number"				>ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ooo</answer>
+	<answer for="decimal"				>ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ooo</answer>
 	
 	<facets><combination>
 		<choice>

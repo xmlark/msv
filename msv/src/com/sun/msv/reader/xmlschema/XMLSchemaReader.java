@@ -7,8 +7,10 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.ReferenceExp;
 import com.sun.tranquilo.grammar.ReferenceContainer;
 import com.sun.tranquilo.grammar.SimpleNameClass;
+import com.sun.tranquilo.grammar.AnyNameClass;
 import com.sun.tranquilo.grammar.ChoiceNameClass;
 import com.sun.tranquilo.grammar.trex.TREXPatternPool;
+import com.sun.tranquilo.grammar.trex.ElementPattern;
 import com.sun.tranquilo.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.tranquilo.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.tranquilo.grammar.xmlschema.ComplexTypeExp;
@@ -74,6 +76,15 @@ public class XMLSchemaReader extends GrammarReader {
 			)
 		);
 		
+		ElementPattern e = new ElementPattern( AnyNameClass.theInstance, Expression.nullSet );
+		e.contentModel =
+			pool.createMixed(
+				pool.createZeroOrMore(
+					pool.createChoice(
+						pool.createAttribute( AnyNameClass.theInstance ),
+						e )));
+		complexUrType = e.contentModel;
+		
 		this.grammar = new XMLSchemaGrammar(pool);
 	}
 	
@@ -86,6 +97,11 @@ public class XMLSchemaReader extends GrammarReader {
 	 * optional xsi:schemaLocation or xsi:noNamespaceSchemaLocation.
 	 */
 	public final Expression xsiSchemaLocationExp;
+	
+	/**
+	 * expression that matches to "ur-type" when used as a complex type.
+	 */
+	public final Expression complexUrType;
 	
 	/** value of "attributeFormDefault" attribute. */
 	protected String attributeFormDefault;
@@ -129,6 +145,11 @@ public class XMLSchemaReader extends GrammarReader {
 		// create new one.
 		g = new XMLSchemaSchema(namespaceURI,grammar);
 		grammar.schemata.put(namespaceURI,g);
+		
+		// memorize the first link so that we can report the source of error
+		// if this namespace turns out to be undefined.
+		backwardReference.memorizeLink(g);
+		
 		return g;
 	}
 	
@@ -345,7 +366,9 @@ public class XMLSchemaReader extends GrammarReader {
 		if( isSchemaNamespace(r[0]) )
 			return pool.createTypedString( resolveBuiltinDataType(r[1]) );
 		
-		return getOrCreateSchema(r[0]/*uri*/).simpleTypes.getOrCreate(r[1]/*local name*/);
+		Expression exp = getOrCreateSchema(r[0]/*uri*/).simpleTypes.getOrCreate(r[1]/*local name*/);
+		backwardReference.memorizeLink(exp);
+		return exp;
 	}
 	
 	public static interface RefResolver {
@@ -481,6 +504,14 @@ public class XMLSchemaReader extends GrammarReader {
 		while( itr.hasNext() ) {
 			XMLSchemaSchema schema = (XMLSchemaSchema)itr.next();
 			
+			if( !isSchemaDefined(schema) ) {
+				reportError(
+					backwardReference.getReferer(schema),
+					ERR_UNDEFINED_SCHEMA,
+					new Object[]{schema.targetNamespace} );
+				return;	// surpress excessive error messages.
+			}
+			
 			// detect undefined declarations.
 			detectUndefinedOnes( schema.attributeDecls,		ERR_UNDEFINED_ATTRIBUTE_DECL );
 			detectUndefinedOnes( schema.attributeGroups,	ERR_UNDEFINED_ATTRIBUTE_GROUP );
@@ -587,6 +618,8 @@ public class XMLSchemaReader extends GrammarReader {
 		"XMLSchemaReader.UndefinedElementDecl";
 	public static final String ERR_UNDEFINED_GROUP =
 		"XMLSchemaReader.UndefinedGroup";
+	public static final String ERR_UNDEFINED_SCHEMA =
+		"XMLSchemaReader.UndefinedSchema";
 	public static final String WRN_UNSUPPORTED_ANYELEMENT = // arg:1
 		"XMLSchemaReader.Warning.UnsupportedAnyElement";
 	public static final String WRN_OBSOLETED_NAMESPACE = // arg:0
@@ -605,4 +638,8 @@ public class XMLSchemaReader extends GrammarReader {
 		"XMLSchemaReader.DuplicateGroupDefinition";
 	public static final String ERR_DUPLICATE_ELEMENT_DEFINITION = // arg:1
 		"XMLSchemaReader.DuplicateElementDefinition";
+	public static final String WRN_IMPLICIT_URTYPE_FOR_ELEMENT = // arg:0
+		"XMLSchemaReader.Warning.ImplicitUrTypeForElement";
+	public static final String WRN_IMPLICIT_URTYPE_FOR_COMPLEXTYPE = // arg:0
+		"XMLSchemaReader.Warning.ImplicitUrTypeForComplexType";
 }

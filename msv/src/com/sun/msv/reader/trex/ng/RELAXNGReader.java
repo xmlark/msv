@@ -27,6 +27,7 @@ import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.reader.trex.TREXBaseReader;
 import com.sun.msv.reader.trex.AnyStringState;
 import com.sun.msv.reader.trex.RootState;
+import com.sun.msv.reader.trex.IncludePatternState;
 import com.sun.msv.reader.datatype.DataTypeVocabulary;
 import com.sun.msv.util.StartTagInfo;
 
@@ -123,9 +124,12 @@ public class RELAXNGReader extends TREXBaseReader {
 		public State data			( State parent, StartTagInfo tag ) { return new DataState(); }
 		public State dataParam		( State parent, StartTagInfo tag ) { return new DataParamState(); }
 		public State value			( State parent, StartTagInfo tag ) { return new ValueState(); }
+		public State list			( State parent, StartTagInfo tag ) { return new ListState(); }
 		public State define			( State parent, StartTagInfo tag ) { return new DefineState(); }
 		public State redefine		( State parent, StartTagInfo tag ) { return new RedefineState(); }
-		public State includeGrammar	( State parent, StartTagInfo tag ){ return new IncludeMergeState(); }
+		public State includeGrammar	( State parent, StartTagInfo tag ) { return new IncludeMergeState(); }
+		public State externalRef	( State parent, StartTagInfo tag ) { return new IncludePatternState(); }
+
 		/**
 		 * gets DataTypeLibrary object that is specified by the namespace URI.
 		 * 
@@ -150,7 +154,9 @@ public class RELAXNGReader extends TREXBaseReader {
 		if(tag.localName.equals("text"))		return getStateFactory().text(parent,tag);
 		if(tag.localName.equals("data"))		return getStateFactory().data(parent,tag);
 		if(tag.localName.equals("value"))		return getStateFactory().value(parent,tag);
-
+		if(tag.localName.equals("list"))		return getStateFactory().list(parent,tag);
+		if(tag.localName.equals("externalRef"))	return getStateFactory().externalRef(parent,tag);
+		
 		return super.createExpressionChildState(parent,tag);
 	}
 	

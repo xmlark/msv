@@ -62,21 +62,22 @@ public class ElementDeclState extends ExpressionWithChildState {
 		// it shall be used as content type.
 		final String typeQName = startTag.getAttribute("type");
 		if( typeQName==null )	return null;
-		
+
 		// TODO: shall I memorize this as a backward reference?
 		// symbol may not be defined at this moment.
 		// so just return an empty ReferenceExp and back-patch the actual definition later.
 		final ReferenceExp ref = new ReferenceExp("elementType("+typeQName+")");
 		
+		final String[] s = reader.splitQName(typeQName);
+		if(s==null) {
+			reader.reportError( reader.ERR_UNDECLARED_PREFIX, typeQName );
+			ref.exp = Expression.nullSet;	// recover by setting a dummy definition.
+			return ref;
+		}
+		
 		reader.addBackPatchJob( new GrammarReader.BackPatch(){
 			public State getOwnerState() { return ElementDeclState.this; }
 			public void patch() {
-				String[] s = reader.splitQName(typeQName);
-				if(s==null) {
-					reader.reportError( reader.ERR_UNDECLARED_PREFIX, typeQName );
-					ref.exp = Expression.nullSet;	// recover by setting a dummy definition.
-					return;
-				}
 				
 				Expression e;
 				

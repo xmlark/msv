@@ -33,7 +33,7 @@ public class JAXPWithMSVDemo
 
 		// create SAXParserFactory that performs validation by the specified schema
 		// this method will throw an exception if it fails to parse the document.
-		SAXParserFactory factory = new SAXParserFactoryImpl(args[0]);
+		SAXParserFactory factory = new SAXParserFactoryImpl(new File(args[0]));
 		
 		
 		// once the parser factory is created, just do as you always do.
@@ -42,7 +42,8 @@ public class JAXPWithMSVDemo
 		
 		for( int i=1; i<args.length; i++ ) {
 			// validation errors will be reported just like any other errors.
-			parser.parse( new File(args[i]), new DefaultHandler() {
+			final String fileName = args[i];
+			parser.parse( new File(fileName), new DefaultHandler() {
 					
 				boolean isValid = true;
 					
@@ -57,9 +58,9 @@ public class JAXPWithMSVDemo
 				public void endDocument() {
 					if(isValid)
 						// successfully parsed without any error.
-						System.out.println(args[i]+" is valid");
+						System.out.println(fileName+" is valid");
 					else
-						System.out.println(args[i]+" is NOT valid");
+						System.out.println(fileName+" is NOT valid");
 				}
 			});
 		}

@@ -65,7 +65,7 @@ public class GrammarCacheDemo
 
 						// use the verify method to validate documents.
 						// or you can validate SAX events by using the getVerifierHandler method.
-						if(verifier.verify(new File(fileName)))
+						if(verifier.verify(fileName))
 							System.out.println(fileName+" is valid");
 						else
 							System.out.println(fileName+" is NOT valid");

@@ -53,7 +53,7 @@ public class JARVDemo
 		// use the verify method to validate documents.
 		// or you can validate SAX events by using the getVerifierHandler method.
 		for( int i=1; i<args.length; i++ )
-			if(verifier.verify(new File(args[i])))
+			if(verifier.verify(args[i]))
 				System.out.println(args[i]+" is valid");
 			else
 				System.out.println(args[i]+" is NOT valid");

@@ -258,7 +258,10 @@ public class ElementDeclState extends ExpressionWithChildState {
 		return decl;
 	}
 
-	protected boolean isGlobal() {
+    /**
+     * Returns true if this element declaration is a global element declaration.
+     */
+	public boolean isGlobal() {
 		return parentState instanceof GlobalDeclState;
 	}
 

@@ -68,8 +68,10 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 			}
 		}
 
-		if(vs.size()<32) {
+		if(vs.size()<32 || random.nextBoolean() ) {
 			// we need more diversity. generate more.
+			// we have to continue producing values, especially for
+			// ID values.
 			
 			for( i=0; i<100; i++ ) {
 				s = _generate(dt,context);

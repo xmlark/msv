@@ -129,8 +129,11 @@ public class Driver
 		Grammar grammar=null;		
 		try {
 			grammar = GrammarLoader.loadSchema(is,new DebugController(warning),factory);
+		} catch(SAXParseException spe) {
+			; // this error is already reported.
 		} catch(SAXException se ) {
-			se.getException().printStackTrace();
+			if( se.getException()!=null ) throw se.getException();
+			throw se;
 		}
 		if( grammar==null ) {
 			System.out.println( localize(ERR_LOAD_GRAMMAR) );

@@ -19,7 +19,7 @@ public class DTDValidator extends AbstractValidatorExImpl {
 
 	public Grammar parseSchema( InputSource is, GrammarReaderController controller ) throws Exception {
 		is.setSystemId( toURL(is.getSystemId()) );
-		Grammar g = DTDReader.parse(is,controller,"",new ExpressionPool() );
+		Grammar g = DTDReader.parse(is,controller,new ExpressionPool() );
 		if(g==null)		return null;
 		return g;
 	}

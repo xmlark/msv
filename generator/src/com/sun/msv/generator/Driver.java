@@ -269,7 +269,6 @@ public class Driver {
 				grammar = DTDReader.parse(
 					is,
 					new DebugController(warning,quiet),
-					"",
 					new ExpressionPool());
 			} else {
 				grammar = GrammarLoader.loadSchema(

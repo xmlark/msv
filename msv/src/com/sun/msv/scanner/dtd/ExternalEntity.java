@@ -33,7 +33,7 @@ class ExternalEntity extends EntityDecl
     
     public ExternalEntity (InputEntity in) { }
     
-    public InputSource getInputSource (EntityResolver r)
+	public InputSource getInputSource (EntityResolver r)
                        throws IOException, SAXException {
 
 		InputSource	retval;

@@ -120,9 +120,9 @@ public class DumpHandler implements DTDEventListener {
 		indent++;
 	}
 	
-	public void endContentModel( String elementName ) {
+	public void endContentModel( String elementName, short t ) {
 		indent--;
-		printFormat("endContentModel()",elementName);
+		printFormat("endContentModel({0},{1})",elementName,getModelTypeString(t));
 	}
 	
 	protected String use( short useType ) {
@@ -152,8 +152,8 @@ public class DumpHandler implements DTDEventListener {
 		
 	}
 	
-	public void childElement( String elementName ) {
-		printFormat("childElement({0})",elementName);
+	public void childElement( String elementName, short occurence ) {
+		printFormat("childElement({0}{1})",elementName,occurType(occurence));
 	}
 	
 	public void mixedElement( String elementName ) {
@@ -165,9 +165,9 @@ public class DumpHandler implements DTDEventListener {
 		indent++;
 	}
 	
-	public void endModelGroup() {
+	public void endModelGroup( short occurence ) {
 		indent--;
-		printFormat("endModelGroup()");
+		printFormat("endModelGroup({0})",occurType(occurence));
 	}
 	
 	String combType( short type ) {
@@ -190,9 +190,5 @@ public class DumpHandler implements DTDEventListener {
 		case OCCURENCE_ONCE:			return "";
 		default:			throw new Error();
 		}
-	}
-	
-	public void occurence( short occurenceType ) {
-		printFormat("occurence({0})",occurType(occurenceType) );
 	}
 }

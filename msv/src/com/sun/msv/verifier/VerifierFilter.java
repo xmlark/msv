@@ -28,6 +28,10 @@ public class VerifierFilter extends XMLFilterImpl implements IVerifier {
 	
 	private final IVerifier verifier;
 
+	/**
+	 * @param verifier
+	 *		Verifier object that performs actual validation.
+	 */
 	public VerifierFilter( IVerifier verifier ) {
 		this.verifier = verifier;
 	}

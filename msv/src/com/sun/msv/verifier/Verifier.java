@@ -53,19 +53,19 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	/** characters that were read (but not processed)  */
 	private StringBuffer text = new StringBuffer();
 	
-	/** error handler */
+	/** Error handler */
 	protected ErrorHandler errorHandler;
 	public final ErrorHandler getErrorHandler() { return errorHandler; }
 	public final void setErrorHandler( ErrorHandler handler ) {
 		this.errorHandler = handler;
 	}
-	/** this flag will be set to true if an error is found */
+	/** This flag will be set to true if an error is found */
 	protected boolean hadError;
 	
-	/** this flag will be set to true after endDocument method is called. */
+	/** This flag will be set to true after endDocument method is called. */
 	private boolean isFinished;
 	
-	/** an object used to store start tag information.
+	/** An object used to store start tag information.
 	 * the same object is reused. */
 	private final StartTagInfo sti = new StartTagInfo(null,null,null,null,null);
 	
@@ -74,7 +74,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	/** Schema object against which the validation will be done */
 	protected final DocumentDeclaration docDecl;
 	
-	/** panic level.
+	/** Panic level.
 	 * 
 	 * If the level is non-zero, createChildAcceptors will silently recover
 	 * from error. This effectively suppresses spurious error messages.
@@ -108,7 +108,8 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 				final char ch = text.charAt(i);
 				if( ch!=' ' && ch!='\t' && ch!='\r' && ch!='\n' ) {
 					// error
-					onError( null, localizeMessage( ERR_UNEXPECTED_TEXT, null ) );
+					onError( null, localizeMessage( ERR_UNEXPECTED_TEXT, null ),
+						new ErrorInfo.BadText(text) );
 					break;// recover by ignoring this token
 				}
 			}
@@ -124,7 +125,8 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 				current.onText( txt, this, err, characterType );
 					
 				// report an error
-				onError( err, localizeMessage( ERR_UNEXPECTED_TEXT, null ) );
+				onError( err, localizeMessage( ERR_UNEXPECTED_TEXT, null ),
+					new ErrorInfo.BadText(text) );
 			}
 			break;
 				
@@ -171,7 +173,9 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 			StringRef ref = new StringRef();
 			next = current.createChildAcceptor(sti,ref);
 			
-			ValidityViolation vv = onError( ref, localizeMessage( ERR_UNEXPECTED_STARTTAG, new Object[]{qName} ) );
+			ValidityViolation vv = onError(
+				ref, localizeMessage( ERR_UNEXPECTED_STARTTAG, new Object[]{qName} ),
+				new ErrorInfo.BadTagName(sti) );
 			
 			if( next==null ) {
 				if( com.sun.msv.driver.textui.Debug.debug )
@@ -197,7 +201,8 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 			// let the acceptor recover from the error.
 			StringRef ref = new StringRef();
 			next.onEndAttributes(sti,ref);
-			onError( ref, localizeMessage( ERR_MISSING_ATTRIBUTE, new Object[]{qName} ) );
+			onError( ref, localizeMessage( ERR_MISSING_ATTRIBUTE, new Object[]{qName} ),
+				new ErrorInfo.MissingAttribute(sti) );
 		}
 		
 		stack.panicLevel = panicLevel;	// back-patching.
@@ -239,7 +244,8 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 			// let the acceptor recover from the error.
 			StringRef ref = new StringRef();
 			child.onAttribute( uri,localName,qName,value,this,ref,null );
-			onError( ref, localizeMessage( ERR_UNEXPECTED_ATTRIBUTE, new Object[]{qName} ) );
+			onError( ref, localizeMessage( ERR_UNEXPECTED_ATTRIBUTE, new Object[]{qName}),
+				new ErrorInfo.BadAttribute(sti,qName,uri,localName,value) );
 		}
 		
 		return attributeType.types;
@@ -257,7 +263,10 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 			// error diagnosis
 			StringRef errRef = new StringRef();
 			current.isAcceptState(errRef);
-			onError( errRef, localizeMessage( ERR_UNCOMPLETED_CONTENT,new Object[]{qName} ) );
+			onError( errRef, localizeMessage(
+					ERR_UNCOMPLETED_CONTENT,
+					new Object[]{qName} ),
+				new ErrorInfo.IncompleteContentModel(qName,namespaceUri,localName) );
 			// error recovery: pretend as if this state is satisfied
 			// fall through is enough
 		}
@@ -274,7 +283,9 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 			StringRef ref = new StringRef();
 			current.stepForward( child, ref );	// force recovery
 			
-			onError( ref, localizeMessage( ERR_UNEXPECTED_ELEMENT, new Object[]{qName} ) );
+			onError( ref,
+				localizeMessage( ERR_UNEXPECTED_ELEMENT, new Object[]{qName} ),
+				null );
 		} else
 			panicLevel = Math.max( panicLevel-1, 0 );
 		
@@ -286,14 +297,14 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	 * 
 	 * This method can be overrided by the derived class to provide different behavior.
 	 */
-	protected ValidityViolation onError( StringRef ref, String defaultMsg ) throws SAXException {
-		if(ref==null)		return onError( defaultMsg );
-		if(ref.str==null)	return onError( defaultMsg );
-		else				return onError( ref.str );
+	protected ValidityViolation onError( StringRef ref, String defaultMsg, ErrorInfo ei ) throws SAXException {
+		if(ref==null)		return onError( defaultMsg, ei );
+		if(ref.str==null)	return onError( defaultMsg, ei );
+		else				return onError( ref.str, ei );
 	}
 	
-	protected ValidityViolation onError( String msg ) throws SAXException {
-		ValidityViolation vv = new ValidityViolation(locator,msg);
+	protected ValidityViolation onError( String msg, ErrorInfo ei ) throws SAXException {
+		ValidityViolation vv = new ValidityViolation(locator,msg,ei);
 		hadError = true;
 			
 		if( errorHandler!=null && panicLevel==0 )
@@ -350,14 +361,14 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 				while( itr.hasNext() ) {
 					Object idref = itr.next();
 					if(!ids.contains(idref))
-						onError( localizeMessage( ERR_UNSOLD_IDREF, new Object[]{idref} ) );
+						onError( localizeMessage( ERR_UNSOLD_IDREF, new Object[]{idref} ), null );
 				}
 			}
 			if(duplicateIds!=null) {
 				Iterator itr = duplicateIds.iterator();
 				while( itr.hasNext() ) {
 					Object id = itr.next();
-					onError( localizeMessage( ERR_DUPLICATE_ID, new Object[]{id} ) );
+					onError( localizeMessage( ERR_DUPLICATE_ID, new Object[]{id} ), null );
 				}
 			}
 		}

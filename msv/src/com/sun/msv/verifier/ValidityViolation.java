@@ -13,14 +13,29 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXParseException;
 
 /**
- * contains information about where and how validity violation was happened.
+ * Contains information about where and how validity violation was happened.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ValidityViolation extends SAXParseException
-{
-	/** constructor for this package */
-	public ValidityViolation( Locator loc, String msg ) {
+public class ValidityViolation extends SAXParseException {
+	
+	private ErrorInfo errorInfo;
+	
+	/**
+	 * Gets the detailed error information, if any.
+	 * 
+	 * If there is no detailed information available, it returns null.
+	 * Otherwise one of the derived classes of ErrorInfo will be returned.
+	 */
+	public ErrorInfo getErrorInfo() { return errorInfo;	}
+	
+	public ValidityViolation( Locator loc, String msg, ErrorInfo ei ) {
 		super( msg, loc );
+		this.errorInfo = ei;
 	}
+/*
+	public ValidityViolation( Locator loc, String msg ) {
+		this( msg, loc, null );
+	}
+*/
 }

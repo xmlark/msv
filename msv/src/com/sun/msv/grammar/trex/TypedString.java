@@ -38,6 +38,7 @@ public class TypedString implements DataType
 	}
 	
 	public boolean isAtomType() { return true; }
+	public boolean isFinal(int t) { return true; }
 	
 	public boolean verify( String literal, ValidationContextProvider context )
 	{

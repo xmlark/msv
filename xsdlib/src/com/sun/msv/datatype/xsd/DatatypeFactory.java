@@ -81,7 +81,7 @@ public class DataTypeFactory
 		for( int i=0; i<memberTypes.length; i++ )
 			m[i] = (DataTypeImpl)memberTypes[i];
 		
-		return deriveByUnion(newTypeName,m);
+		return new UnionType(newTypeName,m);
 	}
 	
 	public static DataType deriveByUnion( String newTypeName, Collection memberTypes )

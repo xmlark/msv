@@ -21,22 +21,21 @@ See the examples folder of the distribution and "testSuite.rng" file
 for how to write a test suite file.
 
 Then, you need a RELAX NG processor and a driver implementation for
-that processor. The driver impl for Jing is included as "jingDriver.jar"
-in the distribution. See javadoc for how to implement a driver for
-arbitrary RELAX NG processors.
+that processor. The driver impl for Sun Multi-Schema Validator is
+included as "msvDriver.jar" in the distribution. See javadoc for
+how to implement a driver for arbitrary RELAX NG processors.
 
 
 To run a test, enter the following command:
 
 $ java -jar rngtsth.jar <driver impl class name> <test suite file> ...
 
-For example, to test the conformance of Jing with example1.rts and
-example2.rts,
+For example, to test the conformance of MSV with foo.rts and bar.rts,
 
-$ java -jar rngtsth.jar jing.IValidatorImpl example1.rts example2.rts
+$ java -jar rngtsth.jar jing.IValidatorImpl foo.rts bar.rts
 
 
-Your classpath must include junit.jar, jing.jar and jingDriver.jar.
+Your classpath must include junit.jar, msv.jar and msvDriver.jar.
 
 
 

@@ -2,9 +2,12 @@ package com.sun.tranquilo.grammar.trex;
 
 import com.sun.tranquilo.grammar.*;
 
-public final class TREXPatternPool extends ExpressionPool
+public class TREXPatternPool extends ExpressionPool
 {
-	public Expression createConcur( Expression left, Expression right )
+	public TREXPatternPool( ExpressionPool parent )	{ super(parent); }
+	public TREXPatternPool()						{ super(); }
+	
+	public final Expression createConcur( Expression left, Expression right )
 	{
 		if( left==Expression.nullSet || right==Expression.nullSet )	return Expression.nullSet;
 		if( left==Expression.epsilon )
@@ -29,7 +32,7 @@ public final class TREXPatternPool extends ExpressionPool
 		return unify(new ConcurPattern(left,right));
 	}
 	
-	public Expression createInterleave( Expression left, Expression right )
+	public final Expression createInterleave( Expression left, Expression right )
 	{
 		if( left == Expression.epsilon )	return right;
 		if( right== Expression.epsilon )	return left;

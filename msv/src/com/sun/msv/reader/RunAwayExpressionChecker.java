@@ -50,13 +50,17 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 	private final GrammarReader reader;
 	
 	protected RunAwayExpressionChecker( GrammarReader reader ) { this.reader = reader; }
-	
-	public static void check( GrammarReader reader, Expression exp ) {
+
+	private void check( Expression exp ) {
 		try {
-			exp.visit( new RunAwayExpressionChecker(reader) );
+			exp.visit(this);
 		} catch( RuntimeException e ) {
 			if(e!=eureka)	throw e;
 		}
+	}
+	
+	public static void check( GrammarReader reader, Expression exp ) {
+		new RunAwayExpressionChecker(reader).check(exp);
 	}
 	
 	public void onAttribute( AttributeExp exp ) {

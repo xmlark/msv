@@ -9,9 +9,8 @@
  */
 package batch.writer.relaxng;
 
-import junit.framework.*;
-import java.util.StringTokenizer;
-import batch.writer.*;
+import junit.framework.TestSuite;
+import batch.writer.RELAXNGTester;
 
 /**
  * tests the RELAXNGWriter with the multiple test directories.
@@ -21,17 +20,17 @@ import batch.writer.*;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RELAXNGWriterTest {
-	public static TestSuite suite() throws Exception {
-		TestSuite s = new TestSuite();
+    public static TestSuite suite() throws Exception {
+        TestSuite s = new TestSuite();
 
-		append( s, "RELAXBatchTestDir", "relax" );
-		append( s, "TREXBatchTestDir", "trex" );
-		append( s, "XSDBatchTestDir", "xsd" );
-		append( s, "DTDBatchTestDir", "dtd" );
-		return s;
-	}
-	
-	private static void append( TestSuite s, String propName, String target ) throws Exception {
-		s.addTest( new RELAXNGTester().createFromProperty(target,propName) );
-	}
+        append(s, "RELAXBatchTestDir", "relax");
+        append(s, "TREXBatchTestDir", "trex");
+        append(s, "XSDBatchTestDir", "xsd");
+        append(s, "DTDBatchTestDir", "dtd");
+        return s;
+    }
+
+    private static void append(TestSuite s, String propName, String target) throws Exception {
+        s.addTest(new RELAXNGTester().createFromProperty(target, propName));
+    }
 }

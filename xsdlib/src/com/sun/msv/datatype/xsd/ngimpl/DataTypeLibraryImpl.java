@@ -16,13 +16,14 @@ import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.DatatypeBuilder;
 import org.relaxng.datatype.DatatypeLibrary;
+import org.relaxng.datatype.DatatypeLibraryFactory;
 
 /**
- * DataTypeLibrary implementation for Sun XML Datatypes Library.
+ * DatatypeLibrary implementation for Sun XML Datatypes Library.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class DataTypeLibraryImpl implements DatatypeLibrary {
+public class DataTypeLibraryImpl implements DatatypeLibrary, DatatypeLibraryFactory {
 	
 	public Datatype createDatatype( String typeName ) throws DatatypeException  {
 		return getType(typeName);
@@ -34,5 +35,11 @@ public class DataTypeLibraryImpl implements DatatypeLibrary {
 	
 	public DatatypeBuilder createDatatypeBuilder( String typeName ) throws DatatypeException {
 		return new DatatypeBuilderImpl( getType(typeName) );
+	}
+	
+	public DatatypeLibrary createDatatypeLibrary( String uri ) {
+		if( uri.equals("http://www.w3.org/2001/XMLSchema")
+		||  uri.equals("http://www.w3.org/2001/XMLSchema-datatypes"))
+			return this;
 	}
 }

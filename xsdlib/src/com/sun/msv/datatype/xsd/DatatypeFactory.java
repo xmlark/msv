@@ -105,9 +105,11 @@ public class DatatypeFactory {
 
 	
 	/**
-	 * obtain a built-in DataType object by its name
+	 * obtain a built-in DataType object by its name.
+	 * For example, you can pass somethings like "token", "gYear", etc.
 	 * 
-	 * @return null	if DataType is not found
+	 * @return
+	 *		If the datatype was not found, <code>null</code> is returned.
 	 */
 	public static XSDatatype getTypeByName( String dataTypeName ) {
 		XSDatatype dt = (XSDatatype)builtinType.get(dataTypeName);

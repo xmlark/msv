@@ -43,6 +43,17 @@ package com.sun.msv.grammar;
 public class OtherExp extends Expression {
 	
 	/**
+	 * returns the string which will be used by ExpressionPrinter
+	 * to print this expression.
+	 */
+	public String printName() {
+		String className = this.getClass().getName();
+		int idx = className.lastIndexOf('.');
+		if(idx>=0)	className = className.substring(idx+1);
+		return className;
+	}
+	
+	/**
 	 * child expression.
 	 */
 	public Expression exp;

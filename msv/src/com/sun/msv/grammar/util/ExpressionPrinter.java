@@ -170,11 +170,12 @@ public class ExpressionPrinter implements ExpressionVisitor {
 	}	
 
 	public Object onOther( OtherExp exp ) {
-		return "other["+exp.exp.visit(this)+"]";
+		
+		return exp.printName()+"["+exp.exp.visit(this)+"]";
 	}
 		
 	public Object onRef( ReferenceExp exp ) {
-		if( (mode&FRAGMENT)!=0 )		return "{"+exp.name+"}";
+		if( (mode&FRAGMENT)!=0 )		return "{%"+exp.name+"}";
 		else							return exp.exp.visit(this);
 	}
 }

@@ -54,9 +54,9 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	private StringBuffer text = new StringBuffer();
 	
 	/** error handler */
-	protected VerificationErrorHandler errorHandler;
-	public final VerificationErrorHandler getVerificationErrorHandler() { return errorHandler; }
-	public final void setVerificationErrorHandler( VerificationErrorHandler handler ) {
+	protected ErrorHandler errorHandler;
+	public final ErrorHandler getErrorHandler() { return errorHandler; }
+	public final void setErrorHandler( ErrorHandler handler ) {
 		this.errorHandler = handler;
 	}
 	/** this flag will be set to true if an error is found */
@@ -87,7 +87,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	
 	private final static int INITIAL_PANIC_LEVEL = 3;
 
-	public Verifier( DocumentDeclaration documentDecl, VerificationErrorHandler errorHandler ) {
+	public Verifier( DocumentDeclaration documentDecl, ErrorHandler errorHandler ) {
 		this.docDecl = documentDecl;
 		this.errorHandler = errorHandler;
 	}
@@ -293,7 +293,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 			vv = new ValidityViolation( locator, defaultMsg );
 			
 		if( errorHandler!=null && panicLevel==0 )
-			errorHandler.onError(vv);
+			errorHandler.error(vv);
 			
 		panicLevel = INITIAL_PANIC_LEVEL;
 		return vv;

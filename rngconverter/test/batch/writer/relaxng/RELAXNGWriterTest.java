@@ -26,7 +26,7 @@ public class RELAXNGWriterTest {
 
 		append( s, "RELAXBatchTestDir", "relax", ".rlx", batch.BatchTester.genericLoader );
 		append( s, "TREXBatchTestDir", "trex", ".trex", batch.BatchTester.genericLoader );
-		append( s, "XSDBatchTestDir", "xsd", ".xsd", batch.BatchTester.genericLoader );
+//		append( s, "XSDBatchTestDir", "xsd", ".xsd", batch.BatchTester.genericLoader );
 		append( s, "DTDBatchTestDir", "dtd", ".dtd", batch.BatchTester.dtdLoader );
 		return s;
 	}

@@ -24,7 +24,6 @@ import com.sun.msv.verifier.Acceptor;
 import com.sun.msv.verifier.DocumentDeclaration;
 import com.sun.msv.verifier.ValidityViolation;
 import com.sun.msv.verifier.Verifier;
-import com.sun.msv.verifier.VerificationErrorHandler;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 //import com.sun.msv.verifier.regexp.AttributeToken;
 import com.sun.msv.verifier.regexp.SimpleAcceptor;
@@ -47,11 +46,11 @@ public class TypeDetector extends Verifier {
 	
 	protected TypedContentHandler handler;
 	
-	public TypeDetector( DocumentDeclaration documentDecl, VerificationErrorHandler errorHandler ) {
+	public TypeDetector( DocumentDeclaration documentDecl, ErrorHandler errorHandler ) {
 		super(documentDecl,errorHandler);
 	}
 	
-	public TypeDetector( DocumentDeclaration documentDecl, TypedContentHandler handler, VerificationErrorHandler errorHandler ) {
+	public TypeDetector( DocumentDeclaration documentDecl, TypedContentHandler handler, ErrorHandler errorHandler ) {
 		this(documentDecl,errorHandler);
 		setContentHandler(handler);
 	}
@@ -76,7 +75,7 @@ public class TypeDetector extends Verifier {
 				current.onText( txt, this, err, null );
 					
 				// report an error
-				errorHandler.onError( new ValidityViolation(locator,
+				errorHandler.error( new ValidityViolation(locator,
 					localizeMessage( ERR_UNEXPECTED_TEXT, null ) ) );
 			}
 			

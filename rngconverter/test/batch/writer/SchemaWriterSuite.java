@@ -15,7 +15,7 @@ import org.xml.sax.*;
 import java.io.*;
 import java.util.Set;
 import com.sun.msv.verifier.*;
-import com.sun.msv.verifier.util.VerificationErrorHandlerImpl;
+import com.sun.msv.verifier.util.ErrorHandlerImpl;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.reader.util.IgnoreController;
 import com.sun.msv.reader.GrammarReader;
@@ -111,7 +111,7 @@ class SchemaWriterSuite extends batch.SchemaSuite {
 					XMLReader r =parent.factory.newSAXParser().getXMLReader();
 					Verifier v;
 					
-					v = new Verifier( docDecl, new VerificationErrorHandlerImpl() );
+					v = new Verifier( docDecl, new ErrorHandlerImpl() );
 					r.setContentHandler(v);
 						
 					r.parse( new InputSource(parent.dir+File.separatorChar+fileName) );

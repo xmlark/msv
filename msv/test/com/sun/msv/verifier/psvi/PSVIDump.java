@@ -16,7 +16,7 @@ import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.grammar.util.ExpressionPrinter;
 import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.verifier.DocumentDeclaration;
-import com.sun.msv.verifier.util.VerificationErrorHandlerImpl;
+import com.sun.msv.verifier.util.ErrorHandlerImpl;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.XMLReader;
 import org.relaxng.datatype.Datatype;
@@ -49,7 +49,7 @@ public class PSVIDump implements TypedContentHandler {
 		XMLReader reader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 		
 		// create an instance of verifier,
-		TypeDetector verifier = new TypeDetector(grammar, new VerificationErrorHandlerImpl() );
+		TypeDetector verifier = new TypeDetector(grammar, new ErrorHandlerImpl() );
 		
 		// configure a pipeline so that the verifier will receive SAX events first.
 		reader.setContentHandler(verifier);

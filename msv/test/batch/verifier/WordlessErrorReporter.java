@@ -9,22 +9,26 @@
  */
 package batch.verifier;
 
-import com.sun.msv.verifier.VerificationErrorHandler;
-import com.sun.msv.verifier.ValidityViolation;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.ErrorHandler;
 
 /**
  * {@link VerificationErrorHandler} that reports only the first error.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class WordlessErrorReporter implements VerificationErrorHandler {
+public class WordlessErrorReporter implements ErrorHandler {
 	
 	private boolean first = true;
-	private ValidityViolation error = null;
+	private SAXParseException error = null;
 	
-	public ValidityViolation getError() { return error; }
+	public SAXParseException getError() { return error; }
 	
-	public void onError( ValidityViolation error ) {
+	public void fatalError( SAXParseException e ) throws SAXParseException {
+		error(e);
+		throw e;
+	}
+	public void error( SAXParseException error ) {
 		if( first ) {
 			System.out.println(error.getMessage());
 			this.error = error;
@@ -32,5 +36,5 @@ public class WordlessErrorReporter implements VerificationErrorHandler {
 		first = false;
 	}
 		
-	public void onWarning( ValidityViolation warning ) {}
+	public void warning( SAXParseException warning ) {}
 }

@@ -113,7 +113,7 @@ public class Daemon implements Runnable
 				Verifier v = new Verifier(
 					new REDocumentDeclaration(grammar),
 //					new REDocumentDeclaration(grammar.getTopLevel(),localPool),
-					new com.sun.msv.verifier.util.VerificationErrorHandlerImpl() );
+					new com.sun.msv.verifier.util.ErrorHandlerImpl() );
 				r.setContentHandler(v);
 				try
 				{

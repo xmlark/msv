@@ -11,6 +11,7 @@ package com.sun.msv.datatype.xsd.ngimpl;
 
 import com.sun.msv.datatype.xsd.DatatypeFactory;
 import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.NmtokenType;
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.DatatypeBuilder;
@@ -24,10 +25,18 @@ import org.relaxng.datatype.DatatypeLibrary;
 public class DataTypeLibraryImpl implements DatatypeLibrary {
 	
 	public Datatype createDatatype( String typeName ) throws DatatypeException  {
+		return getType(typeName);
+	}
+	
+	private XSDatatype getType( String typeName) throws DatatypeException {
+		if( typeName.equals("ID") )		return NmtokenType.theInstance;
+		if( typeName.equals("IDREF") )	return NmtokenType.theInstance;
+		if( typeName.equals("IDREFS"))	typeName = "NMTOKENS";
+		
 		return DatatypeFactory.getTypeByName(typeName);
 	}
 	
 	public DatatypeBuilder createDatatypeBuilder( String typeName ) throws DatatypeException {
-		return new DatatypeBuilderImpl( DatatypeFactory.getTypeByName(typeName) );
+		return new DatatypeBuilderImpl( getType(typeName) );
 	}
 }

@@ -21,7 +21,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 import com.sun.msv.verifier.ValidityViolation;
 import com.sun.msv.verifier.IVerifier;
-import com.sun.msv.verifier.util.SAXErrorHandlerAdaptor;
 import com.sun.msv.util.xml.SAXEventGenerator;
 import java.io.IOException;
 
@@ -64,7 +63,7 @@ class VerifierImpl implements Verifier
 	
 	public void setErrorHandler( ErrorHandler handler ) {
 		reader.setErrorHandler(handler);
-		verifier.setVerificationErrorHandler(new SAXErrorHandlerAdaptor(handler));
+		verifier.setErrorHandler(handler);
 	}
 	
 	public void setEntityResolver( EntityResolver handler ) {

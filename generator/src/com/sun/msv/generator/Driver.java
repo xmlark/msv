@@ -20,7 +20,6 @@ import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.RefExpRemover;
 import com.sun.msv.verifier.Verifier;
-import com.sun.msv.verifier.VerificationErrorHandler;
 import com.sun.msv.verifier.util.*;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
@@ -322,8 +321,8 @@ public class Driver {
 				Verifier v = new Verifier(
 					new REDocumentDeclaration(grammar),
 					debug?
-						(VerificationErrorHandler)new VerificationErrorHandlerImpl():
-						(VerificationErrorHandler)new IgnoreVerificationErrorHandler() );
+						(ErrorHandler)new ErrorHandlerImpl():
+						(ErrorHandler)new IgnoreErrorHandler() );
 				d2s.setContentHandler(v);
 				d2s.traverse(dom);
 				

@@ -23,7 +23,7 @@ import com.sun.msv.relaxns.verifier.SchemaProviderImpl;
 import com.sun.msv.verifier.*;
 import com.sun.msv.verifier.identity.IDConstraintChecker;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import com.sun.msv.verifier.util.VerificationErrorHandlerImpl;
+import com.sun.msv.verifier.util.ErrorHandlerImpl;
 import org.iso_relax.dispatcher.Dispatcher;
 import org.iso_relax.dispatcher.SchemaProvider;
 import org.iso_relax.dispatcher.impl.DispatcherImpl;

@@ -21,7 +21,7 @@ import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.util.IgnoreController;
 import com.sun.msv.verifier.IVerifier;
-import com.sun.msv.verifier.util.VerificationErrorHandlerImpl;
+import com.sun.msv.verifier.util.ErrorHandlerImpl;
 import com.sun.msv.verifier.identity.IDConstraintChecker;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.verifier.regexp.xmlschema.XSREDocDecl;
@@ -133,11 +133,11 @@ abstract class FactoryImpl extends VerifierFactory {
 		if( g instanceof XMLSchemaGrammar )
 			return new IDConstraintChecker(
 				(XMLSchemaGrammar)g,
-				new VerificationErrorHandlerImpl() );
+				new ErrorHandlerImpl() );
 		else
 			return new com.sun.msv.verifier.Verifier(
 				new REDocumentDeclaration(g),
-				new VerificationErrorHandlerImpl() );
+				new ErrorHandlerImpl() );
 	}
 	
 	protected final Verifier getVerifier( Grammar g )

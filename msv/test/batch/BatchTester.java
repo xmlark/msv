@@ -156,7 +156,7 @@ public abstract class BatchTester {
 	
 	public static void report( ValidityViolation vv ) {
 		System.out.println(
-			vv.locator.getLineNumber()+":"+vv.locator.getColumnNumber()+
+			vv.getLineNumber()+":"+vv.getColumnNumber()+
 			"  " + vv.getMessage());
 	}
 }

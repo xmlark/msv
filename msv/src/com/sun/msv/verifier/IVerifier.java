@@ -11,6 +11,7 @@ package com.sun.msv.verifier;
 
 import org.relaxng.datatype.Datatype;
 import org.xml.sax.Locator;
+import org.xml.sax.ErrorHandler;
 import org.iso_relax.verifier.VerifierHandler;
 
 /**
@@ -69,6 +70,6 @@ public interface IVerifier extends VerifierHandler {
 
 
 	Locator getLocator();
-	VerificationErrorHandler getVerificationErrorHandler();
-	void setVerificationErrorHandler( VerificationErrorHandler handler );
+	ErrorHandler getErrorHandler();
+	void setErrorHandler( ErrorHandler handler );
 }

@@ -14,6 +14,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
+import org.xml.sax.ErrorHandler;
 
 /**
  * SAX XMLFilter that verifies incoming SAX event stream.
@@ -37,7 +38,7 @@ public class VerifierFilter extends XMLFilterImpl implements IVerifier {
 	}
 	
 	public VerifierFilter( DocumentDeclaration documentDecl,
-							VerificationErrorHandler errorHandler ) {
+							ErrorHandler errorHandler ) {
 		this( new Verifier(documentDecl,errorHandler) );
 	}
 	
@@ -53,11 +54,12 @@ public class VerifierFilter extends XMLFilterImpl implements IVerifier {
 	public final Locator getLocator() {
 		return verifier.getLocator();
 	}
-	public final VerificationErrorHandler getVerificationErrorHandler() {
-		return verifier.getVerificationErrorHandler();
+	public final ErrorHandler getErrorHandler() {
+		return verifier.getErrorHandler();
 	}
-	public final void setVerificationErrorHandler( VerificationErrorHandler handler ) {
-		verifier.setVerificationErrorHandler(handler);
+	public final void setErrorHandler( ErrorHandler handler ) {
+		super.setErrorHandler(handler);
+		verifier.setErrorHandler(handler);
 	}
 
 	

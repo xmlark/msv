@@ -14,7 +14,7 @@ import org.xml.sax.*;
 import java.io.*;
 import com.sun.msv.verifier.*;
 import com.sun.msv.verifier.identity.IDConstraintChecker;
-import com.sun.msv.verifier.util.VerificationErrorHandlerImpl;
+import com.sun.msv.verifier.util.ErrorHandlerImpl;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.reader.util.IgnoreController;

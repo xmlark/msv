@@ -116,7 +116,7 @@ class SchemaVerifySuite extends batch.SchemaSuite {
 						
 				r.parse( new InputSource(parent.dir+File.separatorChar+fileName) );
 				
-				final ValidityViolation vv = reporter.getError();
+				final SAXParseException vv = reporter.getError();
 				
 				if( v.isValid() )		assert( vv==null );
 				else					assert( vv!=null );

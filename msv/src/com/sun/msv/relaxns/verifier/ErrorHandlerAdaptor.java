@@ -13,14 +13,13 @@ import org.iso_relax.dispatcher.Dispatcher;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
-import com.sun.msv.verifier.ValidityViolation;
 
 /**
  * wraps ISORELAX ErrorHandler by VerificationErrorHandler interface.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ErrorHandlerAdaptor implements com.sun.msv.verifier.VerificationErrorHandler
+public class ErrorHandlerAdaptor implements ErrorHandler
 {
 	private final Dispatcher core;
 	
@@ -28,16 +27,13 @@ public class ErrorHandlerAdaptor implements com.sun.msv.verifier.VerificationErr
 		this.core = core;
 	}
 	
-	public void onError( ValidityViolation error ) throws SAXException {
-		core.getErrorHandler().error( convertToSAXParseException(error) );
+	public void fatalError( SAXParseException error ) throws SAXException {
+		core.getErrorHandler().fatalError( error );
 	}
-
-	public void onWarning( ValidityViolation error ) throws SAXException {
-		core.getErrorHandler().warning( convertToSAXParseException(error) );
+	public void error( SAXParseException error ) throws SAXException {
+		core.getErrorHandler().error( error );
 	}
-	
-	protected static final SAXParseException convertToSAXParseException(
-		ValidityViolation vv ) {
-		return new SAXParseException( vv.getMessage(), vv.locator );
+	public void warning( SAXParseException error ) throws SAXException {
+		core.getErrorHandler().warning( error );
 	}
 }

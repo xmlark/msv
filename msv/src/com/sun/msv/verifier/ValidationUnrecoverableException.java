@@ -9,27 +9,18 @@
  */
 package com.sun.msv.verifier;
 
-import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * Exception that signals error was fatal and recovery was not possible.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ValidationUnrecoverableException extends SAXException
+public class ValidationUnrecoverableException extends SAXParseException
 {
-	public final ValidityViolation error;
-	
-	public ValidationUnrecoverableException( ValidityViolation vv )
-	{
-		super( vv.getMessage() );
-		error=vv;
+	public ValidationUnrecoverableException( SAXParseException vv ) {
+		super(
+			vv.getMessage(), vv.getPublicId(), vv.getSystemId(),
+			vv.getLineNumber(), vv.getColumnNumber(), vv );
 	}
-	
-	public ValidationUnrecoverableException()
-	{
-		super("");
-		error = null;
-	}
-	
 }

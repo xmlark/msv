@@ -8,17 +8,6 @@
 	
 	
 	
-	<h2>Obtaining a working copy</h2>
-	<p>
-		MSV is currently at <code>:pserver:<i>USERID</i>@jse.east:/jse</code>.
-	</p><p>
-		To check out the repository, enter the following command:
-	</p>
-	<pre>
-% cvs -d :pserver:<i>USERID</i>@jse.east:/jse login
-<i>enter your password</i>
-% cvs -d :pserver:<i>USERID</i>@jse.east:/jse co msv
-	</pre>
 	
 	
 	
@@ -153,12 +142,12 @@
 	<p>
 		First, you need to create the "shared/ant.config" file, which
 		stores local preferences. You should create this file from
-		"shared/ant.config.template" file.
+		"shared/ant.config.template" file. Its default value should work,
+		but you may change it if you like.
 		This file is in the standard Java resource format.
-	</p><p>
-		During this process, you'll find you need to download a lot of
-		libraries from third parties.
 	</p>
+	
+	
 	
 	<h3>Build</h3>
 	<p>

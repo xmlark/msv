@@ -35,7 +35,7 @@ import org.apache.xml.serialize.*;
  */
 public class Driver {
 	
-	protected static void usage() {
+	private static void usage() {
 		System.err.println(
 			"Sun XMLGenerator\n"+
 			"----------------\n"+
@@ -70,7 +70,8 @@ public class Driver {
 			Driver driver = new Driver();
 			try {
 				driver.parseArguments(args);
-			} catch( Exception e ) {
+			} catch( CommandLineException e ) {
+                System.err.println(e.getMessage());
 				usage();
 				System.exit(-1);
 			}
@@ -135,11 +136,15 @@ public class Driver {
 		dtgi.tokens = exampleTokens;
 	}
 	
-	
+	/** Command line argument error. */
+    private static class CommandLineException extends Exception {
+        public CommandLineException( String msg ) { super(msg); }
+    }
+    
 	/**
 	 * Parses the arguments and fill the fields accordingly.
 	 */
-	public void parseArguments( String[] args ) throws Exception {
+    public void parseArguments( String[] args ) throws CommandLineException, ParserConfigurationException {
 		String grammarName=null;
 		boolean dtdAsSchema = false;
 
@@ -166,9 +171,16 @@ public class Driver {
 				opt.cutBackDepth = new Integer(args[++i]).intValue();
 			else
 			if( args[i].equalsIgnoreCase("-example") ) {
-				XMLReader p = factory.newSAXParser().getXMLReader();
-				p.setContentHandler( new ExampleReader(exampleTokens) );
-				p.parse( getInputSource(args[++i]) );
+                String fileName = args[++i];
+                try {
+				    XMLReader p = factory.newSAXParser().getXMLReader();
+				    p.setContentHandler( new ExampleReader(exampleTokens) );
+				    p.parse( getInputSource(fileName) );
+                } catch( IOException e ) {
+                    throw new CommandLineException("unable to parse "+fileName+" :"+e.getMessage());
+                } catch( SAXException e ) {
+                    throw new CommandLineException("unable to parse "+fileName+" :"+e.getMessage());
+                }
 			} else
 			if( args[i].equalsIgnoreCase("-width") )
 				opt.width = new Rand.UniformRand( opt.random, new Integer(args[++i]).intValue() );
@@ -236,46 +248,47 @@ public class Driver {
 				else
 				if( args[i].equalsIgnoreCase("-error-attributeNameTypo") )
 						opt.probElemNameTypo	= getRatio(args[++i]);
-				else {
-					System.err.println("unrecognized option :" + args[i]);
-					throw new Error();
-				}
+				else
+					throw new CommandLineException("unrecognized option :" + args[i]);
+				
 			}
 			else {
-				if( args[i].charAt(0)=='-' ) {
-					System.err.println("unrecognized option :" + args[i]);
-					throw new Error();
-				}
+				if( args[i].charAt(0)=='-' )
+					throw new CommandLineException("unrecognized option :" + args[i]);
 					
 				if( grammarName==null )	grammarName = args[i];
 				else
 				if( outputName==null ) outputName = args[i];
-				else {
-					System.err.println("too many parameters");
-					throw new Error();
-				}
+				else
+                    throw new CommandLineException("too many parameters");
 			}
 		}
 		
 		
-		if(grammar!=null) {
+		if(grammarName!=null) {
 			// load a schema
 			if(!quiet)
 				System.err.println("parsing a grammar: "+grammarName);
 		
 			InputSource is = getInputSource(grammarName);
 		
-			if(dtdAsSchema) {
-				grammar = DTDReader.parse(
-					is,
-					new DebugController(warning,quiet),
-					new ExpressionPool());
-			} else {
-				grammar = GrammarLoader.loadSchema(
-					is,
-					new DebugController(warning,quiet),
-					factory);
-			}
+            try {
+			    if(dtdAsSchema) {
+			    	grammar = DTDReader.parse(
+			    		is,
+			    		new DebugController(warning,quiet),
+			    		new ExpressionPool());
+			    } else {
+			    	grammar = GrammarLoader.loadSchema(
+			    		is,
+			    		new DebugController(warning,quiet),
+			    		factory);
+			    }
+            } catch( IOException e ) {
+                throw new CommandLineException("unable to parse "+grammarName+" :"+e.getMessage());
+            } catch( SAXException e ) {
+                throw new CommandLineException("unable to parse "+grammarName+" :"+e.getMessage());
+            }
 		}
 	}
 	

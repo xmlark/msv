@@ -67,8 +67,8 @@
 		
 		<!-- creates binary jar -->
 		<jar	jarfile="${stageName}/relames.jar"
+				manifest="${stageName}/src/META-INF/MANIFEST.MF"
 				compress="false">
-				<!-- manifest="${stageName}/src/META-INF/MANIFEST.MF" -->
 				
 			<fileset dir="temp" />
 			<!-- resource files -->

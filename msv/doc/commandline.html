@@ -79,13 +79,13 @@ h4 {  font-style: italic; color: #000099}
 	</tr>
 </table>
 <hr>
-<p>MSV will detect the schema language regardless of its file extension.</p>
-<p>However, you have to add the <code>-dtd</code> switch to use a DTD.</p>
+<p>MSV will detect the schema language regardless of its file extension if the schema is written in XML syntax.</p>
+<p>However, DTD is only one exception. MSV relies on the file extension ".dtd" to detect XML DTDs. That means you have to have the ".dtd" extension for your DTDs. To validate XMLs with a DTD, enter the command:</p>
 <hr>
 <table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
 	<tr>
 		<td bgcolor="#eeeeee">
-<pre>$ java -jar msv.jar -dtd my.dtd MyDocument1.xml MyDocument2.xml ...</pre>
+<pre>$ java -jar msv.jar my.dtd MyDocument1.xml MyDocument2.xml ...</pre>
 		</td>
 	</tr>
 </table>
@@ -157,8 +157,10 @@ the document is NOT valid.
 <dl>
 	<dt><code><b>-warning</b></code></dt>
 	<dd><p>Display all warning messages. Warnings are useful to catch potential errors.</p></dd>
-	<dt><code><b>-loose</b></code></dt>
-	<dd><p>This switch prevents MSV from resolving external resources (such as an external DTD referenced from documents, or external entities).</p></dd>
+	<dt><code><b>-standalone</b></code></dt>
+	<dd><p>This switch prevents MSV from resolving external resources (such as external DTDs referenced from documents, or external entities). This is applicable only when you are using Xerces.</p></dd>
+	<dt><code><b>-strict</b></code></dt>
+	<dd><p>If this switch is on, MSV will perform extra check on the schema file. To achieve maximum conformance to the spec, you should turn this switch on, although it takes longer to parse a schema.</p></dd>
 </dl>
 <hr>
 </blockquote>

@@ -11,6 +11,7 @@ package com.sun.msv.reader.trex.ng;
 
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
+import com.sun.msv.grammar.util.PossibleNamesCollector;
 import com.sun.msv.util.StringPair;
 import java.util.Set;
 
@@ -99,51 +100,17 @@ public class IdentityAmbiguityChecker {
 		public void onTypedString( TypedStringExp exp ) { throw new Error(); }
 	};
 	
-	/** collects all possible names from NameClass. */
-	private final NameClassVisitor nameCollector = new NameClassVisitor(){
-		private final String MAGIC = "\u0000";
-		private final StringPair pairForAny = new StringPair( MAGIC, MAGIC );
-		
-		public Object onChoice( ChoiceNameClass nc ) {
-			nc.nc1.visit(this);
-			nc.nc2.visit(this);
-			return null;
-		}
-		public Object onAnyName( AnyNameClass nc ) {
-			names.add( pairForAny );
-			return null;
-		}
-		public Object onSimple( SimpleNameClass nc ) {
-			names.add( new StringPair( nc.namespaceURI, nc.localName ) );
-			return null;
-		}
-		public Object onNsName( NamespaceNameClass nc ) {
-			names.add( new StringPair( nc.namespaceURI, MAGIC ) );
-			return null;
-		}
-		public Object onNot( NotNameClass nc ) {
-			names.add( pairForAny );
-			nc.child.visit(this);
-			return null;
-		}
-		public Object onDifference( DifferenceNameClass nc ) {
-			nc.nc1.visit(this);
-			nc.nc2.visit(this);
-			return null;
-		}
-	};
-	
 	/** collects all possible names for elements. */
 	private final ContentModelWalker elementNameCollector = new ContentModelWalker() {
 		public void onElement( ElementExp exp ) {
-			exp.getNameClass().visit( nameCollector );
+			names.addAll(PossibleNamesCollector.calc(exp.getNameClass()));
 		}
 	};
 
 	/** collects all possible names for attributes. */
 	private final ContentModelWalker attributeNameCollector = new ContentModelWalker() {
 		public void onAttribute( AttributeExp exp ) {
-			exp.nameClass.visit( nameCollector );
+			names.addAll(PossibleNamesCollector.calc(exp.nameClass));
 		}
 	};
 	
@@ -177,7 +144,7 @@ public class IdentityAmbiguityChecker {
 			return Expression.epsilon;
 		}
 		public Expression onElement( ElementExp exp ) {
-			if( exp.getNameClass().accepts( thePair.namespaceURI, thePair.localName ) )
+			if( exp.getNameClass().accepts( thePair ) )
 				return exp.contentModel;
 			else
 				return exp.epsilon;
@@ -190,7 +157,7 @@ public class IdentityAmbiguityChecker {
 			return Expression.epsilon;
 		}
 		public Expression onAttribute( AttributeExp exp ) {
-			if( exp.nameClass.accepts( thePair.namespaceURI, thePair.localName ) )
+			if( exp.nameClass.accepts( thePair ) )
 				return exp.exp;
 			else
 				return exp.epsilon;

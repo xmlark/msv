@@ -103,22 +103,6 @@ public class XalanExtension {
         return null;
     }
 
-//    public static NodeList set( ExpressionContext context, NodeList nl, String data ) {
-//        for( int i=0; i<nl.getLength(); i++ ) {
-//            Node n = nl.item(i);
-//            XalanNodeAssociationManager.theInstance.put(n,data);
-//        }
-//        return new NodeList() {
-//            public Node item(int index) {
-//                return null;
-//            }
-//
-//            public int getLength() {
-//                return 0;
-//            }
-//        };
-//    }
-    
     public static NodeList annotation( ExpressionContext context, NodeList list ) {
         final ArrayList a = new ArrayList();
         
@@ -131,19 +115,4 @@ public class XalanExtension {
         
         return new ListNodeListImpl(a);
     }
-    
-//    private static Node create( String data ) {
-//        try {
-//            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-//            dbf.setNamespaceAware(true);
-//            Document d = dbf.newDocumentBuilder().newDocument();
-//        
-//            Node testNode = d.createElementNS("abc","def");
-//            testNode.appendChild(d.createTextNode(data));
-//            return testNode;
-//        } catch( Exception e ) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
 }

@@ -9,7 +9,9 @@
  */
 package batch.writer;
 
-import batch.ThrowErrorController;
+import batch.*;
+import batch.model.*;
+import batch.driver.IValidatorImplForRNG;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.writer.GrammarWriter;
 
@@ -18,8 +20,21 @@ import com.sun.msv.writer.GrammarWriter;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class RELAXNGTester extends BatchWriterTester {
-	
+public class RELAXNGTester extends BatchTester {
+
+    protected TestReader createReader() {
+        return new TestReader( new TestBuilderImpl(validator,
+            new IValidatorImplForRNG(strict) ) {
+            protected GrammarWriter getWriter() {
+        		return new com.sun.msv.writer.relaxng.RELAXNGWriter();
+            }
+        } );
+    }
+    
+	public static void main( String[] av ) throws Exception {
+		new RELAXNGTester().run(av);
+	}
+    
 	protected void usage() {
 		System.out.println(
 			"usage "+this.getClass().getName()+" (relax|trex|xsd|dtd|rng) [-strict] <test case directory>\n"+
@@ -27,16 +42,5 @@ public class RELAXNGTester extends BatchWriterTester {
 			"  1. converting schema files of the specified type into RELAX NG\n"+
 			"  2. then parse it by RELAX NG parser\n"+
 			"  3. then use the test instances to ensure the correctness\n");
-	}
-
-	public static void main( String[] av ) throws Exception {
-		new RELAXNGTester().run(av);
-	}
-
-	protected GrammarReader createReader() {
-		return new com.sun.msv.reader.trex.ng.RELAXNGReader( new ThrowErrorController() );
-	}
-	protected GrammarWriter getWriter() {
-		return new com.sun.msv.writer.relaxng.RELAXNGWriter();
 	}
 }

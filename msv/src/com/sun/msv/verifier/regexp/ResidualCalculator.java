@@ -23,7 +23,7 @@ public class ResidualCalculator implements ExpressionVisitorExpression {
 	protected Token token;
 	protected final ExpressionPool pool;
 	
-	protected ResidualCalculator( ExpressionPool pool )	{ this.pool=pool; }
+	public ResidualCalculator( ExpressionPool pool )	{ this.pool=pool; }
 	
 	/** compute the residual */
 	final Expression calcResidual( Expression exp, ElementToken token ) {

@@ -34,6 +34,7 @@ public class AttributeToken extends Token
 	 * consumed this token, then null.
 	 */
 	public AttributeExp matchedExp = null;
+	
 	/**
 	 * If this value is false, the "matched" field must always null. This indicates
 	 * that no AttributeExp has consumed this token yet.

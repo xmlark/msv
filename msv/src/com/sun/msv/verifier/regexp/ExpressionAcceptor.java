@@ -13,6 +13,7 @@ import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.TypedString;
 import com.sun.msv.grammar.relaxng.ValueType;
 import com.sun.msv.grammar.IDContextProvider;
+import com.sun.msv.grammar.util.RefExpRemover;
 import com.sun.msv.verifier.*;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
@@ -22,19 +23,41 @@ import org.relaxng.datatype.DatatypeException;
 import java.util.*;
 
 /**
- * lazy AutomatonAcceptor.
+ * {@link Acceptor} implementation. If you consider VGM as an automaton,
+ * this class can be thought as a lazy automaton acceptor.
+ * 
+ * <p>
+ * When you are using <code>REDocumentDeclaration</code>, then the acceptor
+ * is always guaranteed to be a subclass of this class.
+ * 
+ * <p>
+ * By using this regexp implementation of VGM, you can always downcast
+ * {@link Acceptor} to this class and access its contents to get more information.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class ExpressionAcceptor implements Acceptor {
 	
+	private Expression	expression;
 	/**
-	 * current state.
+	 * gets the residual content model.
 	 * 
+	 * <p>
+	 * This method returns the expression that represents the expected content model
+	 * it will read.
+	 * For example, if the original content model is (A,(B|C)) and this acceptor
+	 * has already read A, then this method returns (B|C).
+	 * 
+	 * <p>
+	 * The returned residual is useful to find out what elements can appear next.
+	 * 
+	 * <p>
+	 * If you consider VGM as an automaton, the residual content model
+	 * can be thought as the current state. Also,
 	 * At the same time, right language (a regular expression that represents
 	 * the language it can accept from now on).
 	 */
-	private Expression	expression;
+	public Expression getExpression() { return expression; }
 	
 	
 	
@@ -269,8 +292,10 @@ public abstract class ExpressionAcceptor implements Acceptor {
 	{
 		final CombinedChildContentExpCreator cccc = docDecl.cccec;
 		
+		final RefExpRemover refRemover = new RefExpRemover(docDecl.pool);
+		
 		// get combined expression before feeding attributes.
-		Expression e = cccc.get(expression,sti,false,true).content;
+		Expression e = cccc.get(expression,sti,false,true).content.visit(refRemover);
 		
 		if( com.sun.msv.driver.textui.Debug.debug )
 		{
@@ -286,7 +311,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 					
 			// so now we are sure that tag name is wrong, at least.
 			// try creating combined child content pattern without tag name check.
-			e = cccc.get(expression,sti,false,false).content;
+			e = cccc.get(expression,sti,false,false).content.visit(refRemover);
 			
 			if( e==Expression.nullSet )
 			{
@@ -454,8 +479,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 	private final String diagnoseBadTagName( Expression exp, StartTagInfoEx sti,
 											 CombinedChildContentExpCreator cccc )
 	{
-		if( cccc.isComplex() )
-		{
+		if( cccc.isComplex() ) {
 			// probably <concur> is used.
 			// there is no easy way to tell which what tag name is expected.
 						
@@ -479,18 +503,22 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		// this variable will receive that URI.
 		String wrongNamespace = null;
 		
+		final RefExpRemover refRemover = new RefExpRemover(docDecl.pool);
+		
 		CombinedChildContentExpCreator.OwnerAndContent oac;
-		for( oac=cccc.getElementsOfConcern(); oac!=null; oac=oac.next )
-		{
+		for( oac=cccc.getElementsOfConcern(); oac!=null; oac=oac.next ) {
+			
+			if( oac.owner.contentModel.visit(refRemover)==Expression.nullSet )
+				// this element is not allowed to appear.
+				continue;
+			
 			// test some typical name class patterns.
 			final NameClass nc = oac.owner.getNameClass();
 						
-			if( nc instanceof SimpleNameClass )
-			{
+			if( nc instanceof SimpleNameClass ) {
 				SimpleNameClass snc = (SimpleNameClass)nc;
 				
-				if( snc.localName.equals(sti.localName) )
-				{
+				if( snc.localName.equals(sti.localName) ) {
 					// sometimes, people simply forget to add namespace decl,
 					// or declare the wrong name.
 					wrongNamespace = snc.namespaceURI;
@@ -500,17 +528,14 @@ public abstract class ExpressionAcceptor implements Acceptor {
 					docDecl.DIAG_SIMPLE_NAMECLASS, nc.toString() ) );
 				continue;
 			}
-			if( nc instanceof NamespaceNameClass )
-			{
+			if( nc instanceof NamespaceNameClass ) {
 				s.add( docDecl.localizeMessage(
 					docDecl.DIAG_NAMESPACE_NAMECLASS, ((NamespaceNameClass)nc).namespaceURI ) );
 				continue;
 			}
-			if( nc instanceof NotNameClass )
-			{
+			if( nc instanceof NotNameClass ) {
 				NameClass ncc = ((NotNameClass)nc).child;
-				if( ncc instanceof NamespaceNameClass )
-				{
+				if( ncc instanceof NamespaceNameClass ) {
 					s.add( docDecl.localizeMessage(
 						docDecl.DIAG_NOT_NAMESPACE_NAMECLASS, ((NamespaceNameClass)ncc).namespaceURI ) );
 					continue;
@@ -524,8 +549,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		// no candidate was collected. bail out.
 		if( s.size()==0 )			return null;
 		
-		if( wrongNamespace!=null )
-		{
+		if( wrongNamespace!=null ) {
 			if( s.size()==1 )
 				// only one candidate.
 				return docDecl.localizeMessage(
@@ -673,13 +697,12 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		if( e.isEpsilonReducible() )	throw new Error();	// assertion
 		// if attribute expression is epsilon reducible, then
 		// AttributePruner must return Expression other than nullSet.
-		// In that case, there is no error.
+		// In that case, there should have been no error.
 
 		final Set s = new java.util.HashSet();
 		boolean more = false;
 				
-		while( e instanceof ChoiceExp )
-		{
+		while( e instanceof ChoiceExp ) {
 			ChoiceExp ch = (ChoiceExp)e;
 					
 			NameClass nc = ((AttributeExp)ch.exp2).nameClass;
@@ -691,7 +714,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 			e = ch.exp1;
 		}
 		
-		if(!(e instanceof AttributeExp ))	throw new Error();	//assertion
+		if(!(e instanceof AttributeExp ))	throw new Error(e.toString());	//assertion
 		
 		NameClass nc = ((AttributeExp)e).nameClass;
 		if( nc instanceof SimpleNameClass )

@@ -20,7 +20,7 @@ import com.sun.msv.grammar.*;
  */
 public class AttributePruner extends ExpressionCloner
 {
-	protected AttributePruner( ExpressionPool pool ) { super(pool); }
+	public AttributePruner( ExpressionPool pool ) { super(pool); }
 	
 	public Expression onAttribute( AttributeExp exp )	{ return Expression.nullSet; }
 	public Expression onRef( ReferenceExp exp )			{ return exp.exp.visit(this); }

@@ -11,6 +11,8 @@ package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.IDContextProvider;
+import org.xml.sax.Attributes;
 
 /**
  * StartTagInfo plus AttributeTokens.
@@ -37,6 +39,11 @@ public class StartTagInfoEx extends StartTagInfo
 	public void reinit( StartTagInfo base ) {
 		super.reinit( base.namespaceURI, base.localName, base.qName,
 			   base.attributes, base.context );
+		createAttributes();
+	}
+
+	public void reinit( String uri, String local, String qname, Attributes atts, IDContextProvider context ) {
+		super.reinit( uri, local, qname, atts, context );
 		createAttributes();
 	}
 

@@ -18,7 +18,7 @@ import com.sun.msv.grammar.Grammar;
 import java.util.Map;
 
 /**
- * Adaptor between abstract grammar model and verifier's grammar model.
+ * {@link DocumentDeclaration} implementation
  * 
  * Grammar object can be shared among multiple threads, but this object
  * cannot be shared.

@@ -234,8 +234,8 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	/**
 	 * obtains elements of concern and their attribute-pruned content models.
 	 * 
-	 * This method should be called after calling get method. The result is
-	 * in effect until next invocation of get method. 
+	 * This method should be called after calling the get method. The result is
+	 * in effect until the next invocation of get method. 
 	 * 
 	 * <p>
 	 * The extra care should be taken not to hold reference to the result
@@ -246,7 +246,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	 * <p>
 	 * Apparently this is a bad design, but this design gives us better performance.
 	 */
-	protected final OwnerAndContent getElementsOfConcern() {
+	public final OwnerAndContent getElementsOfConcern() {
 		return result;
 	}
 	
@@ -256,7 +256,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	 * in effect until next invocation of get method.
 	 * Apparently this is a bad design, but this design gives us better performance.
 	 */
-	protected final int numElementsOfConcern() { return numElements; }
+	public final int numElementsOfConcern() { return numElements; }
 
 	/**
 	 * a flag that indicates that we have 'concur' element to combine
@@ -341,7 +341,6 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 		for( OwnerAndContent o=result; o!=null; o=o.next )
 			if(o.owner==exp) {
 				// the same element is found.
-//				return new ExpressionPair(o.content,Expression.epsilon);
 				content = o.content;
 				continuation = Expression.epsilon;
 				return;
@@ -365,9 +364,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 				content = continuation = Expression.nullSet;
 				return;
 			}
-		}
-		else
-		{
+		} else {
 			prunedContentModel = exp.contentModel;
 		}
 		

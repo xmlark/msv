@@ -22,7 +22,7 @@ import com.sun.msv.grammar.*;
  */
 public class AttributeRemover extends ExpressionCloner
 {
-	protected AttributeRemover( ExpressionPool pool ) { super(pool); }
+	public AttributeRemover( ExpressionPool pool ) { super(pool); }
 	
 	public Expression onAttribute( AttributeExp exp )	{ return Expression.epsilon; }
 	public Expression onRef( ReferenceExp exp )			{ return exp.exp.visit(this); }

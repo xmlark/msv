@@ -39,7 +39,13 @@ public class ContentModelAcceptor extends ExpressionAcceptor {
 		// TODO: explicitly mention that where the error recovery should be done.
 		if( child instanceof SimpleAcceptor ) {
 			SimpleAcceptor sa = (SimpleAcceptor)child;
-			return stepForwardByContinuation( sa.continuation, errRef );
+			if(sa.continuation!=null)
+				// if the continuation is available,
+				// the stepForward will be very fast.
+				return stepForwardByContinuation( sa.continuation, errRef );
+			else
+				// otherwise we have to compute the residual.
+				return stepForward( new ElementToken(new ElementExp[]{sa.owner}), errRef );
 		}
 		if( child instanceof ComplexAcceptor ) {
 			ComplexAcceptor ca = (ComplexAcceptor)child;
@@ -53,6 +59,9 @@ public class ContentModelAcceptor extends ExpressionAcceptor {
 		throw new Error();	// child must be either Simple or Complex.
 	}
 	
+	/**
+	 * creates actual Acceptor object from the computed result.
+	 */
 	protected Acceptor createAcceptor(
 		Expression combined, Expression continuation,
 		CombinedChildContentExpCreator.OwnerAndContent primitives ) {

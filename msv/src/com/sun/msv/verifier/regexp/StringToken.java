@@ -74,6 +74,10 @@ public class StringToken extends Token {
 		// we need to know what datatype is assigned to this token.
 		if( refType==null )	refType = new DatatypeRef();
 		
+		if(ignorable)
+			// In RELAX NG, key cannot accept ignorable tokens.
+			return false;
+		
 		if(docDecl.resCalc.calcResidual( exp.exp, this )!=Expression.epsilon)
 			return false;	// not accepted.
 		

@@ -20,13 +20,15 @@ import com.sun.msv.grammar.ElementExp;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class SimpleAcceptor extends ContentModelAcceptor
+public class SimpleAcceptor extends ContentModelAcceptor
 {
 	/**
 	 * the expression that should be used by the parent acceptor
 	 * once if this acceptor is satisfied.
+	 * 
+	 * This field can be null. In that case, the continuation has to be computed.
 	 */
-	protected final Expression continuation;
+	public final Expression continuation;
 	
 	/**
 	 * ElementExp that accepted the start tag.
@@ -48,7 +50,6 @@ public final class SimpleAcceptor extends ContentModelAcceptor
 		Expression continuation )
 	{
 		super(docDecl,combined);
-		if(continuation==null)		throw new Error();	// simple acceptor must have continuation
 		this.continuation	= continuation;
 		this.owner			= owner;
 	}

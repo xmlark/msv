@@ -25,7 +25,7 @@ public class AttributeFeeder implements ExpressionVisitorExpression {
 	
 	private Token							token;
 		
-	protected AttributeFeeder( REDocumentDeclaration docDecl ) {
+	public AttributeFeeder( REDocumentDeclaration docDecl ) {
 		this.docDecl	= docDecl;
 		this.pool		= docDecl.pool;
 	}

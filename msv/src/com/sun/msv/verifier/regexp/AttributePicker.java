@@ -57,7 +57,7 @@ public class AttributePicker implements ExpressionVisitorExpression
 {
 	private final ExpressionPool pool;
 	
-	protected AttributePicker( ExpressionPool pool )
+	public AttributePicker( ExpressionPool pool )
 	{
 		this.pool = pool;
 	}

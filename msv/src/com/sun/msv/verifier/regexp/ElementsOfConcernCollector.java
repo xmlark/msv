@@ -25,7 +25,7 @@ public class ElementsOfConcernCollector implements ExpressionVisitor
 {
 	private Collection result;
 	
-	protected ElementsOfConcernCollector() {}
+	public ElementsOfConcernCollector() {}
 	
 	public final void collect( Expression exp, Collection result )
 	{

@@ -9,7 +9,7 @@
  */
 package com.sun.msv.datatype;
 
-import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -35,10 +35,10 @@ public abstract class RangeFacet extends DataTypeWithValueConstraintFacet {
 		return o;
 	}
 	
-	protected DataTypeException diagnoseByFacet(String content, ValidationContext context) {
-		if( convertToValue(content,context)!=null )		return null;
+	protected void diagnoseByFacet(String content, ValidationContext context) throws DatatypeException {
+		if( convertToValue(content,context)!=null )		return;
 			
-		return new DataTypeException(this, content, -1,
+		throw new DatatypeException( DatatypeException.UNKNOWN,
 			localize(ERR_OUT_OF_RANGE, facetName, limitValue) );
 	}
 	

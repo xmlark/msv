@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 import java.util.Set;
 import java.util.Vector;
-import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -35,8 +35,8 @@ public class EnumerationFacet extends DataTypeWithValueConstraintFacet {
 		return o;
 	}
 	
-	protected DataTypeException diagnoseByFacet(String content, ValidationContext context) {
-		if( convertToValue(content,context)!=null )	return null;
+	protected void diagnoseByFacet(String content, ValidationContext context) throws DatatypeException {
+		if( convertToValue(content,context)!=null )	return;
 		
 		// TODO: guess which item the user was trying to specify
 		
@@ -54,11 +54,11 @@ public class EnumerationFacet extends DataTypeWithValueConstraintFacet {
 				
 				r = "("+r+")";	// oh, don't tell me I should use StringBuffer.
 				
-				return new DataTypeException(this, content, -1,
+				throw new DatatypeException( DatatypeException.UNKNOWN,
 					localize(ERR_ENUMERATION_WITH_ARG, r) );
 			}
 		}
-		return new DataTypeException(this, content, -1,
+		throw new DatatypeException( DatatypeException.UNKNOWN,
 			localize(ERR_ENUMERATION) );
 	}
 

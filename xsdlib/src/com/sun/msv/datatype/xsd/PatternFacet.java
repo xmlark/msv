@@ -13,7 +13,7 @@ import org.apache.xerces.utils.regex.RegularExpression;
 import org.apache.xerces.utils.regex.ParseException;
 import java.util.Vector;
 import org.relaxng.datatype.ValidationContext;
-import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * "pattern" facet validator
@@ -74,14 +74,14 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
 		// ignore it for now.
 	}
 	
-	protected DataTypeException diagnoseByFacet(String content, ValidationContext context) {
-		if( checkLexicalConstraint(content) )	return null;
+	protected void diagnoseByFacet(String content, ValidationContext context) throws DatatypeException {
+		if( checkLexicalConstraint(content) )	return;
 		
 		if( exps.length==1 )
-			return new DataTypeException( this, content, -1,
+			throw new DatatypeException( DatatypeException.UNKNOWN,
 				localize(ERR_PATTERN_1,patterns[0]) );
 		else
-			return new DataTypeException( this, content, -1,
+			throw new DatatypeException( DatatypeException.UNKNOWN,
 				localize(ERR_PATTERN_MANY) );
 	}
 	

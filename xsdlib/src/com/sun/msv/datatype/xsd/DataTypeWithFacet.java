@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 import org.relaxng.datatype.*;
 
@@ -105,16 +105,15 @@ public abstract class DataTypeWithFacet extends DataTypeImpl
 		return concreteType.getJavaObjectType();
 	}
 	
-	final protected DataTypeException diagnoseValue(String content, ValidationContext context ) {
-		// if base type complains, pass it through.
-		DataTypeException err = baseType.diagnoseValue(content,context);
-		if(err!=null)		return err;
+	final protected void diagnoseValue(String content, ValidationContext context ) throws DatatypeException {
+		// let the base type complain first.
+		baseType.diagnoseValue(content,context);
 		
-		// otherwise, perform own diagnosis.
-		return diagnoseByFacet(content,context);
+		// then see if the facet is satisfied.
+		diagnoseByFacet(content,context);
 	}
 	
-	protected abstract DataTypeException diagnoseByFacet(String content, ValidationContext context)
-		throws UnsupportedOperationException;
+	protected abstract void diagnoseByFacet(String content, ValidationContext context)
+		throws DatatypeException;
 
 }

@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 import org.relaxng.datatype.ValidationContext;
-import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * base class for those types which can be used by itself
@@ -59,10 +59,10 @@ public abstract class ConcreteType extends DataTypeImpl {
 	}
 
 	// default implementation for concrete type. somewhat shabby.
-	protected DataTypeException diagnoseValue(String content, ValidationContext context) {
-		if(checkFormat(content,context))	return null;
+	protected void diagnoseValue(String content, ValidationContext context) throws DatatypeException {
+		if(checkFormat(content,context))	return;
 		
-		return new DataTypeException(this,content,DataTypeException.UNKNOWN,
+		throw new DatatypeException(DatatypeException.UNKNOWN,
 			localize(ERR_INAPPROPRIATE_FOR_TYPE, content, getName()) );
 	}
 }

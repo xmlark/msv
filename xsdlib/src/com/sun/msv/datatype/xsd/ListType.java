@@ -10,7 +10,7 @@
 package com.sun.msv.datatype;
 
 import java.util.StringTokenizer;
-import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -64,7 +64,7 @@ public final class ListType extends ConcreteType implements Discrete {
 		StringTokenizer tokens = new StringTokenizer(content);
 		
 		while( tokens.hasMoreTokens() )
-			if(!itemType.allows(tokens.nextToken(),context))	return false;
+			if(!itemType.isValid(tokens.nextToken(),context))	return false;
 		
 		return true;
 	}
@@ -107,18 +107,15 @@ public final class ListType extends ConcreteType implements Discrete {
 	}
 	
 	/** The current implementation detects which list item is considered wrong. */
-	protected DataTypeException diagnoseValue(String content, ValidationContext context) {
+	protected void diagnoseValue(String content, ValidationContext context) throws DatatypeException {
 		// StringTokenizer correctly implements the semantics of whiteSpace="collapse"
 		StringTokenizer tokens = new StringTokenizer(content);
 		
 		while( tokens.hasMoreTokens() )
 		{
 			String token = tokens.nextToken();
-			DataTypeException err = itemType.diagnose(token,context);
-			if(err!=null) return err;
+			itemType.checkValid(token,context);
 		}
-		
-		return null;	// accepted
 	}
 
 }

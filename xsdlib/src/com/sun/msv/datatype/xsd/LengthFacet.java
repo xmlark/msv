@@ -10,7 +10,7 @@
 package com.sun.msv.datatype;
 
 import java.util.Hashtable;
-import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -46,7 +46,7 @@ public class LengthFacet extends DataTypeWithValueConstraintFacet {
 		return o;
 	}
 	
-	protected DataTypeException diagnoseByFacet(String content, ValidationContext context) {
+	protected void diagnoseByFacet(String content, ValidationContext context) throws DatatypeException {
 		Object o = concreteType.convertToValue(content,context);
 		// base type must have accepted this lexical value, otherwise 
 		// this method is never called.
@@ -54,9 +54,7 @@ public class LengthFacet extends DataTypeWithValueConstraintFacet {
 		
 		int cnt = ((Discrete)concreteType).countLength(o);
 		if(cnt!=length)
-			return new DataTypeException( this, content, -1,
+			throw new DatatypeException( DatatypeException.UNKNOWN,
 				localize(ERR_LENGTH, new Integer(cnt), new Integer(length)) );
-		
-		return null;
 	}
 }

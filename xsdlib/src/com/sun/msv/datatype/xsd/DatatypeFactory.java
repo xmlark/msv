@@ -7,12 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 import java.util.Map;
 import java.util.Iterator;
 import java.util.Collection;
-import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * DataType object factory.
@@ -167,7 +167,7 @@ public class DataTypeFactory {
 			add( m, UnsignedByteType.theInstance );
 			add( m, PositiveIntegerType.theInstance );
 			return m;
-		} catch( DataTypeException dte )	{
+		} catch( DatatypeException dte )	{
 			// assertion failed
 			throw new Error();
 		}

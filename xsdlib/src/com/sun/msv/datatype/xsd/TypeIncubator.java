@@ -14,16 +14,16 @@ import java.util.Vector;
 import java.util.Iterator;
 import java.math.BigInteger;
 import org.relaxng.datatype.ValidationContext;
-import org.relaxng.datatype.DataType;
-import org.relaxng.datatype.DataTypeBuilder;
-import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.DatatypeBuilder;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * derives a new type by adding facets.
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class TypeIncubator implements DataTypeBuilder {
+public class TypeIncubator implements DatatypeBuilder {
 	
 	/** storage for non-repeatable facets */
 	private final Map impl = new java.util.HashMap();
@@ -42,7 +42,7 @@ public class TypeIncubator implements DataTypeBuilder {
 	}
 	
 
-	public void add( String name, String strValue, ValidationContext context ) throws DataTypeException {
+	public void addParameter( String name, String strValue, ValidationContext context ) throws DatatypeException {
 		add( name, strValue, false, context );
 	}
 
@@ -107,7 +107,7 @@ public class TypeIncubator implements DataTypeBuilder {
 		};
 	
 
-	public DataType derive() throws DataTypeException {
+	public Datatype createDatatype() throws DatatypeException {
 		return derive(null);
 	}
 	

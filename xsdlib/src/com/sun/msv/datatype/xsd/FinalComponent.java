@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
-import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -67,8 +67,8 @@ public final class FinalComponent extends DataTypeImpl {
 		return baseType.convertToLexicalValue(value,context);
 	}
 	
-	public DataTypeException diagnoseValue( String content, ValidationContext context ) {
-		return baseType.diagnoseValue(content,context);
+	public void diagnoseValue( String content, ValidationContext context ) throws DatatypeException {
+		baseType.diagnoseValue(content,context);
 	}
 	
 }

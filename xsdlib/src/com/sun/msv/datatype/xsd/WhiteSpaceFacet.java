@@ -10,7 +10,7 @@
 package com.sun.msv.datatype;
 
 import org.relaxng.datatype.ValidationContext;
-import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -47,7 +47,7 @@ public class WhiteSpaceFacet extends DataTypeWithFacet {
 	}
 	
 	/** whiteSpace facet never constrain anything */
-	protected DataTypeException diagnoseByFacet(String content, ValidationContext context) {
-		return null;
+	protected void diagnoseByFacet(String content, ValidationContext context) {
+		;
 	}
 }

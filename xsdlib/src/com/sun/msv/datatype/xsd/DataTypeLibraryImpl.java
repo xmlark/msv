@@ -7,24 +7,24 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
-import org.relaxng.datatype.DataType;
-import org.relaxng.datatype.DataTypeBuilder;
-import org.relaxng.datatype.DataTypeLibrary;
+import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.DatatypeBuilder;
+import org.relaxng.datatype.DatatypeLibrary;
 
 /**
  * DataTypeLibrary implementation for Sun XML Datatypes Library.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class DataTypeLibraryImpl implements DataTypeLibrary {
+public class DataTypeLibraryImpl implements DatatypeLibrary {
 	
-	public DataType getType( String typeName ) {
+	public Datatype createDatatype( String typeName ) {
 		return DataTypeFactory.getTypeByName(typeName);
 	}
 	
-	public DataTypeBuilder createDataTypeBuilder( String typeName ) {
+	public DatatypeBuilder createDatatypeBuilder( String typeName ) {
 		DataTypeImpl base = DataTypeFactory.getTypeByName(typeName);
 		if(base==null)	return null;
 		return new TypeIncubator(base);

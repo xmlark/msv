@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
-import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * signals bad type definition.
@@ -19,7 +19,7 @@ import org.relaxng.datatype.DataTypeException;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class BadTypeException extends DataTypeException {
+public class BadTypeException extends DatatypeException {
 	
 	public BadTypeException(String resourcePropertyName,Object[] args) {
 		super( java.text.MessageFormat.format(

@@ -9,7 +9,7 @@
  */
 package com.sun.msv.datatype;
 
-import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -43,7 +43,7 @@ public class MaxLengthFacet extends DataTypeWithValueConstraintFacet
 		return o;
 	}
 	
-	protected DataTypeException diagnoseByFacet(String content, ValidationContext context) {
+	protected void diagnoseByFacet(String content, ValidationContext context) throws DatatypeException {
 		Object o = concreteType.convertToValue(content,context);
 		// base type must have accepted this lexical value, otherwise 
 		// this method is never called.
@@ -51,9 +51,7 @@ public class MaxLengthFacet extends DataTypeWithValueConstraintFacet
 		
 		int cnt = ((Discrete)concreteType).countLength(o);
 		if(cnt>maxLength)
-			return new DataTypeException( this, content, -1,
+			throw new DatatypeException( DatatypeException.UNKNOWN,
 				localize(ERR_MAXLENGTH, new Integer(cnt), new Integer(maxLength)) );
-		
-		return null;
 	}
 }

@@ -9,7 +9,7 @@
  */
 package com.sun.msv.datatype;
 
-import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -44,11 +44,11 @@ public class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 		return countScale(content)<=scale;
 	}
 	
-	protected DataTypeException diagnoseByFacet(String content, ValidationContext context) {
+	protected void diagnoseByFacet(String content, ValidationContext context) throws DatatypeException {
 		final int cnt = countScale(content);
-		if(cnt<=scale)		return null;
+		if(cnt<=scale)		return;
 		
-		return new DataTypeException( this, content, -1, 
+		throw new DatatypeException( DatatypeException.UNKNOWN, 
 			localize(ERR_TOO_MUCH_SCALE,
 			new Integer(cnt), new Integer(scale)) );
 	}

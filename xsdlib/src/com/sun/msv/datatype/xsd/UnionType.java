@@ -9,7 +9,7 @@
  */
 package com.sun.msv.datatype;
 
-import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -82,9 +82,10 @@ final public class UnionType extends ConcreteType {
 		throw new IllegalArgumentException();
 	}
 	
-	protected DataTypeException diagnoseValue(String content, ValidationContext context) {
+	protected void diagnoseValue(String content, ValidationContext context) throws DatatypeException {
 		// what is the appropriate implementation for union?
-		throw new UnsupportedOperationException();
+		if( checkFormat(content,context) )		return;
+		else	throw new DatatypeException();
 	}
 
 }

@@ -45,6 +45,11 @@ public class TypedString implements DataType {
 		if(value.equals(literal))	return literal;
 		else						return null;
 	}
+	
+	public Object createJavaObject( String literal, ValidationContext context ) {
+		return createValue(literal,context);
+	}
+
 
 	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if( value instanceof String )

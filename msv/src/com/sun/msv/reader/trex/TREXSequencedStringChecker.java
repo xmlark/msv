@@ -178,6 +178,16 @@ public class TREXSequencedStringChecker implements ExpressionVisitor
 		return o;
 	}
 	
-	public Object onMixed( MixedExp exp )	{ return exp.exp.visit(this); }
+	public Object onMixed( MixedExp exp ) {
+		Object o = exp.exp.visit(this);
+		
+		if( rejectTextInInterleave
+		&&  (toInt(o)&HAS_ANYSTRING)!=0 ) {
+			reader.reportError( reader.ERR_INTERLEAVED_ANYSTRING );
+			return intPool[0];
+		}
+		
+		return merge(o,intPool[HAS_ANYSTRING]);
+	}
 
 }

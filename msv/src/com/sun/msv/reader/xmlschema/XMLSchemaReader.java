@@ -295,46 +295,46 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 	 * parsing behavior can be customized by implementing custom StateFactory.
 	 */
 	public static class StateFactory {
-		protected State schemaHead			(String expectedNamespace )	{
+		public State schemaHead			(String expectedNamespace )	{
 			return new SchemaState(expectedNamespace);
 		}
-		protected State schemaIncluded		(State parent, String expectedNamespace )	{
+		public State schemaIncluded		(State parent, String expectedNamespace )	{
 			return new SchemaIncludedState(expectedNamespace);
 		}
 		
-		protected State simpleType			(State parent,StartTagInfo tag)	{ return new SimpleTypeState(); }
-		protected State all					(State parent,StartTagInfo tag)	{ return new InterleaveState(); }
-		protected State choice				(State parent,StartTagInfo tag)	{ return new ChoiceState(true); }
-		protected State sequence			(State parent,StartTagInfo tag)	{ return new SequenceState(true); }
-		protected State group				(State parent,StartTagInfo tag)	{ return new GroupState(); }
-		protected State complexTypeDecl		(State parent,StartTagInfo tag)	{ return new ComplexTypeDeclState(); }
-		protected State attribute			(State parent,StartTagInfo tag)	{ return new AttributeState(); }
-		protected State attributeGroup		(State parent,StartTagInfo tag)	{ return new AttributeGroupState(); }
-		protected State elementDecl			(State parent,StartTagInfo tag)	{ return new ElementDeclState(); }
-		protected State elementRef			(State parent,StartTagInfo tag)	{ return new ElementRefState(); }
-		protected State any					(State parent,StartTagInfo tag)	{ return new AnyElementState(); }
-		protected State anyAttribute		(State parent,StartTagInfo tag)	{ return new AnyAttributeState(); }
-		protected State include				(State parent,StartTagInfo tag)	{ return new IncludeState(); }
-		protected State import_				(State parent,StartTagInfo tag)	{ return new ImportState(); }
-		protected State redefine			(State parent,StartTagInfo tag)	{ return new RedefineState(); }
-		protected State notation			(State parent,StartTagInfo tag)	{ return new IgnoreState(); }
-		protected State facets				(State parent,StartTagInfo tag)	{ return new FacetState(); }
+		public State simpleType			(State parent,StartTagInfo tag)	{ return new SimpleTypeState(); }
+		public State all					(State parent,StartTagInfo tag)	{ return new InterleaveState(); }
+		public State choice				(State parent,StartTagInfo tag)	{ return new ChoiceState(true); }
+		public State sequence			(State parent,StartTagInfo tag)	{ return new SequenceState(true); }
+		public State group				(State parent,StartTagInfo tag)	{ return new GroupState(); }
+		public State complexTypeDecl		(State parent,StartTagInfo tag)	{ return new ComplexTypeDeclState(); }
+		public State attribute			(State parent,StartTagInfo tag)	{ return new AttributeState(); }
+		public State attributeGroup		(State parent,StartTagInfo tag)	{ return new AttributeGroupState(); }
+		public State elementDecl			(State parent,StartTagInfo tag)	{ return new ElementDeclState(); }
+		public State elementRef			(State parent,StartTagInfo tag)	{ return new ElementRefState(); }
+		public State any					(State parent,StartTagInfo tag)	{ return new AnyElementState(); }
+		public State anyAttribute		(State parent,StartTagInfo tag)	{ return new AnyAttributeState(); }
+		public State include				(State parent,StartTagInfo tag)	{ return new IncludeState(); }
+		public State import_				(State parent,StartTagInfo tag)	{ return new ImportState(); }
+		public State redefine			(State parent,StartTagInfo tag)	{ return new RedefineState(); }
+		public State notation			(State parent,StartTagInfo tag)	{ return new IgnoreState(); }
+		public State facets				(State parent,StartTagInfo tag)	{ return new FacetState(); }
 
-		protected State unique				(State parent,StartTagInfo tag)	{ return new IdentityConstraintState(); }
-		protected State key					(State parent,StartTagInfo tag)	{ return new IdentityConstraintState(); }
-		protected State keyref				(State parent,StartTagInfo tag)	{ return new IdentityConstraintState(); }
+		public State unique				(State parent,StartTagInfo tag)	{ return new IdentityConstraintState(); }
+		public State key					(State parent,StartTagInfo tag)	{ return new IdentityConstraintState(); }
+		public State keyref				(State parent,StartTagInfo tag)	{ return new IdentityConstraintState(); }
 		
-		protected State complexContent		(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new ComplexContentState(decl); }
+		public State complexContent		(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new ComplexContentState(decl); }
 		// complexContent/restriction
-		protected State complexRst			(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new ComplexContentBodyState(decl,false); }
+		public State complexRst			(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new ComplexContentBodyState(decl,false); }
 		// complexContent/extension
-		protected State complexExt			(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new ComplexContentBodyState(decl,true); }
+		public State complexExt			(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new ComplexContentBodyState(decl,true); }
 
-		protected State simpleContent		(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new SimpleContentState(decl); }
+		public State simpleContent		(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new SimpleContentState(decl); }
 		// simpleContent/restriction
-		protected State simpleRst			(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new SimpleContentRestrictionState(decl); }
+		public State simpleRst			(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new SimpleContentRestrictionState(decl); }
 		// simpleContent/extension
-		protected State simpleExt			(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new SimpleContentExtensionState(decl); }
+		public State simpleExt			(State parent,StartTagInfo tag,ComplexTypeExp decl)	{ return new SimpleContentExtensionState(decl); }
 	}
 	
 	public final StateFactory sfactory;

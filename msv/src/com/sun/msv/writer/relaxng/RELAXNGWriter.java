@@ -12,6 +12,7 @@ package com.sun.msv.writer.relaxng;
 import org.relaxng.datatype.*;
 import org.relaxng.datatype.DataType;
 import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.util.ExpressionWalker;
 import com.sun.msv.grammar.trex.TypedString;
 import com.sun.msv.grammar.relaxng.ValueType;
 import com.sun.msv.datatype.*;
@@ -169,8 +170,8 @@ public class RELAXNGWriter implements GrammarWriter {
 		// ElementExps and ReferenceExps who are referenced more than once.
 		final Set heads = new HashSet();
 		
-		g.getTopLevel().visit( new VisitorBase(){
-			// VisitorBase class traverses expressions in depth-first order.
+		g.getTopLevel().visit( new ExpressionWalker(){
+			// ExpressionWalker class traverses expressions in depth-first order.
 			// So this invokation traverses the all reachable expressions from
 			// the top level expression.
 			

@@ -266,10 +266,6 @@ public class Generator implements ExpressionVisitorVoid {
 		exp.exp.visit(this);
 	}
 	
-	public void onKey( KeyExp exp ) {
-		exp.exp.visit(this);
-	}
-	
 	public void onAttribute( AttributeExp exp ) {
 		if( opts.random.nextDouble() < opts.probMutatedAttrError ) {
 			// mutated element error. generate a random attribute and ignore this declaration.
@@ -391,15 +387,15 @@ public class Generator implements ExpressionVisitorVoid {
 	
 	public void onTypedString( TypedStringExp exp ) {
 		String value;
-		if( exp.dt==com.sun.msv.grammar.IDType.theInstance ) {
+		if( exp.dt==com.sun.msv.datatype.xsd.IDType.theInstance ) {
 			do {
 				value = opts.dtGenerator.generate(NmtokenType.theInstance,getContext());
 			}while( ids.contains(value) );
 			ids.add(value);
 		}
 		else
-		if( exp.dt==com.sun.msv.grammar.IDREFType.theInstance
-		||  exp.dt==com.sun.msv.grammar.IDREFType.theIDREFSinstance ) {
+		if( exp.dt.getIdType()==exp.dt.ID_TYPE_IDREF
+		||  exp.dt.getIdType()==exp.dt.ID_TYPE_IDREFS ) {
 			Node n = domDoc.createTextNode("{TmpIDRef}");
 			node.appendChild(n);
 			idrefs.add(n); // memorize this node so that we can patch it later.

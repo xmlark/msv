@@ -152,7 +152,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		sti.reinit(namespaceUri, localName, qName, atts, this );
 
 		// get Acceptor that will be used to validate the contents of this element.
-		Acceptor next = getNextAcceptor(sti,null);
+		Acceptor next = current.createChildAcceptor(sti,ref);
 		
 		if( next==null ) {
 			// no child element matchs this one
@@ -180,13 +180,6 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		if( stringCareLevel==Acceptor.STRING_IGNORE )
 			characterType.types = new Datatype[]{StringType.theInstance};
 		current = next;
-	}
-
-	/**
-	 * gets the acceptor that validates this new element.
-	 */
-	protected Acceptor getNextAcceptor( StartTagInfo sti, StringRef ref ) {
-		return current.createChildAcceptor(sti,ref);
 	}
 	
 	public void endElement( String namespaceUri, String localName, String qName )

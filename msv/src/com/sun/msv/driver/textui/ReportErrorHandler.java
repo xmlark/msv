@@ -2,18 +2,19 @@ package com.sun.tranquilo.driver.textui;
 
 import com.sun.tranquilo.verifier.VerificationErrorHandler;
 import com.sun.tranquilo.verifier.ValidityViolation;
+import com.sun.tranquilo.verifier.ValidationUnrecoverableException;
 
 public class ReportErrorHandler implements VerificationErrorHandler
 {
 	private int counter = 0;
 	public void onError( ValidityViolation vv )
+		throws ValidationUnrecoverableException
 	{
 		countCheck(vv);
 		print(vv,MSG_ERROR);
 	}
 	public void onWarning( ValidityViolation vv )
 	{
-		countCheck(vv);
 		print(vv,MSG_WARNING);
 	}
 	
@@ -28,10 +29,12 @@ public class ReportErrorHandler implements VerificationErrorHandler
 	}
 	
 	private void countCheck( ValidityViolation vv )
+		throws ValidationUnrecoverableException
 	{
 		if( counter++ < 20 )	return;
 		
 		System.out.println( Driver.localizeMessage(MSG_TOO_MANY_ERRORS) );
+		throw new ValidationUnrecoverableException(vv);
 	}
 	
 	public static final String MSG_TOO_MANY_ERRORS = //arg:1

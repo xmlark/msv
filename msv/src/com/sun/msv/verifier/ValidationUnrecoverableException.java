@@ -9,7 +9,7 @@ public class ValidationUnrecoverableException extends SAXException
 {
 	public final ValidityViolation error;
 	
-	ValidationUnrecoverableException( ValidityViolation vv )
+	public ValidationUnrecoverableException( ValidityViolation vv )
 	{
 		super( vv.getMessage() );
 		error=vv;

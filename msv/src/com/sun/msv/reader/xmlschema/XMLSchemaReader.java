@@ -81,6 +81,12 @@ public class XMLSchemaReader extends GrammarReader {
 		
 		return reader.getResult();
 	}
+
+
+	/** easy-to-use constructor. */
+	public XMLSchemaReader( GrammarReaderController controller ) {
+		this(controller,createParserFactory());
+	}
 	
 	public XMLSchemaReader(
 		GrammarReaderController controller,

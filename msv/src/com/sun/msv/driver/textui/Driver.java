@@ -337,30 +337,12 @@ public class Driver
 	{
 		try
 		{// try it as a file
-			InputSource is = new InputSource(new java.io.FileInputStream(fileOrURL));
-//			is.setSystemId(new File(fileOrURL).getAbsolutePath());
-			// this has to be getCanonicalPath, otherwise
-			// java cannot resolve relative paths like "c:work.rlx" (in Windows).
-			is.setSystemId( fullPathToURL(new File(fileOrURL).getCanonicalPath()) );
-			return is;
+			return new InputSource( new File(fileOrURL).toURL().toExternalForm() );
 		}
 		catch( Exception e )
 		{// try it as an URL
 			return new InputSource(fileOrURL);
 		}
-	}
-	
-	private static String fullPathToURL( String fileName ) {
-		// under JDK1.2, use File.toURL
-		StringBuffer buf = new StringBuffer("file://");
-		if( fileName.charAt(0)!=File.separatorChar )	buf.append('/');
-		
-		for( int i=0; i<fileName.length(); i++ ) {
-			char ch = fileName.charAt(i);
-			if( ch==File.separatorChar )	buf.append('/');
-			else							buf.append(ch);
-		}
-		return buf.toString();
 	}
 
 	public static String localize( String propertyName, Object[] args )

@@ -26,7 +26,7 @@ import org.relaxng.datatype.ValidationContext;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class IDType extends NmtokenType {
+public class IDType extends NcnameType {
 	
 	public static final IDType theInstance = new IDType();
 	protected IDType()	{ super("ID"); }

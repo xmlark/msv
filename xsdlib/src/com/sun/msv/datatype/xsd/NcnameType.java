@@ -22,6 +22,7 @@ import org.relaxng.datatype.ValidationContext;
 public class NcnameType extends TokenType {
 	public static final NcnameType theInstance = new NcnameType();
 	private NcnameType() { super("NCName"); }
+	protected NcnameType( String typeName ) { super(typeName); }
 	
 	final public XSDatatype getBaseType() {
 		return NameType.theInstance;

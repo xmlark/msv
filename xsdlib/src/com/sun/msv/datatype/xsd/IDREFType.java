@@ -29,7 +29,7 @@ import org.relaxng.datatype.ValidationContext;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class IDREFType extends NmtokenType {
+public class IDREFType extends NcnameType {
 	
 	public static final IDREFType theInstance = new IDREFType();
 	

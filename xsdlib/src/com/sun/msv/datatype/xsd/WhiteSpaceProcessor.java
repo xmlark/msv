@@ -1,7 +1,5 @@
 package com.sun.tranquilo.datatype;
 
-import java.util.Hashtable;
-
 public abstract class WhiteSpaceProcessor
 {
 	abstract String process( String text );
@@ -10,11 +8,12 @@ public abstract class WhiteSpaceProcessor
 	 * returns a WhiteSpaceProcessor object if "whiteSpace" facet is specified.
 	 * Otherwise returns null.
 	 */
-	protected static WhiteSpaceProcessor create( Hashtable facets )
+	protected static WhiteSpaceProcessor create( Facets facets )
 		throws BadTypeException
 	{
-		Object o = facets.get("whiteSpace");
-		if( o==null )		return null;
+		if( !facets.contains("whiteSpace") )	return null;	// no whiteSpace facet
+		
+		String o = facets.getFacet("whiteSpace");
 		
 		if( o.equals("preserve") )		return null;
 		if( o.equals("collapse") )		return theCollapse;

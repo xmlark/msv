@@ -22,6 +22,7 @@ import com.sun.msv.reader.dtd.DTDReader;
 import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ExpressionPool;
+import com.sun.resolver.tools.CatalogResolver;
 
 /**
  * Test schemata/instances are expected to follow a naming convention.
@@ -44,6 +45,7 @@ public abstract class BatchTester {
 		new org.apache.xerces.jaxp.SAXParserFactoryImpl();
 //		new org.apache.crimson.jaxp.SAXParserFactoryImpl();
 
+	public CatalogResolver resolver = new CatalogResolver();
 	
 	/** test target: "relax", "trex", or "dtd" */
 	public String target;

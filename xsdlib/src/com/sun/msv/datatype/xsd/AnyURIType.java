@@ -74,9 +74,9 @@ public class AnyURIType extends ConcreteType implements Discrete {
 	 * escaped or not. false indicates it has to be escaped.
 	 * this table is of length 128.
 	 */
-	private static final boolean[] isUnreserved = createUnreservedMap();
+	private static final boolean[] isUric = createUricMap();
 	
-	private static boolean[] createUnreservedMap() {
+	private static boolean[] createUricMap() {
 		boolean r[] = new boolean[128];
 		
 		for( int i='a'; i<='z'; i++ )	r[i] = true;
@@ -86,6 +86,10 @@ public class AnyURIType extends ConcreteType implements Discrete {
 		char[] mark = new char[]{'-','_','.','!','~','*','\'','(',')','#','%','[',']'};
 		for( int i=0; i<mark.length; i++ )
 			r[mark[i]] = true;
+		
+		char[] reserved = new char[]{';','/','?',':','@','&','=','+','$',','};
+		for( int i=0; i<reserved.length; i++ )
+			r[reserved[i]] = true;
 		
 		return r;
 	}
@@ -97,7 +101,7 @@ public class AnyURIType extends ConcreteType implements Discrete {
 		
 		for( int i=0; i<content.length(); i++ ) {
 			char ch = content.charAt(i);
-			if( ch<128 && isUnreserved[ch])
+			if( ch<128 && isUric[ch])
 				escaped.append(ch);
 			else {
 				// escape it

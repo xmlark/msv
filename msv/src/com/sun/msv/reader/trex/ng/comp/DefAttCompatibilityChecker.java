@@ -47,13 +47,15 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
 		DefAttMap( ElementExp sample, Map atts ) { this.sampleDecl=sample; this.defaultAttributes=atts; }
 	}
 	
+	private final RefExpRemover refRemover =
+		new RefExpRemover(reader.pool,false);
 	/**
 	 * returns true if the exp is equivalent to &lt;empty/&gt; after
 	 * the simplification.
 	 */
 	private boolean isEpsilon( Expression exp ) {
 		if(exp==Expression.epsilon)		return true;
-		return exp.visit( new RefExpRemover(reader.pool) ) == Expression.epsilon;
+		return exp.visit(refRemover) == Expression.epsilon;
 	}
 	
 	/**

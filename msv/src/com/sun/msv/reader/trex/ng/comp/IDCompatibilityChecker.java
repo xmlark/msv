@@ -3,6 +3,7 @@ package com.sun.msv.reader.trex.ng.comp;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.relaxng.RELAXNGGrammar;
 import com.sun.msv.grammar.util.ExpressionWalker;
+import com.sun.msv.grammar.util.RefExpRemover;
 import com.sun.msv.util.StringPair;
 import java.util.Set;
 import java.util.HashSet;
@@ -58,6 +59,8 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 			
 			private IDAttMap curAtts = null;
 			
+			private RefExpRemover remover = new RefExpRemover(reader.pool,false);
+			
 			public void onElement( ElementExp exp ) {
 				if(!elements.add(exp))
 					return;	// this element has already processed.
@@ -74,7 +77,11 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 					elementName = null;
 				curElm = exp;
 				
-				exp.contentModel.visit(this);	// visit the content model
+//				System.out.println("tested:" + 
+//					com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(
+//					exp.contentModel.visit(remover)));
+				// visit the content model, but remove reference exps first.
+				exp.contentModel.visit(remover).visit(this);
 				
 				if( elementName!=null && curAtts!=null )
 					name2value.put(elementName,curAtts);
@@ -95,7 +102,7 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 				
 				TypedStringExp texp = (TypedStringExp)exp.exp;
 							
-				if(texp.dt.getIdType()!=Datatype.ID_TYPE_NULL) {
+				if(texp.dt.getIdType()==Datatype.ID_TYPE_NULL) {
 					// if this type is not ID/IDREF type, then it's OK
 					return;
 				}

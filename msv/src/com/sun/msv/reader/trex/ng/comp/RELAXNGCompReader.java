@@ -72,6 +72,11 @@ public class RELAXNGCompReader extends RELAXNGReader {
 	}
 
 	/** easy-to-use constructor. */
+	public RELAXNGCompReader( GrammarReaderController controller ) {
+		this(controller,createParserFactory());
+	}
+	
+	/** easy-to-use constructor. */
 	public RELAXNGCompReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory) {

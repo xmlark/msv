@@ -3,10 +3,19 @@ package com.sun.tranquilo.grammar.trex;
 import com.sun.tranquilo.grammar.ExpressionVisitor;
 
 /**
- * Visitor interface for TREX pattern
+ * Visitor interface for TREX pattern.
  * 
- * Note that traversing pattern is still a job for implementator.
- * Pattern and derived types do not provide any traversal.
+ * @see ExpressionVisitor
+ * 
+ * <p>
+ * By implementing this interface, your visitor class can safely walk
+ * any AGM (including AGM created from RELAX).
+ * 
+ * <p>
+ * As long as you depend on the core part and TREX extension of AGM
+ * and not depend on the stub parts, your visitor shall work with any AGM.
+ * So implementing this interface does NOT mean that your visitor is dependent
+ * to TREX.
  */
 public interface TREXPatternVisitor extends ExpressionVisitor
 {

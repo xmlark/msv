@@ -452,31 +452,32 @@ public class XMLSchemaReader extends GrammarReader {
 		}
 		
 		String maxOccurs = startTag.getAttribute("maxOccurs");
-		if( maxOccurs!=null ) {
-			if( maxOccurs.equals("unbounded") )
-				exp = pool.createSequence( exp, pool.createZeroOrMore(item) );
-			else {
-				int v;
-				try {
-					v = Integer.parseInt(maxOccurs);
-					if(v<0 || v<minOccursValue)
-						throw new NumberFormatException();
-				} catch( NumberFormatException e ) {
-					reportError( ERR_BAD_ATTRIBUTE_VALUE, "maxOccurs", maxOccurs );
-					v = 1;
-				}
-				
-				// create (A,(A, ... (A?)? ... )?
-				Expression tmp = Expression.epsilon;
-				for( int i=minOccursValue; i<v; i++ )
-					tmp = pool.createOptional( pool.createSequence( item, tmp ) );
-				
-				exp = pool.createSequence( exp, tmp );
-			}
-		} else {
+		if( maxOccurs==null ) {
 			// maxOccurs if not present. make sure that minOccurs<=1
 			if( minOccursValue>1 )
 				reportError( ERR_MAXOCCURS_IS_NECESSARY );
+			maxOccurs = "1";
+		}
+		
+		if( maxOccurs.equals("unbounded") )
+			exp = pool.createSequence( exp, pool.createZeroOrMore(item) );
+		else {
+			int v;
+			try {
+				v = Integer.parseInt(maxOccurs);
+				if(v<0 || v<minOccursValue)
+					throw new NumberFormatException();
+			} catch( NumberFormatException e ) {
+				reportError( ERR_BAD_ATTRIBUTE_VALUE, "maxOccurs", maxOccurs );
+				v = 1;
+			}
+				
+			// create (A,(A, ... (A?)? ... )?
+			Expression tmp = Expression.epsilon;
+			for( int i=minOccursValue; i<v; i++ )
+				tmp = pool.createOptional( pool.createSequence( item, tmp ) );
+				
+			exp = pool.createSequence( exp, tmp );
 		}
 		
 		return exp;

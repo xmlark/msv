@@ -31,7 +31,6 @@ import com.sun.msv.grammar.relaxng.datatype.CompatibilityDatatypeLibrary;
 import com.sun.msv.reader.*;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.reader.trex.TREXBaseReader;
-import com.sun.msv.reader.trex.AnyStringState;
 import com.sun.msv.reader.trex.RootState;
 import com.sun.msv.reader.trex.RefState;
 import com.sun.msv.reader.trex.NameClassChoiceState;
@@ -201,7 +200,7 @@ public class RELAXNGReader extends TREXBaseReader {
 		public State nsNsName	( State parent, StartTagInfo tag ) { return new NGNameState.NsNameState(); }
 		public State nsExcept	( State parent, StartTagInfo tag ) { return new NameClassChoiceState(); }
 		
-		public State text			( State parent, StartTagInfo tag ) { return new AnyStringState(); }
+		public State text			( State parent, StartTagInfo tag ) { return new TerminalState(Expression.anyString); }
 		public State data			( State parent, StartTagInfo tag ) { return new DataState(); }
 		public State dataParam		( State parent, StartTagInfo tag ) { return new DataParamState(); }
 		public State value			( State parent, StartTagInfo tag ) { return new ValueState(); }
@@ -219,7 +218,7 @@ public class RELAXNGReader extends TREXBaseReader {
 				// this might be a TREX user...
 				// provide an error message.
 				parent.reader.reportError( ERR_DISALLOWED_ATTRIBUTE, "ref", "parent");
-				return new NullSetState();	// recovery
+				return new TerminalState(Expression.nullSet);	// recovery
 			}
 			return new RefState(false);	// always local reference
 		}

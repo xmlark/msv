@@ -29,6 +29,7 @@ import com.sun.msv.reader.State;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.ExpressionWithChildState;
 import org.xml.sax.Locator;
+import org.relaxng.datatype.Datatype;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -84,14 +85,16 @@ public class ElementDeclState extends ExpressionWithChildState {
 			public State getOwnerState() { return ElementDeclState.this; }
 			public void patch() {
 				
-				Expression e;
+				Expression e=null;
 				
 				if( reader.isSchemaNamespace(s[0]) ) {
 					// datatypes of XML Schema part 2
-					e = reader.pool.createTypedString(
-						reader.resolveBuiltinDataType(s[1]),
-						new StringPair(s[0],s[1]) );
-				} else {
+					Datatype dt = reader.resolveBuiltinDataType(s[1]);
+					if(dt!=null)
+						e = reader.pool.createTypedString( dt, new StringPair(s[0],s[1]) );
+				}
+				
+				if(e==null) {
 					XMLSchemaSchema g = reader.getOrCreateSchema(s[0]/*uri*/);
 					e = g.simpleTypes.get(s[1]/*local name*/);
 					if(e==null)	e = g.complexTypes.get(s[1]);

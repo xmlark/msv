@@ -24,7 +24,6 @@ import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.reader.*;
 import com.sun.msv.reader.trex.TREXBaseReader;
-import com.sun.msv.reader.trex.AnyStringState;
 import com.sun.msv.reader.trex.IncludePatternState;
 import com.sun.msv.reader.trex.RootState;
 import com.sun.msv.reader.datatype.DataTypeVocabulary;
@@ -138,7 +137,7 @@ public class TREXGrammarReader extends TREXBaseReader {
 	 */
 	public static class StateFactory extends TREXBaseReader.StateFactory {
 		public State concur		( State parent, StartTagInfo tag )	{ return new ConcurState(); }
-		public State anyString	( State parent, StartTagInfo tag )	{ return new AnyStringState(); }
+		public State anyString	( State parent, StartTagInfo tag )	{ return new TerminalState(Expression.anyString); }
 		public State string		( State parent, StartTagInfo tag )	{ return new StringState(); }
 		public State data		( State parent, StartTagInfo tag )	{ return new DataState(); }
 		public State define		( State parent, StartTagInfo tag )	{ return new DefineState(); }

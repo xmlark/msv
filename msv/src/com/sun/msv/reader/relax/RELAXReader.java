@@ -59,8 +59,8 @@ public abstract class RELAXReader extends GrammarReader
 		protected State refLabel(State parent,StartTagInfo tag)	{ return new ElementRefState(); }
 		protected State hedgeRef(State parent,StartTagInfo tag)	{ return new HedgeRefState(); }
 		protected State choice(State parent,StartTagInfo tag)	{ return new ChoiceState(); }
-		protected State none(State parent,StartTagInfo tag)		{ return new NullSetState(); }
-		protected State empty(State parent,StartTagInfo tag)	{ return new EmptyState(); }
+		protected State none(State parent,StartTagInfo tag)		{ return new TerminalState(Expression.nullSet); }
+		protected State empty(State parent,StartTagInfo tag)	{ return new TerminalState(Expression.epsilon); }
 		protected State sequence(State parent,StartTagInfo tag)	{ return new SequenceState(); }
 		
 		protected FacetState facets(State parent,StartTagInfo tag)	{ return new FacetState(); }

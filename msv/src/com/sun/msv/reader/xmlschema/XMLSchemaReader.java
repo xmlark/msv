@@ -151,7 +151,7 @@ public class XMLSchemaReader extends GrammarReader {
 		this.grammar = new XMLSchemaGrammar(pool);
 		
 		xsdSchema = new XMLSchemaSchema( XMLSchemaNamespace, grammar );
-		markSchemaAsDefined(xsdSchema);
+//		markSchemaAsDefined(xsdSchema);
 	
 		ElementPattern e = new ElementPattern( AnyNameClass.theInstance, Expression.nullSet );
 		e.contentModel =
@@ -432,17 +432,16 @@ public class XMLSchemaReader extends GrammarReader {
 	
 	/**
 	 * resolves built-in datatypes (URI: http://www.w3.org/2001/XMLSchema)
+	 * 
+	 * @return
+	 *		null if the type is not defined.
 	 */
 	public Datatype resolveBuiltinDataType( String typeLocalName ) {
 		// datatypes of XML Schema part 2
 		try {
 			return builtinTypes.getType(typeLocalName);
 		} catch( DatatypeException e ) {
-			Datatype dt = getBackwardCompatibleType(typeLocalName);
-			if( dt!=null )	return dt;
-		
-			reportError( ERR_UNDEFINED_DATATYPE, typeLocalName );
-			return StringType.theInstance;	// recover by assuming string.
+			return null;	// not found.
 		}
 	}
 	
@@ -472,16 +471,23 @@ public class XMLSchemaReader extends GrammarReader {
 			return StringType.theInstance;	// recover by assuming string.
 		}
 		
-		if( isSchemaNamespace(r[0]) )
-			return resolveBuiltinDataType(r[1]);
-		
+		if( isSchemaNamespace(r[0]) ) {
+			// internal definitions should be consulted first.
+			Datatype dt = resolveBuiltinDataType(r[1]);
+			if(dt!=null)	return dt;
+			
+			// the name was not found.
+			// maybe we are parsing schema for schema.
+			// consult the externally defined types.
+		}
+
 		final SimpleTypeExp sexp = getOrCreateSchema(r[0]/*uri*/).simpleTypes.
 			getOrCreate(r[1]/*local name*/);
 		Datatype dt = sexp.getType();
 		backwardReference.memorizeLink(sexp);
 				 
 		if( dt!=null )	return dt;
-		
+
 		// the specified datatype is not defined at this moment.
 		// it is either a forward reference, or an undefined type.
 		// return a late-bind datatype object to support forward references.
@@ -520,10 +526,15 @@ public class XMLSchemaReader extends GrammarReader {
 			return Expression.nullSet;	// recover by assuming some expression.
 		}
 		
-		if( isSchemaNamespace(r[0]) )
-			return pool.createTypedString(
-				resolveBuiltinDataType(r[1]),
-				new StringPair(r[0],r[1]) );
+		if( isSchemaNamespace(r[0]) ) {
+			Datatype dt = resolveBuiltinDataType(r[1]);
+			if(dt!=null)
+				return pool.createTypedString( dt, new StringPair(r[0],r[1]) );
+			
+			// the type was not found.
+			// maybe we are parsing schema for schema.
+			// consult the externally defined types.
+		}
 		
 		Expression exp = getOrCreateSchema(r[0]/*uri*/).simpleTypes.getOrCreate(r[1]/*local name*/);
 		backwardReference.memorizeLink(exp);

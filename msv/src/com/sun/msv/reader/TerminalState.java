@@ -12,11 +12,17 @@ package com.sun.msv.reader;
 import com.sun.msv.grammar.Expression;
 
 /**
- * state that creates epsion.
+ * State that always returns the same expression.
+ * 
+ * Typically used for &lt;empty/&gt;, &lt;notAllowed/&gt; and &lt;text/> of RELAX NG.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class EmptyState extends ExpressionWithoutChildState
-{
-	protected Expression makeExpression() { return Expression.epsilon; }
+public class TerminalState extends ExpressionWithoutChildState {
+	
+	private final Expression exp;
+	
+	public TerminalState( Expression exp ) { this.exp = exp; }
+	
+	protected Expression makeExpression() { return exp; }
 }

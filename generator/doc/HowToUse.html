@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE>USAGE GUIDE FOR SUN TRANQUILO GENERATOR</TITLE>
+	<style>
+		.title
+		{
+			text-align:center;
+			font-weight:bold;
+		}
+		PRE
+		{
+			background-color: rgb(240,240,240);
+		}
+	</style>
+</HEAD>
+<BODY>
+<P ALIGN=center><B>
+SUN TRANQUILO GENERATOR USER'S GUIDE<BR>
+Preview Version.1 April, 2001<BR>
+<BR>
+Copyright (c) Sun Microsystems, 2001</B>
+</P>
+<P><BR></P>
+<P ALIGN=right>Document written by <A href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</A> <BR>
+$Id$ </P>
+<P>
+  Sun XML Generator is a tool to generate XML instances from a RELAX or TREX grammar.
+</P>
+<H1>Contents of This Document</H1>
+<OL>
+	<LI><A href="#size">Controlling Size of Documents</A>
+	<LI><A href="#error">Generating Invalid Documents</A>
+	<LI><A href="#custom">Writing Code to Customize Behavior</A>
+</OL>
+
+
+<H1><A NAME="intro">Controlling Size of Documents</A></H1>
+<P>
+	The size of the generated document can be controlled through two parameters:
+	cut back depth and width.
+</P>
+<P>
+	Cut back depth decides how deep a document can be. Once the depth exceeds this value,
+	generator is switched to "cut back" mode. In this mode, generator skips any optional
+	expressions like ? or *.
+	Therefore if cut-back depth is set to a bigger value, generated documents tend to be big.
+</P>
+<P>
+	Width decides how many times '*' and '+' are repeated. If you set this value to 5, then
+	'*' will be repeated from 0 to 5 times (uniformly distributed), and '+' will be repeated
+	from 1 to 6 times (uniformly distributed).
+	Therefore if width is set to a bigger value, generated documents tend to be big.
+</P>
+<P>
+	Further fine control can be achived by adding your own code into generator.
+</P>
+
+
+<H1><A NAME="error">Generating Invalid Documents</A></H1>
+<P>
+	Generator is capable of generating invalid instances. In this mode, generator randomly
+	inserts errors into the document.
+	Errors are made by following certain predefined patterns.
+</P>
+<P>
+	You can control the probability of each pattern,
+	or you can set all probabilities to the same value by "-error" option.
+</P>
+<P>
+	Probabilities are set by "m/n". "2/100" indicates probability of 2%.
+</P>
+<P>
+	The following sub sections enumerates each pattern and command line option to control the probability.
+</P>
+
+<H3>Greedy Choice</H3>
+<P>
+	"Greedy choice" error is an error of taking more than one choice items.
+</P>
+<PRE><XMP>
+Schema:
+<choice>
+  <element name="A"> .... </element>
+  <element name="B"> .... </element>
+</choice>
+
+Instance:
+<A> ... </A>
+<B> ... </B>
+</XMP></PRE>
+<P>
+	This probability can be controlled through "-error-greedyChoice" option.
+</P>
+
+
+<H3>Missing Attribute</H3>
+<P>
+	"Missing attribute" error is made by intentionally skipping attribute generation.
+</P>
+<PRE><XMP>
+Schema:
+<element name="foo">
+  <attribute name="bar">
+  ...
+</element>
+
+Instance:
+<foo>
+   ...
+</foo>
+</XMP></PRE>
+
+<P>
+	Sometimes, generating an error in this way does not result in an invalid document.
+	For example, if &lt;choice&gt; has occurs="*" attribute, then a greedy choice is not an error.
+	Therefore, generally speaking, error ratio has to be manipulated in try-and-error fashion.
+</P>
+
+
+</BODY>
+</HTML>

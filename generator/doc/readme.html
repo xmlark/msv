@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE>README FILE FOR SUN TRANQUILO GENERATOR</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.2 (Solaris Sparc)">
+	<META NAME="CREATED" CONTENT="20010322;12563300">
+	<META NAME="CHANGEDBY" CONTENT="Eduardo Gutentag">
+	<META NAME="CHANGED" CONTENT="20010322;14524700">
+	<style>
+		.title
+		{
+			text-align:center;
+			font-weight:bold;
+		}
+		LI
+		{
+			margin-top: 1em;
+		}
+		PRE
+		{
+			background-color: rgb(240,240,240);
+		}
+	</style>
+</HEAD>
+<BODY>
+<P ALIGN=center><B>
+README FILE FOR SUN TRANQUILO GENERATOR<BR>
+Preview Version.1 April,2001<BR><BR>
+Copyright (c) Sun Microsystems, 2001</B></P>
+
+<P><BR></P>
+
+<P ALIGN=right>Document written by <A href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke
+KAWAGUCHI</A> <BR>$Id: readme.html,v 1.5 2001/03/21 01:43:15 Bear Exp
+$ 
+</P>
+<P>
+  Sun XML Generator is a tool to generate XML instances from a RELAX or TREX grammar.
+</P>
+<P>This product includes software developed by the Apache Software
+Foundation (<A HREF="http://www.apache.org/">http://www.apache.org/</A>)</P>
+
+<H1>Quick Start</H1>
+<P>
+  To generate a valid instance from a RELAX grammar to stdout,
+</P>
+<PRE>
+$ java -jar tranqgen.jar myGrammar.rxg
+</PRE>
+
+<P>
+  To generate 100 valid instances from a TREX pattern,
+</P>
+<PRE>
+$ java -jar tranqgen.jar -n 100 myPattern.trex out$.xml
+</PRE>
+<P>
+  out00.xml, out01.xml, ... out99.xml will be generated.
+</P>
+
+<P>
+  Tranquilo Generator is capable of generating "invalid" instances.
+  The following example generates an instance, which is very close to valid instance.
+</P>
+<PRE>
+$ java -jar tranqgen.jar -error 1/100 mine.rxm invalid.xml
+</PRE>
+<P>
+  The following example generates an instance, which is almost completely wrong.
+</P>
+<PRE>
+$ java -jar traqgen.jar -error 1/2 mine.rxm terrible.xml
+</PRE>
+
+<H1>Known Limitations</H1>
+<OL>
+  <LI>
+    Datatype support is limited. You will receive "unsupported datatype: XXX" error
+    if the schema contains those unsupported types.
+    If you can write Java program by yourself, you may want to 
+  </LI>
+</OL>
+</BODY>
+</HTML>

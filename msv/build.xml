@@ -104,8 +104,8 @@
 				please remove jaxp.jar from ant directory,
 				because it uses an old one, and this test needs the latest one
 			-->
-			<junit haltonfailure="no" printsummary="yes" fork="yes"
-				haltonerror="no">
+			<junit haltonfailure="yes" printsummary="yes" fork="yes"
+				haltonerror="yes">
 				<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
 				<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
 				<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
@@ -197,6 +197,10 @@
 				package="tranquilo/src/com/sun/xml"
 				command="export -d . -D now"
 				dest="${stageName}/src/com/sun/xml" />
+		<cvs	cvsRoot="${cvsRoot}"
+				package="tranquilo/relaxng"
+				command="export -d . -D now"
+				dest="${stageName}/src/" />
 
 		<!-- copy Xerces files into source directory -->
 		<copy todir="${stageName}/src">
@@ -264,6 +268,8 @@
 	</target>
 	
 	
+	
+	
 	<!-- generate Tranquilo release -->
 	<target name="release">
 		<tstamp />
@@ -276,6 +282,11 @@
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/src"
+				command="export -d . -D now"
+				dest="${stageName}/src/" />
+
+		<cvs	cvsRoot="${cvsRoot}"
+				package="tranquilo/relaxng"
 				command="export -d . -D now"
 				dest="${stageName}/src/" />
 		
@@ -409,20 +420,28 @@
 		<jar	jarfile="${stageName}/xmlgen.small.jar"
 				manifest="./META-INF/Generator.MANIFEST.MF"
 				compress="false">
+			<fileset dir="${stageName}/src" includes="**/*.properties" />
 			<fileset dir="temp" includes="**/*.*" />
 		</jar>
 		
 		
+		<!-- unzip contents from xerces.jar -->
+		<mkdir dir="xerces" />
+		<unjar src="c:\winnt\java\classes\xerces.jar" dest="xerces" />
+		
 		<!-- unzip contents from msv.jar -->
-		<unjar src="./packages/msv.jar" dest="temp" />
+		<unjar src="./package/msv.jar" dest="temp" />
 		
 		<!-- creates the complete binary jar -->
 		<jar	jarfile="${stageName}/xmlgen.jar"
 				manifest="./META-INF/Generator.MANIFEST.MF"
 				compress="false">
+			<fileset dir="${stageName}/src" includes="**/*.properties" />
+			<fileset dir="xerces" includes="org/apache/xml/serialize/*.*" />
 			<fileset dir="temp" includes="**/*.*" />
 		</jar>
 		<delete dir="temp" />
+		<delete dir="xerces" />
 		
 		
 		<!-- creates javadoc -->
@@ -438,6 +457,7 @@
 			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
 			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
 		</javadoc>
+
 		
 		<!-- creates distribution package -->
 		<zip	zipfile="${packageDir}/xmlgen.${DSTAMP}.zip"
@@ -446,4 +466,165 @@
 		
 		<delete	dir="${stageName}" />
 	</target>
+
+
+
+
+
+	<!-- RELAX NG converter release -->
+	<target name="rngconverter">
+		<tstamp />
+		<property name="stageName" value="rngconv-${DSTAMP}"/>
+		
+		<delete	dir="${stageName}" />
+		<mkdir	dir="${stageName}" />
+		<mkdir	dir="${stageName}/src" />
+		
+		<!-- obtain source codes from cvs -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="tranquilo/rngconverter"
+				command="export -d . -D now"
+				dest="${stageName}/src" />
+				
+		<!-- obtain document files -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="tranquilo/doc/rngconverter"
+				command="export -d . -D now"
+				dest="${stageName}" />
+		
+		
+		<!-- compile files -->
+		<mkdir	dir="temp" />
+		<javac	srcdir="${stageName}/src"
+				destdir="temp"
+				classpath="./package/msv.jar:${java.class.path}">
+			<include name="**/*.java" />
+		</javac>
+		
+		<!-- create a time stamp file -->
+		<echo file="temp/version.properties">version=${DSTAMP}</echo>
+
+
+		<!-- creates binary jar -->
+		<jar	jarfile="${stageName}/rngconv.small.jar"
+				manifest="./META-INF/rngconv.MANIFEST.MF"
+				compress="false">
+			<fileset dir="${stageName}/src" includes="**/*.properties" />
+			<fileset dir="temp" includes="**/*.*" />
+		</jar>
+		
+		
+		<!-- unzip contents from xerces.jar -->
+		<mkdir dir="xerces" />
+		<unjar src="c:\winnt\java\classes\xerces.jar" dest="xerces" />
+
+		<!-- unzip contents from msv.jar -->
+		<unjar src="./package/msv.jar" dest="temp" />
+		
+		<!-- creates the complete binary jar -->
+		<jar	jarfile="${stageName}/rngconv.jar"
+				manifest="./META-INF/rngconv.MANIFEST.MF"
+				compress="false">
+			<fileset dir="${stageName}/src" includes="**/*.properties" />
+			<fileset dir="temp" includes="**/*.*" />
+			<fileset dir="xerces" includes="org/apache/xml/serialize/*.*" />
+		</jar>
+		<delete dir="temp" />
+		<delete dir="xerces" />
+		
+		<!-- we don't create javadoc for rngconv -->
+
+<!-- temporarily, remove source codes -->
+		<delete dir="${stageName}/src" />
+		
+		<!-- creates distribution package -->
+		<zip	zipfile="${packageDir}/rngconv.${DSTAMP}.zip"
+				basedir="."
+				includes="${stageName}/**/*.*" />
+		
+		<delete	dir="${stageName}" />
+	</target>
+
+
+
+
+
+
+
+	<!-- TREX converter release -->
+	<target name="rngconverter">
+		<tstamp />
+		<property name="stageName" value="rngconv-${DSTAMP}"/>
+		
+		<delete	dir="${stageName}" />
+		<mkdir	dir="${stageName}" />
+		<mkdir	dir="${stageName}/src" />
+		
+		<!-- obtain source codes from cvs -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="tranquilo/trexconverter"
+				command="export -d . -D now"
+				dest="${stageName}/src" />
+				
+		<!-- obtain document files -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="tranquilo/doc/trexconverter"
+				command="export -d . -D now"
+				dest="${stageName}" />
+		
+		
+		<!-- compile files -->
+		<mkdir	dir="temp" />
+		<javac	srcdir="${stageName}/src"
+				destdir="temp"
+				classpath="./package/msv.jar:${java.class.path}">
+			<include name="**/*.java" />
+		</javac>
+		
+		<!-- create a time stamp file -->
+		<echo file="temp/version.properties">version=${DSTAMP}</echo>
+
+
+		<!-- creates binary jar -->
+		<jar	jarfile="${stageName}/trexconv.small.jar"
+				manifest="./META-INF/trexconv.MANIFEST.MF"
+				compress="false">
+			<fileset dir="${stageName}/src" includes="**/*.properties" />
+			<fileset dir="temp" includes="**/*.*" />
+		</jar>
+		
+		
+		<!-- unzip contents from xerces.jar -->
+		<mkdir dir="xerces" />
+		<unjar src="c:\winnt\java\classes\xerces.jar" dest="xerces" />
+
+		<!-- unzip contents from msv.jar -->
+		<unjar src="./package/msv.jar" dest="temp" />
+		
+		<!-- creates the complete binary jar -->
+		<jar	jarfile="${stageName}/trexconv.jar"
+				manifest="./META-INF/trexconv.MANIFEST.MF"
+				compress="false">
+			<fileset dir="${stageName}/src" includes="**/*.properties" />
+			<fileset dir="temp" includes="**/*.*" />
+			<fileset dir="xerces" includes="org/apache/xml/serialize/*.*" />
+		</jar>
+		<delete dir="temp" />
+		<delete dir="xerces" />
+		
+		<!-- we don't create javadoc for rngconv -->
+
+<!-- temporarily, remove source codes -->
+		<delete dir="${stageName}/src" />
+		
+		<!-- creates distribution package -->
+		<zip	zipfile="${packageDir}/trexconv.${DSTAMP}.zip"
+				basedir="."
+				includes="${stageName}/**/*.*" />
+		
+		<delete	dir="${stageName}" />
+	</target>
+
+
+
 </project>

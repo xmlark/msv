@@ -97,7 +97,6 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 			s = (String)vs.toArray()[random.nextInt(vs.size())];
 		}
 		
-		
 		return s;
 	}
 		

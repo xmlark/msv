@@ -96,7 +96,7 @@ public class NamespaceState extends State
 		if(moduleLocation!=null)
 		{// parse a module from external resource.
 			try {
-				InputSource is = reader.resolveLocation(moduleLocation);
+				InputSource is = reader.resolveLocation(this,moduleLocation);
 				XMLReader parser = reader.parserFactory.newSAXParser().getXMLReader();
 				parser.setContentHandler(moduleReader);
 				parser.parse(is);

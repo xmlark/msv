@@ -31,6 +31,6 @@ public class IncludeGrammarState extends ChildlessState
 			// recover by ignoring this include element
 		}
 		else
-			reader.switchSource(href,new RootGrammarMergeState());
+			reader.switchSource(this,href,new RootGrammarMergeState());
 	}
 }

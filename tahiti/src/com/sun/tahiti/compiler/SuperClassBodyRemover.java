@@ -69,6 +69,8 @@ public class SuperClassBodyRemover extends ExpressionWalker {
 		if( exp instanceof SuperClassItem ) {
 			exp.exp = exp.exp.visit(remover);
 		}
+		if( visitedRefs.add(exp) )
+			super.onRef(exp);	// recurse children if this is the first visit.
 	}
 	
 	private ExpressionCloner remover;

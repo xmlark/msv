@@ -44,6 +44,10 @@ public class Driver
 	}
 	
 	public static void main( String args[] ) throws Exception {
+		System.exit(run(args));
+	}
+	
+	public static int run( String args[] ) throws Exception {
 		// TODO: where should we obtain the package name
 		// and the file name of the generated grammar?
 		
@@ -53,31 +57,37 @@ public class Driver
 		
 		for( int i=0; i<args.length; i++ ) {
 			if( args[i].charAt(0)=='-' ) {
-				if( args[i].equals("-out:xml") )	out = xml;
-				else
-				if( args[i].equals("-out:java") )	out = java;
-				else
+				if( args[i].equals("-out") ) {
+					i++;
+					if(args.length==i) { usage(); return -1; }
+					out = null;
+					if(args[i].equals("xml"))	out = xml;
+					if(args[i].equals("java"))	out = java;
+					if(out==null) { usage(); return -1; }
+				} else
 				if( args[i].equals("-d") ) {
 					i++;
-					if(args.length==i) {
-						usage();
-						return;
-					}
+					if(args.length==i) { usage(); return -1; }
 					outDir = new File(args[i]);
 				}
 				else {
 					System.out.println("unknown option:"+args[i]);
 					usage();
-					return;
+					return -1;
 				}
 			} else {
 				if( grammar!=null ) {
 					System.err.println("more than one grammar specified");
 					usage();
-					return;
+					return -1;
 				}
 				grammar = args[i];
 			}
+		}
+		if( grammar==null ) {
+			System.err.println("no grammar is specified");
+			usage();
+			return -1;
 		}
 		
 		
@@ -89,14 +99,18 @@ public class Driver
 		System.err.println("parsing a schema...");
 		TREXGrammar g;
 		{// parse grammar
-			TRELAXNGReader reader = new TRELAXNGReader(
-				new batch.ThrowErrorController(), f );
+			TRELAXNGReader reader = new TRELAXNGReader( new com.sun.msv.driver.textui.DebugController(false,false), f );
 			reader.parse(args[0]);
 			g = reader.getResult();
+			if(g==null) {
+				System.err.println("bailing out");
+				return -1;
+			}
 		}
 		
 		
-		
+		// grammar file will be generated as this name
+		String grammarName = "out.sub.Name";	// do not write the extension ".java".
 		
 		
 		
@@ -113,15 +127,17 @@ public class Driver
 			TransformerHandler xsltEngine = getTransformer(
 				Driver.class.getResourceAsStream("grammar2java.xsl"));
 			xsltEngine.setResult( new StreamResult(
-				new FileOutputStream( getJavaFile(outDir,"out.sub.Name")) ));
+				new FileOutputStream( getJavaFile(outDir,grammarName)) ));
 			
 			grammarReceiver = new com.sun.msv.writer.ContentHandlerAdaptor(xsltEngine);
 		}
+
+		SuperClassBodyRemover.remove(g);
 		
 		Map rules = RuleGenerator.create(g);
 		
 		Symbolizer symbolizer =
-			RuleFileGenerator.generate( g, rules, "out.sub.Name", grammarReceiver );
+			RuleFileGenerator.generate( g, rules, grammarName, grammarReceiver );
 
 
 	// generate class definitions
@@ -149,10 +165,11 @@ public class Driver
 			};
 		}
 		
-		generator.generate( g.getTopLevel(), "out.sub.Name", symbolizer, resolver );
+		generator.generate( g.getTopLevel(), grammarName, symbolizer, resolver );
 		
 		
 		System.err.println("done.");
+		return 0;
 	}
 	
 	/** gets an XSLT engine. */

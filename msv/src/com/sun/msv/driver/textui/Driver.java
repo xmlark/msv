@@ -126,6 +126,12 @@ public class Driver {
 				if( verbose )
 					System.out.println( localize( MSG_FAILED_TO_IGNORE_EXTERNAL_DTD ) );
 			}
+		else
+			try {
+				factory.setFeature("http://apache.org/xml/features/validation/dynamic",true);
+			} catch( Exception e ) {
+				;
+			}
 		
 		
 		InputSource is = getInputSource(grammarName);
@@ -199,8 +205,12 @@ public class Driver {
 			boolean result=false;
 			
 			try {
+				XMLReader reader = factory.newSAXParser().getXMLReader();
+				if(entityResolver!=null)	reader.setEntityResolver(entityResolver);
+				reader.setErrorHandler( new ReportErrorHandler() );
+				
 				result = verifier.verify(
-					factory.newSAXParser().getXMLReader(),
+					reader,
 					getInputSource(instName));
 			} catch( com.sun.msv.verifier.ValidationUnrecoverableException vv ) {
 				System.out.println(localize(MSG_BAILOUT));

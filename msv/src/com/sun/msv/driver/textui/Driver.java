@@ -12,6 +12,7 @@ package com.sun.tranquilo.driver.textui;
 import javax.xml.parsers.*;
 import java.io.File;
 import com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter;
+import com.sun.tranquilo.grammar.xmlschema.*;
 import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.grammar.relax.*;
 import com.sun.tranquilo.grammar.*;
@@ -104,8 +105,8 @@ public class Driver
 			System.out.println( localize( MSG_PARSER, factory.getClass().getName()) );
 		
 		factory.setNamespaceAware(true);
-		factory.setValidating(dtdValidation);
-		if( dtdValidation && verbose )
+		factory.setValidating(false);
+		if( !loose && verbose )
 			System.out.println( localize( MSG_DTDVALIDATION ) );
 		
 		if( loose )
@@ -165,6 +166,9 @@ public class Driver
 			else
 			if( grammar instanceof TREXGrammar )
 				dumpTREX( (TREXGrammar)grammar );
+			else
+			if( grammar instanceof XMLSchemaGrammar )
+				dumpXMLSchema( (XMLSchemaGrammar)grammar );
 			
 			return;
 		}
@@ -207,6 +211,34 @@ public class Driver
 		System.out.print(
 			TREXPatternPrinter.fragmentInstance.printRefContainer(
 				g.namedPatterns ) );
+	}
+	
+	public static void dumpXMLSchema( XMLSchemaGrammar g ) throws Exception {
+		
+		System.out.println("*** top level ***");
+		System.out.println(TREXPatternPrinter.printFragment(g.topLevel));
+		
+		Iterator itr = g.schemata.values().iterator();
+		while(itr.hasNext()) {
+			XMLSchemaSchema s = (XMLSchemaSchema)itr.next();
+			dumpXMLSchema(s);
+		}
+	}
+	public static void dumpXMLSchema( XMLSchemaSchema s ) throws Exception {
+		System.out.println("\n $$$$$$[ " + s.targetNamespace + " ]$$$$$$");
+
+		System.out.println("*** elementDecls ***");
+		ReferenceExp[] es = s.elementDecls.getAll();
+		for( int i=0; i<es.length; i++ ) {
+			ElementDeclExp exp = (ElementDeclExp)es[i];
+			System.out.println( exp.name + "  : " +
+				TREXPatternPrinter.printContentModel(exp.self.contentModel) );
+		}
+		
+		System.out.println("*** complex types ***");
+		System.out.print(
+			TREXPatternPrinter.contentModelInstance.printRefContainer(
+				s.complexTypes ) );
 	}
 	
 	public static void dumpRELAXModule( RELAXModule m ) throws Exception

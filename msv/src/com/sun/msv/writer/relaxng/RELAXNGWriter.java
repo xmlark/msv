@@ -819,8 +819,8 @@ public class RELAXNGWriter implements GrammarWriter {
 			// simplify the result.
 			if( exp instanceof SequenceExp ) {
 				SequenceExp seq = (SequenceExp)exp;
-				seq.exp1.visit(this);
-				visitUnary(seq.exp2);
+				visitUnary(seq.exp1);
+				seq.exp2.visit(this);
 			}
 			else
 				exp.visit(this);

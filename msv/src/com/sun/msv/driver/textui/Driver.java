@@ -40,6 +40,10 @@ public class Driver {
 	static SAXParserFactory factory;
 	
 	public static void main( String[] args ) throws Exception {
+        System.exit(run(args));
+    }
+    
+    public static int run( String[] args ) throws Exception {
 		final Vector fileNames = new Vector();
 		
 		String grammarName = null;
@@ -106,11 +110,11 @@ public class Driver {
 			if( args[i].equalsIgnoreCase("-version") ) {
 				System.out.println("Multi Schema Validator Ver."+
 					java.util.ResourceBundle.getBundle("version").getString("version") );
-				return;
+				return 0;
 			} else {
 				if( args[i].charAt(0)=='-' ) {
 					System.err.println(localize(MSG_UNRECOGNIZED_OPTION,args[i]));
-					return;
+					return -1;
 				}
 				
 				if( grammarName==null )	grammarName = args[i];
@@ -122,7 +126,7 @@ public class Driver {
 		
 		if( grammarName==null ) {
 			System.out.println( localize(MSG_USAGE) );
-			return;
+			return -1;
 		}
 		
 		
@@ -182,7 +186,7 @@ public class Driver {
 		}
 		if( grammar==null ) {
 			System.out.println( localize(ERR_LOAD_GRAMMAR) );
-			return;
+			return -1;
 		}
 			
 		long parsingTime = System.currentTimeMillis();
@@ -203,7 +207,7 @@ public class Driver {
 			if( grammar instanceof XMLSchemaGrammar )
 				dumpXMLSchema( (XMLSchemaGrammar)grammar );
 			
-			return;
+			return -1;
 		}
 		
 	// validate documents
@@ -220,6 +224,9 @@ public class Driver {
 			// validate normally by using Verifier.
 			verifier = new SimpleVerifier( new REDocumentDeclaration(grammar) );
 		
+        
+        boolean allValid = true;
+        
 		for( int i=0; i<fileNames.size(); i++ )	{
 			
 			final String instName = (String)fileNames.elementAt(i);
@@ -247,9 +254,11 @@ public class Driver {
 			
 			if(result)
 				System.out.println(localize(MSG_VALID));
-			else
+            else {
 				System.out.println(localize(MSG_INVALID));
-			
+                allValid = false;
+            }
+            
 			if( i!=fileNames.size()-1 )
 				System.out.println("--------------------------------------");
 		}
@@ -257,6 +266,8 @@ public class Driver {
 			
 		if( verbose )
 			System.out.println( localize( MSG_VALIDATION_TIME, new Long(System.currentTimeMillis()-parsingTime) ) );
+        
+        return allValid?0:-1;
 	}
 	
 	public static void dumpTREX( TREXGrammar g ) throws Exception {

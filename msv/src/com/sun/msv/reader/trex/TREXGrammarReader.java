@@ -243,8 +243,8 @@ public class TREXGrammarReader extends GrammarReader
 		"TREXGrammarReader.UndefinedPattern";
 	public static final String ERR_UNKNOWN_DATATYPE_VOCABULARY = // arg:1
 		"TREXGrammarReader.UnknownDataTypeVocabulary";
-	public static final String ERR_FAILED_TO_PARSE_DATATYPE = // arg:0
-		"TREXGrammarReader.FailedToParseDataType";
+//	public static final String ERR_FAILED_TO_PARSE_DATATYPE = // arg:0
+//		"TREXGrammarReader.FailedToParseDataType";
 
 	public static final String ERR_BAD_COMBINE = // arg:1
 		"TREXGrammarReader.BadCombine";

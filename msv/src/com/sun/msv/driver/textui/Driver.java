@@ -145,6 +145,8 @@ public class Driver {
 		else
 			try {
 				factory.setFeature("http://apache.org/xml/features/validation/dynamic",true);
+				// turn off XML Schema validation if Xerces is used
+				factory.setFeature("http://apache.org/xml/features/validation/schema",false);
 			} catch( Exception e ) {
 				;
 			}

@@ -14,5 +14,5 @@ public class Debug
 	/**
 	 * set this field to true to enable debug information.
 	 */
-	public static boolean debug = true;
+//	public static boolean debug = true;
 }

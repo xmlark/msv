@@ -377,6 +377,8 @@ class RelationNormalizer {
 				// I-I/I-C multiplicity must be (1,1)
 				InterfaceItem ii = (InterfaceItem)exp;
 				if( !multiplicity.isAtMostOnce() ) {
+					// DBG
+					System.out.println( com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(exp.exp) );
 					reader.reportError(
 						new Locator[]{reader.getDeclaredLocationOf(ii)},
 						ERR_BAD_INTERFACE_CLASS_MULTIPLICITY,

@@ -53,6 +53,13 @@ public class Multiplicity {
 		return max.intValue()==0;
 	}
 	
+	/** gets the string representation.
+	 * mainly debug purpose.
+	 */
+	public String toString() {
+		return "("+(max==null?"unbounded":max.toString())+","+min+")";
+	}
+	
 	/** the constant representing the (0,0) multiplicity. */
 	public static Multiplicity zero = new Multiplicity(0,0);
 	

@@ -12,6 +12,7 @@ package com.sun.tahiti.reader.annotator;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
+import com.sun.msv.grammar.util.ExpressionPrinter;
 import com.sun.msv.grammar.trex.ElementPattern;
 import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
 import com.sun.tahiti.grammar.*;
@@ -34,6 +35,8 @@ import java.util.Iterator;
  */
 class FieldItemAnnotation
 {
+	private static java.io.PrintStream debug = null;
+	
 	public static void annotate( AnnotatedGrammar g ) {
 		
 		FieldItemAnnotation ann = new FieldItemAnnotation();
@@ -283,6 +286,7 @@ class FieldItemAnnotation
 		 * All 
 		 */
 		public Expression onChoice( ChoiceExp exp ) {
+			
 			// check whether there is only one meaningul branch, or more than one of them.
 			Expression[] b = exp.getChildren();
 			boolean[] complexBranch = new boolean[b.length];
@@ -291,10 +295,15 @@ class FieldItemAnnotation
 			
 			boolean bBranchWithField = false;
 			final boolean[] bBranchWithPrimitive = new boolean[1];
+
+			if(debug!=null) {
+				debug.println( "Processing Choice: " + ExpressionPrinter.printContentModel(exp) );
+				debug.println("checking each branch");
+			}
 			
 			for( int i=0; i<b.length; i++ ) {
 				final boolean[] hasChildFieldItem = new boolean[1];
-				
+
 				// compute the multiplicity of the all child JavaItems and 
 				// also compute whether this branch has FieldItem in it.
 				Multiplicity m = Multiplicity.calc( b[i],
@@ -308,6 +317,11 @@ class FieldItemAnnotation
 							else						return null;
 						}
 					});
+
+				if(debug!=null) {
+					debug.println( "  Branch: " + ExpressionPrinter.printContentModel(b[i]) );
+					debug.println( "    multiplicity:"+m+"  hasChildFieldItem:"+hasChildFieldItem[0] );
+				}
 				
 				if(m.isZero())
 					continue;		// do nothing for this branch.
@@ -361,12 +375,10 @@ class FieldItemAnnotation
 				*/
 				
 				for( int i=0; i<b.length; i++ ) {
-					if( fieldlessBranch[i] )
-						// do not perform recursion because we've added FieldItem.
-						if( bBranchWithField )
-							b[i] = new FieldItem( fieldName, b[i] );
-					else
 					if( complexBranch[i] ) {
+						if(debug!=null)
+							debug.println("  Insert a wrapper class on: "+ExpressionPrinter.printContentModel(exp));
+						
 						// insert a new class item here.
 						String className = owner.getTypeName()+"Subordinate"+(++iota);
 						
@@ -374,6 +386,11 @@ class FieldItemAnnotation
 						if( bBranchWithField )
 							b[i] = new FieldItem( fieldName, b[i] );
 						
+					} else
+					if( fieldlessBranch[i] ) {
+						// do not perform recursion because we've added an FieldItem.
+						if( bBranchWithField )
+							b[i] = new FieldItem( fieldName, b[i] );
 					}
 				}
 			
@@ -382,20 +399,34 @@ class FieldItemAnnotation
 					r = pool.createChoice( r, b[i] );
 
 				if( !bBranchWithField ) {
-					// there is no branch with FieldItem.
+					// there was no branch with FieldItem.
 					
 					if( !bBranchWithPrimitive[0] ) {
 						// if there is no branch with a PrimitiveItem,
 						// add an interface item automatically.
 						
-						String intfName = owner.getPackageName();
-						if(intfName==null)	intfName="";
-						else				intfName=intfName+".";
+						// compute the interface name
+						String packagePrefix = owner.getPackageName();
+						if(packagePrefix==null)	packagePrefix="";
+						else					packagePrefix+=".";
 						
-						intfName += "I"+NameUtil.capitalizeFirst(fieldName);
-						// TODO: name uniqueness check
+						String intfName = "I"+NameUtil.capitalizeFirst(fieldName);
+						if(grammar.interfaces.containsKey(packagePrefix+intfName))
+							intfName = "I"+owner.getBareName()+NameUtil.capitalizeFirst(fieldName);
+						
+						if(grammar.interfaces.containsKey(packagePrefix+intfName)) {
+							// the last resort
+							int cnt = 2;
+							while( grammar.interfaces.containsKey(packagePrefix+intfName+cnt) )
+								cnt++;
+							intfName = intfName + cnt;
+						}
 					
-						r = grammar.createInterfaceItem( intfName, r );
+						if(debug!=null) {
+							debug.println("  Wrap it by an interface iem: "+packagePrefix+intfName);
+							debug.println("  "+ ExpressionPrinter.printContentModel(r) );
+						}
+						r = grammar.createInterfaceItem( packagePrefix+intfName, r );
 					}
 					
 					// then wrap it by a FieldItem.

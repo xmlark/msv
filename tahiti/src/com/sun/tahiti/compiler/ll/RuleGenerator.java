@@ -24,6 +24,8 @@ import java.util.Iterator;
  */
 public class RuleGenerator
 {
+	private static java.io.PrintStream debug = null;
+	
 	/**
 	 * creates production rules.
 	 * 
@@ -375,6 +377,55 @@ public class RuleGenerator
 			rules = result;
 			// clean-up.
 			removeUnreachableRules();
+		}
+		
+		
+		/*
+			remove rules of the form " X -> X".
+			
+			I'm not exactly sure if this is the right solution to the problem,
+			but these production rules can be produced from the following pattern:
+		
+			<zeroOrMore>	(X)
+				<optional>	(Y)
+					A
+				</optional>
+			</zeroOrMore>
+		
+			raw rules:
+				X -> Y X
+				X -> \epsilon
+		
+				Y -> \epsilon
+				Y -> A
+		
+			By the optimization, Y is absorbed
+				X -> X
+				X -> A X
+				X -> \epsilon
+		*/
+		{
+			Iterator nonTerms = rules.keySet().iterator();
+			while( nonTerms.hasNext() ) {
+				Rule[] rs = (Rule[])rules.get(nonTerms.next());
+				boolean modified = false;
+				
+				for( int i=rs.length-1; i>=0; i-- ) {
+					if(/*rs[i].right.length==1 &&*/ rs[i].right[0]==rs[i].left) {
+						// this rule is the form of "X->X"
+						if(debug!=null)
+							debug.println("removing self-recursive rule");
+						Rule[] buf = new Rule[rs.length-1];
+						System.arraycopy(rs,0,buf,0,i);
+						System.arraycopy(rs,i+1,buf,i,rs.length-(i+1));
+						rs = buf;
+						modified = true;
+					}
+				}
+				
+				if(modified)
+					rules.put(rs[0].left,rs);
+			}
 		}
 		
 		return rules;

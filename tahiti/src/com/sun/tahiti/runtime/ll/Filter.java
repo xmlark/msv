@@ -1,5 +1,7 @@
 package com.sun.tahiti.runtime.ll;
 
+import java.util.Set;
+
 /**
  * Input token filter for parsing interleave content models.
  * 
@@ -20,6 +22,23 @@ public interface Filter {
 		
 		public boolean rejects( Object symbol ) {
 			return symbol==this.symbol;
+		}
+	}
+	
+	/**
+	 * Filter class that rejects tokens by using a set.
+	 */
+	public static final class SetFilter implements Filter {
+		public SetFilter( Object[] _symbols ) {
+			symbols = new java.util.HashSet();
+			for( int i=0; i<_symbols.length; i++ )
+				symbols.add(_symbols[i]);
+		}
+		
+		private final Set symbols;
+		
+		public boolean rejects( Object symbol ) {
+			return symbols.contains(symbol);
 		}
 	}
 	

@@ -11,7 +11,6 @@ package com.sun.tahiti.runtime.ll;
 
 import com.sun.msv.datatype.DatabindableDatatype;
 import com.sun.msv.grammar.NameClassAndExpression;
-//import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.ValidationContext;
 import java.util.Vector;
 import java.util.Set;
@@ -51,6 +50,9 @@ import java.util.Map;
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class LLParser {
+
+	/** logger. */
+	private static java.io.PrintStream debug = System.out;
 	
 	/**
 	 * a special symbol that instructs InputReader to remove the last-added filter.
@@ -240,18 +242,18 @@ public final class LLParser {
 				// so leave this BackTrackRecord
 				_reader = reader.copy();
 
-			if(Debug.debug) {
-				System.out.println("-- backtrack -------");
+			if(debug!=null) {
+				debug.println("-- backtrack -------");
 				StackItem s = stackTop;
 				String str="";
 				while( s!=null ) {
 					str = " "+symbolToStr(s.symbol)+str;
 					s = s.previous;
 				}
-				System.out.println("token stack:"+str);
-				System.out.println("next token : ("+ reader.getCurrentIndex()
+				debug.println("token stack:"+str);
+				debug.println("next token : ("+ reader.getCurrentIndex()
 					+") " + symbolToStr(reader.current().symbol) );
-				System.out.println("--------------------");
+				debug.println("--------------------");
 			}
 			
 			applyRule(r);
@@ -329,6 +331,10 @@ public final class LLParser {
 	 */
 	protected ValidationContext context;
 	
+	
+	// local variable for the unmarshall method.
+	private final Set applicableRules = new java.util.HashSet();
+	
 	/**
 	 * unmarshal object(s).
 	 * 
@@ -377,8 +383,13 @@ LLparser:
 			
 			if( stackTop==null ) {
 				if( reader.attLen!=0 || current!=null ) {
-					if(Debug.debug)
-						System.out.println("stack is empty but there are unconsumed tokens");
+					if(debug!=null) {
+						debug.println("stack is empty but there are unconsumed tokens");
+						if(reader.attLen!=0)
+							debug.println("attribute is left");
+						if(current!=null)
+							debug.println("input token "+symbolToStr(current)+" is left");
+					}
 					// unconsumed attributes are left, or
 					// unconsumed tokens are left.
 					// That means we have to back track.
@@ -389,8 +400,8 @@ LLparser:
 			}
 			
 			if( stackTop.symbol==removeInterleaveSymbol ) {
-				if(Debug.debug)
-					System.out.println("removing an interleave filter");
+				if(debug!=null)
+					debug.println("removing an interleave filter");
 				reader.removeFilter();
 				popStack();
 				continue;
@@ -409,46 +420,58 @@ LLparser:
 				
 				Rule[] rules=null;
 				Object currentSymbol = (current!=null)?current.symbol:null;
-				
+				applicableRules.clear();
+					
 				// usually, it is better to follow the lead of attributes.
 				for(int i=0; i<reader.attLen; i++) {
 					Rule[] more = table.get( stackTop.symbol, reader.attributes[i].symbol );
 					if(more==null)	continue;
 					if(rules==null)	rules=more;
-					else
-						// we can backtrack to this options later.
-						backTrackLog = new BackTrackRecord(more,0);
+					else {
+						for( int j=0; j<more.length; j++ )
+							applicableRules.add(more[j]);
+					}
 				}
 				
 				{
 					Rule[] more = table.get( stackTop.symbol, currentSymbol );
 					if(more!=null) {
 						if(rules==null)	rules=more;
-						else		backTrackLog = new BackTrackRecord(more,0);
+						else {
+							for( int j=0; j<more.length; j++ )
+								applicableRules.add(more[j]);
+						}
 					}
 				}
 				
-				
 				if(rules==null) {
-					if(Debug.debug) {
-						System.out.println("error: top("+
+					if(debug!=null) {
+						debug.println("error: top("+
 							symbolToStr(stackTop.symbol)+") input("+
 							symbolToStr(currentSymbol)+")");
 						String r = "";
 						for( int i=0; i<reader.attLen; i++ )
 							r += " "+symbolToStr(reader.attributes[i].symbol);
-						System.out.println("  available attributes:"+r );
+						debug.println("  available attributes:"+r );
 					}
 					// error; no rule is available. try back track.
 					doBackTrack();
 				} else {
-					if( rules.length>1 )
+					if( rules.length>1 ) {
 						// we can backtrack to this point later.
 						// so store necessary information.
-						backTrackLog = new BackTrackRecord(rules,1);
+						for( int j=1/*0 is the applied rule*/; j<rules.length; j++ )
+							applicableRules.add( rules[j] );
+					}
 					// then try the first rule.
 					applyRule( rules[0] );
 				}
+
+				// if there are other applicable rules,
+				// memorize them so that we can backtrack later if necessary.
+				if( applicableRules.size()!=0 )
+					backTrackLog = new BackTrackRecord(
+						(Rule[])applicableRules.toArray(new Rule[0]),0);
 				
 				continue;
 			}
@@ -460,9 +483,9 @@ LLparser:
 						addAction( new InvokeReceiverAction( stackTop.receiver, reader.attributes[i] ) );
 						
 						// found a match.
-						if(Debug.debug) {
-							System.out.print("consuming an att token: ");
-							System.out.println(symbolToStr(reader.attributes[i].symbol));
+						if(debug!=null) {
+							debug.println("consuming an att token: "
+								+symbolToStr(reader.attributes[i].symbol));
 						}
 						reader.consumeAttribute(i);
 						popStack();
@@ -478,9 +501,8 @@ LLparser:
 				continue;
 			}
 			
-			if(Debug.debug) {
-				System.out.print("consuming a token: ");
-				System.out.println(symbolToStr(stackTop.symbol));
+			if(debug!=null) {
+				debug.println("consuming a token: "+symbolToStr(stackTop.symbol));
 			}
 			// stackTop.symbol is ElementSymbol or DataSymbol
 //			inputTokenReceiver[reader.getCurrentIndex()] = stackTop.receiver;
@@ -550,18 +572,19 @@ LLparser:
 			receiver = ((NonTerminalSymbol)rule.left).createReceiver(stackTop.receiver);
 		}
 		
-		if(Debug.debug) {
-			System.out.print("expanding a rule : ");
-			System.out.print( symbolToStr(stackTop.symbol) );
-			System.out.print(" --> ");
+		if(debug!=null) {
+			StringBuffer buf = new StringBuffer();
+			buf.append("expanding a rule : ");
+			buf.append( symbolToStr(stackTop.symbol) );
+			buf.append(" --> ");
 			for( int i=0; i<rule.right.length; i++ ) {
 				if(i!=0) {
-					if( rule.isInterleave )	System.out.print(" & ");
-					else	System.out.print(" ");
+					if( rule.isInterleave )	buf.append(" & ");
+					else	buf.append(' ');
 				}
-				System.out.print(symbolToStr(rule.right[i]) );
+				buf.append(symbolToStr(rule.right[i]) );
 			}
-			System.out.println();
+			debug.println(buf);
 		}
 				
 		popStack();

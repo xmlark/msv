@@ -144,7 +144,28 @@ public class TRELAXNGReader extends RELAXNGReader implements TahitiGrammarReader
 			roleExp = annGrammar.createClassItem(decideName(state,exp,role),null);
 		} else
 		if( role.equals("field") ) {
-			roleExp = new FieldItem(decideName(state,exp,role));
+			FieldItem fi = new FieldItem(decideName(state,exp,role));
+			roleExp = fi;
+			
+			// read the additional configuration.
+			String collection = tag.getAttribute(TahitiNamespace,"collection");
+			if(collection!=null) {
+				fi.collectionType = fi.collectionType.parse(collection);
+				if(fi.collectionType==null)
+					reportError( ERR_INVALID_COLLECTION_TYPE, collection );
+			}
+			String access = tag.getAttribute(TahitiNamespace,"access");
+			if(access!=null) {
+				fi.accessModifier = fi.accessModifier.parse(access);
+				if(fi.accessModifier==null)
+					reportError( ERR_INVALID_ACCESS_MODIFIER, access );
+			}
+			String method = tag.getAttribute(TahitiNamespace,"method");
+			if(method!=null) {
+				fi.accessor = fi.accessor.parse(method);
+				if(fi.accessModifier==null)
+					reportError( ERR_INVALID_ACCESSOR, method );
+			}
 		} else
 		if( role.equals("interface") ) {
 			roleExp = annGrammar.createInterfaceItem(decideName(state,exp,role),null);
@@ -292,6 +313,5 @@ public class TRELAXNGReader extends RELAXNGReader implements TahitiGrammarReader
 	public static final String ERR_NAME_NEEDED = // arg:0
 		"NameNeeded";	// failed to generate a proper name for this role.
 				// specify t:name attribute.
-	
 	
 }

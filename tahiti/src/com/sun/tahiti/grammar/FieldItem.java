@@ -16,6 +16,9 @@ import java.util.Set;
 /**
  * represents a field relationship between two objects.
  * 
+ * <p>
+ * Also keeps the information about how accessor should be generated.
+ * 
  * @author
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
@@ -28,6 +31,13 @@ public class FieldItem extends JavaItem {
 		this(name);
 		this.exp = exp;
 	}
+	
+	/** specified accessor value. If none is specified by the user, null. */
+	public Accessor accessor;
+	/** specified access modifier value. If none is specified by the user, null. */
+	public AccessModifier accessModifier;
+	/** specified collection type. If none is specified by the user, null. */
+	public CollectionType collectionType;	
 	
 	/**
 	 * multiplicity of this field to its children (field-class/interface).

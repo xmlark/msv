@@ -13,13 +13,14 @@ import com.sun.tahiti.runtime.sm.MarshallableObject;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.verifier.psvi.TypeDetector;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import com.sun.msv.verifier.VerificationErrorHandler;
-import com.sun.msv.verifier.ValidityViolation;
+//import com.sun.msv.verifier.ValidityViolation;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.InputSource;
+import org.xml.sax.ErrorHandler;
 import java.io.IOException;
 
 /**
@@ -37,11 +38,14 @@ public class Unmarshaller extends TypeDetector {
 	
 	public Unmarshaller( BindableGrammar grammar ) {
 		super( new REDocumentDeclaration(grammar),
-			new VerificationErrorHandler(){
+			new ErrorHandler(){
 				// throw an exception if any error happens.
-				public void onWarning( ValidityViolation vv ) {}
-				public void onError( ValidityViolation vv ) throws UnmarshallingException {
-					throw new UnmarshallingException(vv);
+				public void warning( SAXParseException e ) {}
+				public void fatalError( SAXParseException e ) throws UnmarshallingException {
+					throw new UnmarshallingException(e);
+				}
+				public void error( SAXParseException e ) throws UnmarshallingException {
+					throw new UnmarshallingException(e);
 				}
 			});
 		binder = new Binder(grammar);

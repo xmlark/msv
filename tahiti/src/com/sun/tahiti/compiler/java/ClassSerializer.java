@@ -55,24 +55,28 @@ public class ClassSerializer
 	private final Controller controller;
 	
 	/** fully-qualified name of the Gramamr class. */
-	private final String grammarClassName;
+	protected final String grammarClassName;
 	/**
 	 * bare class name of the Grammar class.
 	 * Since the Grammar class is imported in generated classes,
 	 * this bare name can be used to refer to the Grammar class.
 	 */
-	private final String grammarShortClassName;
+	protected final String grammarShortClassName;
 		
 	public void generate() throws IOException {
 		// collect all ClassItems.
 		
 		ClassItem[] types = grammar.getClasses();
-		for( int i=0; i<types.length; i++ )
-			writeClass( types[i], new PrintWriter(controller.getOutput(types[i])) );
+		for( int i=0; i<types.length; i++ ) {
+			out = new PrintWriter(controller.getOutput(types[i]));
+			writeClass( types[i] );
+		}
 		
 		InterfaceItem[] itfs = grammar.getInterfaces();
-		for( int i=0; i<itfs.length; i++ )
-			writeClass( itfs[i], new PrintWriter(controller.getOutput(itfs[i])) );
+		for( int i=0; i<itfs.length; i++ ) {
+			out = new PrintWriter(controller.getOutput(itfs[i]));
+			writeClass( itfs[i] );
+		}
 	}
 	
 	
@@ -98,7 +102,7 @@ public class ClassSerializer
 	 * If the given type obejct is in the current package, then only the local type
 	 * name is returned. Otherwise fully qualified name is returned.
 	 */
-	private String toPrintName( Type type ) {
+	protected String toPrintName( Type type ) {
 		if( packageName==type.getPackageName()
 		|| 	(packageName!=null && packageName.equals( type.getPackageName() ))
 		||  "java.lang".equals( type.getPackageName() ) )
@@ -114,9 +118,15 @@ public class ClassSerializer
 	private String packageName;
 	
 	/**
+	 * output object which receives the produced Java source code.
+	 * Set in the generate method.
+	 */
+	private PrintWriter out;
+	
+	/**
 	 * writes the body of a ClassItem.
 	 */
-	private void writeClass( TypeItem type, final PrintWriter out ) {
+	private void writeClass( TypeItem type ) {
 
 		// one 
 		ClassItem citm = null;
@@ -135,7 +145,10 @@ public class ClassSerializer
 		out.println(format("import {0};",grammarClassName));
 		out.println();
 		
+		
+		produceHeaderComment(type);
 
+		
 	// class name and the base class definitions
 	//-------------------------------------------
 		
@@ -186,7 +199,7 @@ public class ClassSerializer
 		final Map fsMap = new java.util.HashMap();
 		
 		for( int i=0; i<fields.length; i++ ) {
-			fieldSerializers[i] = getFieldSerializer(fields[i]);
+			fieldSerializers[i] = FieldSerializer.get(this,fields[i]);
 			fsMap.put( fields[i].name, fieldSerializers[i] );
 		}
 			
@@ -194,26 +207,12 @@ public class ClassSerializer
 	// generate fields
 	//----------------------------------------
 		for( int i=0; i<fields.length; i++ ) {
-			
-			out.println(Formatter.format(
+			out.println(
 				"\n"+
 				"//\n"+
-				"// <%2>\n"+
-				"//\n"+
-				"	protected <%1> <%2> <%3>;\n"+
-				"	public void set<%0>( <%1> newVal ) {\n"+
-				"		this.<%2> = newVal;\n"+
-				"	}\n"+
-				"	\n"+
-				"	public <%1> get<%0>() {\n"+
-				"		return <%2>;\n"+
-				"	}\n",
-				new Object[]{
-					NameUtil.xmlNameToJavaName( "class", fields[i].name ),
-					fieldSerializers[i].getTypeStr(),
-					fields[i].name,
-					fieldSerializers[i].getInitializer(),
-				}));
+				"// "+fields[i].name+"\n"+
+				"//\n");
+			fieldSerializers[i].writeFieldDef(out);
 		}
 		
 	// generate the setField method
@@ -311,122 +310,41 @@ public class ClassSerializer
 	}
 	
 	/**
-	 * Java objects which has the corresponding built-in type.
+	 * produces a javadoc comment for this type.
 	 */
-	private static final Map boxTypes;
-	static {
-		boxTypes = new java.util.HashMap();
-		boxTypes.put( "java.lang.Integer",	"int" );
-		boxTypes.put( "java.lang.Boolean",	"boolean" );
-		boxTypes.put( "java.lang.Double",	"double" );
-		boxTypes.put( "java.lang.Float",	"float" );
-		boxTypes.put( "java.lang.Char",		"char" );
-		boxTypes.put( "java.lang.Long",		"long" );
-		boxTypes.put( "java.lang.Byte",		"byte" );
-		boxTypes.put( "java.lang.Short",	"short" );
+	protected void produceHeaderComment( TypeItem type ) {
+		out.println("/**");
+		out.println(" * "+type.getBareName()+".");
+		
+		// lists derived classes.
+		boolean hasDerivedType = false;
+		out.println(" * <h2>list of derived types</h2>");
+		hasDerivedType |= listDerivedTypes(type,grammar.iterateClasses());
+		hasDerivedType |= listDerivedTypes(type,grammar.iterateInterfaces());
+		if(!hasDerivedType)
+			out.println(" *  no derived type");
+		out.println(" */");
 	}
 	
-	private FieldSerializer getFieldSerializer( final FieldUse fu ) {
-		if( fu.multiplicity.isUnique() && boxTypes.containsKey(fu.type.getTypeName()) ) {
-			final String boxType = toPrintName(fu.type);
-			final String primitiveType = (String)boxTypes.get(fu.type.getTypeName());
-			// use the unboxed type.
-			return new FieldSerializer(){
-				public String getTypeStr() {
-					return primitiveType;
-				}
-				public String getInitializer() {
-					return "";
-				}
-				public String setField( String objName ) {
-					return format("this.{0}=(({1}){2}).{3}Value();",
-						fu.name, boxType, objName, primitiveType );
-				}
-				public String marshallerInitializer() {
-					return null;
-				}
-				public String hasMoreToken() {
-					return "true";
-				}
-				public String marshall( Element e ) {
-					return format("out.data(new {0}({1}),{2}.{3});",
-						boxType, fu.name,
-						grammarShortClassName, e.getAttribute("dataSymbol") );
-				}
-			};
+	protected boolean listDerivedTypes( TypeItem current, Iterator itr ) {
+		boolean hasDerivedType = false;
+		while( itr.hasNext() ) {
+			TypeItem type = (TypeItem)itr.next();
+			
+			boolean isDerived = false;
+			
+			if(type.getSuperType()==current)
+				isDerived = true;
+			
+			Type[] itfs = type.getInterfaces();
+			for( int i=0; i<itfs.length; i++ )
+				if( itfs[i]==current )
+					isDerived = true;
+			
+			if(isDerived)
+				out.println(" *   {@link "+type.getTypeName()+"}");
+			hasDerivedType |= isDerived;
 		}
-		if( fu.multiplicity.isAtMostOnce() )
-			// use item type itself.
-			return new FieldSerializer(){
-				public String getTypeStr() {
-					return toPrintName(fu.type);
-				}
-				public String getInitializer() {
-					return "=null";
-				}
-				public String setField( String objName ) {
-					return format("this.{0}=({1}){2};",fu.name,getTypeStr(),objName);
-				}
-				public String hasMoreToken() {
-					// TODO: this code becomes wrong if we allow primitive types
-					// as the type.
-					return format("{0}!=null", fu.name );
-				}
-				public String marshall( Element e ) {
-					if( fu.type instanceof ClassItem || fu.type instanceof InterfaceItem )
-						return format("{0}.marshall(out);", fu.name );
-					else
-						return format("out.data({0},{1}.{2});", fu.name,
-							grammarShortClassName, e.getAttribute("dataSymbol") );
-				}
-				public String marshallerInitializer() {
-					return null;
-				}
-			};
-/*
-		if( fu.multiplicity.max!=null ) {
-			if( fu.multiplicity.max.intValue()==fu.multiplicity.min )
-				// use array.
-				return new Container(){
-					public String getTypeStr() {
-						return fu.type.getTypeName()+"[]";
-					}
-					public String getInitializer() {
-						return format("=new {0}[{1}]",
-							fu.type.getTypeName(),
-							new Integer(fu.multiplicity.min));
-					}
-				};
-		}
-*/		
-		// otherwise use Vector
-		return new FieldSerializer(){
-			public String getTypeStr() {
-				return "java.util.Vector /* of " + toPrintName(fu.type) +" */";
-			}
-			public String getInitializer() {
-				return "=new java.util.Vector()";
-			}
-			public String setField( String objName ) {
-				return format("this.{0}.add({1});",fu.name,objName);
-			}
-			public String marshallerInitializer() {
-				return format("int idx_{0}=0; int len_{0}={0}.size();", fu.name );
-			}
-			public String hasMoreToken() {
-				// TODO: this code becomes wrong if we allow primitive types
-				// as the type.
-				return format("idx_{0}!=len_{0}", fu.name );
-			}
-			public String marshall( Element e ) {
-				if( fu.type instanceof ClassItem || fu.type instanceof InterfaceItem )
-					return format("(({0}){1}.get(idx_{1}++)).marshall(out);",
-						toPrintName(fu.type), fu.name );
-				else
-					return format("out.data(({0}){1}.get(idx_{1}++), {2}.{3});",
-						toPrintName(fu.type), fu.name,
-						grammarShortClassName, e.getAttribute("dataSymbol") );
-			}
-		};
+		return hasDerivedType;
 	}
 }

@@ -10,6 +10,7 @@
 package com.sun.tahiti.grammar;
 
 import java.util.Set;
+import java.util.Iterator;
 import com.sun.tahiti.grammar.util.Multiplicity;
 
 /**
@@ -37,6 +38,52 @@ public class FieldUse {
 	 * This field is computed in the 2nd pass.
 	 */
 	public Type type;
+
+	/**
+	 * computes the value of the accessor of this field.
+	 */
+	public Accessor getAccessor() {
+		// use the first one found.
+		// this means that if two different things are specified,
+		// one will be ignored and we cannot tell which one is ignored.
+		Iterator itr = items.iterator();
+		while(itr.hasNext()) {
+			Accessor acc = ((FieldItem)itr.next()).accessor;
+			if( acc!=null )	return acc;
+		}
+		return Accessor.getDefault();
+	}
+	
+	/**
+	 * computes the value of the access modifier of this field.
+	 */
+	public AccessModifier getAccessModifier() {
+		// use the first one found.
+		// this means that if two different things are specified,
+		// one will be ignored and we cannot tell which one is ignored.
+		Iterator itr = items.iterator();
+		while(itr.hasNext()) {
+			AccessModifier acc = ((FieldItem)itr.next()).accessModifier;
+			if( acc!=null )	return acc;
+		}
+		return AccessModifier.getDefault();
+	}
+	
+	/**
+	 * computes the value of the collection type of this field.
+	 */
+	public CollectionType getCollectionType() {
+		// use the first one found.
+		// this means that if two different things are specified,
+		// one will be ignored and we cannot tell which one is ignored.
+		Iterator itr = items.iterator();
+		while(itr.hasNext()) {
+			CollectionType acc = ((FieldItem)itr.next()).collectionType;
+			if( acc!=null )	return acc;
+		}
+		return CollectionType.getDefault();
+	}
+	
 	
 	/**
 	 * set of FieldItems that shares the same name.

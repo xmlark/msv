@@ -26,6 +26,8 @@ import org.xml.sax.SAXException;
  */
 class Binder implements TypedContentHandler {
 	
+	private static java.io.PrintStream debug = System.out;
+	
 	Binder() {
 		this.rootSymbol = null;
 		this.rootTable = null;
@@ -68,6 +70,13 @@ class Binder implements TypedContentHandler {
 	 */
 	private final LLParserTable rootTable;
 	private final Object rootSymbol;
+
+	private void initialize() {
+		depth = 0;
+		bufLen = 0;
+		currentStartPos = 0;
+		currentBodyPos = 0;
+	}
 	
 	
 	/** place a packet in the buffer. */
@@ -79,9 +88,12 @@ class Binder implements TypedContentHandler {
 			buffer = newBuf;
 		}
 		buffer[bufLen++] = p;
+		
+		if(debug!=null)	debug.println("pushPacket()");
 	}
 	
 	public void characterChunk( String literal, Datatype type ) throws SAXException {
+		System.out.println("characterChunk()");
 		assert( type instanceof DatabindableDatatype );
 		pushPacket( new Packet.DataPacket((DatabindableDatatype)type,literal) );
 	}
@@ -94,9 +106,9 @@ class Binder implements TypedContentHandler {
 		Packet[] attributes = new Packet[currentBodyPos-currentStartPos];
 		System.arraycopy(buffer,currentStartPos,attributes,0,attributes.length);
 		
-		if( Debug.debug ) {
-			System.out.println("target symbol - " + LLParser.symbolToStr(targetSymbol) );
-			System.out.println("input packets (body:"+(bufLen-currentBodyPos)+") (atts:"+(currentBodyPos-currentStartPos)+")");
+		if( debug!=null ) {
+			debug.println("target symbol - " + LLParser.symbolToStr(targetSymbol) );
+			debug.println("input packets (body:"+(bufLen-currentBodyPos)+") (atts:"+(currentBodyPos-currentStartPos)+")");
 		}
 		
 		popContext();
@@ -110,9 +122,9 @@ class Binder implements TypedContentHandler {
 			throw new UnmarshallingException(e);
 		}
 		
-		if( Debug.debug )
-			System.out.println("item processed ("+
-				((Packet.ItemPacket)buffer[bufLen-1]).payloadSize
+		if( debug!=null )
+			debug.println("item processed ("+
+				((Packet.ItemPacket)buffer[bufLen-1]).getPayloadSize()
 				+")\n");
 		
 	}
@@ -139,12 +151,18 @@ class Binder implements TypedContentHandler {
 	}
 	
 	public void startElement( String namespaceURI, String localName, String qName ) throws SAXException {
+		if(debug!=null)
+			debug.println("startElement("+namespaceURI+","+localName+")");
 		pushContext();
 	}
 	
 	public void startAttribute( String namespaceURI, String localName, String qName ) throws SAXException {
+		if(debug!=null)
+			debug.println("startAttribute("+namespaceURI+","+localName+")");
 		pushContext();
 		currentBodyPos = bufLen;
+		if(debug!=null)
+			debug.println("startAttribute(): currentBodyPos="+currentBodyPos);
 	}
 	
 	public void endAttribute( String namespaceURI, String localName, String qName, AttributeExp type ) throws SAXException {
@@ -154,6 +172,9 @@ class Binder implements TypedContentHandler {
 
 	public void endAttributePart() throws SAXException {
 		currentBodyPos = bufLen;
+		if(debug!=null) {
+			debug.println("endAttributePart()   (currentBodyPos="+currentBodyPos+")");
+		}
 	}
 	
 	public void endElement( String namespaceURI, String localName, String qName, ElementExp type ) throws SAXException {
@@ -163,6 +184,7 @@ class Binder implements TypedContentHandler {
 	
 
 	public void startDocument( ValidationContext _context ) throws SAXException {
+		initialize();
 		if( rootSymbol!=null )
 			pushContext();
 		this.context = _context;

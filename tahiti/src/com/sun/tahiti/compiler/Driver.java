@@ -86,8 +86,14 @@ public class Driver
 					i++;
 					if(args.length==i) { usage(); return -1; }
 					outDir = new File(args[i]);
-				}
-				else {
+//				} else
+//				if( args[i].equals("-log") ) {
+//					org.apache.log4j.BasicConfigurator.configure(
+//						new org.apache.log4j.FileAppender(
+//							new org.apache.log4j.SimpleLayout(),
+//							System.out )
+//						);
+				} else {
 					System.out.println("unknown option:"+args[i]);
 					usage();
 					return -1;

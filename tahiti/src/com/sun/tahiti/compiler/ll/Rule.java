@@ -88,19 +88,44 @@ public class Rule {
 				
 		// if one is an interleaving rule and the other is a normal rule,
 		// then we can't rewrite rules.
-		if((replace.isInterleave && this.isInterleave)
-		|| (!replace.isInterleave && !this.isInterleave)) {
-			Expression[] seq = new Expression[right.length+replace.right.length-1];
-		
-			System.arraycopy( right, 0, seq, 0, idx );
-			System.arraycopy( replace.right, 0, seq, idx, replace.right.length );
-			System.arraycopy( right, idx+1, seq, idx+replace.right.length, right.length-(idx+1) );
-		
+		if( replace.isInterleave==this.isInterleave ) {
+			
+			int rlen = replace.right.length;
+			if(rlen==1 && replace.right[0]==Expression.epsilon)
+				rlen=0;	// coerce epsilon
+			
+			Expression[] seq = new Expression[right.length+rlen-1];
+			
+			if(seq.length==0)
+				seq = new Expression[]{Expression.epsilon};
+			else {
+				System.arraycopy( right, 0, seq, 0, idx );
+				System.arraycopy( replace.right, 0, seq, idx, rlen );
+				System.arraycopy( right, idx+1, seq, idx+rlen, right.length-(idx+1) );
+			}
+			
 			right = seq;
 			return true;
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * produces the string representation of this rule.
+	 * Mainly for debugging.
+	 */
+	public String toString( Symbolizer symbolizr ) {
+		StringBuffer buf = new StringBuffer();
+		buf.append( symbolizr.getId(left) );
+		buf.append( " --> ");
+		if(isInterleave)
+			buf.append("(interleave) ");
+		for( int i=0; i<right.length; i++ ) {
+			if(i!=0)	buf.append(' ');
+			buf.append(symbolizr.getId(right[i]));
+		}
+		return buf.toString();
 	}
 	
 	/**

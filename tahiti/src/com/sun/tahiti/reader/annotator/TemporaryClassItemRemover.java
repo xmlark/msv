@@ -52,7 +52,7 @@ class TemporaryClassItemRemover {
 		
 		grammar.topLevel.visit(p1);
 		
-		Set cs = new java.util.HashSet(grammar.classes);
+		Set cs = new java.util.HashSet(grammar.classes.values());
 		cs.removeAll( p1.notRemovableClasses );
 		
 		// remove non-temporary classes from the set

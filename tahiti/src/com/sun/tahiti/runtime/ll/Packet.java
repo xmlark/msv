@@ -56,18 +56,15 @@ abstract class Packet {
 	 * should be received by a ObjectReceiver.
 	 */
 	static class ItemPacket extends Packet implements
-			LLParser.FieldReceiver, LLParser.ObjectReceiver {
+			LLParser.FieldReceiver, LLParser.ObjectReceiver, LLParser.CharacterReceiver {
 		
-		private static class Named {
-			public final NamedSymbol name;
-			public final Object obj;
-			Named( NamedSymbol name, Object obj ) {
-				this.name=name; this.obj=obj;
-			}
+		private static abstract class Payload {
+			abstract void dispatch( LLParser.Receiver rcv ) throws Exception;
 		}
 			
-		public Named[] payload = new Named[4];
-		public int payloadSize = 0;
+		private Payload[] payload = new Payload[4];
+		private int payloadSize = 0;
+		public int getPayloadSize() { return payloadSize; }
 			
 		/**
 		 * symbol is usually either LLAttributeExp or LLElementExp.
@@ -77,13 +74,8 @@ abstract class Packet {
 		}
 		
 		public void dispatch( LLParser.Receiver rcv, ValidationContext contest ) throws Exception {
-			for( int i=0; i<payloadSize; i++ ) {
-				Named p = (Named)payload[i];
-				if( p.name==null )
-					((LLParser.ObjectReceiver)rcv).action( p.obj );
-				else
-					((LLParser.FieldReceiver)rcv).action( p.obj, p.name );
-			}
+			for( int i=0; i<payloadSize; i++ )
+				payload[i].dispatch(rcv);
 		}
 		
 		// ignore the empty action.
@@ -92,17 +84,38 @@ abstract class Packet {
 		public void start() throws Exception {}
 		public void end() throws Exception {}
 			
-		public void action( Object obj, NamedSymbol fieldName ) {
+		public void action( final Object obj, final NamedSymbol fieldName ) {
+			addPayload(
+				new Payload(){
+					void dispatch( LLParser.Receiver rcv ) throws Exception {
+						((LLParser.FieldReceiver)rcv).action( obj, fieldName );
+					}
+				});
+		}
+		public void action( final Object obj ) {
+			addPayload(
+				new Payload(){
+					void dispatch( LLParser.Receiver rcv ) throws Exception {
+						((LLParser.ObjectReceiver)rcv).action( obj );
+					}
+				});
+		}
+		public void action( DatabindableDatatype dt, String literal, ValidationContext ctxt ) {
+			;	// ignorable.
+			/*
+				ItemPacket will receive characters only when IgnoreItem is in its parent.
+				So there is no need to store the value. Just ignore it.
+			*/
+		}
+		
+		private void addPayload( Payload p ) {
 			if( payloadSize==payload.length ) {
 				// expand a buffer
-				Named[] old = payload;
-				payload = new Named[old.length*2];
+				Payload[] old = payload;
+				payload = new Payload[old.length*2];
 				System.arraycopy(old,0,payload,0,old.length);
 			}
-			payload[payloadSize++] = new Named(fieldName,obj);
-		}
-		public void action( Object obj ) {
-			action(obj,null);
+			payload[payloadSize++] = p;
 		}
 	}
 }

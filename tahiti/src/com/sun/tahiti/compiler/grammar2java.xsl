@@ -126,16 +126,10 @@ public class ]]></xsl:text>
 		<xsl:for-each select="ignoreSymbol">
 			<xsl:text>	private static final NonTerminalSymbol </xsl:text>
 				<xsl:value-of select="@id"/>
-			<xsl:text> = new NonTerminalSymbol(){</xsl:text>
-<xsl:text><![CDATA[
-		public LLParser.Receiver createReceiver( final LLParser.Receiver parent ) {
-			return LLParser.ignoreReceiver;
-		}
-		public String toString() { return "]]></xsl:text>
+			<xsl:text> = new IgnoreSymbol("</xsl:text>
 			<xsl:value-of select="@id"/>
-			<xsl:text>"; }
-	};
-</xsl:text>
+			<xsl:text>");</xsl:text>
+			<xsl:call-template name="CRLF"/>
 		</xsl:for-each>
 		
 		
@@ -176,7 +170,14 @@ public class ]]></xsl:text>
 	<!--===================-->
 		<xsl:for-each select="rules/rule">
 			<!-- rule itself -->
-			<xsl:text>	private static final Rule </xsl:text>
+			<!--
+				Some version of javac gives an error
+					Grammar.java:176: Blank final variable 'r**' may not have been initialized. It mu
+					st be assigned a value in an initializer, or in every constructor.
+					        private static final Rule r**;
+				To workaround this problem, remove final.
+			-->
+			<xsl:text>	private static /*final*/ Rule </xsl:text>
 			<xsl:value-of select="@id"/>
 			<xsl:text>;</xsl:text>
 			<xsl:call-template name="CRLF"/>
@@ -189,8 +190,9 @@ public class ]]></xsl:text>
 		
 		
 		
+	<!-- the same problem for the 'final' modifier as above -->
 		<xsl:text><![CDATA[
-	public static final BindableGrammar grammar;
+	public static /*final*/ BindableGrammar grammar;
 	
 	static {
 		try {
@@ -251,7 +253,7 @@ public class ]]></xsl:text>
 		<xsl:for-each select="particle|attributeSymbol">
 			<xsl:choose>
 				<xsl:when test="name()='particle'">
-					<xsl:text>			Expression </xsl:text>
+					<xsl:text>			final Expression </xsl:text>
 					<xsl:value-of select="@id"/>
 					<xsl:text> = </xsl:text>
 					<xsl:apply-templates select="*" mode="exp"/>
@@ -358,7 +360,7 @@ public class ]]></xsl:text>
 		</xsl:for-each>
 		<xsl:call-template name="CRLF"/>
 
-	<!-- elements -->
+	<!-- attributes -->
 		<xsl:text>		// set parsing table for attributes </xsl:text>
 		<xsl:call-template name="CRLF"/>
 		<xsl:for-each select="attributeSymbol">
@@ -368,8 +370,6 @@ public class ]]></xsl:text>
 			<xsl:text>.parserTable = new Table_</xsl:text>
 			<xsl:value-of select="@id"/>
 			<xsl:text>();</xsl:text>
-			<xsl:call-template name="CRLF"/>
-			
 			<xsl:call-template name="CRLF"/>
 		</xsl:for-each>
 		<xsl:call-template name="CRLF"/>
@@ -428,7 +428,7 @@ public class ]]></xsl:text>
 			<xsl:text> implements LLParserTable {</xsl:text>
 			<xsl:call-template name="CRLF"/>
 			
-			<xsl:for-each select="action">
+			<xsl:for-each select="action/token">
 				<xsl:if test="count(rule)>1">
 					<xsl:text>		private static final Rule[] a</xsl:text>
 					<xsl:value-of select="@no"/>
@@ -456,27 +456,55 @@ public class ]]></xsl:text>
 			<xsl:call-template name="CRLF"/>
 			
 			<xsl:for-each select="action">
-				<xsl:text>			if( top==</xsl:text>
-				<xsl:value-of select="@stackTop"/>
-				<xsl:text> &amp;&amp; input==</xsl:text>
-				<xsl:value-of select="@token"/>
-				<xsl:text> ) return </xsl:text>
 				<xsl:choose>
-					<xsl:when test="count(rule)>1">
-						<xsl:text>a</xsl:text>
-						<xsl:value-of select="@no"/>
+					<xsl:when test="token">
+						<xsl:text>			if( top==</xsl:text>
+						<xsl:value-of select="@stackTop"/>
+						<xsl:text> ) {</xsl:text>
+						<xsl:call-template name="CRLF"/>
+						<xsl:for-each select="token">
+							<xsl:text>				if( input==</xsl:text>
+							<xsl:value-of select="@id"/>
+							<xsl:text> ) return </xsl:text>
+							<xsl:choose>
+								<xsl:when test="count(rule)>1">
+									<xsl:text>a</xsl:text>
+									<xsl:value-of select="@no"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<!--
+										if an action consists of only one rule, we don't use
+										a separate field
+									-->
+									<xsl:value-of select="rule/@ref"/>
+									<xsl:text>.selfArray</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+							<xsl:text>;</xsl:text>
+							<xsl:call-template name="CRLF"/>
+						</xsl:for-each>
+						<xsl:if test="otherwise">
+							<xsl:text>				return </xsl:text>
+							<xsl:value-of select="otherwise/rule/@ref"/>
+							<xsl:text>.selfArray;</xsl:text>
+							<xsl:call-template name="CRLF"/>
+						</xsl:if>
+						<xsl:text>			}</xsl:text>
+						<xsl:call-template name="CRLF"/>
 					</xsl:when>
+					
+					<!--
+						we can determine the action only from the stack top.
+					-->
 					<xsl:otherwise>
-						<!--
-							if an action consists of only one rule, we don't use
-							a separate field
-						-->
-						<xsl:value-of select="rule/@ref"/>
-						<xsl:text>.selfArray</xsl:text>
+						<xsl:text>			if( top==</xsl:text>
+						<xsl:value-of select="@stackTop"/>
+						<xsl:text> ) return </xsl:text>
+						<xsl:value-of select="otherwise/rule/@ref"/>
+						<xsl:text>.selfArray;</xsl:text>
+						<xsl:call-template name="CRLF"/>
 					</xsl:otherwise>
 				</xsl:choose>
-				<xsl:text>;</xsl:text>
-				<xsl:call-template name="CRLF"/>
 			</xsl:for-each>
 			
 			<xsl:text>			return null;</xsl:text>

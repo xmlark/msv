@@ -28,4 +28,12 @@ public interface TahitiGrammarReader
 	 * an AnnotatedGrammar object.
 	 */
 	AnnotatedGrammar getAnnotatedResult();
+
+	
+	public static final String ERR_INVALID_COLLECTION_TYPE = // arg:1
+		"InvalidCollectionType";
+	public static final String ERR_INVALID_ACCESS_MODIFIER = // arg:1
+		"InvalidAccessModifier";
+	public static final String ERR_INVALID_ACCESSOR = // arg:1
+		"InvalidAccessor";
 }

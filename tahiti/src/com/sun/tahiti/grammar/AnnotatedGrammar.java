@@ -12,8 +12,9 @@ package com.sun.tahiti.grammar;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
-import java.util.Set;
+import java.util.Map;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * An AGM with Tahiti annotation.
@@ -56,30 +57,36 @@ public final class AnnotatedGrammar implements Grammar
 	
 	
 	
-	/** all ClassItems in this grammar. */
-	public final Set classes = new java.util.HashSet();
+	/** all ClassItems in this grammar (from the fully qualified name to ClassItem). */
+	public final Map classes = new java.util.HashMap();
 	public ClassItem[] getClasses() {
-		return (ClassItem[])classes.toArray( new ClassItem[classes.size()] );
+		return (ClassItem[])classes.values().toArray( new ClassItem[classes.size()] );
+	}
+	public Iterator iterateClasses() {
+		return classes.values().iterator();
 	}
 	
-	/** all InterfaceItems in this grammar. */
-	public final Set interfaces = new java.util.HashSet();
+	/** all InterfaceItems in this grammar (from the fully qualified name to InterfaceItem). */
+	public final Map interfaces = new java.util.HashMap();
 	public InterfaceItem[] getInterfaces() {
-		return (InterfaceItem[])interfaces.toArray( new InterfaceItem[interfaces.size()] );
+		return (InterfaceItem[])interfaces.values().toArray( new InterfaceItem[interfaces.size()] );
+	}
+	public Iterator iterateInterfaces() {
+		return interfaces.values().iterator();
 	}
 	
 	
 	/** creates a new ClassItem. */
 	public ClassItem createClassItem( String typeFullName, Expression body ) {
 		ClassItem o = new ClassItem(typeFullName,body);
-		classes.add(o);
+		classes.put(typeFullName,o);
 		return o;
 	}
 	
 	/** creates a new InterfaceItem. */
 	public InterfaceItem createInterfaceItem( String typeFullName, Expression body ) {
 		InterfaceItem o = new InterfaceItem(typeFullName,body);
-		interfaces.add(o);
+		interfaces.put(typeFullName,o);
 		return o;
 	}
 	
@@ -94,9 +101,9 @@ public final class AnnotatedGrammar implements Grammar
 			System.out.println(c.getTypeName());
 		}
 		assert(c.isTemporary);
-		assert(classes.contains(c));
+		assert(classes.containsValue(c));
 		
-		classes.remove(c);
+		classes.remove(c.name);
 	}
 	
 	public void removeClassItems( Collection col ) {

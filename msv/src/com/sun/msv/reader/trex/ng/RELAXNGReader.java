@@ -32,6 +32,7 @@ import com.sun.msv.reader.trex.TREXBaseReader;
 import com.sun.msv.reader.trex.AnyStringState;
 import com.sun.msv.reader.trex.RootState;
 import com.sun.msv.reader.trex.RefState;
+import com.sun.msv.reader.trex.NameClassChoiceState;
 import com.sun.msv.reader.trex.DivInGrammarState;
 import com.sun.msv.reader.trex.IncludePatternState;
 import com.sun.msv.reader.datatype.DataTypeVocabulary;
@@ -176,6 +177,10 @@ public class RELAXNGReader extends TREXBaseReader {
 	 * parsing behavior can be customized by implementing custom StateFactory.
 	 */
 	public static class StateFactory extends TREXBaseReader.StateFactory {
+		public State nsAnyName	( State parent, StartTagInfo tag ) { return new NGNameState.AnyNameState(); }
+		public State nsNsName	( State parent, StartTagInfo tag ) { return new NGNameState.NsNameState(); }
+		public State nsExcept	( State parent, StartTagInfo tag ) { return new NameClassChoiceState(); }
+		
 		public State text			( State parent, StartTagInfo tag ) { return new AnyStringState(); }
 		public State data			( State parent, StartTagInfo tag ) { return new DataState(); }
 		public State dataParam		( State parent, StartTagInfo tag ) { return new DataParamState(); }

@@ -15,6 +15,8 @@ import com.sun.tranquilo.grammar.Expression;
  * interface that must be implemented by the parent state of ExpressionState.
  * 
  * ExpressionState notifies its parent by using this interface.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface ExpressionOwner
 {

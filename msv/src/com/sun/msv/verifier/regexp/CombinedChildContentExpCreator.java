@@ -29,7 +29,7 @@ import com.sun.tranquilo.util.StringPair;
  * 
  * <p>
  * For example, when the current expression is
- * <PRE>    <!-- javadoc escape -->
+ * <PRE><XMP>    <!-- javadoc escape -->
  *   <choice>
  *     <concur>
  *       <element> ..(A).. </element>
@@ -43,11 +43,11 @@ import com.sun.tranquilo.util.StringPair;
  *       ....
  *     </group>
  *   </choice>
- * </PRE>
+ * </XMP></PRE>
  * 
  * then the combined child expression is
  * 
- * <PRE>
+ * <PRE><XMP>
  *   <choice>
  *     <concur>
  *       ..(A').. 
@@ -55,18 +55,20 @@ import com.sun.tranquilo.util.StringPair;
  *     </concur>
  *     ..(C').. 
  *   </choice>
- * </PRE>
+ * </XMP></PRE>
  * 
  * and elements of concern and its attribute-pruned content models are
  * 
+ * <XMP>
  * <element> ..(A).. </element>  ->   ..(A')..
  * <element> ..(B).. </element>  ->   ..(B')..
  * <element> ..(C).. </element>  ->   ..(C')..
+ * </XMP>
  * 
  * (A'),(B'), and (C') are attribute-pruned content models of (A),(B), and (C)
  * respectively.
  * 
- * Note that combined child pattern contains only <choice> and <concur> as 
+ * Note that combined child pattern contains only &lt;choice&gt; and &lt;concur&gt; as 
  * its grue (of course, except ..(A').. , ..(B').. , and ..(C').. ).
  * 
  * 
@@ -90,6 +92,8 @@ import com.sun.tranquilo.util.StringPair;
  * (A|B)*,C?,(A|B)*
  * 
  * when A is EoC, SequenceExp of (A|B)* and C?,(A|B)* has EoC on both branch.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class CombinedChildContentExpCreator implements ExpressionVisitor
 {

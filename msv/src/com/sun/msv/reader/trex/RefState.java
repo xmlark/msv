@@ -14,6 +14,11 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.ReferenceExp;
 import com.sun.tranquilo.grammar.trex.TREXGrammar;
 														   
+/**
+ * parses &lt;ref&gt; pattern.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class RefState extends ExpressionWithoutChildState
 {
 	protected Expression makeExpression()

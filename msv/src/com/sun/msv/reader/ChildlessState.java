@@ -12,7 +12,9 @@ package com.sun.tranquilo.reader;
 import com.sun.tranquilo.util.StartTagInfo;
 
 /**
- * state that has no children
+ * state that has no children.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ChildlessState extends SimpleState
 {

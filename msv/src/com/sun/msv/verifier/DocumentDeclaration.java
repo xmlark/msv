@@ -14,6 +14,8 @@ package com.sun.tranquilo.verifier;
  * 
  * Usually, this is what people call schema.
  * Conceptually, this object is a collection of ElementDeclaration.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface DocumentDeclaration
 {

@@ -17,6 +17,11 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.reader.*;
 import com.sun.tranquilo.reader.datatype.TypeOwner;
 
+/**
+ * parses &lt;div&gt; element under &lt;module&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class DivInModuleState extends SimpleState implements ExpressionOwner, TypeOwner
 {
 	/** gets reader in type-safe fashion */

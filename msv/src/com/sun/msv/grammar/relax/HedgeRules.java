@@ -16,6 +16,8 @@ import com.sun.tranquilo.grammar.*;
  * 
  * ReferenceExp.exp holds a choice of the content models of all hedgeRules that
  * share the same label name.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class HedgeRules extends ReferenceExp implements Exportable
 {

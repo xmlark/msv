@@ -17,6 +17,11 @@ import com.sun.tranquilo.datatype.DataType;
 import com.sun.tranquilo.datatype.DataTypeFactory;
 import com.sun.tranquilo.util.StartTagInfo;
 
+/**
+ * state that parses &lt;list&gt; element of XSD.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class ListState extends TypeWithOneChildState
 {
 	protected final String newTypeName;

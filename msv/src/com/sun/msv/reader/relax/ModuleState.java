@@ -25,6 +25,8 @@ import com.sun.tranquilo.grammar.relax.RELAXModule;
  * <p>
  * this class switchs RELAXReader.currentModule so that successive declarations
  * are placed in the proper module.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ModuleState extends ModuleMergeState
 {

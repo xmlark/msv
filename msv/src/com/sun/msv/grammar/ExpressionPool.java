@@ -33,6 +33,8 @@ import com.sun.tranquilo.datatype.DataType;
  * called 23000 times. (the third is createOptional method and only 1560 times.)
  * And they took more than 10% of validation time, which is the worst
  * time-consuming method.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ExpressionPool
 {

@@ -17,7 +17,12 @@ import com.sun.tranquilo.grammar.SimpleNameClass;
 import com.sun.tranquilo.grammar.relax.ElementRule;
 import com.sun.tranquilo.grammar.relax.TagClause;
 import com.sun.tranquilo.reader.ExpressionWithoutChildState;
-	
+
+/**
+ * parses &lt;element&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class InlineElementState extends ExpressionWithoutChildState
 {
 	protected TypeIncubator incubator;

@@ -35,6 +35,8 @@ import com.sun.tranquilo.datatype.DataType;
  * 
  * GrammarReader class shouldn't be created directly by the client applications.
  * Instead, they should use parse static method of this class.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class GrammarReader
 	implements IDContextProvider

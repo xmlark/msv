@@ -17,6 +17,8 @@ import org.xml.sax.Attributes;
  * Feeds AttributeToken to the expression and obtains the residual (content model).
  * 
  * AttributeTokens are fed in order-less fashion.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class AttributeFeeder implements ExpressionVisitorExpression
 {

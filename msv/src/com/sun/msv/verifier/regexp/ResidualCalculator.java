@@ -11,6 +11,14 @@ package com.sun.tranquilo.verifier.regexp;
 
 import com.sun.tranquilo.grammar.*;
 
+/**
+ * computes regular expression derivative.
+ * 
+ * this class receives a regexp and computes the right language after eating
+ * given token.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class ResidualCalculator implements ExpressionVisitorExpression
 {
 	protected Token token;

@@ -11,6 +11,11 @@ package com.sun.tranquilo.grammar.trex;
 
 import com.sun.tranquilo.grammar.*;
 
+/**
+ * &lt;element&gt; pattern of TREX.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class ElementPattern extends ElementExp
 {
 	public final NameClass nameClass;

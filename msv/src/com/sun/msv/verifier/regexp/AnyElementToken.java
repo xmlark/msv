@@ -26,6 +26,8 @@ import com.sun.tranquilo.grammar.ElementExp;
  * exp/ei = residual(exp,ei)
  * '|' represents choice
  * </PRE>
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 final class AnyElementToken extends ElementToken
 {

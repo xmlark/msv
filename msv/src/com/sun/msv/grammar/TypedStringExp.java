@@ -14,6 +14,8 @@ import com.sun.tranquilo.datatype.ValidationContextProvider;
 
 /**
  * Expression that matchs characters of the particular {@link DataType}.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TypedStringExp extends Expression
 {

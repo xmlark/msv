@@ -14,6 +14,8 @@ import com.sun.tranquilo.reader.SimpleState;
 
 /**
  * Base implementation for NameClass primitives
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class NameClassState extends SimpleState
 {

@@ -13,6 +13,8 @@ import com.sun.tranquilo.grammar.*;
 
 /**
  * ElementRule declaration of RELAX.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ElementRule extends ElementExp
 {

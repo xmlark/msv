@@ -13,7 +13,9 @@ import com.sun.tranquilo.grammar.ExpressionVisitorExpression;
 import com.sun.tranquilo.grammar.Expression;
 
 /**
- * TREX version of ExpressionVisitorExpression
+ * TREX version of {@link ExpressionVisitorExpression}.
+ *
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface TREXPatternVisitorExpression extends ExpressionVisitorExpression
 {

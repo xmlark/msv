@@ -12,6 +12,11 @@ package com.sun.tranquilo.reader.trex;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.AttributeExp;
 
+/**
+ * parses &lt;attribute&gt; pattern.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class AttributeState extends NameClassAndExpressionState
 {
 	protected boolean firstChild=true;

@@ -30,6 +30,11 @@ import com.sun.tranquilo.reader.datatype.xsd.FacetState;
 import com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary;
 import com.sun.tranquilo.util.StartTagInfo;
 
+/**
+ * reads RELAX grammar/module by SAX2 and constructs abstract grammar model.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class RELAXReader extends GrammarReader
 {
 	/** loads RELAX grammar */

@@ -13,6 +13,8 @@ package com.sun.tranquilo.grammar;
  * clones an expression.
  * 
  * This class is used as a default implementation for relevant task.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ExpressionCloner implements ExpressionVisitorExpression
 {

@@ -10,7 +10,9 @@
 package com.sun.tranquilo.grammar;
 
 /**
- * ExpressionVisitor that returns Expression object
+ * ExpressionVisitor that returns Expression object.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface ExpressionVisitorExpression
 {

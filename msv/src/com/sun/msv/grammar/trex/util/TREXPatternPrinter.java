@@ -16,6 +16,8 @@ import com.sun.tranquilo.grammar.util.ExpressionPrinter;
 
 /**
  * creates a string representation of TREX pattern.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class TREXPatternPrinter extends ExpressionPrinter implements TREXPatternVisitor
 {

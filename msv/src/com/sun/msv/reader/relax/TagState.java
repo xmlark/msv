@@ -14,6 +14,11 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.relax.TagClause;
 import com.sun.tranquilo.grammar.SimpleNameClass;
 
+/**
+ * parses &lt;tag&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class TagState extends ClauseState
 {
 	protected void endSelf( )

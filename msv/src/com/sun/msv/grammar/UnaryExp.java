@@ -11,6 +11,8 @@ package com.sun.tranquilo.grammar;
 
 /**
  * Base implementation for those expression who has one child expresison.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class UnaryExp extends Expression
 {

@@ -20,6 +20,8 @@ import com.sun.tranquilo.util.DataTypeRef;
  * represents a pseudo-automaton acceptor.
  * 
  * this interface is used to verify content models.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface Acceptor
 {

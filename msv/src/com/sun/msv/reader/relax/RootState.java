@@ -25,6 +25,8 @@ import org.xml.sax.Locator;
  * 
  * this state is used only one when starting parsing a RELAX schema.
  * For included module/grammar, different states are used.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 class RootState extends SimpleState implements ExpressionOwner
 {

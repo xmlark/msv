@@ -15,6 +15,8 @@ import com.sun.tranquilo.grammar.trex.typed.TypedElementPattern;
 
 /**
  * reads &lt;element&gt; element with 'label' annotation.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TypedElementState extends ElementState
 {

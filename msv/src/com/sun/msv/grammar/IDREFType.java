@@ -14,6 +14,8 @@ import com.sun.tranquilo.datatype.ValidationContextProvider;
 
 /**
  * very limited 'IDREF' type of XML Schema Part 2.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class IDREFType extends NmtokenType
 {

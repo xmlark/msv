@@ -19,6 +19,8 @@ import com.sun.tranquilo.util.StartTagInfo;
  * Base implementation for HedgeRuleState and TopLevelState.
  * 
  * expects one and only one expression as its child.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class HedgeRuleBaseState extends SimpleState implements ExpressionOwner
 {

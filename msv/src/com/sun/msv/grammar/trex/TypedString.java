@@ -13,6 +13,8 @@ import com.sun.tranquilo.datatype.*;
 
 /**
  * Datatype created by &lt;string&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TypedString implements DataType
 {

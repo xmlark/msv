@@ -22,6 +22,8 @@ import org.xml.sax.Locator;
  * 
  * To create an expression that implements the semantics of anyOtherElement,
  * the entire grammar must be parsed first.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class AnyOtherElementState extends ExpressionWithoutChildState
 {

@@ -18,6 +18,8 @@ import org.xml.sax.Locator;
 
 /**
  * makes sure that no two AttributeExps have the same attribute name as their target.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DblAttrConstraintChecker implements RELAXExpressionVisitorVoid
 {

@@ -18,6 +18,11 @@ import com.sun.tranquilo.datatype.DataType;
 import com.sun.tranquilo.datatype.TypeIncubator;
 import com.sun.tranquilo.util.StartTagInfo;
 
+/**
+ * state that parses &lt;restriction&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class RestrictionState extends TypeWithOneChildState implements FacetStateParent
 {
 	protected final String newTypeName;

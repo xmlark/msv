@@ -11,6 +11,11 @@ package com.sun.tranquilo.reader.datatype;
 
 import java.util.Map;
 
+/**
+ * a map from namespace URI to DataTypeVocabulary
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class DataTypeVocabularyMap
 {
 	/** map from namespace URI to DataTypeVocabulary */

@@ -15,6 +15,8 @@ import com.sun.tranquilo.grammar.*;
  * Creates an expression whose AttributeExp is completely replaced by nullSet.
  * 
  * This step is used to remove all unconsumed AttributeExp from the expression.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class AttributePruner extends ExpressionCloner
 {

@@ -14,6 +14,8 @@ import com.sun.tranquilo.datatype.DataType;
 /**
  * State can implement this method to be notified by DataType vocabulary
  * about the result of parsing.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface TypeOwner
 {

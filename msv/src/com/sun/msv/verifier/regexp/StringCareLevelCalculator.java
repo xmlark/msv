@@ -18,6 +18,8 @@ import com.sun.tranquilo.verifier.Acceptor;
  * This class is thread-safe: multiple threads can simultaneously
  * access the same instance. Note that there is no guarantee that the
  * derived class is thread-safe.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class StringCareLevelCalculator implements ExpressionVisitorBoolean
 {

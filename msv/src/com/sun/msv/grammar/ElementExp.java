@@ -17,6 +17,8 @@ package com.sun.tranquilo.grammar;
  * 
  * Each grammar must/can provide only one concrete implementation.
  * Therefore, they cannot override visit method.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class ElementExp extends Expression
 {

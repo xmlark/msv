@@ -11,6 +11,8 @@ package com.sun.tranquilo.grammar;
 
 /**
  * Base implementation for those expression which has two child expressions.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class BinaryExp extends Expression
 {

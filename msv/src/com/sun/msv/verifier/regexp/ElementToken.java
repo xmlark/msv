@@ -11,6 +11,11 @@ package com.sun.tranquilo.verifier.regexp;
 
 import com.sun.tranquilo.grammar.ElementExp;
 
+/**
+ * a token that represents an XML element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class ElementToken extends Token
 {
 	final ElementExp[] acceptedPatterns;

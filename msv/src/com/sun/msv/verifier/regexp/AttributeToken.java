@@ -12,6 +12,11 @@ package com.sun.tranquilo.verifier.regexp;
 import com.sun.tranquilo.grammar.*;
 import com.sun.tranquilo.datatype.ValidationContextProvider;
 
+/**
+ * represents attribute and its value.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class AttributeToken extends Token
 {
 	protected final String				namespaceURI;

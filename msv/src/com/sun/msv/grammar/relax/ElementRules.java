@@ -15,6 +15,8 @@ import com.sun.tranquilo.grammar.*;
  * Set of ElementRule objects that share the label name.
  * 
  * ReferenceExp.exp contains choice of ElementRule objects.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ElementRules extends ReferenceExp implements Exportable
 {

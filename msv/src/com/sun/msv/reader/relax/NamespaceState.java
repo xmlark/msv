@@ -15,7 +15,9 @@ import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.grammar.relax.RELAXModule;
 
 /**
- * namespace element of RELAX Namespace.
+ * parses &lt;namespace&gt; element of RELAX Namespace.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NamespaceState extends SimpleState
 {

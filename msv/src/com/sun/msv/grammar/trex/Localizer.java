@@ -9,6 +9,11 @@
  */
 package com.sun.tranquilo.grammar.trex;
 
+/**
+ * formats messages by using a resource file.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class Localizer
 {
 	public static String localize( String prop, Object[] args )

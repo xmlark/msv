@@ -14,6 +14,8 @@ package com.sun.tranquilo.grammar;
  * 
  * Attribute declaration consists of a NameClass that verifies attribute name
  * and an Expression that verifies attribute value.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class AttributeExp extends Expression
 {

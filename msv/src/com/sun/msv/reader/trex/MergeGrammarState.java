@@ -20,6 +20,8 @@ import com.sun.tranquilo.reader.*;
  * which is a derived class of this class, is a PatternState.
  * 
  * Therefore this class has to extend PatternState.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class MergeGrammarState extends ExpressionState implements ExpressionOwner
 {

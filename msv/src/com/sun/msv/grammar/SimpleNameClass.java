@@ -11,6 +11,8 @@ package com.sun.tranquilo.grammar;
 
 /**
  * a NameClass that accepts only one fixed tag name.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class SimpleNameClass implements NameClass
 {

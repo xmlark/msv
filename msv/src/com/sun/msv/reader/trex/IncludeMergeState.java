@@ -13,6 +13,8 @@ import com.sun.tranquilo.reader.ChildlessState;
 
 /**
  * &lt;include&gt; element as an immediate child of &lt;grammar&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class IncludeMergeState extends ChildlessState
 {

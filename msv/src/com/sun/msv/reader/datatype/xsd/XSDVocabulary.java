@@ -20,6 +20,11 @@ import com.sun.tranquilo.util.StartTagInfo;
 import org.xml.sax.ContentHandler;
 import java.util.Map;
 
+/**
+ * XSD implementation of {@link DataTypeVocabulary}.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class XSDVocabulary implements DataTypeVocabulary
 {
 	/** namespace URI of XML Schema */

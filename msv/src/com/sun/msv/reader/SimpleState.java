@@ -48,6 +48,8 @@ import com.sun.tranquilo.util.StartTagInfo;
  * 
  * In other words, this state is only active for one hierarchy of XML elements
  * and derived classes are responsible for three abstract methods.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class SimpleState extends State
 {

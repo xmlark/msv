@@ -21,6 +21,8 @@ import java.util.StringTokenizer;
 
 /**
  * State that parses &lt;union&gt; element and its children.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class UnionState extends TypeState implements TypeOwner
 {

@@ -13,6 +13,11 @@ import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.reader.State;
 
+/**
+ * parses root state of a merged grammar.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class RootMergedGrammarState extends RootState
 {
 	protected State createChildState( StartTagInfo tag )

@@ -12,7 +12,9 @@ package com.sun.tranquilo.reader.relax;
 import com.sun.tranquilo.reader.ChildlessState;
 
 /**
- * &lt;include&gt; element of RELAX Core.
+ * parses &lt;include&gt; element of RELAX Core.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class IncludeModuleState extends ChildlessState
 {

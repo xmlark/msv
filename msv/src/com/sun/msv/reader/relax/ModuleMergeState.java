@@ -19,6 +19,8 @@ import com.sun.tranquilo.reader.*;
  * 
  * This class checks consistency between targetNamespace attribute
  * and the namespace specified by its caller (grammar/module).
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ModuleMergeState extends DivInModuleState
 {

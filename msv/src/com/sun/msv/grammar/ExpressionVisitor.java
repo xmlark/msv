@@ -34,6 +34,8 @@ package com.sun.tranquilo.grammar;
  * <p>
  * onRef method is called for all subclass of ReferenceExp. So you can safely use this
  * interface to visit AGMs from RELAX grammar.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface ExpressionVisitor
 {

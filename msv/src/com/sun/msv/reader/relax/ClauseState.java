@@ -13,6 +13,11 @@ import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.reader.*;
 
+/**
+ * common part of &lt;tag&gt; and &lt;attPool&gt;.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 abstract class ClauseState extends SimpleState implements ExpressionOwner
 {
 	protected State createChildState( StartTagInfo tag )

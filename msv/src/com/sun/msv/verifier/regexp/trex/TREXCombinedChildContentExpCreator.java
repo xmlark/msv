@@ -14,6 +14,11 @@ import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.verifier.regexp.CombinedChildContentExpCreator;
 import com.sun.tranquilo.verifier.regexp.StartTagInfoEx;
 
+/**
+ * {@link CombinedChildContentExpCreator} which can handle TREX extension primitives.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class TREXCombinedChildContentExpCreator
 	extends CombinedChildContentExpCreator
 	implements TREXPatternVisitor

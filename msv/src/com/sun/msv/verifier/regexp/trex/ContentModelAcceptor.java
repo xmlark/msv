@@ -24,6 +24,8 @@ import java.util.Iterator;
 
 /**
  * base implementation for SimpleAcceptor and ComplexAcceptor
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 class ContentModelAcceptor extends ExpressionAcceptor
 {

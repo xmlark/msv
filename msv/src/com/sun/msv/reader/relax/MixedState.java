@@ -12,6 +12,11 @@ package com.sun.tranquilo.reader.relax;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.reader.ExpressionWithChildState;
 
+/**
+ * parses &lt;mixed&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class MixedState extends ExpressionWithChildState
 {
 	protected Expression castExpression( Expression current, Expression child )

@@ -19,6 +19,11 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.SAXParserFactory;
 
+/**
+ * VerifierFactory implementation of TREX.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class TREXFactoryImpl extends FactoryImpl
 {
 	public TREXFactoryImpl( SAXParserFactory factory ) { super(factory); }

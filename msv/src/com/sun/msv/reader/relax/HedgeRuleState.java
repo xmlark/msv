@@ -13,9 +13,11 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.relax.HedgeRules;
 
 /**
- * &lt;hedgeRule&gt; element
+ * parses &lt;hedgeRule&gt; element
  * 
  * this class is used as the base class of TopLevelState
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class HedgeRuleState extends HedgeRuleBaseState
 {

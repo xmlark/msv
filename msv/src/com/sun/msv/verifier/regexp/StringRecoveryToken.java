@@ -16,6 +16,8 @@ import java.util.Set;
  * special StringToken that acts as a wild card.
  * 
  * This object is used for error recovery.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 class StringRecoveryToken extends StringToken
 {

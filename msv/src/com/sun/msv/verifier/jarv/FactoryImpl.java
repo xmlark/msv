@@ -16,6 +16,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 /**
  * base implementation of RELAXFactoryImpl and TREXFactoryImpl
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class FactoryImpl extends VerifierFactory
 {

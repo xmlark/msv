@@ -24,6 +24,8 @@ import com.sun.tranquilo.util.StartTagInfo;
 /**
  * Base implementation for those states which produce DataType object
  * as its parsing result.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class TypeState extends SimpleState
 {

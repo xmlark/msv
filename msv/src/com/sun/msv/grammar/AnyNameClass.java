@@ -10,7 +10,9 @@
 package com.sun.tranquilo.grammar;
 
 /**
- * a NameClass that matches any name
+ * a NameClass that matches any name.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class AnyNameClass implements NameClass
 {

@@ -20,6 +20,8 @@ import com.sun.tranquilo.util.StartTagInfo;
 
 /**
  * Base implementation for ElementRuleWithHedgeState and ElementRuleWithTypeState.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class ElementRuleBaseState extends SimpleState
 {

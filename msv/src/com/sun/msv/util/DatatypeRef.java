@@ -11,6 +11,8 @@ package com.sun.tranquilo.util;
 
 /**
  * reference to {@link com.sun.tranquilo.datatype.DataType}
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DataTypeRef
 {

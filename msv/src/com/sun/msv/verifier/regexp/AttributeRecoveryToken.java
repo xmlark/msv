@@ -13,6 +13,12 @@ import com.sun.tranquilo.grammar.AttributeExp;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.ExpressionPool;
 
+/**
+ * special AttributeToken that memorizes {@link AttributeExp} that fails to
+ * validate itself.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 final class AttributeRecoveryToken extends AttributeToken
 {
 	AttributeRecoveryToken( ExpressionPool pool,

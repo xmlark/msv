@@ -21,6 +21,8 @@ import java.util.Map;
  * 
  * Grammar object can be shared among multiple threads, but this object
  * cannot be shared.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class REDocumentDeclaration implements DocumentDeclaration
 {

@@ -10,7 +10,9 @@
 package com.sun.tranquilo.grammar;
 
 /**
- * '+' operator of the regular expression.
+ * A+.
+ *
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class OneOrMoreExp extends UnaryExp
 {

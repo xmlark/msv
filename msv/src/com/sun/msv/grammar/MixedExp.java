@@ -23,7 +23,9 @@ package com.sun.tranquilo.grammar;
  * However, by introducing "mixed" as a primitive, 
  * RELAX module can be expressed without using interleave.
  * 
- * And TREX validation will also (slightly?) become faster.
+ * Also, mixed makes validation faster.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class MixedExp extends UnaryExp
 {

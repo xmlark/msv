@@ -13,6 +13,11 @@ import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.reader.State;
 
+/**
+ * parses the root state of a grammar included as a pattern.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class RootIncludedPatternState extends RootState
 {
 	/**

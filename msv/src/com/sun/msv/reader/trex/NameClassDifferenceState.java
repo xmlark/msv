@@ -14,6 +14,11 @@ import com.sun.tranquilo.grammar.trex.DifferenceNameClass;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * parses &lt;difference&gt; name class.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class NameClassDifferenceState extends NameClassWithChildState
 {
 	protected NameClass castNameClass( NameClass halfCasted, NameClass newChild )

@@ -13,6 +13,8 @@ package com.sun.tranquilo.grammar;
  * validator of (namespaceURI,localPart) pair.
  * 
  * This is equivalent to TREX's "name class".
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface NameClass
 {

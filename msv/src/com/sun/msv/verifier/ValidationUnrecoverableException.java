@@ -13,6 +13,8 @@ import org.xml.sax.SAXException;
 
 /**
  * Exception that signals error was fatal and recovery was not possible.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ValidationUnrecoverableException extends SAXException
 {

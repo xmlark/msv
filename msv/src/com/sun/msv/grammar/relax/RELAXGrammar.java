@@ -15,6 +15,8 @@ import com.sun.tranquilo.grammar.ExpressionPool;
 
 /**
  * "Grammar" of RELAX Namespace.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RELAXGrammar
 {

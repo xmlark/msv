@@ -25,6 +25,8 @@ import java.util.Set;
  * </XMP>
  * 
  * Also, TREX prohibits sequence of typed strings and elements.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 class TREXSequencedStringChecker implements TREXPatternVisitor
 {

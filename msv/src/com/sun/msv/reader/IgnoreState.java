@@ -14,6 +14,8 @@ import org.xml.sax.Attributes;
 
 /**
  * state that ignores the entire subtree.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class IgnoreState extends State
 {

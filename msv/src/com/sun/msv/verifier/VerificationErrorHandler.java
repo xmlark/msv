@@ -13,6 +13,8 @@ import org.xml.sax.SAXException;
 
 /**
  * receives errors and warning of verification.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface VerificationErrorHandler
 {

@@ -14,7 +14,15 @@ import com.sun.tranquilo.grammar.ReferenceExp;
 import com.sun.tranquilo.grammar.relax.RELAXModule;
 import com.sun.tranquilo.reader.ExpressionWithoutChildState;
 import com.sun.tranquilo.reader.GrammarReader;
-														   
+
+/**
+ * base implementation of HedgeRefState and ElementRefState.
+ * 
+ * this class resolves namespace attribute and label attribute into the actual
+ * ReferenceExp object.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 abstract class LabelRefState extends ExpressionWithoutChildState
 {
 	protected Expression makeExpression()

@@ -20,6 +20,7 @@ import com.sun.tranquilo.grammar.AnyNameClass;
  * 
  * This class collects one name class and patterns
  * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class NameClassAndExpressionState extends SequenceState implements NameClassOwner
 {

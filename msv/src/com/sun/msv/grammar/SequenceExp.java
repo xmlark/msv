@@ -10,7 +10,9 @@
 package com.sun.tranquilo.grammar;
 
 /**
- * concatenation operator of the regular expression.
+ * A,B. concatenation operator of the regular expression.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class SequenceExp extends BinaryExp
 {

@@ -14,6 +14,11 @@ import com.sun.tranquilo.grammar.relax.AttPoolClause;
 import com.sun.tranquilo.grammar.relax.RELAXModule;
 import com.sun.tranquilo.reader.ExpressionWithoutChildState;
 
+/**
+ * parses &lt;ref role="..." /&gt;.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class AttPoolRefState extends ExpressionWithoutChildState
 {
 	protected Expression makeExpression()

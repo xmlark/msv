@@ -12,6 +12,11 @@ package com.sun.tranquilo.reader.trex;
 import com.sun.tranquilo.grammar.NameClass;
 import com.sun.tranquilo.grammar.NotNameClass;
 
+/**
+ * parses &lt;not&gt; name class.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class NameClassNotState extends NameClassWithChildState
 {
 	protected NameClass castNameClass( NameClass halfCastedNameClass, NameClass child )

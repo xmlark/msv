@@ -27,6 +27,11 @@ import com.sun.tranquilo.reader.*;
 import com.sun.tranquilo.reader.datatype.DataTypeVocabulary;
 import com.sun.tranquilo.util.StartTagInfo;
 
+/**
+ * reads TREX grammar from SAX2 and constructs abstract grammar model.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class TREXGrammarReader extends GrammarReader
 {
 	/** loads TREX pattern */

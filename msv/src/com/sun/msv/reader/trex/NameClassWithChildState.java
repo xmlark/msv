@@ -14,6 +14,11 @@ import com.sun.tranquilo.grammar.AnyNameClass;
 import com.sun.tranquilo.reader.State;
 import com.sun.tranquilo.util.StartTagInfo;
 
+/**
+ * parses name class that has child name classes
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public abstract class NameClassWithChildState extends NameClassState implements NameClassOwner
 {
 	/**

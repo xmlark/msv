@@ -16,6 +16,8 @@ import com.sun.tranquilo.reader.ExpressionOwner;
 
 /**
  * &lt;include&gt; element in the pattern.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class IncludePatternState extends ExpressionWithoutChildState implements ExpressionOwner
 {

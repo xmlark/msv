@@ -19,6 +19,11 @@ import com.sun.tranquilo.reader.State;
 import com.sun.tranquilo.reader.datatype.xsd.FacetStateParent;
 import com.sun.tranquilo.util.StartTagInfo;
 
+/**
+ * parses &lt;attribute&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class AttributeState extends ExpressionState implements FacetStateParent
 {
 	protected TypeIncubator incubator;

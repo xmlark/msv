@@ -13,6 +13,11 @@ import com.sun.tranquilo.grammar.NameClass;
 import com.sun.tranquilo.grammar.AnyNameClass;
 import com.sun.tranquilo.datatype.WhiteSpaceProcessor;
 
+/**
+ * parses &lt;anyName&gt; name class.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class NameClassAnyNameState extends NameClassWithoutChildState
 {
 	protected NameClass makeNameClass()

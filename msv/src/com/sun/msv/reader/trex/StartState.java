@@ -13,6 +13,11 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.ReferenceExp;
 import com.sun.tranquilo.reader.SequenceState;
 
+/**
+ * parses &lt;start&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class StartState extends SequenceState
 {
 	protected final TREXGrammarReader getReader() { return (TREXGrammarReader)reader; }

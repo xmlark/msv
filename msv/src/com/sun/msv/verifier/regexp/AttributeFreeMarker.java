@@ -13,6 +13,8 @@ import com.sun.tranquilo.grammar.*;
 
 /**
  * traverses Expression and marks every parts as either attribute free or not.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class AttributeFreeMarker implements ExpressionVisitorBoolean
 {

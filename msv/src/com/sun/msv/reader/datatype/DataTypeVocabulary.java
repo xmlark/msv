@@ -28,6 +28,8 @@ import com.sun.tranquilo.util.StartTagInfo;
  * One instance of this class is used throughout the parsing of one grammar.
  * Therefore, implementations are encouraged to take advantages of this property
  * and keep context information (e.g., user-defined named datatypes).
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface DataTypeVocabulary
 {

@@ -35,6 +35,8 @@ import java.util.Map;
  *  <li>no other tag clause shares the same tag name.
  *  <li>no other attribute of non-ID/IDREF types shares the same attribute name.
  * </ol>
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class IdAbuseChecker implements RELAXExpressionVisitorVoid
 {

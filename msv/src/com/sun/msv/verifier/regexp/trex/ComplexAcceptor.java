@@ -18,6 +18,11 @@ import com.sun.tranquilo.verifier.regexp.CombinedChildContentExpCreator;
 import com.sun.tranquilo.util.StringRef;
 import com.sun.tranquilo.util.DataTypeRef;
 
+/**
+ * Accept that is used when more than one pattern can be applicable to the current context.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 final class ComplexAcceptor extends ContentModelAcceptor
 {
 	protected final Expression[]	contents;

@@ -15,6 +15,7 @@ import com.sun.tranquilo.grammar.*;
  * removes all unnecessary expressions and
  * creates an expression that consists of required attributes and choices only.
  * 
+ * <XMP>
  * For example,
  * 
  * <choice>
@@ -48,6 +49,9 @@ import com.sun.tranquilo.grammar.*;
  * 
  * This function object is used only for error recovery.
  * Resulting expressions always consist only of <choice>s and <attribute>s.
+ * </XMP>
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class AttributePicker implements ExpressionVisitorExpression
 {

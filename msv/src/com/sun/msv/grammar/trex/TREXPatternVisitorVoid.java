@@ -12,7 +12,9 @@ package com.sun.tranquilo.grammar.trex;
 import com.sun.tranquilo.grammar.ExpressionVisitorVoid;
 
 /**
- * TREX version of ExpressionVisitorVoid
+ * TREX version of {@link ExpressionVisitorVoid}.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface TREXPatternVisitorVoid extends ExpressionVisitorVoid
 {

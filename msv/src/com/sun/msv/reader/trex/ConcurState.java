@@ -12,6 +12,11 @@ package com.sun.tranquilo.reader.trex;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.reader.ExpressionWithChildState;
 
+/**
+ * parses &lt;concur&gt; pattern.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class ConcurState extends ExpressionWithChildState
 {
 	protected Expression castExpression( Expression exp, Expression child )

@@ -17,6 +17,8 @@ import com.sun.tranquilo.grammar.ElementExp;
 /**
  * Acceptor that will be used when only one ElementExp matches
  * the start tag.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class SimpleAcceptor extends ContentModelAcceptor
 {

@@ -18,6 +18,8 @@ import java.util.Collection;
  * "Elements of concern" are ElementExps that are possibly applicable to
  * the next element. These gathered element declarations are then tested against
  * next XML element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ElementsOfConcernCollector implements ExpressionVisitor
 {

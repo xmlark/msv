@@ -17,7 +17,9 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.reader.ChildlessState;
 
 /**
- * &lt;interface&gt; element and &lt;div&gt; in interface.
+ * parses &lt;interface&gt; element and &lt;div&gt; in interface.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 class InterfaceState extends SimpleState
 {

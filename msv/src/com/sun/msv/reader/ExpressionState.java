@@ -23,6 +23,8 @@ import com.sun.tranquilo.grammar.Expression;
  *  <li>implement makeExpression method to create Expression object
  *		as the outcome of parsing. This method is called at endElement.
  * </ol>
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class ExpressionState extends SimpleState
 {

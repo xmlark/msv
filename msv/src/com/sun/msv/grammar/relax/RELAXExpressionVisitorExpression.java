@@ -12,6 +12,11 @@ package com.sun.tranquilo.grammar.relax;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.ExpressionVisitorExpression;
 
+/**
+ * RELAX version of {@link ExpressionVisitorExpression}
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public interface RELAXExpressionVisitorExpression extends ExpressionVisitorExpression
 {
 	// RELAX visitor can ignore onRef callback.

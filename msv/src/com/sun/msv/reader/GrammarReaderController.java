@@ -21,6 +21,8 @@ import java.io.IOException;
  *  <li>receives notification of errors and warnings while parsing a grammar
  *  <li>controls how inclusion of other grammars are processed.
  * </ol>
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface GrammarReaderController
 {

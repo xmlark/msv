@@ -17,6 +17,8 @@ import com.sun.tranquilo.verifier.regexp.AttributePruner;
  * Creates a pattern whose AttributePattern is completely replaced by nullSet.
  * 
  * This step is used to remove all unconsumed AttributePattern from the pattern.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 final class TREXAttributePruner
 	extends AttributePruner

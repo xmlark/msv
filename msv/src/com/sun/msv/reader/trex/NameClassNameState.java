@@ -13,6 +13,11 @@ import com.sun.tranquilo.grammar.NameClass;
 import com.sun.tranquilo.grammar.SimpleNameClass;
 import com.sun.tranquilo.datatype.WhiteSpaceProcessor;
 
+/**
+ * parses &lt;name&gt; name class.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class NameClassNameState extends NameClassWithoutChildState
 {
 	protected final StringBuffer text = new StringBuffer();

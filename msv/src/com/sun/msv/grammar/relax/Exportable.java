@@ -10,7 +10,9 @@
 package com.sun.tranquilo.grammar.relax;
 
 /**
- * exportable Expression
+ * exportable Expression.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface Exportable
 {

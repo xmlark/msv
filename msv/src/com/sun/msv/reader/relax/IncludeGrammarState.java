@@ -12,7 +12,9 @@ package com.sun.tranquilo.reader.relax;
 import com.sun.tranquilo.reader.ChildlessState;
 
 /**
- * &lt;include&gt; element of RELAX Namespace.
+ * parses &lt;include&gt; element of RELAX Namespace.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class IncludeGrammarState extends ChildlessState
 {

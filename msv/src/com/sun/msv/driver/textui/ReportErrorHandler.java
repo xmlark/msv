@@ -15,6 +15,13 @@ import com.sun.tranquilo.verifier.ValidationUnrecoverableException;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 
+/**
+ * {@link VerificationErrorHandler} that reports all errors and warnings.
+ * 
+ * SAX parse errors are also handled.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class ReportErrorHandler
 	implements VerificationErrorHandler,
 				ErrorHandler

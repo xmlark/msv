@@ -11,6 +11,8 @@ package com.sun.tranquilo.grammar;
 
 /**
  * Union of two NameClasses.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ChoiceNameClass implements NameClass
 {

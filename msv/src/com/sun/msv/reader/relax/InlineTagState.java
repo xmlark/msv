@@ -13,6 +13,11 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.relax.TagClause;
 import com.sun.tranquilo.grammar.SimpleNameClass;
 
+/**
+ * parses &lt;tag&gt; element inlined in &lt;elementRule&gt;
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class InlineTagState extends ClauseState
 {
 	protected void endSelf()

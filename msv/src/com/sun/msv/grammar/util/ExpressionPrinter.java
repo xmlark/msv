@@ -14,7 +14,9 @@ import com.sun.tranquilo.grammar.*;
 /**
  * creates a string representation of the expression.
  * 
- * performance? who cares....
+ * useful for debug and dump.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class ExpressionPrinter implements ExpressionVisitor
 {

@@ -15,7 +15,9 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.util.StartTagInfo;
 
 /**
- * &lt;elementRule&gt; without 'type' attribute.
+ * parses &lt;elementRule&gt; without 'type' attribute.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ElementRuleWithHedgeState extends ElementRuleBaseState implements ExpressionOwner
 {

@@ -14,6 +14,11 @@ import com.sun.tranquilo.grammar.trex.TypedString;
 import com.sun.tranquilo.reader.ExpressionWithoutChildState;
 import com.sun.tranquilo.datatype.WhiteSpaceProcessor;
 
+/**
+ * parses &lt;string&gt; pattern.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class StringState extends ExpressionWithoutChildState
 {
 	protected final StringBuffer text = new StringBuffer();

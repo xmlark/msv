@@ -17,6 +17,8 @@ import com.sun.tranquilo.grammar.*;
  * This step is used to erase all unconsumed AttributeExp from the expression.
  * This class is used for error recovery. Usually, unconsumed attributes are
  * violation of validity.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class AttributeRemover extends ExpressionCloner
 {

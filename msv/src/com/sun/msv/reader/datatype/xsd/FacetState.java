@@ -14,6 +14,11 @@ import com.sun.tranquilo.reader.GrammarReader;
 import com.sun.tranquilo.datatype.BadTypeException;
 import java.util.Set;
 
+/**
+ * state that reads facets.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class FacetState extends ChildlessState
 {
 	/** set of recognizable facet names */

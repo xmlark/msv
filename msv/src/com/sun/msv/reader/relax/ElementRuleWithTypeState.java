@@ -18,7 +18,9 @@ import com.sun.tranquilo.reader.datatype.xsd.FacetStateParent;
 import com.sun.tranquilo.util.StartTagInfo;
 
 /**
- * &lt;elementRule&gt; with 'type' attribute.
+ * parses &lt;elementRule&gt; with 'type' attribute.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ElementRuleWithTypeState extends ElementRuleBaseState implements FacetStateParent
 {

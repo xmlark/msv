@@ -26,6 +26,8 @@ import org.xml.sax.Locator;
  * 
  * Apparently, those expressions cannot be expressed in string regular expression.
  * run-away expressions are prohibited in both RELAX and TREX.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 {

@@ -16,7 +16,9 @@ import com.sun.tranquilo.reader.SequenceState;
 import org.xml.sax.Locator;
 
 /**
- * parses &lt;define&gt; element.
+ * parses &lt;define&gt; declaration.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DefineState extends SequenceState
 {

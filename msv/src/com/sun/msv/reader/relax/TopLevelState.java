@@ -14,7 +14,9 @@ import com.sun.tranquilo.reader.State;
 import com.sun.tranquilo.util.StartTagInfo;
 
 /**
- * &lt;topLevel&gt; element
+ * parses &lt;topLevel&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TopLevelState extends HedgeRuleBaseState
 {

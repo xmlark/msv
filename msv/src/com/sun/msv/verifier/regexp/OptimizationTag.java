@@ -16,6 +16,8 @@ import java.util.Map;
 /**
  * this object will be added to Expression.verifierTag
  * to speed up typical validation.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 final class OptimizationTag
 {

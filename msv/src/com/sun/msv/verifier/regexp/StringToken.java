@@ -16,7 +16,9 @@ import com.sun.tranquilo.datatype.ValidationContextProvider;
 import com.sun.tranquilo.util.DataTypeRef;
 
 /**
- * chunk of string
+ * chunk of string.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class StringToken extends Token
 {

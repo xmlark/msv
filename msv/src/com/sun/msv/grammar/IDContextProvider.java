@@ -3,7 +3,9 @@ package com.sun.tranquilo.grammar;
 import com.sun.tranquilo.datatype.ValidationContextProvider;
 
 /**
- * provides support for limited ID/IDREF.
+ * ValidationContextProvider that supports limited ID/IDREF implementation.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface IDContextProvider extends ValidationContextProvider
 {

@@ -20,6 +20,8 @@ import com.sun.tranquilo.grammar.ExpressionVisitor;
  * <p>
  * Note that onRef method may still be called if you visit AGM created from
  * TREX pattern.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface RELAXExpressionVisitor extends ExpressionVisitor
 {

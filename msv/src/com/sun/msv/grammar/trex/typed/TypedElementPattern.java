@@ -17,6 +17,8 @@ import com.sun.tranquilo.grammar.trex.ElementPattern;
  * ElementPattern with type.
  * 
  * Proprietary extension by Tranquilo to support type-assignment in TREX.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TypedElementPattern extends ElementPattern
 {

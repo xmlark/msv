@@ -14,7 +14,9 @@ import com.sun.tranquilo.grammar.*;
 /**
  * 'tag'  of RELAX module.
  * 
- * ReferenceExp.exp contains a sequence of AttributeExp.
+ * exp field contains a sequence of AttributeExp.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TagClause extends ReferenceExp
 {

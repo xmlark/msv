@@ -10,7 +10,9 @@
 package com.sun.tranquilo.grammar;
 
 /**
- * Union operator
+ * A|B.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class ChoiceExp extends BinaryExp
 {

@@ -15,6 +15,8 @@ import com.sun.tranquilo.grammar.NameClass;
  * interface that must be implemented by the parent state of NameClassState.
  * 
  * NameClassState notifies its parent by using this interface.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 interface NameClassOwner
 {

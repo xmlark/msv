@@ -12,6 +12,11 @@ package com.sun.tranquilo.grammar.trex;
 import com.sun.tranquilo.grammar.*;
 import com.sun.tranquilo.reader.datatype.DataTypeVocabularyMap;
 
+/**
+ * TREX grammar, which is expressed as &lt;grammar&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class TREXGrammar
 {
 	static final public class RefContainer extends ReferenceContainer

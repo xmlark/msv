@@ -12,6 +12,11 @@ package com.sun.tranquilo.verifier.jarv;
 import com.sun.tranquilo.verifier.DocumentDeclaration;
 import com.sun.tranquilo.verifier.VerificationErrorHandler;
 
+/**
+ * VerifierFilter implementation.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class FilterImpl
 	extends com.sun.tranquilo.verifier.VerifierFilter
 	implements org.iso_relax.verifier.VerifierFilter

@@ -12,6 +12,11 @@ package com.sun.tranquilo.verifier.regexp.trex;
 import com.sun.tranquilo.verifier.regexp.AttributeFreeMarker;
 import com.sun.tranquilo.grammar.trex.*;
 
+/**
+ * {@link AttributeFreeMarker} which can handle TREX extension primitives.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class TREXAttributeFreeMarker
 	extends AttributeFreeMarker
 	implements TREXPatternVisitorBoolean

@@ -13,7 +13,12 @@ import com.sun.tranquilo.reader.RunAwayExpressionChecker;
 import com.sun.tranquilo.grammar.trex.TREXPatternVisitorVoid;
 import com.sun.tranquilo.grammar.trex.ConcurPattern;
 import com.sun.tranquilo.grammar.trex.InterleavePattern;
-	
+
+/**
+ * TREX version of {@link RunAwayExpressionChecker}.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class TREXRunAwayExpressionChecker
 	extends RunAwayExpressionChecker
 	implements TREXPatternVisitorVoid

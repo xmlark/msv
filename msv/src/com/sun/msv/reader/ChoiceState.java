@@ -11,6 +11,11 @@ package com.sun.tranquilo.reader;
 
 import com.sun.tranquilo.grammar.Expression;
 
+/**
+ * state that creates ChoiceExp.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class ChoiceState extends ExpressionWithChildState
 {
 	protected Expression castExpression( Expression exp, Expression child )

@@ -12,6 +12,11 @@ package com.sun.tranquilo.reader.trex;
 import com.sun.tranquilo.grammar.NameClass;
 import com.sun.tranquilo.grammar.NamespaceNameClass;
 
+/**
+ * parses &lt;nsName&gt; name class.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class NameClassNsNameState extends NameClassWithoutChildState
 {
 	protected NameClass makeNameClass()

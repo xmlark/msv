@@ -11,6 +11,8 @@ package com.sun.tranquilo.grammar;
 
 /**
  * ExpressionVisitor that returns void.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface ExpressionVisitorVoid
 {

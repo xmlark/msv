@@ -14,7 +14,9 @@ import com.sun.tranquilo.datatype.*;
 /**
  * 'emptyString' type of RELAX.
  * 
- * this type accepts nothing but ""
+ * this type accepts nothing but "".
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class EmptyStringType extends ConcreteType
 {

@@ -24,6 +24,11 @@ import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.*;
 import java.util.*;
 
+/**
+ * command line Verifier.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class Driver
 {
 	static SAXParserFactory factory;

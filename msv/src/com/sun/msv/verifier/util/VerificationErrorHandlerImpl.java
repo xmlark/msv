@@ -18,6 +18,8 @@ import org.xml.sax.SAXException;
  * 
  * If an error is found, throw ValidityViolation to stop further validation.
  * warnings are ignored.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class VerificationErrorHandlerImpl implements VerificationErrorHandler
 {

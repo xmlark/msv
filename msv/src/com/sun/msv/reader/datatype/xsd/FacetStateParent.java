@@ -19,6 +19,8 @@ import com.sun.tranquilo.datatype.TypeIncubator;
  * 
  * After all facets are added, the parent state should derive a
  * new type.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface FacetStateParent
 {

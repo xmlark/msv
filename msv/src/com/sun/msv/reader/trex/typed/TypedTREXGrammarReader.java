@@ -18,7 +18,11 @@ import com.sun.tranquilo.util.StartTagInfo;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.InputSource;
 
-/** reads TREX grammar with 'label' annotation. */
+/**
+ * reads TREX grammar with 'label' annotation.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class TypedTREXGrammarReader extends TREXGrammarReader
 {
 	public final static String LABEL_NAMESPACE =

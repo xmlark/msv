@@ -75,6 +75,8 @@ import com.sun.tranquilo.util.StartTagInfo;
  *  <li>default implementations for all ContentHandler callbacks
  *		except startElement and endElement
  * </ul>
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class State implements ContentHandler
 {

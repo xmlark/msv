@@ -17,6 +17,8 @@ import com.sun.tranquilo.reader.SimpleState;
  * invokes State object that parses the document element.
  * 
  * this state is used for parsing included module.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 class RootModuleMergeState extends SimpleState
 {

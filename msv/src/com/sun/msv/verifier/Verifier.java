@@ -26,6 +26,8 @@ import com.sun.tranquilo.util.DataTypeRef;
  * This object can be reused to validate multiple documents.
  * Just be careful NOT to use the same object to validate more than one
  * documents <b>at the same time</b>.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class Verifier implements
 	ContentHandler,

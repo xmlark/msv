@@ -14,6 +14,11 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import com.sun.tranquilo.reader.GrammarReaderController;
 
+/**
+ * GrammarReaderController that prints all errors and warnings.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class DebugController implements GrammarReaderController
 {
 	public void warning( Locator[] loc, String errorMessage )

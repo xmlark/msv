@@ -17,6 +17,8 @@ import java.util.Stack;
  * the purpose of this function object is to make sure
  * that the expression does not contain references to modules
  * other than one specified by this variable.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class ExportedHedgeRuleChecker implements RELAXExpressionVisitorBoolean
 {

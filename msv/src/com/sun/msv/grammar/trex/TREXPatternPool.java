@@ -11,6 +11,11 @@ package com.sun.tranquilo.grammar.trex;
 
 import com.sun.tranquilo.grammar.*;
 
+/**
+ * ExpressionPool that can create TREX extension primitives.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class TREXPatternPool extends ExpressionPool
 {
 	public TREXPatternPool( ExpressionPool parent )	{ super(parent); }

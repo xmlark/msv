@@ -12,6 +12,11 @@ package com.sun.tranquilo.reader.trex;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.trex.ElementPattern;
 
+/**
+ * parses &lt;element&gt; pattern.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class ElementState extends NameClassAndExpressionState
 {
 	protected Expression annealExpression( Expression contentModel )

@@ -17,6 +17,8 @@ import org.xml.sax.InputSource;
  * Default implementation of GrammarReaderController.
  * 
  * This class ignores every errors and warnings.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class IgnoreController implements GrammarReaderController
 {

@@ -13,6 +13,11 @@ import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.reader.*;
 
+/**
+ * parses &lt;grammar&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class GrammarState extends SimpleState
 {
 	/** gets reader in type-safe fashion */

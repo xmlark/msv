@@ -22,6 +22,11 @@ import com.sun.tranquilo.verifier.ValidityViolation;
 import com.sun.tranquilo.verifier.util.VerificationErrorHandlerImpl;
 import java.io.IOException;
 
+/**
+ * Verifier implementation.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class VerifierImpl implements Verifier
 {
 	private final DocumentDeclaration grammar;

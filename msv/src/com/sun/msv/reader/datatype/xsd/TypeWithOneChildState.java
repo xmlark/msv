@@ -19,6 +19,8 @@ import com.sun.tranquilo.reader.datatype.TypeOwner;
 
 /**
  * State which has at most one TypeState as its child.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class TypeWithOneChildState extends TypeState implements TypeOwner
 {

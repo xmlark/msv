@@ -12,6 +12,11 @@ package com.sun.tranquilo.reader;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.util.StartTagInfo;
 
+/**
+ * State that parses Expression which contains other expressions.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public abstract class ExpressionWithChildState extends ExpressionState implements ExpressionOwner
 {
 	/**

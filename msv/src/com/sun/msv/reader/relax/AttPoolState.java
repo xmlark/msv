@@ -13,6 +13,11 @@ import org.xml.sax.Locator;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.relax.AttPoolClause;
 
+/**
+ * parses &lt;attPool&gt; element.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class AttPoolState extends ClauseState
 {
 	protected void endSelf( )

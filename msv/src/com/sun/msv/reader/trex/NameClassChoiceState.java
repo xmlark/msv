@@ -14,6 +14,11 @@ import com.sun.tranquilo.grammar.ChoiceNameClass;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * parses &lt;choice&gt; name class.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class NameClassChoiceState extends NameClassWithChildState
 {
 	protected NameClass castNameClass( NameClass halfCasted, NameClass newChild )

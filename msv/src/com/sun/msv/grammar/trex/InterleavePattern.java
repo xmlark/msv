@@ -3,7 +3,9 @@ package com.sun.tranquilo.grammar.trex;
 import com.sun.tranquilo.grammar.*;
 
 /**
- * &lt;interleave&gt; pattern of TREX
+ * &lt;interleave&gt; pattern of TREX.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class InterleavePattern extends BinaryExp
 {

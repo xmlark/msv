@@ -23,6 +23,8 @@ import com.sun.tranquilo.grammar.trex.TREXGrammar;
  * <p>
  * this class provides a new TREXGrammar object to localize names defined
  * within this grammar.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 class GrammarState extends MergeGrammarState
 {

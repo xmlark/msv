@@ -16,6 +16,8 @@ import com.sun.tranquilo.grammar.ReferenceExp;
  * 'attPool'  of RELAX module.
  * 
  * ReferenceExp.exp contains a sequence of AttributeExp.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class AttPoolClause extends ReferenceExp
 {

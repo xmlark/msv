@@ -12,7 +12,9 @@ package com.sun.tranquilo.grammar.trex;
 import com.sun.tranquilo.grammar.*;
 
 /**
- * &lt;concur&gt; pattern of TREX
+ * &lt;concur&gt; pattern of TREX.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class ConcurPattern extends BinaryExp
 {

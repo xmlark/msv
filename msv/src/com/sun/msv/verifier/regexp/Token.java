@@ -14,7 +14,9 @@ import com.sun.tranquilo.grammar.*;
 /**
  * primitive unit of XML instance.
  * 
- * this object is fed to expression
+ * this object is fed to expression.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class Token
 {

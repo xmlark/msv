@@ -13,6 +13,11 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.verifier.regexp.AttributeFeeder;
 
+/**
+ * {@link AttributeFeeder} which can handle TREX extension primitives.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 final class TREXAttributeFeeder
 	extends AttributeFeeder
 	implements TREXPatternVisitorExpression

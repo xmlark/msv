@@ -11,6 +11,8 @@ package com.sun.tranquilo.grammar;
 
 /**
  * NameClass that acts a not operator.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class NotNameClass implements NameClass
 {

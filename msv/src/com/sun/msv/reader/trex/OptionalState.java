@@ -12,6 +12,11 @@ package com.sun.tranquilo.reader.trex;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.reader.SequenceState;
 
+/**
+ * parses &lt;optional&gt; pattern.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class OptionalState extends SequenceState
 {
 	protected Expression annealExpression( Expression exp )

@@ -19,6 +19,8 @@ import com.sun.tranquilo.reader.relax.RELAXReader;
 
 /**
  * detects whether this XML is TREX  or RELAX.
+ *
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class SchemaDetector extends DefaultHandler
 {

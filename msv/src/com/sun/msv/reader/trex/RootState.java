@@ -20,6 +20,8 @@ import com.sun.tranquilo.grammar.trex.TREXGrammar;
  * invokes State object that parses the document element.
  * 
  * This class accepts grammar element only.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RootState extends SimpleState implements ExpressionOwner
 {

@@ -13,7 +13,9 @@ import java.util.Map;
 import java.util.Iterator;
 
 /**
- * Container of ReferenceExp.
+ * Container of ReferenceExp. a map from name to ReferenceExp.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class ReferenceContainer
 {

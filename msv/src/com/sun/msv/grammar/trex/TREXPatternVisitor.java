@@ -25,6 +25,8 @@ import com.sun.tranquilo.grammar.ExpressionVisitor;
  * and not depend on the stub parts, your visitor shall work with any AGM.
  * So implementing this interface does NOT mean that your visitor is dependent
  * to TREX.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface TREXPatternVisitor extends ExpressionVisitor
 {

@@ -35,6 +35,8 @@ import java.util.Collection;
  * used to unify the expressions. equals method can safely assume that its children
  * are already unified (therefore == can be used to test the equality, rather than
  * equals method).
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class Expression
 {

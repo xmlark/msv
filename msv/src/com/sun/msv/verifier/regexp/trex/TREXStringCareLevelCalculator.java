@@ -13,9 +13,9 @@ import com.sun.tranquilo.verifier.regexp.StringCareLevelCalculator;
 import com.sun.tranquilo.grammar.trex.*;
 
 /**
- * TREX-extended StringCareLevelCalculator.
+ * {@link StringCareLevelCalculator} which can handle TREX extension primitives.
  * 
- * this class is also thread safe.
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 class TREXStringCareLevelCalculator
 	extends StringCareLevelCalculator

@@ -14,6 +14,11 @@ import com.sun.tranquilo.verifier.DocumentDeclaration;
 import com.sun.tranquilo.verifier.VerificationErrorHandler;
 import org.iso_relax.verifier.VerifierHandler;
 
+/**
+ * Verifier Handler implementation.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class HandlerImpl
 	extends Verifier
 	implements VerifierHandler

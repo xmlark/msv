@@ -18,6 +18,8 @@ import com.sun.tranquilo.util.StartTagInfo;
  * 
  * Note that this class does not prohibit children from different namespace.
  * Those "foreign" elements are just ignored.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class ExpressionWithoutChildState extends ExpressionState
 {

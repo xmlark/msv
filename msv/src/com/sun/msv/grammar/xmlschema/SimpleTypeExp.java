@@ -38,7 +38,8 @@ public class SimpleTypeExp extends XMLSchemaTypeExp {
 	public void setType( XSDatatype dt, ExpressionPool pool ) {
 		if(!(dt instanceof LateBindDatatype ))
 			// do not create a TypedStringExp for late-bind object.
-			// this will unnecessary "contaminate" the pool.
+			// this will unnecessary "contaminate" the pool,
+            // which makes it impossible to serialize AGM.
 			this.exp = pool.createData(dt);
 		this.type = dt;
 	}

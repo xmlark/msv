@@ -16,9 +16,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * removes all ReferenceExp from Expression but do not recurse the child elements.
+ * Non-recursive ReferenceExpRemover with a cache.
  * 
- * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ContentModelRefExpRemover {
 	

@@ -72,7 +72,8 @@ public class StringToken extends Token {
 		if(refType!=null)		assignType(exp.dt);
 		
 		// if the type has ID semantics, report it.
-		if( exp.dt.getIdType()!=exp.dt.ID_TYPE_NULL )
+		if( exp.dt.getIdType()!=exp.dt.ID_TYPE_NULL && context!=null )
+			// context can be legally null when this datatype is not context dependent.
 			context.onID( exp.dt, literal );
 		
 		return true;

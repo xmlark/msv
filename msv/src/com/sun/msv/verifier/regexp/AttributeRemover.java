@@ -15,8 +15,8 @@ import com.sun.msv.grammar.*;
  * Creates an expression whose AttributeExp is completely replaced by epsilon.
  * 
  * This step is used to erase all unconsumed AttributeExp from the expression.
- * This class is used for error recovery. Usually, unconsumed attributes are
- * violation of validity.
+ * This class is used for error recovery. Usually, unconsumed attributes
+ * indicates a violation of the validity.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

@@ -56,7 +56,11 @@ public class TypeIncubator {
 	 */
 	public void addFacet( String name, String strValue, boolean fixed,
 					 ValidationContext context ) throws DatatypeException {
-		// checks applicability of the facet
+		
+        if(baseType instanceof ErrorType)
+            return; // silently ignore any further error
+        
+        // checks applicability of the facet
 		switch( baseType.isFacetApplicable(name) ) {
 		case XSDatatypeImpl.APPLICABLE:	break;
 		case XSDatatypeImpl.FIXED:
@@ -127,6 +131,10 @@ public class TypeIncubator {
 	 *		has invalid values, ... things like that.
 	 */
 	public XSDatatypeImpl derive( String newNameUri, String newLocalName ) throws DatatypeException {
+        
+        if(baseType instanceof ErrorType)
+            return baseType;
+
 		
 		if( baseType.isFinal(XSDatatype.DERIVATION_BY_RESTRICTION) )
 			throw new DatatypeException( XSDatatypeImpl.localize(

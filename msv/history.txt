@@ -1,4 +1,6 @@
 
+(DTD)   supports DTD.
+
 (both)  fixed a bug that a named type is not properly derived by restriction
         when no facet is specified.
 (both)  fixed an inconvenience of error recovery logic.

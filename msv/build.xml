@@ -12,33 +12,41 @@
 	
 	<!-- test directory where you put your files like "relaxNNN.rlx" -->
 	<property name="testRoot" value="./testCases" />
-	<property name="commonTestDir" value="${testRoot}/JepaX;${testRoot}/relax/error/lrgErrRatio;${testRoot}/relax/error/smlErrRatio" />
-	<property name="RELAXBatchTestDir" value="${testRoot}/relax;${testRoot}/NITF;${commonTestDir}" />
-	<property name="TREXBatchTestDir" value="${testRoot}/trex;${testRoot}/NITF;${commonTestDir}" />
-	<property name="DTDBatchTestDir" value="${testRoot}/NITF;${commonTestDir}" />
+	<property name="commonTestDir" value="${testRoot}/suites/JepaX;${testRoot}/suites/NITF;${testRoot}/suites/errorRELAXGrammar/lrgErrRatio;${testRoot}/errorRELAXGrammar/smlErrRatio" />
+	<property name="RELAXBatchTestDir" value="${testRoot}/relax;${commonTestDir}" />
+	<property name="TREXBatchTestDir" value="${testRoot}/trex;${commonTestDir}" />
+	<property name="DTDBatchTestDir" value="${commonTestDir}" />
 	<property name="XSDBatchTestDir"
-		value="${testRoot}/xmlschema/tutorialExamples;${commonTestDir}" />
+		value="${testRoot}/xmlschema;${testRoot}/xmlschema/tutorialExamples;${commonTestDir}" />
 
 
 	
 	<!-- compile Java source files -->
 	<target name="binary" depends="javacc">
-		<javac srcdir="${sourceDir}:${testDir}" destdir="${buildDir}"/>
+		<javac
+			srcdir="${sourceDir}:${testDir}:lib\dispatcher"
+			destdir="${buildDir}"
+			debug="on"
+			optimize="off"
+			classpath="lib"
+			/>
 	</target>
 	
 	
 		<!-- internal task -->
 		<target name="doJavacc">
-			<javacc	target="${src}/com/sun/tranquilo/datatype/datetime/ISO8601.jj"
-					outputdirectory="${src}/com/sun/tranquilo/datatype/datetime"
+			<javacc	target="${src}/com/sun/msv/datatype/datetime/ISO8601.jj"
+					outputdirectory="${src}/com/sun/msv/datatype/datetime"
 					javacchome="${javaCClib}"
 			/>
 
 			<!-- run javacc for UriReference -->
-			<javacc	target="${src}/com/sun/tranquilo/datatype/anyURI.jj"
-					outputdirectory="${src}/com/sun/tranquilo/datatype"
+<!--
+			<javacc	target="${src}/com/sun/msv/datatype/anyURI.jj"
+					outputdirectory="${src}/com/sun/msv/datatype"
 					javacchome="${javaCClib}"
 			/>
+-->
 		</target>
 	
 	<!-- run javacc -->
@@ -54,34 +62,63 @@
 	
 	<!--  run all the test suites -->
 	<target name="test">
-		<mkdir dir="./testLog" />
-		<!--
-			please remove jaxp.jar from ant directory,
-			because it uses an old one, and this test needs the latest one
-		-->
-		<junit haltonfailure="yes" printsummary="yes" fork="yes">
-			<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
-			<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
-			<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
-			<sysproperty key="XSDBatchTestDir"		value="${XSDBatchTestDir}"/>
-			
-  			<formatter type="plain" />
-			
-			<classpath>
-				<pathelement location="${buildDir}" />
-				<pathelement location="${sourceDir}" />
-				<pathelement location="${testDir}" />
-				<pathelement location="lib/dispatcher" />
-				<pathelement path="${java.class.path}" />
-			</classpath>
-		
-			<batchtest todir="./testLog">
-				<fileset dir="${buildDir}">
-					<include name="**/*Test.class" />
-				</fileset>
-			</batchtest>
-		</junit>
+		<antcall target="doTest">
+			<param name="testClasses" value="**/*Test.class" />
+		</antcall>
 	</target>
+	
+	<!-- run msv test suites -->
+	<target name="test_msv">
+		<antcall target="doTest">
+			<param name="testClasses" value="*Test.class" />
+		</antcall>
+		<antcall target="doTest">
+			<param name="testClasses" value="com/sun/msv/datatype/*Test.class" />
+		</antcall>
+		<antcall target="doTest">
+			<param name="testClasses" value="com/sun/msv/util/*Test.class" />
+		</antcall>
+	</target>
+	
+	<!--  run generator test suites -->
+	<target name="test_generator">
+		<antcall target="doTest">
+			<param name="testClasses" value="**/generator/**/*Test.class" />
+		</antcall>
+	</target>
+	
+	
+	
+		<!-- internal task -->
+		<target name="doTest">
+			<mkdir dir="./testLog" />
+			<!--
+				please remove jaxp.jar from ant directory,
+				because it uses an old one, and this test needs the latest one
+			-->
+			<junit haltonfailure="yes" printsummary="yes" fork="yes">
+				<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
+				<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
+				<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
+				<sysproperty key="XSDBatchTestDir"		value="${XSDBatchTestDir}"/>
+				
+  				<formatter type="plain" />
+				
+				<classpath>
+					<pathelement location="${buildDir}" />
+					<pathelement location="${sourceDir}" />
+					<pathelement location="${testDir}" />
+					<pathelement location="lib/dispatcher" />
+					<pathelement path="${java.class.path}" />
+				</classpath>
+			
+				<batchtest todir="./testLog">
+					<fileset dir="${buildDir}">
+						<include name="${testClasses}" />
+					</fileset>
+				</batchtest>
+			</junit>
+		</target>
 	
 	
 	
@@ -90,7 +127,7 @@
 		<tstamp />
 		
 		<!-- standard archive -->
-		<jar	jarfile="${packageDir}/tranquilo.${DSTAMP}.jar"
+		<jar	jarfile="${packageDir}/msv.${DSTAMP}.jar"
 				manifest="./META-INF/MANIFEST.MF"
 				compress="false">
 			<fileset dir="${sourceDir}" includes="**/*.properties" />
@@ -103,12 +140,13 @@
 	<!-- generate javadoc documentation -->
 	<target name="javadoc">
 		<javadoc	locale="en_US"
-					packagenames="com.sun.tranquilo.*"
+					packagenames="com.sun.msv.*"
 					sourcepath="${sourceDir}"
 					classpath="lib/dispatcher;${java.class.path}"
 					destdir="${documentDir}"
-					windowtitle="Tranquilo RELAX/TREX Verifier"
+					windowtitle="Sun Multi Schema Validator"
 					public="yes"
+					author="yes"
 					>
 			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
 			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
@@ -133,18 +171,18 @@
 		<delete	dir="${stageName}" />
 		<mkdir	dir="${stageName}" />
 		<mkdir	dir="${stageName}/src" />
-		<mkdir	dir="${stageName}/src/com/sun/tranquilo/datatype" />
+		<mkdir	dir="${stageName}/src/com/sun/msv/datatype" />
 		<mkdir	dir="${stageName}/src/com/sun/xml" />
 		
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/test/com/sun/tranquilo/datatype/CommandLineTester.java"
+				package="tranquilo/test/com/sun/msv/datatype/CommandLineTester.java"
 				command="export -d . -D now"
-				dest="${stageName}/src/com/sun/tranquilo/datatype" />
+				dest="${stageName}/src/com/sun/msv/datatype" />
 		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/src/com/sun/tranquilo/datatype"
+				package="tranquilo/src/com/sun/msv/datatype"
 				command="export -d . -D now"
-				dest="${stageName}/src/com/sun/tranquilo/datatype" />
+				dest="${stageName}/src/com/sun/msv/datatype" />
 		<cvs	cvsRoot="${cvsRoot}"
 				package="tranquilo/src/com/sun/xml"
 				command="export -d . -D now"
@@ -191,11 +229,12 @@
 		<!-- creates javadoc -->
 		<mkdir		dir="${stageName}/javadoc" />
 		<javadoc	locale="en_US"
-					packagenames="com.sun.tranquilo.datatype.*"
+					packagenames="com.sun.msv.datatype.*"
 					sourcepath="${stageName}/src"
 					destdir="${stageName}/javadoc"
 					windowtitle="XML Schema Part 2 Implementation"
 					public="yes"
+					author="yes"
 					>
 			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
 			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
@@ -218,7 +257,7 @@
 	<!-- generate Tranquilo release -->
 	<target name="release">
 		<tstamp />
-		<property name="stageName" value="tranquilo-${DSTAMP}" />
+		<property name="stageName" value="msv-${DSTAMP}" />
 		
 		<delete	dir="${stageName}" />
 		<mkdir	dir="${stageName}" />
@@ -242,7 +281,7 @@
 		</antcall>
 		
 		<!-- unzip contents from iso-relax.jar into binary directory -->
-		<!-- for ease of use, iso-relax.jar is merged into tranquilo.jar -->
+		<!-- for ease of use, iso-relax.jar is merged into msv.jar -->
 		<unjar src="${libDir}/iso-relax.jar" dest="temp" />
 		
 		<!-- compile files -->
@@ -261,10 +300,10 @@
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
 		
 		<!-- creates binary jar -->
-		<jar	jarfile="${stageName}/tranquilo.jar"
+		<jar	jarfile="${stageName}/msv.jar"
 				manifest="./META-INF/MANIFEST.MF"
 				compress="false">
-			<fileset dir="${stageName}/src" includes="**/tranquilo/**/*.properties" />
+			<fileset dir="${stageName}/src" includes="**/msv/**/*.properties" />
 			<fileset dir="${libDir}" includes="javax/xml/parsers/*.class" />
 			<fileset dir="temp" />
 			<fileset dir="xerces" includes="org/apache/xerces/**/*.*" />
@@ -275,11 +314,12 @@
 		<!-- creates javadoc -->
 		<mkdir		dir="${stageName}/javadoc" />
 		<javadoc	locale="en_US"
-					packagenames="com.sun.tranquilo.*"
+					packagenames="com.sun.msv.*"
 					sourcepath="${stageName}/src"
 					classpath="temp;${java.class.path}"
 					destdir="${stageName}/javadoc"
-					windowtitle="Tranquilo Verifier"
+					windowtitle="Sun Multi Schema Validator"
+					author="yes"
 					public="yes"
 					>
 			<!--
@@ -290,16 +330,23 @@
 			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
 			<link offline="true" href="http://iso-relax.sourceforge.net/apiDoc/" packagelistLoc="ExternalPackageLists\ISO-RELAX" />
 		</javadoc>
+		<delete dir="${stageName}" includes="**/*.vsd">
+			<!-- remove Visio files from release package -->
+		</delete>
 
 		<delete dir="temp" />
 		<delete dir="xerces" />
 
+		<!-- copy sample files -->
+		<copy todir="${stageName}/examples">
+			<fileset dir="${stageName}/src" includes="com/sun/msv/writer/trex/**/*.*" />
+		</copy>
 <!-- temporarily, remove source codes -->
 		<delete dir="${stageName}/src" />
 		
 		
 		<!-- creates distribution package -->
-		<zip	zipfile="${packageDir}/tranquilo.${DSTAMP}.zip"
+		<zip	zipfile="${packageDir}/msv.${DSTAMP}.zip"
 				basedir="."
 				includes="${stageName}/**/*.*" />
 		
@@ -315,7 +362,7 @@
 	<!-- generator release -->
 	<target name="generator">
 		<tstamp />
-		<property name="stageName" value="tranqgen-${DSTAMP}"/>
+		<property name="stageName" value="xmlgen-${DSTAMP}"/>
 		
 		<delete	dir="${stageName}" />
 		<mkdir	dir="${stageName}" />
@@ -338,7 +385,7 @@
 		<mkdir	dir="temp" />
 		<javac	srcdir="${stageName}/src"
 				destdir="temp"
-				classpath="./package/tranquilo.jar">
+				classpath="./package/msv.jar">
 			<include name="**/*.java" />
 		</javac>
 		
@@ -346,7 +393,7 @@
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
 		
 		<!-- creates binary jar -->
-		<jar	jarfile="${stageName}/tranqgen.jar"
+		<jar	jarfile="${stageName}/xmlgen.jar"
 				manifest="./META-INF/Generator.MANIFEST.MF"
 				compress="false">
 			<fileset dir="temp" includes="**/*.*" />
@@ -357,18 +404,19 @@
 		<!-- creates javadoc -->
 		<mkdir		dir="${stageName}/javadoc" />
 		<javadoc	locale="en_US"
-					packagenames="com.sun.tranquilo.generator.*"
+					packagenames="com.sun.msv.generator.*"
 					sourcepath="${stageName}/src"
 					destdir="${stageName}/javadoc"
-					windowtitle="Tranquilo Generator"
+					windowtitle="Sun XML Generator"
 					public="yes"
+					authro="yes"
 					>
 			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
 			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
 		</javadoc>
 		
 		<!-- creates distribution package -->
-		<zip	zipfile="${packageDir}/tranqgen.${DSTAMP}.zip"
+		<zip	zipfile="${packageDir}/xmlgen.${DSTAMP}.zip"
 				basedir="."
 				includes="${stageName}/**/*.*" />
 		

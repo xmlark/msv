@@ -113,24 +113,12 @@ public class ]]></xsl:text>
 		<xsl:for-each select="primitiveSymbol">
 			<xsl:text>	private static final NonTerminalSymbol </xsl:text>
 				<xsl:value-of select="@id"/>
-			<xsl:text> = new NonTerminalSymbol(){</xsl:text>
-<xsl:text><![CDATA[
-		public LLParser.Receiver createReceiver( final LLParser.Receiver parent ) {
-			return new LLParser.CharacterReceiver(){
-				public void action(DatabindableDatatype dt, String literal, ValidationContext context ) throws Exception {
-					((LLParser.ObjectReceiver)parent).action(
-						dt.createJavaObject(literal,context) );
-				}
-				public void start() throws Exception {}
-				public void end() throws Exception {}
-			};
-		}
-		public String toString() { return "]]></xsl:text>
+			<xsl:text> = new DefaultNonTerminalSymbol("</xsl:text>
 			<xsl:value-of select="@id"/>
-			<xsl:text>"; }
-	};
-</xsl:text>
+			<xsl:text>");</xsl:text>
+			<xsl:call-template name="CRLF"/>
 		</xsl:for-each>
+		<xsl:call-template name="CRLF"/>
 		
 		
 		
@@ -441,35 +429,24 @@ public class ]]></xsl:text>
 			<xsl:call-template name="CRLF"/>
 			
 			<xsl:for-each select="action">
-				<xsl:text>		private static final Rule[] a</xsl:text>
-				<xsl:value-of select="@no"/>
-				<xsl:choose>
-					<xsl:when test="count(rule)=1">
-						<!--
-							if this action contains only one rule,
-							then we don't need to create a new array
-						-->
-						<xsl:text> = </xsl:text>
-						<xsl:value-of select="rule/@ref"/>
-						<xsl:text>.selfArray</xsl:text>
-					</xsl:when>
-					<xsl:otherwise>
-						<!--
-							if this action has more than one rule,
-							an explicit array creation is necessary
-						-->
-						<xsl:text> = new Rule[]{</xsl:text>
-						<xsl:for-each select="rule">
-							<xsl:if test="position()!=1">
-								<xsl:text>,</xsl:text>
-							</xsl:if>
-							<xsl:value-of select="@ref"/>
-						</xsl:for-each>
-						<xsl:text>}</xsl:text>
-					</xsl:otherwise>
-				</xsl:choose>
-				<xsl:text>;</xsl:text>
-				<xsl:call-template name="CRLF"/>
+				<xsl:if test="count(rule)>1">
+					<xsl:text>		private static final Rule[] a</xsl:text>
+					<xsl:value-of select="@no"/>
+					<!--
+						if this action has more than one rule,
+						an explicit array creation is necessary
+					-->
+					<xsl:text> = new Rule[]{</xsl:text>
+					<xsl:for-each select="rule">
+						<xsl:if test="position()!=1">
+							<xsl:text>,</xsl:text>
+						</xsl:if>
+						<xsl:value-of select="@ref"/>
+					</xsl:for-each>
+					<xsl:text>}</xsl:text>
+					<xsl:text>;</xsl:text>
+					<xsl:call-template name="CRLF"/>
+				</xsl:if>
 			</xsl:for-each>
 			<xsl:call-template name="CRLF"/>
 			
@@ -483,8 +460,21 @@ public class ]]></xsl:text>
 				<xsl:value-of select="@stackTop"/>
 				<xsl:text> &amp;&amp; input==</xsl:text>
 				<xsl:value-of select="@token"/>
-				<xsl:text> ) return a</xsl:text>
-				<xsl:value-of select="@no"/>
+				<xsl:text> ) return </xsl:text>
+				<xsl:choose>
+					<xsl:when test="count(rule)>1">
+						<xsl:text>a</xsl:text>
+						<xsl:value-of select="@no"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<!--
+							if an action consists of only one rule, we don't use
+							a separate field
+						-->
+						<xsl:value-of select="rule/@ref"/>
+						<xsl:text>.selfArray</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
 				<xsl:text>;</xsl:text>
 				<xsl:call-template name="CRLF"/>
 			</xsl:for-each>

@@ -1,13 +1,15 @@
 package com.sun.msv.schematron;
 
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.XMLReader;
+
 import com.sun.msv.driver.textui.DebugController;
 import com.sun.msv.driver.textui.ReportErrorHandler;
 import com.sun.msv.grammar.Grammar;
-import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.schematron.reader.SRELAXNGReader;
 import com.sun.msv.schematron.verifier.RelmesVerifier;
-import javax.xml.parsers.SAXParserFactory;
-import org.xml.sax.XMLReader;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 
 public class Driver
 {

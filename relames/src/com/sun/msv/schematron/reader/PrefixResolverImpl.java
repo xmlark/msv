@@ -1,9 +1,10 @@
 package com.sun.msv.schematron.reader;
 
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.GrammarReader;
 import org.apache.xml.utils.PrefixResolver;
 import org.xml.sax.Locator;
+
+import com.sun.msv.reader.GrammarReader;
+import com.sun.msv.reader.State;
 
 /**
  * prefix resolver.

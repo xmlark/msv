@@ -1,9 +1,11 @@
 package com.sun.msv.schematron.reader;
 
+import javax.xml.transform.TransformerException;
+
+import org.apache.xpath.XPath;
+
 import com.sun.msv.reader.ChildlessState;
 import com.sun.msv.schematron.grammar.SAction;
-import org.apache.xpath.XPath;
-import javax.xml.transform.TransformerException;
 
 public abstract class SActionState extends ChildlessState {
 	
@@ -19,10 +21,10 @@ public abstract class SActionState extends ChildlessState {
 				a.document = document.toString().trim();
 				onActionReady(a);
 			} catch( TransformerException e ) {
-				reader.reportError( reader.ERR_INVALID_XPATH, test, e.getMessage() );
+				reader.reportError( SRELAXNGReader.ERR_INVALID_XPATH, test, e.getMessage() );
 			}
 		} else {
-			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, startTag.qName, "context" );
+			reader.reportError( SRELAXNGReader.ERR_MISSING_ATTRIBUTE, startTag.qName, "context" );
 		}
 		
 		super.endSelf();

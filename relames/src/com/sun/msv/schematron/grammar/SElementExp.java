@@ -1,9 +1,10 @@
 package com.sun.msv.schematron.grammar;
 
-import com.sun.msv.grammar.NameClass;
-import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.trex.ElementPattern;
 import org.apache.xml.utils.PrefixResolver;
+
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.trex.ElementPattern;
 
 /**
  * ElementPattern with schematron annotation

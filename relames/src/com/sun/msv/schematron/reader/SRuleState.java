@@ -1,13 +1,16 @@
 package com.sun.msv.schematron.reader;
 
+import java.util.Vector;
+
+import javax.xml.transform.TransformerException;
+
+import org.apache.xpath.XPath;
+
 import com.sun.msv.reader.SimpleState;
 import com.sun.msv.reader.State;
-import com.sun.msv.util.StartTagInfo;
-import com.sun.msv.schematron.grammar.SRule;
 import com.sun.msv.schematron.grammar.SAction;
-import org.apache.xpath.XPath;
-import java.util.Vector;
-import javax.xml.transform.TransformerException;
+import com.sun.msv.schematron.grammar.SRule;
+import com.sun.msv.util.StartTagInfo;
 
 public class SRuleState extends SimpleState implements SActionReceiver {
 	
@@ -45,10 +48,10 @@ public class SRuleState extends SimpleState implements SActionReceiver {
 				rule.xpath = new XPath(context,null,new PrefixResolverImpl(this), XPath.MATCH);
 				((SRuleReceiver)parentState).onRule(rule);
 			} catch( TransformerException e ) {
-				reader.reportError( reader.ERR_INVALID_XPATH, context, e.getMessage() );
+				reader.reportError( SRELAXNGReader.ERR_INVALID_XPATH, context, e.getMessage() );
 			}
 		} else {
-			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, startTag.qName, "context" );
+			reader.reportError( SRELAXNGReader.ERR_MISSING_ATTRIBUTE, startTag.qName, "context" );
 		}
 		
 		super.endSelf();

@@ -1,32 +1,34 @@
 package com.sun.msv.schematron.verifier;
 
-import com.sun.msv.verifier.DocumentDeclaration;
-import com.sun.msv.verifier.IVerifier;
-import com.sun.msv.verifier.Verifier;
-import com.sun.msv.verifier.VerifierFilter;
-import com.sun.msv.verifier.ValidityViolation;
-import com.sun.msv.schematron.grammar.SElementExp;
-import com.sun.msv.schematron.grammar.SAction;
-import com.sun.msv.schematron.grammar.SRule;
-import com.sun.msv.schematron.util.DOMBuilder;
-import org.apache.xpath.XPathContext;
+import java.util.Map;
+import java.util.Stack;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import org.apache.xml.utils.PrefixResolverDefault;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.Attributes;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.helpers.LocatorImpl;
+import org.apache.xpath.XPathContext;
 import org.relaxng.datatype.Datatype;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.traversal.NodeIterator;
-import java.util.Map;
-import java.util.Stack;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
+import org.xml.sax.Attributes;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.LocatorImpl;
+
+import com.sun.msv.schematron.grammar.SAction;
+import com.sun.msv.schematron.grammar.SElementExp;
+import com.sun.msv.schematron.grammar.SRule;
+import com.sun.msv.schematron.util.DOMBuilder;
+import com.sun.msv.verifier.DocumentDeclaration;
+import com.sun.msv.verifier.IVerifier;
+import com.sun.msv.verifier.ValidityViolation;
+import com.sun.msv.verifier.Verifier;
+import com.sun.msv.verifier.VerifierFilter;
 
 public class RelmesVerifier implements IVerifier {
 	
@@ -155,7 +157,7 @@ public class RelmesVerifier implements IVerifier {
 				testRule( (SRule)effectiveRules.get(i), node );
 			
 			// recursively process children
-			if( node.getNodeType()==node.ELEMENT_NODE ) {
+			if( node.getNodeType()==Node.ELEMENT_NODE ) {
 				Element e = (Element)node;
 				NamedNodeMap atts = e.getAttributes();
 				len = atts.getLength();

@@ -1,13 +1,15 @@
 package com.sun.msv.schematron.reader;
 
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.InputSource;
+
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.trex.TREXGrammar;
-import com.sun.msv.reader.State;
 import com.sun.msv.reader.GrammarReaderController;
+import com.sun.msv.reader.State;
 import com.sun.msv.reader.trex.ng.RELAXNGReader;
 import com.sun.msv.util.StartTagInfo;
-import javax.xml.parsers.SAXParserFactory;
-import org.xml.sax.InputSource;
 
 public class SRELAXNGReader extends RELAXNGReader {
 

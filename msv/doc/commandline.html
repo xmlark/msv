@@ -1,0 +1,79 @@
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE>Tranquilo Readme</TITLE>
+	<style>
+		.title
+		{
+			text-align:center;
+			font-weight:bold;
+		}
+		LI
+		{
+			margin-top: 1em;
+		}
+		PRE
+		{
+			background-color: rgb(240,240,240);
+		}
+	</style>
+</HEAD>
+<BODY>
+<P ALIGN=center STYLE="MARGIN-BOTTOM: 0in"><B>USAGE GUIDE&nbsp;FOR Tranquilo
+Verifier<BR>Preview Version.1 April,2001<BR><BR>Copyright (c) Sun
+Microsystems, 2001</B></P>
+<P STYLE="MARGIN-BOTTOM: 0in"><BR>
+</P>
+<P ALIGN=right>Document written by <A href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke
+KAWAGUCHI</A> <BR>      $Id:&nbsp;
+$ 
+</P>
+<P>Sun Tranquilo Verifier  is  a Java tool to validate XML documents with
+schema language. It supports RELAX Namespace, RELAX Core, and TREX.</P>
+<H1>Usage</H1>
+<P>To validate XML documents with a schema, do as follows</P><PRE>$ java -jar tranquilo.jar MySchema.rxg MyDocument1.xml MyDocument2.xml</PRE>
+<P>Or if you'd like to use TREX,</P><PRE>$ java -jar tranquilo.jar MySchema.trex MyDocument1.xml MyDocument2.xml</PRE>
+<P>You can also use&nbsp;URL&nbsp;instead of&nbsp;filename. 
+Under some operating systems (including Windows), wild card for filenames is not 
+available.</P>
+<P>If the schema contains some errors, you will see messages like 
+this.</P>
+<PRE>
+start parsing 
+a grammar. the following
+hedgeRules form a infinite recursion ( y &gt; z  &gt;  y )
+  18:23@file:///c:/work/relax/relax024.e.rlx
+  14:23@file:///c:/work/relax/relax024.e.rlx
+failed to load a grammar.
+</PRE>
+<P>"18:23@XYZ" indicates that the error is related with line 18, column 23 of file XYZ.</P>
+<P>If the document is valid, you will see messages like this.</P>
+<PRE>
+start parsing a grammar.
+validating c:\work\relax\relax001.v00.xml
+the document is valid.
+</PRE>
+<P>Alternatively, if the&nbsp;document has some errors, you 
+will see messages like this.</P>
+<PRE>
+start parsing a grammar.
+validating c:\work\relax\relax001.n02.xml
+Error at line:5, column:5 of file:///c:/work/relax/relax001.n02.xml
+  tag name "q" is not allowed. possible tag names are:
+
+the document is NOT valid.
+</PRE>
+<P>Please note that line/column infomation is sometimes 
+inaccurate, and one tab char is counted as one character, not 4 or 8. So you 
+might want to look around to find the actual error.</P>
+<H1>Options</H1>
+<P>Command line tool has several other options. You can see the list of 
+available options by invoking Tranquilo without any arguments.</P><PRE>$ java -jar tranquilo.jar</PRE>
+<H1>Further Readings</H1>
+<P>To learn RELAX,&nbsp;<A href="http://www.xml.gr.jp/relax/">"How to RELAX"</A> 
+is a good starter. To learn TREX, there is <A 
+href="http://thaiopensource.com/trex/tutorial.html">"TREX tutorial"</A>. For XML 
+Schema Part 2, see <A 
+href="http://www.w3.org/TR/2001/PR-xmlschema-0-20010316/#CreatDt">section 
+2.3&nbsp;of XML Schema Part 0: Primer</A></P>
+<P>&nbsp;</P></BODY></HTML>

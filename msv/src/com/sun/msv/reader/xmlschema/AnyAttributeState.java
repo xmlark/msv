@@ -81,8 +81,10 @@ public class AnyAttributeState extends AnyState {
 						}
 					});
 				
-				exp.exp = reader.pool.createSequence( 
-					reader.pool.createAttribute( laxNc ),
+				exp.exp = reader.pool.createSequence(
+					reader.pool.createZeroOrMore(
+						reader.pool.createAttribute( laxNc )
+					),
 					exp.exp );
 			}
 		});

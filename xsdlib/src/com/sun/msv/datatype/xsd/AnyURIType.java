@@ -14,7 +14,8 @@ import java.io.ByteArrayInputStream;
 /**
  * "anyURI" type.
  * 
- * See http://www.w3.org/TR/xmlschema-2/#anyURI for the spec
+ * See http://www.w3.org/TR/xmlschema-2/#anyURI for the spec.
+ * value object of "anyURI" type is escaped URI.
  * 
  * @author Kohsuke KAWAGUCHI
  */
@@ -27,11 +28,74 @@ public class AnyURIType extends ConcreteType implements Discrete
 	{
 		return convertToValue(content,context)!=null;
 	}
+
+	private static void appendHex( StringBuffer buf, int hex )
+	{
+		if( hex<10 )	buf.append( (char)(hex+'0') );
+		else			buf.append( (char)(hex-10+'A') );
+	}
+	private static void appendByte( StringBuffer buf, int ch )
+	{
+		buf.append('%');
+		appendHex( buf, ch/16 );
+		appendHex( buf, ch%16 );
+	}
+	private static void appendEscaped( StringBuffer buf, char ch )
+	{// convert one 'char' in BMP to UTF-8 encoding
+		if( ch<0x7F )
+		{
+			appendByte(buf,(int)ch);
+			return;
+		}
+		if( ch<0x7FF )
+		{
+			appendByte(buf, 0xC0 + (ch>>6));
+			appendByte(buf, 0x80 + (ch%64));
+			return;
+		}
+		if( ch<0xFFFF )
+		{
+			appendByte(buf, 0xE0 + (ch>>12) );
+			appendByte(buf, 0x80 + ((ch>>6)%64) );
+			appendByte(buf, 0x80 + (ch%64) );
+		}
+	}
+	private static void appendEscaped( StringBuffer buf, char ch1, char ch2 )
+	{// convert one surrogate pair to UTF-8 encoding
+		int ucs = (((int)(ch1&0x3FF))<<10) + (ch2&0x3FF);
+		
+		appendByte(buf, 0xF0 + (ucs>>18) );
+		appendByte(buf, 0x80 + ((ucs>>12)%64) );
+		appendByte(buf, 0x80 + ((ucs>> 6)%64) );
+		appendByte(buf, 0x80 + (ucs%64) );
+	}
 	
+	/** escape non-ASCII characters in URL */
+	public static String escape( String content )
+	{
+		StringBuffer escaped = new StringBuffer(content.length());
+		for( int i=0; i<content.length(); i++ )
+		{
+			char ch = content.charAt(i);
+			if( ch<128 )	// TODO: how should we escape reserved characters
+				escaped.append(ch);
+			else
+			{// escape it
+				if( 0xD800 <= ch && ch < 0xDC00 )	// surrogate pair
+					appendEscaped( escaped, ch, content.charAt(++i) );
+				else	// normal
+					appendEscaped( escaped, ch );
+			}
+		}
+		return new String(escaped);
+	}
+
 	public Object convertToValue( String content, ValidationContextProvider context )
 	{
 		// we can't use java.net.URL (for example, it cannot handle IPv6.)
-		// so use lexical value instead
+		
+		// TODO: directly create byte[]
+		content = escape(content);
 		
 		try
 		{// make sure it conforms [RFC2396] (amended by [RFC2732])

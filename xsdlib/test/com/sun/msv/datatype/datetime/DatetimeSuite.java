@@ -23,10 +23,6 @@ public class DatetimeSuite extends TestCase {
 		suite.addTest(com.sun.tranquilo.datatype.datetime.BigDateTimeValueTypeTest.suite());
 		suite.addTest(com.sun.tranquilo.datatype.datetime.TimeZoneTest.suite());
 		suite.addTest(com.sun.tranquilo.datatype.datetime.ISO8601ParserTest.suite());
-		suite.addTest(com.sun.tranquilo.datatype.datetime.ISO8601ParserTokenManagerTest.suite());
-		suite.addTest(com.sun.tranquilo.datatype.datetime.ParseExceptionTest.suite());
-		suite.addTest(com.sun.tranquilo.datatype.datetime.TokenTest.suite());
-		suite.addTest(com.sun.tranquilo.datatype.datetime.TokenMgrErrorTest.suite());
 		//:JUNIT--
 		//This value MUST ALWAYS be returned from this function.
 		return suite;

@@ -108,27 +108,27 @@
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="msv/msv/src"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}/src/" />
+				command="export -d src ${cvsExportOpt}"
+				dest="${stageName}" />
 		
 		<!-- obtain source code of XSDLib -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="msv/xsdlib/src"
-				command="export -d . ${cvsExportOpt}"
-				dest="temp_xsdlibsrc" />
+				command="export -d temp_xsdlibsrc ${cvsExportOpt}"
+				dest="." />
 		
 		<!-- obtain document files -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="msv/msv/doc"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}" />
+				command="export -d ${stageName} ${cvsExportOpt}"
+				dest="." />
 	
 		<!-- obtain examples -->
 		<mkdir dir="${stageName}/examples"/>
 		<cvs	cvsRoot="${cvsRoot}"
 				package="msv/msv/examples"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}/examples" />
+				command="export -d examples ${cvsExportOpt}"
+				dest="${stageName}" />
 		
 		<!-- compile files -->
 		<javac	srcdir="${stageName}/src"

@@ -77,14 +77,14 @@
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="msv/rngconverter/src"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}/src" />
+				command="export -d src ${cvsExportOpt}"
+				dest="${stageName}" />
 				
 		<!-- obtain document files -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="msv/rngconverter/doc"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}" />
+				command="export -d ${stageName} ${cvsExportOpt}"
+				dest="." />
 		
 		
 		<!-- compile files -->

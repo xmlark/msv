@@ -121,24 +121,24 @@
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="msv/xsdlib/examples"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}/examples" />
+				command="export -d examples ${cvsExportOpt}"
+				dest="${stageName}" />
 		<cvs	cvsRoot="${cvsRoot}"
 				package="msv/xsdlib/src"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}/src" />
-
+				command="export -d src ${cvsExportOpt}"
+				dest="${stageName}" />
+		<!-- obtain document files -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="msv/xsdlib/doc"
+				command="export -d ${stageName} ${cvsExportOpt}"
+				dest="." />
+		
+		
 		<!-- copy Xerces files into source directory -->
 		<copy todir="${stageName}/src">
 			<fileset dir="${xerces.source}" includes="org/apache/xerces/utils/regex/*.*" />
 		</copy>
 		
-		<!-- obtain document files -->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="msv/xsdlib/doc"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}" />
-				
 		<!-- run javacc -->
 		<antcall target="doJavacc">
 			<param name="src" value="${stageName}/src" />

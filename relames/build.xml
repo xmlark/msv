@@ -30,12 +30,12 @@
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
 				package="msv/relames/src"
-				command="export -d . -D now"
-				dest="${stageName}/src/" />
+				command="export -d src -D now"
+				dest="${stageName}" />
 		<cvs	cvsRoot="${cvsRoot}"
 				package="msv/relames/doc"
-				command="export -d . -D now"
-				dest="${stageName}" />
+				command="export -d ${stageName} -D now"
+				dest="." />
 		<fixcrlf	srcdir="${stageName}"
 					cr="remove"
 					eof="remove"

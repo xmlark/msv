@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.util.StringPair;
 import com.sun.msv.util.StringRef;
 import com.sun.msv.util.DatatypeRef;
 import com.sun.msv.verifier.Acceptor;
@@ -233,7 +234,7 @@ public class TypeDetecter extends AbstractVerifier {
 		// ID/IDREF check
 		Iterator itr = idrefs.keySet().iterator();
 		while( itr.hasNext() ) {
-			String symbolSpace = (String)itr.next();
+			StringPair symbolSpace = (StringPair)itr.next();
 			
 			Set refs = (Set)idrefs.get(symbolSpace);
 			Set keys = (Set)ids.get(symbolSpace);

@@ -77,6 +77,14 @@ public class ComplexTypeDeclState extends RedefinableDeclState {
 		return reader.pool.createSequence( newChildExpression, halfCastedExpression );
 	}
 																												   
+	protected Expression defaultExpression() {
+		// if no content model is given, then this complex type is ur-type.
+		// TODO: confirm it.
+		
+		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
+		reader.reportWarning( reader.WRN_IMPLICIT_URTYPE_FOR_COMPLEXTYPE, null );
+		return reader.complexUrType;
+	}
 	
 	protected Expression annealExpression(Expression contentType) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;

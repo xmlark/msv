@@ -16,4 +16,8 @@ public class SuperClassItem extends JavaItem {
 	
 	/** actual super class definition. */
 	public ClassItem definition = null;
+
+	public Object visitJI( JavaItemVisitor visitor ) {
+		return visitor.onSuper(this);
+	}
 }

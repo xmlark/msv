@@ -14,4 +14,8 @@ package com.sun.tahiti.grammar;
  */
 public class IgnoreItem extends JavaItem {
 	public IgnoreItem() { super("$ignore"); }
+
+	public Object visitJI( JavaItemVisitor visitor ) {
+		return visitor.onIgnore(this);
+	}
 }

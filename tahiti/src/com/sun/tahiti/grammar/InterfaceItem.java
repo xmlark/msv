@@ -15,4 +15,8 @@ public class InterfaceItem extends TypeItem {
 	}
 
 	public Type getSuperType() { return null; } // interfaces do not have the super type.
+
+	public Object visitJI( JavaItemVisitor visitor ) {
+		return visitor.onInterface(this);
+	}
 }

@@ -37,4 +37,8 @@ public class FieldItem extends JavaItem {
 	 * This field is computed during the first pass of the normalization.
 	 */
 	public final Set types = new java.util.HashSet();
+
+	public Object visitJI( JavaItemVisitor visitor ) {
+		return visitor.onField(this);
+	}
 }

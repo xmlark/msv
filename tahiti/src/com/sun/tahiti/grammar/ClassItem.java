@@ -35,4 +35,8 @@ public class ClassItem extends TypeItem {
 		if(superClass==null)	return null;
 		return superClass.definition;
 	}
+	
+	public Object visitJI( JavaItemVisitor visitor ) {
+		return visitor.onClass(this);
+	}
 }

@@ -38,4 +38,8 @@ public class PrimitiveItem extends JavaItem implements Type {
 	public Type getSuperType()		{ return type.getSuperType(); }
 	public String getPackageName()	{ return type.getPackageName(); }
 	public String getBareName()		{ return type.getBareName(); }
+
+	public Object visitJI( JavaItemVisitor visitor ) {
+		return visitor.onPrimitive(this);
+	}
 }

@@ -16,10 +16,12 @@ import com.sun.msv.grammar.OtherExp;
  * that are used to annotate data-binding information
  * to AGM.
  */
-public class JavaItem extends OtherExp {
+public abstract class JavaItem extends OtherExp {
 	public JavaItem( String name ) {
 		this.name = name;
 	}
 	
 	public String name;
+	
+	public abstract Object visitJI( JavaItemVisitor visitor );
 }

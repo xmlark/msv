@@ -128,7 +128,7 @@ public abstract class GrammarReader
 	 */
 	public static final PrefixResolver basePrefixResolver = new PrefixResolver() {
 		public String resolve( String prefix ) {
-			if(prefix.equals("xml"))	return "http://www.w3.org/1998/xml";
+			if(prefix.equals("xml"))	return "http://www.w3.org/XML/1998/namespace";
 			else						return null;
 		}
 	};

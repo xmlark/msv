@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- $Id$ -->
+<suite>
+<comment>
+
+<case name="test for string">
+	<value></value>
+	<value>x</value>
+	<value>--</value>
+	<value>&#x10005;&#x10009;</value>
+	
+	<value>$#"</value>
+	<value>日本�?/value>	<!-- "the Japanese" in kanji. length 3 -->
+	<value>lame</value>
+	<value>label</value>
+	
+	<value>length</value>
+	<value> a b c </value>
+	<value>quicker</value>
+	<value>length 8</value>
+	<value>GetItDone</value>
+	<value>McDonald's</value>
+	<value>drive safely</value>
+	
+	<!--   123456789-123456 -->
+	<value>  more   space  </value>
+	<value>  	
+		tab and   returns
+		</value>
+	
+	<answer for="string"			>oooo oooo ooooooo oo</answer>
+	
+	<facets><combination>
+		
+		<choice>
+			<!-- length test -->
+			<facet answer=			"o... .... ....... .." name="length" value="0" />
+			<facet answer=			"..oo .... ....... .." name="length" value="2" />
+			<facet answer=			".... oo.. ....... .." name="length" value="3" />
+			<facet answer=			".... .... ....... o." name="length" value="16" />
+			<facet answer=			".... .... ....... .o" name="length" value="26" />
+			<!-- min/maxLength -->
+			<combination>
+				<choice>
+					<facet answer=	"oooo oooo ooooooo oo" name="minLength" value="0" />
+					<facet answer=	"..oo oooo ooooooo oo" name="minLength" value="2" />
+					<facet answer=	".... .... ooooooo oo" name="minLength" value="6" />
+				</choice>
+				<choice>
+					<facet answer=	"oooo oooo o...... .." name="maxLength" value="6" />
+					<facet answer=	"oooo oooo ooooo.. .." name="maxLength" value="9" />
+					<facet answer=	"oooo oooo ooooooo o." name="maxLength" value="20" />
+					<facet answer=	"oooo oooo ooooooo oo" name="maxLength" value="999999999999999999999999999999999999999" />
+				</choice>
+			</combination>
+		</choice>
+		
+		<!-- enumeration -->
+		<combination mode="or">
+			<facet			answer=	".... .... ....... .." name="enumeration" value="more  space" />
+			<facet			answer=	".... .... ....... .." name="enumeration" value="more space" />	<!-- makes sure that whiteSpace=preserve -->
+			<facet			answer=	"o... .... ....... .." name="enumeration" value="" />
+			<facet			answer=	".... ...o ....... .." name="enumeration" value="label" />
+		</combination>
+		
+		<!-- pattern -->
+		<combination mode="or">
+			<facet			answer=	".... ..oo o..o... .." name="pattern" value="l.*" />
+			<facet			answer=	".... .... ...o... .." name="pattern" value=".*[0-9].*" />
+			<facet			answer=	".ooo oooo o.o.oo. .." name="pattern" value="[^ ]+" />
+		</combination>
+	</combination></facets>
+	
+	<wrongs />	<!-- nothing can be wrong as string -->
+</case>
+
+
+<case name="test for year">
+	<value>  -999999999999999999999999999999999999999999999999999999999999999999Z</value>
+	<value  >-10000</value>
+	<value > -0852+02:00</value>
+	<value>  -0312</value>
+	<value  >-0019Z</value>
+	
+	<value > -0002</value>
+	<value > -0001-09:00</value>
+	<value   >0001</value>
+	<value>   0001Z</value>
+	<value  > 0001-08:00</value>
+	<value >  0001+08:00</value>
+	<value  > 0053</value>
+	<value >  0227</value>
+	
+	<value>   1255</value>
+	<value   >2512Z</value>
+	<value  > 7522</value>
+	<value >  9999</value>
+	<value>   12555+09:00</value>
+	
+	<value   >99999999999999999999+05:00</value>
+	<value  > 999999999999999999999999999999999999999999999999999999999999999999</value>
+	
+	<answer for="year"		>ooooo oooooooo ooooo oo</answer>
+
+	<facets><combination>
+		<combination mode="or">
+			<facet answer=	"..... ..o..... ..... .." name="enumeration" value="0001" />
+			<facet answer=	"..... ........ ..... .o" name="enumeration" value="999999999999999999999999999999999999999999999999999999999999999999" />
+		</combination>
+		<combination mode="or">
+			<facet answer=	"..... ..o...oo o.oo. .." name="pattern" value="...." />
+			<facet answer=	".o.o. o.o...oo o.oo. .o" name="pattern" value="-?[0-9]+" />
+		</combination>
+	</combination></facets>
+
+	<wrongs>
+		<!-- no year 0 -->
+		<value> 0000</value>
+		<value> 0000Z</value>
+		<value> 0000+08:00</value>
+		<value>-0000</value>
+		<value> 00000000</value>
+		<value>-000000</value>
+
+		<!-- no trancated form -->
+		<value >99</value>
+		<value> 199</value>
+		<value>-115</value>
+
+		<!-- wrong time zone -->
+		<value>2000ZZ</value>
+		<value>2000+14:01</value>
+		<value>2000-14:01</value>
+		<value>2000-8:00</value>
+		<value>2000+000</value>
+		<value>2000-00:000</value>
+		<value>2000-0:0</value>
+		<value>2000 GMT</value>
+		<value>2000z</value>
+
+		<!-- with month/day -->
+		<value>2000-01-01</value>
+		<value>2000-01</value>
+
+		<!-- format related problem -->
+		<value> 1 9 9 9 </value>		<!-- illegal whitespace -->
+		<value>(1999)</value>
+		<value>1999:</value>
+		<value>1999-</value>
+		<value>01999</value>
+	</wrongs>
+</case>
+
+<case name="test for date">
+	<value>-0013-08-31</value>
+	<value>-0001-12-31 </value>
+	<value> 0001-01-01</value>
+	<value> 1996-02-29  </value>
+	
+	<value> 2001-01-01 </value>
+	<value> 2001-01-01-14:00 </value>
+	<value >2001-01-01-08:00     </value>
+	<value> 2001-01-01Z </value>
+	<value> 2001-01-01+05:00 </value>
+	<value> 2001-01-01+14:00</value>
+	<value> 2001-01-02 </value>
+
+	<value> 9999999999999999999999999999999999999999999999999999999999999999999-01-01 </value>
+	<value> 9999999999999999999999999999999999999999999999999999999999999999999-01-01Z </value>
+	<value> 9999999999999999999999999999999999999999999999999999999999999999999-01-01+05:00 </value>
+
+	<value> 1512-01-04-12:00 </value>
+	<value> 1512-01-05+12:00 </value>
+	<value>2000-02-29Z</value>
+
+	<answer for="date"		>oooo ooooooo ooo ooo</answer>
+
+	<facets><combination>
+		<combination mode="or">
+			<facet answer=	".... ....... ... oo." name="enumeration" value="1512-01-05+12:00" />
+			<facet answer=	".... o...... ... ..." name="enumeration" value="2001-01-01" />
+		</combination>
+		<combination mode="or">
+			<facet answer=	"o..o ....... ooo oo." name="pattern" value="-?..[13579].*" />
+			<facet answer=  ".ooo o...... o.. oo." name="pattern" value=".*[24680]" />
+		</combination>
+</combination></facets>
+	
+	<wrongs>
+		<!-- no year 0 -->
+		<value> 0000-01-01</value>
+		<value>-0000-05-03</value>
+		<value> 00000000-11-04</value>
+		<value>-00000000-07-09</value>
+
+		<!-- no trancated form -->
+		<value> 99-05-05 </value>
+		<value>  952-03-05</value>
+		<value> -952-02-09</value>
+		<value> 1253-1-03</value>
+		<value> 1245-09-7</value>
+		<value> 1877- 1- 1</value>
+		
+		<!-- impossible day of month -->
+		<value>1932-01-32</value>
+		<value>1159-02-29</value>
+		<value>1900-02-29Z</value>
+		<value>1168-03-32</value>
+		<value>1654-04-31-05:00</value>
+		<value>1705-05-32</value>
+		<value>1812-06-31+08:00</value>
+		<value>0432-07-32</value>
+		<value>0779-08-32Z</value>
+		<value>1425-09-31</value>
+		<value>1227-10-32-01:00</value>
+		<value>1621-11-31</value>
+		<value>0015-12-32Z+09:0</value>
+
+		<!-- wrong time zone -->
+		<value>2000-01-01ZZ</value>
+		<value>2000-01-01+14:01</value>
+		<value>2000-01-01-14:01</value>
+		<value>2000-01-01-8:00</value>
+		<value>2000-01-01+000</value>
+		<value>2000-01-01-00:000</value>
+		<value>2000-01-01-0:0</value>
+		<value>2000-01-01 GMT</value>
+		<value>2000-01-01z</value>
+
+		<!-- format related problem -->
+		<value> 1956 - 05 - 32 </value>		<!-- illegal whitespace -->
+		<value> 2000/05/05 </value>			<!-- illegal separator -->
+		<value>2000-01-01 Z +05:00</value>
+	</wrongs>
+</case>
+
+
+<case name="test for boolean">
+	<value>true</value>
+	<value>false</value>
+	
+	<answer for="boolean">oo</answer>
+
+	<facets>
+		<!-- pattern is the only applicable facet -->
+		<combination mode="or">
+			<facet answer="o." name="pattern" value="tr.*" />
+			<facet answer=".o" name="pattern" value="f.*" />
+			<facet answer=".." name="pattern" value="f..." />
+		</combination>
+
+	</facets>
+	
+	<wrongs>
+		<value>True</value>
+		<value>FALSE</value>
+		<value>0</value>
+		<value>1</value>
+	</wrongs>
+</case>
+</comment>
+
+<case name="test for integer and its derived types">
+	<value>-9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999</value>
+	<value>-123104809034590906573845</value>
+	<value>-9223372036854775809</value><!--  MIN_LONG -1 -->
+	<value>-9223372036854775808</value><!--minimum possible value for long-->
+	<value>-324021378997</value>
+
+	<value>-2147483649</value><!-- MIN_INT -1 -->
+	<value>-2147483648</value><!-- minimum possible value for int -->
+	<value>-32769</value><!-- MIN_SHORT -1 -->
+	<value>-32768</value><!-- MIN_SHORT -->
+	<value>-11100</value><!-- precision=3? precision=5? -->
+	
+	<value>-129</value><!-- MIN_BYTE -1 -->
+	<value>-128</value><!-- MIN_BYTE -->
+	<value>-2</value>
+	<value>-1</value>
+	<value>-0</value>
+	
+	<value>0</value>
+	<value>000000000000000000000000000000000000000000000000000000000000</value><!-- valid representation of 0 -->
+	<value>+0</value>
+	<value> 1</value>
+	<value>+2</value>
+	
+
+	<value>127</value><!-- MAX_BYTE -->
+	<value>128</value><!-- MAX_BYTE +1 -->
+	<value>255</value><!-- MAX_UBYTE -->
+	<value>256</value><!-- MAX_UBYTE+1 -->
+	<value>1111</value>
+
+	<value>32767</value><!-- MAX_SHORT -->
+	<value>32768</value><!-- MAX_SHORT+1 -->
+	<value>65535</value><!-- MAX_USHORT -->
+	<value>65536</value><!-- MAX_USHORT+1 -->
+	<value>90893012</value>
+
+	<value>2147483647</value><!-- MAX_INT -->
+	<value>2147483648</value><!-- MAX_INT+1 -->
+	<value>4294967294</value>
+	<value>4294967295</value><!-- MAX_UINT -->
+	<value>4294967296</value><!-- MAX_UINT+1 -->
+
+	<value>9223372036854775807</value><!-- MAX_LONG -->
+	<value>9223372036854775808</value><!-- MAX_LONG+1 -->
+	<value>18446744073709551615</value><!-- MAX_ULONG -->
+	<value>18446744073709551616</value><!-- MAX_ULONG+1 -->
+	<!-- very long but valid integer -->
+	<value>99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999</value>
+	
+	<!-- decimal values are not valid -->
+	<value>0.0</value>
+	<value>0.</value>
+	<value>.0</value>
+	
+	<answer for="integer"				>ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ...</answer>
+	<answer for="negativeInteger"		>ooooo ooooo oooo. .....  ..... ..... ..... ..... ...</answer>
+	<answer for="nonPositiveInteger"	>ooooo ooooo ooooo ooo..  ..... ..... ..... ..... ...</answer>
+	<answer for="nonNegativeInteger"	>..... ..... ....o ooooo  ooooo ooooo ooooo ooooo ...</answer>
+	<answer for="positiveInteger"		>..... ..... ..... ...oo  ooooo ooooo ooooo ooooo ...</answer>
+	<answer for="long"					>...oo ooooo ooooo ooooo  ooooo ooooo ooooo o.... ...</answer>
+	<answer for="int"					>..... .oooo ooooo ooooo  ooooo ooooo o.... ..... ...</answer>
+	<answer for="short"					>..... ...oo ooooo ooooo  ooooo o.... ..... ..... ...</answer>
+	<answer for="byte"					>..... ..... .oooo ooooo  o.... ..... ..... ..... ...</answer>
+	<answer for="unsignedLong"			>..... ..... ....o ooooo  ooooo ooooo ooooo ooo.. ...</answer>
+	<answer for="unsignedInt"			>..... ..... ....o ooooo  ooooo ooooo oooo. ..... ...</answer>
+	<answer for="unsignedShort"			>..... ..... ....o ooooo  ooooo ooo.. ..... ..... ...</answer>
+	<answer for="unsignedByte"			>..... ..... ....o ooooo  ooo.. ..... ..... ..... ...</answer>
+	<answer for="decimal"				>ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ooo</answer>
+	
+	<facets><combination>
+		<choice>
+			<facet answer=				"..... ..... ooooo ooooo  oooo. ..... ..... ..... ooo" name="precision" value="3" />
+			<facet answer=				"..... ..... ooooo ooooo  ooooo ..... ..... ..... ooo" name="precision" value="4" />
+			<facet answer=				"..... ..ooo ooooo ooooo  ooooo oooo. ..... ..... ooo" name="precision" value="5" />
+			<facet answer=				"ooooo ooooo ooooo ooooo  ooooo ooooo ooooo oooo. ooo" name="precision" value="400" />
+<!-- precision can be any positiveInteger, but no way to support this in Java -->
+			<facet answer=				"ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ooo" name="precision" value="99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999" />
+		</choice>
+		<combination mode="or">
+			<facet answer=				"..... ..... ..... ...o.  ....o ..... ..... ..... ..." name="pattern" value="1*" />
+			<facet answer=				"..... ..... oo... .....  ....o ..... ..... ..... ..." name="pattern" value="...." />
+		</combination>
+		<combination mode="or">
+			<facet answer=				"..... ..... ....o ooo..  ..... ..... ..... ..... ooo" name="enumeration" value="0" />
+			<facet answer=				"..... ..... ..... ....o  ..... ..... ..... ..... ..." name="enumeration" value="2" />
+		</combination>
+		<choice>
+			<combination><!-- min-max pair part.1 -->
+				<choice>
+					<facet answer=		".oooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ooo" name="minExclusive" value="-9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999" />
+					<facet answer=		"..ooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ooo" name="minInclusive" value="-9223372036854775809" />
+					<facet answer=		"...oo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ooo" name="minExclusive" value="-9223372036854775809" />
+				</choice>
+				<choice>
+					<facet answer=		"ooo.. ..... ..... .....  ..... ..... ..... ..... ..." name="maxInclusive" value="-9223372036854775809" />
+					<facet answer=		"ooooo ..... ..... .....  ..... ..... ..... ..... ..." name="maxExclusive" value="-2147483649" />
+					<facet answer=		"ooooo o.... ..... .....  ..... ..... ..... ..... ..." name="maxInclusive" value="-2147483649" />
+					<facet answer=		"ooooo ooooo oooo. .....  ..... ..... ..... ..... ..." name="maxExclusive" value="+00000000000000000000000000000000000000000000" />
+					<facet answer=		"ooooo ooooo ooooo ooo..  ..... ..... ..... ..... ooo" name="maxInclusive" value="0" />
+					<facet answer=		"ooooo ooooo ooooo ooooo  ooooo ooooo ooooo oooo. ooo" name="maxExclusive" value="99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999" />
+					<facet answer=		"ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ooo" name="maxInclusive" value="99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999" />
+				</choice>
+			</combination>
+			<combination><!-- min-max pair part.2 -->
+				<choice>
+					<facet answer=		"..... ..... ....o ooooo  ooooo ooooo ooooo ooooo ooo" name="minInclusive" value="0" />
+					<facet answer=		"..... ..... ..... ...oo  ooooo ooooo ooooo ooooo ..." name="minExclusive" value="000000000000000000000000000000000000" />
+					<facet answer=		"..... ..... ..... .....  ...oo ooooo ooooo ooooo ..." name="minInclusive" value="256" />
+					<facet answer=		"..... ..... ..... .....  ....o ooooo ooooo ooooo ..." name="minExclusive" value="256" />
+					<facet answer=		"..... ..... ..... .....  ..... ..... ooooo ooooo ..." name="minInclusive" value="214748364" />
+					<facet answer=		"..... ..... ..... .....  ..... ..... ...oo ooooo ..." name="minInclusive" value="4294967295" />
+					<facet answer=		"..... ..... ..... .....  ..... ..... ....o ooooo ..." name="minExclusive" value="4294967295" />
+				</choice>
+				<choice>
+					<facet answer=		"ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ..... ooo" name="maxExclusive" value="9223372036854775807" />
+					<facet answer=		"ooooo ooooo ooooo ooooo  ooooo ooooo ooooo o.... ooo" name="maxInclusive" value="9223372036854775807" />
+					<facet answer=		"ooooo ooooo ooooo ooooo  ooooo ooooo ooooo oooo. ooo" name="maxInclusive" value="1844674407370955161618446744073709551616" />
+				</choice>
+			</combination>
+		</choice>
+	</combination></facets>
+	
+	<wrongs>
+		<value>+</value>
+		<value>-</value>
+		<value></value>
+		<value>++5</value>
+		<value>+-0</value>
+		<value>0x50</value>
+		<value>&amp;h20</value>
+		<value>#x11</value>
+		<value>-1E4</value>
+	</wrongs>
+</case>
+
+<comment>
+
+<case name="test of float/double (incomplete)">
+	<value>-INF</value>
+	<value>-999999999999999999999999999999999999999999999999999999999999999e99999999999999999999999999999999</value> <!-- way beyond the possible range of double, but valid -->
+	<value>-1.79769313486231570999999999999999999999999999e+308</value> <!-- MAX_DOUBLE + additional digits that will be rounded to MAX_DOUBLE -->
+	<value>-1.79769313486231570e+308</value> <!-- MAX_DOUBLE -->
+	<value>-3.4028234799999999999999E+38f</value>	<!-- MAX_FLOAT + additional digits -->
+	<value>-3.40282347e+38f</value>	<!-- MAX_FLOAT -->
+
+	<value>-.0</value>
+	<value>0.0</value>
+	<value>00000000000.00000000000e00000000000000000000000000000000</value>
+	<value>0.</value>
+	<value>+0</value>
+
+	<value>4.94065645841246544E-326</value>	<!-- should be rounded to -0 -->
+	<value>4.94065645841246544E-324</value>	<!-- MIN_DOUBLE -->
+	<value>0.70119923e-45f</value>	<!-- for float, should be rounded to -0 -->
+	<value>0.70119923000000000000000000001e-45f</value>	<!-- for float, should be rounded to MIN_FLOAT -->
+	<value>1.40239846e-45f</value>	<!-- MIN_FLOAT -->
+
+	<value>INF</value>
+	<value>NaN</value>
+
+	<answer for="float" 		>oooooo ooooo ooooo oo </answer>
+	<answer for="double"		>oooooo ooooo ooooo oo </answer>
+
+	<facets><combination>
+		<combination mode="or">
+			<facet answer=		"...... .ooo. ..... .." name="pattern" value="(0|\.|e)+" />
+			<facet answer=		"o..... ..... ..... oo" name="pattern" value="[^0-9]+" />
+		</combination>
+		<combination mode="or">
+			<facet answer=		"...... .oooo ..... .." name="enumeration" value="+0" />
+			<facet answer=		"...... o.... ..... .." name="enumeration" value="-0" />
+			<facet answer=		"...... ..... ..... o." name="enumeration" value="INF" />
+			<facet answer=		"...... ..... ..... .o" name="enumeration" value="NaN" />
+		</combination>
+	</combination></facets>
+	
+	<wrongs>
+		<value>+INF</value>
+		<value>inf</value>
+		<value>Inf</value>
+		<value>nan</value>
+		<value>-NaN</value>
+		<value>1e2f</value>
+		<value>0.005d</value>
+		<value>-0.0f</value>
+		<value>E-2</value>
+		<value>1e2.5</value>
+		<value>0x123</value>
+	</wrongs>
+</case>
+</comment>
+
+</suite>

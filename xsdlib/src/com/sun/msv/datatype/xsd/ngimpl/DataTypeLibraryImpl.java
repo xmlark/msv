@@ -41,5 +41,7 @@ public class DataTypeLibraryImpl implements DatatypeLibrary, DatatypeLibraryFact
 		if( uri.equals("http://www.w3.org/2001/XMLSchema")
 		||  uri.equals("http://www.w3.org/2001/XMLSchema-datatypes"))
 			return this;
+		
+		return null;
 	}
 }

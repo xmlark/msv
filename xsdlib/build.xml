@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<!--
+	Ant build script for XSDLib.
+	
+	$Id$
+	
+	
+	
+	Tasks to help development
+	=========================
+	javacc
+		run JavaCC
+	binary
+		compile everything to the bin directory.
+	javadoc
+		run javadoc on the working copy. Useful to check the documentation
+		without actually creating a distribution package.
+	test
+		test core msv codes. parser, verifier and several related codes.
+	release
+		create a distribution package
+	
+-->
+<project name="xsdlib" basedir="." default="binary">
+	
+	<!-- import the global configuration file -->
+	<property file="../shared/ant.config"/>
+	
+	<!-- compile Java source files -->
+	<target name="binary" depends="javacc">
+		<mkdir dir="./bin"/>
+		<javac
+			srcdir="src:test"
+			destdir="bin"
+			debug="on"
+			optimize="off"
+			classpath="lib"
+			/>
+	</target>
+	
+	
+		<!-- internal task -->
+		<target name="doJavacc">
+			<!-- check if javacc needs to run -->
+			<uptodate property="iso8601.uptodate"
+				targetfile="${src}/com/sun/msv/datatype/xsd/datetime/ISO8601Parser.java">
+				<srcfiles dir="${src}/com/sun/msv/datatype/xsd/datetime"
+					includes="ISO8601.jj"/>
+			</uptodate>
+			<antcall target="doJavacc.sub"/>
+		</target>
+		
+		<target name="doJavacc.sub" unless="iso8601.uptodate">
+			<javacc	target="${src}/com/sun/msv/datatype/xsd/datetime/ISO8601.jj"
+					outputdirectory="${src}/com/sun/msv/datatype/xsd/datetime"
+					javacchome="${javaCClib}"
+			/>
+		</target>
+	
+	<!-- run javacc -->
+	<target name="javacc">
+		<antcall target="doJavacc">
+			<param name="src" value="./src" />
+		</antcall>
+	</target>
+	
+	<!-- generate javadoc documentation from the working copy -->
+	<target name="javadoc">
+		<mkdir dir="./javadoc"/>
+		<javadoc	locale="en_US"
+					packagenames="com.sun.msv.*, org.relaxng.*"
+					sourcepath="./src;${rngInterfaceSource}"
+					classpath="${java.class.path}"
+					destdir="./javadoc"
+					windowtitle="XSDLib (private build)"
+					public="yes"
+					author="yes"
+					overview="src/com/sun/msv/overview.html"
+					>
+			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api"
+				packagelistLoc="../ExternalPackageLists/CoreAPI" />
+			<link offline="true" href="http://xml.apache.org/apiDocs/"
+				packagelistLoc="../ExternalPackageLists/XML" />
+			<link offline="true" href="http://iso-relax.sourceforge.net/apiDoc/"
+				packagelistLoc="../ExternalPackageLists/ISO-RELAX" />
+		</javadoc>
+	</target>
+	
+	
+	
+	
+	
+	
+	<!-- XSDLib -->
+	<property name="tests"
+		value="../xsdlib/bin/com/sun/msv/datatype/**/*Test.class"/>
+	
+	
+	<target name="test">
+		<ant antfile="../shared/ant.test.xml" target="test_xsdlib">
+			<property name="tests" value="${tests}"/>
+		</ant>
+	</target>
+	<target name="test_package">
+		<ant antfile="../shared/ant.test.xml" target="test_xsdlib_package">
+			<property name="tests" value="${tests}"/>
+		</ant>
+	</target>
+	
+	
+	
+	
+	<!-- generate XSDLib release -->
+	<target name="release">
+		<tstamp />
+		<property name="stageName" value="xsdlib-${DSTAMP}"/>
+		
+		<delete	dir="${stageName}" />
+		<mkdir	dir="${stageName}/examples" />
+		<mkdir	dir="${stageName}/src" />
+		
+		<!-- obtain source codes from cvs -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="msv/xsdlib/examples"
+				command="export -d . ${cvsExportOpt}"
+				dest="${stageName}/examples" />
+		<cvs	cvsRoot="${cvsRoot}"
+				package="msv/xsdlib/src"
+				command="export -d . ${cvsExportOpt}"
+				dest="${stageName}/src" />
+
+		<!-- copy Xerces files into source directory -->
+		<copy todir="${stageName}/src">
+			<fileset dir="${xerces.source}" includes="org/apache/xerces/utils/regex/*.*" />
+		</copy>
+		
+		<!-- obtain document files -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="msv/xsdlib/doc"
+				command="export -d . ${cvsExportOpt}"
+				dest="${stageName}" />
+				
+		<!-- run javacc -->
+		<antcall target="doJavacc">
+			<param name="src" value="${stageName}/src" />
+		</antcall>
+		
+		
+		<!-- compile files -->
+		<mkdir	dir="temp" />
+		<javac	srcdir="${stageName}/src" destdir="temp">
+			
+			<classpath path="${relaxngDatatype.jar}"/>
+			<include name="**/*.java" />
+		</javac>
+		
+		
+		<!-- create a time stamp file -->
+		<echo file="temp/version.properties">version=${DSTAMP}</echo>
+		
+		<!-- creates binary jar -->
+		<jar	jarfile="${stageName}/xsdlib.jar"
+				manifest="./MANIFEST.MF"
+				compress="false">
+			<fileset dir="temp" />
+			<!-- resource files -->
+			<fileset dir="${stageName}/src" includes="**/*.properties" />
+		</jar>
+		<delete dir="temp" />
+		<delete dir="xerces"/>
+		
+		<!-- copy jar file to package dir -->
+		<copy file="${stageName}/xsdlib.jar" tofile="../package/xsdlib.jar" />
+		
+		
+		<!-- creates javadoc -->
+		<mkdir		dir="${stageName}/javadoc" />
+		<javadoc	locale="en_US"
+					packagenames="com.sun.msv.datatype.*,org.relaxng.datatype.*"
+					sourcepath="${stageName}/src:${rngInterfaceSource}"
+					destdir="${stageName}/javadoc"
+					windowtitle="Sun XML Datatypes Library"
+					public="yes"
+					author="yes"
+					>
+			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
+			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
+		</javadoc>
+		
+		<!-- copy additional jar files -->
+		<copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
+		
+		<!-- delete the source! -->
+		<delete dir="${stageName}/src" />
+		
+		<!-- creates distribution package -->
+		<mkdir dir="../package"/>
+		<zip	zipfile="../package/xsdlib.${DSTAMP}.zip"
+				basedir="."
+				includes="${stageName}/**/*.*" />
+		
+		<delete	dir="${stageName}" />
+	</target>
+	
+</project>

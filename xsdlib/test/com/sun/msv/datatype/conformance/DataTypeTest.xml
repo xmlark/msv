@@ -2,6 +2,109 @@
 <!-- $Id$ -->
 <suite>
 
+<case name="test for duration">
+	<value>P1Y1M1DT1H1M1.1111S</value>
+	<value>-P123Y</value>
+	
+	<!-- truncated forms -->
+	<value>P1YT1S</value>
+	
+	<answer for="duration"		>oo o</answer>
+	
+	<facets>
+		<facet		answer=		"oo o" name="pattern" value=".*" />
+	</facets>
+	
+	<wrongs>
+		<value>P-123Y</value>	<!-- malplaced '-' -->
+		<value>P5.2D</value>	<!-- only seconds have fraction -->
+		<value>P123YT</value>	<!-- T is unnecessary -->
+		<value>P52S</value>		<!-- T is necessary -->
+	</wrongs>
+</case>
+
+<comment>
+
+<case name="test for time">
+	<!-- ad hoc values -->
+	<value>00:00:00</value>
+	<value>08:00:00Z</value>
+	<value> 12:15:32-08:00 </value>
+	
+	<value>15:00:00Z</value>
+	
+	<answer for="time"			>ooo o</answer>
+	
+	<facets><combination mode="or">
+		<facet answer=			".o. ." name="enumeration" value="09:00:00+01:00" />
+		<facet answer=			"... o" name="enumeration" value="00:00:00-09:00" />
+	</combination></facets>
+	
+	<wrongs>
+		<!-- truncated forms -->
+		<value>1:00</value>
+		<value>01:00</value>
+		<value>1:00:00</value>
+		
+		<!-- out of range -->
+		<value>-01:00:00</value>
+		<value> 24:00:00</value>
+		<value> 27:00:00</value>
+		<value> 23:59:60</value>
+		<value> 12:60:00</value>
+	</wrongs>
+</case>
+
+
+<case name="test for gMonth">
+	<!-- plain -->
+	<value>--01--</value>
+	<value>--02--</value>
+	<value>--03--</value>
+	<value>--10--</value>
+	<value>--11--</value>
+	<value>--12--</value>
+	
+	<!-- with time zone -->
+	<value>--03---07:30</value>
+	<value>--03--Z</value>
+	<value>--03--+00:00</value>
+	<value>--03--+03:00</value>
+	
+	<answer for="gMonth"		>oooooo oooo</answer>
+	
+	<facets><combination>
+		<!-- min{In|Ex}clusive -->
+		<choice>
+			<facet answer=		"..oooo ...." name="minInclusive" value="--03--" />
+			<facet answer=		"...ooo ...." name="minExclusive" value="--03--" />
+			<facet answer=		"...ooo .ooo" name="minInclusive" value="--03--Z" />
+			<facet answer=		"...ooo ...o" name="minExclusive" value="--03--Z" />
+		</choice>
+		
+		<facet answer=			"...... .oo." name="enumeration" value="--03--Z" />
+	</combination></facets>
+	
+	<wrongs>
+		<!-- out of range -->
+		<value>--00--</value>
+		<value>--1--</value>
+		<value>--13--</value>
+		<value>5</value>
+		
+		<!-- illegal time zone -->
+		<value>--03-- Z</value>
+		<value>--03--(GMT)</value>
+		<value>--03--(+08:00)</value>
+		<value>--03--+1:00</value>
+		<value>--03--+15:00</value>
+		<value>--03--+12</value>
+		<value>--03--08:00</value>
+		<value>--03---14:01</value>
+		
+	</wrongs>
+</case>
+
 <!--
 	test for Name,NMTOKEN,NCName.
 	Core engine of these types are tested as a part of Crimson,
@@ -25,7 +128,6 @@
 	</wrongs>
 </case>
 
-<comment>
 <!-- sloppy test -->
 <case name="test for hexBinary">
 	<value></value>

@@ -23,15 +23,26 @@ public class GrammarCacheDemo
 	public static void main( String args[] ) throws Exception {
 		
 		if( args.length<2 ) {
-			System.out.println("GrammarCacheDemo <XSD schema> <instance file 1> <instance file 2> ...");
+			System.out.println("GrammarCacheDemo <schema schema> <instance file 1> <instance file 2> ...");
 			return;
 		};
 		
-		// load a validator engine for W3C XML Schema
-		// if no implementation is available, an exception is thrown
-		// to load a validator engine for RELAX NG, simply change
-		// the argument to "http://relaxng.org/ns/structure/0.9"
-		VerifierFactory factory = VerifierFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+		/*
+			Implementation independent way to create a VerifierFactory.
+			This method will discover an appropriate JARV implementation and
+			returns the factory of that implementation.
+		 
+			To load a validator engine for RELAX NG, simply change
+			the argument to "http://relaxng.org/ns/structure/0.9"
+		*/		
+		// VerifierFactory factory = VerifierFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+		
+		/*
+			MSV dependent way to create a VerifierFactory.
+			But this allows MSV to detect the schema language.
+		*/
+		VerifierFactory factory = new com.sun.msv.verifier.jarv.TheFactoryImpl();
+		
 		
 		// compile a schema.
 		// other overloaded methods allows you to parse a schema from InputSource, URL, etc.

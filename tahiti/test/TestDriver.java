@@ -40,11 +40,11 @@ public class TestDriver
 		
 		MarshallableObject mo = unmarshaller.getResult();
 		System.out.println(mo);
-		DOMMarshaller dom = new DOMMarshaller();
+		DOMMarshaller dom = new DOMMarshaller( new org.apache.xerces.dom.DocumentImpl() );
 		mo.marshall(dom);
 		
 		// serialize
-		new XMLSerializer( System.out, new OutputFormat() ).serialize(dom.getResult());
+		new XMLSerializer( System.out, new OutputFormat("xml","UTF-8",true) ).serialize(dom.getResult());
 	}
 	
 	static BindableGrammar getGrammar( String className ) throws Exception {

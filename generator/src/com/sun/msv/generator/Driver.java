@@ -277,6 +277,8 @@ public class Driver {
 			}
 			
 			org.w3c.dom.Document dom;
+			int retry=0;
+			
 			while(true) {
 				dom = domFactory.newDocumentBuilder().newDocument();
 				Generator.generate(topLevel,dom,opt);
@@ -295,7 +297,12 @@ public class Driver {
 				
 				if( createError && !v.isValid() )	break;
 				if( !createError && v.isValid() )	break;
+				
 				// do it again
+				if( retry++ == 100 ) {
+					out.println("unable to generate a proper instance.");
+					return -1;
+				}
 			}
 		
 			// serialize it

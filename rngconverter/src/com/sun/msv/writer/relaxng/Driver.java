@@ -12,7 +12,6 @@ package com.sun.msv.writer.relaxng;
 import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.reader.dtd.DTDReader;
 import com.sun.msv.grammar.Grammar;
-import com.sun.msv.writer.trex.TREXWriter;
 import java.io.PrintWriter;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;

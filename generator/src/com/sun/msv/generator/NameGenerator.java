@@ -36,12 +36,13 @@ class NameGenerator {
 	
 	
 	public StringPair generate( NameClass nc ) {
-		if( nc instanceof SimpleNameClass )
+		if( nc instanceof SimpleNameClass ) {
 			// 90% is SimpleNameClass. So this check makes
 			// the computation faster.
 			return new StringPair(
 				((SimpleNameClass)nc).namespaceURI,
 				((SimpleNameClass)nc).localName );
+        }
 		
 		final String MAGIC = ".";
 		final Set possibleNames = new java.util.HashSet();

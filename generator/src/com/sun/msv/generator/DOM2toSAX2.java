@@ -45,8 +45,7 @@ public class DOM2toSAX2 {
             String value = a.getValue();
 			if(value==null)	value="";
             
-            String uri = a.getNamespaceURI();
-            if(uri==null)   uri=""; // work defensively
+            String uri = nullAdjust(a.getNamespaceURI());
             
             String localName = a.getLocalName();
             if(localName==null) localName=a.getName();
@@ -73,7 +72,7 @@ public class DOM2toSAX2 {
 		}
 		
 		handler.startElement(
-			e.getNamespaceURI(), e.getLocalName(), e.getTagName(),
+			nullAdjust(e.getNamespaceURI()), e.getLocalName(), e.getTagName(),
 			convertAttributes(e) );
 		
 		NodeList children = e.getChildNodes();
@@ -85,7 +84,8 @@ public class DOM2toSAX2 {
 				onText((Text)n);
 		}
 		
-		handler.endElement( e.getNamespaceURI(), e.getLocalName(), e.getTagName() );
+		handler.endElement(
+            nullAdjust(e.getNamespaceURI()), e.getLocalName(), e.getTagName() );
 
 		// end namespace mapping
 		for( int i=0; i<atts.getLength(); i++ ) {
@@ -104,4 +104,8 @@ public class DOM2toSAX2 {
 		if(s!=null)
 			handler.characters( s.toCharArray(), 0, s.length() );
 	}
+    
+    private static String nullAdjust(String s) {
+        return s==null?"":s;
+    }
 }

@@ -26,14 +26,14 @@ public class DOMDecorator {
 		
 		visit( root, new DOMVisitor(){
 			public void onElement( Element e ) {
-				usedURIs.add(e.getNamespaceURI());
+				usedURIs.add(nullAdjust(e.getNamespaceURI()));
 			}
 			public void onAttr( Attr a ) {
-				String uri = a.getNamespaceURI();
+				String uri = nullAdjust(a.getNamespaceURI());
 				if(!"".equals(uri) && !uri.equals(XMLNS_URI))
-					usedURIs.add(a.getNamespaceURI());
+					usedURIs.add(nullAdjust(a.getNamespaceURI()));
 				
-				if(a.getNamespaceURI().equals(XMLNS_URI)) {
+				if(nullAdjust(a.getNamespaceURI()).equals(XMLNS_URI)) {
 					String qname = a.getName();
 					int idx = qname.indexOf(':');
 					if(idx<0)
@@ -57,8 +57,8 @@ public class DOMDecorator {
 		// the root element is considered as the default namespace URI.
 		final String defaultNs =
 			(!usedURIs.contains(""))?
-				root.getNamespaceURI():"";
-		
+				nullAdjust(root.getNamespaceURI()):"";
+        
 		if( !defaultNs.equals("") )	// declare the default ns
 			root.setAttributeNS( XMLNS_URI, "xmlns", defaultNs );
 		
@@ -69,7 +69,8 @@ public class DOMDecorator {
 		int cnt=1;
 		String[] uris = (String[])usedURIs.toArray(new String[0]);
 		for( int i=0; i<uris.length; i++ ) {
-			
+			if( uris[i].equals(defaultNs) ) continue;   // skip.
+            
 			String prefix;
 			do {
 				prefix = "ns"+(cnt++);
@@ -84,13 +85,14 @@ public class DOMDecorator {
 		// visit nodes and set prefixes
 		visit( root, new DOMVisitor(){
 			public void onElement( Element e ) {
-				if( e.getNamespaceURI().equals(defaultNs) )
+                String uri = nullAdjust(e.getNamespaceURI()); 
+				if( uri.equals(defaultNs) )
 					; // don't touch
 				else
-					e.setPrefix((String)uri2prefix.get(e.getNamespaceURI()));
+					e.setPrefix((String)uri2prefix.get(uri));
 			}
 			public void onAttr( Attr a ) {
-				String uri = a.getNamespaceURI();
+				String uri = nullAdjust(a.getNamespaceURI());
 				if("".equals(uri))
 					return;	// do nothing.
 				
@@ -126,5 +128,7 @@ public class DOMDecorator {
 		void onAttr(Attr a);
 	}
 	
-	
+    private static String nullAdjust(String s) {
+        return s==null?"":s;
+    }
 }

@@ -79,11 +79,13 @@ public abstract class WhiteSpaceProcessor implements Serializable {
 			final int len = text.length();
 			StringBuffer result = new StringBuffer(len);
 			
-			for( int i=0; i<len; i++ )
-				if( super.isWhiteSpace(text.charAt(i)) )
+			for( int i=0; i<len; i++ ) {
+				char ch = text.charAt(i);
+				if( super.isWhiteSpace(ch) )
 					result.append(' ');
 				else
-					result.append(text.charAt(i));
+					result.append(ch);
+			}
 			
 			return result.toString();		
 		}
@@ -93,20 +95,20 @@ public abstract class WhiteSpaceProcessor implements Serializable {
 
 	public final static WhiteSpaceProcessor theCollapse= new WhiteSpaceProcessor() {
 		public String process( String text ) {
-			char[] chars = text.toCharArray();
 			int len = text.length();
 			StringBuffer result = new StringBuffer(len /**enough size*/ );
 			
 			boolean inStripMode = true;
 			
 			for( int i=0; i<len; i++ ) {
-				boolean b = WhiteSpaceProcessor.isWhiteSpace(chars[i]);
+				char ch = text.charAt(i);
+				boolean b = WhiteSpaceProcessor.isWhiteSpace(ch);
 				if( inStripMode && b )
 					continue;	// skip this character
 				
 				inStripMode = b;
 				if( inStripMode )	result.append(' ');
-				else				result.append(chars[i]);
+				else				result.append(ch);
 			}
 			
 			// remove trailing whitespaces

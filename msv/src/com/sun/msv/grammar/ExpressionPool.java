@@ -123,7 +123,7 @@ public class ExpressionPool
 	
 	public final Expression createMixed( Expression body )
 	{
-		if( body==Expression.nullSet )		return Expression.anyString;
+		if( body==Expression.nullSet )		return Expression.nullSet;
 		if( body==Expression.epsilon )		return Expression.anyString;
 		
 		return unify( new MixedExp(body) );

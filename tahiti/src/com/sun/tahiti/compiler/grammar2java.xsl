@@ -26,7 +26,12 @@ import org.relaxng.datatype.ValidationContext;
 import com.sun.msv.datatype.DatabindableDatatype;
 import com.sun.msv.datatype.xsd.ngimpl.DataTypeLibraryImpl;
 import com.sun.msv.grammar.*;
+import com.sun.msv.util.StringPair;
 import com.sun.tahiti.runtime.ll.*;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import java.io.IOException;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * generated class.
@@ -35,6 +40,16 @@ public class ]]></xsl:text>
 		<xsl:value-of select="name"/>
 		<xsl:text> {</xsl:text>
 		<xsl:call-template name="CRLF"/>
+		
+		
+	<!--      header                  -->
+	<!--==============================-->
+	<xsl:text><![CDATA[
+	
+	// empty StringPair which is used as a dummy name for datatypes
+	private static final StringPair emptyName = new StringPair("","");
+	
+]]></xsl:text>
 	
 	
 	
@@ -470,6 +485,25 @@ public class ]]></xsl:text>
 			<xsl:text>	};</xsl:text>
 			<xsl:call-template name="CRLF"/>
 		</xsl:for-each>
+
+
+	<xsl:text>
+//
+// utility methods
+//
+	public static </xsl:text><xsl:value-of select="rootType/@name"/><xsl:text> unmarshall( String source )
+			throws IOException, SAXException, ParserConfigurationException {
+		return unmarshall( new InputSource(source) );
+	}
+	
+	public static </xsl:text><xsl:value-of select="rootType/@name"/><xsl:text> unmarshall( InputSource source )
+			throws IOException, SAXException, ParserConfigurationException {
+		return (</xsl:text><xsl:value-of select="rootType/@name"/><xsl:text>)
+			com.sun.tahiti.runtime.ll.Unmarshaller.unmarshall( 
+				</xsl:text><xsl:value-of select="name"/><xsl:text>.grammar, source );
+	}
+	
+</xsl:text>
 	
 	<!--  footer           -->
 	<!--===================-->
@@ -583,6 +617,26 @@ public class ]]></xsl:text>
 		<xsl:text>Expression.anyString</xsl:text>
 	</xsl:template>
 	
+	<xsl:template match="key" mode="exp">
+		<xsl:text>pool.createKey(</xsl:text>
+		<xsl:apply-templates select="*" mode="exp"/>
+		<xsl:text>, new StringPair("</xsl:text>
+		<xsl:value-of select="@ns"/>
+		<xsl:text>","</xsl:text>
+		<xsl:value-of select="@name"/>
+		<xsl:text>"))</xsl:text>
+	</xsl:template>
+	
+	<xsl:template match="keyref" mode="exp">
+		<xsl:text>pool.createKeyref(</xsl:text>
+		<xsl:apply-templates select="*" mode="exp"/>
+		<xsl:text>, new StringPair("</xsl:text>
+		<xsl:value-of select="@ns"/>
+		<xsl:text>","</xsl:text>
+		<xsl:value-of select="@name"/>
+		<xsl:text>"))</xsl:text>
+	</xsl:template>
+	
 	<xsl:template match="list" mode="exp">
 		<xsl:text>pool.createList(</xsl:text>
 		<xsl:apply-templates select="*" mode="exp"/>
@@ -598,7 +652,7 @@ public class ]]></xsl:text>
 	<xsl:template match="typedString" mode="exp">
 		<xsl:text>pool.createTypedString(</xsl:text>
 		<xsl:value-of select="@dataSymbolRef"/>
-		<xsl:text>,"")</xsl:text>
+		<xsl:text>,emptyName)</xsl:text>
 	</xsl:template>
 	
 	<xsl:template match="element" mode="exp">

@@ -31,6 +31,7 @@ public class LanguageType extends TokenType
 			 Subtag = 1*8ALPHA
 
 			Whitespace is not allowed within the tag.
+			All tags are to be treated as case insensitive.
 		*/
 		
 		final int len = content.length();
@@ -38,7 +39,7 @@ public class LanguageType extends TokenType
 		
 		while( i<len )
 		{
-			final char ch = content.charAt(i);
+			final char ch = content.charAt(i++);
 			if( ('a'<=ch && ch<='z') || ('A'<=ch && ch<='Z') )
 			{
 				tokenSize++;
@@ -57,6 +58,6 @@ public class LanguageType extends TokenType
 		
 		if( tokenSize==0 )	return null;	// this means either string is empty or ends with '-'
 		
-		return content;
+		return content.toLowerCase();
 	}
 }

@@ -8,6 +8,11 @@
 	<property name="packageDir" value="./package"/>
 	<property name="libDir" value="./lib"/>
 	<property name="javaCClib" value="C:\Progra~1\Development\JavaCC\bin\lib" />
+	
+	<!-- test directory where you put your files like "relaxNNN.rlx" -->
+	<property name="RELAXBatchTestDir" value="C:/work/relax/" />
+	<property name="TREXBatchTestDir" value="C:/work/trex/" />
+
 
 	<target name="javacc">
 		<!-- run javacc for ISO8601Parser -->
@@ -88,10 +93,19 @@
 		<delete dir="xsdrelease" />
 	</target>
 	
+	
+	<!--  run all the test suites -->
 	<target name="test">
 		<mkdir dir="./testLog" />
-		<junit haltonfailure="no" printsummary="no">
-			<formatter type="plain" />
+		<!--
+			please remove jaxp.jar from ant directory,
+			because it uses an old one, and this test needs the latest one
+		-->
+		<junit haltonfailure="no" printsummary="yes" fork="yes">
+			<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
+			<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
+			
+  			<formatter type="plain" />
 			
 			<classpath>
 				<pathelement location="${buildDir}" />
@@ -107,6 +121,8 @@
 			</batchtest>
 		</junit>
 	</target>
+	
+	
 	
 	<!-- generate jar files -->
 	<target name="jars" depends="binary">

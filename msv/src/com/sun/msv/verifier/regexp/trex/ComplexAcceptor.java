@@ -54,7 +54,12 @@ final class ComplexAcceptor extends ContentModelAcceptor
 		}
 	}
 
-	
+	/**
+	 * collects satisfied ElementExps.
+	 * 
+	 * "satisfied ElementExps" are ElementExps whose
+	 * contents is now epsilon reducible.
+	 */
 	public final ElementExp[] getSatisfiedOwners()
 	{
 		ElementExp[] satisfied;

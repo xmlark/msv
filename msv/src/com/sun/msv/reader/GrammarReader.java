@@ -456,6 +456,8 @@ public abstract class GrammarReader
         try {
             XMLReader reader = parserFactory.newSAXParser().getXMLReader();
             reader.setContentHandler(this);
+            reader.setErrorHandler(controller);
+            reader.setEntityResolver(controller);
             
             // invoke XMLReader
             if( source instanceof InputSource )        reader.parse((InputSource)source);

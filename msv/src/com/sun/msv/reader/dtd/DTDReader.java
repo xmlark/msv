@@ -20,8 +20,9 @@ import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.scanner.dtd.DTDEventListener;
 import com.sun.msv.scanner.dtd.DTDParser;
 import com.sun.msv.scanner.dtd.InputEntity;
-import com.sun.msv.grammar.relax.*;
 import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.trex.TREXGrammar;
+import com.sun.msv.grammar.trex.ElementPattern;
 import com.sun.msv.grammar.dtd.*;
 import org.relaxng.datatype.DatatypeException;
 import org.xml.sax.SAXException;
@@ -47,16 +48,16 @@ public class DTDReader implements DTDEventListener {
 	public DTDReader( GrammarReaderController controller, 
 		String targetNamespace, ExpressionPool pool ) {
 		this.controller = controller;
-		module = new RELAXModule(pool,targetNamespace);
+		grammar = new TREXGrammar(pool);
 	}
 	
-	public static RELAXModule parse( InputSource source,
+	public static TREXGrammar parse( InputSource source,
 		GrammarReaderController controller ) {
 		
 		return parse( source, controller, "", new ExpressionPool() );
 	}
 	
-	public static RELAXModule parse( InputSource source,
+	public static TREXGrammar parse( InputSource source,
 		GrammarReaderController controller,
 		String targetNamespace, ExpressionPool pool ) {
 		
@@ -68,7 +69,7 @@ public class DTDReader implements DTDEventListener {
 			parser.parse(source);
 		
 			if( reader.hadError )	return null;
-			else					return reader.module;
+			else					return reader.grammar;
 		} catch( SAXParseException e ) {
 			return null;	// this error was already handled by GrammarReaderController
 		} catch( Exception e ) {
@@ -137,8 +138,13 @@ public class DTDReader implements DTDEventListener {
 	 */
 	protected static final String ABANDON_URI_SNIFFING = "*";
 	
-	protected NameClass getNameClass( String maybeQName ) {
+	protected NameClass getNameClass( String maybeQName, boolean handleAsAttribute ) {
 		String[] s = splitQName(maybeQName);
+		
+		if(s[0].length()==0 && handleAsAttribute )
+			// if this is an attribute and unprefixed, it is local to the element.
+			return new SimpleNameClass(s[0],s[1]);
+		
 		Set vec = (Set)namespaces.get(s[0]/*uri*/);
 		if(vec==null) {
 			if(s[0].equals(""))
@@ -188,7 +194,7 @@ public class DTDReader implements DTDEventListener {
 	}
 	
 	
-	protected final RELAXModule module;
+	protected final TREXGrammar grammar;
 
 	protected Locator locator;
 	
@@ -221,8 +227,8 @@ public class DTDReader implements DTDEventListener {
 			contentModel = Expression.nullSet;	// initial set up.
 		if( type==CONTENT_MODEL_ANY )
 			// if ANY is used, then refer to the special hedgeRule.
-			contentModel = module.pool.createZeroOrMore(
-				module.hedgeRules.getOrCreate("all") );
+			contentModel = grammar.pool.createZeroOrMore(
+				grammar.namedPatterns.getOrCreate("$  all  $") );
 		if( type==CONTENT_MODEL_EMPTY )
 			contentModel = Expression.epsilon;
 	}
@@ -244,8 +250,8 @@ public class DTDReader implements DTDEventListener {
 			if( contentModel == Expression.nullSet )
 				// this happens when mixed content model is #PCDATA only.
 				contentModel = Expression.epsilon;
-			contentModel = module.pool.createMixed(
-				module.pool.createZeroOrMore(contentModel));
+			contentModel = grammar.pool.createMixed(
+				grammar.pool.createZeroOrMore(contentModel));
 			break;
 		}
 		
@@ -260,9 +266,9 @@ public class DTDReader implements DTDEventListener {
 	protected Expression processOccurs( Expression item, short occurence ) {
 		switch( occurence ) {
 		case OCCURENCE_ONCE:			return item;
-		case OCCURENCE_ONE_OR_MORE:		return module.pool.createOneOrMore(item);
-		case OCCURENCE_ZERO_OR_MORE:	return module.pool.createZeroOrMore(item);
-		case OCCURENCE_ZERO_OR_ONE:		return module.pool.createOptional(item);
+		case OCCURENCE_ONE_OR_MORE:		return grammar.pool.createOneOrMore(item);
+		case OCCURENCE_ZERO_OR_MORE:	return grammar.pool.createZeroOrMore(item);
+		case OCCURENCE_ZERO_OR_ONE:		return grammar.pool.createOptional(item);
 		default:		// assertion failed. this must be a bug of DTDScanner.
 										throw new Error();
 		}
@@ -286,7 +292,7 @@ public class DTDReader implements DTDEventListener {
 	
 	public void childElement( String elementName, short occurence ) {
 		Expression exp = processOccurs(
-				module.elementRules.getOrCreate(elementName),
+				grammar.namedPatterns.getOrCreate(elementName),
 				occurence);
 		
 		if( connectorType == CONNECTOR_UNKNOWN ) {
@@ -301,10 +307,10 @@ public class DTDReader implements DTDEventListener {
 	protected void combineToContentModel( Expression exp ) {
 		switch( connectorType ) {
 		case CHOICE:
-			contentModel = module.pool.createChoice( contentModel, exp );
+			contentModel = grammar.pool.createChoice( contentModel, exp );
 			break;
 		case SEQUENCE:
-			contentModel = module.pool.createSequence( contentModel, exp );
+			contentModel = grammar.pool.createSequence( contentModel, exp );
 			break;
 		default:
 			// assertion failed. no such connector.
@@ -317,8 +323,8 @@ public class DTDReader implements DTDEventListener {
 			// assertion failed. contentModel must be prepared by startContentModel method.
 			throw new Error();
 		
-		contentModel = module.pool.createChoice( contentModel,
-			module.elementRules.getOrCreate(elementName) );
+		contentModel = grammar.pool.createChoice( contentModel,
+			grammar.namedPatterns.getOrCreate(elementName) );
 	}
 	
 	public void startModelGroup() {
@@ -431,7 +437,7 @@ public class DTDReader implements DTDEventListener {
 		
 		// add it to the list.
 		attList.put( attributeName,
-			new AttModel(module.pool.createTypedString(dt), attributeUse==USE_REQUIRED ) );
+			new AttModel(grammar.pool.createTypedString(dt), attributeUse==USE_REQUIRED ) );
 	}
 
     public void endDTD() throws SAXException {
@@ -440,58 +446,52 @@ public class DTDReader implements DTDEventListener {
 		// this variable will be the choice of all elements.
 		Expression allExp = Expression.nullSet;
 		
-		// create ElementRules
+		// create declarations
 		Iterator itr = elementDecls.keySet().iterator();
 		while( itr.hasNext() ) {
-			String elementName = (String)itr.next();
-			
-			TagClause t = module.tags.getOrCreate(elementName);
-			t.nameClass = getNameClass(elementName);
-			Map attList = (Map)attributeDecls.get(elementName);
-			if( attList==null ) {
-				// this element has no attribute.
-				t.exp = Expression.epsilon;
-			} else {
-				t.exp = Expression.epsilon;		
+			final String elementName = (String)itr.next();
+			final Map attList = (Map)attributeDecls.get(elementName);
+
+			Expression contentModel = Expression.epsilon;
 				
+			if(attList!=null) {
 				// create AttributeExps and append it to tag.
-				
 				Iterator jtr = attList.keySet().iterator();
 				while( jtr.hasNext() ) {
 					String attName = (String)jtr.next();
 					AttModel model = (AttModel)attList.get(attName);
-					
+						
 					// wrap it by AttributeExp.
-					Expression exp = module.pool.createAttribute(
-						getNameClass(attName), model.value );
+					Expression exp = grammar.pool.createAttribute(
+						getNameClass(attName,true), model.value );
 		
 					// apply attribute use.
 					// unless USE_REQUIRED, the attribute is optional.
 					if( !model.required )
-						exp = module.pool.createOptional(exp);
+						exp = grammar.pool.createOptional(exp);
 		
 					// append it to attribute list.
-					t.exp = module.pool.createSequence( exp, t.exp );
+					contentModel = grammar.pool.createSequence( contentModel, exp );
 				}
 			}
 			
-			ElementRules er = module.elementRules.getOrCreate(elementName);
-			er.addElementRule( module.pool,
-				new ElementRule( module.pool, t,
+			ReferenceExp er = grammar.namedPatterns.getOrCreate(elementName);
+			er.exp = new ElementPattern( getNameClass(elementName,false), 
+				grammar.pool.createSequence(contentModel,
 					(Expression)elementDecls.get(elementName) ) );
-			allExp = module.pool.createChoice( allExp, er );
+			allExp = grammar.pool.createChoice( allExp, er );
 		}
 		
 		// set this allExp as the content model of "all" hedgeRule.
 		// this special hedgeRule is used to implement ANY content model,
 		// and this hedgeRule is also exported.
-		module.hedgeRules.getOrCreate("all").exp = allExp;
+		grammar.namedPatterns.getOrCreate("$  all  $").exp = allExp;
 		
 		// also this allExp is used as top-level expression.
-		module.topLevel = allExp;
+		grammar.start = allExp;
 		
 		// check undefined element.
-		ReferenceExp[] exps = module.elementRules.getAll();
+		ReferenceExp[] exps = grammar.namedPatterns.getAll();
 		for( int i=0; i<exps.length; i++ )
 			if( exps[i].exp==null ) {
 				// this element is referenced but not defined.

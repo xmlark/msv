@@ -37,14 +37,25 @@ public class SAXEventGenerator {
 				AttributesImpl atts = new AttributesImpl();
 				for( int i=0; i<attLen; i++ ) {
 					Attr a = (Attr)e.getAttributes().item(i);
-					atts.addAttribute( a.getNamespaceURI(), a.getLocalName(),
+					
+					String uri = a.getNamespaceURI();
+					String local = a.getLocalName();
+					if(uri==null)	uri="";
+					if(local==null)	local=a.getName();
+					
+					atts.addAttribute( uri,local,
 						a.getName(), null/*no type available*/, a.getValue() );
 				}
 				
 				try {
-					handler.startElement( e.getNamespaceURI(), e.getLocalName(), e.getNodeName(), atts );
+					String uri = e.getNamespaceURI();
+					String local = e.getLocalName();
+					if(uri==null)	uri="";
+					if(local==null)	local=e.getNodeName();
+					
+					handler.startElement( uri, local, e.getNodeName(), atts );
 					super.visit(e);
-					handler.endElement( e.getNamespaceURI(), e.getLocalName(), e.getNodeName() );
+					handler.endElement( uri, local, e.getNodeName() );
 				} catch( SAXException x ) {
 					throw new SAXWrapper(x);
 				}

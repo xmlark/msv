@@ -171,13 +171,19 @@ public class Generator implements TREXPatternVisitorVoid
 				vec.remove(idx);
 				
 				// copy attributes
-				// order of copy is significant because removing an attribute
+				// note that removing an attribute
 				// will change the index of the rest.
 				NamedNodeMap m = e.getAttributes();
-				for( int i=m.getLength()-1; i>=0; i-- ) {
-					Attr a = (Attr)m.item(i);
-					e.removeAttributeNode(a);
-					((Element)node).setAttributeNode(a);
+				for( int i=0; i<m.getLength(); i++ ) {
+					Attr a = (Attr)m.item(0);
+					
+					// due to the bug(?) of DOM (or Xercs), we cannot use
+					// removeAttributeNode.
+					e.removeAttributeNS(a.getNamespaceURI(),a.getLocalName());
+					
+					if( !((Element)node).hasAttribute(a.getName()) )
+						// due to the error generation, two attributes may collide.
+						((Element)node).setAttributeNodeNS(a);
 				}
 				
 				continue;

@@ -230,7 +230,7 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
     }
     
     /** converts our DateTimeValueType to a java-friendly Date type. */
-    public final Object _createJavaObject(String literal, ValidationContext context) {
+    public Object _createJavaObject(String literal, ValidationContext context) {
         IDateTimeValueType v = (IDateTimeValueType)createValue(literal, context);
         if (v == null)
             return null;

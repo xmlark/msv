@@ -11,8 +11,11 @@ package com.sun.msv.datatype.xsd;
 
 import java.util.Calendar;
 
+import org.relaxng.datatype.ValidationContext;
+
 import com.sun.msv.datatype.SerializationContext;
 import com.sun.msv.datatype.xsd.datetime.BigDateTimeValueType;
+import com.sun.msv.datatype.xsd.datetime.CalendarParser;
 import com.sun.msv.datatype.xsd.datetime.IDateTimeValueType;
 import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
 
@@ -74,6 +77,15 @@ public class DateTimeType extends DateTimeBaseType {
         result.append(formatTimeZone(cal));
 
         return result.toString();
+    }
+
+    public Object _createJavaObject(String literal, ValidationContext context) {
+        // TODO: if this is promising, change DateTimeBaseType.
+        try {
+            return CalendarParser.parse("%Y-%M-%DT%h:%m:%s%z",literal);
+        } catch( IllegalArgumentException e ) {
+            return null;
+        }
     }
 
     // serialization support

@@ -356,7 +356,11 @@ public class XmlChars
         return !isCompatibilityChar (c)
             // per "5.14 of Unicode", rule out some combiners
         && !(c >= 0x20dd && c <= 0x20e0);
-
+      
+      case Character.FORMAT:
+          // starting from Unicode 4.0, this is a FORMAT char.
+          return c==0x06DD;
+      
       default:
         // added a character ...
         // 212E is in the category So, so I don't know why this is

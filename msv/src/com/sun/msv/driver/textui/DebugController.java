@@ -88,7 +88,7 @@ public class DebugController implements GrammarReaderController {
 			loc.getSystemId() );
 	}
 
-	public InputSource resolveEntity( String publicId, String systemId ) {
+	public InputSource resolveEntity( String publicId, String systemId ) throws java.io.IOException, SAXException {
 		return null;
 	}
 }

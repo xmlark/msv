@@ -117,7 +117,6 @@
 		<tstamp />
 		<property name="stageName" value="xsdlib-${DSTAMP}"/>
 		
-		<delete	dir="${stageName}" />
 		<mkdir	dir="${stageName}/examples" />
 		<mkdir	dir="${stageName}/src" />
 		
@@ -200,9 +199,6 @@
 		
 		<!-- copy additional jar files -->
 		<copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
-		
-		<!-- delete the source! -->
-		<delete dir="${stageName}/src" />
 		
 		<!-- creates distribution package -->
 		<mkdir dir="../package"/>

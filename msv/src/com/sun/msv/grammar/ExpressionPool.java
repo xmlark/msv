@@ -91,9 +91,7 @@ public class ExpressionPool implements java.io.Serializable {
 
         // special (optimized) unification.
         // this will prevent unnecessary ChoiceExp instanciation.
-        Expression o = expTable.get(
-                Expression.hashCode(left,right,Expression.HASHCODE_CHOICE),
-                left, right, ChoiceExp.class );
+        Expression o = expTable.getBinExp( left, right, ChoiceExp.class );
         if(o==null)
             // different thread may possibly be doing the same thing at the same time.
             // so we have to call unify method, too synchronize update.
@@ -168,9 +166,7 @@ public class ExpressionPool implements java.io.Serializable {
         }
         
         // special (optimized) unification.
-        Expression o = expTable.get(
-                Expression.hashCode(left,right,Expression.HASHCODE_SEQUENCE),
-                left, right, SequenceExp.class );
+        Expression o = expTable.getBinExp( left, right, SequenceExp.class );
         if(o==null)
             return unify( new SequenceExp(left,right) );
         else
@@ -311,9 +307,13 @@ public class ExpressionPool implements java.io.Serializable {
             this.parent = parent;
         }
 
-        public Expression get(int hash, Expression left, Expression right, Class type) {
+        public Expression getBinExp(Expression left, Expression right, Class type) {
+            int hash = (left.hashCode()+right.hashCode())^type.hashCode();
+            return getBinExp( hash, left, right, type );
+        }
+        private Expression getBinExp(int hash, Expression left, Expression right, Class type) {
             if (parent != null) {
-                Expression e = parent.get(hash, left, right, type);
+                Expression e = parent.getBinExp(hash, left, right, type);
                 if (e != null)
                     return e;
             }
@@ -445,34 +445,30 @@ public class ExpressionPool implements java.io.Serializable {
                     s.writeObject(table[i]);
         }
         
-        private void readObject(ObjectInputStream s) throws IOException {
-            try { 
-                // prepare to read the alternate persistent fields
-                ObjectInputStream.GetField fields = s.readFields();
+        private void readObject(ObjectInputStream s) throws IOException,ClassNotFoundException {
+            // prepare to read the alternate persistent fields
+            ObjectInputStream.GetField fields = s.readFields();
+            
+            byte version = fields.get("streamVersion",(byte)0);
+            
+            if( version==0 ) {
+                // read in the old version format
+                count = fields.get("count",0);
+                parent = (ClosedHash)fields.get("parent",null);
+                table = (Expression[])fields.get("table",null);
+                threshold = fields.get("threshold",0);
+            } else {
+                // read the new format
+                int objCnt = fields.get("count",0);
+                parent = (ClosedHash)fields.get("parent",null);
                 
-                byte version = fields.get("streamVersion",(byte)0);
-                
-                if( version==0 ) {
-                    // read in the old version format
-                    count = fields.get("count",0);
-                    parent = (ClosedHash)fields.get("parent",null);
-                    table = (Expression[])fields.get("table",null);
-                    threshold = fields.get("threshold",0);
-                } else {
-                    // read the new format
-                    int objCnt = fields.get("count",0);
-                    parent = (ClosedHash)fields.get("parent",null);
-                    
-                    int size = (int)(objCnt/loadFactor)*2;
-                    threshold = count*2;
-                    count = 0;
-                    table = new Expression[size];
-                    for( int i=0; i<count; i++ )
-                        put( (Expression)s.readObject() );
-                }
-           } catch (ClassNotFoundException e) {
-               throw new NoClassDefFoundError(e.getMessage());
-           }
+                int size = (int)(objCnt/loadFactor)*2;
+                threshold = count*2;
+                count = 0;
+                table = new Expression[size];
+                for( int i=0; i<count; i++ )
+                    put( (Expression)s.readObject() );
+            }
         }
     }
     

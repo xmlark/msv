@@ -59,7 +59,9 @@ public class OtherExp extends Expression {
     public Expression exp;
     
     public OtherExp() {
-        super(null,null);
+    }
+    protected final int calcHashCode() {
+        return System.identityHashCode(this);
     }
 
     public OtherExp( Expression exp ) {

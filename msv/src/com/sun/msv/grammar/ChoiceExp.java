@@ -17,7 +17,7 @@ package com.sun.msv.grammar;
 public final class ChoiceExp extends BinaryExp {
     
     ChoiceExp( Expression left, Expression right ) {
-        super(left,right,HASHCODE_CHOICE);
+        super(left,right);
     }
     
     public Object visit( ExpressionVisitor visitor )                { return visitor.onChoice(this); }

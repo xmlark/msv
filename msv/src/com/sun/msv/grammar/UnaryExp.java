@@ -19,9 +19,13 @@ public abstract class UnaryExp extends Expression {
     /** child expression. */
     public final Expression exp;
     
-    protected UnaryExp( Expression exp, int hashKey ) {
-        super( hashCode(exp,hashKey) );
+    protected UnaryExp( Expression exp) {
+        super(exp.hashCode());
         this.exp = exp;
+    }
+    
+    protected final int calcHashCode() {
+        return exp.hashCode();
     }
 
     public boolean equals( Object o ) {

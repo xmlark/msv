@@ -7,8 +7,9 @@ package com.sun.msv.grammar;
  */
 public final class InterleaveExp extends BinaryExp {
     InterleaveExp( Expression left, Expression right ) {
-        super(left,right,HASHCODE_INTERLEAVE);
+        super(left,right);
     }
+    
     public Object visit( ExpressionVisitor visitor ) {
         return visitor.onInterleave(this);
     }

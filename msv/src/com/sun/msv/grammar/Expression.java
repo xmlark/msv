@@ -9,6 +9,9 @@
  */
 package com.sun.msv.grammar;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
 import com.sun.msv.grammar.util.RefExpRemover;
 
 /**
@@ -126,15 +129,15 @@ public abstract class Expression implements java.io.Serializable {
     }
 
     protected Expression(int hashCode) {
-        this.cachedHashCode = hashCode;
+        setHashCode(hashCode);
     }
-
+    
     /**
      * this constructor can be used for the ununified expressions.
      * the only reason there are two parameters is to prevent unintentional
      * use of the default constructor.
      */
-    protected Expression(Object foolProof1, Object foolProof2) {
+    protected Expression() {
         this.cachedHashCode = System.identityHashCode(this);
     }
 
@@ -166,18 +169,37 @@ public abstract class Expression implements java.io.Serializable {
     }
 // until here
     
-    /** hash code of this object.
+    /**
+     * Hash code of this object.
      * 
+     * <p>
      * To memorize every sub expression, hash code is frequently used.
      * And computation of the hash code requires full-traversal of
      * the expression. Therefore, hash code is computed when the object
      * is constructed, and kept cached thereafter.
+     * 
+     * <p>
+     * This field is essentially final, but because of the serialization
+     * support, we cannot declare it as such. 
      */
-    private final int cachedHashCode;
+    private transient int cachedHashCode;
 
     public final int hashCode() {
         return cachedHashCode;
     }
+    
+    private final void setHashCode(int hashCode) {
+        this.cachedHashCode = hashCode^getClass().hashCode();
+    }
+    
+    /**
+     * Computes the hashCode again.
+     * <p>
+     * This method and the parameter to the constructor has to be
+     * the same. This method is used when the object is being read
+     * from the stream. 
+     */
+    protected abstract int calcHashCode();
 
     public abstract boolean equals(Object o);
 
@@ -191,26 +213,11 @@ public abstract class Expression implements java.io.Serializable {
         return o.hashCode() + hashKey;
     }
 
-    static final int HASHCODE_ATTRIBUTE = 1;
-    static final int HASHCODE_CHOICE = 2;
-    static final int HASHCODE_ONE_OR_MORE = 3;
-    static final int HASHCODE_REF = 4;
-    static final int HASHCODE_SEQUENCE = 5;
-    static final int HASHCODE_DATA = 6;
-    static final int HASHCODE_VALUE = 7;
-    static final int HASHCODE_ANYSTRING = 8;
-    static final int HASHCODE_EPSILON = 9;
-    static final int HASHCODE_NULLSET = 10;
-    static final int HASHCODE_ELEMENT = 11;
-    static final int HASHCODE_MIXED = 12;
-    static final int HASHCODE_CONCUR = 20;
-    static final int HASHCODE_INTERLEAVE = 21;
-    static final int HASHCODE_LIST = 22;
-    static final int HASHCODE_KEY = 23;
-
     private static class EpsilonExpression extends Expression {
         EpsilonExpression() {
-            super(Expression.HASHCODE_EPSILON);
+        }
+        protected final int calcHashCode() {
+            return System.identityHashCode(this);
         }
         public Object visit(ExpressionVisitor visitor) {
             return visitor.onEpsilon();
@@ -233,7 +240,7 @@ public abstract class Expression implements java.io.Serializable {
 
         // serialization support
         private static final long serialVersionUID = 1;
-        private Object readResolve() {
+        protected Object readResolve() {
             return Expression.epsilon;
         }
     };
@@ -246,7 +253,9 @@ public abstract class Expression implements java.io.Serializable {
 
     private static class NullSetExpression extends Expression {
         NullSetExpression() {
-            super(Expression.HASHCODE_NULLSET);
+        }
+        protected final int calcHashCode() {
+            return System.identityHashCode(this);
         }
         public Object visit(ExpressionVisitor visitor) {
             return visitor.onNullSet();
@@ -269,7 +278,7 @@ public abstract class Expression implements java.io.Serializable {
 
         // serialization support
         private static final long serialVersionUID = 1;
-        private Object readResolve() {
+        protected Object readResolve() {
             return Expression.nullSet;
         }
     };
@@ -282,7 +291,9 @@ public abstract class Expression implements java.io.Serializable {
 
     private static class AnyStringExpression extends Expression {
         AnyStringExpression() {
-            super(Expression.HASHCODE_ANYSTRING);
+        }
+        protected final int calcHashCode() {
+            return System.identityHashCode(this);
         }
         public Object visit(ExpressionVisitor visitor) {
             return visitor.onAnyString();
@@ -311,7 +322,7 @@ public abstract class Expression implements java.io.Serializable {
 
         // serialization support
         private static final long serialVersionUID = 1;
-        private Object readResolve() {
+        protected Object readResolve() {
             return Expression.anyString;
         }
     };
@@ -327,5 +338,11 @@ public abstract class Expression implements java.io.Serializable {
     public static final Expression anyString = new AnyStringExpression();
 
 
+    protected Object readResolve() {
+        System.out.println("resolve");
+        setHashCode(calcHashCode());
+        return this;
+    }
+    
     private static final long serialVersionUID = -569561418606215601L;
 }

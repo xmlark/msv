@@ -15,7 +15,7 @@ package com.sun.msv.grammar;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class OneOrMoreExp extends UnaryExp {
-    OneOrMoreExp( Expression exp )    { super( exp,HASHCODE_ONE_OR_MORE ); }
+    OneOrMoreExp( Expression exp )    { super(exp); }
     
     public Object visit( ExpressionVisitor visitor )                { return visitor.onOneOrMore(this);    }
     public Expression visit( ExpressionVisitorExpression visitor )    { return visitor.onOneOrMore(this); }

@@ -29,7 +29,7 @@ package com.sun.msv.grammar;
  */
 public final class MixedExp extends UnaryExp {
     MixedExp(Expression exp) {
-        super(exp, HASHCODE_MIXED);
+        super(exp);
     }
 
     public Object visit(ExpressionVisitor visitor) {

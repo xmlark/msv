@@ -41,13 +41,16 @@ public class ReferenceExp extends Expression {
     public final String name;
     
     public ReferenceExp( String name ) {
-        super( hashCode(name==null?"":name,HASHCODE_REF) );
         this.name = name;
     }
 
     public ReferenceExp( String name, Expression exp ) {
         this(name);
         this.exp = exp;
+    }
+
+    protected final int calcHashCode() {
+        return System.identityHashCode(this);
     }
     
     /**

@@ -48,9 +48,13 @@ public abstract class ElementExp extends Expression implements NameClassAndExpre
         // since ElementExp is not unified, no two ElementExp objects are considered equal.
         // therefore essentially any value can be used as hash code.
         // that's why this code works even when content model may be changed later.
-        super( hashCode( contentModel, HASHCODE_ELEMENT ) );
+        super( contentModel.hashCode() );
         this.contentModel = contentModel;
         this.ignoreUndeclaredAttributes = ignoreUndeclaredAttributes;
+    }
+    
+    protected final int calcHashCode() {
+        return contentModel.hashCode();
     }
 
     public final boolean equals( Object o ) {

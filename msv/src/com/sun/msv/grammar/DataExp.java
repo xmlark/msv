@@ -41,10 +41,14 @@ public final class DataExp extends Expression implements DataOrValueExp {
     public final Expression except;
     
     protected DataExp( Datatype dt, StringPair typeName, Expression except ) {
-        super(hashCode(dt,except,HASHCODE_DATA));
+        super(dt.hashCode()+except.hashCode());
         this.dt=dt;
         this.name = typeName;
         this.except = except;
+    }
+    
+    protected final int calcHashCode() {
+        return dt.hashCode()+except.hashCode();
     }
     
     public boolean equals( Object o ) {

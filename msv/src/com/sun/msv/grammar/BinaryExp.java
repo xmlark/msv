@@ -21,12 +21,16 @@ public abstract class BinaryExp extends Expression {
     public final Expression exp1;
     public final Expression exp2;
     
-    public BinaryExp( Expression left, Expression right, int hashKey ) {
-        super( hashCode(left,right,hashKey) );
+    public BinaryExp( Expression left, Expression right ) {
+        super( left.hashCode()+right.hashCode() );
         this.exp1 = left;
         this.exp2 = right;
     }
-
+    
+    protected final int calcHashCode() {
+        return exp1.hashCode()+exp2.hashCode();
+    }
+    
     public boolean equals( Object o ) {
         if( this.getClass()!=o.getClass() )        return false;
         

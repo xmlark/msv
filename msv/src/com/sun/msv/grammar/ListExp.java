@@ -18,7 +18,7 @@ package com.sun.msv.grammar;
  */
 public final class ListExp extends UnaryExp {
     
-    ListExp( Expression exp )    { super( exp,HASHCODE_LIST ); }
+    ListExp( Expression exp )    { super(exp); }
     
     public Object visit( ExpressionVisitor visitor )                { return visitor.onList(this);    }
     public Expression visit( ExpressionVisitorExpression visitor )    { return visitor.onList(this); }

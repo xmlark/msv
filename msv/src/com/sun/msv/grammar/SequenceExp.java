@@ -16,7 +16,7 @@ package com.sun.msv.grammar;
  */
 public final class SequenceExp extends BinaryExp {
     
-    SequenceExp( Expression left, Expression right )    { super(left,right,HASHCODE_SEQUENCE); }
+    SequenceExp( Expression left, Expression right )    { super(left,right); }
     
     public Object visit( ExpressionVisitor visitor )                { return visitor.onSequence(this); }
     public Expression visit( ExpressionVisitorExpression visitor )    { return visitor.onSequence(this); }

@@ -21,9 +21,9 @@ package com.sun.msv.grammar;
 public final class ConcurExp extends BinaryExp {
     
     ConcurExp( Expression left, Expression right ) {
-        super(left,right,HASHCODE_CONCUR);
+        super(left,right);
     }
-
+    
     public Object visit( ExpressionVisitor visitor ) {
         return visitor.onConcur(this);
     }

@@ -29,9 +29,13 @@ public class AttributeExp extends Expression implements NameClassAndExpression {
     public final Expression getContentModel() { return exp; }
     
     public AttributeExp( NameClass nameClass, Expression exp ) {
-        super( hashCode( nameClass, exp, HASHCODE_ATTRIBUTE ) );
+        super( nameClass.hashCode()+exp.hashCode() );
         this.nameClass    = nameClass;
         this.exp        = exp;
+    }
+
+    protected final int calcHashCode() {
+        return nameClass.hashCode()+exp.hashCode();
     }
     
     public boolean equals( Object o ) {

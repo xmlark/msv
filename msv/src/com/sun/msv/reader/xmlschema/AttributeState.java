@@ -14,6 +14,7 @@ import org.xml.sax.Locator;
 
 import com.sun.msv.grammar.AttributeExp;
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.grammar.relax.NoneType;
@@ -154,7 +155,7 @@ public class AttributeState extends ExpressionWithChildState implements XSTypeOw
 				// use='prohibited' is implemented through NoneType
 				contentType = reader.pool.createData( NoneType.theInstance );
 			
-			exp = reader.pool.createAttribute(
+			exp = createAttribute(
 				new SimpleNameClass( targetNamespace, name ),
 				contentType );
 		}
@@ -192,7 +193,14 @@ public class AttributeState extends ExpressionWithChildState implements XSTypeOw
 		
 		return exp;
 	}
-
+    
+    /**
+     * Allows the derived class to change it.
+     */
+    protected Expression createAttribute( NameClass nc, Expression exp ) {
+        return reader.pool.createAttribute(nc,exp);
+    }
+    
     public String getTargetNamespaceUri() {
         final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
         return reader.currentSchema.targetNamespace;

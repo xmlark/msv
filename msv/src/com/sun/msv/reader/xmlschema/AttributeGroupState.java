@@ -4,6 +4,7 @@ import com.sun.tranquilo.datatype.DataType;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.ReferenceContainer;
 import com.sun.tranquilo.grammar.xmlschema.AttributeGroupExp;
+import com.sun.tranquilo.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.reader.State;
 import org.xml.sax.Locator;
@@ -27,19 +28,18 @@ public class AttributeGroupState extends RedefinableDeclState {
 		
 		String refQName = startTag.getAttribute("ref");
 		if( refQName==null )
-			// child expressions are expected.
-			return null;
-		
-		String[] r = reader.splitQName(refQName);
-		if(r==null) {
-			reader.reportError( reader.ERR_UNDECLARED_PREFIX, refQName );
-			// recover by returning something meaningless.
-			return Expression.nullSet;
-		}
-		
-		// TODO: memorize this reference.
-		return reader.getOrCreateSchema(r[0]/*uri*/).
-			attributeGroups.getOrCreate(r[1]/*localName*/);
+			// child expressions are expected. (although it's optional)
+			return Expression.epsilon;
+
+		Expression exp = reader.resolveQNameRef(
+			startTag, "ref",
+			new XMLSchemaReader.RefResolver() {
+				public ReferenceContainer get( XMLSchemaSchema g ) {
+					return g.attributeGroups;
+				}
+			} );
+		if( exp==null )		return Expression.epsilon;	// couldn't resolve QName.
+		return exp;
 	}
 
 	protected Expression castExpression( Expression halfCastedExpression, Expression newChildExpression ) {

@@ -9,7 +9,7 @@
  */
 package com.sun.tahiti.runtime.ll;
 
-import com.sun.tahiti.runtime.TypeDetecter;
+import com.sun.msv.verifier.psvi.TypeDetector;
 import com.sun.tahiti.runtime.sm.MarshallableObject;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
@@ -29,7 +29,7 @@ import java.io.IOException;
  * @author
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class Unmarshaller extends TypeDetecter {
+public class Unmarshaller extends TypeDetector {
 	
 	private final Binder binder;
 	

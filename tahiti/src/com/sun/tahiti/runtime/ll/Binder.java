@@ -14,7 +14,7 @@ import com.sun.msv.grammar.AttributeExp;
 import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.grammar.NameClassAndExpression;
 import com.sun.msv.grammar.Expression;
-import com.sun.tahiti.runtime.TypedContentHandler;
+import com.sun.msv.verifier.psvi.TypedContentHandler;
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.ValidationContext;
 import org.xml.sax.SAXException;

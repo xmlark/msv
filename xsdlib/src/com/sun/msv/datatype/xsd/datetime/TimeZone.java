@@ -14,7 +14,7 @@ package com.sun.msv.datatype.datetime;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class TimeZone {
+public class TimeZone implements java.io.Serializable {
 	/** difference from GMT in terms of minutes */
 	public int minutes;
 	
@@ -31,6 +31,12 @@ public class TimeZone {
 	public static TimeZone create( int minutes ) {
 		if(minutes==0)		return GMT;
 		else				return new TimeZone(minutes);
+	}
+	
+	protected Object readResolve() throws java.io.ObjectStreamException {
+		// use GMT object in case of GMT.
+		if(minutes==0)		return GMT;
+		return				this;
 	}
 	
 	public int hashCode()	{ return minutes; }

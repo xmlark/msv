@@ -16,7 +16,7 @@ import java.math.BigInteger;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class IntegerValueType implements Comparable {
+public class IntegerValueType implements Comparable, java.io.Serializable {
 	/** canonical representation of absolute value of integer
 	 * 
 	 * BNF of canonical representation

@@ -13,7 +13,7 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-class QnameValueType {
+class QnameValueType implements java.io.Serializable {
 	String namespaceURI;
 	String localPart;
 	

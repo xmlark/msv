@@ -15,7 +15,7 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class ListValueType
+public class ListValueType implements java.io.Serializable
 {
 	public final Object[] values;
 	

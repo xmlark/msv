@@ -9,21 +9,30 @@
  */
 package com.sun.msv.datatype;
 
+import java.io.Serializable;
+import java.io.InvalidObjectException;
+
 /**
  * processes white space normalization
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public abstract class WhiteSpaceProcessor {
+public abstract class WhiteSpaceProcessor implements Serializable {
 	
-	/** returns whitespace normalized text.
-	 *
+	/**
+	 * returns whitespace normalized text.
 	 * behavior varies on what normalization mode is used.
 	 */
 	public abstract String process( String text );
 	
 	/** higher return value indicates tigher constraint */
 	abstract int tightness();
+	
+	/**
+	 * gets the name of the white space processing mode.
+	 * It is one of "preserve","collapse", or "replace".
+	 */
+	public abstract String getName();
 	
 	/**
 	 * returns a WhiteSpaceProcessor object if "whiteSpace" facet is specified.
@@ -39,13 +48,29 @@ public abstract class WhiteSpaceProcessor {
 		throw new BadTypeException( BadTypeException.ERR_INVALID_WHITESPACE_VALUE, name );
 	}
 	
+	/** returns true if the specified char is a white space character. */
 	protected static final boolean isWhiteSpace( char ch ) {
 		return ch==0x9 || ch==0xA || ch==0xD || ch==0x20;
 	}
 	
+	
+	protected Object readResolve() throws InvalidObjectException {
+		// return the singleton instead of deserialized object.
+		try {
+			return get(getName());
+		} catch( BadTypeException bte ) {
+			throw new InvalidObjectException("Unknown Processing Mode");
+		}
+	}
+	
+/*
+	Actual processor implementation
+*/
+	
 	public final static WhiteSpaceProcessor thePreserve = new WhiteSpaceProcessor() {
 		public String process( String text )	{ return text; }
 		int tightness() { return 0; }
+		public String getName() { return "preserve"; }
 	};
 	
 	public final static WhiteSpaceProcessor theReplace = new WhiteSpaceProcessor() {
@@ -62,6 +87,7 @@ public abstract class WhiteSpaceProcessor {
 			return result.toString();		
 		}
 		int tightness() { return 1; }
+		public String getName() { return "replace"; }
 	};
 
 	public final static WhiteSpaceProcessor theCollapse= new WhiteSpaceProcessor() {
@@ -93,6 +119,7 @@ public abstract class WhiteSpaceProcessor {
 			return result.toString();
 		}
 		int tightness() { return 2; }
+		public String getName() { return "collapse"; }
 	};
 }
 

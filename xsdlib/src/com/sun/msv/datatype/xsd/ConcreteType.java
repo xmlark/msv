@@ -16,6 +16,7 @@ package com.sun.msv.datatype;
  * @author	Kohsuke Kawaguchi
  */
 public abstract class ConcreteType extends DataTypeImpl {
+	
 	protected ConcreteType( String typeName, WhiteSpaceProcessor whiteSpace ) {
 		super( typeName, whiteSpace );
 	}
@@ -40,6 +41,18 @@ public abstract class ConcreteType extends DataTypeImpl {
 	
 	public final String displayName() {
 		return getName();
+	}
+	
+	protected Object readResolve() throws java.io.ObjectStreamException {
+		// return the sigleton object, if any.
+		String name = getName();
+		if(name!=null) {
+			DataType dt = DataTypeFactory.getTypeByName(name);
+			if(dt!=null)
+				return dt;
+		}
+		
+		return this;
 	}
 
 	// default implementation for concrete type. somewhat shabby.

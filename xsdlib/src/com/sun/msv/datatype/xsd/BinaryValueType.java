@@ -14,7 +14,7 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-class BinaryValueType {
+class BinaryValueType implements java.io.Serializable {
 	/** raw byte data */
 	public byte[]	rawData;
 	

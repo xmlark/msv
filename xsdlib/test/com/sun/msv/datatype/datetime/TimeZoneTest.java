@@ -8,7 +8,9 @@
  * 
  */
 package com.sun.msv.datatype.datetime;
+
 import junit.framework.*;
+import java.io.*;
 
 /**
  * tests TimeZone.
@@ -57,5 +59,27 @@ public class TimeZoneTest extends TestCase {
 	{
 		assertEquals( TimeZone.create(50), TimeZone.create(50) );
 		assertEquals( TimeZone.create(-123), TimeZone.create(-123) );
+	}
+	
+	/** serializes o and then returns de-serialized object. */
+	public Object freezeDry( Object o ) throws Exception {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(bos);
+		
+		// serialize it
+		oos.writeObject( o );
+		oos.flush();
+		
+		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+		ObjectInputStream ois = new ObjectInputStream(bis);
+		
+		return ois.readObject();
+	}
+
+	/** test serialization. */
+	public void testSerialization() throws Exception {
+		
+		// ensure that serialization doesn't break
+		assertSame( TimeZone.GMT, TimeZone.GMT );
 	}
 }

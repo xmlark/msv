@@ -10,6 +10,7 @@
 package com.sun.msv.datatype;
 
 import junit.framework.*;
+import java.io.*;
 
 /**
  * tests WhiteSpaceProcessor.
@@ -100,5 +101,34 @@ public class WhiteSpaceProcessorTest extends TestCase
 		assertEquals( target.process(
 			"abc "),
 			"abc");
+	}
+	
+	/** serializes o and then returns de-serialized object. */
+	public Object freezeDry( Object o ) throws Exception {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(bos);
+		
+		// serialize it
+		oos.writeObject( o );
+		oos.flush();
+		
+		ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+		ObjectInputStream ois = new ObjectInputStream(bis);
+		
+		return ois.readObject();
+	}
+	
+	/** test serialization. */
+	public void testSerialization() throws Exception {
+		
+		// ensure that serialization doesn't break
+		assertSame( WhiteSpaceProcessor.theCollapse,
+			freezeDry(WhiteSpaceProcessor.theCollapse) );
+
+		assertSame( WhiteSpaceProcessor.thePreserve,
+			freezeDry(WhiteSpaceProcessor.thePreserve) );
+		
+		assertSame( WhiteSpaceProcessor.theReplace,
+			freezeDry(WhiteSpaceProcessor.theReplace) );
 	}
 }

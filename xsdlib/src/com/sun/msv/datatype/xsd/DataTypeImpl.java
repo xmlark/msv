@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import java.io.Serializable;
+
 /**
  * base implementaion for DataType interface.
  * 

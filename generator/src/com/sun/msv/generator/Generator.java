@@ -283,6 +283,12 @@ public class Generator implements TREXPatternVisitorVoid
 	}
 	
 	public void onElement( ElementExp exp ) {
+		
+		if( node instanceof Document && ((Document)node).getDocumentElement()!=null ) {
+			// document has the root element. so abort.
+			return;
+		}
+		
 		if( opts.random.nextDouble() < opts.probMutatedElemError ) {
 			// mutated element error. generate a random element and ignore this declaration.
 			noteError("mutated element");

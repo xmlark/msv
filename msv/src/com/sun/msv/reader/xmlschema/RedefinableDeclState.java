@@ -27,14 +27,14 @@ public abstract class RedefinableDeclState extends ExpressionWithChildState {
 	 */
 	protected RedefinableExp oldDecl;
 	
-	private ReferenceContainer container;
+	/** gets appropriate ReferenceContainer to store this declaration. */
+	protected abstract ReferenceContainer getContainer();
 	
-	protected void startSelf(ReferenceContainer con) {
+	protected void startSelf() {
 		super.startSelf();
 		
 		if( isRedefine() ) {
 			final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
-			this.container = con;
 			
 			String name = startTag.getAttribute("name");
 			if( name==null )
@@ -42,18 +42,19 @@ public abstract class RedefinableDeclState extends ExpressionWithChildState {
 				// this error will be reported in annealExpression method.
 				return;
 			
-			oldDecl = (RedefinableExp)con._get(name);
-			if(exp==null) {
+			oldDecl = (RedefinableExp)getContainer()._get(name);
+			if(oldDecl==null) {
 				reader.reportError( reader.ERR_REDEFINE_UNDEFINED, name );
 				return;
 			}
 			
-			con.redefine( name, oldDecl.getClone() );
+			getContainer().redefine( name, oldDecl.getClone() );
 		}
 	}
 	
 	protected void endSelf() {
-		container.redefine( oldDecl.name, oldDecl );
+		if( oldDecl!=null )
+			getContainer().redefine( oldDecl.name, oldDecl );
 		
 		super.endSelf();
 	}

@@ -581,12 +581,13 @@ public class XMLSchemaReader extends GrammarReader
 	public static final String ERR_REDEFINE_UNDEFINED = // arg:1
 		"XMLSchemaReader.RedefineUndefined";
 	public static final String ERR_DUPLICATE_ATTRIBUTE_DEFINITION = // arg:1
-		null;
+		"XMLSchemaReader.DuplicateAttributeDefinition";
 	public static final String ERR_DUPLICATE_COMPLEXTYPE_DEFINITION = // arg:1
-		null;
+		"XMLSchemaReader.DuplicateComplexTypeDefinition";
 	public static final String ERR_DUPLICATE_ATTRIBUTE_GROUP_DEFINITION = // arg:1
-		null;
+		"XMLSchemaReader.DuplicateAttributeGroupDefinition";
 	public static final String ERR_DUPLICATE_GROUP_DEFINITION = // arg:1
-		null;
-
+		"XMLSchemaReader.DuplicateGroupDefinition";
+	public static final String ERR_DUPLICATE_ELEMENT_DEFINITION = // arg:1
+		"XMLSchemaReader.DuplicateElementDefinition";
 }

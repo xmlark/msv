@@ -13,6 +13,7 @@ import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.reader.State;
 import com.sun.tranquilo.reader.IgnoreState;
 import com.sun.tranquilo.reader.ExpressionWithChildState;
+import org.xml.sax.Locator;
 
 /**
  * used to parse &lt;element &gt; element without ref attribute.
@@ -174,6 +175,12 @@ public class ElementDeclState extends ExpressionWithChildState {
 		
 		// register this as global element declaration
 		ElementDeclExp decl = reader.currentSchema.elementDecls.getOrCreate(name);
+		if( decl.self!=null )
+			reader.reportError( 
+				new Locator[]{this.location,reader.getDeclaredLocationOf(decl)},
+				reader.ERR_DUPLICATE_ELEMENT_DEFINITION,
+				new Object[]{name} );
+		
 		decl.self = exp;
 		decl.exp = reader.pool.createChoice( decl.exp, decl.self );
 		reader.setDeclaredLocationOf(decl);

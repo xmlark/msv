@@ -3,6 +3,7 @@ package com.sun.tranquilo.reader.xmlschema;
 import com.sun.tranquilo.datatype.DataType;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.SimpleNameClass;
+import com.sun.tranquilo.grammar.ReferenceContainer;
 import com.sun.tranquilo.grammar.xmlschema.ComplexTypeExp;
 import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.reader.State;
@@ -11,6 +12,10 @@ import org.xml.sax.Locator;
 public class ComplexTypeDeclState extends RedefinableDeclState {
 	
 	protected ComplexTypeExp decl;
+	
+	protected ReferenceContainer getContainer() {
+		return ((XMLSchemaReader)reader).currentSchema.complexTypes;
+	}
 	
 	protected void startSelf() {
 		super.startSelf();
@@ -29,7 +34,7 @@ public class ComplexTypeDeclState extends RedefinableDeclState {
 				decl = new ComplexTypeExp( reader.currentSchema, name );
 			else {
 				decl = reader.currentSchema.complexTypes.getOrCreate(name);
-				if( decl.self!=null )
+				if( decl.self.exp!=null )
 					reader.reportError( 
 						new Locator[]{this.location,reader.getDeclaredLocationOf(decl)},
 						reader.ERR_DUPLICATE_COMPLEXTYPE_DEFINITION,

@@ -16,6 +16,10 @@ public class GroupState extends RedefinableDeclState {
 		// TODO: group reference is prohibited under group element.
 		return reader.createModelGroupState(this,tag);
 	}
+
+	protected ReferenceContainer getContainer() {
+		return ((XMLSchemaReader)reader).currentSchema.groupDecls;
+	}
 	
 	protected Expression initialExpression() {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;

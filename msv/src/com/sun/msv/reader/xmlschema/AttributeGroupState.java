@@ -2,6 +2,7 @@ package com.sun.tranquilo.reader.xmlschema;
 
 import com.sun.tranquilo.datatype.DataType;
 import com.sun.tranquilo.grammar.Expression;
+import com.sun.tranquilo.grammar.ReferenceContainer;
 import com.sun.tranquilo.grammar.xmlschema.AttributeGroupExp;
 import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.reader.State;
@@ -17,6 +18,10 @@ public class AttributeGroupState extends RedefinableDeclState {
 		return reader.createAttributeState(this,tag);
 	}
 
+	protected ReferenceContainer getContainer() {
+		return ((XMLSchemaReader)reader).currentSchema.attributeGroups;
+	}
+	
 	protected Expression initialExpression() {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		

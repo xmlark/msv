@@ -17,9 +17,7 @@ import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.grammar.relax.*;
 import com.sun.tranquilo.grammar.*;
 import com.sun.tranquilo.driver.textui.DebugController;
-import com.sun.tranquilo.reader.trex.TREXGrammarReader;
-import com.sun.tranquilo.reader.relax.RELAXReader;
-import com.sun.tranquilo.reader.util.IntelligentLoader;
+import com.sun.tranquilo.reader.util.GrammarLoader;
 import org.apache.xml.serialize.*;
 
 /**
@@ -78,8 +76,6 @@ public class Driver
 	
 	protected void run( String[] args ) throws Exception
 	{
-		boolean relax=false;
-		boolean trex=false;
 		String grammarName=null;
 		String outputName=null;
 		String encoding="UTF-8";
@@ -97,12 +93,6 @@ public class Driver
 		{
 			for( int i=0; i<args.length; i++ )
 			{
-				if( args[i].equalsIgnoreCase("-relax") )
-					relax = true;
-				else
-				if( args[i].equalsIgnoreCase("-trex") )
-					trex = true;
-				else
 				if( args[i].equalsIgnoreCase("-ascii") )
 					((DataTypeGeneratorImpl)opt.dtGenerator).asciiOnly = true;
 				else
@@ -231,36 +221,17 @@ public class Driver
 		
 		// load a schema
 		//===========================================
-		Object grammar;
-		if( !trex && !relax )
-		{// schema type is not specified. sniff it.
-			grammar = IntelligentLoader.loadSchema(
+		Grammar grammar = GrammarLoader.loadSchema(
 				grammarName, new DebugController(false), factory );
-		}
-		if(relax)
-			grammar = RELAXReader.parse(
-					getInputSource(grammarName),
-					factory,
-					new com.sun.tranquilo.driver.textui.DebugController(false),
-					new TREXPatternPool() );
-		else
-			grammar = TREXGrammarReader.parse(
-					getInputSource(grammarName),
-					factory,
-					new com.sun.tranquilo.driver.textui.DebugController(false) );
 		
-		if( grammar instanceof RELAXGrammar )
-		{
-			RELAXGrammar g = (RELAXGrammar)grammar;
-			NoneTypeRemover.removeNoneType(g);
-			opt.pool = (TREXPatternPool)g.pool;
-			topLevel = g.topLevel.visit( new RefExpRemover(g.pool) );
-		}
-		else
-		{
-			TREXGrammar g = (TREXGrammar)grammar;
-			topLevel = g.start.visit( new RefExpRemover(g.pool) );
-		}
+		topLevel = grammar.getTopLevel();
+		
+		if( grammar instanceof RELAXGrammar
+		||  grammar instanceof RELAXModule )
+			topLevel = topLevel.visit( new NoneTypeRemover(grammar.getPool()) );
+	
+		topLevel = topLevel.visit( new RefExpRemover(grammar.getPool()) );
+		opt.pool = (TREXPatternPool)grammar.getPool();
 		
 		// generate instances
 		//===========================================

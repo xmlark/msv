@@ -28,7 +28,7 @@ public class NoneTypeRemover
 	/** set of visited ReferenceExps */
 	private final Set visitedRefs = new java.util.HashSet();
 	
-	private NoneTypeRemover( ExpressionPool pool ) { super(pool); }
+	public NoneTypeRemover( ExpressionPool pool ) { super(pool); }
 	
 	public Expression onElement( ElementExp exp )
 	{
@@ -54,32 +54,5 @@ public class NoneTypeRemover
 		visitedRefs.add(exp);
 		exp.exp = exp.exp.visit(this);
 		return exp;
-	}
-	
-	
-	
-	public static void removeNoneType( RELAXGrammar grammar )
-	{
-		Iterator itr = grammar.moduleMap.values().iterator();
-		while( itr.hasNext() )
-			removeNoneType( (RELAXModule)itr.next(), grammar.pool );
-	}
-	public static void removeNoneType( RELAXModule module, ExpressionPool pool )
-	{
-		NoneTypeRemover t = new NoneTypeRemover(pool);
-		t.remove( module.elementRules );
-		t.remove( module.hedgeRules );
-		t.remove( module.tags );
-		t.remove( module.exportedAttPools );
-		t.remove( module.attPools );
-	}
-	private void remove( ReferenceContainer cont )
-	{
-		Iterator itr = cont.iterator();
-		while( itr.hasNext() )
-		{
-			ReferenceExp exp = (ReferenceExp)itr.next();
-			exp.exp = exp.exp.visit(this);
-		}
 	}
 }

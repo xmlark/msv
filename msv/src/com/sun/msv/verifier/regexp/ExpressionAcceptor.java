@@ -792,6 +792,18 @@ public abstract class ExpressionAcceptor implements Acceptor {
 			try {
 				// TODO: handle ValueExp nicely
 				texp.getType().checkValid( srt.literal, srt.context );
+                
+                if(texp instanceof ValueExp) {
+                    ValueExp vexp = (ValueExp)texp;
+                    
+                    if(!vexp.dt.sameValue(vexp.value,
+                            vexp.dt.createValue(srt.literal,srt.context))) {
+                        // incorrect value
+                        return docDecl.localizeMessage(
+                            docDecl.DIAG_BAD_LITERAL_INCORRECT_VALUE,
+                            vexp.value.toString() );
+                    }
+                }
 			} catch( DatatypeException de ) {
 				// this literal is invalid.
 				if( de.getMessage()!=null )

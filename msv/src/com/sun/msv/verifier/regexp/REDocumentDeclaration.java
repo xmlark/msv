@@ -166,7 +166,9 @@ public class REDocumentDeclaration implements DocumentDeclaration
 		"Diagnosis.BadLiteral.More";
 	public static final String DIAG_BAD_LITERAL_GENERIC =
 		"Diagnosis.BadLiteral.Generic";
-	public static final String DIAG_SIMPLE_NAMECLASS =
+    public static final String DIAG_BAD_LITERAL_INCORRECT_VALUE = // arg:1
+		"Diagnosis.BadLiteral.IncorrectValue";
+    public static final String DIAG_SIMPLE_NAMECLASS =
 		"Diagnosis.SimpleNameClass";
 	public static final String DIAG_NAMESPACE_NAMECLASS =
 		"Diagnosis.NamespaceNameClass";

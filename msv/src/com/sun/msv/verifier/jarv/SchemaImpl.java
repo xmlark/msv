@@ -39,6 +39,13 @@ public class SchemaImpl implements Schema
         this.usePanicMode = _usePanicMode;
     }
     
+    public SchemaImpl( Grammar grammar ) {
+        this.grammar = grammar;
+        this.factory = SAXParserFactory.newInstance();
+        factory.setNamespaceAware(true);
+        this.usePanicMode = false;
+    }
+    
     public Verifier newVerifier() throws VerifierConfigurationException {
         IVerifier core = FactoryImpl.createVerifier(grammar);
         core.setPanicMode(usePanicMode);

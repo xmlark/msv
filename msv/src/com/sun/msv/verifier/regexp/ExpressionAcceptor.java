@@ -283,7 +283,10 @@ public abstract class ExpressionAcceptor implements Acceptor
 				com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter.printSmallest(continuation) );
 		}
 		
-		return createAcceptor( contentModel, continuation, cccc.getElementsOfConcern() );
+		// by passing null as elements of concern and
+		// using continuation, we are effectively "generating"
+		// the content model for error recovery.
+		return createAcceptor( contentModel, continuation, null );
 	}
 	
 	protected Acceptor recover( StartTagInfoEx sti, StringRef errRef )
@@ -430,6 +433,12 @@ public abstract class ExpressionAcceptor implements Acceptor
 		return r;
 	}
 
+	private final String concatenateMessages( Set items, boolean more,
+											  String separatorStr, String moreStr )
+	{
+		return concatenateMessages( new Vector(items), more, separatorStr, moreStr );
+	}
+
 	/**
 	 * gets error diagnosis message from datatype.
 	 * 
@@ -489,7 +498,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 						
 		// therefore we can provide candidates for users.
 						
-		Vector vec = new Vector();
+		Set s = new java.util.HashSet();
 		boolean more = false;
 
 		// if there is a SimpleNameClass with the same localName
@@ -514,13 +523,13 @@ public abstract class ExpressionAcceptor implements Acceptor
 					wrongNamespace = snc.namespaceURI;
 				}
 				
-				vec.add( docDecl.localizeMessage(
+				s.add( docDecl.localizeMessage(
 					docDecl.DIAG_SIMPLE_NAMECLASS, nc.toString() ) );
 				continue;
 			}
 			if( nc instanceof NamespaceNameClass )
 			{
-				vec.add( docDecl.localizeMessage(
+				s.add( docDecl.localizeMessage(
 					docDecl.DIAG_NAMESPACE_NAMECLASS, ((NamespaceNameClass)nc).namespaceURI ) );
 				continue;
 			}
@@ -529,7 +538,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 				NameClass ncc = ((NotNameClass)nc).child;
 				if( ncc instanceof NamespaceNameClass )
 				{
-					vec.add( docDecl.localizeMessage(
+					s.add( docDecl.localizeMessage(
 						docDecl.DIAG_NOT_NAMESPACE_NAMECLASS, ((NamespaceNameClass)nc).namespaceURI ) );
 					continue;
 				}
@@ -540,11 +549,11 @@ public abstract class ExpressionAcceptor implements Acceptor
 		}
 		
 		// no candidate was collected. bail out.
-		if( vec.size()==0 )			return null;
+		if( s.size()==0 )			return null;
 		
 		if( wrongNamespace!=null )
 		{
-			if( vec.size()==1 )
+			if( s.size()==1 )
 				// only one candidate.
 				return docDecl.localizeMessage(
 					docDecl.DIAG_BAD_TAGNAME_WRONG_NAMESPACE, sti.localName, wrongNamespace );
@@ -559,7 +568,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 		// there is no clue about user's intention.
 		return docDecl.localizeMessage(
 			docDecl.DIAG_BAD_TAGNAME_WRAPUP, sti.qName,
-			concatenateMessages( vec, more,
+			concatenateMessages( s, more,
 				docDecl.DIAG_BAD_TAGNAME_SEPARATOR,
 				docDecl.DIAG_BAD_TAGNAME_MORE ) );
 	}
@@ -634,7 +643,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 			//
 			// falls into this pattern.
 								
-			final Vector items = new Vector();
+			final Set items = new java.util.HashSet();
 			boolean more = false;
 								
 			
@@ -712,7 +721,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 		// AttributePruner must return Expression other than nullSet.
 		// In that case, there is no error.
 
-		final Vector vec = new Vector();
+		final Set s = new java.util.HashSet();
 		boolean more = false;
 				
 		while( e instanceof ChoiceExp )
@@ -721,7 +730,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 					
 			NameClass nc = ((AttributeExp)ch.exp1).nameClass;
 			if( nc instanceof SimpleNameClass )
-				vec.add( nc.toString() );
+				s.add( nc.toString() );
 			else
 				more = true;
 			
@@ -732,25 +741,25 @@ public abstract class ExpressionAcceptor implements Acceptor
 		
 		NameClass nc = ((AttributeExp)e).nameClass;
 		if( nc instanceof SimpleNameClass )
-			vec.add( nc.toString() );
+			s.add( nc.toString() );
 		else
 			more = true;
 				
-		if( vec.size()==0 )		return null;
+		if( s.size()==0 )		return null;
 		
 		// at least one candidate is found
-		if( vec.size()==1 && !more )
+		if( s.size()==1 && !more )
 		{// only one candidate
 			return docDecl.localizeMessage(
 				docDecl.DIAG_MISSING_ATTRIBUTE_SIMPLE,
-				sti.qName, vec.get(0) );
+				sti.qName,s.iterator().next() );
 		}
 		else
 			// list candidates
 			return docDecl.localizeMessage(
 				docDecl.DIAG_MISSING_ATTRIBUTE_WRAPUP,
 				sti.qName,
-				concatenateMessages( vec, more,
+				concatenateMessages( s, more,
 					docDecl.DIAG_MISSING_ATTRIBUTE_SEPARATOR,
 					docDecl.DIAG_MISSING_ATTRIBUTE_MORE ) );
 	}

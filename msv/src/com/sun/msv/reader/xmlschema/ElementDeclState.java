@@ -59,13 +59,24 @@ public class ElementDeclState extends ExpressionWithChildState {
 	}
 
 	protected Expression initialExpression() {
-		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
-		
 		// if <element> element has type attribute, then
 		// it shall be used as content type.
-		final String typeQName = startTag.getAttribute("type");
+		String typeQName = startTag.getAttribute("type");
 		if( typeQName==null )	return null;
 
+        return resolveTypeRef(typeQName);
+    }
+    
+    /**
+     * If this element declaration has @type, then this method
+     * is called to resolve it.
+     * 
+     * Since the type refered to may not be processed yet,
+     * a late binding is needed here.
+     */
+    protected Expression resolveTypeRef( final String typeQName ) {
+		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
+		
 		// TODO: shall I memorize this as a backward reference?
 		// reader.backwardReference.memorizeLink(???);
 		

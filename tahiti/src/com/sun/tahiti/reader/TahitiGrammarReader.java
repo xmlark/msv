@@ -20,6 +20,9 @@ import com.sun.tahiti.grammar.AnnotatedGrammar;
  */
 public interface TahitiGrammarReader
 {
+	public static final String TahitiNamespace = 
+		"http://www.sun.com/xml/tahiti/";
+	
 	/**
 	 * the same as the getResult method, but this one returns
 	 * an AnnotatedGrammar object.

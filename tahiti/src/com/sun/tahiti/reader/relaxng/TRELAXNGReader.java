@@ -35,9 +35,6 @@ import org.xml.sax.Attributes;
  */
 public class TRELAXNGReader extends RELAXNGReader implements TahitiGrammarReader {
 
-	public static final String TahitiNamespace = 
-		"http://www.sun.com/xml/tahiti/";
-	
 	public TRELAXNGReader(
 		GrammarReaderController controller, SAXParserFactory parserFactory,
 		StateFactory stateFactory, ExpressionPool pool ) {

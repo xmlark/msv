@@ -1,8 +1,14 @@
 
+(RELAX) supports "Java API for RELAX Verifier".
+(both)  XML parser can now be choosed from Xerces or Crimson,
+        by using a command line switch.
+(both)  Performance optimization
+(RELAX) Reader now detects ID/IDREF abuse, which is prohibited by
+        the formal specification of RELAX.
 (RELAX) ID/IDREF types are implemented
-(RELAX) signals an error when two <attribute> declarations have the
+(RELAX) Reader signals an error when two <attribute> declarations have the
         same target attribute name.
-(both)  signals an error when namespace-unaware ParserFactory is given.
+(both)  Reader signals an error when namespace-unaware ParserFactory is given.
 
 2000/03/09 release
 ------------------

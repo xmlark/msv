@@ -83,13 +83,13 @@ public class XSAcceptor extends SimpleAcceptor {
 	}
 	
 	
-	protected boolean stepForwardByAttribute( AttributeToken token, StringRef refErr ) {
+	protected boolean onAttribute( AttributeToken token, StringRef refErr ) {
 		// xsi:*** attribute is ignored.
 		// TODO: maybe we should issue an error for unrecognized xsi:*** attributes.
 		if( token.namespaceURI.equals(XSINamespace) )
 			return true;
 		
-		return super.stepForwardByAttribute( token, refErr );
+		return super.onAttribute( token, refErr );
 	}
 	
 

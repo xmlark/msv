@@ -69,11 +69,11 @@ public class TypeDetector extends Verifier {
 	protected void verifyText() throws SAXException {
 		if(text.length()!=0) {
 			final String txt = new String(text);
-			if(!current.stepForward( txt, this, null, characterType )) {
+			if(!current.onText( txt, this, null, characterType )) {
 				// error
 				// diagnose error, if possible
 				StringRef err = new StringRef();
-				current.stepForward( txt, this, err, null );
+				current.onText( txt, this, err, null );
 					
 				// report an error
 				errorHandler.onError( new ValidityViolation(locator,

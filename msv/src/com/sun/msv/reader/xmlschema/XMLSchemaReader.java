@@ -603,11 +603,16 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 		return exp;
 	}
 	
+    /**
+     * Adds maxOccurs/minOccurs semantics to a given expression.
+     * 
+     * For example, if this method receives A, minOccurs=0, and maxOccurs=3,
+     * then this method should return something like (A,(A,A?)?)?
+     */
 	public Expression processOccurs( StartTagInfo startTag, Expression item ) {
 																				 
 		String minOccurs = startTag.getAttribute("minOccurs");
 		int minOccursValue=1;
-		Expression exp = item;
 		
 		if( minOccurs!=null ) {
 			try {
@@ -617,57 +622,62 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 				reportError( ERR_BAD_ATTRIBUTE_VALUE, "minOccurs", minOccurs );
 				minOccursValue = 1;
 			}
-			
-			switch(minOccursValue) {
-			case 0:
-				exp = Expression.epsilon;
-				break;
-			case 1:
-				break;
-			default:
-				for( int i=1; i<minOccursValue; i++ )
-					exp = pool.createSequence( item, exp );
-				break;
-			}
 		}
 		
 		String maxOccurs = startTag.getAttribute("maxOccurs");
+        int maxOccursValue; // -1 for 'unbounded'
+        
 		if( maxOccurs==null ) {
 			// maxOccurs if not present. make sure that minOccurs<=1
 			if( minOccursValue>1 )
 				reportError( ERR_MAXOCCURS_IS_NECESSARY );
-			maxOccurs = "1";
-		}
-		
+			maxOccursValue = 1;
+		} else
 		if( maxOccurs.equals("unbounded") ) {
-			if( minOccursValue==1 )
-				// this will produce a smaller expression.
-				// it is also good for TREXWriter and ExpressionPrinter.
-				exp = pool.createOneOrMore(item);
-			else
-				exp = pool.createSequence( exp, pool.createZeroOrMore(item) );
+            maxOccursValue = -1;
 		} else {
-			int v;
 			try {
-				v = Integer.parseInt(maxOccurs);
-				if(v<0 || v<minOccursValue)
+				maxOccursValue = Integer.parseInt(maxOccurs);
+				if(maxOccursValue<0 || maxOccursValue<minOccursValue)
 					throw new NumberFormatException();
 			} catch( NumberFormatException e ) {
 				reportError( ERR_BAD_ATTRIBUTE_VALUE, "maxOccurs", maxOccurs );
-				v = 1;
+				maxOccursValue = 1;
 			}
-				
-			// create (A,(A, ... (A?)? ... )?
-			Expression tmp = Expression.epsilon;
-			for( int i=minOccursValue; i<v; i++ )
-				tmp = pool.createOptional( pool.createSequence( item, tmp ) );
-				
-			exp = pool.createSequence( exp, tmp );
 		}
-		
-		return exp;
+        
+        return processOccurs( item, minOccursValue, maxOccursValue );
+    }
+    
+    /**
+     * Adds maxOccurs/minOccurs semantics to a given expression.
+     * 
+     * @param   maxOccurs
+     *      -1 to represent "unbounded".
+     */
+	public Expression processOccurs( Expression item, int minOccurs, int maxOccurs ) {
+
+        Expression exp = Expression.epsilon;
+		for( int i=0; i<minOccurs; i++ )
+			exp = pool.createSequence( item, exp );
+        
+        if(maxOccurs==-1) {
+            if( minOccurs==1 )
+                return pool.createOneOrMore(item);
+            else
+                return pool.createSequence( exp, pool.createZeroOrMore(item) );
+        }
+				
+		// create (A,(A, ... (A?)? ... )?
+		Expression tmp = Expression.epsilon;
+		for( int i=minOccurs; i<maxOccurs; i++ )
+			tmp = pool.createOptional( pool.createSequence( item, tmp ) );
+				
+		return pool.createSequence( exp, tmp );
 	}
 
+    
+    
 	protected void switchSource( State sourceState, State newRootState ) {
 		final String schemaLocation = sourceState.getStartTag().getAttribute("schemaLocation");
 

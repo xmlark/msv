@@ -21,6 +21,7 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.ReferenceExp;
 import com.sun.tranquilo.grammar.relax.RELAXModule;
 import com.sun.tranquilo.grammar.relax.ElementRules;
+import com.sun.tranquilo.grammar.relax.HedgeRules;
 import com.sun.tranquilo.grammar.relax.AttPoolClause;
 import com.sun.tranquilo.grammar.trex.TREXPatternPool;
 import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
@@ -50,6 +51,14 @@ public class RELAXIslandSchema extends IslandSchemaImpl
 		for( int i=0; i<refs.length; i++ )
 			if( ((ElementRules)refs[i]).exported )
 				elementDecls.put( refs[i].name, new DeclImpl(refs[i]) );
+		
+		// export hedgeRules as ElementDecl.
+		// each exportable hedgeRule must be of length 1,
+		// but it should have already checked.
+		refs = module.hedgeRules.getAll();
+		for( int i=0; i<refs.length; i++ )
+			if ( ((HedgeRules)refs[i]).exported )
+					elementDecls.put( refs[i].name, new DeclImpl(refs[i]) );
 		
 		// export attPools as AttributesDecl
 		ExportedAttPoolGenerator expGen = new ExportedAttPoolGenerator( module.pool );

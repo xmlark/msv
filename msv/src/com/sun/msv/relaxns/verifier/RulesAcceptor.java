@@ -19,6 +19,13 @@ import com.sun.tranquilo.util.StringRef;
 import com.sun.tranquilo.util.DataTypeRef;
 import org.iso_relax.dispatcher.Rule;
 
+/**
+ * Acceptor that is used to validate root node of the island.
+ * 
+ * This object receives {@link RuleImpl}s and validates them.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class RulesAcceptor
 	extends com.sun.tranquilo.verifier.regexp.trex.ComplexAcceptorBaseImpl
 {

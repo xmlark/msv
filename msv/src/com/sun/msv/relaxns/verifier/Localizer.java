@@ -9,6 +9,11 @@
  */
 package com.sun.tranquilo.relaxns.verifier;
 
+/**
+ * localizes messages.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class Localizer
 {
 	public static String localize( String propertyName, Object[] args )

@@ -17,6 +17,8 @@ import com.sun.tranquilo.reader.GrammarReaderController;
 
 /**
  * wraps GrammarReaderController by ISORELAX ErrorHandler interface.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class GrammarReaderControllerAdaptor implements ErrorHandler
 {

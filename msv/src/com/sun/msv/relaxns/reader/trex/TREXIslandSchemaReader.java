@@ -16,6 +16,12 @@ import org.iso_relax.dispatcher.IslandSchemaReader;
 import org.iso_relax.dispatcher.IslandSchema;
 import org.xml.sax.helpers.XMLFilterImpl;
 
+/**
+ * reads extended-TREX grammar (extended by RELAX Namespace)
+ * and constructs IslandSchema.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class TREXIslandSchemaReader
 	extends XMLFilterImpl
 	implements IslandSchemaReader {

@@ -24,6 +24,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Iterator;
 
+/**
+ * base implementation of IslandSchema for Tranquilo VGM.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public abstract class IslandSchemaImpl implements IslandSchema
 {
 	/** map from name to RuleImpl. */

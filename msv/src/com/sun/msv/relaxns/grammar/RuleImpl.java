@@ -12,6 +12,11 @@ package com.sun.tranquilo.relaxns.grammar;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.ReferenceExp;
 
+/**
+ * Implementation of Rule interface by Tranquilo grammar model.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class RuleImpl implements org.iso_relax.dispatcher.Rule
 {
 	/** "meat" of this Rule. */

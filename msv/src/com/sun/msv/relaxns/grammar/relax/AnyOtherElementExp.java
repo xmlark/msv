@@ -29,6 +29,8 @@ import java.util.StringTokenizer;
 
 /**
  * place holder for &lt;anyOtherElement&gt; of RELAX.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class AnyOtherElementExp extends ElementExp implements Rule {
 	

@@ -32,6 +32,8 @@ import java.util.Set;
 
 /**
  * reads RELAX-Namespace-extended RELAX Core.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RELAXCoreIslandSchemaReader extends RELAXCoreReader
 	implements IslandSchemaReader {

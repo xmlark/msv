@@ -23,6 +23,11 @@ import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * IslandSchema implementation for TREX pattern.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class TREXIslandSchema extends IslandSchemaImpl
 {
 	/** underlying TREX pattern which this IslandSchema is representing */

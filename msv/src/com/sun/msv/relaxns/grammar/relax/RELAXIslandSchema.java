@@ -25,6 +25,11 @@ import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
 import java.util.Set;
 import java.util.Iterator;
 
+/**
+ * IslandSchema implementation for RELXA module.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class RELAXIslandSchema extends IslandSchemaImpl
 {
 	/** underlying RELAX module which this IslandSchema is representing */

@@ -17,6 +17,8 @@ import com.sun.tranquilo.verifier.ValidityViolation;
 
 /**
  * wraps ISORELAX ErrorHandler by VerificationErrorHandler interface.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ErrorHandlerAdaptor implements com.sun.tranquilo.verifier.VerificationErrorHandler
 {

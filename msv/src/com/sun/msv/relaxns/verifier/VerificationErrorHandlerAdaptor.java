@@ -17,7 +17,11 @@ import org.xml.sax.helpers.LocatorImpl;
 import com.sun.tranquilo.verifier.VerificationErrorHandler;
 import com.sun.tranquilo.verifier.ValidityViolation;
 
-/** wraps VerificationErrorHandler by ISORELAX ErrorHandler interface. */
+/**
+ * wraps VerificationErrorHandler by ISORELAX ErrorHandler interface.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class VerificationErrorHandlerAdaptor implements ErrorHandler
 {
 	private final VerificationErrorHandler core;

@@ -24,6 +24,8 @@ import org.xml.sax.Locator;
  * This class derives ElementExp because "rule" is a constraint over one element.
  * This class also provides stub methods so that programs who are not aware to
  * divide&validate can gracefully degrade.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ExternalElementExp extends ElementExp
 {

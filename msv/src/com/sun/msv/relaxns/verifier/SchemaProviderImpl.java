@@ -23,6 +23,11 @@ import com.sun.tranquilo.grammar.trex.TREXPatternPool;
 import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
 import java.util.Iterator;
 
+/**
+ * implementation of SchemaProvider by using RELAX Grammar.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class SchemaProviderImpl extends AbstractSchemaProviderImpl {
 	
 	private final RELAXGrammar grammar;

@@ -28,6 +28,11 @@ import com.sun.tranquilo.util.StringRef;
 import java.util.Map;
 import java.util.Vector;
 
+/**
+ * base implementation of IslandVerifier for Tranquilo VGM.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 class IslandVerifierImpl
 	extends com.sun.tranquilo.verifier.Verifier
 	implements org.iso_relax.dispatcher.IslandVerifier

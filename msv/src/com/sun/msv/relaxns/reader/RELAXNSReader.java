@@ -29,6 +29,11 @@ import org.xml.sax.helpers.LocatorImpl;
 import org.iso_relax.dispatcher.IslandSchemaReader;
 import org.iso_relax.dispatcher.SchemaProvider;
 
+/**
+ * parses RELAX Namespace XML and constructs a SchemaProvider.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class RELAXNSReader
 	extends RELAXReader
 {

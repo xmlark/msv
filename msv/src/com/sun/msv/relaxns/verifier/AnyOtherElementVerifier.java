@@ -22,6 +22,11 @@ import com.sun.tranquilo.verifier.Verifier;
 import com.sun.tranquilo.relaxns.grammar.relax.AnyOtherElementExp;
 import java.util.Set;
 
+/**
+ * IslandVerifier that validates &lt;anyOtherElement /&gt; of RELAX.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class AnyOtherElementVerifier
 	extends DefaultHandler
 	implements IslandVerifier {

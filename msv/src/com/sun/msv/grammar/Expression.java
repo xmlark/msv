@@ -11,6 +11,7 @@ package com.sun.msv.grammar;
 
 import org.xml.sax.*;
 import java.util.Collection;
+import com.sun.msv.grammar.util.RefExpRemover;
 
 /**
  * Primitive of the tree regular expression.
@@ -71,6 +72,29 @@ public abstract class Expression implements java.io.Serializable {
 	
 	/** computes epsilon reducibility */
 	protected abstract boolean calcEpsilonReducibility();
+	
+	/**
+	 * Cached value of the expression after ReferenceExps are removed.
+	 * This value is computed on demand.
+	 */
+	private Expression expandedExp = null;
+	
+	/**
+	 * Gets the expression after removing all ReferenceExps, until child 
+	 * AttributeExp or ElementExp.
+	 */
+	public Expression getExpandedExp( ExpressionPool pool ) {
+		if(expandedExp==null) {
+			// this part of the code may be called by the multiple threads
+			// even if that happens, there is no consistency problem
+			// because two thread will compute the same value.
+			expandedExp = this.visit(new RefExpRemover(pool,false));
+		}
+		return expandedExp;
+	}
+	
+	
+	
 	
 	protected Expression( int hashCode ) {
 		this.cachedHashCode = hashCode;

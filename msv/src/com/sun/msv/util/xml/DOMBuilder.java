@@ -46,12 +46,12 @@ public class DOMBuilder extends DefaultHandler {
 	}
 	
 	public void startElement( String ns, String local, String qname, Attributes atts ) {
-		Element e = dom.createElementNS( ns, local );
+		Element e = dom.createElementNS( ns, qname );
 		parent.appendChild(e);
 		parent = e;
 		
 		for( int i=0; i<atts.getLength(); i++ )
-			e.setAttributeNS( atts.getURI(i), atts.getLocalName(i), atts.getValue(i) );
+			e.setAttributeNS( atts.getURI(i), atts.getQName(i), atts.getValue(i) );
 	}
 	
 	public void endElement( String ns, String local, String qname ) {

@@ -78,35 +78,38 @@ public class AttributeState extends ExpressionWithChildState {
 	
 	protected Expression annealExpression(Expression contentType) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
-		
-		String name = startTag.getAttribute("name");
+		final String fixed = startTag.getAttribute("fixed");
+		final String name = startTag.getAttribute("name");
 
-		// TODO: form attribute is prohibited in several occasions.
-		String targetNamespace;
+
+		Expression exp;
 		
-		if( isGlobal() )	targetNamespace = reader.currentSchema.targetNamespace;
-		else
-			// in local attribute declaration,
-			// targetNamespace is affected by @form and schema's @attributeFormDefault.
-			targetNamespace = ((XMLSchemaReader)reader).resolveNamespaceOfAttributeDecl(
-				startTag.getAttribute("form") );
+		if( startTag.containsAttribute("ref") ) {
+			if( fixed!=null )
+				reader.reportError( reader.ERR_UNIMPLEMENTED_FEATURE,
+					"<attribute> element with both 'ref' and 'fixed' attributes" );
+			
+			exp = contentType;
+		} else {
+			// TODO: form attribute is prohibited in several occasions.
+			String targetNamespace;
 		
-		// TODO: this doesn't work: super class signals an error
-		// if contentType is null at this moment.
+			if( isGlobal() )	targetNamespace = reader.currentSchema.targetNamespace;
+			else
+				// in local attribute declaration,
+				// targetNamespace is affected by @form and schema's @attributeFormDefault.
+				targetNamespace = ((XMLSchemaReader)reader).resolveNamespaceOfAttributeDecl(
+					startTag.getAttribute("form") );
 		
-		if( contentType==null )
-			// type attribute is not present, and no <simpleType> is given as a child.
-			// so it is assumed as "ur-type".
-			contentType = Expression.anyString;
+			if( fixed!=null )
+				// TODO: is this 'fixed' value should be added through enumeration facet?
+				// in that way, we can check if this value is acceptable as the base type.
+				contentType = reader.pool.createTypedString( new TypedString(fixed,false) );
 		
-		String fixed = startTag.getAttribute("fixed");
-		if( fixed!=null )
-			// TODO: is this 'fixed' value should be added through enumeration facet?
-			contentType = reader.pool.createTypedString( new TypedString(fixed,false) );
-		
-		Expression exp = reader.pool.createAttribute(
-			new SimpleNameClass( targetNamespace, name ),
-			contentType );
+			exp = reader.pool.createAttribute(
+				new SimpleNameClass( targetNamespace, name ),
+				contentType );
+		}
 		
 		if( isGlobal() ) {
 			

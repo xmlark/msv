@@ -20,8 +20,14 @@ import org.xml.sax.SAXParseException;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ErrorHandlerImpl implements ErrorHandler
-{
+public class ErrorHandlerImpl implements ErrorHandler {
+	
+	/**
+	 * the singleton instance of this object. This class doesn't have any
+	 * internal state so
+	 */
+	public static final ErrorHandler theInstance = new ErrorHandlerImpl();
+	
 	public void fatalError( SAXParseException error ) throws SAXParseException {
 		throw error; }
 	public void error( SAXParseException error ) throws SAXParseException {

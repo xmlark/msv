@@ -19,8 +19,9 @@ import org.xml.sax.SAXNotRecognizedException;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DeclImpl
-	implements org.iso_relax.dispatcher.ElementDecl,
-				org.iso_relax.dispatcher.AttributesDecl {
+	implements	org.iso_relax.dispatcher.ElementDecl,
+				org.iso_relax.dispatcher.AttributesDecl,
+				java.io.Serializable {
 	/** "meat" of this Rule. */
 	public final Expression exp;
 	

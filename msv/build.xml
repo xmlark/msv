@@ -31,11 +31,11 @@
 	<target name="binary" depends="javacc">
 		
 		<!-- compile Java source files -->
-		<javac srcdir="${sourceDir}" destdir="${buildDir}" />
+		<javac srcdir="${sourceDir}" destdir="${buildDir}"/>
 	</target>
 	
 	<!-- generate XSDLib release -->
-	<target name="xsd">
+	<target name="xsd" depends="javacc">
 		<tstamp />
 		
 		<mkdir	dir="xsdrelease" />
@@ -71,10 +71,10 @@
 		
 		<!-- creates javadoc -->
 		<mkdir		dir="xsdrelease/javadoc" />
-		<javadoc	packagenames="com.sun.tranquilo.datatype.*"
+		<javadoc	locale="en_US"
+					packagenames="com.sun.tranquilo.datatype.*"
 					sourcepath="${sourceDir}"
 					destdir="xsdrelease/javadoc"
-					locale="en_US"
 					windowtitle="XML Schema Part 2 Implementation"
 					public="yes"
 					>
@@ -91,6 +91,71 @@
 		</zip>
 		
 		<delete dir="xsdrelease" />
+	</target>
+	
+	
+	<!-- generate Tranquilo release -->
+	<target name="release" depends="javacc">
+		<tstamp />
+		
+		<mkdir	dir="release" />
+
+		<!-- copy document files -->
+		<copy	todir="release">
+			<fileset dir="doc/tranquilo" includes="**/*.*" />
+		</copy>
+				
+		<!-- compile files again -->
+		<mkdir	dir="temp" />
+		<javac	srcdir="${sourceDir}"
+				destdir="temp"
+				classpath="${libDir}">
+			<include name="**/tranquilo/**/*.java" />
+			<include name="**/sun/xml/*.java" />
+		</javac>
+		
+		<!-- unzip contents from xerces.jar -->
+		<mkdir dir="xerces" />
+		<unjar src="c:\winnt\java\classes\xerces.jar" dest="xerces" />
+		
+		<!-- creates binary jar -->
+		<jar	jarfile="release/tranquilo.jar"
+				manifest="./META-INF/MANIFEST.MF"
+				compress="false">
+			<fileset dir="${sourceDir}" includes="**/tranquilo/**/*.properties" />
+			<fileset dir="${libDir}" includes="javax/xml/parsers/*.class" />
+			<fileset dir="temp" />
+			<fileset dir="xerces" includes="org/apache/xerces/**/*.*" />
+<!--			<fileset dir="c:\winnt\java\classes" includes="org/apache/xerces/utils/regex/*.*" />	-->
+			<fileset dir="c:\winnt\java\classes" includes="org/xml/sax/**/*.class" />
+		</jar>
+		
+		<delete dir="temp" />
+		<delete dir="xerces" />
+		
+		
+		<!-- creates javadoc -->
+		<mkdir		dir="release/javadoc" />
+		<javadoc	locale="en_US"
+					packagenames="com.sun.tranquilo.*"
+					sourcepath="${sourceDir}"
+					destdir="release/javadoc"
+					windowtitle="Tranquilo Verifier"
+					public="yes"
+					>
+			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
+			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
+		</javadoc>
+		
+		<!-- creates distribution package -->
+		<zip	zipfile="${packageDir}/tranquilo.${DSTAMP}.zip">
+			<fileset dir="." includes="src/**/tranquilo/**/*.*" />
+			<fileset dir="." includes="src/**/sun/xml/**/*.*" />
+			<fileset dir="C:\Program Files\Development\Xerces" includes="src/org/apache/xerces/utils/regex/*.*" />
+			<fileset dir="release" />
+		</zip>
+		
+		<delete dir="release" />
 	</target>
 	
 	

@@ -34,7 +34,7 @@ schema language. It supports RELAX Namespace, RELAX Core, and TREX.</P>
   <LI>
   <DIV>a command line tool that can read XML documents and validate them with a 
   schema (RELAX/TREX). If any error is found, error messages are 
-  provided.</DIV></LI>
+  provided.</DIV>
   <LI>
   <DIV>a library that can be incorporated into Java application.</DIV></LI></OL>
 <P>For the formar usage, see <A href="commandline.html">commandline.html</A>. 
@@ -68,11 +68,17 @@ For the latter usage, see <A href="developer.html">developer.html</A>.</P>
   <LI>
   <DIV><A href="http://www.w3.org/TR/2001/PR-xmlschema-2-20010316/">W3C XML 
   Schema Part 2 Proposed Recommendation</A>.</DIV></LI></UL>
-<H1>Optional&nbsp;Package</H1>
-<P><A href="http://xml.apache.org/xerces-j/">Apache Xerces-J Parser</A> can be used instead of Apache 
-Crimson Parser, which is shipped as a default parser. In that case, use of 
-Xerces-J v.1.3.1 or later is recommended because JAXP support of eariler 
-version is unsatisfactry. </P>
-<P>Also, by a small modification to the source code, any 
-JAXP1.1 compliant XML parser 
-can be used. </P></BODY></HTML>
+  
+  
+<H1>Optional Packages</H1>
+<P>
+  In theory, by a small modification to the source code,
+  any JAXP1.1 compliant XML parser can be used.
+</P>
+<P>
+  This package is shipped with Apache Xerces-J Parser v1.3.1.
+  Eariler versions of Xerces-J and Apache Crimson Parser 
+  do not correctly implement JAXP1.1, so their use is not recommended
+  especially when you use command-line Verifier.
+</P>
+</BODY></HTML>

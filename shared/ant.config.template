@@ -27,7 +27,7 @@ cvsExportOpt = -D now
 
 
 # JavaCC is available at http://www.webgain.com/products/java_cc/
-javaCClib = ../shared/lib/JavaCC.zip
+javaCClib = ../shared/lib
 
 
 #

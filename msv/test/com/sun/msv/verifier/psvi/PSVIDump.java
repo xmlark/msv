@@ -46,7 +46,9 @@ public class PSVIDump implements TypedContentHandler {
 		}
 		
 		// create an XMLReader to be used to parse the instance document
-		XMLReader reader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
+		SAXParserFactory factory = SAXParserFactory.newInstance();
+		factory.setNamespaceAware(true);
+		XMLReader reader = factory.newSAXParser().getXMLReader();
 		
 		// create an instance of verifier,
 		TypeDetector verifier = new TypeDetector(grammar, new ErrorHandlerImpl() );

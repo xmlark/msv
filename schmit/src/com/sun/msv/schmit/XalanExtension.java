@@ -11,12 +11,12 @@ package com.sun.msv.schmit;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xalan.extensions.XSLProcessorContext;
@@ -75,10 +75,19 @@ public class XalanExtension {
      * <code>useSchema</code> extension element that
      * associates a schema to the input.
      */
-    public void useSchema( XSLProcessorContext context, ElemExtensionCall call ) {
+    public void useSchema( XSLProcessorContext context, ElemExtensionCall call ) throws TransformerException {
         try {
             // obtain the schema location
-            String href = call.getAttribute("href");
+            String href = call.getAttribute("href", context.getContextNode(), 
+                                                      context.getTransformer());
+
+            // determine the root node
+            Element root;
+//            if( call.hasAttribute("name") ) {
+//                // TODO
+//            } else {
+                root = getFirstElement(context.getContextNode().getOwnerDocument());
+//            }
             
             try {
                 href = new URL( new URL(call.getBaseIdentifier()), href ).toExternalForm();
@@ -103,7 +112,7 @@ public class XalanExtension {
             // run PSVI annotation
             new PSVIRecorder(grammar,psvi).annotate(
                 // DTM node proxy doesn't support the getDocumentElement method.
-                getFirstElement(context.getContextNode().getOwnerDocument()) );
+                root );
         } catch( RuntimeException re ) {
             re.printStackTrace();
             throw re;
@@ -120,29 +129,34 @@ public class XalanExtension {
         return null;
     }
 
+    public NodeSet annotation( ExpressionContext context ) throws ParserConfigurationException {
+        Element e = document.createElement("dummy");
+        buildResult( context.getContextNode(), e );
+        return new NodeSet(e);
+    }
+
     public NodeSet annotation( ExpressionContext context, NodeList list ) throws ParserConfigurationException {
-        final ArrayList a = new ArrayList();
-        
         // put all the nodes under a dummy element so that the stylesheets
          // can be written as "schmit:annotation(.)/@test" etc.
         Element e = document.createElement("dummy");
                 
-        for( int i=0; i<list.getLength(); i++ ) {
-            Node n = list.item(i);
-            AnnotatedPattern p = (AnnotatedPattern)psvi.get(n);
-            
-            if( p==null )   continue;
-            
-            for( Iterator itr=p.getAnnotations().iterator(); itr.hasNext(); ) {
-                Node o = document.importNode( (Node)itr.next(), true );
-                if( o instanceof Attr )
-                    e.setAttributeNodeNS((Attr)o);
-                else
-                	e.appendChild( o );
-            }
-            
-        }
+        for( int i=0; i<list.getLength(); i++ )
+            buildResult( list.item(i), e );
 
         return new NodeSet(e);
+    }
+    
+    private void buildResult( Node n, Element result ) {
+        AnnotatedPattern p = (AnnotatedPattern)psvi.get(n);
+            
+        if( p==null )   return;
+            
+        for( Iterator itr=p.getAnnotations().iterator(); itr.hasNext(); ) {
+            Node o = document.importNode( (Node)itr.next(), true );
+            if( o instanceof Attr )
+                result.setAttributeNodeNS((Attr)o);
+            else
+                result.appendChild( o );
+        }
     }
 }

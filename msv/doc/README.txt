@@ -1,7 +1,7 @@
 ======================================================================
             README FILE FOR SUN MULTI-SCHEMA XML VALIDATOR
-                   Preview Version September, 2001
-                 Copyright (c) Sun Microsystems, 2001
+                            Apr,2002 Version
+              Copyright (c) Sun Microsystems, 2001-2002
 Document written by Kohsuke Kawaguchi (kohsuke.kawaguchi@eng.sun.com)
                                                     $Revision$
 ======================================================================

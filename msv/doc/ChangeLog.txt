@@ -1,6 +1,16 @@
+From Nov,2001 version to Apr,2001 version
+-----------------------------------------
 
-From 2001/09/10 version to the present version
-----------------------------------------------
+- The "-maxerror" option is added to the command line version
+  of MSV. This option prohibits the "panic mode" behavior of MSV.
+
+- Changed the way XML Schema datatypes are parsed
+
+- bug fixes
+
+
+From 2001/09/10 version to Nov,2001 version
+-------------------------------------------
 
 - RELAX NG DTD compatibility spec is supported.
   

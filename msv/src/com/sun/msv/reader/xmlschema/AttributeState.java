@@ -21,7 +21,11 @@ import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringPair;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.ExpressionWithChildState;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
+import com.sun.msv.reader.datatype.xsd.XSTypeIncubator;
 import org.xml.sax.Locator;
+import org.relaxng.datatype.DatatypeException;
+
 
 /**
  * used to parse &lt;attribute &gt; element.
@@ -116,13 +120,34 @@ public class AttributeState extends ExpressionWithChildState {
 				targetNamespace = reader.resolveNamespaceOfAttributeDecl(
 					startTag.getAttribute("form") );
 		
-			if( fixed!=null )
-				// TODO: is this 'fixed' value should be added through enumeration facet?
-				// in that way, we can check if this value is acceptable as the base type.
-				contentType = reader.pool.createValue(
-					com.sun.msv.datatype.xsd.TokenType.theInstance,
-					new StringPair("","token"), // emulate RELAX NG built-in "token" type
-					fixed );
+            if( fixed!=null ) {
+                if(contentType instanceof XSDatatypeExp ) {
+                    // we know that the attribute value is of XSDatatypeExp
+                    final XSDatatypeExp baseType = (XSDatatypeExp)contentType;
+                    
+                    try {
+                        XSTypeIncubator inc = baseType.createIncubator();
+                        inc.addFacet("enumeration",fixed,false,reader);
+                    
+                        contentType = inc.derive(null);
+                    } catch( DatatypeException e ) {
+                        reader.reportError( e, reader.ERR_BAD_TYPE, e.getMessage() );
+                        return Expression.nullSet;
+                    }
+                } else {
+                    // this is strange, as the type of the attribute
+                    // must be a simple type in theory.
+                    // but I'm not sure if we receive XSDatatypeExp as
+                    // the content type --- it maybe some ReferenceExp,
+                    // for example. So just degrade and assume token here.
+                    
+                    // I know  this is a sloppy work
+				    contentType = reader.pool.createValue(
+				    	com.sun.msv.datatype.xsd.TokenType.theInstance,
+				    	new StringPair("","token"), // emulate RELAX NG built-in "token" type
+				    	fixed );
+                }
+            }
 			
 			if( "prohibited".equals(use) )
 				// use='prohibited' is implemented through NoneType

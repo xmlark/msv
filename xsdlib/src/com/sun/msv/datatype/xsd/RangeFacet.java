@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
@@ -20,7 +20,7 @@ import org.relaxng.datatype.ValidationContext;
 public abstract class RangeFacet extends DataTypeWithValueConstraintFacet {
 	public final Object limitValue;
 
-	protected RangeFacet( String typeName, DataTypeImpl baseType, String facetName, TypeIncubator facets )
+	protected RangeFacet( String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets )
 		throws BadTypeException {
 		super(typeName,baseType,facetName,facets);
 		limitValue = facets.getFacet(facetName);

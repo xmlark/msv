@@ -20,7 +20,7 @@ import org.relaxng.datatype.ValidationContext;
  * @author	Kohsuke Kawaguchi
  */
 public class EnumerationFacet extends DataTypeWithValueConstraintFacet {
-	protected EnumerationFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
+	protected EnumerationFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException {
 		super(typeName,baseType,FACET_ENUMERATION,facets);
 		values = new java.util.HashSet( facets.getVector(FACET_ENUMERATION) );

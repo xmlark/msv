@@ -9,7 +9,7 @@
  */
 package com.sun.msv.grammar;
 
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -23,11 +23,21 @@ import org.relaxng.datatype.ValidationContext;
 public class TypedStringExp extends Expression {
 	
 	/** datatype object that actually validates text. */
-	public final DataType dt;
+	public final Datatype dt;
 	
-	protected TypedStringExp( DataType dt ) {
+	/**
+	 * name of this datatype.
+	 * 
+	 * The value of this field is not considered as significant.
+	 * When two TypedStringExps share the same Datatype object,
+	 * then they are unified even if they have different names.
+	 */
+	public final String typeName;
+	
+	protected TypedStringExp( Datatype dt, String typeName ) {
 		super(hashCode(dt,HASHCODE_TYPED_STRING));
 		this.dt=dt;
+		this.typeName = typeName;
 	}
 	
 	public boolean equals( Object o ) {
@@ -46,7 +56,7 @@ public class TypedStringExp extends Expression {
 	public void visit( ExpressionVisitorVoid visitor )				{ visitor.onTypedString(this); }
 
 	protected boolean calcEpsilonReducibility() {
-		return dt.allows("",dummyContext);
+		return dt.isValid("",dummyContext);
 	}
 	
 	// At this moment, ValidationContextProvider is used only by QName and ENTITY.
@@ -57,5 +67,8 @@ public class TypedStringExp extends Expression {
 			{ return s.length()!=0; }
 			public String resolveNamespacePrefix( String prefix )
 			{ return ""; }
+			public boolean isNotation( String s )
+			{ return s.length()!=0; }
 		};
+
 }

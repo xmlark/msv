@@ -7,9 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 import java.util.StringTokenizer;
+import com.sun.msv.datatype.SerializationContext;
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 
@@ -25,7 +26,7 @@ public final class ListType extends ConcreteType implements Discrete {
 	/**
 	 * derives a new datatype from atomic datatype by list
 	 */
-	public ListType( String newTypeName, DataTypeImpl itemType )
+	public ListType( String newTypeName, XSDatatypeImpl itemType )
 		throws BadTypeException {
 		super(newTypeName);
 		
@@ -37,7 +38,7 @@ public final class ListType extends ConcreteType implements Discrete {
 	}
 	
 	/** atomic base type */
-	final public DataTypeImpl itemType;
+	final public XSDatatypeImpl itemType;
 
 	// list type is not an atom type.
 	public final boolean isAtomType() { return false; }

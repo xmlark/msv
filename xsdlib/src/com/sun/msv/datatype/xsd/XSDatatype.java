@@ -7,10 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 import java.io.Serializable;
 import java.util.Hashtable;
+import com.sun.msv.datatype.DatabindableDatatype;
+import com.sun.msv.datatype.SerializationContext;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -20,10 +22,19 @@ import org.relaxng.datatype.ValidationContext;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public interface XSDataType extends
-	Serializable, org.relaxng.datatype.Datatype {
+public interface XSDatatype extends
+	Serializable, DatabindableDatatype {
 
-	/** gets the displayable name of this type. */
+	/**
+	 * gets the name of the named type.
+	 * If this type is an anonymous type, then this method returns null.
+	 */
+	public String getName();
+
+	/**
+	 * gets the displayable name of this type.
+	 * This method always return something.
+	 */
 	String displayName();
 	
 	/**
@@ -47,28 +58,6 @@ public interface XSDataType extends
 	String convertToLexicalValue( Object valueObject, SerializationContext context ) throws IllegalArgumentException;
 
 	
-	/**
-	 * converts lexcial value to a corresponding Java-friendly object
-	 * by using the given context information.
-	 * 
-	 * <p>
-	 * For the actual types returned by each type,
-	 * see <a href="package-summary.html#javaType">here</a>.
-	 * 
-	 * <p>
-	 * Note that due to the difference between those Java friendly types
-	 * and actual XML Schema specification, the returned object sometimes
-	 * loses accuracy,
-	 * 
-	 * @return	null
-	 *		when the given lexical value is not a valid lexical value for this type.
-	 */
-	Object createJavaObject( String literal, ValidationContext context );
-	
-	/**
-	 * gets the type of the objects that are created by the createJavaObject method.
-	 */
-	Class getJavaObjectType();
 	
 	
 	/**

@@ -16,7 +16,7 @@
  * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
  * THIS SOFTWARE OR ITS DERIVATIVES.
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 import com.sun.xml.util.XmlChars;
 

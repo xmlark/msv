@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 import java.util.Map;
 import java.util.Vector;
@@ -23,28 +23,24 @@ import org.relaxng.datatype.DatatypeException;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class TypeIncubator implements DatatypeBuilder {
+public class TypeIncubator {
 	
 	/** storage for non-repeatable facets */
 	private final Map impl = new java.util.HashMap();
 	
 	/** base type */
-	private final DataTypeImpl baseType;
+	private final XSDatatypeImpl baseType;
 	
 	private static boolean isRepeatable( String facetName ) {
 		return facetName.equals("enumeration") || facetName.equals("pattern");
 	}
 	
-	public TypeIncubator( DataType baseType ) {
-		this.baseType = (DataTypeImpl)baseType;
+	public TypeIncubator( XSDatatype baseType ) {
+		this.baseType = (XSDatatypeImpl)baseType;
 		if( baseType==null )
 			throw new IllegalArgumentException();
 	}
 	
-
-	public void addParameter( String name, String strValue, ValidationContext context ) throws DatatypeException {
-		add( name, strValue, false, context );
-	}
 
 	/** adds a facet to this set.
 	 *
@@ -56,10 +52,10 @@ public class TypeIncubator implements DatatypeBuilder {
 		throws BadTypeException {
 		// checks applicability of the facet
 		switch( baseType.isFacetApplicable(name) ) {
-		case DataTypeImpl.APPLICABLE:	break;
-		case DataTypeImpl.FIXED:
+		case XSDatatypeImpl.APPLICABLE:	break;
+		case XSDatatypeImpl.FIXED:
 			throw new BadTypeException( BadTypeException.ERR_OVERRIDING_FIXED_FACET, name );
-		case DataTypeImpl.NOT_ALLOWED:
+		case XSDatatypeImpl.NOT_ALLOWED:
 			throw new BadTypeException( BadTypeException.ERR_NOT_APPLICABLE_FACET, name );
 		default:
 			throw new Error();
@@ -100,17 +96,13 @@ public class TypeIncubator implements DatatypeBuilder {
 	
 	final static private String[][] exclusiveFacetPairs =
 		new String[][]{
-			new String[]{	DataTypeImpl.FACET_LENGTH, DataTypeImpl.FACET_MINLENGTH	},
-			new String[]{	DataTypeImpl.FACET_LENGTH, DataTypeImpl.FACET_MAXLENGTH },
-			new String[]{	DataTypeImpl.FACET_MAXINCLUSIVE, DataTypeImpl.FACET_MAXEXCLUSIVE },
-			new String[]{	DataTypeImpl.FACET_MININCLUSIVE, DataTypeImpl.FACET_MINEXCLUSIVE }
+			new String[]{	XSDatatypeImpl.FACET_LENGTH, XSDatatypeImpl.FACET_MINLENGTH	},
+			new String[]{	XSDatatypeImpl.FACET_LENGTH, XSDatatypeImpl.FACET_MAXLENGTH },
+			new String[]{	XSDatatypeImpl.FACET_MAXINCLUSIVE, XSDatatypeImpl.FACET_MAXEXCLUSIVE },
+			new String[]{	XSDatatypeImpl.FACET_MININCLUSIVE, XSDatatypeImpl.FACET_MINEXCLUSIVE }
 		};
 	
 
-	public Datatype createDatatype() throws DatatypeException {
-		return derive(null);
-	}
-	
 	/**
 	 * derives a new datatype from a datatype by facets that were set.
 	 * 
@@ -122,9 +114,9 @@ public class TypeIncubator implements DatatypeBuilder {
 	 *		For example, not applicable facets are applied, or enumeration
 	 *		has invalid values, ... things like that.
 	 */
-	public DataTypeImpl derive( String newName )
+	public XSDatatypeImpl derive( String newName )
 		throws BadTypeException {
-		if( baseType.isFinal(DataTypeImpl.DERIVATION_BY_RESTRICTION) )
+		if( baseType.isFinal(XSDatatypeImpl.DERIVATION_BY_RESTRICTION) )
 			throw new BadTypeException(BadTypeException.ERR_INVALID_BASE_TYPE, baseType.displayName() );
 		
 		if( isEmpty() ) {
@@ -136,7 +128,7 @@ public class TypeIncubator implements DatatypeBuilder {
 			return new FinalComponent(newName,baseType,0);
 		}
 		
-		DataTypeImpl r = baseType;	// start from current datatype
+		XSDatatypeImpl r = baseType;	// start from current datatype
 		
 // TODO : make sure that the following interpretation is true
 		/*
@@ -185,29 +177,29 @@ public class TypeIncubator implements DatatypeBuilder {
 					exclusiveFacetPairs[i][0],
 					exclusiveFacetPairs[i][1] );
 		
-		if( contains(DataTypeImpl.FACET_TOTALDIGITS) )
+		if( contains(XSDatatypeImpl.FACET_TOTALDIGITS) )
 			r = new TotalDigitsFacet	( newName, r, this );
-		if( contains(DataTypeImpl.FACET_FRACTIONDIGITS) )
+		if( contains(XSDatatypeImpl.FACET_FRACTIONDIGITS) )
 			r = new FractionDigitsFacet	( newName, r, this );
-		if( contains(DataTypeImpl.FACET_MININCLUSIVE) )
+		if( contains(XSDatatypeImpl.FACET_MININCLUSIVE) )
 			r = new MinInclusiveFacet	( newName, r, this );
-		if( contains(DataTypeImpl.FACET_MAXINCLUSIVE) )
+		if( contains(XSDatatypeImpl.FACET_MAXINCLUSIVE) )
 			r = new MaxInclusiveFacet	( newName, r, this );
-		if( contains(DataTypeImpl.FACET_MINEXCLUSIVE) )
+		if( contains(XSDatatypeImpl.FACET_MINEXCLUSIVE) )
 			r = new MinExclusiveFacet	( newName, r, this );
-		if( contains(DataTypeImpl.FACET_MAXEXCLUSIVE) )
+		if( contains(XSDatatypeImpl.FACET_MAXEXCLUSIVE) )
 			r = new MaxExclusiveFacet	( newName, r, this );
-		if( contains(DataTypeImpl.FACET_LENGTH) )
+		if( contains(XSDatatypeImpl.FACET_LENGTH) )
 			r = new LengthFacet			( newName, r, this );
-		if( contains(DataTypeImpl.FACET_MINLENGTH) )
+		if( contains(XSDatatypeImpl.FACET_MINLENGTH) )
 			r = new MinLengthFacet		( newName, r, this );
-		if( contains(DataTypeImpl.FACET_MAXLENGTH) )
+		if( contains(XSDatatypeImpl.FACET_MAXLENGTH) )
 			r = new MaxLengthFacet		( newName, r, this );
-		if( contains(DataTypeImpl.FACET_WHITESPACE) )
+		if( contains(XSDatatypeImpl.FACET_WHITESPACE) )
 			r = new WhiteSpaceFacet		( newName, r, this );
-		if( contains(DataTypeImpl.FACET_PATTERN) )
+		if( contains(XSDatatypeImpl.FACET_PATTERN) )
 			r = new PatternFacet		( newName, r, this );
-		if( contains(DataTypeImpl.FACET_ENUMERATION) )
+		if( contains(XSDatatypeImpl.FACET_ENUMERATION) )
 			r = new EnumerationFacet	( newName, r, this );
 		
 					
@@ -216,32 +208,32 @@ public class TypeIncubator implements DatatypeBuilder {
 			DataTypeWithFacet o1,o2;
 			
 			// check that minLength <= maxLength
-			o1 = r.getFacetObject(DataTypeImpl.FACET_MAXLENGTH);
-			o2 = r.getFacetObject(DataTypeImpl.FACET_MINLENGTH);
+			o1 = r.getFacetObject(XSDatatypeImpl.FACET_MAXLENGTH);
+			o2 = r.getFacetObject(XSDatatypeImpl.FACET_MINLENGTH);
 			
 			if( o1!=null && o2!=null
 			&& ((MaxLengthFacet)o1).maxLength < ((MinLengthFacet)o2).minLength )
 				throw reportFacetInconsistency(
-					newName, o1,DataTypeImpl.FACET_MAXLENGTH, o2,DataTypeImpl.FACET_MINLENGTH );
+					newName, o1,XSDatatypeImpl.FACET_MAXLENGTH, o2,XSDatatypeImpl.FACET_MINLENGTH );
 			
 			
 			// check that scale <= precision
-			o1 = r.getFacetObject(DataTypeImpl.FACET_FRACTIONDIGITS);
-			o2 = r.getFacetObject(DataTypeImpl.FACET_TOTALDIGITS);
+			o1 = r.getFacetObject(XSDatatypeImpl.FACET_FRACTIONDIGITS);
+			o2 = r.getFacetObject(XSDatatypeImpl.FACET_TOTALDIGITS);
 			
 			if( o1!=null && o2!=null
 			&& ((FractionDigitsFacet)o1).scale > ((TotalDigitsFacet)o2).precision )
 				throw reportFacetInconsistency(
-					newName, o1,DataTypeImpl.FACET_FRACTIONDIGITS, o2,DataTypeImpl.FACET_TOTALDIGITS );
+					newName, o1,XSDatatypeImpl.FACET_FRACTIONDIGITS, o2,XSDatatypeImpl.FACET_TOTALDIGITS );
 			
 			// check that minInclusive <= maxInclusive
-			checkRangeConsistency( r, DataTypeImpl.FACET_MININCLUSIVE, DataTypeImpl.FACET_MAXINCLUSIVE );
-			checkRangeConsistency( r, DataTypeImpl.FACET_MINEXCLUSIVE, DataTypeImpl.FACET_MAXEXCLUSIVE );
+			checkRangeConsistency( r, XSDatatypeImpl.FACET_MININCLUSIVE, XSDatatypeImpl.FACET_MAXINCLUSIVE );
+			checkRangeConsistency( r, XSDatatypeImpl.FACET_MINEXCLUSIVE, XSDatatypeImpl.FACET_MAXEXCLUSIVE );
 			
 			// TODO : I'm not sure that the following two checks should be done or not.
 			//			since the spec doesn't have these constraints
-			checkRangeConsistency( r, DataTypeImpl.FACET_MININCLUSIVE, DataTypeImpl.FACET_MAXEXCLUSIVE );
-			checkRangeConsistency( r, DataTypeImpl.FACET_MINEXCLUSIVE, DataTypeImpl.FACET_MAXINCLUSIVE );
+			checkRangeConsistency( r, XSDatatypeImpl.FACET_MININCLUSIVE, XSDatatypeImpl.FACET_MAXEXCLUSIVE );
+			checkRangeConsistency( r, XSDatatypeImpl.FACET_MINEXCLUSIVE, XSDatatypeImpl.FACET_MAXINCLUSIVE );
 		}
 		
 		return r;
@@ -254,7 +246,7 @@ public class TypeIncubator implements DatatypeBuilder {
 	 * @exception BadTypeException
 	 *		when two facets are inconsistent
 	 */
-	private static void checkRangeConsistency( DataTypeImpl newType,
+	private static void checkRangeConsistency( XSDatatypeImpl newType,
 		String facetName1, String facetName2 )
 		throws BadTypeException {
 		
@@ -309,11 +301,11 @@ public class TypeIncubator implements DatatypeBuilder {
 	}
 	
 	private boolean isValueFacet( String facetName ) {
-		return facetName.equals(DataTypeImpl.FACET_ENUMERATION)
-			|| facetName.equals(DataTypeImpl.FACET_MAXEXCLUSIVE)
-			|| facetName.equals(DataTypeImpl.FACET_MINEXCLUSIVE)
-			|| facetName.equals(DataTypeImpl.FACET_MAXINCLUSIVE)
-			|| facetName.equals(DataTypeImpl.FACET_MININCLUSIVE);
+		return facetName.equals(XSDatatypeImpl.FACET_ENUMERATION)
+			|| facetName.equals(XSDatatypeImpl.FACET_MAXEXCLUSIVE)
+			|| facetName.equals(XSDatatypeImpl.FACET_MINEXCLUSIVE)
+			|| facetName.equals(XSDatatypeImpl.FACET_MAXINCLUSIVE)
+			|| facetName.equals(XSDatatypeImpl.FACET_MININCLUSIVE);
 	}
 	
 	/**

@@ -7,14 +7,15 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
-import com.sun.msv.datatype.datetime.ISO8601Parser;
-import com.sun.msv.datatype.datetime.IDateTimeValueType;
-import com.sun.msv.datatype.datetime.BigDateTimeValueType;
+import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
+import com.sun.msv.datatype.xsd.datetime.IDateTimeValueType;
+import com.sun.msv.datatype.xsd.datetime.BigDateTimeValueType;
 import java.util.Date;
 import java.util.SimpleTimeZone;
 import org.relaxng.datatype.ValidationContext;
+import com.sun.msv.datatype.SerializationContext;
 
 /**
  * "time" type.

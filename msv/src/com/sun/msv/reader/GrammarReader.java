@@ -18,7 +18,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
 import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.helpers.XMLFilterImpl;
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,6 +30,7 @@ import java.net.URL;
 import java.net.MalformedURLException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.util.StartTagInfo;
@@ -140,7 +141,7 @@ public abstract class GrammarReader
 	 *		For RELAX, this is unqualified type name. For TREX,
 	 *		this is a QName.
 	 */
-	public abstract DataType resolveDataType( String typeName );
+	public abstract Datatype resolveDataType( String typeName );
 
 	/**
 	 * map from type name of Candidate Recommendation to the current type.
@@ -148,23 +149,23 @@ public abstract class GrammarReader
 	private static final Map deprecatedTypes = initDeprecatedTypes();
 	private static Map initDeprecatedTypes() {
 		Map m = new java.util.HashMap();
-		m.put("uriReference",		com.sun.msv.datatype.AnyURIType.theInstance );
-		m.put("number",				com.sun.msv.datatype.NumberType.theInstance );
-		m.put("timeDuration",		com.sun.msv.datatype.DurationType.theInstance );
-		m.put("CDATA",				com.sun.msv.datatype.NormalizedStringType.theInstance );
-		m.put("year",				com.sun.msv.datatype.GYearType.theInstance );
-		m.put("yearMonth",			com.sun.msv.datatype.GYearMonthType.theInstance );
-		m.put("month",				com.sun.msv.datatype.GMonthType.theInstance );
-		m.put("monthDay",			com.sun.msv.datatype.GMonthDayType.theInstance );
-		m.put("day",				com.sun.msv.datatype.GDayType.theInstance );
+		m.put("uriReference",		com.sun.msv.datatype.xsd.AnyURIType.theInstance );
+		m.put("number",				com.sun.msv.datatype.xsd.NumberType.theInstance );
+		m.put("timeDuration",		com.sun.msv.datatype.xsd.DurationType.theInstance );
+		m.put("CDATA",				com.sun.msv.datatype.xsd.NormalizedStringType.theInstance );
+		m.put("year",				com.sun.msv.datatype.xsd.GYearType.theInstance );
+		m.put("yearMonth",			com.sun.msv.datatype.xsd.GYearMonthType.theInstance );
+		m.put("month",				com.sun.msv.datatype.xsd.GMonthType.theInstance );
+		m.put("monthDay",			com.sun.msv.datatype.xsd.GMonthDayType.theInstance );
+		m.put("day",				com.sun.msv.datatype.xsd.GDayType.theInstance );
 		return m;
 	}
 	/**
 	 * tries to obtain a DataType object by resolving obsolete names.
 	 * this method is useful for backward compatibility purpose.
 	 */
-	public DataType getBackwardCompatibleType( String typeName ) {
-		DataType dt = (DataType)deprecatedTypes.get(typeName);
+	public Datatype getBackwardCompatibleType( String typeName ) {
+		XSDatatype dt = (XSDatatype)deprecatedTypes.get(typeName);
 		if( dt!=null )
 			reportWarning( WRN_DEPRECATED_TYPENAME, typeName, dt.displayName() );
 		return dt;
@@ -498,6 +499,9 @@ public abstract class GrammarReader
 	
 	public boolean isUnparsedEntity( String entityName ) {
 		// we have to allow everything here?
+		return true;
+	}
+	public boolean isNotation( String notationName ) {
 		return true;
 	}
 	

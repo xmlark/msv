@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
@@ -21,7 +21,7 @@ public class MaxLengthFacet extends DataTypeWithValueConstraintFacet
 {
 	public final int maxLength;
 	
-	protected MaxLengthFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
+	protected MaxLengthFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException {
 		super(typeName,baseType,FACET_MAXLENGTH,facets);
 	
@@ -34,7 +34,7 @@ public class MaxLengthFacet extends DataTypeWithValueConstraintFacet
 				BadTypeException.ERR_LOOSENED_FACET,
 				FACET_MAXLENGTH, o.displayName() );
 		
-		// consistency with minLength is checked in DataTypeImpl.derive method.
+		// consistency with minLength is checked in XSDatatypeImpl.derive method.
 	}
 	
 	public Object convertToValue( String literal, ValidationContext context ) {

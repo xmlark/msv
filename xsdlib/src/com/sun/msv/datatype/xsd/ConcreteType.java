@@ -18,7 +18,7 @@ import org.relaxng.datatype.DatatypeException;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public abstract class ConcreteType extends DataTypeImpl {
+public abstract class ConcreteType extends XSDatatypeImpl {
 	
 	protected ConcreteType( String typeName, WhiteSpaceProcessor whiteSpace ) {
 		super( typeName, whiteSpace );
@@ -50,7 +50,7 @@ public abstract class ConcreteType extends DataTypeImpl {
 		// return the sigleton object, if any.
 		String name = getName();
 		if(name!=null) {
-			DataType dt = DataTypeFactory.getTypeByName(name);
+			XSDatatype dt = DatatypeFactory.getTypeByName(name);
 			if(dt!=null)
 				return dt;
 		}

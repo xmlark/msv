@@ -7,8 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
+import com.sun.msv.datatype.SerializationContext;
 import org.relaxng.datatype.ValidationContext;
 
 /**

@@ -11,6 +11,7 @@ package com.sun.msv.datatype.xsd;
 
 import java.io.ByteArrayInputStream;
 import org.apache.xerces.utils.regex.RegularExpression;
+import com.sun.msv.datatype.SerializationContext;
 import org.relaxng.datatype.ValidationContext;
 
 /**

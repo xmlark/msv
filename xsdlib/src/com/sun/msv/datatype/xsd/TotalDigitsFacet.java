@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
@@ -23,7 +23,7 @@ public class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 	/** maximum number of total digits. */
 	public final int		precision;
 
-	public TotalDigitsFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
+	public TotalDigitsFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException {
 		super( typeName, baseType, FACET_TOTALDIGITS, facets );
 		
@@ -36,7 +36,7 @@ public class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 				BadTypeException.ERR_LOOSENED_FACET,
 				FACET_TOTALDIGITS, o.displayName() );
 		
-		// consistency with scale is checked in DataTypeImpl.derive method.
+		// consistency with scale is checked in XSDatatypeImpl.derive method.
 	}
 
 	protected boolean checkLexicalConstraint( String content ) {

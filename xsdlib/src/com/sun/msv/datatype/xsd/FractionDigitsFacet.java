@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
@@ -24,7 +24,7 @@ public class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 	/** maximum number of fraction digits */
 	public final int scale;
 
-	public FractionDigitsFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
+	public FractionDigitsFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException {
 		super( typeName, baseType, FACET_FRACTIONDIGITS, facets );
 		
@@ -37,7 +37,7 @@ public class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 				BadTypeException.ERR_LOOSENED_FACET,
 				FACET_FRACTIONDIGITS, o.displayName() );
 		
-		// consistency with precision is checked in DataTypeImpl.derive method.
+		// consistency with precision is checked in XSDatatypeImpl.derive method.
 	}
 
 	protected boolean checkLexicalConstraint( String content ) {

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 import org.apache.xerces.utils.regex.RegularExpression;
 import org.apache.xerces.utils.regex.ParseException;
@@ -46,7 +46,7 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
 	 *		(see http://www.w3.org/TR/xmlschema-2/#dt-regex )
 	 *		There patterns are considered as an 'OR' set.
 	 */
-	public PatternFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
+	public PatternFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException {
 		super( typeName, baseType, FACET_PATTERN, facets );
 		

@@ -26,12 +26,12 @@ import org.relaxng.datatype.DatatypeException;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class DataTypeFactory {
+public class DatatypeFactory {
 	
 	/** a map that contains all built in types */
 	private static final Map builtinType = createStaticTypes();
 	
-	private DataTypeFactory(){}
+	private DatatypeFactory(){}
 	
 	/**
 	 * derives a new type by list.
@@ -54,9 +54,9 @@ public class DataTypeFactory {
 	 *		this exception is thrown when the derivation is illegal.
 	 *		For example, when you try to derive a type from non-atom type.
 	 */
-	public static DataTypeImpl deriveByList( String newTypeName, DataTypeImpl itemType )
+	public static XSDatatype deriveByList( String newTypeName, XSDatatype itemType )
 		throws BadTypeException {
-		return new ListType(newTypeName,itemType);
+		return new ListType(newTypeName,(XSDatatypeImpl)itemType);
 	}
 	
 	/**
@@ -74,19 +74,19 @@ public class DataTypeFactory {
 	 * @exception BadTypeException
 	 *		this exception is thrown when the derivation is illegal.
 	 */
-	public static DataTypeImpl deriveByUnion( String newTypeName, DataTypeImpl[] memberTypes )
+	public static XSDatatype deriveByUnion( String newTypeName, XSDatatypeImpl[] memberTypes )
 		throws BadTypeException {
 		
 		return new UnionType(newTypeName,memberTypes);
 	}
 	
-	public static DataTypeImpl deriveByUnion( String newTypeName, Collection memberTypes )
+	public static XSDatatype deriveByUnion( String newTypeName, Collection memberTypes )
 		throws BadTypeException {
-		DataTypeImpl[] m = new DataTypeImpl[memberTypes.size()];
+		XSDatatypeImpl[] m = new XSDatatypeImpl[memberTypes.size()];
 		int n=0;
 		for( Iterator itr=memberTypes.iterator(); itr.hasNext(); n++ )
 		for( int i=0; i<m.length; i++ )
-			m[i] = (DataTypeImpl)itr.next();
+			m[i] = (XSDatatypeImpl)itr.next();
 		
 		return new UnionType(newTypeName,m);
 	}
@@ -96,11 +96,11 @@ public class DataTypeFactory {
 	 * 
 	 * @return null	if DataType is not found
 	 */
-	public static DataTypeImpl getTypeByName( String dataTypeName ) {
-		return (DataTypeImpl)builtinType.get(dataTypeName);
+	public static XSDatatype getTypeByName( String dataTypeName ) {
+		return (XSDatatype)builtinType.get(dataTypeName);
 	}
 	
-	private static void add( Map m, DataTypeImpl type ) {
+	private static void add( Map m, XSDatatypeImpl type ) {
 		final String name = type.getName();
 		if( name==null )
 			throw new IllegalArgumentException("anonymous type");

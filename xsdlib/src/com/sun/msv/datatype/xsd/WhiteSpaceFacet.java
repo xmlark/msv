@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 import org.relaxng.datatype.ValidationContext;
 import org.relaxng.datatype.DatatypeException;
@@ -20,14 +20,14 @@ import org.relaxng.datatype.ValidationContext;
  */
 public class WhiteSpaceFacet extends DataTypeWithFacet {
 	
-	WhiteSpaceFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
+	WhiteSpaceFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException {
 		super(typeName, baseType, FACET_WHITESPACE, facets,
 			WhiteSpaceProcessor.get( (String)facets.getFacet(FACET_WHITESPACE)) );
 		
 		// loosened facet check
 		if( baseType.whiteSpace.tightness() > this.whiteSpace.tightness() ) {
-			DataType d;
+			XSDatatype d;
 			d=baseType.getFacetObject(FACET_WHITESPACE);
 			if(d==null)	d = getConcreteType();
 			
@@ -36,7 +36,7 @@ public class WhiteSpaceFacet extends DataTypeWithFacet {
 				FACET_WHITESPACE, d.displayName() );
 		}
 		
-		// consistency with minLength/maxLength is checked in DataTypeImpl.derive method.
+		// consistency with minLength/maxLength is checked in XSDatatypeImpl.derive method.
 	}
 	
 	protected boolean checkFormat( String content, ValidationContext context ) {

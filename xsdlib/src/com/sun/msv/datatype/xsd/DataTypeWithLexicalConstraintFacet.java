@@ -19,7 +19,7 @@ import org.relaxng.datatype.ValidationContext;
 abstract class DataTypeWithLexicalConstraintFacet extends DataTypeWithFacet {
 	
 	DataTypeWithLexicalConstraintFacet(
-		String typeName, DataTypeImpl baseType, String facetName, TypeIncubator facets )
+		String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets )
 		throws BadTypeException {
 		super( typeName, baseType, facetName, facets );
 	}

@@ -11,25 +11,26 @@ package com.sun.msv.datatype.xsd;
 
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
+import com.sun.msv.datatype.SerializationContext;
 
 /**
  * "final" component.
  * 
  * @author	Kohsuke Kawaguchi
  */
-public final class FinalComponent extends DataTypeImpl {
+public final class FinalComponent extends XSDatatypeImpl {
 	/** immediate base type, which may be a concrete type or DataTypeWithFacet */
-	public final DataTypeImpl baseType;
+	public final XSDatatypeImpl baseType;
 	
 	protected final int finalValue;
 	
 	public boolean isAtomType() { return baseType.isAtomType(); }
 	
-	public FinalComponent( DataTypeImpl baseType, int finalValue ) {
+	public FinalComponent( XSDatatypeImpl baseType, int finalValue ) {
 		this( baseType.getName(), baseType, finalValue );
 	}
 	
-	public FinalComponent( String newTypeName, DataTypeImpl baseType, int finalValue ) {
+	public FinalComponent( String newTypeName, XSDatatypeImpl baseType, int finalValue ) {
 		super( newTypeName, baseType.whiteSpace );
 		this.baseType = baseType;
 		this.finalValue = finalValue;

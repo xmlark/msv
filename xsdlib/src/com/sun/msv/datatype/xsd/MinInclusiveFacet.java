@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 /**
  * 'minInclusive' facet
@@ -15,7 +15,7 @@ package com.sun.msv.datatype;
  * @author	Kohsuke Kawaguchi
  */
 public class MinInclusiveFacet extends RangeFacet {
-	protected MinInclusiveFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
+	protected MinInclusiveFacet( String typeName, XSDatatypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException {
 		super( typeName, baseType, FACET_MININCLUSIVE, facets );
 	}

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 import java.io.Serializable;
 import org.relaxng.datatype.ValidationContext;
@@ -20,7 +20,7 @@ import org.relaxng.datatype.helpers.StreamingValidatorImpl;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public abstract class XSDataTypeImpl implements XSDataType {
+public abstract class XSDatatypeImpl implements XSDatatype {
 	
 	private final String typeName;
 	public String getName()	{ return typeName; }
@@ -31,7 +31,7 @@ public abstract class XSDataTypeImpl implements XSDataType {
 	/** this field characterizes how this datatype treats white space. */
 	public final WhiteSpaceProcessor whiteSpace;
 	
-	protected XSDataTypeImpl( String typeName, WhiteSpaceProcessor whiteSpace ) {
+	protected XSDatatypeImpl( String typeName, WhiteSpaceProcessor whiteSpace ) {
 		this.typeName	= typeName;
 		this.whiteSpace	= whiteSpace;
 	}

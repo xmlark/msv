@@ -11,6 +11,7 @@ package com.sun.msv.datatype.xsd;
 
 import java.math.BigInteger;
 import org.relaxng.datatype.ValidationContext;
+import com.sun.msv.datatype.SerializationContext;
 
 /**
  * "byte" type.

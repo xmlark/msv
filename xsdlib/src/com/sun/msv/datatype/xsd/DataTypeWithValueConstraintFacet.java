@@ -19,7 +19,7 @@ import org.relaxng.datatype.ValidationContext;
 abstract class DataTypeWithValueConstraintFacet extends DataTypeWithFacet {
 	
 	DataTypeWithValueConstraintFacet(
-		String typeName, DataTypeImpl baseType, String facetName, TypeIncubator facets )
+		String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets )
 		throws BadTypeException {
 	
 		super( typeName, baseType, facetName, facets );

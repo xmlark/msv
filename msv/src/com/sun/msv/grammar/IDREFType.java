@@ -9,7 +9,9 @@
  */
 package com.sun.msv.grammar;
 
-import com.sun.msv.datatype.NmtokenType;
+import com.sun.msv.datatype.xsd.NmtokenType;
+import com.sun.msv.datatype.xsd.XSDatatypeImpl;
+import com.sun.msv.datatype.xsd.DatatypeFactory;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -20,6 +22,16 @@ import org.relaxng.datatype.ValidationContext;
 public class IDREFType extends NmtokenType {
 	
 	public static final IDREFType theInstance = new IDREFType();
+	public static final XSDatatypeImpl theIDREFSinstance = createIDREFS();
+		
+	private static XSDatatypeImpl createIDREFS() {
+		try {
+			return (XSDatatypeImpl)DatatypeFactory.deriveByList("IDREFS",IDREFType.theInstance );
+		} catch( Exception e ) {
+			// not possible
+			throw new Error();
+		}
+	}
 	
 	protected IDREFType()	{ super("IDREF"); }
 	

@@ -9,7 +9,7 @@
  */
 package com.sun.msv.grammar;
 
-import com.sun.msv.datatype.NmtokenType;
+import com.sun.msv.datatype.xsd.NmtokenType;
 import org.relaxng.datatype.ValidationContext;
 
 /**

@@ -10,16 +10,17 @@
 package com.sun.msv.datatype.xsd;
 
 import org.relaxng.datatype.*;
+import com.sun.msv.datatype.SerializationContext;
 
 /**
  * Base implementation of facet-restricted datatype
  * 
  * @author	Kohsuke Kawaguchi
  */
-public abstract class DataTypeWithFacet extends DataTypeImpl
+public abstract class DataTypeWithFacet extends XSDatatypeImpl
 {
 	/** immediate base type, which may be a concrete type or DataTypeWithFacet */
-	public final DataTypeImpl baseType;
+	public final XSDatatypeImpl baseType;
 	
 	/** base concrete type */
 	protected final ConcreteType concreteType;
@@ -37,13 +38,13 @@ public abstract class DataTypeWithFacet extends DataTypeImpl
 	private final boolean needValueCheckFlag;
 	
 	/** constructor for facets other than WhiteSpaceFacet */
-	DataTypeWithFacet( String typeName, DataTypeImpl baseType, String facetName, TypeIncubator facets )
+	DataTypeWithFacet( String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets )
 		throws BadTypeException {
 		this( typeName, baseType, facetName, facets, baseType.whiteSpace );
 	}
 	
 	/** constructor for WhiteSpaceFacet */
-	DataTypeWithFacet( String typeName, DataTypeImpl baseType, String facetName, TypeIncubator facets, WhiteSpaceProcessor whiteSpace )
+	DataTypeWithFacet( String typeName, XSDatatypeImpl baseType, String facetName, TypeIncubator facets, WhiteSpaceProcessor whiteSpace )
 		throws BadTypeException {
 		super(typeName, whiteSpace);
 		this.baseType = baseType;

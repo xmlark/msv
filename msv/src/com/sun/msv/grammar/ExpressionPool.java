@@ -10,7 +10,8 @@
 package com.sun.msv.grammar;
 
 import java.util.Hashtable;
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
+import com.sun.msv.datatype.xsd.XSDatatype;
 
 /**
  * Creates a new Expression by combining existing expressions.
@@ -107,8 +108,12 @@ public class ExpressionPool implements java.io.Serializable {
 		return createChoice(child,Expression.epsilon);
 	}
 	
-	public final Expression createTypedString( DataType dt ) {
-		return unify( new TypedStringExp(dt) );
+	public final Expression createTypedString( XSDatatype dt ) {
+		return unify( new TypedStringExp(dt,dt.displayName()) );
+	}
+	
+	public final Expression createTypedString( Datatype dt, String typeName ) {
+		return unify( new TypedStringExp(dt,typeName) );
 	}
 	
 	public final Expression createList( Expression exp ) {

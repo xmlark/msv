@@ -7,10 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype;
+package com.sun.msv.datatype.xsd;
 
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
+import com.sun.msv.datatype.SerializationContext;
 
 /**
  * union type.
@@ -21,7 +22,7 @@ final public class UnionType extends ConcreteType {
 	/**
 	 * derives a new datatype from atomic datatypes by union
 	 */
-	public UnionType( String newTypeName, DataTypeImpl[] memberTypes )
+	public UnionType( String newTypeName, XSDatatypeImpl[] memberTypes )
 		throws BadTypeException {
 		super(newTypeName);
 		
@@ -36,7 +37,7 @@ final public class UnionType extends ConcreteType {
 	}
 	
 	/** member types */
-	final public DataTypeImpl[] memberTypes;
+	final public XSDatatypeImpl[] memberTypes;
 
 	// union type is not an atom type.
 	public final boolean isAtomType() { return false; }

@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: org.relaxng.testharness.junit.TestRunner
+Created-By: 1.2.2 (Sun Microsystems Inc.)
+

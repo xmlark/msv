@@ -47,8 +47,10 @@
 					public="yes"
 					author="yes"
 					>
+<!--
 			<link href="http://java.sun.com/products/jdk/1.2/docs/api" />
 			<link href="http://xml.apache.org/apiDocs/" />
+-->
 		</javadoc>
 		
 		

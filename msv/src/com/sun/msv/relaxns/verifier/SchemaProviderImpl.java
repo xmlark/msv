@@ -18,9 +18,10 @@ import org.iso_relax.dispatcher.impl.AbstractSchemaProviderImpl;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
 import com.sun.msv.relaxns.grammar.DeclImpl;
 import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.ExpressionPool;
-import com.sun.msv.verifier.regexp.REDocumentDeclaration;
+//import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import java.util.Iterator;
 
 /**
@@ -32,21 +33,15 @@ public class SchemaProviderImpl extends AbstractSchemaProviderImpl {
 	
 	private final RELAXGrammar grammar;
 	private final DeclImpl[] topLevel;
-	protected final REDocumentDeclaration docDecl;
+	/** top-level expression as AGM. */
+	private final Expression topLevelExp;
+	/** shared expression pool. */
+	private final ExpressionPool pool;
 	
 	public IslandVerifier createTopLevelVerifier() {
 		return new TREXIslandVerifier(
-			new RulesAcceptor( docDecl, topLevel ) );
-	}
-	
-	/**
-	 * creates SchemaProvider from existing RELAXGrammar.
-	 * 
-	 * Since bind method is already called by RELAXNSReader,
-	 * the application should not call bind method.
-	 */
-	public SchemaProviderImpl( RELAXGrammar grammar ) {
-		this( grammar, new REDocumentDeclaration(grammar) ); 
+			new RulesAcceptor(
+				new com.sun.msv.verifier.regexp.REDocumentDeclaration(topLevelExp,pool), topLevel ) );
 	}
 	
 	/**
@@ -62,9 +57,16 @@ public class SchemaProviderImpl extends AbstractSchemaProviderImpl {
 		return new SchemaProviderImpl( g );
 	}
 	
-	public SchemaProviderImpl( RELAXGrammar grammar, REDocumentDeclaration docDecl ) {
+	/**
+	 * creates SchemaProvider from existing RELAXGrammar.
+	 * 
+	 * Since bind method is already called by RELAXNSReader,
+	 * the application should not call bind method.
+	 */
+	public SchemaProviderImpl( RELAXGrammar grammar ) {
 		this.grammar = grammar;
-		this.docDecl = docDecl;
+		this.pool = grammar.pool;
+		this.topLevelExp = grammar.topLevel;
 		this.topLevel = new DeclImpl[]{new DeclImpl("##start",grammar.topLevel)};
 		
 		// add all parsed modules into the provider.

@@ -28,34 +28,51 @@ import java.util.Set;
 import java.util.Iterator;
 
 /**
- * base implementation of IslandSchema for MSV VGM.
+ * base implementation of IslandSchema for MSV.
+ * 
+ * the iso_relax package doesn't have the distinction between AGM and VGM.
+ * For the safety, the implementation of the createNewVerifier method creates
+ * a new VGM everytime it is called.
+ * 
+ * Fortunately, when all island schemas are from MSV, the application can simply
+ * treat RELAXGrammar as a normal Grammar object; there is no need to use
+ * Dispatcher nor any divide-and-validate framework.
+ * 
+ * So createNewVerifier method is called only when
+ * <ul>
+ *  <li>
+ *		MSV is used by other RELAX Namespace
+ *		implementation or
+ *  <li>
+ *		other IslandSchema implemntations are used by MSV's RELAXNSReader.
+ * </ul>
+ * 
+ * In that case, the current createNewVerifier method causes a performance problem.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class IslandSchemaImpl
-			implements IslandSchema, java.io.Serializable
-{
+			implements IslandSchema, java.io.Serializable {
+	
 	/** map from name to DeclImpl. */
 	protected final Map elementDecls = new java.util.HashMap();
 	
 	/** map from name to DeclImpl. */
 	protected final Map attributesDecls = new java.util.HashMap();
 	
-	/** VGM to be used to create IslandVerifier. */
-	protected final REDocumentDeclaration docDecl;
-	
-	protected IslandSchemaImpl( REDocumentDeclaration docDecl ) {
-		this.docDecl = docDecl;
-	}
-	
-	public IslandVerifier createNewVerifier( String namespace, ElementDecl[] rules )
-	{
+	public IslandVerifier createNewVerifier( String namespace, ElementDecl[] rules ) {
+		// see the class comment.
+		// this method is invoked only under certain limited situations.
 		DeclImpl[] ri = new DeclImpl[rules.length];
 		System.arraycopy( rules,0, ri,0, rules.length );
 		
 		return new TREXIslandVerifier(
-			new RulesAcceptor( docDecl, ri ) );
+			new RulesAcceptor( 
+				new REDocumentDeclaration( getGrammar() ), ri ) );
 	}
+	
+	/** get the grammar object that represents this island. */
+	protected abstract Grammar getGrammar();
 	
 	public ElementDecl getElementDeclByName( String name ) {
 		return (ElementDecl)elementDecls.get(name);
@@ -90,11 +107,7 @@ public abstract class IslandSchemaImpl
 		throw new Error("not implemented");
 	}
 	
-	
-	
-	
-	protected void bind( ReferenceContainer con, Binder binder )
-	{
+	protected void bind( ReferenceContainer con, Binder binder ) {
 		ReferenceExp[] exps = con.getAll();
 		for( int i=0; i<exps.length; i++ )
 			exps[i].exp = exps[i].exp.visit(binder);
@@ -105,9 +118,8 @@ public abstract class IslandSchemaImpl
 	 * 
 	 * these two expressions forms the fundamental mechanism of schema interaction.
 	 */
-	public static class Binder
-		extends ExpressionCloner
-	{
+	public static class Binder extends ExpressionCloner	{
+		
 		protected final SchemaProvider provider;
 		protected final ErrorHandler errorHandler;
 		private final Set boundElements = new java.util.HashSet();

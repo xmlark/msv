@@ -20,6 +20,7 @@ import com.sun.msv.relaxns.grammar.ExternalElementExp;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.relax.RELAXModule;
 import com.sun.msv.grammar.relax.ElementRules;
 import com.sun.msv.grammar.relax.HedgeRules;
@@ -40,9 +41,7 @@ public class RELAXIslandSchema extends IslandSchemaImpl
 
 	protected Set pendingAnyOtherElements;
 
-	public RELAXIslandSchema( RELAXModule module, Set pendingAnyOtherElements )
-	{
-		super( new REDocumentDeclaration(module) );
+	public RELAXIslandSchema( RELAXModule module, Set pendingAnyOtherElements ) {
 		this.module = module;
 		this.pendingAnyOtherElements = pendingAnyOtherElements;
 		
@@ -69,9 +68,11 @@ public class RELAXIslandSchema extends IslandSchemaImpl
 					new DeclImpl( refs[i].name, expGen.create(module,refs[i].exp) ) );
 	}
 	
+	protected Grammar getGrammar() {
+		return module;
+	}
 	
-	public void bind( SchemaProvider provider, ErrorHandler handler ) throws SAXException
-	{
+	public void bind( SchemaProvider provider, ErrorHandler handler ) throws SAXException {
 		{// wrap up anyOtherElements.
 			Expression pseudoContentModel = createChoiceOfAllExportedRules(provider);
 				
@@ -81,7 +82,7 @@ public class RELAXIslandSchema extends IslandSchemaImpl
 			pendingAnyOtherElements = null;
 		}
 		
-		Binder binder = new Binder(provider,handler,docDecl.pool);
+		Binder binder = new Binder( provider, handler, module.pool );
 		bind( module.elementRules, binder );
 		bind( module.hedgeRules, binder );
 		bind( module.attPools, binder );

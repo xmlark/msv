@@ -9,7 +9,7 @@
 	<!-- environment dependend -->
 	<property name="JUnitJar" value="c:/winnt/java/classes/junit.jar"/>
 	<property name="AntJar" value="c:/progra~1/development/ant/lib/ant.jar"/>
-	<property name="msvJar" value="../tranquilo/package/msv.jar"/>
+	<property name="msvJar" value="../tranquilo/package/msv.light.jar"/>
 	
 	<!-- create a distribution package -->
 	<target name="release">
@@ -51,8 +51,9 @@
 		
 		<!-- unzip related jars -->
 		<unzip src="c:/winnt/java/classes/xalan.jar" dest="temp"/>
-		<unzip src="c:/winnt/java/classes/xerces.jar" dest="temp"/>
 		<unzip src="${msvJar}" dest="temp"/>
+		<!-- remove meta files contained in those jars -->
+		<delete dir="temp/META-INF"/>
 		
 		<!-- creates binary jar -->
 		<jar	jarfile="${stageName}/relames.jar"

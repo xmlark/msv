@@ -112,12 +112,12 @@ public class AnyURIType extends ConcreteType implements Discrete
 		return new String(escaped);
 	}
 
-	public Object convertToValue( String content, ValidationContextProvider context )
+	public Object convertToValue( final String content, ValidationContextProvider context )
 	{
 		// we can't use java.net.URL (for example, it cannot handle IPv6.)
 		
 		// TODO: directly create byte[]
-		content = escape(content);
+		String escaped = escape(content);
 		
 		try
 		{// make sure it conforms [RFC2396] (amended by [RFC2732])
@@ -131,7 +131,7 @@ public class AnyURIType extends ConcreteType implements Discrete
 			// By using UTF-8, non ascii characters will have bit image of 1XXXXXXX.
 			// thus these characters will be rejected by the parser as an error.
 			final AnyURIParser parser =
-				new AnyURIParser( new ByteArrayInputStream( content.getBytes("UTF8") ) );
+				new AnyURIParser( new ByteArrayInputStream( escaped.getBytes("UTF8") ) );
 			parser.start();
 		}
 		catch( Throwable e )
@@ -139,6 +139,8 @@ public class AnyURIType extends ConcreteType implements Discrete
 			return null;
 		}
 		
+		// the value space and the lexical space is the same.
+		// escaped characters are only used for validation.
 		return content;
 	}
 	
@@ -157,8 +159,8 @@ public class AnyURIType extends ConcreteType implements Discrete
 	
 	public final int countLength( Object value )
 	{
-		// uriReference only allows US-ASCII characters.
-		// thus we don't need to count surrogate pairs.
-		return ((String)value).length();
+		// the spec does not define this.
+		// TODO: check the update of the spec and modify this if necessary.
+		return UnicodeUtil.countLength( (String)value );
 	}
 }

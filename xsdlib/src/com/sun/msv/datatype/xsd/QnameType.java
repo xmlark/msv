@@ -16,7 +16,7 @@ package com.sun.tranquilo.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class QnameType extends ConcreteType
+public class QnameType extends ConcreteType implements Discrete
 {
 	public static final QnameType theInstance = new QnameType();
 	private QnameType() { super("QName"); }
@@ -97,5 +97,15 @@ public class QnameType extends ConcreteType
 			return APPLICABLE;
 		else
 			return NOT_ALLOWED;
+	}
+	
+	public final int countLength( Object value )
+	{
+		QnameValueType v = (QnameValuType)value;
+		
+		// the spec does not define what is the unit of length.
+		// TODO: check the update of the spec and modify this if necessary.
+		return	UnicodeUtil.countLength( v.namespaceURI )+
+				UnicodeUtil.countLength( v.localPart );
 	}
 }

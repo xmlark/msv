@@ -134,24 +134,14 @@ public class TREXGrammarReader extends GrammarReader
 	protected String targetNamespace ="";
 	
 	
-	// to make them accesible from inner classes
-	public void pushState( State newState, StartTagInfo startTag )
-	{
-		// handle 'ns' attribute propagation
-		nsStack.push(targetNamespace);
-		if( startTag!=null && startTag.containsAttribute("ns") )
-			targetNamespace = startTag.getAttribute("ns");
-		// if nothing specified, targetNamespace stays the same.
-		// for root state, startTag is null.
-		
-		super.pushState(newState,startTag);
-	}
-	public void popState()
-	{
-		super.popState();
-		
-		targetNamespace = (String)nsStack.pop();
-	}
+//	public void pushState( State newState, StartTagInfo startTag )
+//	{
+//		super.pushState(newState,startTag);
+//	}
+//	public void popState()
+//	{
+//		super.popState();
+//	}
 	protected TREXPatternPool getPool()
 	{ return (TREXPatternPool)super.pool; }
 	
@@ -262,6 +252,29 @@ public class TREXGrammarReader extends GrammarReader
 		// recover by using a dummy DataType
 		return StringType.theInstance;
 	}
+
+
+// SAX event interception
+//--------------------------------
+	public void startElement( String a, String b, String c, Attributes d ) throws SAXException
+	{
+		// handle 'ns' attribute propagation
+		nsStack.push(targetNamespace);
+		if( d.getIndex("ns")!=-1 )
+			targetNamespace = d.getValue("ns");
+		// if nothing specified, targetNamespace stays the same.
+		// for root state, startTag is null.
+		
+		super.startElement(a,b,c,d);
+	}
+	public void endElement( String a, String b, String c ) throws SAXException
+	{
+		super.endElement(a,b,c);
+		targetNamespace = (String)nsStack.pop();
+	}
+
+	
+	
 	
 	/**
 	 * Dummy DataTypeVocabulary for better error recovery.

@@ -19,7 +19,10 @@ import com.sun.msv.grammar.ExpressionPool;
  */
 public class StartTagInfoEx extends StartTagInfo
 {
-	public AttributeToken[] attTokens;
+	/** AttributeToken for every attribute. */
+	protected AttributeToken[] attTokens;
+	public AttributeToken getToken( int idx ) { return attTokens[idx]; }
+	
 	private final REDocumentDeclaration	owner;
 	
 	public StartTagInfoEx( REDocumentDeclaration docDecl ) {

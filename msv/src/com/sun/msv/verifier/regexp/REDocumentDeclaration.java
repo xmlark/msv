@@ -75,7 +75,7 @@ public class REDocumentDeclaration implements DocumentDeclaration
 	 * This object can also hold information about what types are assigned to attributes,
 	 * and what types are assigned to attribute content.
 	 */
-	protected final StartTagInfoEx					startTag;
+	public final StartTagInfoEx					startTag;
 
 	public Acceptor createAcceptor() {
 		// top-level Acceptor cannot have continuation.

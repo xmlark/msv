@@ -17,11 +17,11 @@ import com.sun.msv.util.DataTypeRef;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class AttributeToken extends Token
+public class AttributeToken extends Token
 {
-	protected final String					namespaceURI;
-	protected final String					localName;
-	protected final StringToken				value;
+	public final String					namespaceURI;
+	public final String					localName;
+	public final StringToken			value;
 	protected final REDocumentDeclaration	docDecl;
 	
 	/**

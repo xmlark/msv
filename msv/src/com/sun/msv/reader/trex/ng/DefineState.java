@@ -31,18 +31,9 @@ public class DefineState extends com.sun.msv.reader.trex.DefineState {
 		
 		final RELAXNGReader reader = (RELAXNGReader)this.reader;
 		RELAXNGReader.RefExpParseInfo info = reader.getRefExpParseInfo(baseExp);
-		
-		if( baseExp.exp!=null ) {
-			// make sure that the previous definition was in a different file.
-			if( reader.getDeclaredLocationOf(baseExp).getSystemId().equals(
-					reader.locator.getSystemId() ) ) {
-				reader.reportError( reader.ERR_DUPLICATE_DEFINITION, baseExp.name );
-				// recovery by ignoring this definition
-				return baseExp.exp;
-			}
-		}
-		
-		
+
+		// RELAX NG allows multiple definitions in the same file.
+
 		if( combine==null ) {
 			// this is a head declaration
 			if( info.haveHead ) {

@@ -20,9 +20,10 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public abstract class ElementExp extends Expression {
+public abstract class ElementExp extends Expression implements NameClassAndExpression {
 	/** content model of this element declaration. */
 	public Expression contentModel;
+	public final Expression getContentModel() { return contentModel; }
 	
 	/** a flag that indicates undeclared attributes should be ignored. */
 	public boolean ignoreUndeclaredAttributes;

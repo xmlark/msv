@@ -17,12 +17,15 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class AttributeExp extends Expression
+public final class AttributeExp extends Expression implements NameClassAndExpression
 {
 	/** constraint over attribute name */
 	public final NameClass nameClass;
+	public final NameClass getNameClass() { return nameClass; }
+	
 	/** child expression */
 	public final Expression exp;
+	public final Expression getContentModel() { return exp; }
 	
 	/** use ExpressionPool to create it from outside */
 	AttributeExp( NameClass nameClass, Expression exp )

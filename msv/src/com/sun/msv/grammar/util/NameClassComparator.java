@@ -49,12 +49,6 @@ public abstract class NameClassComparator implements NameClassVisitor {
      */
     public boolean check( NameClass _new, NameClass _old ) {
                 
-        if( _new instanceof SimpleNameClass ) {
-            // short cut for 90% of the cases
-            SimpleNameClass nnc = (SimpleNameClass)_new;
-            return _old.accepts( nnc.namespaceURI, nnc.localName );
-        }
-                
         try {
             nc1 = _new;
             nc2 = _old;

@@ -61,6 +61,22 @@ public abstract class NameClass implements java.io.Serializable {
     public boolean isNull() {
         return !new NameClassCollisionChecker().check(this,NameClass.ALL);
     }
+    
+    /**
+     * Returns true if this name class represents the same set as the given name class.
+     */
+    public final boolean isEqualTo( NameClass rhs ) {
+        boolean r = new NameClassComparator() {
+            protected void probe(String uri, String local) {
+                boolean a = nc1.accepts(uri,local);
+                boolean b = nc2.accepts(uri,local);
+                
+                if( (a&&!b) || (!a&&b) )    throw eureka;
+            }
+        }.check(this,rhs);
+        
+        return !r;
+    }
 
     /**
      * Computes the equivalent but simple name class.

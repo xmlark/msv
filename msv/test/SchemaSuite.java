@@ -69,13 +69,27 @@ class SchemaSuite extends TestCase {
 			
 		// load grammar
 		if( pathName.endsWith(".e"+parent.ext) ) {
-			docDecl = parent.loader.load( is, new IgnoreController(), parent.factory );
-			if( docDecl!=null )
+			Grammar g = parent.loader.load( is, new IgnoreController(), parent.factory );
+			if( g!=null )
 				fail("unexpected result");
 		} else {
-			docDecl = parent.loader.load( is, new ThrowErrorController(), parent.factory );
-			if( docDecl==null )
+			Grammar g = parent.loader.load( is, new ThrowErrorController(), parent.factory );
+			if( g==null )
 				fail("unexpected result");	// unexpected result
+
+			{// ensure that the serialization works
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				ObjectOutputStream oos = new ObjectOutputStream(bos);
+				oos.writeObject(g);
+				oos.flush();
+				
+				ObjectInputStream ois = new ObjectInputStream(
+					new ByteArrayInputStream(bos.toByteArray()));
+				
+				g = (Grammar)ois.readObject();
+			}
+			
+			docDecl = new REDocumentDeclaration(g);
 		}
 	}
 	
@@ -126,7 +140,12 @@ class SchemaSuite extends TestCase {
 					if( vv!=null )		fail( vv.getMessage() );
 					else				fail( "should be invalid" );
 				}
-			} catch( SAXException se ) {
+				
+				if( vv!=null )
+					System.out.println(vv.getMessage());
+			}
+			catch( SAXException se )
+			{
 				if( se.getException()!=null )
 					throw se.getException();
 				else

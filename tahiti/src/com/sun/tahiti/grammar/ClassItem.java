@@ -11,6 +11,12 @@ package com.sun.tahiti.grammar;
 
 import com.sun.msv.grammar.Expression;
 
+/**
+ * represents a generated class.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class ClassItem extends TypeItem {
 	
 	protected ClassItem( String name, Expression exp ) {

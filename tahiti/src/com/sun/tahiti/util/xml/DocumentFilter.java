@@ -20,6 +20,9 @@ import org.xml.sax.AttributeList;
  * This object acts as a filter to DocumentHandler events.
  * Derived class should override methods of interest and
  * perform somethings.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DocumentFilter implements DocumentHandler
 {

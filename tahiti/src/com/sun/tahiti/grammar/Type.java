@@ -14,6 +14,9 @@ import java.util.Set;
 /**
  * Type. Several types are generated, and several types are built-in (such as String.)
  * Generated types are modeled by TypeItem. Built-in types are modeled by SystemType.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface Type {
 	

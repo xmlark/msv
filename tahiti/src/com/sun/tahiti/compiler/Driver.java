@@ -37,6 +37,12 @@ import org.apache.xml.serialize.OutputFormat;
 import org.xml.sax.XMLReader;
 import org.xml.sax.DocumentHandler;
 
+/**
+ * Command-line compiler.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class Driver
 {
 	private static class OutputMethod {}

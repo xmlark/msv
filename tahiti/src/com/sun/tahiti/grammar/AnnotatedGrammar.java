@@ -19,6 +19,9 @@ import java.util.Collection;
  * An AGM with Tahiti annotation.
  * 
  * This object keeps track of all JavaItems added to the grammar.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class AnnotatedGrammar implements Grammar
 {

@@ -14,10 +14,13 @@ import com.sun.msv.datatype.DatabindableDatatype;
 import java.util.Set;
 
 /**
- * represents "primitive" type.
+ * represents a "primitive" type.
  * 
  * Primitive types are those types which can construct itself from a string
  * and a DataType.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class PrimitiveItem extends JavaItem implements Type {
 	

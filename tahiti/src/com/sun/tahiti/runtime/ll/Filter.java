@@ -1,5 +1,12 @@
 package com.sun.tahiti.runtime.ll;
 
+/**
+ * Input token filter for parsing interleave content models.
+ * 
+ * This class filters out tokens so that "interleave" can be treated like a sequence.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public interface Filter {
 	boolean rejects( Object symbol );
 	

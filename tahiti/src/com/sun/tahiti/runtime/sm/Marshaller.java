@@ -16,6 +16,9 @@ import com.sun.msv.datatype.DatabindableDatatype;
  * 
  * A marshaller should implement this interface and perform actual
  * marshalling.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface Marshaller {
 	void startElement( String namespaceURI, String localName );

@@ -11,6 +11,9 @@ package com.sun.tahiti.runtime.ll;
 
 /**
  * base class of the non-terminal symbols of LL grammar.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class NonTerminalSymbol {
 	public abstract LLParser.Receiver createReceiver( LLParser.Receiver parent );

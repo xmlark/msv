@@ -25,6 +25,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * serializes all marshallers in the grammar into one XML representation.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class MarshallerSerializer {
 	

@@ -11,6 +11,19 @@ package com.sun.tahiti.grammar.util;
 
 import com.sun.msv.grammar.Expression;
 
+/**
+ * represents a possible number of occurence.
+ * 
+ * Usually, denoted by a pair of integers like (1,1) or (5,10).
+ * A special value "unbounded" is allowed as the upper bound.
+ * 
+ * <p>
+ * For example, (0,unbounded) corresponds to the '*' occurence of DTD.
+ * (0,1) corresponds to the '?' occurence of DTD.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class Multiplicity {
 	public final int min;
 	public final Integer max;	// null is used to represent "unbounded".

@@ -13,6 +13,9 @@ import java.util.Map;
 
 /**
  * built-in types.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class SystemType implements Type {
 	

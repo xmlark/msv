@@ -22,6 +22,9 @@ import java.util.Set;
  * However, it cannot remove elements/attributes whose content model is the nullSet,
  * nor can it remove ReferenceExps whose body is the nullSet. This class walks the
  * grammar and removes those unused ReferenceExps, elements, and attributes.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NotAllowedRemover extends ExpressionCloner {
 	

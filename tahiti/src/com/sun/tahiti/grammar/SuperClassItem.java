@@ -9,6 +9,12 @@
  */
 package com.sun.tahiti.grammar;
 
+/**
+ * represents a derivation relationship between two classes.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class SuperClassItem extends JavaItem {
 	public SuperClassItem() {
 		super("superClass-marker");

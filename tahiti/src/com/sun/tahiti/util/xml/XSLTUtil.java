@@ -15,7 +15,12 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
 
-/** utility methods for XSLT related tasks. */
+/**
+ * utility methods for XSLT related tasks.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public final class XSLTUtil
 {
 	/** gets an XSLT engine. */

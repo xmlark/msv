@@ -20,6 +20,9 @@ import java.io.IOException;
  * 
  * This implementation delegates GrammarReaderController events to
  * another object.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class ControllerImpl implements Controller {
 	

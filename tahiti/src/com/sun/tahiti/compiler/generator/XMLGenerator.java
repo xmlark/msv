@@ -25,6 +25,9 @@ import java.io.IOException;
 
 /**
  * produces XML representation of the object model.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 class XMLGenerator
 {

@@ -16,6 +16,9 @@ import org.w3c.dom.Node;
 
 /**
  * visits all DOM elements in the depth-first order (in-order).
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class DOMVisitor
 {

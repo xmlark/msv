@@ -11,6 +11,9 @@ package com.sun.tahiti.util.text;
 
 /**
  * provides replacement strings for {@link Formatter}.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface Model {
 	/**

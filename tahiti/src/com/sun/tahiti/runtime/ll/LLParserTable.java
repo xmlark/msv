@@ -9,6 +9,12 @@
  */
 package com.sun.tahiti.runtime.ll;
 
+/**
+ * LL parser table.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public interface LLParserTable {
 	/**
 	 * looks up LL parsing table.

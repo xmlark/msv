@@ -15,6 +15,9 @@ import com.sun.msv.grammar.OtherExp;
  * the base class of all special ReferenceExps
  * that are used to annotate data-binding information
  * to AGM.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class JavaItem extends OtherExp {
 	public JavaItem( String name ) {

@@ -9,6 +9,12 @@
  */
 package com.sun.tahiti.reader;
 
+/**
+ * Identifier-related utility methods.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class NameUtil
 {
 	/**

@@ -27,6 +27,12 @@ import java.text.MessageFormat;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 
+/**
+ * parses Tahiti-annotated RELAX NG grammar.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class TRELAXNGReader extends RELAXNGReader implements TahitiGrammarReader {
 
 	public static final String TahitiNamespace = 

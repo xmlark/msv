@@ -19,6 +19,9 @@ import java.io.IOException;
  * 
  * <p>
  * Methods on the GrammarReaderController interface is used for error reporting.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface Controller extends GrammarReaderController {
 	/**

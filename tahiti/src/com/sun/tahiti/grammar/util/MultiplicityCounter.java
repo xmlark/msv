@@ -18,6 +18,9 @@ import com.sun.tahiti.grammar.*;
  * Note that currently this method does not do anything to stop infinite recursion.
  * The algorithm should be implemented within this class to handle recursive multiplicity
  * calculation.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class MultiplicityCounter implements ExpressionVisitor
 {

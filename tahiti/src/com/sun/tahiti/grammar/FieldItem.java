@@ -13,6 +13,12 @@ import com.sun.msv.grammar.Expression;
 import com.sun.tahiti.grammar.util.Multiplicity;
 import java.util.Set;
 
+/**
+ * represents a field relationship between two objects.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class FieldItem extends JavaItem {
 	public FieldItem( String name ) {
 		super(name);

@@ -31,6 +31,9 @@ import org.w3c.dom.Element;
 
 /**
  * produces Java source codes of the object model.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ClassSerializer
 {

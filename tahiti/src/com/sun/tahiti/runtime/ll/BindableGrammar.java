@@ -9,7 +9,12 @@
  */
 package com.sun.tahiti.runtime.ll;
 
-
+/**
+ * A Grammar object which is capable of performing data-binding.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public interface BindableGrammar extends com.sun.msv.grammar.Grammar {
 	LLParserTable getRootTable();
 	Object getRootSymbol();

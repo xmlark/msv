@@ -19,6 +19,9 @@ import java.text.MessageFormat;
 
 /**
  * serializes {@link Expression}s to Java source code.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 class ExpressionSerializer {
 	

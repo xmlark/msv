@@ -40,6 +40,9 @@ import java.util.Iterator;
  *		level expression is important. Otherwise a ClassItem will be removed
  *		if it is the only one ClassItem in the entire grammar.
  * </ol>
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 class TemporaryClassItemRemover {
 	

@@ -14,6 +14,16 @@ import com.sun.msv.reader.GrammarReader;
 import com.sun.tahiti.grammar.AnnotatedGrammar;
 import com.sun.tahiti.grammar.util.*;
 
+/**
+ * Forges a raw AGM into the fully-fledged annotated AGM.
+ * 
+ * TahitiGrammarReader can add annotation partially. This class performs
+ * several processes and forges those partially annotated AGM into fully
+ * annotated AGM.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class Annotator
 {
 	public static Expression annotate( AnnotatedGrammar grammar, GrammarReader reader ) {

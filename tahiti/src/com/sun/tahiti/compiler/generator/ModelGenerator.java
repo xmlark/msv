@@ -15,6 +15,12 @@ import com.sun.tahiti.compiler.Controller;
 import com.sun.tahiti.compiler.java.ClassSerializer;
 import com.sun.tahiti.grammar.*;
 
+/**
+ * serializes object models into some format.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public interface ModelGenerator
 {
 	/**

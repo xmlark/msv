@@ -9,6 +9,12 @@
  */
 package com.sun.tahiti.util.text;
 
+/**
+ * Text formatter.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class Formatter
 {
 	/**

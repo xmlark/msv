@@ -21,6 +21,9 @@ import org.relaxng.datatype.Datatype;
  *   wrap TypedStringExp by PrimitiveItem.
  *  </li>
  * </ul>
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 class PrimitiveTypeAnnotator extends ExpressionCloner {
 	

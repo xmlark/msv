@@ -100,6 +100,9 @@ import org.xml.sax.Locator;
  * <p>
  * Its next job is to compute the type of the field. Field values may have
  * different types, and we need to compute the common base type.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 class RelationNormalizer {
 	

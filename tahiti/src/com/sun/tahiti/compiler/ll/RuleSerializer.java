@@ -27,6 +27,9 @@ import java.text.MessageFormat;
 
 /**
  * serializes a LL grammar into the XML representation.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RuleSerializer implements Symbolizer {
 	

@@ -13,6 +13,9 @@ package com.sun.tahiti.runtime.ll;
  * one production rule of LL grammar (for example A -> xBCy)
  * 
  * immutable.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class Rule {
 	/** 

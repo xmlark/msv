@@ -63,6 +63,9 @@ import java.util.Set;
  *   <data type="string"/>
  * </define>
  * </XMP></PRE>
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class SuperClassBodyRemover extends ExpressionWalker {
 	

@@ -11,7 +11,13 @@ package com.sun.tahiti.compiler.ll;
 
 import com.sun.msv.grammar.*;
 
-public class Util
+/**
+ * LL grammar related utility methods.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
+class Util
 {
 	public static boolean isTerminalSymbol( Expression exp ) {
 		return	exp instanceof TypedStringExp

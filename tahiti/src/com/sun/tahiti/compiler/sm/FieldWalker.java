@@ -15,6 +15,9 @@ import com.sun.msv.grammar.util.ExpressionWalker;
 
 /**
  * traverses an expression tree and reports class items with the field name.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class FieldWalker extends ExpressionWalker
 {

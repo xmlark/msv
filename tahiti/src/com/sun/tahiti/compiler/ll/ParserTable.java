@@ -23,6 +23,9 @@ import com.sun.tahiti.compiler.Symbolizer;
  * 
  * A parser table is conceptually a two dimensional array, whose cell is a
  * set of Rule objects.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ParserTable
 {

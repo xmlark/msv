@@ -9,7 +9,12 @@
  */
 package com.sun.tahiti.runtime.ll;
 
-
+/**
+ * signals an error encountered during the unmarshalling.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class UnmarshallingException extends org.xml.sax.SAXException {
 	public UnmarshallingException( Exception e ) {
 		super(e);

@@ -13,6 +13,12 @@ import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.trex.ElementPattern;
 
+/**
+ * ElementExp with LL parser table.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class LLElementExp extends ElementPattern {
 	/** LL parser table for this rule. */
 	public LLParserTable parserTable;

@@ -27,6 +27,9 @@ import java.util.Iterator;
  * 
  * This algorithm expands C-C, C-I, and C-P relationships to
  * C-F/F-C, C-F/F-I, and C-F/F-P relationships.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 class FieldItemAnnotation
 {

@@ -20,6 +20,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * builds DOM from SAX2 event stream.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DOMBuilder extends DefaultHandler {
 	

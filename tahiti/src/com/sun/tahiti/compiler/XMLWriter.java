@@ -17,6 +17,9 @@ import com.sun.msv.writer.ContentHandlerAdaptor;
 
 /**
  * helper class for generating XML through {@link DocumentHandler}.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class XMLWriter {
 	

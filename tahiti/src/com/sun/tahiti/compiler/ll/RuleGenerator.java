@@ -16,7 +16,12 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.Iterator;
 
-/** creates raw production rules for a grammar. */
+/**
+ * creates raw production rules for a grammar.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class RuleGenerator
 {
 	/**

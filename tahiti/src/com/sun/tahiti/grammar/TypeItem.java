@@ -14,6 +14,9 @@ import java.util.Map;
 
 /**
  * base class of the generated type.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class TypeItem extends JavaItem implements Type {
 	

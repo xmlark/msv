@@ -15,6 +15,12 @@ import java.util.Map;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * computes LL parser table from annotated AGM.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class LLTableCalculator
 {
 	// private use only. call the calc method.

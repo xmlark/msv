@@ -11,6 +11,12 @@ package com.sun.tahiti.grammar;
 
 import com.sun.msv.grammar.Expression;
 
+/**
+ * represents a generated interface.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class InterfaceItem extends TypeItem {
 	
 	protected InterfaceItem( String name, Expression body ) {

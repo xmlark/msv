@@ -12,7 +12,14 @@ package com.sun.tahiti.runtime.ll;
 import com.sun.msv.datatype.DatabindableDatatype;
 import org.relaxng.datatype.ValidationContext;
 
-/** Intermediate non-terminal symbols for LL grammar. */
+/**
+ * Intermediate non-terminal symbols for LL grammar.
+ * 
+ * Intermediate non-terminals are non-terminals with no associated action.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public final class IntermediateSymbol extends NonTerminalSymbol
 {
 	/** purely for the debug purpose. */

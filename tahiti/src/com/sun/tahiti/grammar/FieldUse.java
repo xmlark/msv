@@ -12,6 +12,16 @@ package com.sun.tahiti.grammar;
 import java.util.Set;
 import com.sun.tahiti.grammar.util.Multiplicity;
 
+/**
+ * aggregated field information.
+ * 
+ * Information about one field can be possibly spanned across
+ * multiple FieldItems. This object serves as a bundle of those FieldItems
+ * that share the same name.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class FieldUse {
 	
 	public FieldUse( String name ) {

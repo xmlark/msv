@@ -20,6 +20,15 @@ import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import java.io.IOException;
 
+/**
+ * controls the overall unmarshalling process.
+ * 
+ * This class receives type-augmented SAX events and pass it to
+ * Binder.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class Unmarshaller extends TypeDetecter {
 	
 	private final Binder binder;

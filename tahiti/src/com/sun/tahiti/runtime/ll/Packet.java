@@ -16,6 +16,9 @@ import com.sun.msv.grammar.NameClassAndExpression;
 
 /**
  * packet is a pair of symbol and payload.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 abstract class Packet {
 	public final Object	symbol;

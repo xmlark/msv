@@ -18,7 +18,9 @@ import java.util.Set;
 import java.util.Map;
 
 /**
+ * Generic LL parser.
  * 
+ * parses tokens according to the specified LL grammar.
  * 
  * <h2>Parser symbols</h2>
  * 
@@ -44,6 +46,9 @@ import java.util.Map;
  * C<String>1	= $string(maxLength=10)
  * C<String>2	= $string(maxLength=12)
  * </XMP></PRE>
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class LLParser {
 	

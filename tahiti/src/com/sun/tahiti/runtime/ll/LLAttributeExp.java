@@ -13,6 +13,12 @@ import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.AttributeExp;
 
+/**
+ * AttributeExp with LL parser table.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class LLAttributeExp extends AttributeExp {
 	/** LL parser table for this rule. */
 	public LLParserTable parserTable;

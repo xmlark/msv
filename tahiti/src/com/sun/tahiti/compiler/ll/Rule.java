@@ -15,6 +15,12 @@ import com.sun.tahiti.compiler.Symbolizer;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * a production rule of context-free grammar (CFG).
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class Rule {
 	
 	public Expression		left;

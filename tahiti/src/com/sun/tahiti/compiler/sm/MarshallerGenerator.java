@@ -27,6 +27,9 @@ import java.util.Iterator;
  * 
  * <p>
  * This algorithm cannot generate a marshaller for complex object models.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class MarshallerGenerator implements ExpressionVisitorVoid {
 

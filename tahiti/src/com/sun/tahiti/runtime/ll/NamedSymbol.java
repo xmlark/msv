@@ -12,6 +12,9 @@ package com.sun.tahiti.runtime.ll;
 /**
  * Non-terminal name symbol for LL grammar.
  * immutable.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NamedSymbol extends NonTerminalSymbol
 {

@@ -1,7 +1,22 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package com.sun.tahiti.compiler.java;
 
 import org.w3c.dom.Element;
 
+/**
+ * produces field-access related java soure code.
+ * 
+ * @author
+ *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
+ */
 interface FieldSerializer {
 	
 	/** gets the string that represents the type of the field. */

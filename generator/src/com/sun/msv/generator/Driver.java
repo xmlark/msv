@@ -323,7 +323,7 @@ public class Driver {
 		//===========================================
 		for( int i=0; i<number; i++ ) {
 			if(!quiet) {
-				if(number<=10 )	out.println("generating a document #"+(i+1));
+				if(number<=10 )	out.println("generating document #"+(i+1));
 				else			out.print(">");
 			}
 			

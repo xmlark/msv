@@ -141,13 +141,14 @@ public abstract class BatchTester {
 				return name.endsWith(ext);
 			}
 		} );
-		
+
 		// each schema will have its own suite.
 		TestSuite suite = new TestSuite();
 		populateSuite( suite, schemas );
 //		if( schemas!=null )
 //			for( int i=0; i<schemas.length; i++ )
 //				suite.addTest( new SchemaSuite(this,schemas[i]).suite() );
+		
 		return suite;
 	}
 	

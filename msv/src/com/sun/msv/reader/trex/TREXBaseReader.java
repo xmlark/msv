@@ -20,6 +20,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
 import org.relaxng.datatype.Datatype;
 import org.iso_relax.dispatcher.IslandSchema;
+import org.iso_relax.verifier.Schema;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;

@@ -16,6 +16,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.DatatypeException;
+import org.iso_relax.verifier.Schema;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import com.sun.msv.reader.GrammarReaderController;
@@ -60,7 +61,32 @@ public class RELAXCoreReader extends RELAXReader {
 		reader.parse(module);
 		return reader.getResult();
 	}
+
+	/**
+	 * Schema for schema of RELAX Core.
+	 * 
+	 * Unless overrided, this schema for schema will be used to parse a RELAX Core schema.
+	 * To override, call the full constructor of this class and change the parameter.
+	 */
+	protected static Schema relaxCoreSchema4Schema = null;
 	
+	public static Schema getRELAXCoreSchema4Schema() {
+		
+		// under the multi-thread environment, more than once s4s could be loaded.
+		// it's a waste of resource, but by no means fatal.
+		if(relaxCoreSchema4Schema==null) {
+			try {
+				relaxCoreSchema4Schema =
+					new com.sun.msv.verifier.jarv.RELAXCoreFactoryImpl().compileSchema(
+						RELAXCoreReader.class.getResourceAsStream("relaxCore.rlx"));
+			} catch( Exception e ) {
+				e.printStackTrace();
+				throw new Error("unable to load schema-for-schema for RELAX Core");
+			}
+		}
+		
+		return relaxCoreSchema4Schema;
+	}
 	
 	public RELAXCoreReader(
 		GrammarReaderController controller,
@@ -88,7 +114,7 @@ public class RELAXCoreReader extends RELAXReader {
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
 		StateFactory stateFactory,
-		ExpressionPool pool, String expectedTargetNamespace ) {
+		ExpressionPool pool, String expectedTargetNamespace) {
 		
 		super(controller,parserFactory,stateFactory,pool,new RootModuleState(expectedTargetNamespace));
 	}

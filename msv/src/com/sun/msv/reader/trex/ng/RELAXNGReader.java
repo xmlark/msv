@@ -21,6 +21,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.relaxng.datatype.*;
+import org.iso_relax.verifier.Schema;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
@@ -75,6 +76,7 @@ public class RELAXNGReader extends TREXBaseReader {
 	public RELAXNGReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory) {
+		// TODO: add s4s
 		this(controller,parserFactory,new StateFactory(),new ExpressionPool());
 	}
 	
@@ -87,6 +89,35 @@ public class RELAXNGReader extends TREXBaseReader {
 		
 		super( controller, parserFactory, pool, stateFactory, new RootState() );
 	}
+	
+	
+
+	
+	/**
+	 * Schema for schema of RELAX NG.
+	 */
+	protected static Schema relaxNGSchema4Schema = null;
+	
+	public static Schema getRELAXNGSchema4Schema() {
+		
+		// under the multi-thread environment, more than once s4s could be loaded.
+		// it's a waste of resource, but by no means fatal.
+		if(relaxNGSchema4Schema==null) {
+			try {
+				relaxNGSchema4Schema =
+					new com.sun.msv.verifier.jarv.RELAXNGFactoryImpl().compileSchema(
+						RELAXNGReader.class.getResourceAsStream("relaxng.rng"));
+			} catch( Exception e ) {
+				e.printStackTrace();
+				throw new Error("unable to load schema-for-schema for RELAX NG");
+			}
+		}
+		
+		return relaxNGSchema4Schema;
+	}
+	
+	
+	
 	
 	protected String localizeMessage( String propertyName, Object[] args ) {
 		String format;

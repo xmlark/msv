@@ -42,7 +42,7 @@ public class TREXGrammarReader extends TREXBaseReader {
 	public static TREXGrammar parse( String grammarURL,
 		SAXParserFactory factory, GrammarReaderController controller )
 	{
-		TREXGrammarReader reader = new TREXGrammarReader(controller,factory);
+		TREXGrammarReader reader = new TREXGrammarReader(controller,factory,new ExpressionPool());
 		reader.parse(grammarURL);
 		
 		return reader.getResult();
@@ -52,17 +52,24 @@ public class TREXGrammarReader extends TREXBaseReader {
 	public static TREXGrammar parse( InputSource grammar,
 		SAXParserFactory factory, GrammarReaderController controller )
 	{
-		TREXGrammarReader reader = new TREXGrammarReader(controller,factory);
+		TREXGrammarReader reader = new TREXGrammarReader(controller,factory,new ExpressionPool());
 		reader.parse(grammar);
 		
 		return reader.getResult();
 	}
 
+	
+	/** easy-to-use constructor. */
+	public TREXGrammarReader( GrammarReaderController controller) {
+		this(controller,createParserFactory(),new ExpressionPool());
+	}
+
 	/** easy-to-use constructor. */
 	public TREXGrammarReader(
 		GrammarReaderController controller,
-		SAXParserFactory parserFactory) {
-		this(controller,parserFactory,new StateFactory(),new ExpressionPool());
+		SAXParserFactory parserFactory,
+		ExpressionPool pool ) {
+		this(controller,parserFactory,new StateFactory(),pool);
 	}
 	
 	/** full constructor */
@@ -87,7 +94,9 @@ public class TREXGrammarReader extends TREXBaseReader {
 	    return MessageFormat.format(format, args );
 	}
 	
-	/** TREX allows either
+	
+	/**
+	 * TREX allows either
 	 *    (1) the predefined namespace for TREX or
 	 *    (2) default namespace ""
 	 * 
@@ -103,24 +112,19 @@ public class TREXGrammarReader extends TREXBaseReader {
 	/** Namespace URI of TREX */
 	public static final String TREXNamespace = "http://www.thaiopensource.com/trex";
 
-	protected boolean isGrammarElement( StartTagInfo tag )
-	{
-		if( currentGrammarURI==null )
-		{// first time.
-			if( tag.namespaceURI.equals(TREXNamespace) )
-			{
+	protected boolean isGrammarElement( StartTagInfo tag ) {
+		if( currentGrammarURI==null ) {
+			// first time.
+			if( tag.namespaceURI.equals(TREXNamespace) ) {
 				currentGrammarURI = TREXNamespace;
 				return true;
 			}
-			if( tag.namespaceURI.equals("") )
-			{
+			if( tag.namespaceURI.equals("") ) {
 				currentGrammarURI = "";
 				return true;
 			}
 			return false;
-		}
-		else
-		{
+		} else {
 			if(currentGrammarURI.equals(tag.namespaceURI))	return true;
 			if(tag.containsAttribute(TREXNamespace,"role"))	return true;
 			

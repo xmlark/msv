@@ -46,10 +46,9 @@ public class RELAXNGCompReader extends RELAXNGReader {
 	 *		restriction imposed by Java language, I cannot change the
 	 *		signature of this method.
 	 */
-	public static TREXGrammar parse( String grammarURL,
-		SAXParserFactory factory, GrammarReaderController controller )
+	public static TREXGrammar parse( String grammarURL, GrammarReaderController controller )
 	{
-		RELAXNGCompReader reader = new RELAXNGCompReader(controller,factory);
+		RELAXNGCompReader reader = new RELAXNGCompReader(controller);
 		reader.parse(grammarURL);
 		
 		return reader.getResult();
@@ -62,10 +61,9 @@ public class RELAXNGCompReader extends RELAXNGReader {
 	 *		restriction imposed by Java language, I cannot change the
 	 *		signature of this method.
 	 */
-	public static TREXGrammar parse( InputSource grammar,
-		SAXParserFactory factory, GrammarReaderController controller )
+	public static TREXGrammar parse( InputSource grammar, GrammarReaderController controller )
 	{
-		RELAXNGCompReader reader = new RELAXNGCompReader(controller,factory);
+		RELAXNGCompReader reader = new RELAXNGCompReader(controller);
 		reader.parse(grammar);
 		
 		return reader.getResult();
@@ -73,14 +71,15 @@ public class RELAXNGCompReader extends RELAXNGReader {
 
 	/** easy-to-use constructor. */
 	public RELAXNGCompReader( GrammarReaderController controller ) {
-		this(controller,createParserFactory());
+		this(controller,createParserFactory(),new ExpressionPool());
 	}
 	
 	/** easy-to-use constructor. */
 	public RELAXNGCompReader(
 		GrammarReaderController controller,
-		SAXParserFactory parserFactory) {
-		this(controller,parserFactory,new StateFactory(),new ExpressionPool());
+		SAXParserFactory parserFactory,
+		ExpressionPool pool ) {
+		this(controller,parserFactory,new StateFactory(),pool);
 	}
 	
 	/** full constructor */
@@ -90,6 +89,7 @@ public class RELAXNGCompReader extends RELAXNGReader {
 		StateFactory stateFactory,
 		ExpressionPool pool ) {
 		
+		// TODO: add s4s
 		super( controller, parserFactory, stateFactory, pool );
 		
 		lastRNGElement.push(null);

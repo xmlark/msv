@@ -20,6 +20,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
+import org.iso_relax.verifier.Schema;
 import com.sun.msv.datatype.xsd.DatatypeFactory;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.relax.EmptyStringType;

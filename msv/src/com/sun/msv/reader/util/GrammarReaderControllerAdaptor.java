@@ -14,6 +14,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.LocatorImpl;
+import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.GrammarReaderController;
 
 /**
@@ -23,23 +24,36 @@ import com.sun.msv.reader.GrammarReaderController;
  */
 public class GrammarReaderControllerAdaptor implements ErrorHandler
 {
-	private final GrammarReaderController core;
+	private final GrammarReader reader;
+	private final GrammarReaderController controller;
 	
-	public GrammarReaderControllerAdaptor( GrammarReaderController core ) {
-		this.core = core;
+	/**
+	 * 
+	 * @param _reader
+	 *		can be null. If non-null, hadError flag will be properly maintained.
+	 */
+	public GrammarReaderControllerAdaptor( GrammarReader _reader, GrammarReaderController _controller ) {
+		this.reader = _reader;
+		this.controller = _controller;
 	}
 	
+	public GrammarReaderControllerAdaptor( GrammarReader _reader ) {
+		this( _reader, _reader.controller );
+	}
+
+	
 	public void fatalError( SAXParseException spe ) throws SAXException {
-		core.error( getLocator(spe), spe.getMessage(), spe.getException() );
+		error(spe);
 		throw spe;
 	}
 	
 	public void error( SAXParseException spe ) throws SAXException {
-		core.error( getLocator(spe), spe.getMessage(), spe.getException() );
+		if(reader!=null)		reader.hadError = true;
+		controller.error( getLocator(spe), spe.getMessage(), spe.getException() );
 	}
 	
 	public void warning( SAXParseException spe ) {
-		core.warning( getLocator(spe), spe.getMessage() );
+		controller.warning( getLocator(spe), spe.getMessage() );
 	}
 			
 	protected Locator[] getLocator( SAXParseException spe ) {

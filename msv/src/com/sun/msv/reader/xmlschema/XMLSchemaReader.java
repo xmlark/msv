@@ -43,6 +43,7 @@ import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.reader.datatype.xsd.LateBindDatatype;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringPair;
+import com.sun.msv.verifier.jarv.XSFactoryImpl;
 import javax.xml.parsers.SAXParserFactory;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -51,9 +52,12 @@ import java.util.Vector;
 import java.util.Iterator;
 import java.text.MessageFormat;
 import org.xml.sax.Locator;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.DatatypeException;
+import org.iso_relax.verifier.Schema;
+
 
 /**
  * parses XML representation of XML Schema and constructs AGM.
@@ -91,7 +95,13 @@ public class XMLSchemaReader extends GrammarReader {
 	public XMLSchemaReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory ) {
-		this( controller, parserFactory, new StateFactory(), new ExpressionPool() );
+		this( controller, parserFactory, new ExpressionPool() );
+	}
+
+	public XMLSchemaReader(
+		GrammarReaderController controller,
+		SAXParserFactory parserFactory, ExpressionPool pool ) {
+		this( controller, parserFactory, new StateFactory(), pool );
 	}
 	
 	public XMLSchemaReader(
@@ -156,6 +166,42 @@ public class XMLSchemaReader extends GrammarReader {
 		complexUrType.derivationMethod = ComplexTypeExp.RESTRICTION;
 		
 	}
+	
+	
+	
+	/** Schema for schema of W3C XML Schema. */
+	protected static Schema xmlSchema4XmlSchema = null;
+	
+	public static Schema getXmlSchemaForXmlSchema() {
+		
+		// under the multi-thread environment, more than once s4s could be loaded.
+		// it's a waste of resource, but by no means fatal.
+		if(xmlSchema4XmlSchema==null) {
+			try {
+				XSFactoryImpl factory = new XSFactoryImpl();
+				factory.setEntityResolver( new EntityResolver() {
+					public InputSource resolveEntity( String publicId, String systemId ) {
+						if(systemId.equals("datatypes.xsd"))
+							return new InputSource(XMLSchemaReader.class.getResourceAsStream(
+								"datatypes.xsd"));
+						if(systemId.equals("xml.xsd"))
+							return new InputSource(XMLSchemaReader.class.getResourceAsStream(
+								"xml.xsd"));
+						return null;
+					}
+				});
+				xmlSchema4XmlSchema = factory.compileSchema(
+						XMLSchemaReader.class.getResourceAsStream("xmlschema.xsd"));
+			} catch( Exception e ) {
+				e.printStackTrace();
+				throw new Error("unable to load schema-for-schema for W3C XML Schema");
+			}
+		}
+		
+		return xmlSchema4XmlSchema;
+	}
+	
+	
 	
 	
 	/** content model that matches to the use of "nil". */

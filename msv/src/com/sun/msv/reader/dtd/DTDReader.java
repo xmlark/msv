@@ -421,7 +421,7 @@ public class DTDReader implements DTDEventListener {
 			if(enums!=null) {
 				TypeIncubator incubator = new TypeIncubator(dt);
 				for( int i=0; i<enums.length; i++ )
-					incubator.add( XSDatatype.FACET_ENUMERATION, enums[i], false, null );
+					incubator.addFacet( XSDatatype.FACET_ENUMERATION, enums[i], false, null );
 				dt = incubator.derive(null);
 			}
 		

@@ -22,6 +22,7 @@ import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.util.Util;
+import com.sun.msv.verifier.jaxp.SAXParserFactoryImpl;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.verifier.regexp.xmlschema.XSREDocDecl;
 import javax.xml.parsers.SAXParserFactory;
@@ -34,6 +35,10 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.DefaultHandler;
+import org.iso_relax.verifier.Schema;
+import org.iso_relax.verifier.Verifier;
+import org.iso_relax.verifier.VerifierFilter;
+import org.iso_relax.verifier.VerifierConfigurationException;
 import java.util.Vector;
 
 
@@ -280,7 +285,7 @@ public class GrammarLoader
 	
 	private ExpressionPool pool;
 	/**
-	 * sets the ExpressionPool object that will be used during the loading process.
+	 * Sets the ExpressionPool object that will be used during the loading process.
 	 * If not set, a fresh one is used for each time the loadXXX method is called.
 	 */
 	public void setPool( ExpressionPool pool ) {
@@ -292,6 +297,23 @@ public class GrammarLoader
 	}
 
 	
+	private boolean strictCheck = false;
+	
+	/**
+	 * Sets the strict check flag. If set to true, schema readers will apply
+	 * stricter checks so that it can find errors in the schema. If set to false,
+	 * readers will skip some of the checks.
+	 * 
+	 * <p>
+	 * When this flag is set to false, which is the default, the reader may accept
+	 * incorrect schemas.
+	 */
+	public void setStrictCheck( boolean value ) {
+		strictCheck = value;
+	}
+	public boolean getStrictCheck() {
+		return strictCheck;
+	}
 	
 	
 	public Grammar parse( InputSource source )
@@ -338,6 +360,8 @@ public class GrammarLoader
 	
 	/**
 	 * Actual "meat" of parsing schema.
+	 * 
+	 * All other methods will ultimately come down to this method.
 	 */
 	private Grammar _loadSchema( Object source )
 			throws SAXException, ParserConfigurationException, java.io.IOException {
@@ -369,6 +393,8 @@ public class GrammarLoader
 		// otherwise this schema is an XML syntax based schema.
 		
 		
+		// this field will receive the grammar reader 
+		final GrammarReader[] reader = new GrammarReader[1];
 		
 		final XMLReader parser = getSAXParserFactory().newSAXParser().getXMLReader();
 		/*
@@ -391,35 +417,72 @@ public class GrammarLoader
 			public void startPrefixMapping( String prefix, String uri ) {
 				prefixes.add( new String[]{prefix,uri} );
 			}
+			
+			/**
+			 * Sets up the pipe line of "VerifierFilter > GrammarReader"
+			 * so that the grammar will be properly validated.
+			 */
+			private ContentHandler setupPipeline( Schema schema ) throws SAXException {
+				try {
+					Verifier v = schema.newVerifier();
+					v.setErrorHandler( new GrammarReaderControllerAdaptor(
+						reader[0],getController()) );
+							
+					VerifierFilter filter = v.getVerifierFilter();
+					filter.setContentHandler(reader[0]);
+					return (ContentHandler)filter;
+				} catch( VerifierConfigurationException vce ) {
+					throw new SAXException(vce);
+				}
+			}
+			
 			public void startElement( String namespaceURI, String localName, String qName, Attributes atts )
 									throws SAXException {
 				ContentHandler winner;
 				// sniff the XML and decide the reader to use.
-				if( localName.equals("module") )
+				if( localName.equals("module") ) {
 					// assume RELAX Core.
-					winner = new RELAXCoreReader(
-						getController(),getSAXParserFactory(),getPool());
-				else
+					if( strictCheck ) {
+						Schema s = RELAXCoreReader.getRELAXCoreSchema4Schema();
+						reader[0] = new RELAXCoreReader(
+							getController(),
+							new SAXParserFactoryImpl(getSAXParserFactory(),s),
+							getPool() );
+						winner = setupPipeline(s);
+					} else {
+						winner = reader[0] = new RELAXCoreReader(
+							getController(),getSAXParserFactory(),getPool());
+					}
+				} else
 				if( localName.equals("schema") )
 					// assume W3C XML Schema
-					winner = new XMLSchemaReader(
-						getController(), getSAXParserFactory(),
-						new XMLSchemaReader.StateFactory(), getPool() );
+					winner = reader[0] = new XMLSchemaReader(
+						getController(), getSAXParserFactory(), getPool() );
 				else
 				if( RELAXNSReader.RELAXNamespaceNamespace.equals(namespaceURI) )
 					// assume RELAX Namespace
-					winner = new RELAXNSReader(
-						getController(),getSAXParserFactory(),getPool());
+					winner = reader[0] = new RELAXNSReader(
+						getController(), getSAXParserFactory(), getPool() );
 				else
 				if( TREXGrammarReader.TREXNamespace.equals(namespaceURI)
 				||  namespaceURI.equals("") )
 					// assume TREX
-					winner = new TREXGrammarReader(getController(),getSAXParserFactory(),
-						new TREXGrammarReader.StateFactory(),getPool()); 
-				else
+					winner = reader[0] = new TREXGrammarReader(
+						getController(), getSAXParserFactory(), getPool() ); 
+				else {
 					// otherwise assume RELAX NG
-					winner = new RELAXNGCompReader(getController(),getSAXParserFactory(),
-						new RELAXNGCompReader.StateFactory(),getPool() );
+					if( strictCheck ) {
+						Schema s = RELAXNGCompReader.getRELAXNGSchema4Schema();
+						reader[0] = new RELAXNGCompReader(
+							getController(),
+							new SAXParserFactoryImpl(getSAXParserFactory(),s),
+							getPool() );
+						winner = setupPipeline(s);
+					} else {
+						winner = reader[0] = new RELAXNGCompReader(
+							getController(), getSAXParserFactory(), getPool() );
+					}
+				}
 				
 				// simulate the start of the document.
 				winner.setDocumentLocator(locator);
@@ -433,11 +496,11 @@ public class GrammarLoader
 				parser.setContentHandler(winner);
 			}
 		});
-		parser.setErrorHandler(new GrammarReaderControllerAdaptor(getController()));
+		parser.setErrorHandler(new GrammarReaderControllerAdaptor(null,getController()));
 		if( source instanceof String )	parser.parse( (String)source );
 		else							parser.parse( (InputSource)source );
 		
-		return ((GrammarReader)parser.getContentHandler()).getResultAsGrammar();
+		return reader[0].getResultAsGrammar();
 	}
 	
 	

@@ -111,7 +111,7 @@ public class NumberType extends BuiltinAtomicType implements Comparator {
 		}
 	}
     
-    public String save( Object o ) {
+    public static String save( Object o ) {
         return ((BigDecimal)o).toString();
     }
     

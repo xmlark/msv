@@ -45,14 +45,32 @@ public class ComplexContentBodyState extends SequenceState {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		exp = super.annealExpression(exp);
 		
-		ComplexTypeExp baseType = (ComplexTypeExp)reader.resolveQNameRef(
-			startTag, "base",
-			new XMLSchemaReader.RefResolver() {
-				public ReferenceContainer get( XMLSchemaSchema g ) {
-					return g.complexTypes;
-				}
-			} );
+		
+		String refQName = startTag.getAttribute("base");
+		if( refQName==null ) {
+			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, startTag.qName, "base" );
+			return exp;
+			// recover by abandoning proper derivation processing
+		}
+		
+		String[] r = reader.splitQName(refQName);
+		if(r==null) {
+			reader.reportError( reader.ERR_UNDECLARED_PREFIX, refQName );
+			return exp;
+			// recover by abandoning proper derivation processing
+		}
+		
+		if( reader.isSchemaNamespace(r[0]) && r[1].equals("anyType") )
+			// derivation from anyType means this expression is the root of
+			// derivation. So we don't have to connect this complex type to
+			// the super class.
+			return exp;
+		
+		ComplexTypeExp baseType =
+			reader.getOrCreateSchema(r[0]/*uri*/).complexTypes.getOrCreate(r[1]/*local name*/);
 		if( baseType==null )	return exp;	// recover by abandoning further processing of this declaration.
+		
+		reader.backwardReference.memorizeLink(baseType);
 		
 		if( extension ) {
 			baseType.extensions.exp = reader.pool.createChoice(

@@ -178,7 +178,7 @@ public abstract class XSDatatypeImpl implements XSDatatype {
     public XSDatatype getAncestorBuiltinType() {
         XSDatatype dt = this;
         
-        while( !dt.getNamespaceUri().equals(XMLSCHEMA_NSURI) )
+        while( !XMLSCHEMA_NSURI.equals(dt.getNamespaceUri()) )
             dt = dt.getBaseType();
         return dt;
     }

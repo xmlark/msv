@@ -15,11 +15,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.iso_relax.verifier.*;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.reader.GrammarReaderController;
-import com.sun.msv.reader.util.IgnoreController;
 import com.sun.msv.verifier.IVerifier;
 import com.sun.msv.verifier.util.ErrorHandlerImpl;
 import com.sun.msv.verifier.identity.IDConstraintChecker;
@@ -79,9 +80,14 @@ abstract class FactoryImpl extends VerifierFactory {
 	public Schema compileSchema( String uri )
 		throws VerifierConfigurationException, SAXException {
 		try {
-			Grammar g = parse(uri,new IgnoreController());
-			if(g==null)		return null;	// load failure
+			Grammar g = parse(uri,new ThrowController());
+			if(g==null)
+				// theoretically this isn't possible because we throw an exception
+				// if an error happens.
+				throw new VerifierConfigurationException("unable to parse the schema");
 			return new SchemaImpl(g,factory);
+		} catch( WrapperException we ) {
+			throw we.e;
 		} catch( Exception pce ) {
 			throw new VerifierConfigurationException(pce);
 		}
@@ -90,9 +96,14 @@ abstract class FactoryImpl extends VerifierFactory {
 	public Schema compileSchema( InputSource source )
 		throws VerifierConfigurationException, SAXException {
 		try {
-			Grammar g = parse(source,new IgnoreController());
-			if(g==null)		return null;	// load failure
+			Grammar g = parse(source,new ThrowController());
+			if(g==null)
+				// theoretically this isn't possible because we throw an exception
+				// if an error happens.
+				throw new VerifierConfigurationException("unable to parse the schema");
 			return new SchemaImpl(g,factory);
+		} catch( WrapperException we ) {
+			throw we.e;
 		} catch( Exception pce ) {
 			throw new VerifierConfigurationException(pce);
 		}
@@ -103,9 +114,14 @@ abstract class FactoryImpl extends VerifierFactory {
 	public Verifier newVerifier( String uri )
 		throws VerifierConfigurationException, SAXException {
 		try {
-			Grammar g = parse(uri,new IgnoreController());
-			if(g==null)		return null;	// load failure
+			Grammar g = parse(uri,new ThrowController());
+			if(g==null)
+				// theoretically this isn't possible because we throw an exception
+				// if an error happens.
+				throw new VerifierConfigurationException("unable to parse the schema");
 			return getVerifier(g);
+		} catch( WrapperException we ) {
+			throw we.e;
 		} catch( Exception pce ) {
 			throw new VerifierConfigurationException(pce);
 		}
@@ -114,9 +130,14 @@ abstract class FactoryImpl extends VerifierFactory {
 	public Verifier newVerifier( InputSource source )
 		throws VerifierConfigurationException, SAXException {
 		try {
-			Grammar g = parse(source,new IgnoreController());
-			if(g==null)		return null;	// load failure
+			Grammar g = parse(source,new ThrowController());
+			if(g==null)
+				// theoretically this isn't possible because we throw an exception
+				// if an error happens.
+				throw new VerifierConfigurationException("unable to parse the schema");
 			return getVerifier(g);
+		} catch( WrapperException we ) {
+			throw we.e;
 		} catch( Exception pce ) {
 			throw new VerifierConfigurationException(pce);
 		}
@@ -149,4 +170,30 @@ abstract class FactoryImpl extends VerifierFactory {
 			throw new VerifierConfigurationException(pce);
 		}
 	}
+	
+	
+	
+	/** wrapper exception so that we can throw it from the GrammarReaderController. */
+	private static class WrapperException extends RuntimeException {
+		WrapperException( SAXException e ) {
+			super(e.getMessage());
+			this.e = e;
+		}
+		public final SAXException e;
+	}
+	private static class ThrowController implements GrammarReaderController {
+		public void warning( Locator[] locs, String errorMessage ) {}
+		public void error( Locator[] locs, String errorMessage, Exception nestedException ) {
+			for( int i=0; i<locs.length; i++ )
+				if(locs[i]!=null)
+					throw new WrapperException(
+						new SAXParseException(errorMessage,locs[i],nestedException));
+			
+			throw new WrapperException(
+				new SAXException(errorMessage,nestedException));
+		}
+		public InputSource resolveEntity( String p, String s ) { return null; }
+		
+	}
+	
 }

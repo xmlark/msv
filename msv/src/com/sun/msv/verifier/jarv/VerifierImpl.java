@@ -21,6 +21,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 import com.sun.msv.verifier.ValidityViolation;
 import com.sun.msv.verifier.IVerifier;
+import com.sun.msv.verifier.util.ErrorHandlerImpl;
 import com.sun.msv.util.xml.SAXEventGenerator;
 import java.io.IOException;
 
@@ -38,6 +39,9 @@ class VerifierImpl implements Verifier
 	VerifierImpl( IVerifier verifier, XMLReader reader ) {
 		this.verifier = verifier;
 		this.reader	= reader;
+		reader.setContentHandler(verifier);
+		// set the default error handler.
+		reader.setErrorHandler(ErrorHandlerImpl.theInstance);
 	}
 	
 	public boolean isFeature(String featureName) throws SAXNotRecognizedException {
@@ -72,7 +76,6 @@ class VerifierImpl implements Verifier
 
     public boolean verify(String uri) throws SAXException, IOException {
 		
-		reader.setContentHandler(verifier);
 		reader.parse(uri);
 		return verifier.isValid();
 	}

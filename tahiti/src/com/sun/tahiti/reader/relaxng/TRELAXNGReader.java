@@ -10,6 +10,11 @@ import com.sun.tahiti.reader.RelationNormalizer;
 import com.sun.tahiti.grammar.*;
 import javax.xml.parsers.SAXParserFactory;
 import java.util.Map;
+import java.util.Stack;
+import java.util.ResourceBundle;
+import java.text.MessageFormat;
+import org.xml.sax.SAXException;
+import org.xml.sax.Attributes;
 
 public class TRELAXNGReader extends RELAXNGReader {
 
@@ -125,32 +130,47 @@ public class TRELAXNGReader extends RELAXNGReader {
 	
 		String name = tag.getAttribute(TahitiNamespace,"name");
 		// if we have t:name attribute, use it.
-		if(name!=null)	return name;
+		if(name==null) {
 		
-		// if the current tag has the name attribute, use it.
-		// this is the case of <define/>,<ref/>, and sometimes
-		// <element/> and <attribute/>
-		name = tag.getAttribute("name");
-		if(name!=null)	return name;
-		
-		// otherwise, sniff the name.
-		
-		// if it's element/attribute, then we may be able to use its name.
-		if( exp instanceof NameClassAndExpression ) {
-			NameClass nc = ((NameClassAndExpression)exp).getNameClass();
-			if( nc instanceof SimpleNameClass )
-				return xmlNameToJavaName(role,((SimpleNameClass)nc).localName);
-			
-			// if it's not a simple type, abort.
+			// if the current tag has the name attribute, use it.
+			// this is the case of <define/>,<ref/>, and sometimes
+			// <element/> and <attribute/>
+			name = tag.getAttribute("name");
+			if(name!=null)	name = xmlNameToJavaName(role,name);
 		}
 		
-		// we can't generate a proper name. bail out
-		reportError( ERR_NAME_NEEDED );
-		return "";
+		if(name==null) {
+			// otherwise, sniff the name.
+		
+			// if it's element/attribute, then we may be able to use its name.
+			if( exp instanceof NameClassAndExpression ) {
+				NameClass nc = ((NameClassAndExpression)exp).getNameClass();
+				if( nc instanceof SimpleNameClass )
+					name = xmlNameToJavaName(role,((SimpleNameClass)nc).localName);
+					
+				// if it's not a simple type, abort.
+			}
+		}
+		
+		if(name==null) {
+			// we can't generate a proper name. bail out
+			reportError( ERR_NAME_NEEDED );
+			return "";
+		}
+		
+		if( role.equals("class") || role.equals("interface") ) {
+			// append the default package name, if necessary.
+			int idx = name.indexOf('.');
+			if(idx<0)	name = defaultPackageName+"."+name;
+		}
+		
+		return name;
 	}
 	
 	/**
 	 * convert XML names (like element names) to the corresponding Java names.
+	 * 
+	 * This method should perform conversion like ("abc"->"Abc").
 	 * 
 	 * @param role
 	 *		the role of this expression. One of "field","interface", and "class".
@@ -177,12 +197,53 @@ public class TRELAXNGReader extends RELAXNGReader {
 		grammar.start = RelationNormalizer.normalize( this, grammar.start );
 	}
 
-// TODO: add more arguments to produce user-friendly messages.
 	
+	
+	/**
+	 * propagatable 't:package' attribute that specifies the default package 
+	 * for unqualified java classes/interfaces.
+	 */
+	private final Stack packageNameStack = new Stack();
+	private String defaultPackageName="";
+	
+	public void startElement( String a, String b, String c, Attributes d ) throws SAXException {
+		// handle "t:package" attribute here.
+		packageNameStack.push(defaultPackageName);
+		if( d.getIndex(TahitiNamespace,"package")!=-1 ) {
+			defaultPackageName = d.getValue(TahitiNamespace,"package");
+		}
+		
+		super.startElement(a,b,c,d);
+	}
+	public void endElement( String a, String b, String c ) throws SAXException {
+		super.endElement(a,b,c);
+		defaultPackageName = (String)packageNameStack.pop();
+	}
+	
+	
+	
+
+	protected String localizeMessage( String propertyName, Object[] args ) {
+		String format;
+		try {
+			format = ResourceBundle.getBundle(
+				"com.sun.tahiti.reader.relaxng.Messages").getString(propertyName);
+		} catch( Exception e ) {
+			try {
+				format = ResourceBundle.getBundle(
+					"com.sun.tahiti.reader.Messages").getString(propertyName);
+			} catch( Exception ee ) {
+				return super.localizeMessage(propertyName,args);
+			}
+		}
+	    return MessageFormat.format(format, args );
+	}
+	
+// TODO: add more arguments to produce user-friendly messages.
 	public static final String ERR_UNDEFINED_ROLE = // arg:1
-		null; // "{0}" is a bad value for the role attribute.
+		"UndefinedRole"; // "{0}" is a bad value for the role attribute.
 	public static final String ERR_NAME_NEEDED = // arg:0
-		null;	// failed to generate a proper name for this role.
+		"NameNeeded";	// failed to generate a proper name for this role.
 				// specify t:name attribute.
 	
 	

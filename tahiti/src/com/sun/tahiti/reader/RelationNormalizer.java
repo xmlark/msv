@@ -28,24 +28,24 @@ import org.xml.sax.Locator;
  * <p>
  * Its third job is to find the actual ClassItem for every SuperClassItem.
  * There has to be one and only one ClassItem for each SuperClassItem,
- * and its cardinality must be '1'.
+ * and its multiplicity must be '1'.
  * 
  * <p>
  * Its fourth job is to make sure that a ClassItem has at most one SuperClassItem,
- * and its cardinality must be '1' or '?'.
+ * and its multiplicity must be '1' or '?'.
  * 
  * <p>
  * Its fifth job is to create a FieldUse object for each class-field relationship and
  * connects a class and its fields. It is possible and allowed for one ClassItem object
  * to have multiple FieldUse objects that point the same Field object.
- * Those cardinality computation is done at the 2nd pass.
+ * Those multiplicity computation is done at the 2nd pass.
  * 
  * <p>
  * Its sixth job is to process "interface-class" relationship. Whenever this is 
  * relationship is found, the class is recorded to implement the specified interface.
- * Its cardinality must be (1,1). (It can be relaxed to allow (0,1))
+ * Its multiplicity must be (1,1). (It can be relaxed to allow (0,1))
  * 
- * ++++++++++++ interface-class and interface-interface needs a special cardinality check
+ * ++++++++++++ interface-class and interface-interface needs a special multiplicity check
  * to prevent things like:
  * <XMP>
  *   <group t:role="interface">
@@ -58,20 +58,20 @@ import org.xml.sax.Locator;
  * 
  * <h2>2nd pass</h2>
  * <p>
- * In the 2nd pass, our first job is to compute the total cardinality of each field.
+ * In the 2nd pass, our first job is to compute the total multiplicity of each field.
  * One ClassItem can have multiple FieldItem with the same name, and one FieldItem
  * can have multiple TypeItem as its children.
  * 
  * <p>
- * In the 1st pass, we've computed the cardinality for every FieldItem. So before
+ * In the 1st pass, we've computed the multiplicity for every FieldItem. So before
  * the 2nd pass, we are in the following situation:
  * 
  * <PRE><XMP>
  *   <group t:role="class">
- *     <element name="abc" t:role="field"> <!-- cardinality (1,1) -->
+ *     <element name="abc" t:role="field"> <!-- multiplicity (1,1) -->
  *       <ref name="abc.model"/>
  *     </element>
- *     <oneOrMore t:role="field"> <!-- cardinality (1,unbounded) -->
+ *     <oneOrMore t:role="field"> <!-- multiplicity (1,unbounded) -->
  *       <element name="abc">
  *         <ref name="abc.model"/>
  *       </element>
@@ -80,7 +80,7 @@ import org.xml.sax.Locator;
  * </XMP></PRE>
  * 
  * <p>
- * We'd like to know the "total" cardinality of the field "abc". In this case,
+ * We'd like to know the "total" multiplicity of the field "abc". In this case,
  * it will be (2,unbounded).
  * 
  * <p>
@@ -95,19 +95,36 @@ public class RelationNormalizer {
 	
 	private final GrammarReader reader;
 	
+	/**
+	 * performs the normalization.
+	 * 
+	 * @param reader
+	 *		GrammarReader object which was responsible to parse the grammar.
+	 *		This object is used to report errors and obtain the source location
+	 *		for error messages.
+	 * @param exp
+	 *		The top-level expression of the parsed grammar.
+	 * 
+	 * @return
+	 *		The top-level expression of the normalized grammar.
+	 */
 	public static Expression normalize( GrammarReader reader, Expression exp ) {
+		
+		// removes unreachable declarations from the grammar.
+		exp = exp.visit(new NotAllowedRemover(reader.pool));
+		
 		RelationNormalizer n = new RelationNormalizer(reader);
 		exp = exp.visit(n.new Pass1());
 		
 		// for each field use in each class item,
-		// compute the total cardinality.
+		// compute the total multiplicity.
 		// also, compute the type of the field.
 		ClassItem[] classItems = (ClassItem[])n.classes.toArray(new ClassItem[0]);
 		for( int i=0; i<classItems.length; i++ ) {
 			FieldUse[] fieldUses = (FieldUse[])classItems[i].fields.values().toArray(new FieldUse[0]);
 			for( int j=0; j<fieldUses.length; j++ ) {
 				
-				fieldUses[j].cardinality = (Cardinality)
+				fieldUses[j].multiplicity = (Multiplicity)
 					classItems[i].exp.visit(n.new Pass2(fieldUses[j]));
 				
 				// collect all possible ClassItems for this type.
@@ -169,12 +186,12 @@ public class RelationNormalizer {
 		}
 		
 		public Expression onMixed( MixedExp exp ) {
-			// <mixed> doesn't affect the cardinality.
+			// <mixed> doesn't affect the multiplicity.
 			return reader.pool.createMixed(exp.exp.visit(this));
 		}
 		
 		public Expression onList( ListExp exp ) {
-			// <list> itself doesn't affect the cardinality.
+			// <list> itself doesn't affect the multiplicity.
 			return reader.pool.createList(exp.exp.visit(this));
 		}
 
@@ -185,56 +202,56 @@ public class RelationNormalizer {
 		
 		public Expression onChoice( ChoiceExp exp ) {
 			Expression lhs = exp.exp1.visit(this);
-			Cardinality lhc = cardinality;
+			Multiplicity lhc = multiplicity;
 			Expression rhs = exp.exp2.visit(this);
-			Cardinality rhc = cardinality;
+			Multiplicity rhc = multiplicity;
 			
-			cardinality = Cardinality.choice(lhc,rhc);
+			multiplicity = Multiplicity.choice(lhc,rhc);
 			return reader.pool.createChoice( lhs, rhs );
 		}
 		
 		public Expression onSequence( SequenceExp exp ) {
 			Expression lhs = exp.exp1.visit(this);
-			Cardinality lhc = cardinality;
+			Multiplicity lhc = multiplicity;
 			Expression rhs = exp.exp2.visit(this);
-			Cardinality rhc = cardinality;
+			Multiplicity rhc = multiplicity;
 			
-			cardinality = Cardinality.group(lhc,rhc);
+			multiplicity = Multiplicity.group(lhc,rhc);
 			return reader.pool.createSequence( lhs, rhs );
 		}
 		
 		public Expression onInterleave( InterleaveExp exp ) {
 			Expression lhs = exp.exp1.visit(this);
-			Cardinality lhc = cardinality;
+			Multiplicity lhc = multiplicity;
 			Expression rhs = exp.exp2.visit(this);
-			Cardinality rhc = cardinality;
+			Multiplicity rhc = multiplicity;
 			
-			cardinality = Cardinality.group(lhc,rhc);
+			multiplicity = Multiplicity.group(lhc,rhc);
 			return reader.pool.createInterleave( lhs, rhs );
 		}
 		
 		public Expression onOneOrMore( OneOrMoreExp exp ) {
 			Expression p = reader.pool.createOneOrMore( exp.exp.visit(this) );
-			cardinality = Cardinality.oneOrMore(cardinality);
+			multiplicity = Multiplicity.oneOrMore(multiplicity);
 			
 			return p;
 		}
 
-// terminal items. starts with cardinality (0,0)
+// terminal items. starts with multiplicity (0,0)
 		public Expression onEpsilon() {
-			cardinality = new Cardinality(0,0);
+			multiplicity = Multiplicity.zero;
 			return Expression.epsilon;
 		}
 		public Expression onNullSet() {
-			cardinality = new Cardinality(0,0);
+			multiplicity = Multiplicity.zero;
 			return Expression.nullSet;
 		}
 		public Expression onAnyString() {
-			cardinality = new Cardinality(0,0);
+			multiplicity = Multiplicity.zero;
 			return Expression.anyString;
 		}
 		public Expression onTypedString( TypedStringExp exp ) {
-			cardinality = new Cardinality(0,0);
+			multiplicity = Multiplicity.zero;
 			return exp;
 		}
 		
@@ -244,6 +261,12 @@ public class RelationNormalizer {
 		
 		public Expression onRef( ReferenceExp exp ) {
 			
+			// if it's not a java item,
+			// simply recurse its contents.
+			// note that we can't update exp.exp by the modified expressions.
+			if(!(exp instanceof JavaItem))
+				return exp.exp.visit(this);
+			
 			if( isClass(parentItem)	&& (exp instanceof Type) ) {
 				// class-class, class-interface, or class-primitive relation.
 				// this should be converted to
@@ -251,7 +274,7 @@ public class RelationNormalizer {
 				// before anything else.
 				
 				// create a tag and insert it between tag and its parent.
-				ReferenceExp tag = new FieldItem(typeNameToJavaName(exp.name));
+				ReferenceExp tag = new FieldItem(typeNameToFieldName(exp.name));
 				tag.exp = exp;
 				// then process tag. so that we can process both C-F and F-C/I/P.
 				return onRef(tag);
@@ -289,16 +312,16 @@ public class RelationNormalizer {
 				if( isField(parentItem) && (exp instanceof Type) )
 					((FieldItem)parentItem).types.add(exp);
 				
-				// then change the parent item to this object.
-				parentItem = (JavaItem)exp;
-
 				if( !visitedClasses.add(exp) ) {
-					cardinality = new Cardinality(1,1);
+					multiplicity = Multiplicity.one;
 					// this one is a java item and already processed.
 					// so there is no need to traverse it again.
 					// to prevent infinite recursion, return immediately.
 					return exp;
 				}
+				
+				// then change the parent item to this object.
+				parentItem = (JavaItem)exp;
 			}
 
 			
@@ -318,13 +341,13 @@ public class RelationNormalizer {
 				if( sci.definition==null ) {
 					reader.reportError(
 						new Locator[]{reader.getDeclaredLocationOf(exp)},
-						ERR_SUPERCLASS_BODY_NOTFOUND,
+						ERR_MISSING_SUPERCLASS_BODY,
 						null );
 				}
 				else {
 					// if we couldn't find the definition, do not report this error.
-					// S-C cardinality must be (1,1)
-					if( !cardinality.isUnique() ) {
+					// S-C multiplicity must be (1,1)
+					if( !multiplicity.isUnique() ) {
 						reader.reportError(
 							new Locator[]{
 								reader.getDeclaredLocationOf(exp),
@@ -336,9 +359,9 @@ public class RelationNormalizer {
 			}
 
 			if( isInterface(exp) ) {
-				// I-I/I-C cardinality must be (1,1)
+				// I-I/I-C multiplicity must be (1,1)
 				InterfaceItem ii = (InterfaceItem)exp;
-				if( !cardinality.isUnique() ) {
+				if( !multiplicity.isUnique() ) {
 					reader.reportError(
 						new Locator[]{reader.getDeclaredLocationOf(ii)},
 						ERR_BAD_INTERFACE_CLASS_CARDINALITY,
@@ -347,18 +370,22 @@ public class RelationNormalizer {
 			}
 			
 			if( isField(exp) ) {
-				// store the cardinality of this field.
-				((FieldItem)exp).cardinality = cardinality;
+				// store the multiplicity of this field.
+				((FieldItem)exp).multiplicity = multiplicity;
 			}
 			
-			cardinality = new Cardinality(1,1);
+			multiplicity = Multiplicity.one;
 			return exp;
 		}
 		
 		/**
-		 * changes the first character to the lower case
+		 * generates a field name suitable to hold a reference for the specified class.
 		 */
-		protected String typeNameToJavaName( String s ) {
+		protected String typeNameToFieldName( String s ) {
+			// if the type name is qualified, remove the package name
+			int idx = s.lastIndexOf('.');
+			if(idx>=0)	s = s.substring(idx+1);
+			
 			return Character.toLowerCase(s.charAt(0))+s.substring(1);
 		}
 		
@@ -399,9 +426,9 @@ public class RelationNormalizer {
 		 * all the descendants of "super" is processed.
 		 */
 		protected void setSuperClassForClass( ClassItem p, SuperClassItem c ) {
-			// C-S cardinality check has to be done in the 2nd pass.
+			// C-S multiplicity check has to be done in the 2nd pass.
 /*
-			if( cardinality!='1' && cardinality!='?' ) {
+			if( multiplicity!='1' && multiplicity!='?' ) {
 				reader.reportError(
 					new Locator[]{
 						reader.getDeclaredLocationOf(p),
@@ -419,7 +446,7 @@ public class RelationNormalizer {
 						reader.getDeclaredLocationOf(p),	// parent class item
 						reader.getDeclaredLocationOf(p.superClass),	// previous super class definition.
 						reader.getDeclaredLocationOf(c)},	// newly found super class definition.
-					ERR_MULTIPLE_SUPERCLASS,
+					ERR_MULTIPLE_INHERITANCE,
 					new Object[]{p.name} );
 				return;
 			}
@@ -450,7 +477,7 @@ public class RelationNormalizer {
 						reader.getDeclaredLocationOf(child),
 						reader.getDeclaredLocationOf(parent.definition)
 					},
-					ERR_MULTIPLE_DEFINITIONS_FOR_SUPERCLASS, null );
+					ERR_MULTIPLE_SUPERCLASS_BODY, null );
 				// recover by ignoring this definition.
 				return;
 			}
@@ -478,7 +505,7 @@ public class RelationNormalizer {
 		private JavaItem parentItem = null;
 		
 		/**
-		 * cardinality from the current parent (either '1', '?', '+', or '*').
+		 * multiplicity from the current parent (either '1', '?', '+', or '*').
 		 * 
 		 * '1' means "exactly once", '?' means "zero or one", '+' means
 		 * "one or more", and '*' means "zero or more".
@@ -500,13 +527,13 @@ public class RelationNormalizer {
 		 * 
 		 * for one parent item, child item can appear '*' times.
 		 */
-		private Cardinality cardinality = null;
+		private Multiplicity multiplicity = null;
 	}
 	
 	
 	
 	/**
-	 * computes the total cardinality of a FieldUse.
+	 * computes the total multiplicity of a FieldUse.
 	 */
 	private class Pass2 implements ExpressionVisitor {
 		
@@ -516,27 +543,27 @@ public class RelationNormalizer {
 		
 		private final FieldUse fieldUse;
 		
-		public Object onEpsilon()	{ return new Cardinality(0,0); }
-		public Object onNullSet()	{ return new Cardinality(0,0); }
-		public Object onAnyString()	{ return new Cardinality(0,0); }
-		public Object onTypedString( TypedStringExp exp ) { return new Cardinality(0,0); }
+		public Object onEpsilon()	{ return Multiplicity.zero; }
+		public Object onNullSet()	{ return Multiplicity.zero; }
+		public Object onAnyString()	{ return Multiplicity.zero; }
+		public Object onTypedString( TypedStringExp exp ) { return Multiplicity.zero; }
 		
 		public Object onSequence( SequenceExp exp ) {
-			return Cardinality.group(
-				(Cardinality)exp.exp1.visit(this),
-				(Cardinality)exp.exp2.visit(this) );
+			return Multiplicity.group(
+				(Multiplicity)exp.exp1.visit(this),
+				(Multiplicity)exp.exp2.visit(this) );
 		}
 		
 		public Object onInterleave( InterleaveExp exp ) {
-			return Cardinality.group(
-				(Cardinality)exp.exp1.visit(this),
-				(Cardinality)exp.exp2.visit(this) );
+			return Multiplicity.group(
+				(Multiplicity)exp.exp1.visit(this),
+				(Multiplicity)exp.exp2.visit(this) );
 		}
 		
 		public Object onChoice( ChoiceExp exp ) {
-			return Cardinality.choice(
-				(Cardinality)exp.exp1.visit(this),
-				(Cardinality)exp.exp2.visit(this) );
+			return Multiplicity.choice(
+				(Multiplicity)exp.exp1.visit(this),
+				(Multiplicity)exp.exp2.visit(this) );
 		}
 		
 		public Object onList( ListExp exp )				{ return exp.exp.visit(this); }
@@ -550,22 +577,22 @@ public class RelationNormalizer {
 		}
 		
 		public Object onOneOrMore( OneOrMoreExp exp ) {
-			return Cardinality.oneOrMore( (Cardinality)exp.exp.visit(this) );
+			return Multiplicity.oneOrMore( (Multiplicity)exp.exp.visit(this) );
 		}
 		
 		
 		public Object onRef( ReferenceExp exp ) {
 			// if this is a FieldItem and it counts, then
-			// return its cardinality.
+			// return its multiplicity.
 			if( fieldUse.items.contains(exp) ) {
-				if( ((FieldItem)exp).cardinality==null)
+				if( ((FieldItem)exp).multiplicity==null)
 					throw new Error("internal error");
-				return ((FieldItem)exp).cardinality;
+				return ((FieldItem)exp).multiplicity;
 			}
 			
 			// otherwise if it is a JavaItem, return (0,0).
 			if( exp instanceof JavaItem )
-				return new Cardinality(0,0);
+				return Multiplicity.zero;
 			
 			// if this is just a reference, then resolve the reference.
 			return exp.exp.visit(this);
@@ -618,21 +645,19 @@ public class RelationNormalizer {
 
 // Normalizer error messages.
 	public static final String ERR_BAD_SUPERCLASS_USE = // arg:0
-		null;
+		"Normalizer.BadSuperClassUse";
 	public static final String ERR_BAD_ITEM_USE = // arg:0
-		null;
-	public static final String ERR_MULTIPLE_DEFINITIONS_FOR_SUPERCLASS = // arg:0
-		null;	// more than one class items match a superClass item.
-	public static final String ERR_MULTIPLE_SUPERCLASS = // arg:1
-		null;	// more than one super class items are found for a class item "{0}".
-	public static final String ERR_NO_DEFINITION_FOR_SUPERCLASS = // arg:1
-		null;	// super class item "{0}" doesn't have a child class item.
+		"Normalizer.BadItemUse";
+	public static final String ERR_MULTIPLE_SUPERCLASS_BODY = // arg:0
+		"Normalizer.MultipleSuperClassBody";	// more than one class items match a superClass item.
+	public static final String ERR_MULTIPLE_INHERITANCE = // arg:1
+		"Normalizer.MultipleInheritance";	// more than one super class items are found for a class item "{0}".
+	public static final String ERR_MISSING_SUPERCLASS_BODY = // arg:1
+		"Normalizer.MissingSuperClassBody";	// super class item "{0}" doesn't have a child class item.
 	public static final String ERR_BAD_SUPERCLASS_CARDINALITY  = // arg:1
-		null;	// class item "{0}" can possibly match its super class several times.
+		"Normalizer.BadSuperClassMultiplicity";	// class item "{0}" can possibly match its super class several times.
 	public static final String ERR_BAD_SUPERCLASS_BODY_CARDINALITY = // arg:1
-		null;	// a super class item can reach this class item "{0}" more than once, or maybe zero.
+		"Normalizer.BadSuperClassBodyMultiplicity";	// a super class item can reach this class item "{0}" more than once, or maybe zero.
 	public static final String ERR_BAD_INTERFACE_CLASS_CARDINALITY = // arg:1
-		null;	// the interface item "{1}" may have repeated children or is epsilon-reducible.
-	public static final String ERR_SUPERCLASS_BODY_NOTFOUND = // arg:0
-		null;	// a super class item without child class item.
+		"Normalizer.BadInterfaceToClassMultiplicity";	// the interface item "{1}" may have repeated children or is epsilon-reducible.
 }

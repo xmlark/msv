@@ -71,7 +71,7 @@ import java.text.CharacterIterator;
  * @author TAMURA Kent &lt;kent@trl.ibm.co.jp&gt;
  * @version Match.java,v 1.4 2002/08/09 15:18:17 neilg Exp
  */
-public class Match implements Cloneable {
+final class Match implements Cloneable {
     int[] beginpos = null;
     int[] endpos = null;
     int nofgroups = 0;

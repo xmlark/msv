@@ -9,15 +9,14 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.Vector;
-
+import com.sun.msv.datatype.xsd.regex.ParseException;
+import com.sun.msv.datatype.xsd.regex.RegularExpression;
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 
-import com.sun.msv.datatype.xsd.regex.ParseException;
-import com.sun.msv.datatype.xsd.regex.RegularExpression;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.Vector;
 
 /**
  * "pattern" facet validator
@@ -31,7 +30,10 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
     
     /**
      * actual object that performs regular expression validation.
-     * one of the item has to match
+     * one of the item has to match.
+     *
+     * Don't serialize so that we won't have hard-coded dependency to
+     * a particular regexp lib.
      */
     private transient RegularExpression[] exps;
     

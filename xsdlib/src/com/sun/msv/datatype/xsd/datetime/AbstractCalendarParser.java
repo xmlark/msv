@@ -133,7 +133,7 @@ abstract class AbstractCalendarParser {
     
     protected final int parseInt( int minDigits, int maxDigits ) throws IllegalArgumentException {
         int vstart = vidx;
-        while( isDigit(peek()) && (vidx-vstart)<=maxDigits )
+        while( isDigit(peek()) && (vidx-vstart)<maxDigits )
             vidx++;
         if((vidx-vstart)<minDigits)
             // we are expecting more digits

@@ -1,6 +1,7 @@
 package com.sun.msv.datatype;
 
 import org.relaxng.datatype.ValidationContext;
+import org.relaxng.datatype.Datatype;
 
 /**
  * Datatype interface that supports Java databinding.
@@ -9,7 +10,7 @@ import org.relaxng.datatype.ValidationContext;
  * 
  * @author    Kohsuke Kawaguchi
  */
-public interface DatabindableDatatype extends org.relaxng.datatype.Datatype {
+public interface DatabindableDatatype extends Datatype {
     /**
      * converts lexcial value to a corresponding Java-friendly object
      * by using the given context information.

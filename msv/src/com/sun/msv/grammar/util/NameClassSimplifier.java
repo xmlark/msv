@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.Iterator;
 
 /**
- * minimizes a name class.
+ * Minimizes a name class.
  * 
  * Sometimes, a name class could become unnecessarily big. For example,
  * 

@@ -239,10 +239,12 @@ public class RELAXNGReader extends TREXBaseReader {
 	}
 	
 	/** Namespace URI of RELAX NG */
-	public static final String RELAXNGNamespace = "http://relaxng.org/ns/structure/0.9";
+	public static final String RELAXNGNamespace = "http://relaxng.org/ns/structure/1.0";
 
 	protected boolean isGrammarElement( StartTagInfo tag ) {
-		return RELAXNGNamespace.equals(tag.namespaceURI);
+		return RELAXNGNamespace.equals(tag.namespaceURI)
+		// allow old namespace URI for now.
+		|| "http://relaxng.org/ns/structure/0.9".equals(tag.namespaceURI);
 	}
 	
 	/**
@@ -425,6 +427,12 @@ public class RELAXNGReader extends TREXBaseReader {
 	}
 	
 	
+	/**
+	 * Contextual restriction checker.
+	 */
+	protected final RestrictionChecker restrictionChecker =
+		new RestrictionChecker(this);
+	
 	public void wrapUp() {
 		
 		// checks the runaway expression
@@ -440,7 +448,7 @@ public class RELAXNGReader extends TREXBaseReader {
 		
 		if(!hadError)
 			// check RELAX NG contextual restrictions
-			RestrictionChecker.check(this);
+			restrictionChecker.check();
 			// this algorithm does not work if there is a runaway expression
 	}
 	
@@ -561,5 +569,6 @@ public class RELAXNGReader extends TREXBaseReader {
 		"RELAXNGReader.InfosetUriAttribute";
 	public static final String ERR_XMLNS_ATTRIBUTE = // arg:0
 		"RELAXNGReader.XmlnsAttribute";
-		
+	public static final String ERR_NAKED_INFINITE_ATTRIBUTE_NAMECLASS = //arg:0
+		"RELAXNGReader.NakedInfiniteAttributeNameClass";
 }

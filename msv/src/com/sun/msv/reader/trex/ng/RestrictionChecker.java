@@ -33,12 +33,15 @@ import java.util.Vector;
  */
 public class RestrictionChecker {
 	
-	private RestrictionChecker( RELAXNGReader _reader ) {
+	public RestrictionChecker( RELAXNGReader _reader ) {
 		this.reader = _reader;
 	}
 	
-	public static void check( RELAXNGReader reader ) {
-		reader.getGrammar().visit(new RestrictionChecker(reader).inStart);
+	/**
+	 * Traverses the grammar and performs the contextual check.
+	 */
+	public void check() {
+		reader.getGrammar().visit(inStart);
 	}
 	
 	/** Reader object to which errors are reported. */
@@ -96,8 +99,6 @@ public class RestrictionChecker {
 			attDupChecker = new DuplicateAttributesChecker();
 			elemDupChecker = new DuplicateElementsChecker();
 
-			exp.getNameClass().visit(inNameClass);	// check the name
-			
 			// it is important to use the expanded exp because
 			// section 7 has to be applied after patterns are expanded.
 			exp.contentModel.getExpandedExp(reader.pool).visit(inElement);
@@ -111,14 +112,38 @@ public class RestrictionChecker {
 			// check duplicate attributes
 			attDupChecker.add(exp);
 			
+			// check infinite name
+			checkAttributeInfiniteName(exp);
+			
 			final Expression oldContext = errorContext;
 			
 			errorContext = exp;
 			
-			exp.getNameClass().visit(inNameClass);	// check the name
-			
 			exp.exp.getExpandedExp(reader.pool).visit(inAttribute);
 			errorContext = oldContext;
+		}
+		protected void checkAttributeInfiniteName( final AttributeExp exp ) {
+			exp.nameClass.visit( new NameClassVisitor() {
+				public Object onAnyName( AnyNameClass nc ) { return error(); }
+				public Object onSimple( SimpleNameClass nc ) { return null; }
+				public Object onNsName( NamespaceNameClass nc ) { return error(); }
+				public Object onNot( NotNameClass nc ) { throw new Error(); }	// should not be used
+				public Object onDifference( DifferenceNameClass nc ) {
+					nc.nc1.visit(this);
+					nc.nc2.visit(this);
+					return null;
+				}
+				public Object onChoice( ChoiceNameClass nc ) {
+					nc.nc1.visit(this);
+					nc.nc2.visit(this);
+					return null;
+				}
+				private Object error() {
+					reportError(exp,
+						RELAXNGReader.ERR_NAKED_INFINITE_ATTRIBUTE_NAMECLASS );
+					return null;
+				}
+			});
 		}
 		public void onList( ListExp exp ) {
 			exp.exp.visit(inList);
@@ -203,6 +228,10 @@ public class RestrictionChecker {
 		}
 		public void onInterleave( InterleaveExp exp ) {
 			exp.visit(inGroupInOneOrMoreInElement);
+		}
+		protected void checkAttributeInfiniteName( AttributeExp exp ) {
+			// attribute name class whose size is infinite
+			// is allowed inside oneOrMore.
 		}
 	};
 	
@@ -323,6 +352,17 @@ public class RestrictionChecker {
 			nc.nc2.visit(this);
 			return null;
 		}
+	}
+	
+	
+	/**
+	 * Checks the contextual restriction on a name class.
+	 * 
+	 * <p>
+	 * If an error is found, it is reported through GrammarReader.
+	 */
+	public void checkNameClass( NameClass nc ) {
+		nc.visit(inNameClass);
 	}
 	
 	/**

@@ -1,6 +1,6 @@
 <grammar datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
-	ns="http://relaxng.org/ns/structure/0.9"
-	xmlns="http://relaxng.org/ns/structure/0.9">
+	ns="http://relaxng.org/ns/structure/1.0"
+	xmlns="http://relaxng.org/ns/structure/1.0">
 
 	<start>
 		<ref name="pattern"/>

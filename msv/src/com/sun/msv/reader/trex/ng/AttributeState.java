@@ -22,6 +22,10 @@ public class AttributeState extends com.sun.msv.reader.trex.AttributeState
 	protected void endSelf() {
 		super.endSelf();
 		
+		final RELAXNGReader reader = (RELAXNGReader)this.reader;
+		
+		reader.restrictionChecker.checkNameClass(nameClass);
+		
 		nameClass.visit( new NameClassVisitor() {
 			public Object onAnyName( AnyNameClass nc ) { return null; }
 			public Object onSimple(SimpleNameClass nc) {

@@ -30,7 +30,11 @@ public class ElementState extends com.sun.msv.reader.trex.ElementState {
 	}
 	
 	protected void endSelf() {
-		((RELAXNGReader)reader).directRefernce = previousDirectReference;
+		final RELAXNGReader reader = (RELAXNGReader)this.reader;
+		
+		reader.directRefernce = previousDirectReference;
 		super.endSelf();
+
+		reader.restrictionChecker.checkNameClass(nameClass);
 	}
 }

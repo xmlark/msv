@@ -127,7 +127,7 @@ public class RELAXNGCompReader extends RELAXNGReader {
 	
 	/** Namespace URI of RELAX NG DTD compatibility annotation */
 	public static final String AnnotationNamespace =
-		"http://relaxng.org/ns/compatibility/annotations/0.9";
+		"http://relaxng.org/ns/compatibility/annotations/1.0";
 
 	/**
 	 * creates various State object, which in turn parses grammar.

@@ -27,6 +27,17 @@ This tool is:
 
 See commandline.html for details on how to use MSV from the command line.
 See developer.html for details on how to use it as a library.
+ChangeLog.txt contains changes made from previous versions.
+
+
+----------------------------------------------------------------------
+TECHNICAL SUPPROT
+----------------------------------------------------------------------
+
+Sun does not provide any official support for this software. However,
+Kohsuke KAWAGUCHI provides personal, best-effort support for this
+software. Please post any questions/comments to the "msv-interest"
+group [19].
 
 
 ----------------------------------------------------------------------
@@ -54,10 +65,10 @@ This preview version implements:
    reference implementation [11]. The only datatype vocabulary available
    is W3C XML Schema Part 2 PR [12].
 
-7. A limited subset of W3C XML Schema Part 1 PR [13].
+7. A limited subset of W3C XML Schema Part 1 REC [13].
    See commandline.html for details of limitations.
 
-8. W3C XML Schema Part 2 PR [12] as a datatype vocabulary.
+8. W3C XML Schema Part 2 REC [12] as a datatype vocabulary.
 
 For limitations, see commandline.html.
 
@@ -93,18 +104,20 @@ REFERENCES
 [11] TREX reference implementation (JTREX)
       http://www.thaiopensource.com/trex/jtrex.html
 [12] W3C XML Schema Part 2: Datatypes
-      http://www.w3.org/TR/2001/PR-xmlschema-2-20010316/
+      http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/
 [13] W3C XML Schema Part 1: Structure
-      http://www.w3.org/TR/2001/PR-xmlschema-1-20010316/
+      http://www.w3.org/TR/2001/REC-xmlschema-1-20010502/
 [14] RELAX NG
       http://www.oasis-open.org/committees/relax-ng/
-[15] RELAX NG Spec (2001/08/11)
-      http://www.oasis-open.org/committees/relax-ng/spec-20010811.html
+[15] RELAX NG Spec (Upcoming version.1.0)
+      (URL is not decided yet. follow the link from [14])
 [16] RELAX NG tutorial
       http://www.oasis-open.org/committees/relax-ng/tutorial.html
 [17] RELAX NG discussion list archive
       http://lists.oasis-open.org/archives/relax-ng/
-[18] RELAX NG DTD Compatibility Spec (2001/09/03)
-      http://www.oasis-open.org/committees/relax-ng/compatibility-20010903.html
+[18] RELAX NG DTD Compatibility Spec (Upcoming version.1.0)
+      (URL is not decided yet. follow the link from [14])
+[19] MSV-interest group
+      http://www.yahoogroups.com/group/msv-interest/
 ======================================================================
 END OF README

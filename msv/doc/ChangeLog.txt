@@ -3,8 +3,38 @@ From 2001/09/10 version to the present version
 ----------------------------------------------
 
 - RELAX NG DTD compatibility spec is supported.
-  (http://www.oasis-open.org/committees/relax-ng/compatibility-20010907.html)
+  
+  For details and limitations go to commandline.html.
 
-- Conformance to RELAX NG spec (2001/08/11 version) is improved.
-  MSV is now intended to be almost fully conform to the spec.
+
+- Conformance to RELAX NG spec is improved.
+  MSV is now intended to fully conform to the version 1 spec
+  when the "strict schema check" switch is turned on.
   For details of the limitation, see commandline.html
+
+
+- "JAXP masquerading" feature is implemented
+  
+  For details, look at JAXPmasquerading.html
+
+
+- W3C XML Schema support is improved
+
+  Several bugs (handling of attribute wildcards, etc) are fixed.
+
+
+- "strict" schema check is implemented
+
+  Schema parser now has a switch to perform extra schema checks,
+  at the expense of consuming more time to parse a schema.
+  Command line tool is updated to accept the "-strict" option
+  for this purpose.
+
+
+- internal representation is modified
+
+  TypedStringExp is splitted into DataExp and ValueExp.
+
+
+- more examples are added
+

@@ -5,6 +5,7 @@ import java.util.List;
 import com.sun.tranquilo.datatype.ValidationContextProvider;
 import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.util.StringRef;
+import com.sun.tranquilo.util.DataTypeRef;
 
 /**
  * represents a pseudo-automaton acceptor.
@@ -37,11 +38,19 @@ public interface Acceptor
 	 *		if this parameter is non-null, the implementation should
 	 *		try to detect the reason of error and recover from it.
 	 *		and this object should have the error message as its str field.
+	 * @param refType
+	 *		if this parameter is non-null and the callee supports
+	 *		type-assignment, the callee will assign the DataType object
+	 *		to this variable.
+	 *		Caller must initialize refType.type to null before calling this method.
+	 *		If the callee doesn't support type-assignment or type-assignment
+	 *		is impossible for this literal (possibly by ambiguous grammar),
+	 *		this variable must kept null.
 	 * 
 	 * @return false
 	 *		if the literal at this position is not allowed.
 	 */
-	boolean stepForward( String literal, ValidationContextProvider context, StringRef refErr );
+	boolean stepForward( String literal, ValidationContextProvider context, StringRef refErr, DataTypeRef refType );
 	
 	/** eats a child element
 	 * 

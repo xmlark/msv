@@ -8,6 +8,7 @@ import com.sun.tranquilo.datatype.DataTypeErrorDiagnosis;
 import com.sun.tranquilo.datatype.ValidationContextProvider;
 import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.util.StringRef;
+import com.sun.tranquilo.util.DataTypeRef;
 import java.util.*;
 
 /**
@@ -129,9 +130,9 @@ public abstract class ExpressionAcceptor implements Acceptor
 		return true;
 	}
 	
-	public boolean stepForward( String literal, ValidationContextProvider provider, StringRef errRef )
+	public boolean stepForward( String literal, ValidationContextProvider provider, StringRef refErr, DataTypeRef refType )
 	{
-		return stepForward( new StringToken(literal,provider), errRef );
+		return stepForward( new StringToken(literal,provider,refType), refErr );
 	}
 	
 	public final boolean stepForwardByContinuation( Expression continuation, StringRef errRef )

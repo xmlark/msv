@@ -4,9 +4,12 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.NamespaceSupport;
 import java.util.Set;
 import java.util.Iterator;
+import com.sun.tranquilo.datatype.DataType;
+import com.sun.tranquilo.datatype.StringType;
 import com.sun.tranquilo.grammar.IDContextProvider;
 import com.sun.tranquilo.util.StartTagInfo;
 import com.sun.tranquilo.util.StringRef;
+import com.sun.tranquilo.util.DataTypeRef;
 
 /**
  * SAX ContentHandler that verifies incoming SAX event stream.
@@ -83,17 +86,33 @@ public class Verifier implements
 		this.errorHandler = errorHandler;
 	}
 	
+	/** this field is used to receive type information of character literals. */
+	private final DataTypeRef characterType = new DataTypeRef();
+	/**
+	 * gets DataType that validated the last characters.
+	 * 
+	 * <p>
+	 * This method works correctly only when called immediately
+	 * after startElement and endElement method. When called, this method
+	 * returns DataType object that validated the last character literals.
+	 * 
+	 * <p>
+	 * So when you are using VerifierFilter, you can call this method only
+	 * in your startElement and endElement method.
+	 * 
+	 * @return null
+	 *		if type-assignment was not possible.
+	 */
+	public DataType getLastCharacterType() { return characterType.type; }
+	
 	private void verifyText()
 		throws SAXException
 	{
 		if(text.length()!=0)
 		{
+			characterType.type=null;
 			switch( stringCareLevel )
 			{
-			case Acceptor.STRING_IGNORE:
-				// do nothing
-				return;
-				
 			case Acceptor.STRING_PROHIBITED:
 				// only whitespace is allowed.
 				final int len = text.length();
@@ -112,13 +131,14 @@ public class Verifier implements
 				
 			case Acceptor.STRING_STRICT:
 				final String txt = new String(text);
-				if(!current.stepForward( txt, this, null ))
+				if(!current.stepForward( txt, this, null, characterType ))
 				{// error
 					hadError = true;
 					
 					// diagnose error, if possible
 					StringRef err = new StringRef();
-					current.stepForward( txt, this, err );
+					characterType.type=null;
+					current.stepForward( txt, this, err, characterType );
 					
 					// report an error
 					if( err.str==null )
@@ -130,6 +150,8 @@ public class Verifier implements
 				}
 				break;
 				
+			case Acceptor.STRING_IGNORE:
+				// if STRING_IGNORE, no text should be appended.
 			default:
 				throw new Error();	//assertion failed
 			}
@@ -186,7 +208,8 @@ public class Verifier implements
 				throw new ValidationUnrecoverableException(vv);
 		}
 		stringCareLevel = next.getStringCareLevel();
-		
+		if( stringCareLevel==Acceptor.STRING_IGNORE )
+			characterType.type = StringType.theInstance;
 		current = next;
 	}
 	

@@ -23,7 +23,7 @@ public class VerifierFilter extends XMLFilterImpl
 	
 	public boolean isValid() { return verifier.isValid(); }
 
-	public Object getCurrentElementType() { return verifier.getCurrentElementType(); }
+	public Verifier getVerifier() { return verifier; }
 	
     public void setDocumentLocator(Locator locator)
 	{

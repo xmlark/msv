@@ -7,6 +7,7 @@ import com.sun.tranquilo.verifier.regexp.StringToken;
 import com.sun.tranquilo.verifier.regexp.ElementToken;
 import com.sun.tranquilo.verifier.regexp.CombinedChildContentExpCreator;
 import com.sun.tranquilo.util.StringRef;
+import com.sun.tranquilo.util.DataTypeRef;
 
 final class ComplexAcceptor extends ContentModelAcceptor
 {
@@ -38,9 +39,9 @@ final class ComplexAcceptor extends ContentModelAcceptor
 	}
 	
 	/** eats string literal */
-	public boolean stepForward( String literal, ValidationContextProvider context, StringRef errRef )
+	public boolean stepForward( String literal, ValidationContextProvider context, StringRef refErr, DataTypeRef refType )
 	{
-		if(!super.stepForward(literal,context,errRef))	return false;
+		if(!super.stepForward(literal,context,refErr,refType))	return false;
 
 		final StringToken token = new StringToken(literal,context);
 

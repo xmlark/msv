@@ -17,7 +17,7 @@ import org.relaxng.datatype.DatatypeException;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class MaxInclusiveFacet extends RangeFacet {
-    protected MaxInclusiveFacet( String nsUri, String typeName, XSDatatypeImpl baseType, Number limit, boolean _isFixed )
+    protected MaxInclusiveFacet( String nsUri, String typeName, XSDatatypeImpl baseType, Object limit, boolean _isFixed )
         throws DatatypeException {
         super( nsUri, typeName, baseType, FACET_MAXINCLUSIVE, limit, _isFixed );
     }

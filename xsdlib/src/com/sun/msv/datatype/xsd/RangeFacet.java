@@ -18,9 +18,9 @@ import org.relaxng.datatype.ValidationContext;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class RangeFacet extends DataTypeWithValueConstraintFacet {
-	public final Number limitValue;
+	public final Object limitValue;
 
-    protected RangeFacet( String nsUri, String typeName, XSDatatypeImpl baseType, String facetName, Number limit, boolean _isFixed )
+    protected RangeFacet( String nsUri, String typeName, XSDatatypeImpl baseType, String facetName, Object limit, boolean _isFixed )
         throws DatatypeException {
 		super(nsUri,typeName,baseType,facetName,_isFixed);
 		limitValue = limit;

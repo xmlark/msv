@@ -213,19 +213,19 @@ public class TypeIncubator {
                 getPositiveInteger(XSDatatype.FACET_FRACTIONDIGITS),
                 isFixed(XSDatatype.FACET_FRACTIONDIGITS) );
 		if( contains(XSDatatypeImpl.FACET_MININCLUSIVE) )
-			r = new MinInclusiveFacet	( newNameUri,newLocalName, r, (Number)
+			r = new MinInclusiveFacet	( newNameUri,newLocalName, r,
                 getFacet(XSDatatype.FACET_MININCLUSIVE),
                 isFixed (XSDatatype.FACET_MININCLUSIVE) );
 		if( contains(XSDatatypeImpl.FACET_MAXINCLUSIVE) )
-            r = new MaxInclusiveFacet   ( newNameUri,newLocalName, r, (Number)
+            r = new MaxInclusiveFacet   ( newNameUri,newLocalName, r,
                 getFacet(XSDatatype.FACET_MAXINCLUSIVE),
                 isFixed (XSDatatype.FACET_MAXINCLUSIVE) );
 		if( contains(XSDatatypeImpl.FACET_MINEXCLUSIVE) )
-            r = new MinExclusiveFacet   ( newNameUri,newLocalName, r, (Number)
+            r = new MinExclusiveFacet   ( newNameUri,newLocalName, r,
                 getFacet(XSDatatype.FACET_MINEXCLUSIVE),
                 isFixed (XSDatatype.FACET_MINEXCLUSIVE) );
 		if( contains(XSDatatypeImpl.FACET_MAXEXCLUSIVE) )
-            r = new MaxExclusiveFacet   ( newNameUri,newLocalName, r, (Number)
+            r = new MaxExclusiveFacet   ( newNameUri,newLocalName, r,
                 getFacet(XSDatatype.FACET_MAXEXCLUSIVE),
                 isFixed (XSDatatype.FACET_MAXEXCLUSIVE) );
 		if( contains(XSDatatypeImpl.FACET_LENGTH) )

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
+import java.util.Enumeration;
 import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
@@ -273,7 +274,7 @@ public abstract class GrammarReader
 		try {
 			// this state will receive endDocument event.
 			pushState( newState, null );
-			parse( source );
+			_parse( source, currentState.location );
 		} finally {
 			// restore the current state.
 			super.setContentHandler(currentState);
@@ -283,16 +284,16 @@ public abstract class GrammarReader
 	
 	/** parses a grammar from the specified source */
 	public final void parse( String source ) {
-		_parse(source);
+		_parse(source,null);
 	}
 	
 	/** parses a grammar from the specified source */
 	public final void parse( InputSource source ) {
-		_parse(source);
+		_parse(source,null);
 	}
 	
 	/** parses a grammar from the specified source */
-	private void _parse( Object source ) {
+	private void _parse( Object source, Locator errorSource ) {
 		try {
 			XMLReader reader = parserFactory.newSAXParser().getXMLReader();
 			reader.setContentHandler(this);
@@ -301,11 +302,17 @@ public abstract class GrammarReader
 			if( source instanceof InputSource )		reader.parse((InputSource)source);
 			if( source instanceof String )			reader.parse((String)source);
 		} catch( ParserConfigurationException e ) {
-			reportError( e, ERR_XMLPARSERFACTORY_EXCEPTION, e.getMessage() );
+			reportError( ERR_XMLPARSERFACTORY_EXCEPTION,
+				new Object[]{e.getMessage()},
+				e, new Locator[]{errorSource} );
 		} catch( IOException e ) {
-			reportError( e, ERR_IO_EXCEPTION, e.getMessage() );
+			reportError( ERR_IO_EXCEPTION,
+				new Object[]{e.getMessage()},
+				e, new Locator[]{errorSource} );
 		} catch( SAXException e ) {
-			reportError( e, ERR_SAX_EXCEPTION, e.getMessage() );
+			reportError( ERR_SAX_EXCEPTION,
+				new Object[]{e.getMessage()},
+				e, new Locator[]{errorSource} );
 		}
 	}
 	
@@ -478,13 +485,11 @@ public abstract class GrammarReader
 	// implementing ValidationContextProvider is neccessary
 	// to correctly handle facets.
 	
-	public String resolveNamespacePrefix( String prefix )
-	{
+	public String resolveNamespacePrefix( String prefix ) {
 		return namespaceSupport.getURI(prefix);
 	}
 	
-	public boolean isUnparsedEntity( String entityName )
-	{
+	public boolean isUnparsedEntity( String entityName ) {
 		// we have to allow everything here?
 		return true;
 	}
@@ -495,7 +500,32 @@ public abstract class GrammarReader
 	public boolean onID( String token ) { return true; }
 	public void onIDREF( String token ) {}
 
-	
+	/**
+	 * returns a persistent ValidationContextProvider.
+	 * this context provider is necessary to late-bind simple types. 
+	 */
+	public IDContextProvider getPersistentVCP() {
+		// dump prefix->URI mapping into a map.
+		final Map prefixes = new java.util.HashMap();
+		Enumeration e = namespaceSupport.getDeclaredPrefixes();
+		while( e.hasMoreElements() ) {
+			String prefix = (String)e.nextElement();
+			prefixes.put( prefix, namespaceSupport.getURI(prefix) );
+		}
+		
+		return new IDContextProvider(){
+			public String resolveNamespacePrefix( String prefix ) {
+				return (String)prefixes.get(prefix);
+			}
+			public boolean isUnparsedEntity( String entityName ) {
+				return true;
+			}
+			public boolean onID( String token ) {
+				return true;
+			}
+			public void onIDREF( String token ) {}
+		};
+	}
 	
 
 // error related services

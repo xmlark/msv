@@ -4,6 +4,7 @@ import junit.framework.*;
 import javax.xml.parsers.*;
 import java.io.*;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Tests the typical use cases of JAXP masquerading with DocumentBuilderFactory
@@ -20,22 +21,7 @@ public class DOMBuilderTest extends TestCase
 		return new TestSuite(DOMBuilderTest.class);
 	}
 	
-	static final String rngSchema =
-		"<element name='root' xmlns='http://relaxng.org/ns/structure/0.9'>"+
-			"<optional>"+
-				"<attribute name='foo'/>"+
-			"</optional>"+
-			"<text/>"+
-		"</element>";
-	
-	static final String xsdSchema =
-		"<schema xmlns='http://www.w3.org/2001/XMLSchema'>"+
-			"<element name='root' type='string'/>"+
-		"</schema>";
 
-	
-	static final String validDocument = "<root>abc</root>";
-	static final String invalidDocument = "<root2/>";
 	
 //	
 //	
@@ -58,16 +44,25 @@ public class DOMBuilderTest extends TestCase
 		// use it without any schema
 		parse(factory.newDocumentBuilder(),true);
 
+		// set the incorrect schema and expect the error
+		try {
+			factory.setAttribute( Const.SCHEMA_PROPNAME,
+				new InputSource( new StringReader(TestConst.incorrectSchema) ) );
+			fail("incorrect schema was accepted");
+		} catch( IllegalArgumentException e ) {
+			// it should throw this exception
+		}
+
 		// set the schema.
 		factory.setAttribute( Const.SCHEMA_PROPNAME,
-			new InputSource( new StringReader(rngSchema) ) );
+			new InputSource( new StringReader(TestConst.rngSchema) ) );
 		
 		// then parse again.
 		parse(factory.newDocumentBuilder(),false);
 		
 		// set another schema.
 		factory.setAttribute( Const.SCHEMA_PROPNAME,
-			new InputSource( new StringReader(xsdSchema) ) );
+			new InputSource( new StringReader(TestConst.xsdSchema) ) );
 		
 		// then parse again.
 		parse(factory.newDocumentBuilder(),false);
@@ -92,7 +87,7 @@ public class DOMBuilderTest extends TestCase
 		// since builder1 is already created, it should not be affected
 		// by this change.
 		factory.setAttribute( Const.SCHEMA_PROPNAME,
-			new InputSource( new StringReader(xsdSchema) ) );
+			new InputSource( new StringReader(TestConst.xsdSchema) ) );
 		DocumentBuilder builder2 = factory.newDocumentBuilder();
 		
 		parse(builder2,false);
@@ -114,7 +109,7 @@ public class DOMBuilderTest extends TestCase
 	private void doTest3( DocumentBuilderFactory factory ) throws Exception {
 		// set the schema.
 		factory.setAttribute( Const.SCHEMA_PROPNAME,
-			new InputSource( new StringReader(rngSchema) ) );
+			new InputSource( new StringReader(TestConst.rngSchema) ) );
 		
 		factory.newDocumentBuilder().parse( new InputSource(
 					new StringReader("<root foo='abc'>abc</root>")) );
@@ -128,16 +123,16 @@ public class DOMBuilderTest extends TestCase
 		for( int i=0; i<2; i++ ) {
 			try {
 				builder.parse( new InputSource(
-					new StringReader(invalidDocument)) );
+					new StringReader(TestConst.invalidDocument)) );
 				if(expectationForInvalid==false)
 					fail("failed to reject an invalid document");
-			} catch( Exception e ) {
+			} catch( SAXException e ) {
 				if(expectationForInvalid==true)
 					fail("failed to accept a valid document");
 			}
 		
 			builder.parse( new InputSource(
-				new StringReader(validDocument)) );
+				new StringReader(TestConst.validDocument)) );
 		}
 	}
 }

@@ -4,6 +4,8 @@ import junit.framework.*;
 import javax.xml.parsers.*;
 import java.io.*;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Tests the typical use cases of JAXP masquerading with SAXParserFactory.
@@ -20,23 +22,6 @@ public class SAXParserTest extends TestCase
 		return new TestSuite(SAXParserTest.class);
 	}
 	
-	static final String rngSchema =
-		"<element name='root' xmlns='http://relaxng.org/ns/structure/0.9'>"+
-			"<optional>"+
-				"<attribute name='foo'/>"+
-			"</optional>"+
-			"<text/>"+
-		"</element>";
-	
-	static final String xsdSchema =
-		"<schema xmlns='http://www.w3.org/2001/XMLSchema'>"+
-			"<element name='root' type='string'/>"+
-		"</schema>";
-
-	
-	static final String validDocument = "<root>abc</root>";
-	static final String invalidDocument = "<root2/>";
-	
 //	
 //	
 // use of DocumentBuilderFactory without schema
@@ -44,91 +29,82 @@ public class SAXParserTest extends TestCase
 //
 //
 	public void testScenario1_1() throws Exception {
-		DocumentBuilderFactory factory = new DocumentBuilderFactoryImpl();
+		SAXParserFactory factory = new SAXParserFactoryImpl();
 		doTest1(factory);
 	}
 
 	public void testScenario1_2() throws Exception {
-		DocumentBuilderFactory factory = new DocumentBuilderFactoryImpl();
+		SAXParserFactory factory = new SAXParserFactoryImpl();
 		factory.setNamespaceAware(true);
 		doTest1(factory);
 	}
 	
-	private void doTest1( DocumentBuilderFactory factory ) throws Exception {
+	private void doTest1( SAXParserFactory factory ) throws Exception {
 		// use it without any schema
-		parse(factory.newDocumentBuilder(),true);
+		SAXParser parser = factory.newSAXParser();
+		
+		parse(parser,true);
+
+		// set the incorrect schema and expect the error
+		try {
+			parser.setProperty( Const.SCHEMA_PROPNAME,
+				new InputSource( new StringReader(TestConst.incorrectSchema) ) );
+			fail("incorrect schema was accepted");
+		} catch( org.xml.sax.SAXNotRecognizedException e ) {
+			// it should throw an exception
+		}
 
 		// set the schema.
-		factory.setAttribute( Const.SCHEMA_PROPNAME,
-			new InputSource( new StringReader(rngSchema) ) );
+		parser.setProperty( Const.SCHEMA_PROPNAME,
+			new InputSource( new StringReader(TestConst.rngSchema) ) );
 		
 		// then parse again.
-		parse(factory.newDocumentBuilder(),false);
+		parse(parser,false);
 		
 		// set another schema.
-		factory.setAttribute( Const.SCHEMA_PROPNAME,
-			new InputSource( new StringReader(xsdSchema) ) );
+		parser.setProperty( Const.SCHEMA_PROPNAME,
+			new InputSource( new StringReader(TestConst.xsdSchema) ) );
 		
 		// then parse again.
-		parse(factory.newDocumentBuilder(),false);
+		parse(parser,false);
 	}
 
 	
-	public void testScenario2_1() throws Exception {
-		DocumentBuilderFactory factory = new DocumentBuilderFactoryImpl();
-		doTest2(factory);
-	}
-		
-	public void testScenario2_2() throws Exception {
-		DocumentBuilderFactory factory = new DocumentBuilderFactoryImpl();
-		factory.setNamespaceAware(true);
-		doTest2(factory);
-	}
-		
-	private void doTest2( DocumentBuilderFactory factory ) throws Exception {
-		DocumentBuilder builder1 = factory.newDocumentBuilder();
-		
-		// set the schema.
-		// since builder1 is already created, it should not be affected
-		// by this change.
-		factory.setAttribute( Const.SCHEMA_PROPNAME,
-			new InputSource( new StringReader(xsdSchema) ) );
-		DocumentBuilder builder2 = factory.newDocumentBuilder();
-		
-		parse(builder2,false);
-		parse(builder1,true);
-	}
 	
 	
 	
 	public void testScenario3_1() throws Exception {
-		DocumentBuilderFactory factory = new DocumentBuilderFactoryImpl();
+		SAXParserFactory factory = new SAXParserFactoryImpl();
 		doTest3(factory);
 	}
 	public void testScenario3_2() throws Exception {
-		DocumentBuilderFactory factory = new DocumentBuilderFactoryImpl();
+		SAXParserFactory factory = new SAXParserFactoryImpl();
 		factory.setNamespaceAware(true);
 		doTest3(factory);
 	}
 	
-	private void doTest3( DocumentBuilderFactory factory ) throws Exception {
-		// set the schema.
-		factory.setAttribute( Const.SCHEMA_PROPNAME,
-			new InputSource( new StringReader(rngSchema) ) );
+	private void doTest3( SAXParserFactory factory ) throws Exception {
+		SAXParser parser = factory.newSAXParser();
 		
-		factory.newDocumentBuilder().parse( new InputSource(
-					new StringReader("<root foo='abc'>abc</root>")) );
+		// set the schema.
+		parser.setProperty( Const.SCHEMA_PROPNAME,
+			new InputSource( new StringReader(TestConst.rngSchema) ) );
+		
+		parser.parse( new InputSource(
+					new StringReader("<root foo='abc'>abc</root>")) ,
+			new Handler() );
 	}
 	
 	
-	private void parse( DocumentBuilder builder, boolean expectationForInvalid ) throws Exception {
+	private void parse( SAXParser parser, boolean expectationForInvalid ) throws Exception {
 		// parse test. test the invalid case first to make sure that this failure
 		// won't affect the rest of the story.
 		
 		for( int i=0; i<2; i++ ) {
 			try {
-				builder.parse( new InputSource(
-					new StringReader(invalidDocument)) );
+				parser.parse( new InputSource(
+					new StringReader(TestConst.invalidDocument)),
+					new Handler() );
 				if(expectationForInvalid==false)
 					fail("failed to reject an invalid document");
 			} catch( Exception e ) {
@@ -136,8 +112,16 @@ public class SAXParserTest extends TestCase
 					fail("failed to accept a valid document");
 			}
 		
-			builder.parse( new InputSource(
-				new StringReader(validDocument)) );
+			parser.parse( new InputSource(
+				new StringReader(TestConst.validDocument)),
+				new Handler() );
+		}
+	}
+	
+	
+	private class Handler extends DefaultHandler {
+		public void error( SAXParseException e ) throws SAXParseException {
+			throw e;
 		}
 	}
 }

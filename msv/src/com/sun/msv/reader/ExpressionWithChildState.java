@@ -17,8 +17,9 @@ import com.sun.tranquilo.util.StartTagInfo;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public abstract class ExpressionWithChildState extends ExpressionState implements ExpressionOwner
-{
+public abstract class ExpressionWithChildState
+	extends ExpressionState implements ExpressionOwner {
+	
 	/**
 	 * expression object that is being created.
 	 * See {@link castPattern} and {@link annealPattern} methods
@@ -32,18 +33,29 @@ public abstract class ExpressionWithChildState extends ExpressionState implement
 	}
 	
 	/** sets initial pattern */
-	protected Expression initialExpression() { return null; }
+	protected Expression initialExpression() {
+		return null;
+	}
+	
+	/**
+	 * computes default expression.
+	 * this method is called before annealExpression when no child expression
+	 * is given during parsing. return null to signal an error.
+	 */
+	protected Expression defaultExpression() {
+		return null;
+	}
 	
 	/** receives a Pattern object that is contained in this element. */
-	public final void onEndChild( Expression childExpression )
-	{
+	public final void onEndChild( Expression childExpression ) {
 		exp = castExpression( exp, childExpression );
 	}
 	
-	protected final Expression makeExpression()
-	{
+	protected final Expression makeExpression() {
 		if( exp==null )
-		{
+			exp = defaultExpression();
+		
+		if( exp==null ) {
 			reader.reportError( GrammarReader.ERR_MISSING_CHILD_EXPRESSION );
 			exp = Expression.nullSet;
 			// recover by assuming some pattern.
@@ -77,8 +89,7 @@ public abstract class ExpressionWithChildState extends ExpressionState implement
 	 * performs final wrap-up and returns a fully created Expression object
 	 * that represents this element.
 	 */
-	protected Expression annealExpression( Expression exp )
-	{
+	protected Expression annealExpression( Expression exp ) {
 		// default implementation do nothing.
 		return exp;
 	}

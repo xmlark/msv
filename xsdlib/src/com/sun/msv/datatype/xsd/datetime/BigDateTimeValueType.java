@@ -396,8 +396,14 @@ public class BigDateTimeValueType implements IDateTimeValueType {
         // In BigDateTimeValueType, the first day of the month is 0,
         // where it is 1 in java.util.Calendar.
 
-        Calendar cal = new java.util.GregorianCalendar(createJavaTimeZone());
-        cal.clear(); // reset all fields. This method does not reset the time zone.
+//        Calendar cal = new java.util.GregorianCalendar(createJavaTimeZone());
+//        cal.clear(); // reset all fields. This method does not reset the time zone.
+        // the following is faster than above.
+        Calendar cal = new java.util.GregorianCalendar(0,0,0);
+        cal.setTimeZone(createJavaTimeZone());
+        cal.clear(Calendar.YEAR);
+        cal.clear(Calendar.MONTH);
+        cal.clear(Calendar.DAY_OF_MONTH);
 
         if (getYear() != null)
             cal.set(Calendar.YEAR, getYear().intValue());

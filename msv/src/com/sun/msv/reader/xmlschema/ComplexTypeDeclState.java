@@ -130,11 +130,11 @@ public class ComplexTypeDeclState extends RedefinableDeclState {
 		if( isRedefine() ) {
 			// copy new definition back into the original definition.
 			oldDecl.redefine(decl);
-			reader.setDeclaredLocationOf(oldDecl);
-			return oldDecl;
-		} else {
-			reader.setDeclaredLocationOf(decl);
-			return decl;
+			decl = (ComplexTypeExp)oldDecl;
 		}
+		
+		reader.setDeclaredLocationOf(decl);
+		reader.setDeclaredLocationOf(decl.self);
+		return decl;
 	}
 }

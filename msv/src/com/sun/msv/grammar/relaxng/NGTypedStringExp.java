@@ -28,7 +28,7 @@ import com.sun.msv.util.StringPair;
  */
 public class NGTypedStringExp extends TypedStringExp {
 	
-	public NGTypedStringExp( Datatype dataType, String typeName, String keyName, String keyRefName, StringPair baseTypeName ) {
+	public NGTypedStringExp( Datatype dataType, String typeName, StringPair keyName, StringPair keyRefName, StringPair baseTypeName ) {
 		super(dataType,typeName);
 		this.keyName = keyName;
 		this.keyrefName= keyRefName;
@@ -46,10 +46,10 @@ public class NGTypedStringExp extends TypedStringExp {
 	}
 	
 	/**
-	 * compare two Strings.
+	 * compare two StringPairs.
 	 * This method considers that a null string is equal to a null string.
 	 */
-	private boolean compare( String a, String b ) {
+	private boolean compare( StringPair a, StringPair b ) {
 		if(a==null && b==null)	return true;
 		if(a==null || b==null)	return false;
 		return a.equals(b);
@@ -59,13 +59,13 @@ public class NGTypedStringExp extends TypedStringExp {
 	 * name of the symbol space that this expression acts a key.
 	 * If this expression is not a key, then this field is set to null.
 	 */
-	public final String keyName;
+	public final StringPair keyName;
 	
 	/**
 	 * name of the symbol space that this expression acts a keyref.
 	 * If this expression is not a key, then this field is set to null.
 	 */
-	public final String keyrefName;
+	public final StringPair keyrefName;
 	
 	/**
 	 * the base type name of this key/keyref.

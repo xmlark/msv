@@ -31,7 +31,7 @@ public class IDType extends NmtokenType {
 		Object o = super.convertToValue(content,context);
 		if(o==null)		return null;
 
-		if(!((IDContextProvider)context).onID("",content))	return null;
+		if(!((IDContextProvider)context).onID("","",content))	return null;
 		return o;
 	}
 }

@@ -44,7 +44,7 @@ public class IDREFType extends NmtokenType {
 		Object o = super.convertToValue(content,context);
 		if(o==null)		return null;
 
-		((IDContextProvider)context).onIDREF("",content);
+		((IDContextProvider)context).onIDREF("","",content);
 		return o;
 	}
 }

@@ -36,7 +36,7 @@ public interface IDContextProvider extends ValidationContext {
 	 *	false
 	 *		if this name is already declared as ID.
 	 */
-	boolean onID( String symbolSpaceName, Object newIDToken );
+	boolean onID( String symbolSpaceURI, String symbolSpaceLocalName, Object newIDToken );
 	
 	/**
 	 * this method is called when an IDREF is found.
@@ -48,5 +48,5 @@ public interface IDContextProvider extends ValidationContext {
 	 * possible to perform this check when IDREF is found.
 	 * It must be done separately after parsing the entire document.
 	 */
-	void onIDREF( String symbolSpaceName, Object idrefToken );
+	void onIDREF( String symbolSpaceURI, String symbolSpaceLocalName, Object idrefToken );
 }

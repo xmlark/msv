@@ -19,10 +19,15 @@ import org.relaxng.datatype.DatatypeException;
 import org.iso_relax.verifier.Schema;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.DatatypeFactory;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.ExpressionState;
 import com.sun.msv.reader.RunAwayExpressionChecker;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeResolver;
+import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.reader.relax.RELAXReader;
 import com.sun.msv.reader.relax.core.checker.*;
 import com.sun.msv.grammar.Expression;
@@ -42,7 +47,7 @@ import com.sun.msv.util.StartTagInfo;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class RELAXCoreReader extends RELAXReader {
+public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
 	
 	/** loads RELAX module */
 	public static RELAXModule parse( String moduleURL,
@@ -158,23 +163,44 @@ public class RELAXCoreReader extends RELAXReader {
 	}
 
 	
-	
+	/**
+	 * User-defined datatypes (from type name to XSDatatypeExp object.
+	 */
+    private final Map userDefinedTypes = new java.util.HashMap();
+    
+    public final void addUserDefinedType( XSDatatypeExp exp ) {
+        userDefinedTypes.put( exp.name(), exp );
+    }
+    
 	/**
 	 * gets DataType object from type name.
 	 * 
 	 * If undefined type name is specified, this method is responsible
 	 * to report an error, and recovers.
 	 */
-	public Datatype resolveDataType( String typeName ) {
+	public XSDatatypeExp resolveXSDatatype( String typeName ) {
 		// look up user defined types first
 		try {
-			return (Datatype)module.userDefinedTypes.getType(typeName);
+            XSDatatypeExp e = (XSDatatypeExp)userDefinedTypes.get(typeName);
+            if(e!=null)     return e;
+            
+            // then try as a built-in type
+            // if this method fails, it throws an exception
+            return new XSDatatypeExp( DatatypeFactory.getTypeByName(typeName), pool );
 		} catch( DatatypeException e ) {
-			Datatype dt = getBackwardCompatibleType(typeName);
-			if(dt!=null)	return dt;
-			
-			reportError( ERR_UNDEFINED_DATATYPE, typeName );
-			return NoneType.theInstance;	// recover by assuming a valid DataType
+            
+            // try a old alias for the type
+			XSDatatype dt = getBackwardCompatibleType(typeName);
+            
+            if(typeName.equals("none"))         dt = NoneType.theInstance;
+            if(typeName.equals("emptyString"))  dt = EmptyStringType.theInstance;
+            
+            if(dt==null) {
+			    reportError( ERR_UNDEFINED_DATATYPE, typeName );
+			    dt = NoneType.theInstance;	// recover by assuming a valid DataType
+            }
+            
+            return new XSDatatypeExp( dt, pool );
 		}
 	}
 
@@ -194,8 +220,10 @@ public class RELAXCoreReader extends RELAXReader {
 			if(tag.containsAttribute("type"))	return new ElementRuleWithTypeState();
 			else								return new ElementRuleWithHedgeState();
 		}
+        
+        protected XSDVocabulary vocabulary = new XSDVocabulary();
 		protected State simpleType( State parent, StartTagInfo tag) {
-			return ((RELAXCoreReader)parent.reader).module.userDefinedTypes.createTopLevelReaderState(tag);
+			return vocabulary.createTopLevelReaderState(tag);
 		}
 	}
 
@@ -251,6 +279,16 @@ public class RELAXCoreReader extends RELAXReader {
 	
 	
 	protected void wrapUp() {
+        
+        runBackPatchJob();
+        
+        // register user-defined types to the module
+        Iterator itr = userDefinedTypes.entrySet().iterator();
+        while( itr.hasNext() ) {
+            XSDatatypeExp e = (XSDatatypeExp)((Map.Entry)itr.next()).getValue();
+            module.datatypes.add(e.getCreatedType());
+        }
+        
 		// combine expressions to their masters.
 		// if no master is found, then create a new AttPool.
 		{

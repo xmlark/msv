@@ -29,6 +29,8 @@ import com.sun.msv.grammar.xmlschema.ElementDeclExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaTypeExp;
 import com.sun.msv.grammar.xmlschema.AttWildcardExp;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeResolver;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.SequenceState;
@@ -41,7 +43,6 @@ import com.sun.msv.reader.RunAwayExpressionChecker;
 import com.sun.msv.reader.datatype.xsd.FacetState;
 import com.sun.msv.reader.datatype.xsd.SimpleTypeState;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
-import com.sun.msv.reader.datatype.xsd.LateBindDatatype;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringPair;
 import com.sun.msv.verifier.jarv.XSFactoryImpl;
@@ -65,7 +66,7 @@ import org.iso_relax.verifier.Schema;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class XMLSchemaReader extends GrammarReader {
+public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver {
 	
 	/** loads XML Schema */
 	public static XMLSchemaGrammar parse( String grammarURL,
@@ -439,10 +440,10 @@ public class XMLSchemaReader extends GrammarReader {
 	 * @return
 	 *		null if the type is not defined.
 	 */
-	public Datatype resolveBuiltinDataType( String typeLocalName ) {
+	public XSDatatype resolveBuiltinDataType( String typeLocalName ) {
 		// datatypes of XML Schema part 2
 		try {
-			return builtinTypes.getType(typeLocalName);
+			return (XSDatatype)builtinTypes.getType(typeLocalName);
 		} catch( DatatypeException e ) {
 			return null;	// not found.
 		}
@@ -462,22 +463,22 @@ public class XMLSchemaReader extends GrammarReader {
 		
 		return false;
 	}
-		
 	
-	public Datatype resolveDataType( String typeQName ) {
+	public XSDatatypeExp resolveXSDatatype( String typeQName ) {
 		
 		final String[] r = splitQName(typeQName);
 		if(r==null) {
 			reportError( ERR_UNDECLARED_PREFIX, typeQName );
 			// TODO: implement UndefinedType, that is used only when an error is encountered.
 			// it should accept anything and any facets.
-			return StringType.theInstance;	// recover by assuming string.
+            // recover by assuming string.
+			return  new XSDatatypeExp(StringType.theInstance,pool);
 		}
 		
 		if( isSchemaNamespace(r[0]) ) {
 			// internal definitions should be consulted first.
-			Datatype dt = resolveBuiltinDataType(r[1]);
-			if(dt!=null)	return dt;
+			XSDatatype dt = resolveBuiltinDataType(r[1]);
+			if(dt!=null) return new XSDatatypeExp(dt,pool);
 			
 			// the name was not found.
 			// maybe we are parsing schema for schema.
@@ -486,62 +487,26 @@ public class XMLSchemaReader extends GrammarReader {
 
 		final SimpleTypeExp sexp = getOrCreateSchema(r[0]/*uri*/).simpleTypes.
 			getOrCreate(r[1]/*local name*/);
-		Datatype dt = sexp.getType();
 		backwardReference.memorizeLink(sexp);
 				 
-		if( dt!=null )	return dt;
+        XSDatatypeExp e = sexp.getType();
+        if(e!=null)     return e;
 
 		// the specified datatype is not defined at this moment.
 		// it is either a forward reference, or an undefined type.
 		// return a late-bind datatype object to support forward references.
 		
-		dt = new LateBindDatatype( new LateBindDatatype.Renderer(){
-			public XSDatatype render( LateBindDatatype.RenderingContext context ) {
-				XSDatatype dt = sexp.getType();
-				
-				if( dt==null ) {
-					// this error is reported by the detectUndefinedOnes(simpleTypes) method
-					return StringType.theInstance; // recover
-				}
-				
-				if( dt instanceof LateBindDatatype )
-					dt = ((LateBindDatatype)dt).getBody(context);
-			
-				sexp.setType( dt, pool );
-				return dt;
-			}
-		}, getCurrentState() );
-		
-		return dt;
-	}
-	
-	/**
-	 * gets a TypedString expression for the specified datatype.
-	 * this method may return a ReferenceExp whose content will be supplied later
-	 * (to make forward-reference possible).
-	 */
-	public Expression resolveDelayedDataType( String qName ) {
-		String[] r = splitQName(qName);
-		if(r==null) {
-			reportError( ERR_UNDECLARED_PREFIX, qName );
-			// TODO: implement UndefinedType, that is used only when an error is encountered.
-			// it should accept anything and any facets.
-			return Expression.nullSet;	// recover by assuming some expression.
-		}
-		
-		if( isSchemaNamespace(r[0]) ) {
-			Datatype dt = resolveBuiltinDataType(r[1]);
-			if(dt!=null)
-				return pool.createData( dt, new StringPair(r[0],r[1]) );
-			
-			// the type was not found.
-			// maybe we are parsing schema for schema.
-			// consult the externally defined types.
-		}
-		
-		Expression exp = getOrCreateSchema(r[0]/*uri*/).simpleTypes.getOrCreate(r[1]/*local name*/);
-		backwardReference.memorizeLink(exp);
-		return exp;
+        return new XSDatatypeExp(r[1],this,new XSDatatypeExp.Renderer(){
+            public XSDatatype render( XSDatatypeExp.RenderingContext context ) {
+                if(sexp.getType()!=null)
+                    return sexp.getType().getType(context);
+                else
+                    // undefined error is alreadyreported by
+                    // the detectUndefinedOnes(simpleTypes) method
+                    // so silently recover by using some sort of expression
+                    return StringType.theInstance;
+            }
+        });
 	}
 	
 	public static interface RefResolver {
@@ -737,6 +702,7 @@ public class XMLSchemaReader extends GrammarReader {
 			detectUndefinedOnes( schema.complexTypes,		ERR_UNDEFINED_COMPLEX_TYPE );
 			detectUndefinedOnes( schema.elementDecls,		ERR_UNDEFINED_ELEMENT_DECL );
 			detectUndefinedOnes( schema.groupDecls,			ERR_UNDEFINED_GROUP );
+			detectUndefinedOnes( schema.simpleTypes,		ERR_UNDEFINED_SIMPLE_TYPE );
 			
 			
 			// TODO: it is now possible to check that the derivation doesn't
@@ -760,29 +726,10 @@ public class XMLSchemaReader extends GrammarReader {
 		// some of the back-patching process relies on this grammar.topLevel field.
 		grammar.topLevel = grammarTopLevel;
 
-		
 		// perform all back patching.
-		//------------------------------
-		Locator oldLoc = locator;
-		itr = backPatchJobs.iterator();
-		while( itr.hasNext() ) {
-			BackPatch job = ((BackPatch)itr.next());
-			// so that errors reported in the patch job will have 
-			// position of its start tag.
-			locator = job.getOwnerState().getLocation();
-			job.patch();
-		}
-		locator = oldLoc;
+        runBackPatchJob();
 
 		
-		// test undefined simple types
-		//-----------------------------------
-		// some of the simple types are supplied during the back-patching
-		itr = grammar.iterateSchemas();
-		while( itr.hasNext() ) {
-			XMLSchemaSchema schema = (XMLSchemaSchema)itr.next();
-			detectUndefinedOnes( schema.simpleTypes,		ERR_UNDEFINED_SIMPLE_TYPE );
-		}
 		
 		
 		// perform substitutability computation
@@ -851,6 +798,8 @@ public class XMLSchemaReader extends GrammarReader {
 	}
 	
 	
+    
+    
 	private interface Type {
 		int getDerivationMethod();
 		int getBlockValue();
@@ -868,13 +817,13 @@ public class XMLSchemaReader extends GrammarReader {
 					if( cexp.complexBaseType!=null )
 						return getType(cexp.complexBaseType);
 					if( cexp.simpleBaseType!=null )
-						return getType(cexp.simpleBaseType);
+						return getType(cexp.simpleBaseType.getCreatedType());
 					return getType(complexUrType);
 				}
 				public Object getCore() { return cexp; }
 			};
 		} else {
-			return getType( ((SimpleTypeExp)exp).getType() );
+			return getType( ((SimpleTypeExp)exp).getDatatype() );
 		}
 	}
 	

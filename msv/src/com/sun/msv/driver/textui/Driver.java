@@ -286,7 +286,8 @@ public class Driver {
 		for( int i=0; i<es.length; i++ ) {
 			ElementDeclExp exp = (ElementDeclExp)es[i];
 			System.out.println( exp.name + "  : " +
-				ExpressionPrinter.printContentModel(exp.body.contentModel) );
+				ExpressionPrinter.printContentModel(
+                    exp.body.contentModel.getExpandedExp(s.pool)) );
 		}
 		
 		System.out.println("*** complex types ***");

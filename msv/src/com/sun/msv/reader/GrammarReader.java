@@ -202,13 +202,13 @@ public abstract class GrammarReader
 	 *		For RELAX, this is unqualified type name. For TREX,
 	 *		this is a QName.
 	 */
-	public abstract Datatype resolveDataType( String typeName );
+//	public abstract Datatype resolveDataType( String typeName );
 
 	/**
 	 * tries to obtain a DataType object by resolving obsolete names.
 	 * this method is useful for backward compatibility purpose.
 	 */
-	public Datatype getBackwardCompatibleType( String typeName ) {
+	public XSDatatype getBackwardCompatibleType( String typeName ) {
 		/*
 			This method is not heavily used.
 			So it is a good idea not to create a reference to the actual instance
@@ -628,10 +628,24 @@ public abstract class GrammarReader
 		State getOwnerState();
 	}
 	
-	protected final Vector backPatchJobs = new Vector();
-	public void addBackPatchJob( BackPatch job ) {
+	private final Vector backPatchJobs = new Vector();
+	public final void addBackPatchJob( BackPatch job ) {
 		backPatchJobs.add(job);
 	}
+    
+    /** Performs all back-patchings. */
+    public final void runBackPatchJob() {
+		Locator oldLoc = locator;
+		Iterator itr = backPatchJobs.iterator();
+		while( itr.hasNext() ) {
+			BackPatch job = ((BackPatch)itr.next());
+			// so that errors reported in the patch job will have 
+			// position of its start tag.
+			locator = job.getOwnerState().getLocation();
+			job.patch();
+		}
+		locator = oldLoc;
+    }
 	
 	
 	

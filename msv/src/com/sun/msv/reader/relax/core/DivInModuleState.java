@@ -11,20 +11,20 @@ package com.sun.msv.reader.relax.core;
 
 import java.util.Map;
 import org.xml.sax.Locator;
-//import org.relaxng.datatype.Datatype;
-import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.datatype.xsd.XSDatatypeImpl;
+//import com.sun.msv.datatype.xsd.XSDatatype;
+//import com.sun.msv.datatype.xsd.XSDatatypeImpl;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.reader.*;
-import com.sun.msv.reader.datatype.TypeOwner;
+import com.sun.msv.reader.datatype.xsd.XSTypeOwner;
 
 /**
  * parses &lt;div&gt; element under &lt;module&gt; element.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class DivInModuleState extends SimpleState implements ExpressionOwner, TypeOwner
+public class DivInModuleState extends SimpleState implements ExpressionOwner, XSTypeOwner
 {
 	/** gets reader in type-safe fashion */
 	protected RELAXCoreReader getReader() { return (RELAXCoreReader)reader; }
@@ -45,18 +45,18 @@ public class DivInModuleState extends SimpleState implements ExpressionOwner, Ty
 	// do nothing. declarations register themselves by themselves.
 	public void onEndChild( Expression exp ) {}
 	
-	public void onEndChild( XSDatatype type )
-	{// user-defined simple types
+	public void onEndChild( XSDatatypeExp type ) {
+        // user-defined simple types
 		
-		final String typeName = type.getName();
+		final String typeName = type.name();
 		
-		if( typeName==null )
-		{// top-level simpleType must define a named type
+		if( typeName==null ) {
+            // top-level simpleType must define a named type
 			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "simpleType", "name" );
 			return;	// recover by ignoring this declaration
 		}
 		
 		// memorize this type.
-		getReader().module.userDefinedTypes.addType( (XSDatatypeImpl)type );
+        getReader().addUserDefinedType(type);
 	}
 }

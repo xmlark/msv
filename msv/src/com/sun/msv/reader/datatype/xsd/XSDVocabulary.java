@@ -37,15 +37,6 @@ public class XSDVocabulary implements DataTypeVocabulary, java.io.Serializable {
 	}
 	
 	public Datatype getType( String localTypeName ) throws DatatypeException {
-		XSDatatype dt = (XSDatatype)userDefinedTypes.get(localTypeName);
-		if(dt!=null)	return dt;
 		return DatatypeFactory.getTypeByName(localTypeName);
-	}
-
-	/** user-defined named types */
-	private final Map userDefinedTypes = new java.util.HashMap();
-	
-	public void addType( XSDatatypeImpl type ) {
-		userDefinedTypes.put( type.getName(), type );
 	}
 }

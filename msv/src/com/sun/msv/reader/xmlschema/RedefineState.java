@@ -13,6 +13,7 @@ import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
 import com.sun.msv.reader.ChildlessState;
 import com.sun.msv.reader.datatype.xsd.SimpleTypeState;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 
 /**
  * used to parse &lt;redefine&gt; element.
@@ -49,11 +50,11 @@ public class RedefineState extends GlobalDeclState {
 	}
 	
 	
-	public void onEndChild( XSDatatype type ) {
+	public void onEndChild( XSDatatypeExp type ) {
 		// handle redefinition of simpleType.
 		
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
-		final String typeName = type.getName();
+		final String typeName = type.name();
 		
 		if( typeName==null ) {
 			// top-level simpleType must define a named type
@@ -70,7 +71,7 @@ public class RedefineState extends GlobalDeclState {
 		}
 		
 		// overwrite
-		exp.setType((XSDatatype)type,reader.pool);
+		exp.set(type);
 		reader.setDeclaredLocationOf(exp);
 	}
 

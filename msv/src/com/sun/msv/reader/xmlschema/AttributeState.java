@@ -66,7 +66,7 @@ public class AttributeState extends ExpressionWithChildState {
 		
 		// if <attribute> element has @type, then
 		// it shall be used as content type.
-		return reader.resolveDelayedDataType( typeAttr );
+		return reader.resolveXSDatatype( typeAttr );
 	}
 
 	protected Expression defaultExpression() {

@@ -29,32 +29,20 @@ public class ListState extends TypeWithOneChildState
 		this.newTypeName = newTypeName;
 	}
 	
-	protected XSDatatype annealType( final XSDatatype baseType ) throws DatatypeException {
-		if( baseType instanceof LateBindDatatype )
-			// late-bind construction
-			return new LateBindDatatype( new LateBindDatatype.Renderer() {
-				public XSDatatype render( LateBindDatatype.RenderingContext context )
-											throws DatatypeException {
-					return DatatypeFactory.deriveByList( newTypeName,
-						((LateBindDatatype)baseType).getBody(context) );
-				}
-			}, this );
-		else
-			return DatatypeFactory.deriveByList( newTypeName, baseType );
-	}
+	protected XSDatatypeExp annealType( final XSDatatypeExp itemType ) throws DatatypeException {
+        return XSDatatypeExp.makeList( newTypeName, itemType, reader );
+    }
 	
-	protected void startSelf()
-	{
+	protected void startSelf() {
 		super.startSelf();
 		
-		// if itemType attribute is used, try to load it.
+		// if itemType attribute is used, use it.
 		String itemType = startTag.getAttribute("itemType");
 		if(itemType!=null)
-			type = (XSDatatype)reader.resolveDataType(itemType);
+            onEndChild( ((XSDatatypeResolver)reader).resolveXSDatatype(itemType) );
 	}
 
-	protected State createChildState( StartTagInfo tag )
-	{
+	protected State createChildState( StartTagInfo tag ) {
 		// accepts elements from the same namespace only.
 		if( !startTag.namespaceURI.equals(tag.namespaceURI) )	return null;
 		

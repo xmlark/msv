@@ -12,9 +12,10 @@ package com.sun.msv.reader.relax.core;
 import org.relaxng.datatype.DatatypeException;
 import com.sun.msv.reader.State;
 import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.datatype.xsd.TypeIncubator;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.reader.datatype.xsd.FacetStateParent;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
+import com.sun.msv.reader.datatype.xsd.XSTypeIncubator;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -24,22 +25,24 @@ import com.sun.msv.util.StartTagInfo;
  */
 public class ElementRuleWithTypeState extends ElementRuleBaseState implements FacetStateParent
 {
-	protected TypeIncubator incubator;
+	protected XSTypeIncubator incubator;
 	
-	public TypeIncubator getIncubator()	{ return incubator; }
+	public XSTypeIncubator getIncubator()	{ return incubator; }
 	
 	protected void startSelf() {
 		super.startSelf();
-		
+
+        final RELAXCoreReader reader = (RELAXCoreReader)this.reader;
+        
 		// existance of type attribute has already checked before
 		// this state is created.
-		incubator = new TypeIncubator(
-			(XSDatatype)reader.resolveDataType( startTag.getAttribute("type") ) );
+		incubator = reader.resolveXSDatatype(startTag.getAttribute("type"))
+            .createIncubator();
 	}
 	
 	protected Expression getContentModel() {
 		try {
-			return reader.pool.createData( incubator.derive(null) );
+			return incubator.derive(null);
 		} catch( DatatypeException e ) {
 			// derivation failed
 			reader.reportError( e, reader.ERR_BAD_TYPE, e.getMessage() );

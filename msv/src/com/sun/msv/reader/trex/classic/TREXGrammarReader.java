@@ -20,6 +20,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
 import org.relaxng.datatype.DatatypeException;
 import com.sun.msv.datatype.xsd.StringType;
+import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.reader.*;
@@ -28,6 +29,8 @@ import com.sun.msv.reader.trex.IncludePatternState;
 import com.sun.msv.reader.trex.RootState;
 import com.sun.msv.reader.trex.TREXSequencedStringChecker;
 import com.sun.msv.reader.datatype.DataTypeVocabulary;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeResolver;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 import com.sun.msv.util.StartTagInfo;
 import org.relaxng.datatype.Datatype;
 
@@ -36,7 +39,7 @@ import org.relaxng.datatype.Datatype;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TREXGrammarReader extends TREXBaseReader {
+public class TREXGrammarReader extends TREXBaseReader implements XSDatatypeResolver {
 	
 	/** loads TREX pattern */
 	public static TREXGrammar parse( String grammarURL,
@@ -192,14 +195,16 @@ public class TREXGrammarReader extends TREXBaseReader {
 		
 		return super.createExpressionChildState(parent,tag);
 	}
-	
+
+	public XSDatatypeExp resolveXSDatatype( String qName ) {
+        return new XSDatatypeExp( (XSDatatype)resolveDatatype(qName),pool);
+    }
+    
 	/** obtains a named DataType object referenced by a QName.
 	 */
-	public Datatype resolveDataType( String qName )
-	{
+	public Datatype resolveDatatype( String qName ) {
 		String[] s = splitQName(qName);
-		if(s==null)
-		{
+		if(s==null) {
 			reportError( ERR_UNDECLARED_PREFIX, qName );
 			// recover by using a dummy DataType
 			return StringType.theInstance;
@@ -208,15 +213,12 @@ public class TREXGrammarReader extends TREXBaseReader {
 		s[0] = mapNamespace(s[0]);	// s[0] == namespace URI
 		
 		DataTypeVocabulary v = grammar.dataTypes.get(s[0]);
-		if(v==null)
-		{
+		if(v==null) {
 			reportError( ERR_UNKNOWN_DATATYPE_VOCABULARY, s[0] );
 			// put a dummy vocabulary into the map
 			// so that user will never receive the same error again.
 			grammar.dataTypes.put( s[0], new UndefinedDataTypeVocabulary() );
-		}
-		else
-		{
+		} else {
 			try {
 				return v.getType( s[1] );	// s[1] == local name
 			} catch( DatatypeException e ) {

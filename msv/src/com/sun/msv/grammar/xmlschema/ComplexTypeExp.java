@@ -12,6 +12,7 @@ package com.sun.msv.grammar.xmlschema;
 import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.datatype.xsd.TypeIncubator;
 import com.sun.msv.datatype.xsd.QnameType;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.OtherExp;
 import com.sun.msv.grammar.ElementExp;
@@ -217,7 +218,7 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 	 * 
 	 * @see #complexBaseType
 	 */
-	public XSDatatype simpleBaseType;
+	public XSDatatypeExp simpleBaseType;
 	
 	/**
 	 * the derivation method used to derive this complex type from the base type.
@@ -292,7 +293,7 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 		while(true) {
 			if( derived.complexBaseType==null ) {
 				if( derived.simpleBaseType!=null )
-					return derived.simpleBaseType.isDerivedTypeOf(
+					return derived.simpleBaseType.getCreatedType().isDerivedTypeOf(
 						baseType, (constraint&RESTRICTION)==0 );
 				else
 					return false;
@@ -308,7 +309,7 @@ public class ComplexTypeExp extends XMLSchemaTypeExp {
 		if( exp instanceof ComplexTypeExp )
 			return isDerivedTypeOf( (ComplexTypeExp)exp, constraint );
 		else
-			return isDerivedTypeOf( ((SimpleTypeExp)exp).getType(), constraint );
+			return isDerivedTypeOf( ((SimpleTypeExp)exp).getDatatype(), constraint );
 	}
 
 

@@ -31,7 +31,7 @@ public class DataState extends ExpressionWithoutChildState {
 			return Expression.anyString;
 		} else {
 			return reader.pool.createData(
-				((TREXGrammarReader)reader).resolveDataType(typeName),
+				((TREXGrammarReader)reader).resolveDatatype(typeName),
 				new StringPair("",typeName) );
 		}
 	}

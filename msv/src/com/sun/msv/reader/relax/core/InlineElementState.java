@@ -10,7 +10,7 @@
 package com.sun.msv.reader.relax.core;
 
 import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.datatype.xsd.TypeIncubator;
+//import com.sun.msv.datatype.xsd.TypeIncubator;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.grammar.relax.ElementRule;
@@ -19,6 +19,8 @@ import com.sun.msv.grammar.relax.AttPoolClause;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.ExpressionState;
 import com.sun.msv.reader.datatype.xsd.FacetStateParent;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
+import com.sun.msv.reader.datatype.xsd.XSTypeIncubator;
 import com.sun.msv.util.StartTagInfo;
 import org.relaxng.datatype.DatatypeException;
 
@@ -30,9 +32,9 @@ import org.relaxng.datatype.DatatypeException;
 public class InlineElementState extends ExpressionState implements FacetStateParent {
 	
 	/** this field is set to null if this element has label attribute. */
-	protected TypeIncubator incubator;
+	protected XSTypeIncubator incubator;
 	
-	public TypeIncubator getIncubator() { return incubator; }
+	public XSTypeIncubator getIncubator() { return incubator; }
 	
 	protected State createChildState( StartTagInfo tag ) {
 		if( incubator!=null )
@@ -43,6 +45,8 @@ public class InlineElementState extends ExpressionState implements FacetStatePar
 	
 	protected void startSelf() {
 		super.startSelf();
+        
+		final RELAXCoreReader reader = (RELAXCoreReader)this.reader;
 		String type		= startTag.getAttribute("type");
 		String label	= startTag.getAttribute("label");
 		
@@ -58,7 +62,7 @@ public class InlineElementState extends ExpressionState implements FacetStatePar
 		if( label!=null ) {
 			incubator = null;
 		} else {
-			incubator = new TypeIncubator( (XSDatatype)reader.resolveDataType(type) );
+			incubator = reader.resolveXSDatatype(type).createIncubator();
 		}
 	}
 	
@@ -76,14 +80,7 @@ public class InlineElementState extends ExpressionState implements FacetStatePar
 			Expression contentModel;
 
 			if( incubator!=null ) {
-				// @type is used
-				if( "string".equals(startTag.getAttribute("type")) && incubator.isEmpty() ) {
-					// we can use cheaper anyString
-					contentModel = Expression.anyString;
-				} else {
-					contentModel = reader.pool.createData(
-						incubator.derive(null) );
-				}
+				contentModel = incubator.derive(null);
 			} else {
 				// @label is used
 				String label = startTag.getAttribute("label");

@@ -31,36 +31,22 @@ public class RestrictionState extends TypeWithOneChildState implements FacetStat
 		this.newTypeName = newTypeName;
 	}
 	
-	protected TypeIncubator incubator;
-	public final TypeIncubator getIncubator() {
+	protected XSTypeIncubator incubator;
+	public final XSTypeIncubator getIncubator() {
 		return incubator;
 	}
 
-	protected XSDatatype annealType( XSDatatype baseType ) throws DatatypeException {
-		if( type instanceof LateBindDatatype )
-			// late-bind construction.
-			return new LateBindDatatype(
-				new LateBindDatatype.Renderer() {
-					public XSDatatype render( LateBindDatatype.RenderingContext context )
-								throws DatatypeException {
-						return ((LateBindTypeIncubator)incubator).derive(newTypeName,context);
-					}
-				}, this );
-		else
-			return incubator.derive(newTypeName);
+	protected XSDatatypeExp annealType( XSDatatypeExp baseType ) throws DatatypeException {
+        return incubator.derive(newTypeName);
 	}
 	
-	public void onEndChild( XSDatatype child ) {
+	public void onEndChild( XSDatatypeExp child ) {
 		super.onEndChild(child);
 		createTypeIncubator();
 	}
 	
 	private void createTypeIncubator() {
-		if( type instanceof LateBindDatatype )
-			// this datatype is not available now. Use late-binder.
-			incubator = new LateBindTypeIncubator( (LateBindDatatype)type );
-		else
-			incubator = new TypeIncubator(type);
+        incubator = type.createIncubator();
 	}
 
 	
@@ -69,10 +55,8 @@ public class RestrictionState extends TypeWithOneChildState implements FacetStat
 		
 		// if the base attribute is used, try to load it.
 		String base = startTag.getAttribute("base");
-		if(base!=null) {
-			type = (XSDatatype)reader.resolveDataType(base);
-			createTypeIncubator();
-		}
+		if(base!=null)
+            onEndChild( ((XSDatatypeResolver)reader).resolveXSDatatype(base) );
 	}
 
 	protected State createChildState( StartTagInfo tag ) {
@@ -84,8 +68,7 @@ public class RestrictionState extends TypeWithOneChildState implements FacetStat
 		if( FacetState.facetNames.contains(tag.localName) ) {
 			if( incubator==null ) {
 				reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "restriction", "base" );
-				type = StringType.theInstance;
-				incubator = new TypeIncubator(type);
+                onEndChild(new XSDatatypeExp(StringType.theInstance,reader.pool));
 			}
 			return new FacetState();
 		}

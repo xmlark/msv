@@ -10,9 +10,9 @@
 package com.sun.msv.grammar.xmlschema;
 
 import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.ExpressionPool;
-import com.sun.msv.reader.datatype.xsd.LateBindDatatype;
 
 /**
  * Simple type declaration.
@@ -31,25 +31,26 @@ import com.sun.msv.reader.datatype.xsd.LateBindDatatype;
  */
 public class SimpleTypeExp extends XMLSchemaTypeExp {
 	
-	SimpleTypeExp( String typeLocalName ) {
-		super(typeLocalName);
+	SimpleTypeExp( String typeName ) {
+		super(typeName);
 	}
+    
+    public void set( XSDatatypeExp exp ) {
+        this.exp = this.type = exp;
+    }
 	
-	public void setType( XSDatatype dt, ExpressionPool pool ) {
-		if(!(dt instanceof LateBindDatatype ))
-			// do not create a TypedStringExp for late-bind object.
-			// this will unnecessary "contaminate" the pool,
-            // which makes it impossible to serialize AGM.
-			this.exp = pool.createData(dt);
-		this.type = dt;
-	}
-	
-	protected XSDatatype type;
-	/** gets the XSDatatype object that represents this simple type. */
-	public XSDatatype getType() {
-		return type;
-	}
+	protected XSDatatypeExp type;
+	/** gets the XSDatatypeExp object that represents this simple type. */
+	public XSDatatypeExp getType() { return type; }
 
+    /**
+     * Gets the encapsulated Datatype object.
+     * <p>
+     * This method can be called only after the parsing is finished.
+     */
+    public XSDatatype getDatatype() { return type.getCreatedType(); }
+    
+    
 	/**
 	 * gets the value of the block constraint.
 	 * SimpleTypeExp always returns 0 because it doesn't
@@ -59,7 +60,7 @@ public class SimpleTypeExp extends XMLSchemaTypeExp {
 	
 	/** clone this object. */
 	public RedefinableExp getClone() {
-		SimpleTypeExp exp = new SimpleTypeExp(super.name);
+		SimpleTypeExp exp = new SimpleTypeExp(this.name);
 		exp.redefine(this);
 		return exp;
 	}
@@ -67,7 +68,7 @@ public class SimpleTypeExp extends XMLSchemaTypeExp {
 	public void redefine( RedefinableExp _rhs ) {
 		super.redefine(_rhs);
 		
-		((SimpleTypeExp)_rhs).type = this.type;
+		((SimpleTypeExp)_rhs).set(this.type);
 	}
 	
 

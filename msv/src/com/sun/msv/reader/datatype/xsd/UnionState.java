@@ -25,7 +25,7 @@ import org.relaxng.datatype.DatatypeException;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class UnionState extends TypeState implements TypeOwner {
+public class UnionState extends TypeState implements XSTypeOwner {
 	
 	protected final String newTypeName;
 	protected UnionState( String newTypeName ) {
@@ -34,8 +34,7 @@ public class UnionState extends TypeState implements TypeOwner {
 	
 	private final ArrayList memberTypes = new ArrayList();
 												  
-	protected State createChildState( StartTagInfo tag )
-	{
+	protected State createChildState( StartTagInfo tag ) {
 		// accepts elements from the same namespace only.
 		if( !startTag.namespaceURI.equals(tag.namespaceURI) )	return null;
 		
@@ -53,41 +52,17 @@ public class UnionState extends TypeState implements TypeOwner {
 		if(memberTypes!=null) {
 			StringTokenizer tokens = new StringTokenizer(memberTypes);
 			while( tokens.hasMoreTokens() )
-				onEndChild( (XSDatatype)reader.resolveDataType(tokens.nextToken()) );
+	            onEndChild( ((XSDatatypeResolver)reader)
+                    .resolveXSDatatype(tokens.nextToken()) );
 		}
 	}
 	
-	/**
-	 * this flag is set to true if there is a child LateBindDatatype object.
-	 * In that case, the deriveByUnion method has to be called after the parsing
-	 * is completed.
-	 */
-	private boolean performLateBinding = false;
-	
-	public void onEndChild( XSDatatype type ) {
-		if( type instanceof LateBindDatatype )
-			performLateBinding = true;
+	public void onEndChild( XSDatatypeExp type ) {
 		memberTypes.add(type);
 	}
 	
-	protected final XSDatatype makeType() throws DatatypeException {
-		if( !performLateBinding )
-			// normal construction.
-			return DatatypeFactory.deriveByUnion( newTypeName, memberTypes );
-		
-		// late binding
-		return new LateBindDatatype( new LateBindDatatype.Renderer() {
-			public XSDatatype render( LateBindDatatype.RenderingContext context ) throws DatatypeException {
-				int len = memberTypes.size();
-				for( int i=0; i<len; i++ ) {
-					XSDatatype dt = (XSDatatype)memberTypes.get(i);
-					if( dt instanceof LateBindDatatype )
-						memberTypes.set(i, ((LateBindDatatype)dt).getBody(context) );
-				}
-				
-				return DatatypeFactory.deriveByUnion( newTypeName, memberTypes );
-			}
-		}, this );
+	protected final XSDatatypeExp makeType() throws DatatypeException {
+        return XSDatatypeExp.makeUnion( newTypeName, memberTypes, reader );
 	}
 
 }

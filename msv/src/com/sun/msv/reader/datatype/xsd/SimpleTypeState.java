@@ -41,23 +41,13 @@ public class SimpleTypeState extends TypeWithOneChildState
 		return null;	// unrecognized
 	}
 
-	protected XSDatatype annealType( final XSDatatype dt ) {
+	protected XSDatatypeExp annealType( final XSDatatypeExp dt ) {
 		final String finalValueStr = startTag.getAttribute("final");
 		if(finalValueStr!=null) {
 			final int finalValue = getFinalValue(finalValueStr);
 			
-			// wrap it by a FinalComponent
-			if( dt instanceof LateBindDatatype ) {
-				// late-binding
-				return new LateBindDatatype( new LateBindDatatype.Renderer() {
-					public XSDatatype render( LateBindDatatype.RenderingContext context ) throws DatatypeException {
-						return new FinalComponent(
-							(XSDatatypeImpl)((LateBindDatatype)dt).getBody(context),
-							finalValue );
-					}
-				}, this );
-			} else
-				return new FinalComponent( (XSDatatypeImpl)dt, finalValue );
+			// create a new type by adding final constraint.
+            return dt.createFinalizedType(finalValue,reader);
 		} else
 			return dt;
 	}

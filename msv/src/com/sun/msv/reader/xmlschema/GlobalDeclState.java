@@ -14,8 +14,8 @@ import com.sun.msv.reader.State;
 import com.sun.msv.reader.SimpleState;
 import com.sun.msv.reader.ExpressionOwner;
 import com.sun.msv.reader.GrammarReader;
-import com.sun.msv.reader.datatype.TypeOwner;
-import com.sun.msv.reader.datatype.xsd.LateBindDatatype;
+import com.sun.msv.reader.datatype.xsd.XSTypeOwner;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
 import com.sun.msv.util.StartTagInfo;
@@ -26,7 +26,7 @@ import com.sun.msv.util.StartTagInfo;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class GlobalDeclState extends SimpleState
-	implements ExpressionOwner,TypeOwner {
+	implements ExpressionOwner,XSTypeOwner {
 	
 	protected State createChildState( StartTagInfo tag ) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
@@ -48,7 +48,7 @@ public class GlobalDeclState extends SimpleState
 	// do nothing. declarations register themselves by themselves.
 	public void onEndChild( Expression exp ) {}
 	
-	public void onEndChild( XSDatatype type ) {
+	public void onEndChild( XSDatatypeExp type ) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 //		final XSDatatypeImpl dti = (XSDatatypeImpl)type;
 //		final String typeName = dti.getName();
@@ -68,21 +68,8 @@ public class GlobalDeclState extends SimpleState
 			return;
 			// recover by ignoring this declaration
 		}
-		if( type instanceof LateBindDatatype ) {
-			final LateBindDatatype lbdt = (LateBindDatatype)type;
-			reader.addBackPatchJob( new GrammarReader.BackPatch() {
-				public State getOwnerState() {
-					return GlobalDeclState.this;
-				}
-				public void patch() {
-					// replace the definition of the SimpleTypeExp by
-					// a real object.
-					exp.setType( lbdt.getBody(null), reader.pool );
-				}
-			});
-		}
 		
-		exp.setType(type,reader.pool);
+        exp.set(type);
 		reader.setDeclaredLocationOf(exp);
 	}
 }

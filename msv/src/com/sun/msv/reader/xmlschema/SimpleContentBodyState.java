@@ -19,10 +19,10 @@ import com.sun.msv.grammar.xmlschema.AttributeWildcard;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.SequenceState;
 import com.sun.msv.reader.GrammarReader;
-import com.sun.msv.reader.datatype.TypeOwner;
+import com.sun.msv.reader.datatype.xsd.XSTypeOwner;
+import com.sun.msv.reader.datatype.xsd.XSTypeIncubator;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 import com.sun.msv.reader.datatype.xsd.FacetStateParent;
-import com.sun.msv.reader.datatype.xsd.LateBindDatatype;
-import com.sun.msv.reader.datatype.xsd.LateBindTypeIncubator;
 import com.sun.msv.util.StartTagInfo;
 import org.relaxng.datatype.DatatypeException;
 
@@ -32,7 +32,7 @@ import org.relaxng.datatype.DatatypeException;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class SimpleContentBodyState extends SequenceState
-	implements FacetStateParent,TypeOwner,AnyAttributeOwner {
+	implements FacetStateParent,XSTypeOwner,AnyAttributeOwner {
 	
 	protected final boolean extension;
 
@@ -49,11 +49,10 @@ public class SimpleContentBodyState extends SequenceState
 	}
 	
 	/** used to restrict simpleType */
-	protected TypeIncubator incubator;
-	private boolean lateBinding;
-	public TypeIncubator getIncubator() { return incubator; }
+	protected XSTypeIncubator incubator;
+	public XSTypeIncubator getIncubator() { return incubator; }
 	
-	public void onEndChild( XSDatatype child ) {
+	public void onEndChild( XSDatatypeExp child ) {
 		if( incubator!=null )
 			// assertion failed.
 			// createChildState should reject 2nd <simpleType> element.
@@ -75,27 +74,24 @@ public class SimpleContentBodyState extends SequenceState
 	
 	protected void startSelf() {
 		super.startSelf();
+		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		
 		String base	= startTag.getAttribute("base");
 		if(base!=null) {
-			createTypeIncubator( (XSDatatype)reader.resolveDataType(base) );
+            incubator = reader.resolveXSDatatype(base).createIncubator();
 		} else {
 			if(extension) {
 				// in extension, base attribute must is mandatory.
 				reader.reportError( reader.ERR_MISSING_ATTRIBUTE, startTag.localName, "base");
 				// recover by pretending base="string"
-				incubator = new TypeIncubator( StringType.theInstance );
+                incubator = new XSDatatypeExp(StringType.theInstance,reader.pool).createIncubator();
 			}
 			// in case of restriction, child <simpleType> may be present.
 		}
 	}
 
-	private void createTypeIncubator( XSDatatype baseType ) {
-		if( baseType instanceof LateBindDatatype ) {
-			lateBinding = true;
-			incubator = new LateBindTypeIncubator( (LateBindDatatype)baseType );
-		} else
-			incubator = new TypeIncubator( baseType );
+	private void createTypeIncubator( XSDatatypeExp baseType ) {
+		incubator = baseType.createIncubator();
 	}
 	
 	protected Expression initialExpression() {
@@ -118,33 +114,16 @@ public class SimpleContentBodyState extends SequenceState
 		} else {
 			parentDecl.derivationMethod = extension?parentDecl.EXTENSION:parentDecl.RESTRICTION;
 			
-			if(lateBinding) {
-				// in case of the late-binding
-				final ReferenceExp r = new ReferenceExp(null);
-				typedStr = r;
-				// perform a back-patch to provide the real definition
-				reader.addBackPatchJob( new GrammarReader.BackPatch() {
-					public State getOwnerState() { return SimpleContentBodyState.this; }
-					public void patch() {
-						r.exp = getDatatypeExp();
-					}
-				});
-			} else
-				typedStr = getDatatypeExp();
+            try {
+    			typedStr = parentDecl.simpleBaseType = incubator.derive(null);
+            } catch( DatatypeException e ) {
+            	// derivation failed
+            	reader.reportError( e, reader.ERR_BAD_TYPE, e.getMessage() );
+            	// recover by using harmless expression. anything will do.
+            	return Expression.nullSet;
+            }
 		}
 
 		return reader.pool.createSequence( typedStr, exp );
-	}
-
-	private Expression getDatatypeExp() {
-		try {
-			return reader.pool.createData(
-				parentDecl.simpleBaseType = incubator.derive(null) );
-		} catch( DatatypeException e ) {
-			// derivation failed
-			reader.reportError( e, reader.ERR_BAD_TYPE, e.getMessage() );
-			// recover by using harmless expression. anything will do.
-			return Expression.nullSet;
-		}
 	}
 }

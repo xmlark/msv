@@ -198,7 +198,8 @@ public class XSAcceptor extends SimpleAcceptor {
 					return onNotSubstitutableType(sti,type,refErr);
 				
 				SimpleTypeExp curT = (SimpleTypeExp)currentType;
-				if(sexp.getType().isDerivedTypeOf(curT.getType(), !xe.parent.isRestrictionBlocked() ))
+				if(sexp.getDatatype().isDerivedTypeOf(
+                    curT.getDatatype(), !xe.parent.isRestrictionBlocked() ))
 					contentModel = sexp;
 				else
 					return onNotSubstitutableType(sti,type,refErr);

@@ -23,12 +23,12 @@ import org.relaxng.datatype.DatatypeException;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-abstract class TypeWithOneChildState extends TypeState implements TypeOwner
+abstract class TypeWithOneChildState extends TypeState implements XSTypeOwner
 {
-	protected XSDatatype type;
+	protected XSDatatypeExp type;
 
 	/** receives a Pattern object that is contained in this element. */
-	public void onEndChild( XSDatatype child ) {
+	public void onEndChild( XSDatatypeExp child ) {
 		if( type!=null )
 			reader.reportError( reader.ERR_MORE_THAN_ONE_CHILD_TYPE );
 			// recover by ignoring this child
@@ -36,10 +36,11 @@ abstract class TypeWithOneChildState extends TypeState implements TypeOwner
 			type = child;
 	}
 	
-	protected final XSDatatype makeType() throws DatatypeException {
+	protected final XSDatatypeExp makeType() throws DatatypeException {
 		if( type==null ) {
 			reader.reportError( reader.ERR_MISSING_CHILD_TYPE );
-			return StringType.theInstance;	// recover by supplying a dummy DataType
+            // recover by supplying a dummy DataType
+			return new XSDatatypeExp( StringType.theInstance, reader.pool );
 		}
 		return annealType(type);
 	}
@@ -48,8 +49,7 @@ abstract class TypeWithOneChildState extends TypeState implements TypeOwner
 	 * performs final wrap-up and returns a fully created DataType object
 	 * that represents this element.
 	 */
-	protected XSDatatype annealType( XSDatatype dt ) throws DatatypeException
-	{
+	protected XSDatatypeExp annealType( XSDatatypeExp dt ) throws DatatypeException {
 		// default implementation do nothing.
 		return dt;
 	}

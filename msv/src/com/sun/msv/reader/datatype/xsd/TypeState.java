@@ -24,7 +24,7 @@ import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.util.StartTagInfo;
 
 /**
- * Base implementation for those states which produce DataType object
+ * Base implementation for those states which produce a type object
  * as its parsing result.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
@@ -34,53 +34,35 @@ abstract class TypeState extends SimpleState
 	public void endSelf() {
 		super.endSelf();
 		
-		XSDatatype type = _makeType();
+		XSDatatypeExp type = _makeType();
 		
+        if( parentState instanceof XSTypeOwner ) {
+            ((XSTypeOwner)parentState).onEndChild(type);
+            return;
+        }
 		if( parentState instanceof TypeOwner ) {
 			// if the parent can understand what we are creating,
 			// then pass the result.
-			((TypeOwner)parentState).onEndChild(type);
+			((TypeOwner)parentState).onEndChildType(type,type.name());
 			return;
-		} else
+		}
 		if( parentState instanceof ExpressionOwner ) {
-			if( type instanceof LateBindDatatype ) {
-				// if this is a late-bind datatype,/
-				// return a temporary ReferenceExp now and
-				// perform a back-patching later to complete AGM.
-				final ReferenceExp ref = new ReferenceExp(null);
-				((ExpressionOwner)parentState).onEndChild(ref);
-				
-				final LateBindDatatype lbdt = (LateBindDatatype)type;
-				
-				// register a patcher to render the real object.
-				reader.addBackPatchJob(
-					new GrammarReader.BackPatch() {
-						public State getOwnerState() { return TypeState.this; }
-						public void patch() {
-							// perform binding.
-							ref.exp = reader.pool.createData(lbdt.getBody(null));
-						}
-				});
-				
-			} else {
-				// if the parent expects Expression, convert type into Expression
-				((ExpressionOwner)parentState).onEndChild(
-					reader.pool.createData(type) );
-			}
+            ((ExpressionOwner)parentState).onEndChild(type);
 			return;
 		}
 		
 		// we have no option to let the parent state know our result.
-		throw new Error();
+		throw new Error(parentState.getClass().getName()+" doesn't implement any of TypeOwner");
 	}
 	
 	/** the makeType method with protection against possible exception. */
-	XSDatatype _makeType() {
+	XSDatatypeExp _makeType() {
 		try {
 			return makeType();
 		} catch( DatatypeException be ) {
 			reader.reportError( be, reader.ERR_BAD_TYPE );
-			return StringType.theInstance;	// recover by assuming a valid type.
+            // recover by assuming a valid type.
+			return new XSDatatypeExp(StringType.theInstance,reader.pool);
 		}
 	}
 		
@@ -89,7 +71,7 @@ abstract class TypeState extends SimpleState
 	 * Implementation has to provide DataType object that represents the content of
 	 * this element.
 	 */
-	protected abstract XSDatatype makeType() throws DatatypeException;
+	protected abstract XSDatatypeExp makeType() throws DatatypeException;
 
 
 	public final void startElement( String namespaceURI, String localName, String qName, Attributes atts )
@@ -99,8 +81,7 @@ abstract class TypeState extends SimpleState
 		// we have to copy Attributes, otherwise it will be mutated by SAX parser
 			
 		State nextState = createChildState(tag);
-		if(nextState!=null)
-		{
+		if(nextState!=null) {
 			reader.pushState(nextState,this,tag);
 			return;
 		}

@@ -24,5 +24,5 @@ import com.sun.msv.datatype.xsd.TypeIncubator;
  */
 public interface FacetStateParent {
 	/** gets an incubator object that the owner holds. */
-	TypeIncubator getIncubator();
+	XSTypeIncubator getIncubator();
 }

@@ -23,7 +23,8 @@ import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.ReferenceContainer;
-import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import java.util.Map;
 
 /**
  * "Module" of RELAX Core.
@@ -107,8 +108,20 @@ public class RELAXModule implements Grammar {
 	/** target namespace URI */
 	public final String targetNamespace;
 	
-	/** datatypes */
-	public final XSDVocabulary userDefinedTypes = new XSDVocabulary();
+	/** Datatypes. */
+    public class DatatypeContainer {
+    	private final Map m = new java.util.HashMap();
+        
+        public XSDatatype get( String name ) {
+            return (XSDatatype)m.get(name);
+        }
+        public void add( XSDatatype dt ) {
+            if(dt.getName()==null)  throw new IllegalArgumentException();
+            m.put(dt.getName(),dt);
+        }
+    };
+    public final DatatypeContainer datatypes = new DatatypeContainer();
+    
 	
 	/**
 	 * chioce of all exported elementRules and hedgeRules.
@@ -131,7 +144,7 @@ public class RELAXModule implements Grammar {
 		
 		this.pool = pool;
 		this.targetNamespace = targetNamespace;
-		userDefinedTypes.addType( EmptyStringType.theInstance );
-		userDefinedTypes.addType( NoneType.theInstance );
+		datatypes.add( EmptyStringType.theInstance );
+		datatypes.add( NoneType.theInstance );
 	}
 }

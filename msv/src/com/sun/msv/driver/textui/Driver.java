@@ -130,7 +130,7 @@ public class Driver {
 				// use Sun's "XML Entity and URI Resolvers" by Norman Walsh
 				// to resolve external entities.
 				// http://www.sun.com/xml/developers/resolver/
-				if(entityResolver!=null)
+				if(entityResolver==null)
 					entityResolver = new CatalogResolver(true);
 				
 				((CatalogResolver)entityResolver).getCatalog().parseCatalog(args[++i]);
@@ -278,10 +278,12 @@ public class Driver {
 			} catch( com.sun.msv.verifier.ValidationUnrecoverableException vv ) {
 				System.out.println(localize(MSG_BAILOUT));
 			} catch( SAXParseException se ) {
-				  se.getException().printStackTrace();
+                if( se.getException()!=null )
+				    se.getException().printStackTrace();
 				; // error is already reported by ErrorHandler
 			} catch( SAXException e ) {
-				  e.getException().printStackTrace();
+                if( e.getException()!=null )
+    				  e.getException().printStackTrace();
 			}
 			
 			if(result)

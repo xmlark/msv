@@ -22,7 +22,7 @@ public class RootIncludedSchemaState extends SimpleState {
 	
 	protected State topLevelState;
 	
-	protected RootIncludedSchemaState( State topLevelState ) {
+	public RootIncludedSchemaState( State topLevelState ) {
 		this.topLevelState = topLevelState;
 	}
 	

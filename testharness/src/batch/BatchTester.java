@@ -16,7 +16,6 @@ import java.util.Vector;
 import java.io.*;
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.InputSource;
-import org.relaxng.testharness.model.*;
 import junit.framework.*;
 import com.sun.msv.verifier.*;
 import com.sun.msv.reader.GrammarReaderController;
@@ -24,7 +23,7 @@ import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.resolver.tools.CatalogResolver;
 import batch.driver.*;
-import batch.model.DirectoryTestReader;
+import batch.model.*;
 
 /**
  * Test schemata/instances are expected to follow a naming convention.
@@ -54,7 +53,9 @@ public abstract class BatchTester {
 	
 	public IValidatorEx validator;
 	
-	
+	private TestReader reader;
+    
+    
 	
 	
 	
@@ -63,15 +64,11 @@ public abstract class BatchTester {
 	 */
 	protected abstract void usage();
 	
-	/**
-	 * Creates JUnit test suite from the source test suite information.
-	 */
-	protected abstract TestSuite suite( RNGTestSuite src );
 	
 	/**
 	 * Creates the test suite from the specified file/directory.
 	 */
-	public RNGTest parse( String target ) throws Exception {
+	public Test parse( String target ) throws Exception {
 		return parse(target,false);
 	}
 	
@@ -82,14 +79,13 @@ public abstract class BatchTester {
 	 *		if the target is directory and this parameter is true, then
 	 *		subdirectories are recursively parsed into a test suite.
 	 */
-	public RNGTest parse( String target, boolean recursive ) throws Exception {
+	public Test parse( String target, boolean recursive ) throws Exception {
 		File src = new File(target);
 		
 		if(src.isDirectory())
-			return DirectoryTestReader.parseDirectory(
-				src, ext, recursive );
+			return reader.parseDirectory( src, ext, recursive );
 		else
-			return DirectoryTestReader.parseSchema(src);
+			return reader.parseSchema(src);
 	}
 	
 	/**
@@ -106,23 +102,34 @@ public abstract class BatchTester {
 			target.equals("relax") ))
 			System.out.println("*** strict option is not supported for the language "+target);
 		
-		if( target.equals("relax") )		_init( ".rlx", new GenericValidator() );
+		if( target.equals("relax") )	setUp( ".rlx", new GenericValidator() );
 		else
-		if( target.equals("trex") )		_init( ".trex", new GenericValidator() );
+		if( target.equals("trex") )		setUp( ".trex", new GenericValidator() );
 		else
-		if( target.equals("rng") )		_init( ".rng", new IValidatorImplForRNG(strict) );
+		if( target.equals("rng") )		setUp( ".rng", new IValidatorImplForRNG(strict) );
 		else
-		if( target.equals("xsd") )		_init( ".xsd", new IValidatorImplForXS(strict) );
+		if( target.equals("xsd") )		setUp( ".xsd", new IValidatorImplForXS(strict) );
 		else
-		if( target.equals("dtd") )		_init( ".dtd", new DTDValidator() );
+		if( target.equals("dtd") )		setUp( ".dtd", new DTDValidator() );
 		else
 			throw new Error("unrecognized language type: "+target );
 	}
-		
-	private void _init( String _ext, IValidatorEx _validator ) {
+	
+    /**
+     * This method is called when the schema language is detected.
+     */
+	protected void setUp( String _ext, IValidatorEx _validator ) {
 		this.ext = _ext;
 		this.validator = _validator;
+        this.reader = createReader();
 	}
+    
+    /**
+     * This method is called as the last step of set-up
+     * to create TestReader object which will parse test files.
+     */
+    protected abstract TestReader createReader();
+    
 	
 	protected void onOption( String opt ) throws Exception {
 		System.out.println("unrecognized option:"+opt);
@@ -164,11 +171,11 @@ public abstract class BatchTester {
 		init(target,strict);
 		
 		// collect test cases
-		RNGTestSuite s = new RNGTestSuite();
+		TestSuite s = new TestSuite();
 		for( int i=0; i<instances.size(); i++ )
 			s.addTest(parse((String)instances.get(i),recursive));
 		
-		junit.textui.TestRunner.run( suite(s) );
+		junit.textui.TestRunner.run(s);
 	}
 
 	/*
@@ -197,7 +204,7 @@ public abstract class BatchTester {
 		StringTokenizer tokens = new StringTokenizer( property, ";" );
 
 		// collect test cases
-		RNGTestSuite s = new RNGTestSuite();
+		TestSuite s = new TestSuite();
 		while( tokens.hasMoreTokens() ) {
 			String name = tokens.nextToken();
 			if(name.charAt(name.length()-1)=='@')
@@ -206,17 +213,6 @@ public abstract class BatchTester {
 				s.addTest(parse(name));
 		}
 		
-		return suite(s);
-	}
-	
-	/**
-	 * Gets the name of the test case from a header, which can be possibly null.
-	 */
-	public String getName( RNGHeader header ) {
-		String s=null;
-		if(header!=null)	s = header.getName();
-		if(s==null)			s = "";
 		return s;
 	}
-
 }

@@ -7,13 +7,13 @@
  * Use is subject to license terms.
  * 
  */
-package batch.driver;
+package batch;
 
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
 
 /**
- * {@link VerificationErrorHandler} that reports only the first error.
+ * {@link ErrorHandler} that reports only the first error.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

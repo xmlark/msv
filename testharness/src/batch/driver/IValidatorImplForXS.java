@@ -10,7 +10,7 @@ import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.xmlschema.XMLSchemaReader;
 import com.sun.msv.verifier.IVerifier;
 import com.sun.msv.verifier.identity.IDConstraintChecker;
-import org.relaxng.testharness.model.RNGHeader;
+import batch.model.*;
 import org.iso_relax.verifier.Schema;
 
 /**
@@ -26,7 +26,7 @@ public class IValidatorImplForXS extends IValidatorImpl {
 		return XMLSchemaReader.getXmlSchemaForXmlSchema();
 	}
 
-	protected GrammarReader getReader( RNGHeader header ) {
+	protected GrammarReader getReader() {
 		return new XMLSchemaReader( createController(), factory, new ExpressionPool() );
 	}
 	

@@ -5,7 +5,7 @@ import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.grammar.relaxng.RELAXNGGrammar;
-import org.relaxng.testharness.model.RNGHeader;
+import batch.model.*;
 import org.iso_relax.verifier.Schema;
 
 /**
@@ -21,7 +21,7 @@ public class IValidatorImplForRNG extends IValidatorImpl {
 		return RELAXNGCompReader.getRELAXNGSchema4Schema();
 	}
 	
-	protected GrammarReader getReader( RNGHeader header ) {
+	protected GrammarReader getReader() {
 		return new RELAXNGCompReader( createController(), factory, new ExpressionPool() );
 	}
 }

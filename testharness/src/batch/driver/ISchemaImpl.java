@@ -1,6 +1,6 @@
 package batch.driver;
 
-import org.relaxng.testharness.validator.ISchema;
+import batch.model.*;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.relaxng.RELAXNGGrammar;
 	

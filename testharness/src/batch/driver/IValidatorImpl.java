@@ -1,8 +1,6 @@
 package batch.driver;
 
-import org.relaxng.testharness.validator.*;
-import org.relaxng.testharness.model.XMLDocument;
-import org.relaxng.testharness.model.RNGHeader;
+import batch.model.*;
 import org.iso_relax.verifier.*;
 import org.xml.sax.*;
 import com.sun.msv.driver.textui.ReportErrorHandler;
@@ -14,6 +12,7 @@ import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.util.GrammarLoader;
+import java.io.File;
 import javax.xml.parsers.SAXParserFactory;
 
 /**
@@ -50,12 +49,16 @@ public abstract class IValidatorImpl extends AbstractValidatorExImpl
 	 */
 	protected Schema getSchemaForSchema() { return null; }
 	
-	public ISchema parseSchema( XMLDocument pattern, RNGHeader header ) throws Exception {
-		GrammarReader reader = getReader(header);
+	public ISchema parseSchema( File file ) throws Exception {
+		GrammarReader reader = getReader();
 		
-		if(!strictCheck)
-			pattern.getAsSAX(reader);
-		else {
+        InputSource source = com.sun.msv.util.Util.getInputSource(
+            file.getAbsolutePath());
+        XMLReader parser = factory.newSAXParser().getXMLReader();
+        
+        if(!strictCheck) {
+            parser.setContentHandler(reader);
+        } else {
 			Schema schema = getSchemaForSchema();
 			final boolean[] error = new boolean[1];
 			
@@ -71,13 +74,16 @@ public abstract class IValidatorImpl extends AbstractValidatorExImpl
 					error[0]=true;
 				}
 			});
+            
 			filter.setContentHandler(reader);
-			pattern.getAsSAX((ContentHandler)filter);
+            parser.setContentHandler((ContentHandler)filter);
 			
 			if( error[0]==true )		return null;
 		}
-		
-		Grammar grammar = getGrammarFromReader(reader,header);
+
+        parser.parse(source);
+        
+		Grammar grammar = getGrammarFromReader(reader,file);
 		
 		if( grammar==null )	return null;
 		else				return new ISchemaImpl( grammar );
@@ -94,9 +100,9 @@ public abstract class IValidatorImpl extends AbstractValidatorExImpl
 	 * override this method to use different reader implementation.
 	 * RELAX NG test harness can be used to test XML Schema, TREX, etc.
 	 */
-	protected abstract GrammarReader getReader( RNGHeader header );
+	protected abstract GrammarReader getReader();
 	
-	protected Grammar getGrammarFromReader( GrammarReader reader, RNGHeader header ) {
+	protected Grammar getGrammarFromReader( GrammarReader reader, File schema ) {
 		return reader.getResultAsGrammar();
 	}
 	

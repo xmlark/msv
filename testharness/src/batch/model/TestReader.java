@@ -1,56 +1,45 @@
 package batch.model;
 
-import org.relaxng.testharness.model.*;
-import org.relaxng.testharness.reader.TestSuiteReader;
 import java.io.File;
 import java.io.FilenameFilter;
 import javax.xml.parsers.*;
+import junit.framework.*;
 
 /**
- * Parses a directory into the test suite object model.
+ * Parses a directory into the test suite.
+ * 
+ * This object will enumerate test files, and TestBuilder will create
+ * actual test cases.
  * 
  * @author
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class DirectoryTestReader
+public class TestReader
 {
-	static final DocumentBuilderFactory domFactory;
-	static {
-		domFactory = new org.apache.xerces.jaxp.DocumentBuilderFactoryImpl();
-		domFactory.setNamespaceAware(true);
-		domFactory.setValidating(false);
-	}
-	
-	static final SAXParserFactory saxFactory;
-	static {
-		saxFactory = new org.apache.xerces.jaxp.SAXParserFactoryImpl();
-		saxFactory.setNamespaceAware(true);
-		saxFactory.setValidating(false);
-	}
-	
-	
+    public TestReader( TestBuilder _builder ) {
+        this.builder = _builder;
+    }
+
+    private final TestBuilder builder;
+    
+
 	
 	/**
-	 * Obtains an RNGTest object from a schema file (e.g., abc.rng) and
+	 * Obtains a test object from a schema file (e.g., abc.rng) and
 	 * its instance documents.
 	 */
-	public static RNGTest parseSchema( File schema ) throws Exception {
+	public Test parseSchema( File schema ) throws Exception {
 
 		String schemaName = schema.getName();
 		File parent = new File(schema.getParent());
-		
-		if(schemaName.endsWith(".ssuite")) {
-			// this is a schema suite file. 
-			return TestSuiteReader.parse(schema);
-		}
 		
 		final String prefix = schemaName.substring(0, schemaName.lastIndexOf('.')+1);
 		final boolean isCorrect = schemaName.indexOf(".e.")==-1;
 		
 		if(isCorrect) {
-			RNGValidTestCase tcase = new RNGValidTestCase();
-			tcase.header = new RNGHeaderImpl(schema);
-			tcase.pattern = new XMLDocumentImpl(schema);
+            TestSuite suite = new TestSuite();
+            
+            suite.addTest( builder.createCorrectSchemaTest(schema) );
 				
 			// collects test instances.			
 			String[] instances = parent.list( new FilenameFilter(){ 
@@ -62,41 +51,35 @@ public class DirectoryTestReader
 			if( instances!=null ) {
 				for( int i=0; i<instances.length; i++ ) {
 					boolean isValid = instances[i].indexOf(".v")!=-1;
-					XMLDocument doc = 
-						new XMLDocumentImpl(new File(parent,instances[i]));
-					
-					if(isValid)		tcase.addValidDocument(new ValidDocument(doc));
-					else			tcase.addInvalidDocument(doc);
+					File document = new File(parent,instances[i]);
+					if(isValid)
+                        suite.addTest( builder.createValidDocumentTest(document) );
+                    else
+                        suite.addTest( builder.createInvalidDocumentTest(document) );
 				}
 			}
 			
-			return tcase;
+			return suite;
 			
 		} else {
 			// if this schema is invalid
-			RNGInvalidTestCase tcase = new RNGInvalidTestCase();
-			tcase.header = new RNGHeaderImpl(schema);
-			tcase.addPattern( new XMLDocumentImpl(schema) );
-			
-			return tcase;
+            return builder.createIncorrectSchemaTest(schema);
 		}
 	}
 
 
 	/**
-	 * Parses a directory into the test suite object model.
+	 * Parses a directory into a test suite .
 	 */
-	public static RNGTestSuite parseDirectory(
+	public Test parseDirectory(
 			File dir, final String ext, boolean recurseSubDirectory ) throws Exception {
 		
-		RNGTestSuite suite = new RNGTestSuite();
-		suite.header = new RNGHeaderImpl(dir);
+		TestSuite suite = new TestSuite();
 		
 		// enumerate all schema
 		String[] schemas = dir.list( new FilenameFilter(){
 			public boolean accept( File dir, String name ) {
-				return name.endsWith(ext)
-					|| name.endsWith(ext+".ssuite");
+				return name.endsWith(ext);
 			}
 		} );
 		
@@ -117,4 +100,21 @@ public class DirectoryTestReader
 		
 		return suite;
 	}
+
+
+	static final DocumentBuilderFactory domFactory;
+	static {
+		domFactory = new org.apache.xerces.jaxp.DocumentBuilderFactoryImpl();
+		domFactory.setNamespaceAware(true);
+		domFactory.setValidating(false);
+	}
+	
+	static final SAXParserFactory saxFactory;
+	static {
+		saxFactory = new org.apache.xerces.jaxp.SAXParserFactoryImpl();
+		saxFactory.setNamespaceAware(true);
+		saxFactory.setValidating(false);
+	}
+	
+    
 }

@@ -7,16 +7,15 @@
  * Use is subject to license terms.
  * 
  */
-package org.relaxng.testharness.model;
+package batch.model;
 
 /**
- * Visitor pattern support for RNGTest.
+ * Represents a compiled shcmea.
+ * 
+ * The format of the compiled schema is implementation-dependent.
  * 
  * @author
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface TestVisitor {
-	Object onValidTest( RNGValidTestCase test );
-	Object onInvalidTest( RNGInvalidTestCase test );
-	Object onSuite( RNGTestSuite suite );
-}
+public interface ISchema {}
+

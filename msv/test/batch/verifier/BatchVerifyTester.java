@@ -9,14 +9,12 @@
  */
 package batch.verifier;
 
-import javax.xml.parsers.*;
 import java.util.Iterator;
 import java.io.*;
+import javax.xml.parsers.*;
 import org.apache.xerces.parsers.SAXParser;
-import org.relaxng.testharness.validator.IValidator;
-import org.relaxng.testharness.junit.TestSuiteBuilder;
-import org.relaxng.testharness.model.*;
 import org.xml.sax.InputSource;
+import batch.model.*;
 import junit.framework.*;
 import com.sun.msv.verifier.*;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
@@ -32,6 +30,10 @@ import com.sun.msv.grammar.Grammar;
  */
 public class BatchVerifyTester extends batch.BatchTester {
 	
+    protected TestReader createReader() {
+        return new TestReader( new TestBuilderImpl(validator) );
+    }
+    
 	public static void main( String[] av ) throws Exception {
 		new BatchVerifyTester().run(av);
 	}
@@ -41,9 +43,5 @@ public class BatchVerifyTester extends batch.BatchTester {
 			"usage "+this.getClass().getName()+" (relax|trex|xsd|dtd|rng) [-strict] [-recursive] <test case directory>\n"+
 			"  tests the validation engine by using schema files and test instances\n"+
 			"  in the specified directory.");
-	}
-
-	public TestSuite suite( RNGTestSuite source ) {
-		return new TestSuiteBuilder(validator).create(source);
 	}
 }

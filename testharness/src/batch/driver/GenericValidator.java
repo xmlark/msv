@@ -11,8 +11,7 @@ import com.sun.msv.verifier.IVerifier;
 import com.sun.msv.verifier.Verifier;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.resolver.tools.CatalogResolver;
-import org.relaxng.testharness.validator.*;
-import org.relaxng.testharness.model.*;
+import batch.model.*;
 import org.xml.sax.*;
 
 /**

@@ -500,7 +500,7 @@ public class XMLSchemaReader extends GrammarReader {
 				XSDatatype dt = sexp.getType();
 				
 				if( dt==null ) {
-					reportError( ERR_UNDEFINED_SIMPLE_TYPE, r[2]/*qName*/ );
+					// this error is reported by the detectUndefinedOnes(simpleTypes) method
 					return StringType.theInstance; // recover
 				}
 				
@@ -701,8 +701,6 @@ public class XMLSchemaReader extends GrammarReader {
 			detectUndefinedOnes( schema.complexTypes,		ERR_UNDEFINED_COMPLEX_TYPE );
 			detectUndefinedOnes( schema.elementDecls,		ERR_UNDEFINED_ELEMENT_DECL );
 			detectUndefinedOnes( schema.groupDecls,			ERR_UNDEFINED_GROUP );
-// undefined simple types are checked by the back-patch job submitted by the resolveDatatype method.
-//			detectUndefinedOnes( schema.simpleTypes,		ERR_UNDEFINED_SIMPLE_TYPE );
 			
 			
 			// TODO: it is now possible to check that the derivation doesn't
@@ -739,6 +737,17 @@ public class XMLSchemaReader extends GrammarReader {
 			job.patch();
 		}
 		locator = oldLoc;
+
+		
+		// test undefined simple types
+		//-----------------------------------
+		// some of the simple types are supplied during the back-patching
+		itr = grammar.iterateSchemas();
+		while( itr.hasNext() ) {
+			XMLSchemaSchema schema = (XMLSchemaSchema)itr.next();
+			detectUndefinedOnes( schema.simpleTypes,		ERR_UNDEFINED_SIMPLE_TYPE );
+		}
+		
 		
 		// perform substitutability computation
 		//-----------------------------------------

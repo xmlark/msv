@@ -93,6 +93,39 @@ public abstract class Expression implements java.io.Serializable {
 		return expandedExp;
 	}
 	
+    /**
+     * Peels the occurence expressions from this expression.
+     * <p>
+     * In AGM, 'X?','X+' and 'X*' are represented by using
+     * other primitives. This method returns the 'X' part by
+     * removing occurence related expressions.
+     */
+    public final Expression peelOccurence() {
+        // 'X?' is represented as 'choice(X,epsilon)'.
+        if( this instanceof ChoiceExp ) {
+            ChoiceExp cexp = (ChoiceExp)this;
+            if(cexp.exp1==Expression.epsilon)
+                return cexp.exp2.peelOccurence();
+            if(cexp.exp2==Expression.epsilon)
+                return cexp.exp1.peelOccurence();
+            
+            // note that epsilon may be in some branch deep under the tree.
+            // for example, when the expression is ((A|epsilon)|B)
+            // the above code won't be able to peel the epsilon in it.
+            // but this is OK, since this method still returns ChoiceExp,
+            // and the type of the expression is what matters.
+        }
+        
+        // 'X+' is represented as 'oneOrMore(X)'
+        if( this instanceof OneOrMoreExp )
+            return ((OneOrMoreExp)this).exp.peelOccurence();
+        
+        // 'X*' is represented as '(X+)?'
+        // therefore it is important to recursively process it.
+        
+        // otherwise we've finished.
+        return this;
+    }
 	
 	
 	

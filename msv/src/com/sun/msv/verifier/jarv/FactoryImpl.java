@@ -17,6 +17,7 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.InputSource;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.Locator;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
@@ -32,8 +33,14 @@ import com.sun.msv.verifier.regexp.xmlschema.XSREDocDecl;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-abstract class FactoryImpl extends VerifierFactory {
+public abstract class FactoryImpl extends VerifierFactory {
 	protected final SAXParserFactory factory;
+	
+	/**
+	 * To be used to resolve files included/imported by the schema. Can be null.
+	 */
+	private EntityResolver resolver;
+	
 	
 	protected FactoryImpl( SAXParserFactory factory ) {
 		this.factory = factory;
@@ -61,6 +68,13 @@ abstract class FactoryImpl extends VerifierFactory {
 	public void setProperty(String property, Object value)
 		throws SAXNotRecognizedException {
 		throw new SAXNotRecognizedException(property);
+	}
+	
+	public void setEntityResolver( EntityResolver _resolver ) {
+		this.resolver = _resolver;
+	}
+	public EntityResolver getEntityResolver() {
+		return resolver;
 	}
 	
 	
@@ -181,7 +195,7 @@ abstract class FactoryImpl extends VerifierFactory {
 		}
 		public final SAXException e;
 	}
-	private static class ThrowController implements GrammarReaderController {
+	private class ThrowController implements GrammarReaderController {
 		public void warning( Locator[] locs, String errorMessage ) {}
 		public void error( Locator[] locs, String errorMessage, Exception nestedException ) {
 			for( int i=0; i<locs.length; i++ )
@@ -192,8 +206,10 @@ abstract class FactoryImpl extends VerifierFactory {
 			throw new WrapperException(
 				new SAXException(errorMessage,nestedException));
 		}
-		public InputSource resolveEntity( String p, String s ) { return null; }
-		
+		public InputSource resolveEntity( String p, String s ) throws SAXException, IOException {
+			if(resolver==null)		return null;
+			else					return resolver.resolveEntity(p,s);
+		}
 	}
 	
 }

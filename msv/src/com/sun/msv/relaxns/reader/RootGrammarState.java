@@ -47,7 +47,7 @@ public class RootGrammarState extends SimpleState implements ExpressionOwner
 		SchemaProviderImpl schemaProvider = new SchemaProviderImpl(reader.grammar);
 		reader.schemaProvider = schemaProvider;
 		
-		ErrorHandler handler = new GrammarReaderControllerAdaptor(reader.controller);
+		ErrorHandler handler = new GrammarReaderControllerAdaptor(reader);
 		
 		if(!reader.hadError) {
 			// abort further wrap up if there was an error.

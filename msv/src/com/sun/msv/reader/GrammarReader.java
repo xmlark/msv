@@ -73,6 +73,16 @@ public abstract class GrammarReader
 	/** this object must be used to create a new expression */
 	public final ExpressionPool pool;
 	
+	/**
+	 * Creates a default SAXParserFactory.
+	 */
+	protected static SAXParserFactory createParserFactory() {
+		SAXParserFactory factory = SAXParserFactory.newInstance();
+		factory.setNamespaceAware(true);
+		return factory;
+	}
+	
+	
 	/** constructor that should be called from parse method. */
 	protected GrammarReader(
 		GrammarReaderController controller,

@@ -22,7 +22,7 @@ import org.xml.sax.Locator;
  */
 public class ThrowErrorController implements GrammarReaderController
 {
-	public InputSource resolveInclude(String s){return null;}
+	public InputSource resolveEntity(String s,String r){return null;}
 	public void error( Locator[] locs, String msg, Exception nested )
 	{
 		throw new Error(msg);

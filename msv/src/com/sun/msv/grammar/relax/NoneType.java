@@ -35,7 +35,7 @@ public class NoneType extends ConcreteType {
 		return null;
 	}
 	
-	public String convertToLexicalValue( Object o, SerializationContext context ) {
+	public String convertToLexicalValue( Object o, SerializationContextProvider context ) {
 		throw new IllegalArgumentException();
 	}
 	

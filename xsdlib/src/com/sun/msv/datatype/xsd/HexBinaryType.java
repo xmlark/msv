@@ -70,7 +70,7 @@ public class HexBinaryType extends BinaryBaseType
 		return true;
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
+	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
 		if(!(value instanceof BinaryValueType))
 			throw new IllegalArgumentException();
 		

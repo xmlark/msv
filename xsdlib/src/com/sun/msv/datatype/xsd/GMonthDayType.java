@@ -34,7 +34,7 @@ public class GMonthDayType extends DateTimeBaseType {
 	}
 
 	
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
+	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
 		if(!(value instanceof IDateTimeValueType ))
 			throw new IllegalArgumentException();
 		

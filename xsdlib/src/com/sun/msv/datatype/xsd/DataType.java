@@ -99,7 +99,7 @@ public interface DataType extends Serializable,Cloneable
 	 * @exception IllegalArgumentException
 	 *		if the given object does not belong to the value space of this datatype.
 	 */
-	String convertToLexicalValue( Object valueObject, SerializationContext context ) throws IllegalArgumentException;
+	String convertToLexicalValue( Object valueObject, SerializationContextProvider context ) throws IllegalArgumentException;
 	
 	/**
 	 * checks if this type is an atom type.

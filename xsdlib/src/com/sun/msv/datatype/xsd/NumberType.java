@@ -111,7 +111,7 @@ public class NumberType extends ConcreteType implements Comparator
 		}
 	}
 	
-	public String convertToLexicalValue( Object o, SerializationContext context ) {
+	public String convertToLexicalValue( Object o, SerializationContextProvider context ) {
 		if(o instanceof BigDecimal)
 			return o.toString();
 		else

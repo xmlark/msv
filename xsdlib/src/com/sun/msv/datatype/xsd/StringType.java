@@ -36,7 +36,7 @@ public class StringType extends ConcreteType implements Discrete {
 		return lexicalValue;
 	}
 
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
+	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
 		if( value instanceof String )
 			return (String)value;
 		else

@@ -96,7 +96,7 @@ abstract class DataTypeWithFacet extends DataTypeImpl
 		return baseType.isFinal(derivationType);
 	}
 	
-	final public String convertToLexicalValue( Object o, SerializationContext context ) {
+	final public String convertToLexicalValue( Object o, SerializationContextProvider context ) {
 		return concreteType.convertToLexicalValue(o,context);
 	}
 	

@@ -87,7 +87,7 @@ public final class ListType extends ConcreteType implements Discrete {
 		return ((ListValueType)value).values.length;
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
+	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
 		if(!(value instanceof ListValueType))
 			throw new IllegalArgumentException();
 		

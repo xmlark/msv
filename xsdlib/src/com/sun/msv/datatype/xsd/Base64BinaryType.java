@@ -142,7 +142,7 @@ public class Base64BinaryType extends BinaryBaseType {
 		return encodeMap[i&0x3F];
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
+	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
 		if(!(value instanceof BinaryValueType))
 			throw new IllegalArgumentException();
 		

@@ -36,7 +36,7 @@ public class DateTimeType extends DateTimeBaseType {
 		return p.dateTimeTypeV();
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
+	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
 		if(!(value instanceof IDateTimeValueType))
 			throw new IllegalArgumentException();
 		

@@ -37,7 +37,7 @@ public class BooleanType extends ConcreteType
 		return null;
 	}
 
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
+	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
 		if( value instanceof Boolean ) {
 			Boolean b = (Boolean)value;
 			if( b.booleanValue()==true )	return "true";

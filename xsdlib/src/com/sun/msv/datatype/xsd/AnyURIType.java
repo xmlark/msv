@@ -176,7 +176,7 @@ public class AnyURIType extends ConcreteType implements Discrete {
 		return content;
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
+	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
 		if( value instanceof String )
 			return (String)value;
 		else

@@ -82,7 +82,7 @@ public class QnameType extends ConcreteType implements Discrete
 		return new QnameValueType(uri,localPart);
 	}
 	
-	public String convertToLexicalValue( Object o, SerializationContext context ) {
+	public String convertToLexicalValue( Object o, SerializationContextProvider context ) {
 		if(!( o instanceof QnameValueType ))
 			throw new UnsupportedOperationException();
 		

@@ -64,7 +64,7 @@ public final class DurationType extends ConcreteType implements Comparator {
 			return NOT_ALLOWED;
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
+	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
 		if(!(value instanceof ITimeDurationValueType))
 			throw new IllegalArgumentException();
 		

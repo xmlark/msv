@@ -60,7 +60,7 @@ public class FloatType extends FloatingNumberType
 		}
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
+	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
 		if(!(value instanceof Float ))
 			throw new IllegalArgumentException();
 		

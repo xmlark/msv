@@ -45,7 +45,7 @@ public class EntityType extends ConcreteType
 		else									return null;
 	}
 
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
+	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
 		if( value instanceof String )
 			return (String)value;
 		else

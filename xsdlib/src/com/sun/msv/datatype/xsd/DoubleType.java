@@ -42,7 +42,7 @@ public class DoubleType extends FloatingNumberType {
 		}
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
+	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
 		if(!(value instanceof Double ))
 			throw new IllegalArgumentException();
 		

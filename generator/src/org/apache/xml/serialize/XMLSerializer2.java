@@ -552,6 +552,44 @@ public class XMLSerializer2
 		return "ns"+i;
 	}
 	
+//	public void comment( String text )
+//	{
+//		_printer.breakLine();
+//		super.comment(text);
+//		_printer.breakLine();
+//	}
+    public void comment( String text )
+    {
+		if( isDocumentState() )
+		{
+			super.comment(text);
+			return;
+		}
+		
+        StringBuffer buffer;
+        int          index;
+        ElementState state;
+        
+        if ( _format.getOmitComments() )
+            return;
+
+        state  = content();
+        buffer = new StringBuffer( 40 );
+        // Create the processing comment textual representation.
+        // Make sure we don't have '-->' inside the comment.
+        index = text.indexOf( "-->" );
+        if ( index >= 0 )
+            buffer.append( "<!--" ).append( text.substring( 0, index ) ).append( "-->" );
+        else
+            buffer.append( "<!--" ).append( text ).append( "-->" );
+
+		_printer.breakLine();
+        _printer.indent();
+        printText( buffer.toString(), false, true );
+        _printer.unindent();
+		_printer.breakLine();
+    }
+	
     /**
      * Called to serialize a DOM element. Equivalent to calling {@link
      * #startElement}, {@link #endElement} and serializing everything

@@ -97,9 +97,10 @@ public class Driver {
 				// use Sun's "XML Entity and URI Resolvers" by Norman Walsh
 				// to resolve external entities.
 				// http://www.sun.com/xml/developers/resolver/
-				CatalogResolver cat = new CatalogResolver(true);
-				cat.getCatalog().parseCatalog(args[++i]);
-				entityResolver = cat;
+				if(entityResolver!=null)
+					entityResolver = new CatalogResolver(true);
+				
+				((CatalogResolver)entityResolver).getCatalog().parseCatalog(args[++i]);
 			}
 			else
 			if( args[i].equalsIgnoreCase("-version") ) {
@@ -159,6 +160,7 @@ public class Driver {
 				new DebugController(warning,false,entityResolver),
 				factory);
 		} catch(SAXParseException spe) {
+//			spe.printStackTrace();
 			; // this error is already reported.
 		} catch(SAXException se ) {
 			if( se.getException()!=null ) throw se.getException();

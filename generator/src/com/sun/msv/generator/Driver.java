@@ -19,8 +19,10 @@ import com.sun.msv.grammar.relax.*;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.RefExpRemover;
+import com.sun.msv.util.StringPair;
 import com.sun.msv.verifier.Verifier;
 import com.sun.msv.verifier.util.*;
+import com.sun.msv.verifier.regexp.ElementsOfConcernCollector;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
 import com.sun.msv.driver.textui.DebugController;
@@ -49,6 +51,8 @@ public class Driver {
 			"  -n <n>    : # of files to be generated\n" +
 			"  -warning  : show warnings.\n"+
 			"  -quiet    : be quiet.\n"+
+            "  -root {<namespaceURI>}<localName>\n"+
+            "      fix the root element to the given element\n"+
 			"  -encoding <str>\n"+
 			"      output encoding (Java name)\n"+
 			"  -example <filename>\n"+
@@ -111,6 +115,8 @@ public class Driver {
 	}
 	private int number = 1;
 	
+    /** designated root element name. */
+    private StringPair rootName = null;
 	
 	private SAXParserFactory factory = SAXParserFactory.newInstance();
 	{
@@ -190,6 +196,15 @@ public class Driver {
 				if( number<1 )	number=1;
 			}
 			else
+            if( args[i].equals("-root") ) {
+                String root = args[++i];
+                int idx = root.indexOf('}');
+                if(idx<0)
+                    throw new CommandLineException("format of the root parameter is wrong");
+                
+                rootName = new StringPair( root.substring(1,idx), root.substring(idx+1) );
+            }
+            else
 			if( args[i].equalsIgnoreCase("-encoding") )
 				encoding = args[++i];
 			else
@@ -317,6 +332,15 @@ public class Driver {
 		
 	
 		topLevel = topLevel.visit( new RefExpRemover(grammar.getPool(),true) );
+        
+        if(rootName!=null) {
+            topLevel = findElement(topLevel,rootName);
+            if(topLevel==null) {
+                out.println("unable to find the specified root element: "+rootName);
+                return -1;
+            }
+        }
+        
 		opt.pool = grammar.getPool();
 		
 		// generate instances
@@ -386,6 +410,20 @@ public class Driver {
 		return 0;
 	}
 	
+    private Expression findElement( Expression exp, StringPair name ) {
+        
+        Vector vec = new Vector();
+        new ElementsOfConcernCollector().collect( exp, vec );
+        
+        for( int i=0; i<vec.size(); i++ ) {
+            ElementExp eexp = (ElementExp)vec.get(i);
+            if(eexp.getNameClass().accepts(name))
+                return eexp;
+        }
+        
+        return null;
+    }
+    
 	private static InputSource getInputSource( String fileOrURL ) {
 		try {
 			// try it as a file

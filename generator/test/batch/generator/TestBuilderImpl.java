@@ -62,6 +62,8 @@ class TestBuilderImpl implements TestBuilder
 	     */
 		public void runTest() throws Exception {
 
+            System.out.println(schemaFile.getPath());
+            
 			Driver driver = new Driver();	// generator instance.
 				
 			// parse parameters
@@ -77,9 +79,9 @@ class TestBuilderImpl implements TestBuilder
 			}
 				
 			// set the grammar
-			ISchemaImpl schema = (ISchemaImpl)validator.parseSchema(schemaFile);
+			ISchema schema = validator.parseSchema(schemaFile);
 			assert( "failed to parse the schema", schema!=null );
-			driver.grammar = schema.grammar;
+			driver.grammar = schema.asGrammar();
 			driver.outputName = "NUL";
 				
 			// run the test

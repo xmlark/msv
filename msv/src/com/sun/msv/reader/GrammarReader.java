@@ -442,7 +442,7 @@ public abstract class GrammarReader
 	 * Derived classes must check this flag to determine whether the parsing
 	 * was successful or not.
 	 */
-	protected boolean hadError = false;
+	public boolean hadError = false;
 	
 	public final void reportError( String propertyName )
 	{ reportError( propertyName, null, null, null ); }

@@ -277,4 +277,10 @@ public class TREXGrammarReader extends GrammarReader
 		"TREXGrammarReader.DuplicateDefinition";
 	public static final String ERR_NONEXISTENT_PARENT_GRAMMAR =
 		"TREXGrammarReader.NonExistentParentGrammar";
+	public static final String ERR_INTERLEAVED_STRING =
+		"TREXGrammarReader.InterleavedString";
+	public static final String ERR_SEQUENCED_STRING =
+		"TREXGrammarReader.SequencedString";
+	public static final String ERR_REPEATED_STRING =
+		"TREXGrammarReader.RepeatedString";
 }

@@ -43,6 +43,14 @@ class RootState extends SimpleState implements ExpressionOwner
 	// so RootState has to implement ExpressionOwner.
 	public void onEndChild(Expression exp)
 	{
-		if( simple )	((TREXGrammarReader)reader).grammar.start = exp;
+		if( simple )
+		{
+			((TREXGrammarReader)reader).grammar.start = exp;
+			// run-away expression check is not necessary,
+			// because there can be no Ref element.
+			
+			// make sure that there is no sequenced string.
+			exp.visit( new TREXSequencedStringChecker((TREXGrammarReader)reader) );
+		}
 	}
 }

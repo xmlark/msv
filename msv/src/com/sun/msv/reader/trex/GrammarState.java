@@ -51,6 +51,11 @@ class GrammarState extends MergeGrammarState
 		
 		// make sure that there is no recurisve patterns.
 		grammar.start.visit( new TREXRunAwayExpressionChecker(getReader()) );
+		if( !reader.hadError )
+			// make sure that there is no sequenced string.
+			// when run-away expression is found, calling this method results in
+			// stack overflow.
+			grammar.start.visit( new TREXSequencedStringChecker(getReader()) );
 
 		// this method is called when this State is about to be removed.
 		// restore the previous grammar
@@ -60,7 +65,7 @@ class GrammarState extends MergeGrammarState
 		// if the previous grammar is null, it means this grammar is the top-level
 		// grammar. In that case, leave it there so that GrammarReader can access
 		// the loaded grammar.
-		
+			
 		super.endSelf();
 	}
 }

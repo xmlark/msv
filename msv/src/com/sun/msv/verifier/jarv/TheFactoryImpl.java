@@ -33,6 +33,19 @@ public class TheFactoryImpl extends FactoryImpl {
 		super(factory);
 	}
 
+	/**
+	 * use default SAXParser.
+	 */
+	public TheFactoryImpl() {
+		super(createNewSAXParserFactory());
+	}
+	
+	private static SAXParserFactory createNewSAXParserFactory() {
+		SAXParserFactory f = SAXParserFactory.newInstance();
+		f.setNamespaceAware(true);
+		return f;
+	}
+
 	public Verifier newVerifier( String uri )
 		throws VerifierConfigurationException, SAXException {
 		try {

@@ -1,5 +1,7 @@
 package com.sun.msv.reader.relax.core;
 
+import javax.xml.parsers.SAXParserFactory;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -23,8 +25,7 @@ public class RELAXCoreReaderTest extends TestCase
     
     /** tests the existence of all messages */
     public void testMessages() throws Exception {
-        javax.xml.parsers.SAXParserFactory factory =
-            new org.apache.xerces.jaxp.SAXParserFactoryImpl();
+        SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
         
         final RELAXCoreReader reader = new RELAXCoreReader(null,factory,null);

@@ -149,11 +149,6 @@
     </replace>
 		
 		
-		<!-- copy regexp lib files into the source directory -->
-		<copy todir="dist/src">
-			<fileset dir="${regexplib.src}" />
-		</copy>
-		
 		<!-- run javacc -->
 		<antcall target="doJavacc">
 			<param name="src" value="dist/src" />

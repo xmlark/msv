@@ -9,7 +9,8 @@
  */
 package com.sun.msv.writer.relaxng;
 
-import org.apache.xerces.jaxp.SAXParserFactoryImpl;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.xml.sax.SAXException;
@@ -31,9 +32,7 @@ public class Driver {
             return;
         }
 
-        // use Xerces. Since we are using Xerces to serialize XML,
-        // it is a good idea to use Xerces for parsing, too.
-        SAXParserFactoryImpl factory = new SAXParserFactoryImpl();
+        SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
 
         // load a grammar.

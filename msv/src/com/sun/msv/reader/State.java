@@ -14,6 +14,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
 
+import com.sun.msv.grammar.Expression;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -174,6 +175,10 @@ public abstract class State implements ContentHandler
                 reader.reportError( GrammarReader.ERR_CHARACTERS, new String(buffer,from,len).trim() );
                 return;
             }
+    }
+
+    protected final Expression callInterceptExpression( Expression exp ) {
+        return reader.interceptExpression(this,exp);
     }
         
     

@@ -50,8 +50,7 @@ public class Daemon implements Runnable
             return;
         }
         
-//        SAXParserFactory factory = new org.apache.crimson.jaxp.SAXParserFactoryImpl();
-        SAXParserFactory factory = new org.apache.xerces.jaxp.SAXParserFactoryImpl();
+        SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setValidating(false);
         
@@ -93,7 +92,7 @@ public class Daemon implements Runnable
         final String name = Thread.currentThread().getName();
         try
         {
-            SAXParserFactory factory = new org.apache.xerces.jaxp.SAXParserFactoryImpl();
+            SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setNamespaceAware(true);
             ExpressionPool localPool = new ExpressionPool(grammar.getPool());
 //            ExpressionPool localPool = new ExpressionPool();

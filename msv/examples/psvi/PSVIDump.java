@@ -44,7 +44,7 @@ public class PSVIDump implements TypedContentHandler {
 		// load a schema. GrammarLoader will detect the schema language automatically.
 		GrammarLoader loader = new GrammarLoader();
 		loader.setController( new DebugController(false,false) );
-		DocumentDeclaration grammar = loader.loadVGM( args[0] );
+		DocumentDeclaration grammar = GrammarLoader.loadVGM( args[0] );
 		
 		if( grammar==null ) {
 			System.err.println("failed to load a grammar");

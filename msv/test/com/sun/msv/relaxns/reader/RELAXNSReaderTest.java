@@ -1,5 +1,7 @@
 package com.sun.msv.relaxns.reader;
 
+import javax.xml.parsers.SAXParserFactory;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -23,8 +25,7 @@ public class RELAXNSReaderTest extends TestCase
     
     /** tests the existence of all messages */
     public void testMessages() throws Exception {
-        javax.xml.parsers.SAXParserFactory factory =
-            new org.apache.xerces.jaxp.SAXParserFactoryImpl();
+        SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
         
         final RELAXNSReader reader = new RELAXNSReader(null,factory,null);

@@ -108,14 +108,14 @@ public class TestReader
 
     static final DocumentBuilderFactory domFactory;
     static {
-        domFactory = new org.apache.xerces.jaxp.DocumentBuilderFactoryImpl();
+        domFactory = DocumentBuilderFactory.newInstance();
         domFactory.setNamespaceAware(true);
         domFactory.setValidating(false);
     }
     
     static final SAXParserFactory saxFactory;
     static {
-        saxFactory = new org.apache.xerces.jaxp.SAXParserFactoryImpl();
+        saxFactory = SAXParserFactory.newInstance();
         saxFactory.setNamespaceAware(true);
         saxFactory.setValidating(false);
     }

@@ -231,7 +231,7 @@ public abstract class GrammarReader
      * derived class can perform further wrap-up before it is received by the parent.
      * This mechanism is used by RELAXReader to handle occurs attribute.
      */
-    protected Expression interceptExpression( ExpressionState state, Expression exp ) {
+    protected Expression interceptExpression( State state, Expression exp ) {
         return exp;
     }
     

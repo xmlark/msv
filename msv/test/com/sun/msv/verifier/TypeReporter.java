@@ -50,8 +50,7 @@ public class TypeReporter extends DefaultHandler
             return;
         }
         
-//        SAXParserFactory factory = new org.apache.crimson.jaxp.SAXParserFactoryImpl();
-        SAXParserFactory factory = new org.apache.xerces.jaxp.SAXParserFactoryImpl();
+        SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setValidating(false);
         

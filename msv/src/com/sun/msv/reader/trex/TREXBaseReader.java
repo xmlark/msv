@@ -161,6 +161,9 @@ public abstract class TREXBaseReader extends GrammarReader {
      * This method has to be called after the run-away expression check is done.
      */
     public void wrapUp() {}
+
+
+
     
     
 // SAX event interception

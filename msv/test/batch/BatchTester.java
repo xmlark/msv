@@ -43,9 +43,7 @@ import com.sun.resolver.tools.CatalogResolver;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class BatchTester {
-    public SAXParserFactory factory =
-        new org.apache.xerces.jaxp.SAXParserFactoryImpl();
-//        new org.apache.crimson.jaxp.SAXParserFactoryImpl();
+    public SAXParserFactory factory = SAXParserFactory.newInstance();
 
     public CatalogResolver resolver = new CatalogResolver();
     

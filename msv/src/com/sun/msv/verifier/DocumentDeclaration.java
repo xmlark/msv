@@ -21,8 +21,8 @@ package com.sun.msv.verifier;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface DocumentDeclaration
-{
+public interface DocumentDeclaration {
+	
 	/**
 	 * creates a new Acceptor that will validate the document element.
 	 * 

@@ -40,8 +40,8 @@ public abstract class ComplexAcceptorBaseImpl extends ContentModelAcceptor
 	}
 
 	/** eats string literal */
-	public final boolean stepForward( String literal, IDContextProvider context, StringRef refErr, DatatypeRef refType ) {
-		if(!super.stepForward(literal,context,refErr,refType))	return false;
+	public final boolean onText( String literal, IDContextProvider context, StringRef refErr, DatatypeRef refType ) {
+		if(!super.onText(literal,context,refErr,refType))	return false;
 
 		final StringToken token = new StringToken(docDecl,literal,context);
 		final ResidualCalculator res = docDecl.resCalc;
@@ -86,9 +86,9 @@ public abstract class ComplexAcceptorBaseImpl extends ContentModelAcceptor
 		return true;
 	}
 	
-	protected boolean stepForwardByAttribute( AttributeToken token, StringRef refErr ) {
+	protected boolean onAttribute( AttributeToken token, StringRef refErr ) {
 		
-		if(!super.stepForwardByAttribute(token,refErr))	return false;
+		if(!super.onAttribute(token,refErr))	return false;
 		
 		for( int i=0; i<contents.length; i++ )
 			contents[i] = docDecl.attFeeder.feed( contents[i], token, ignoreUndeclaredAttributes );

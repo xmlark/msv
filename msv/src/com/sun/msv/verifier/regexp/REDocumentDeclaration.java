@@ -23,6 +23,10 @@ import java.util.Map;
  * Grammar object can be shared among multiple threads, but this object
  * cannot be shared.
  * 
+ * <p>
+ * REDocumentDeclaration always returns subclasses of {@link ExpressionAcceptor}
+ * as the Acceptor implementation.
+ * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class REDocumentDeclaration implements DocumentDeclaration
@@ -37,6 +41,9 @@ public class REDocumentDeclaration implements DocumentDeclaration
 		this( grammar.getTopLevel(), grammar.getPool() );
 	}
 	
+	/**
+	 * creates an object that validates the specified expression.
+	 */
 	public REDocumentDeclaration( Expression topLevel, ExpressionPool pool ) {
 		this.topLevel = topLevel;
 		this.pool = pool;
@@ -68,7 +75,7 @@ public class REDocumentDeclaration implements DocumentDeclaration
 	 * 
 	 * <p>
 	 * Only one AttributeToken object is used during the
-	 * {@link Acceptor#stepForwardByAttribute} method.
+	 * {@link Acceptor#onAttribute} method.
 	 * So instead of creating new object every time the method is called, we can
 	 * kept using one copy.
 	 * 
@@ -78,7 +85,7 @@ public class REDocumentDeclaration implements DocumentDeclaration
 	 * 
 	 * <p>
 	 * Note: this field should be accessed <b>ONLY</b> by the
-	 * {@link ExpressionAcceptor#stepForwardByAttribute} method.
+	 * {@link ExpressionAcceptor#onAttribute} method.
 	 */
 	public final AttributeToken					attToken;
 

@@ -57,25 +57,29 @@ public class AttributePicker implements ExpressionVisitorExpression
 {
 	private final ExpressionPool pool;
 	
-	public AttributePicker( ExpressionPool pool )
-	{
+	public AttributePicker( ExpressionPool pool ) {
 		this.pool = pool;
 	}
 	
-	public Expression onElement( ElementExp exp )
-		{ return AttributeExp.epsilon; }
+	public Expression onElement( ElementExp exp ) {
+		return AttributeExp.epsilon;
+	}
 	
-	public Expression onMixed( MixedExp exp )
-		{ return exp.exp.visit(this); }
+	public Expression onMixed( MixedExp exp ) {
+		return exp.exp.visit(this);
+	}
 	
-	public Expression onAnyString()
-		{ return Expression.epsilon; }
+	public Expression onAnyString() {
+		return Expression.epsilon;
+	}
 	
-	public Expression onEpsilon()
-		{ return Expression.epsilon; }
+	public Expression onEpsilon() {
+		return Expression.epsilon;
+	}
 	
-	public Expression onNullSet()
-		{ return Expression.nullSet; }
+	public Expression onNullSet() {
+		return Expression.nullSet;
+	}
 	
 	public Expression onRef( ReferenceExp exp ) {
 		return exp.exp.visit(this);
@@ -96,13 +100,12 @@ public class AttributePicker implements ExpressionVisitorExpression
 		return Expression.epsilon;
 	}
 
-	public Expression onAttribute( AttributeExp exp )
-	{
+	public Expression onAttribute( AttributeExp exp ) {
 		return exp;
 	}
 	
-	public Expression onOneOrMore( OneOrMoreExp exp )
-	{// reduce A+ -> A
+	public Expression onOneOrMore( OneOrMoreExp exp ) {
+		// reduce A+ -> A
 		return exp.exp.visit(this);
 	}
 	
@@ -134,8 +137,7 @@ public class AttributePicker implements ExpressionVisitorExpression
 		return Expression.epsilon;
 	}
 	
-	public Expression onChoice( ChoiceExp exp )
-	{
+	public Expression onChoice( ChoiceExp exp ) {
 		Expression ex1 = exp.exp1.visit(this);
 		Expression ex2 = exp.exp2.visit(this);
 		// if one of choice is epsilon-reducible,

@@ -23,6 +23,8 @@ import com.sun.msv.util.DatatypeRef;
  * represents a pseudo-automaton acceptor.
  * this interface is used to validate content models.
  * 
+ * 
+ * 
  * <h2>Perform Validation</h2>
  * <p>
  * To perform validation, call the createAcceptor method of the DocumentDeclaration
@@ -51,8 +53,21 @@ import com.sun.msv.util.DatatypeRef;
  * </pre>
  * 
  * <p>
- * If this start tag was unexpected, then this method returns null. See javadoc
+ * If this tag name was unexpected, then this method returns null. See javadoc
  * for more details.
+ * 
+ * <p>
+ * Then, for every attributes, call the {@link #onAttribute()} method.
+ * After that you call the {@link #onEndAttributes()} method.
+ * 
+ * <pre><xmp>
+ * for( int i=0; i<atts.getLength(); i++ )
+ *   a.onAttribute( atts.getURI(i), .... );
+ * a.onEndAttributes();
+ * </xmp></pre>
+ * 
+ * <p>
+ * An error can occur at any method. See the method documentations for details.
  * 
  * <p>
  * If you find an end tag, make sure that the acceptor is satisfied. An acceptor
@@ -73,12 +88,12 @@ import com.sun.msv.util.DatatypeRef;
  * the child acceptor to it.
  * 
  * <p>
- * Finally, whenever you see a text, call the stepForward method.
+ * Finally, whenever you see a text, call the onText method.
  * If the text was unexpected or not allowed, then this method returns null.
  * See the documentation for details.
  * 
  * <pre>
- * a.stepForward("text",context,null,null);
+ * a.onText("text",context,null,null);
  * </pre>
  * 
  * 
@@ -93,14 +108,35 @@ import com.sun.msv.util.DatatypeRef;
  * 
  * 
  * 
+ * <h2>Downcasting</h2>
+ * 
+ * <p>
+ * It is often useful to downcast the Acceptor interface to appropriate
+ * derived class. For example, if you are using
+ * {@link com.sun.msv.verifier.regexp.REDocumentDeclaration}, then you can always
+ * downcast an Acceptor to
+ * {@link com.sun.msv.verifier.regexp.ExpressionAcceptor}, which provides
+ * more predictable behaviors and some useful methods.
+ * 
+ * 
  * @see DocumentDeclaration
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface Acceptor
 {
 	/**
-	 * creates an Acceptor that will eat 
-	 * combined content model of all the possible children at this moment.
+	 * creates an Acceptor that will accept
+	 * the content model of the children of this moment.
+	 * 
+	 * 
+	 * <p>
+	 * Once you create an acceptor, you need to call the
+	 * {@link #onAttribute} method for each present attribute,
+	 * and then you need to call the {@link #onEndAttributes} method.
+	 * 
+	 * <p>
+	 * If an error occurs at this method, the bottom line is that the user cannot
+	 * write this element here.
 	 * 
 	 * @param refErr
 	 *		if this parameter is non-null, the implementation should
@@ -114,33 +150,73 @@ public interface Acceptor
 	 * 
 	 * @return null
 	 *		If refErr is null, return null if the given start tag is not accepted.
-	 *		If refErr is non-null, return null only if the recovery is impossible.
+	 *		If refErr is non-null, return null only when the recovery is impossible.
 	 */
 	Acceptor createChildAcceptor( StartTagInfo sti, StringRef refErr );
 	
 	/**
-	 * eats an attribute.
+	 * processes an attribute.
+	 * 
+	 * <p>
+	 * For every attribute present in the document, you need to call this method.
+	 * 
+	 * <p>
+	 * An error at this method typically indicates that
+	 * <ol>
+	 *  <li>this attribute is not allowed to appear here
+	 *  <li>the attribute name was OK, but the value was incorrect.
+	 * </ol>
+	 * 
+	 * @param	refErr
+	 *		In case of an error, this object will receive the localized error
+	 *		message. Null is a valid value for this parameter.
+	 *		The implementation must provide some kind of message.
+	 * 
+	 * @param	refType
+	 *		If this parameter is non-null, this object will receive the datatype
+	 *		assigned to the attribute value.
+	 *	
+	 *		<p>
+	 *		This feature is optional and therefore the implementation is
+	 *		not necessarily	provide this information.
 	 * 
 	 * @return
-	 *		<b>false</b> if this attribute is not allowed, and refErr parameter
-	 *		was not provided.
+	 *		<b>false</b> if an error happens and refErr parameter
+	 *		was not provided. Otherwise true.
 	 */
-	boolean stepForwardByAttribute(
+	boolean onAttribute(
 		String namespaceURI, String localName, String qName, String value,
-		IDContextProvider provider, StringRef refErr, DatatypeRef refType );
+		IDContextProvider context, StringRef refErr, DatatypeRef refType );
 	
 	/**
 	 * notifies the end of attributes.
 	 * 
+	 * <p>
+	 * This method needs to be called after the {@link #onAttribute}
+	 * method is called for each present attribute.
+	 * 
+	 * <p>
+	 * An error at this method typically indicates that some required
+	 * attributes are missing.
+	 * 
 	 * @param	sti
 	 *		This information is used to produce the error message if that is
 	 *		necessary.
+	 * 
+	 * @param	refErr
+	 *		In case of an error, this object will receive the localized error
+	 *		message. Null is a valid value for this parameter.
+	 *		The implementation must provide some kind of message.
+	 * 
+	 * @return
+	 *		<b>false</b> if an error happens and refErr parameter
+	 *		was not provided. Otherwise true.
 	 */
 	boolean onEndAttributes( StartTagInfo sti, StringRef refErr );
 	
 	
 	/**
-	 * eats string literal.
+	 * processes a string literal.
 	 * 
 	 * @param context
 	 *		an object that provides context information necessary to validate
@@ -161,23 +237,41 @@ public interface Acceptor
 	 * @return false
 	 *		if the literal at this position is not allowed.
 	 */
-	boolean stepForward( String literal, IDContextProvider context, StringRef refErr, DatatypeRef refType );
+	boolean onText( String literal, IDContextProvider context, StringRef refErr, DatatypeRef refType );
 	
-	/** eats a child element
+	/**
+	 * eats a child element
 	 * 
+	 * <p>
+	 * A child acceptor created by the {@link createChildAcceptor} method
+	 * will be ultimately consumed by the parent through this method.
+	 * 
+	 * <p>
 	 * It is the caller's responsibility to make sure that child acceptor
-	 * is in the accept state. It is the callee's responsibility to recover
-	 * from error of unsatisified child acceptor.
+	 * is in the accept state. If it's not, that indicates that some required
+	 * elements are missing (in other words, contents are not allowed to end here).
+	 * 
+	 * <p>
+	 * It is the callee's responsibility to recover from error of
+	 * unsatisified child acceptor. That is, even if the caller finds that
+	 * there are missing elements, it is possible to call this method
+	 * as if there was no such error.
 	 * 
 	 * @return false
-	 *		if this child element is not allowed.
+	 *		if an error happens. For example, if the implementation passes
+	 *		an acceptor which is NOT a child of this acceptor, then
+	 *		the callee can return <b>false</b>.
 	 */
 	boolean stepForward( Acceptor child, StringRef errRef );
 	
-	/** checks if this Acceptor is satisifed.
+	/**
+	 * checks if this Acceptor is satisifed.
 	 * 
+	 * <p>
 	 * Acceptor is said to be satisfied when given sequence of elements/strings
-	 * is accepted by the content model.
+	 * is accepted by the content model. This method should be called before
+	 * calling the stepForward method to make sure that the children
+	 * is written properly.
 	 * 
 	 * @param errRef
 	 *		If this value is non-null, implementation can diagnose the error
@@ -185,7 +279,8 @@ public interface Acceptor
 	 */
 	boolean isAcceptState( StringRef errRef );
 	
-	/** gets the "type" object for which this acceptor is working.
+	/**
+	 * gets the "type" object for which this acceptor is working.
 	 * 
 	 * This method is used for type assignment. Actual Java type of
 	 * return value depends on the implementation.
@@ -200,8 +295,12 @@ public interface Acceptor
 	/**
 	 * clones this acceptor.
 	 * 
+	 * <p>
 	 * You can keep a "bookmark" of the acceptor by cloning it.
 	 * This is useful when you are trying to perform "partial validation".
+	 * 
+	 * <p>
+	 * Cloned acceptor will behave in exactly the same way as the original one.
 	 */
 	Acceptor createClone();
 	
@@ -217,7 +316,7 @@ public interface Acceptor
 	 * 
 	 * <p>
 	 * In the former case, this method returns {@link #STRING_PROHIBITED}.
-	 * In other words, this declares that any stepForward(String) method with
+	 * In other words, this declares that any onText(String) method with
 	 * non-whitespace characters will always result in a failure.
 	 * The caller can then exploit this property of the content model and 
 	 * can immediately signal an error when it finds characters, or discard any
@@ -225,13 +324,13 @@ public interface Acceptor
 	 * 
 	 * <p>
 	 * In the latter case, this method returns {@link #STRING_IGNORE}.
-	 * This declares that any stepForward(String) call does not change anything at all.
+	 * This declares that any onText(String) call does not change anything at all.
 	 * The caller can then exploit this property and discard any characeters it found.
 	 * 
 	 * <p>
 	 * If non of the above applies, or the implementation is simply not capable of
 	 * providing this information, then this method returns {@link #STRING_STRICT}.
-	 * In this case, the caller has to faithfully call the stepForward(String) method
+	 * In this case, the caller has to faithfully call the onText(String) method
 	 * for all characeters it found.
 	 * 
 	 * <p>
@@ -244,7 +343,8 @@ public interface Acceptor
 	int getStringCareLevel();
 
 	/**
-	 * only whitespaces are allowed.
+	 * only whitespaces are allowed. Acceptor will reject any string
+	 * if it's not whitespaces.
 	 * 
 	 * for example, &lt;elementRule&gt; of RELAX doesn't allow
 	 * characters (except whitespaces) at all.
@@ -254,7 +354,7 @@ public interface Acceptor
 	 * character literals are allowed, but Acceptor doesn't care
 	 * its contents and where it is appeared.
 	 * 
-	 * The caller doesn't need to call stepForward for literal.
+	 * The caller doesn't need to call onText for literal.
 	 * This mode is used for mixed contents.
 	 */
 	static final int STRING_IGNORE		= 0x01;
@@ -262,7 +362,7 @@ public interface Acceptor
 	 * attentive handling of characters is required.
 	 * 
 	 * Verifier has to keep track of exact contents of string and
-	 * it must call stepForward for string accordingly.
+	 * it must call onText for string accordingly.
 	 */
 	static final int STRING_STRICT		= 0x02;
 	

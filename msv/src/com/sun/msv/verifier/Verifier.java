@@ -114,12 +114,12 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 				
 			case Acceptor.STRING_STRICT:
 				final String txt = new String(text);
-				if(!current.stepForward( txt, this, null, characterType )) {
+				if(!current.onText( txt, this, null, characterType )) {
 					// error
 					// diagnose error, if possible
 					StringRef err = new StringRef();
 					characterType.types=null;
-					current.stepForward( txt, this, err, characterType );
+					current.onText( txt, this, err, characterType );
 					
 					// report an error
 					onError( err, localizeMessage( ERR_UNEXPECTED_TEXT, null ) );
@@ -223,14 +223,14 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	
 	protected Datatype[] feedAttribute( Acceptor child, String uri, String localName, String qName, String value ) throws SAXException {
 		attributeType.types = null;
-		if( !child.stepForwardByAttribute( uri,localName,qName,value,this,null,attributeType ) ) {
+		if( !child.onAttribute( uri,localName,qName,value,this,null,attributeType ) ) {
 			// error
 			if( com.sun.msv.driver.textui.Debug.debug )
 				System.out.println("-- bad attribute: error recovery");
 			
 			// let the acceptor recover from the error.
 			StringRef ref = new StringRef();
-			child.stepForwardByAttribute( uri,localName,qName,value,this,ref,null );
+			child.onAttribute( uri,localName,qName,value,this,ref,null );
 			onError( ref, localizeMessage( ERR_UNEXPECTED_ATTRIBUTE, new Object[]{qName} ) );
 		}
 		

@@ -23,16 +23,19 @@ import org.relaxng.datatype.DatatypeException;
 import java.util.*;
 
 /**
- * {@link Acceptor} implementation. If you consider VGM as an automaton,
- * this class can be thought as a lazy automaton acceptor.
+ * {@link Acceptor} implementation.
  * 
  * <p>
  * When you are using <code>REDocumentDeclaration</code>, then the acceptor
  * is always guaranteed to be a subclass of this class.
  * 
- * <p>
- * By using this regexp implementation of VGM, you can always downcast
+ * Therefore, by using this regexp implementation of VGM, you can always downcast
  * {@link Acceptor} to this class and access its contents to get more information.
+ * 
+ * <p>
+ * If you consider VGM as an automaton,
+ * this class can be thought as a lazy automaton acceptor.
+ * 
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
@@ -141,7 +144,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 
 	
 	
-	public final boolean stepForwardByAttribute(
+	public final boolean onAttribute(
 		String namespaceURI, String localName, String qName, String value,
 		IDContextProvider context, StringRef refErr, DatatypeRef refType ) {
 		
@@ -150,10 +153,10 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		docDecl.attToken.reinit( namespaceURI,localName,qName,
 				new StringToken(docDecl,value,context,refType) );
 		
-		return stepForwardByAttribute( docDecl.attToken, refErr );
+		return onAttribute( docDecl.attToken, refErr );
 	}
 	
-	protected boolean stepForwardByAttribute( AttributeToken token, StringRef refErr ) {
+	protected boolean onAttribute( AttributeToken token, StringRef refErr ) {
 		Expression r = docDecl.attFeeder.feed( this.expression, token, ignoreUndeclaredAttributes );
 		
 		if( r!=Expression.nullSet ) {
@@ -280,7 +283,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		return true;
 	}
 	
-	public boolean stepForward( String literal, IDContextProvider provider, StringRef refErr, DatatypeRef refType ) {
+	public boolean onText( String literal, IDContextProvider provider, StringRef refErr, DatatypeRef refType ) {
 		return stepForward( new StringToken(docDecl,literal,provider,refType), refErr );
 	}
 	
@@ -403,6 +406,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		// the content model for error recovery.
 		return createAcceptor( contentModel, continuation, null, 0 );
 	}
+	
 	/**
 	 * format list of candidates to one string.
 	 * 
@@ -418,14 +422,12 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		
 		Collections.sort(items,
 			new Comparator(){
-				public int compare( Object o1, Object o2 )
-				{
+				public int compare( Object o1, Object o2 ) {
 					return ((String)o1).compareTo((String)o2);
 				}
 			});	// sort candidates.
 		
-		for( int i=0; i<items.size(); i++ )
-		{
+		for( int i=0; i<items.size(); i++ ) {
 			if(r.length()!=0)		r+= sep;
 			r += items.get(i);
 		}
@@ -436,8 +438,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 	}
 
 	private final String concatenateMessages( Set items, boolean more,
-											  String separatorStr, String moreStr )
-	{
+											  String separatorStr, String moreStr ) {
 		return concatenateMessages( new Vector(items), more, separatorStr, moreStr );
 	}
 

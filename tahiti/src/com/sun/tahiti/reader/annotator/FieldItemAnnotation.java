@@ -80,9 +80,10 @@ class FieldItemAnnotation
 			if( exp instanceof PrimitiveItem
 			||  exp instanceof InterfaceItem
 			||  exp instanceof ClassItem )
-				return new FieldItem(
-					typeNameToFieldName(((Type)exp).getBareName()),
-					exp );
+//				return new FieldItem(
+//					typeNameToFieldName(((Type)exp).getBareName()),
+//					exp );
+				return new FieldItem( decideName(), exp );
 			
 			if( exp instanceof IgnoreItem
 			||  exp instanceof SuperClassItem
@@ -109,7 +110,7 @@ class FieldItemAnnotation
 		}
 
 		public Expression onAttribute( AttributeExp exp ) {
-			Expression body = exp.exp.visit(this);
+			Expression body = visitXMLItemContent(exp);
 			if( body==exp.exp )	return exp;
 			else	return pool.createAttribute( exp.nameClass, body );
 		}
@@ -137,9 +138,24 @@ class FieldItemAnnotation
 			When processing Y->Z, we don't want that.
 			*/
 			
-			Expression body = exp.contentModel.visit(this);
+			Expression body = visitXMLItemContent(exp);
 			if(body==exp.contentModel)	return exp;
 			else	return new ElementPattern( exp.getNameClass(), body );
+		}
+		
+		private Expression visitXMLItemContent( NameClassAndExpression exp ) {
+			// if this element or attribute has a simple name, then
+			// push it to the name stack.
+			String name=null;
+			NameClass nc = exp.getNameClass();
+			if( nc instanceof SimpleNameClass )
+				name = ((SimpleNameClass)nc).localName;
+			
+			if(name!=null)	names.push(name);
+			Expression body = exp.getContentModel().visit(this);
+			if(name!=null)	names.pop();
+			
+			return body;
 		}
 
 		public Expression onChoice( ChoiceExp exp ) {
@@ -291,12 +307,12 @@ class FieldItemAnnotation
 	}
 
 
-	/**
-	 * generates a field name suitable to hold a reference for the specified class.
-	 */
-	private static String typeNameToFieldName( String bareName ) {
-		return Character.toLowerCase(bareName.charAt(0))+bareName.substring(1);
-	}
+//	/**
+//	 * generates a field name suitable to hold a reference for the specified class.
+//	 */
+//	private static String typeNameToFieldName( String bareName ) {
+//		return Character.toLowerCase(bareName.charAt(0))+bareName.substring(1);
+//	}
 		
 	private static void assert( boolean b ) {
 		if(!b)	throw new Error();

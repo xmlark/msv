@@ -1,72 +1,87 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
-	<TITLE>Usage guide for Sun XML Datatypes Library</TITLE>
-	<META NAME="GENERATOR" CONTENT="StarOffice/5.2 (Solaris Sparc)">
-	<META NAME="CREATED" CONTENT="20010322;14525300">
-	<META NAME="CHANGEDBY" CONTENT="Eduardo Gutentag">
-	<META NAME="CHANGED" CONTENT="20010322;15064500">
-	<style>
-		.title
-		{
-			text-align:center;
-			font-weight:bold;
-		}
-		PRE
-		{
-			background-color: rgb(240,240,240);
-		}
-	</style>
-</HEAD>
-<BODY>
-<P ALIGN=center STYLE="MARGIN-BOTTOM: 0in"><B>
-USAGE GUIDE FOR SUN XML DATATYPES LIBRARY<BR>
-Preview Version.1 April, 2001<BR><BR>
-Copyright &copy; Sun Microsystems, 2001</B></P>
-<P STYLE="MARGIN-BOTTOM: 0in"><BR>
-</P>
-<P ALIGN=right>Document written by <A href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke
-KAWAGUCHI</A> <BR>$Id: HowToUse.html,v 1.3 2001/03/19 20:12:30 Bear
-Exp $ 
-</P>
-<P>Sun XML Datatypes Library, Sun's Java Implemantation of XML Schema Part 2,
-is intended for use by application that incorporates XML Schema
-Part 2.</P>
-<H1>Contents of This Document</H1>
-<OL>
-	<LI><P STYLE="MARGIN-BOTTOM: 0in"><A href="#intro">Introduction</A> 
-	</P>
-	<LI><P STYLE="MARGIN-BOTTOM: 0in"><A href="#derivation">Deriving A
-	New Type</A> 
-	</P>
-	<LI><P STYLE="MARGIN-BOTTOM: 0in"><A href="#diagnosis">Diagnosing
-	Errors</A> 
-	</P>
-	<LI><P><A href="#misc">Miscellaneous Notes</A> 
-	</P></LI>
-</OL>
-<H1><A NAME="intro"></A>Introduction: Validating Strings</H1>
-<P>The following example validates a string with integer datatype.</P>
-<PRE>void f( String v ) {
+<html>
+<head>
+<meta http-equiv="CONTENT-TYPE" content="text/html; charset=iso-8859-1">
+<title>Using the Sun[TM] XML Datatypes Library</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#dddddd">
+   <tr>
+      <td align="center" valign="middle">
+         <table width="100%" border="1" cellspacing="3" cellpadding="3" height="100%">
+            <tr>
+               <td valign="top" bgcolor="#FFFFFF">
+                  <h1>Using the Sun<small><sup>TM</sup></small> XML Datatypes Library</h1>
+               </td>
+               <td rowspan="2" align="center" valign="middle" bgcolor="#dddddd">
+                  <p><strong>Preview Version 1<br>
+                      April, 2001</strong></p>
+                  <p><a href="mailto:kohsuke.kawaguchi@eng.sun.com"><strong>Kohsuke KAWAGUCHI</strong></a></p>
+               </td>
+               <td rowspan="2" align="right" valign="middle" bgcolor="#FFFFFF" nowrap><small><em>Copyright &copy; 2001</em></small><br>
+      <small><em>Sun Microsystems, Inc.</em></small><br>
+      <small><em>All Rights Reserved</em></small></td>
+            </tr>
+            <tr>
+               <td align="left" valign="top" bgcolor="#FFFFFF">
+                  <h2><font color="#0000FF"><em>Sun's Java<small><sup>TM</sup></small> Technology Implementation of XML Schema Part 2</em></font></h2>
+               </td>
+            </tr>
+         </table>
+      </td>
+   </tr>
+</table>
+<blockquote>
+   <p>The Sun XML Datatypes Library, Sun's Java<small><sup>TM</sup></small>  technology implementation of <a href="http://www.w3.org/TR/xmlschema-2/">XML Schema Part 2</a>, is intended for use with applications that incorporate XML Schema Part 2.</p>
+</blockquote>
+<h2><font color="#0000FF">Contents</font></h2>
+<ul>
+   <li><a href="#intro">Introduction</a></li>
+   <li><a href="#derivation">Deriving A New Type</a></li>
+   <li><a href="#diagnosis">Diagnosing Errors</a></li>
+   <li><a href="#limits">Known Limitations</a></li>
+   <li><a href="#misc">Miscellaneous Notes</a></li>
+</ul>
+<hr>
+<blockquote>
+   <table width="85%" cellspacing="3" cellpadding="3">
+   <tr align="left" valign="top">
+         <td><strong>Note:</strong></td>
+         <td><em>This distribution of the XML Datatypes Library includes a sample class file, <code>src/com/sun/tranquilo/datatype/CommandLineTester.java</code>, which is provided as a guide for implementing your own Java classes with the Datatypes Library. </em></td>
+   </tr>
+</table>
+</blockquote>
+
+<hr>
+<h2><a name="intro"></a><font color="#0000FF">Introduction: Validating Strings</font></h2>
+<blockquote>
+   <p>The following example validates a string with integer datatype.</p>
+   <hr>
+   <table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+         <tr>
+            <td bgcolor="#eeeeee">
+               <pre>void f( String v ) {
   // obtain a type object
-  DataType dt = DataTypeFactory.getTypeByName("integer");
+  DataType dt = DataTypeFactory.getTypeByName(&quot;integer&quot;);
   // validates a type
   if( dt.verify(v,null) )
     ; // v is a valid integer
   else
     ; // v is not a valid integer
-}</PRE><P>
-Several types are context-dependent. For example, the "QName"
-type, which validates something like "prefix:localPart",
-neeeds to know that the given prefix is properly declared. 
-</P>
-<P>This information must be supplied to DataType object by the
-caller. To do this, the caller must provide an object that implements
-the ValidationContextProvider interface and pass it as the second
-parameter of the verify method. 
-</P>
-<PRE>class MyContextProvider implements ValidationContextProvider
+}</pre>
+      </td>
+         </tr>
+      </table>
+   <hr>
+   <p>Several types are context-dependent. For example, the <code>QName</code> type, which validates something like <code>prefix:localPart</code>, needs to know that the given prefix is properly declared. </p>
+   <p>This information must be supplied to <code>DataType</code> object by the caller. To do this, the caller must provide an object that implements the <code>ValidationContextProvider</code> interface and pass it as the second parameter of the verify method.</p>
+
+<hr>
+   <table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>class MyContextProvider implements ValidationContextProvider
 {
   String resolveNamespacePrefix( String prefix ) {
     // resolves namespace prefix to namespace URI.
@@ -79,108 +94,178 @@ parameter of the verify method.
 
 void f( String v, MyContextProvider context ) {
   // obtain a type object
-  DataType dt = DataTypeFactory.getTypeByName("QName");
+  DataType dt = DataTypeFactory.getTypeByName(&quot;QName&quot;);
   // validates a type
   if( dt.verify(v,contest) )
     ; // v is a valid QName
   else
     ; // v is not a valid QName
-}</PRE><P>
-Although the first example passes null as a
-ValidationContextProvider, the caller must ALWAYS provide a valid
-ValidationContextProvider for the library to work correctly. 
-</P>
-<H1><A NAME="derivation"></A>Deriving A New Type</H1>
-<H2>By List</H2>
-<P>The following example derives a new type from an existing DataType
-object by list. 
-</P>
-<PRE>DataType deriveByList( DataType itemType ) throws BadTypeException {
-  return DataTypeFactory.deriveByList("myType",itemType);
-}</PRE><P>
-The first parameter 
-specifies the name of the newly created type. Note that these
-derived types cannot be found through the getTypeByName method of
-DataTypeFactory class. 
-</P>
-<P>When an error is found during derivation, a BadTypeException will
-be thrown. For example, if you derive a type by list from list type,
-an exception will be thrown. 
-</P>
-<H2>By Union</H2>
-<P>The following example derives a new type from existing DataType
-objects by union. 
-</P>
-<PRE>DataType deriveByUnion( DataType[] memberTypes ) throws BadTypeException {
-  return DataTypeFactory.deriveByUnion("myType",memberTypes);
-}</PRE><P>
-The only difference between derivation by list and derivation by
-union is that the latter accepts more than one base type. 
-</P>
-<H2>By Restriction</H2>
-<P>The following example derives a new type by adding facets. 
-</P>
-<PRE>DataType f() throws BadTypeException {
-  DataType baseType = DataTypeFactory.getTypeByName("string");
-  
+}</pre>
+		</td></tr>
+</table>
+<hr>
+
+   <p>Although the first example passes null as a <code>ValidationContextProvider</code>, the caller must <em>always</em> provide a valid <code>ValidationContextProvider</code> for the library to work correctly.</p>
+</blockquote>
+
+<hr>
+<h2><a name="derivation"></a><font color="#0000FF">Deriving A New Type</font></h2>
+
+<h3><em><font color="#0000FF">By List</font></em></h3>
+<blockquote>
+   <p>The following example derives a new type from an existing <code>DataType</code> object by list.</p>
+   
+<hr>
+      <table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+         <tr>
+            <td bgcolor="#eeeeee">
+               <pre>DataType deriveByList( DataType itemType ) throws BadTypeException {
+  return DataTypeFactory.deriveByList(&quot;myType&quot;,itemType);
+}</pre>
+      </td>
+         </tr>
+      </table>
+      <hr>
+
+   <p>The first parameter specifies the name of the newly created type. Note that these derived types cannot be found through the <code>getTypeByName</code> method of the <code>DataTypeFactory</code> class.</p>
+   <p>When an error is found during derivation, a <code>BadTypeException</code> will be thrown. For example, if you derive a type by list from list type, an exception will be thrown.</p>
+</blockquote>
+<h3><em><font color="#0000FF">By Union</font></em></h3>
+
+<blockquote>
+   <p>The following example derives a new type from existing <code>DataType</code> objects by union.</p>
+      <hr>
+   <table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+         <tr>
+          <td bgcolor="#eeeeee">
+             <pre>DataType deriveByUnion( DataType[] memberTypes ) throws BadTypeException {
+  return DataTypeFactory.deriveByUnion(&quot;myType&quot;,memberTypes);
+}</pre>
+      </td>
+         </tr>
+      </table>
+      <hr>
+   <p> The only difference between derivation by list and derivation by union is that the latter accepts more than one base type.</p>
+</blockquote>
+
+<h3><em><font color="#0000FF">By Restriction</font></em></h3>
+
+<blockquote>
+   <p>The following example derives a new type by adding facets.</p>
+
+      <hr>
+   <table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+      <tr>
+         <td bgcolor="#eeeeee">
+            <pre>DataType f() throws BadTypeException {
+  DataType baseType = DataTypeFactory.getTypeByName(&quot;string&quot;);
+
   // create a type incubator with the base type
   TypeIncubator incubator = new TypeIncubator(baseType);
-  
+
   // add facets
-  incubator.add( "minLength", "5", false, null );
-  incubator.add( "maxLength", "20", false, null );
-  
+  incubator.add( &quot;minLength&quot;, &quot;5&quot;, false, null );
+  incubator.add( &quot;maxLength&quot;, &quot;20&quot;, false, null );
+
   // derive a new type by those facets
-  DataType derived = incubator.derive("newTypeName");
-  
+  DataType derived = incubator.derive(&quot;newTypeName&quot;);
+
   return derived;
-}</PRE><P>
-The third parameter to the add method specifies whether that facet
-should be "fixed" or not. Once a facet is fixed, a derived
-class can no longer restrict that facet. 
-</P>
-<P>The fourth parameter is again ValidationContextProvider, which is
-sometimes necessary. Although the above example does not supply one,
-the caller has to supply an object that implements
-ValidationContextProvider. 
-</P>
-<P>BadTypeException can be thrown when you add a facet or when you
-call the derive method. 
-</P>
-<H1><A NAME="diagnosis"></A>Diagnosing Errors</H1>
-<P>The following example provides a diagnostic message to users about
-what is wrong with their value. 
-</P>
-<PRE>void test( DataType dt, String v, ValidationContextProvider context ) {
+}</pre>
+      </td>
+      </tr>
+   </table>
+   <hr>
+
+   <p>The third parameter to the add method specifies whether that facet should be &quot;fixed&quot; or not. Once a facet is fixed, a derived class can no longer restrict that facet.</p>
+   <p>The fourth parameter is again <code>ValidationContextProvider</code>, which is sometimes necessary. Although the above example does not supply one, the caller has to supply an object that implements <code>ValidationContextProvider</code>.</p>
+   <p><code>BadTypeException</code> can be thrown when you add a facet, or when you call the derive method.</p>
+</blockquote>
+
+<hr>
+<h2><a name="diagnosis"></a><font color="#0000FF">Diagnosing Errors</font></h2>
+
+<blockquote>
+   <p>The following example provides a diagnostic message to users about what is wrong with their value.</p>
+
+      <hr>
+   <table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+      <tr>
+         <td bgcolor="#eeeeee">
+            <pre>void test( DataType dt, String v, ValidationContextProvider context ) {
   if( dt.verify(v,context) )
-    System.out.println("valid");
+    System.out.println(&quot;valid&quot;);
   else {
     try {
       DataTypeDiagnosis d = dt.diagnose(v,context);
       // print diagnosis message
-      System.out.println("invalid: "+d.getMessage());
+      System.out.println(&quot;invalid: &quot;+d.getMessage());
     }
     catch( NotSupportedOperationException e ) {
       // data type may not support diagnosis.
-      System.out.println("invalid");
+      System.out.println(&quot;invalid&quot;);
     }
   }
-}</PRE><P>
-In this way, the user gets informative error messages. If the
-DataType object does not support diagnosis, it throws
-NotSupportedOperationException. It is the caller's responsibility to
-handle this exception correctly. 
-</P>
-<H1><A NAME="misc"></A>Miscellaneous Notes</H1>
-<H2>DataType interface</H2>
-<P>The DataType interface is NOT intended to be used as a general
-interface for datatype vocabularies. This interface is strongly
-coupled with XSD. Providing a generic interface that can be used by
-various full-fledged datatype vocabularies is not trivial. 
-</P>
-<P>In order to overcome this shortcoming in the current release of
-Sun XML Datatypes Library, developers wishing to implement their own type that
-implements Datatype should do so by deriving their class from
-<CODE>ConcreteType</CODE> class.</P>
-</BODY>
-</HTML>
+}</pre>
+         </td>
+      </tr>
+   </table>
+      <hr>
+
+   <p>In this way, the user gets informative error messages. If the <code>DataType</code> object does not support diagnosis, it throws <code>NotSupportedOperationException</code>. It is the caller's responsibility to handle this exception correctly.</p>
+</blockquote>
+
+<hr>
+<h2><a name="limits"></a><font color="#0000FF">Known Limitations</font></h2>
+<ol>
+   <li>
+      <p>Types <code>float</code> and <code>double</code>: the spec says a lexical value must be mapped to the closest value in the value space. However, This library cannot accept values that are larger than the maximum value for that type or smaller than the minimum value for that type. This should not be a problem for most users.</p>
+   </li>
+   <li>
+      <p><code>ID</code>, <code>IDREF</code>, and <code>IDREFS</code> types are not implemented. Although uniqueness constraints are removed from Part 2, these types are still intended to be used with uniqueness constraints. These constraints are so special that it is impossible to provide a generic implementation. <code>com.sun.tranquilo.datatype.DataTypeFactory</code> does not recognize these three types.</p>
+   </li>
+   <li>
+      <p><code>NOTATION</code> type is not implemented. <code>com.sun.tranquilo.datatype.DataTypeFactory</code> does not recognize this type.</p>
+   </li>
+   <li>
+      <p><code>length</code>, <code>minLength</code>, and <code>maxLength</code> facets are effectively limited to the value 2147483647. Values above this limit are recognized, but will be treated as this limit. Items larger than this limit will not be validated correctly. This limitation has no practical impact.</p>
+   </li>
+   <li>
+      <p>Regarding <code>length</code> and <code>min/maxLength</code> facets of <code>anyURI</code> the spec does not define what is the unit of length. This version implements <code>length</code> facet as being in units of XML characters in the lexical space.</p>
+   </li>
+   <li>
+      <p>Regarding <code>length</code> and <code>min/maxLength</code> facets of <code>QName</code>: again, the specification does not define the unit of length. This version implements <code>length</code> facet as being in units of XML characters in the value space ( # of chars in namespace URI + local part ). Users are strongly discouraged from applying length-related facets to <code>QName</code> type.</p>
+   </li>
+   <li>
+      <p><code>anyURI</code> (formerly <code>uriReference</code>) is made to accept several IP v6 addresses like <code>::192.168.0.1</code>, which are not accepted by the original BNF specified in RFC 2373. This modification should be considered as a &quot;bug fix.&quot; Although the BNF specified in RFC 2373 has several other problems, those are not fixed. For example, the current release accepts <code>1:2:3:4:5:6:7:8:9</code>, which is not a valid IP v6 address.</p>
+   </li>
+   <li>
+      <p><code>language</code> type is implemented in accordance with RFC 1766, and language identifiers are treated in a case-insensitive way. XML SchemaPart 2 says that the lexical space of the language type will be as defined in XML1.0 Recommendation 2nd edition, but that production was thrown away in the 2nd edition. Furthermore, the derivation shown inXML Schema Part 2 does not correctly implement the definition given in RFC 1766, so apparently there is a problem in the definition of the language type. However, by making <code>language</code> case-insensitive, it is no longer a derived type of <code>token</code> type.</p>
+   </li>
+   <li>
+      <p>Regarding <code>base64Binary</code> type, RFC 2045 states that &quot;any characters outside of the base64 alphabet are to be ignored in base64-encoded data.&quot; This makes &quot;validation&quot; of <code>base64Binary</code> meaningless. For example, <code>&lt;picture&gt;))))&lt;/picture&gt</code>; is considered as valid <code>base64Binary</code>. Developers should keep this in mind.</p>
+   </li>
+   <li>
+      <p><code>minInclusive</code>, <code>maxInclusive</code>, <code>minExclusive</code>, and <code>maxExclusive</code> facets of date/time related types do not work properly. XML Schema Part 2 is broken as regards the order relation of these types. This also affects the behavior of  the &quot;enumeration&quot; facet (since equality is a part of order-relation). See Kawaguchi's comments to <a href="http://lists.w3.org/Archives/Public/www-xml-schema-comments/">www-xml-schema-comments@w3.org</a> for details  (
+
+	<a href="http://lists.w3.org/Archives/Public/www-xml-schema-comments/2001JanMar/0365.html">[1]</a>
+
+	<a href="http://lists.w3.org/Archives/Public/www-xml-schema-comments/2001JanMar/0366.html">[2]</a>
+
+	<a href="http://lists.w3.org/Archives/Public/www-xml-schema-comments/2001JanMar/0367.html">[3]</a> and
+
+	<a href="http://lists.w3.org/Archives/Public/www-xml-schema-comments/2001JanMar/0368.html">[4]</a>
+
+	).</p>
+   </li>
+</ol>
+<hr>
+<h2><a name="misc"></a><font color="#0000FF">Miscellaneous Notes</font></h2>
+<h3><em><font color="#0000FF">DataType Interface</font></em></h3>
+
+<blockquote>
+   <p>The <code>DataType</code> interface is <em>not</em> intended to be used as a general interface for datatype vocabularies. This interface is strongly coupled with XSD. Providing a generic interface that can be used by various full-fledged datatype vocabularies is not trivial.</p>
+   <p>In order to overcome this shortcoming in the current release of the Sun XML Datatypes Library, developers wishing to implement their own type that implements <code>DataType</code> should do so by deriving their class from the <code>ConcreteType</code> class.</p>
+</blockquote>
+</body>
+</html>

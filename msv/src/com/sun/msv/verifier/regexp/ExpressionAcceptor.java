@@ -379,7 +379,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 	 * 
 	 * <ol>
 	 *  <li>We may get back to sync by ignoring the newly found illegal element.
-	 *      ( this is for mistake like "abcdXefg")
+	 *      ( this is for mistake like "abcXdefg")
 	 *  <li>We may get back to sync by replacing newly found illegal element
 	 *      by one of the valid elements.
 	 *      ( this is for mistake like "abcXefg")
@@ -389,33 +389,15 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		
 		final CombinedChildContentExpCreator cccc = docDecl.cccec;
 		
-		// cccc leaves attributes. so we have to "remove" them.
-		// note the difference between pruning and removing.
-		// pruning replaces unconsumed attributes by nullSet, whereas removing
-		// replaces them by epsilon.
-		// since we are in error recovery, removing is what we want here.
-		final AttributeRemover ar = docDecl.attRemover;
-		
 		CombinedChildContentExpCreator.ExpressionPair combinedEoC =
 			cccc.get( expression, null, false );
 		
 		// get residual of EoC.
 		Expression eocr = docDecl.resCalc.calcResidual( expression, AnyElementToken.theInstance );
 		
-		CombinedChildContentExpCreator.ExpressionPair combinedEoC_EoCR =
-			cccc.continueGet( eocr, null, false );
-			// append result to the previous result.
-
-		// alter this.expression for error recovery
-		this.expression = docDecl.pool.createChoice( this.expression, eocr );
-		
-		Expression continuation = mergeContinuation( combinedEoC.continuation, combinedEoC_EoCR.continuation );
-		if( continuation==null || continuation==Expression.nullSet )
-			continuation = this.expression;
-				
-		Expression contentModel =
-			docDecl.pool.createChoice(combinedEoC.content,combinedEoC_EoCR.content);
-		contentModel = contentModel.visit(ar);
+        Expression continuation = docDecl.pool.createChoice(
+            expression, eocr );
+        Expression contentModel = combinedEoC.content;
 		
 		if( com.sun.msv.driver.textui.Debug.debug )
 		{

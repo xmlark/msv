@@ -9,6 +9,10 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * whiteSpace facet validator
  * 
@@ -35,15 +39,15 @@ public class WhiteSpaceFacet extends DataTypeWithFacet {
 		// consistency with minLength/maxLength is checked in DataTypeImpl.derive method.
 	}
 	
-	protected boolean checkFormat( String content, ValidationContextProvider context ) {
+	protected boolean checkFormat( String content, ValidationContext context ) {
 		return baseType.checkFormat(content,context);
 	}
-	public Object convertToValue( String content, ValidationContextProvider context ) {
+	public Object convertToValue( String content, ValidationContext context ) {
 		return baseType.convertToValue(content,context);
 	}
 	
 	/** whiteSpace facet never constrain anything */
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context) {
+	protected DataTypeException diagnoseByFacet(String content, ValidationContext context) {
 		return null;
 	}
 }

@@ -9,13 +9,14 @@
  */
 package com.sun.msv.reader.datatype.xsd;
 
+import com.sun.msv.datatype.DataTypeImpl;
 import com.sun.msv.datatype.BadTypeException;
-import com.sun.msv.datatype.DataType;
 import com.sun.msv.datatype.StringType;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.ExpressionWithChildState;
 import com.sun.msv.reader.datatype.TypeOwner;
+import org.relaxng.datatype.DataType;
 
 /**
  * State which has at most one TypeState as its child.
@@ -24,7 +25,7 @@ import com.sun.msv.reader.datatype.TypeOwner;
  */
 abstract class TypeWithOneChildState extends TypeState implements TypeOwner
 {
-	protected DataType type;
+	protected DataTypeImpl type;
 
 	/** receives a Pattern object that is contained in this element. */
 	public void onEndChild( DataType child )
@@ -33,10 +34,10 @@ abstract class TypeWithOneChildState extends TypeState implements TypeOwner
 			reader.reportError( reader.ERR_MORE_THAN_ONE_CHILD_TYPE );
 			// recover by ignoring this child
 		else
-			type = child;
+			type = (DataTypeImpl)child;
 	}
 	
-	protected final DataType makeType() throws BadTypeException
+	protected final DataTypeImpl makeType() throws BadTypeException
 	{
 		if( type==null )
 		{
@@ -50,7 +51,7 @@ abstract class TypeWithOneChildState extends TypeState implements TypeOwner
 	 * performs final wrap-up and returns a fully created DataType object
 	 * that represents this element.
 	 */
-	protected DataType annealType( DataType dt ) throws BadTypeException
+	protected DataTypeImpl annealType( DataTypeImpl dt ) throws BadTypeException
 	{
 		// default implementation do nothing.
 		return dt;

@@ -13,9 +13,10 @@ import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.State;
 import com.sun.msv.datatype.BadTypeException;
-import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.DataTypeImpl;
 import com.sun.msv.datatype.DataTypeFactory;
 import com.sun.msv.util.StartTagInfo;
+//import org.relaxng.datatype.DataType;
 
 /**
  * state that parses &lt;list&gt; element of XSD.
@@ -30,9 +31,7 @@ public class ListState extends TypeWithOneChildState
 		this.newTypeName = newTypeName;
 	}
 	
-	protected DataType annealType( DataType baseType )
-		throws BadTypeException
-	{
+	protected DataTypeImpl annealType( DataTypeImpl baseType ) throws BadTypeException {
 		return DataTypeFactory.deriveByList( newTypeName, baseType );
 	}
 	
@@ -43,7 +42,7 @@ public class ListState extends TypeWithOneChildState
 		// if itemType attribute is used, try to load it.
 		String itemType = startTag.getAttribute("itemType");
 		if(itemType!=null)
-			type = reader.resolveDataType(itemType);
+			type = (DataTypeImpl)reader.resolveDataType(itemType);
 	}
 
 	protected State createChildState( StartTagInfo tag )

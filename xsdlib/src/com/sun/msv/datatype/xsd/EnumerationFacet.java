@@ -11,6 +11,8 @@ package com.sun.msv.datatype;
 
 import java.util.Set;
 import java.util.Vector;
+import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * "enumeration" facets validator.
@@ -27,13 +29,13 @@ public class EnumerationFacet extends DataTypeWithValueConstraintFacet {
 	/** set of valid values */
 	public final Set values;
 
-	public Object convertToValue( String literal, ValidationContextProvider context ) {
+	public Object convertToValue( String literal, ValidationContext context ) {
 		Object o = baseType.convertToValue(literal,context);
 		if(o==null || !values.contains(o))		return null;
 		return o;
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context) {
+	protected DataTypeException diagnoseByFacet(String content, ValidationContext context) {
 		if( convertToValue(content,context)!=null )	return null;
 		
 		// TODO: guess which item the user was trying to specify
@@ -52,11 +54,11 @@ public class EnumerationFacet extends DataTypeWithValueConstraintFacet {
 				
 				r = "("+r+")";	// oh, don't tell me I should use StringBuffer.
 				
-				return new DataTypeErrorDiagnosis(this, content, -1,
+				return new DataTypeException(this, content, -1,
 					localize(ERR_ENUMERATION_WITH_ARG, r) );
 			}
 		}
-		return new DataTypeErrorDiagnosis(this, content, -1,
+		return new DataTypeException(this, content, -1,
 			localize(ERR_ENUMERATION) );
 	}
 

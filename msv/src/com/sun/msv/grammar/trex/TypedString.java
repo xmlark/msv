@@ -10,6 +10,8 @@
 package com.sun.msv.grammar.trex;
 
 import com.sun.msv.datatype.*;
+import org.relaxng.datatype.ValidationContext;
+import org.relaxng.datatype.DataTypeException;
 
 /**
  * Datatype created by &lt;string&gt; element.
@@ -36,7 +38,7 @@ public class TypedString implements DataType {
 		throw new UnsupportedOperationException();
 	}
 
-	public Object convertToValueObject( String literal, ValidationContextProvider context ) {
+	public Object createValue( String literal, ValidationContext context ) {
 		if(!preserveWhiteSpace)
 			literal = WhiteSpaceProcessor.theCollapse.process(literal);
 		
@@ -44,7 +46,7 @@ public class TypedString implements DataType {
 		else						return null;
 	}
 
-	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if( value instanceof String )
 			return (String)value;
 		else
@@ -54,17 +56,24 @@ public class TypedString implements DataType {
 	public boolean isAtomType() { return true; }
 	public boolean isFinal(int t) { return true; }
 	
-	public boolean verify( String literal, ValidationContextProvider context ) {
-		return convertToValueObject(literal,context)!=null;
+	public boolean allows( String literal, ValidationContext context ) {
+		return createValue(literal,context)!=null;
 	}
 	
-	public DataTypeErrorDiagnosis diagnose( String content, ValidationContextProvider context ) {
-		if( convertToValueObject(content,context)!=null )	return null;
+	public DataTypeException diagnose( String content, ValidationContext context ) {
+		if( createValue(content,context)!=null )	return null;
 		
-		return new DataTypeErrorDiagnosis(
+		return new DataTypeException(
 			this, content,-1,
 			Localizer.localize(DIAG_TYPED_STRING,value) );
 	}
+	
+// stubs
+	public final boolean sameValue( Object o1, Object o2 ) {
+		return o1.equals(o2);
+	}
+	
+	
 	
 	public String getName() { return null; }
 	public String displayName() { return "TREX built-in string"; }

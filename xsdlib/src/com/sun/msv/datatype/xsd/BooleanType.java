@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * "boolean" type.
  * 
@@ -22,12 +24,12 @@ public class BooleanType extends ConcreteType {
 	
 	private BooleanType()	{ super("boolean"); }
 	
-	protected boolean checkFormat( String content, ValidationContextProvider context ) {
+	protected boolean checkFormat( String content, ValidationContext context ) {
 		return "true".equals(content) || "false".equals(content)
 			|| "0".equals(content) || "1".equals(content);
 	}
 	
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
+	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		// for string, lexical space is value space by itself
 		if( lexicalValue.equals("true") )		return Boolean.TRUE;
 		if( lexicalValue.equals("1") )			return Boolean.TRUE;
@@ -36,7 +38,7 @@ public class BooleanType extends ConcreteType {
 		return null;
 	}
 
-	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if( value instanceof Boolean ) {
 			Boolean b = (Boolean)value;
 			if( b.booleanValue()==true )	return "true";

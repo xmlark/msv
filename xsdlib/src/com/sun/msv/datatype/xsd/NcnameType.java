@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * "NCName" type.
  * 
@@ -21,7 +23,7 @@ public class NcnameType extends TokenType {
 	public static final NcnameType theInstance = new NcnameType();
 	private NcnameType() { super("NCName"); }
 	
-	public Object convertToValue( String content, ValidationContextProvider context ) {
+	public Object convertToValue( String content, ValidationContext context ) {
 		if(XmlNames.isNCName(content))		return content;
 		else								return null;
 	}

@@ -9,6 +9,9 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * "final" component.
  * 
@@ -49,19 +52,19 @@ public final class FinalComponent extends DataTypeImpl {
 		return baseType.isFacetApplicable(facetName);
 	}
 	
-	public boolean checkFormat( String content, ValidationContextProvider context ) {
+	public boolean checkFormat( String content, ValidationContext context ) {
 		return baseType.checkFormat(content,context);
 	}
 	
-	public Object convertToValue( String content, ValidationContextProvider context ) {
+	public Object convertToValue( String content, ValidationContext context ) {
 		return baseType.convertToValue(content,context);
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		return baseType.convertToLexicalValue(value,context);
 	}
 	
-	public DataTypeErrorDiagnosis diagnoseValue( String content, ValidationContextProvider context ) {
+	public DataTypeException diagnoseValue( String content, ValidationContext context ) {
 		return baseType.diagnoseValue(content,context);
 	}
 	

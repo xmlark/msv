@@ -9,6 +9,9 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * 'totalDigits' facet.
  *
@@ -40,12 +43,12 @@ public class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 		return countPrecision(content)<=precision;
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context) {
+	protected DataTypeException diagnoseByFacet(String content, ValidationContext context) {
 		final int cnt = countPrecision(content);
 		if( cnt<=precision )
 			return null;
 		
-		return new DataTypeErrorDiagnosis(this, content, -1,
+		return new DataTypeException(this, content, -1,
 			localize(ERR_TOO_MUCH_PRECISION, new Integer(cnt), new Integer(precision)) );
 	}
 	

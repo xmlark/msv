@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * "long" type.
  * 
@@ -22,7 +24,7 @@ public class LongType extends IntegerDerivedType {
 	private LongType() { super("long"); }
 	protected LongType( String typeName ) { super(typeName); }
 	
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
+	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		try {
 			lexicalValue = removeOptionalPlus(lexicalValue);

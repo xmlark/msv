@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /** base class of FloatType and DoubleType
  * 
  * @author	Kohsuke Kawaguchi
@@ -16,7 +18,7 @@ package com.sun.msv.datatype;
 abstract class FloatingNumberType extends ConcreteType implements Comparator {
 	protected FloatingNumberType( String typeName ) { super(typeName); }
 	
-	final protected boolean checkFormat( String lexicalValue, ValidationContextProvider context ) {
+	final protected boolean checkFormat( String lexicalValue, ValidationContext context ) {
 		// FloatType and DoubleType checks format by trying to convert it to value object
 		return convertToValue(lexicalValue,context)!=null;
 	}

@@ -11,6 +11,7 @@ package com.sun.msv.datatype;
 
 import java.io.ByteArrayInputStream;
 import org.apache.xerces.utils.regex.RegularExpression;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * "anyURI" type.
@@ -27,7 +28,7 @@ public class AnyURIType extends ConcreteType implements Discrete {
 		super("anyURI");
 	}
 	
-	protected boolean checkFormat( String content, ValidationContextProvider context ) {
+	protected boolean checkFormat( String content, ValidationContext context ) {
 		return regexp.matches(escape(content));
 	}
 
@@ -167,7 +168,7 @@ public class AnyURIType extends ConcreteType implements Discrete {
 	}
 	
 
-	public Object convertToValue( final String content, ValidationContextProvider context ) {
+	public Object convertToValue( final String content, ValidationContext context ) {
 		// we can't use java.net.URL (for example, it cannot handle IPv6.)
 		if(!regexp.matches(escape(content)))		return null;
 		
@@ -176,7 +177,7 @@ public class AnyURIType extends ConcreteType implements Discrete {
 		return content;
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if( value instanceof String )
 			return (String)value;
 		else

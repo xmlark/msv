@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * "hexBinary" type.
  * 
@@ -33,7 +35,7 @@ public class HexBinaryType extends BinaryBaseType {
 		return -1;
 	}
 
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
+	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		final int len = lexicalValue.length();
 
 		// "111" is not a valid hex encoding.
@@ -53,7 +55,7 @@ public class HexBinaryType extends BinaryBaseType {
 		return new BinaryValueType(out);
 	}
 
-	protected boolean checkFormat( String lexicalValue, ValidationContextProvider context ) {
+	protected boolean checkFormat( String lexicalValue, ValidationContext context ) {
 		final int len = lexicalValue.length();
 
 		// "111" is not a valid hex encoding.
@@ -66,7 +68,7 @@ public class HexBinaryType extends BinaryBaseType {
 		return true;
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if(!(value instanceof BinaryValueType))
 			throw new IllegalArgumentException();
 		

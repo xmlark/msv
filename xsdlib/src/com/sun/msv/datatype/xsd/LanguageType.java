@@ -10,6 +10,7 @@
 package com.sun.msv.datatype;
 
 import java.util.Hashtable;
+import org.relaxng.datatype.ValidationContext;
 
 
 /**
@@ -25,7 +26,7 @@ public class LanguageType extends TokenType {
 	public static final LanguageType theInstance = new LanguageType();
 	private LanguageType() { super("language"); }
 	
-	public Object convertToValue( String content, ValidationContextProvider context ) {
+	public Object convertToValue( String content, ValidationContext context ) {
 		/*	RFC1766 defines the following BNF
 		
 			 Language-Tag = Primary-tag *( "-" Subtag )

@@ -9,6 +9,9 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * Base class of "(max|min)(In|Ex)clusive" facet validator
  * 
@@ -23,7 +26,7 @@ public abstract class RangeFacet extends DataTypeWithValueConstraintFacet {
 		limitValue = facets.getFacet(facetName);
 	}
 	
-	public final Object convertToValue( String literal, ValidationContextProvider context ) {
+	public final Object convertToValue( String literal, ValidationContext context ) {
 		Object o = baseType.convertToValue(literal,context);
 		if(o==null)	return null;
 		
@@ -32,10 +35,10 @@ public abstract class RangeFacet extends DataTypeWithValueConstraintFacet {
 		return o;
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context) {
+	protected DataTypeException diagnoseByFacet(String content, ValidationContext context) {
 		if( convertToValue(content,context)!=null )		return null;
 			
-		return new DataTypeErrorDiagnosis(this, content, -1,
+		return new DataTypeException(this, content, -1,
 			localize(ERR_OUT_OF_RANGE, facetName, limitValue) );
 	}
 	

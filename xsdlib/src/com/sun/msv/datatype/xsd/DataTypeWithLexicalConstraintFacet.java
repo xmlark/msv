@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * base class for facets which constrains lexical space of data
  * 
@@ -23,12 +25,12 @@ abstract class DataTypeWithLexicalConstraintFacet extends DataTypeWithFacet {
 	}
 	
 	// this class does not perform any lexical check.
-	protected final boolean checkFormat( String literal, ValidationContextProvider context ) {
+	protected final boolean checkFormat( String literal, ValidationContext context ) {
 		if(!baseType.checkFormat(literal,context))	return false;
 		return checkLexicalConstraint(literal);
 	}
 	
-	public final Object convertToValue( String literal, ValidationContextProvider context ) {
+	public final Object convertToValue( String literal, ValidationContext context ) {
 		Object o = baseType.convertToValue(literal,context);
 		if(o!=null && !checkLexicalConstraint(literal) )	return null;
 		return o;

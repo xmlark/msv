@@ -10,7 +10,7 @@
 package com.sun.msv.grammar;
 
 import com.sun.msv.datatype.NmtokenType;
-import com.sun.msv.datatype.ValidationContextProvider;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * very limited 'IDREF' type of XML Schema Part 2.
@@ -23,12 +23,16 @@ public class IDREFType extends NmtokenType {
 	
 	protected IDREFType()	{ super("IDREF"); }
 	
+	protected Object readResolve() {
+		// prevent serialization from breaking the singleton.
+		return theInstance;
+	}
 	
-	public Object convertToValue( String content, ValidationContextProvider context ) {
+	public Object convertToValue( String content, ValidationContext context ) {
 		Object o = super.convertToValue(content,context);
 		if(o==null)		return null;
 
-		((IDContextProvider)context).onIDREF(content);
+		((IDContextProvider)context).onIDREF("",content);
 		return o;
 	}
 }

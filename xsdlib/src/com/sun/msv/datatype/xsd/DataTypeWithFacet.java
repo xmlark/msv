@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.*;
+
 /**
  * Base implementation of facet-restricted datatype
  * 
@@ -96,20 +98,20 @@ public abstract class DataTypeWithFacet extends DataTypeImpl
 		return baseType.isFinal(derivationType);
 	}
 	
-	final public String convertToLexicalValue( Object o, SerializationContextProvider context ) {
+	final public String convertToLexicalValue( Object o, SerializationContext context ) {
 		return concreteType.convertToLexicalValue(o,context);
 	}
 	
-	final protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context ) {
+	final protected DataTypeException diagnoseValue(String content, ValidationContext context ) {
 		// if base type complains, pass it through.
-		DataTypeErrorDiagnosis err = baseType.diagnoseValue(content,context);
+		DataTypeException err = baseType.diagnoseValue(content,context);
 		if(err!=null)		return err;
 		
 		// otherwise, perform own diagnosis.
 		return diagnoseByFacet(content,context);
 	}
 	
-	protected abstract DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context)
+	protected abstract DataTypeException diagnoseByFacet(String content, ValidationContext context)
 		throws UnsupportedOperationException;
 
 }

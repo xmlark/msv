@@ -10,6 +10,8 @@
 package com.sun.msv.datatype;
 
 import java.util.StringTokenizer;
+import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * List type.
@@ -57,17 +59,17 @@ public final class ListType extends ConcreteType implements Discrete {
 			return NOT_ALLOWED;
 	}
 	
-	protected final boolean checkFormat( String content, ValidationContextProvider context ) {
+	protected final boolean checkFormat( String content, ValidationContext context ) {
 		// Are #x9, #xD, and #xA allowed as a separator, or not?
 		StringTokenizer tokens = new StringTokenizer(content);
 		
 		while( tokens.hasMoreTokens() )
-			if(!itemType.verify(tokens.nextToken(),context))	return false;
+			if(!itemType.allows(tokens.nextToken(),context))	return false;
 		
 		return true;
 	}
 	
-	public Object convertToValue( String content, ValidationContextProvider context ) {
+	public Object convertToValue( String content, ValidationContext context ) {
 		// StringTokenizer correctly implements the semantics of whiteSpace="collapse"
 		StringTokenizer tokens = new StringTokenizer(content);
 		
@@ -87,7 +89,7 @@ public final class ListType extends ConcreteType implements Discrete {
 		return ((ListValueType)value).values.length;
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if(!(value instanceof ListValueType))
 			throw new IllegalArgumentException();
 		
@@ -102,14 +104,14 @@ public final class ListType extends ConcreteType implements Discrete {
 	}
 	
 	/** The current implementation detects which list item is considered wrong. */
-	protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context) {
+	protected DataTypeException diagnoseValue(String content, ValidationContext context) {
 		// StringTokenizer correctly implements the semantics of whiteSpace="collapse"
 		StringTokenizer tokens = new StringTokenizer(content);
 		
 		while( tokens.hasMoreTokens() )
 		{
 			String token = tokens.nextToken();
-			DataTypeErrorDiagnosis err = itemType.diagnose(token,context);
+			DataTypeException err = itemType.diagnose(token,context);
 			if(err!=null) return err;
 		}
 		

@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * "double" type.
  * 
@@ -22,7 +24,7 @@ public class DoubleType extends FloatingNumberType {
 	public static final DoubleType theInstance = new DoubleType();
 	private DoubleType() { super("double"); }
 	
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
+	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		// TODO : probably the same problems exist as in the case of float
 		try {
 			if(lexicalValue.equals("NaN"))	return new Double(Double.NaN);
@@ -42,7 +44,7 @@ public class DoubleType extends FloatingNumberType {
 		}
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if(!(value instanceof Double ))
 			throw new IllegalArgumentException();
 		

@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.DataTypeException;
+
 /**
  * signals bad type definition.
  *
@@ -17,7 +19,7 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class BadTypeException extends Exception {
+public class BadTypeException extends DataTypeException {
 	
 	public BadTypeException(String resourcePropertyName,Object[] args) {
 		super( java.text.MessageFormat.format(

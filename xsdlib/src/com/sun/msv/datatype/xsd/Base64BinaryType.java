@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * "base64Binary" type.
  * 
@@ -44,7 +46,7 @@ public class Base64BinaryType extends BinaryBaseType {
 		return map;
 	}
 
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
+	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		final byte[] buf = lexicalValue.getBytes();
 
 		final int outlen = calcLength(buf);
@@ -81,7 +83,7 @@ public class Base64BinaryType extends BinaryBaseType {
 		return new BinaryValueType(out);
 	}
 
-	protected boolean checkFormat( String lexicalValue, ValidationContextProvider context ) {
+	protected boolean checkFormat( String lexicalValue, ValidationContext context ) {
 		return calcLength( lexicalValue.getBytes() ) != -1;
 	}
 
@@ -142,7 +144,7 @@ public class Base64BinaryType extends BinaryBaseType {
 		return encodeMap[i&0x3F];
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if(!(value instanceof BinaryValueType))
 			throw new IllegalArgumentException();
 		

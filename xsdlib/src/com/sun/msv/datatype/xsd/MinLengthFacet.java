@@ -9,6 +9,9 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * 'minLength' facet
  * 
@@ -33,13 +36,13 @@ public class MinLengthFacet extends DataTypeWithValueConstraintFacet {
 		// consistency with maxLength is checked in DataTypeImpl.derive method.
 	}
 	
-	public Object convertToValue( String literal, ValidationContextProvider context ) {
+	public Object convertToValue( String literal, ValidationContext context ) {
 		Object o = baseType.convertToValue(literal,context);
 		if(o==null || ((Discrete)concreteType).countLength(o)<minLength)	return null;
 		return o;
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context) {
+	protected DataTypeException diagnoseByFacet(String content, ValidationContext context) {
 		Object o = concreteType.convertToValue(content,context);
 		// base type must have accepted this lexical value, otherwise 
 		// this method is never called.
@@ -47,7 +50,7 @@ public class MinLengthFacet extends DataTypeWithValueConstraintFacet {
 		
 		int cnt = ((Discrete)concreteType).countLength(o);
 		if(cnt<minLength)
-			return new DataTypeErrorDiagnosis( this, content, -1,
+			return new DataTypeException( this, content, -1,
 				localize(ERR_MINLENGTH,	new Integer(cnt), new Integer(minLength)) );
 		
 		return null;

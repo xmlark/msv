@@ -12,6 +12,7 @@ package com.sun.msv.datatype;
 import com.sun.msv.datatype.datetime.ISO8601Parser;
 import com.sun.msv.datatype.datetime.IDateTimeValueType;
 import com.sun.msv.datatype.datetime.BigDateTimeValueType;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * "dateTime" type.
@@ -36,7 +37,7 @@ public class DateTimeType extends DateTimeBaseType {
 		return p.dateTimeTypeV();
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if(!(value instanceof IDateTimeValueType))
 			throw new IllegalArgumentException();
 		

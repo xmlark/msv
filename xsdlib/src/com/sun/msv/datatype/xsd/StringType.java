@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * "string" type.
  * 
@@ -26,17 +28,17 @@ public class StringType extends ConcreteType implements Discrete {
 		super(typeName,whiteSpace);
 	}
 	
-	protected final boolean checkFormat( String content, ValidationContextProvider context ) {
+	protected final boolean checkFormat( String content, ValidationContext context ) {
 		// string derived types should use convertToValue method to check its validity
 		return convertToValue(content,context)!=null;
 	}
 	
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
+	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		// for string, lexical space is value space by itself
 		return lexicalValue;
 	}
 
-	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if( value instanceof String )
 			return (String)value;
 		else

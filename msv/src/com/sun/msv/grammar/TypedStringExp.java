@@ -9,8 +9,8 @@
  */
 package com.sun.msv.grammar;
 
-import com.sun.msv.datatype.DataType;
-import com.sun.msv.datatype.ValidationContextProvider;
+import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * Expression that matchs characters of the particular {@link DataType}.
@@ -22,7 +22,7 @@ public class TypedStringExp extends Expression {
 	/** datatype object that actually validates text. */
 	public final DataType dt;
 	
-	TypedStringExp( DataType dt ) {
+	protected TypedStringExp( DataType dt ) {
 		super(hashCode(dt,HASHCODE_TYPED_STRING));
 		this.dt=dt;
 	}
@@ -33,7 +33,7 @@ public class TypedStringExp extends Expression {
 		
 		// Therefore datatype vocaburary does not necessarily provide
 		// strict equals method.
-		if(!(o instanceof TypedStringExp))	return false;
+		if(o.getClass()!=this.getClass())	return false;
 		return ((TypedStringExp)o).dt.equals(dt);
 	}
 	
@@ -43,13 +43,13 @@ public class TypedStringExp extends Expression {
 	public void visit( ExpressionVisitorVoid visitor )				{ visitor.onTypedString(this); }
 
 	protected boolean calcEpsilonReducibility() {
-		return dt.verify("",dummyContext);
+		return dt.allows("",dummyContext);
 	}
 	
 	// At this moment, ValidationContextProvider is used only by QName and ENTITY.
 	// And both of them work with the following dummy ValidationContextProvider
-	private static final ValidationContextProvider dummyContext =
-		new ValidationContextProvider(){
+	private static final ValidationContext dummyContext =
+		new ValidationContext(){
 			public boolean isUnparsedEntity( String s )
 			{ return s.length()!=0; }
 			public String resolveNamespacePrefix( String prefix )

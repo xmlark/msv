@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * "QName" type.
  * 
@@ -21,11 +23,11 @@ public class QnameType extends ConcreteType implements Discrete {
 	public static final QnameType theInstance = new QnameType();
 	private QnameType() { super("QName"); }
 
-	private static String getNamespaceURI( String content, ValidationContextProvider context ) {
+	private static String getNamespaceURI( String content, ValidationContext context ) {
 		return context.resolveNamespacePrefix( content.substring(0, content.indexOf(':')) );
 	}
 	
-	protected boolean checkFormat( String value, ValidationContextProvider context ) {
+	protected boolean checkFormat( String value, ValidationContext context ) {
 		// [6] QName ::= (Prefix ':')? LocalPart
 		// [7] Prefix ::= NCName
 		// [8] LocalPart ::= NCName
@@ -45,7 +47,7 @@ public class QnameType extends ConcreteType implements Discrete {
 			&& context.resolveNamespacePrefix(prefix)!=null;
 	}
 	
-	public Object convertToValue( String value, ValidationContextProvider context ) {
+	public Object convertToValue( String value, ValidationContext context ) {
 		String uri,localPart;
 		// [6] QName ::= (Prefix ':')? LocalPart
 		// [7] Prefix ::= NCName
@@ -78,7 +80,7 @@ public class QnameType extends ConcreteType implements Discrete {
 		return new QnameValueType(uri,localPart);
 	}
 	
-	public String convertToLexicalValue( Object o, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object o, SerializationContext context ) {
 		if(!( o instanceof QnameValueType ))
 			throw new UnsupportedOperationException();
 		

@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * "float" type.
  * 
@@ -22,7 +24,7 @@ public class FloatType extends FloatingNumberType {
 	public static final FloatType theInstance = new FloatType();
 	private FloatType() { super("float"); }
 	
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
+	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		// TODO : quick hack. Spec doesn't allow me directly to use FloatValueType.valueOf method
 		
 		/* Incompatibilities of XML Schema's float "xfloat" and Java's float "jfloat"
@@ -57,7 +59,7 @@ public class FloatType extends FloatingNumberType {
 		}
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if(!(value instanceof Float ))
 			throw new IllegalArgumentException();
 		

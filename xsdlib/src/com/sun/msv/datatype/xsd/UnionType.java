@@ -9,6 +9,9 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * union type.
  * 
@@ -46,14 +49,14 @@ final public class UnionType extends ConcreteType {
 			return NOT_ALLOWED;
 	}
 	
-	protected final boolean checkFormat( String content, ValidationContextProvider context ) {
+	protected final boolean checkFormat( String content, ValidationContext context ) {
 		for( int i=0; i<memberTypes.length; i++ )
 			if( memberTypes[i].checkFormat(content,context) )	return true;
 		
 		return false;
 	}
 	
-	public Object convertToValue( String content, ValidationContextProvider context ) {
+	public Object convertToValue( String content, ValidationContext context ) {
 		Object o;
 		for( int i=0; i<memberTypes.length; i++ ) {
 			o = memberTypes[i].convertToValue(content,context);
@@ -63,7 +66,7 @@ final public class UnionType extends ConcreteType {
 		return null;
 	}
 	
-	public String convertToLexicalValue( Object o, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object o, SerializationContext context ) {
 		for( int i=0; i<memberTypes.length; i++ ) {
 			try {
 				return memberTypes[i].convertToLexicalValue(o,context);
@@ -75,7 +78,7 @@ final public class UnionType extends ConcreteType {
 		throw new IllegalArgumentException();
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context) {
+	protected DataTypeException diagnoseValue(String content, ValidationContext context) {
 		// what is the appropriate implementation for union?
 		throw new UnsupportedOperationException();
 	}

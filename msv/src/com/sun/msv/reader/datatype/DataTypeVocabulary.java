@@ -10,8 +10,8 @@
 package com.sun.msv.reader.datatype;
 
 import com.sun.msv.reader.State;
-import com.sun.msv.datatype.DataType;
 import com.sun.msv.util.StartTagInfo;
+import org.relaxng.datatype.DataType;
 
 /**
  * this class is used to parse foreign datatype vocabulary.

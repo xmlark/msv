@@ -9,6 +9,9 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+import org.relaxng.datatype.DataTypeException;
+
 /**
  * base class for those types which can be used by itself
  * (int,uriReference,string, etc) .
@@ -56,10 +59,10 @@ public abstract class ConcreteType extends DataTypeImpl {
 	}
 
 	// default implementation for concrete type. somewhat shabby.
-	protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context) {
+	protected DataTypeException diagnoseValue(String content, ValidationContext context) {
 		if(checkFormat(content,context))	return null;
 		
-		return new DataTypeErrorDiagnosis(this,content,-1,
+		return new DataTypeException(this,content,DataTypeException.UNKNOWN,
 			localize(ERR_INAPPROPRIATE_FOR_TYPE, content, getName()) );
 	}
 }

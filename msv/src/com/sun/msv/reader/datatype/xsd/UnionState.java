@@ -10,14 +10,15 @@
 package com.sun.msv.reader.datatype.xsd;
 
 import com.sun.msv.datatype.BadTypeException;
+import com.sun.msv.datatype.DataTypeImpl;
 import com.sun.msv.datatype.DataTypeFactory;
-import com.sun.msv.datatype.DataType;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.datatype.TypeOwner;
 import com.sun.msv.util.StartTagInfo;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import org.relaxng.datatype.DataType;
 
 /**
  * State that parses &lt;union&gt; element and its children.
@@ -61,7 +62,7 @@ public class UnionState extends TypeState implements TypeOwner
 	
 	public void onEndChild( DataType type )	{ memberTypes.add(type); }
 	
-	protected final DataType makeType() throws BadTypeException
+	protected final DataTypeImpl makeType() throws BadTypeException
 	{
 		return DataTypeFactory.deriveByUnion( newTypeName, memberTypes );
 	}

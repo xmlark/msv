@@ -14,6 +14,7 @@ import com.sun.msv.datatype.datetime.IDateTimeValueType;
 import com.sun.msv.datatype.datetime.TimeZone;
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * base implementation of dateTime and dateTime-truncated types.
@@ -31,7 +32,7 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator {
 		return new ISO8601Parser( new ByteArrayInputStream( content.getBytes("UTF8") ) );
 	}
 	
-	protected final boolean checkFormat( String content, ValidationContextProvider context ) {
+	protected final boolean checkFormat( String content, ValidationContext context ) {
 		// string derived types should use convertToValue method to check its validity
 		try {
 			runParserL(getParser(content));
@@ -45,7 +46,7 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator {
 	abstract protected void runParserL( ISO8601Parser p ) throws Exception;
 
 	
-	public final Object convertToValue( String content, ValidationContextProvider context ) {
+	public final Object convertToValue( String content, ValidationContext context ) {
 		// for string, lexical space is value space by itself
 		try {
 			return runParserV(getParser(content));

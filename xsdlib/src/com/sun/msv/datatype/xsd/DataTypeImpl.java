@@ -10,11 +10,13 @@
 package com.sun.msv.datatype;
 
 import java.io.Serializable;
+import org.relaxng.datatype.ValidationContext;
+import org.relaxng.datatype.DataTypeException;
 
 /**
  * base implementaion for DataType interface.
  * 
- * @author	Kohsuke Kawaguchi
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class DataTypeImpl implements DataType {
 	
@@ -32,26 +34,26 @@ public abstract class DataTypeImpl implements DataType {
 		this.whiteSpace	= whiteSpace;
 	}
 
-	final public Object convertToValueObject( String lexicalValue, ValidationContextProvider context ) {
+	final public Object createValue( String lexicalValue, ValidationContext context ) {
 		return convertToValue(whiteSpace.process(lexicalValue),context);
 	}
 	
 	/**
 	 * converts whitespace-processed lexical value into value object
 	 */
-	abstract protected Object convertToValue( String content, ValidationContextProvider context );
+	abstract protected Object convertToValue( String content, ValidationContext context );
 
 	
-	final public DataTypeErrorDiagnosis diagnose(String content, ValidationContextProvider context) {
+	final public DataTypeException diagnose(String content, ValidationContext context) {
 		return diagnoseValue(whiteSpace.process(content),context);
 	}
 	
 	/** actual 'meat' of diagnose method */
-	abstract protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context)
+	abstract protected DataTypeException diagnoseValue(String content, ValidationContext context)
 		throws UnsupportedOperationException;
 	
 
-	final public boolean verify( String literal, ValidationContextProvider context ) {
+	final public boolean allows( String literal, ValidationContext context ) {
 		// step.1 white space processing
 		literal = whiteSpace.process(literal);
 		
@@ -63,7 +65,7 @@ public abstract class DataTypeImpl implements DataType {
 			return checkFormat(literal,context);
 	}
 	
-	abstract protected boolean checkFormat( String literal, ValidationContextProvider context );
+	abstract protected boolean checkFormat( String literal, ValidationContext context );
 	protected boolean needValueCheck() { return false; }
 	
 	/**
@@ -82,6 +84,11 @@ public abstract class DataTypeImpl implements DataType {
 	abstract public ConcreteType getConcreteType();
 	
 	
+	public final boolean sameValue( Object o1, Object o2 ) {
+		return o1.equals(o2);
+	}
+
+
 
 	
 	public static String localize( String prop, Object[] args ) {

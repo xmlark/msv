@@ -10,6 +10,8 @@
 package com.sun.msv.datatype;
 
 import java.util.Hashtable;
+import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * "length", "minLength", and "maxLength" facet validator.
@@ -38,13 +40,13 @@ public class LengthFacet extends DataTypeWithValueConstraintFacet {
 		// consistency with minLength/maxLength is checked in DataTypeImpl.derive method.
 	}
 	
-	public Object convertToValue( String content, ValidationContextProvider context ) {
+	public Object convertToValue( String content, ValidationContext context ) {
 		Object o = baseType.convertToValue(content,context);
 		if(o==null || ((Discrete)concreteType).countLength(o)!=length)	return null;
 		return o;
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context) {
+	protected DataTypeException diagnoseByFacet(String content, ValidationContext context) {
 		Object o = concreteType.convertToValue(content,context);
 		// base type must have accepted this lexical value, otherwise 
 		// this method is never called.
@@ -52,7 +54,7 @@ public class LengthFacet extends DataTypeWithValueConstraintFacet {
 		
 		int cnt = ((Discrete)concreteType).countLength(o);
 		if(cnt!=length)
-			return new DataTypeErrorDiagnosis( this, content, -1,
+			return new DataTypeException( this, content, -1,
 				localize(ERR_LENGTH, new Integer(cnt), new Integer(length)) );
 		
 		return null;

@@ -16,8 +16,8 @@ import com.sun.msv.reader.SimpleState;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.ExpressionOwner;
 import com.sun.msv.reader.datatype.TypeOwner;
+import com.sun.msv.datatype.DataTypeImpl;
 import com.sun.msv.datatype.BadTypeException;
-import com.sun.msv.datatype.DataType;
 import com.sun.msv.datatype.StringType;
 import com.sun.msv.util.StartTagInfo;
 
@@ -51,7 +51,7 @@ abstract class TypeState extends SimpleState
 	}
 	
 	/** makeType method with protection against possible exception. */
-	DataType _makeType() {
+	DataTypeImpl _makeType() {
 		try {
 			return makeType();
 		} catch( BadTypeException be ) {
@@ -65,7 +65,7 @@ abstract class TypeState extends SimpleState
 	 * Implementation has to provide DataType object that represents the content of
 	 * this element.
 	 */
-	protected abstract DataType makeType() throws BadTypeException;
+	protected abstract DataTypeImpl makeType() throws BadTypeException;
 
 
 	public final void startElement( String namespaceURI, String localName, String qName, Attributes atts )

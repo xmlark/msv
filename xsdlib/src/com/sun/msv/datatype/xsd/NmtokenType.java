@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * "NMTOKEN" type.
  * 
@@ -21,7 +23,7 @@ public class NmtokenType extends TokenType {
 	public static final NmtokenType theInstance = new NmtokenType("NMTOKEN");
 	protected NmtokenType(String typeName) { super(typeName); }
 	
-	public Object convertToValue( String content, ValidationContextProvider context ) {
+	public Object convertToValue( String content, ValidationContext context ) {
 		if(XmlNames.isNmtoken(content))		return content;
 		else								return null;
 	}

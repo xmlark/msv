@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * "unsignedShort" type.
  * 
@@ -28,7 +30,7 @@ public class UnsignedShortType extends IntType {
     /** upper bound value. this is the maximum possible valid value as an unsigned int */
     private static final int upperBound = 65535;
 	
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
+	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		try {
 			Integer v = (Integer)super.convertToValue(lexicalValue,context);

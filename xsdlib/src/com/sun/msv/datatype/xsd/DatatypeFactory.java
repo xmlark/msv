@@ -12,6 +12,7 @@ package com.sun.msv.datatype;
 import java.util.Map;
 import java.util.Iterator;
 import java.util.Collection;
+import org.relaxng.datatype.DataTypeException;
 
 /**
  * DataType object factory.
@@ -53,9 +54,9 @@ public class DataTypeFactory {
 	 *		this exception is thrown when the derivation is illegal.
 	 *		For example, when you try to derive a type from non-atom type.
 	 */
-	public static DataType deriveByList( String newTypeName, DataType itemType )
+	public static DataTypeImpl deriveByList( String newTypeName, DataTypeImpl itemType )
 		throws BadTypeException {
-		return new ListType(newTypeName,(DataTypeImpl)itemType);
+		return new ListType(newTypeName,itemType);
 	}
 	
 	/**
@@ -73,16 +74,13 @@ public class DataTypeFactory {
 	 * @exception BadTypeException
 	 *		this exception is thrown when the derivation is illegal.
 	 */
-	public static DataType deriveByUnion( String newTypeName, DataType[] memberTypes )
+	public static DataTypeImpl deriveByUnion( String newTypeName, DataTypeImpl[] memberTypes )
 		throws BadTypeException {
-		DataTypeImpl[] m = new DataTypeImpl[memberTypes.length];
-		for( int i=0; i<memberTypes.length; i++ )
-			m[i] = (DataTypeImpl)memberTypes[i];
 		
-		return new UnionType(newTypeName,m);
+		return new UnionType(newTypeName,memberTypes);
 	}
 	
-	public static DataType deriveByUnion( String newTypeName, Collection memberTypes )
+	public static DataTypeImpl deriveByUnion( String newTypeName, Collection memberTypes )
 		throws BadTypeException {
 		DataTypeImpl[] m = new DataTypeImpl[memberTypes.size()];
 		int n=0;
@@ -98,11 +96,11 @@ public class DataTypeFactory {
 	 * 
 	 * @return null	if DataType is not found
 	 */
-	public static DataType getTypeByName( String dataTypeName ) {
-		return (DataType)builtinType.get(dataTypeName);
+	public static DataTypeImpl getTypeByName( String dataTypeName ) {
+		return (DataTypeImpl)builtinType.get(dataTypeName);
 	}
 	
-	private static void add( Map m, DataType type ) {
+	private static void add( Map m, DataTypeImpl type ) {
 		final String name = type.getName();
 		if( name==null )
 			throw new IllegalArgumentException("anonymous type");
@@ -169,9 +167,9 @@ public class DataTypeFactory {
 			add( m, UnsignedByteType.theInstance );
 			add( m, PositiveIntegerType.theInstance );
 			return m;
-		} catch( BadTypeException bte )	{
+		} catch( DataTypeException dte )	{
 			// assertion failed
-			throw new IllegalStateException();
+			throw new Error();
 		}
 	}
 }

@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * "nonPositiveInteger" type.
  * 
@@ -21,7 +23,7 @@ public class NonPositiveIntegerType extends IntegerType {
 	public static final NonPositiveIntegerType theInstance = new NonPositiveIntegerType();
 	private NonPositiveIntegerType() { super("nonPositiveInteger"); }
 	
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
+	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		Object o = super.convertToValue(lexicalValue,context);
 		if(o==null)		return null;
 		

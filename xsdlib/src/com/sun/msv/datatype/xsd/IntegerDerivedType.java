@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * base class for types derived from integer.
  * 
@@ -34,12 +36,12 @@ abstract class IntegerDerivedType extends ConcreteType implements Comparator {
 			return NOT_ALLOWED;
 	}
 	
-	protected final boolean checkFormat( String content, ValidationContextProvider context ) {
+	protected final boolean checkFormat( String content, ValidationContext context ) {
 		// integer-derived types always checks lexical format by trying to convert it to value object
 		return convertToValue(content,context)!=null;
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if( value instanceof Number || value instanceof IntegerValueType )
 			return value.toString();
 		else

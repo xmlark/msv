@@ -12,6 +12,7 @@ package com.sun.msv.datatype;
 import com.sun.msv.datatype.datetime.ISO8601Parser;
 import com.sun.msv.datatype.datetime.ITimeDurationValueType;
 import java.io.ByteArrayInputStream;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * "duration" type.
@@ -30,7 +31,7 @@ public final class DurationType extends ConcreteType implements Comparator {
 		return new ISO8601Parser( new ByteArrayInputStream( content.getBytes("UTF8") ) );
 	}
 	
-	protected boolean checkFormat( String content, ValidationContextProvider context ) {
+	protected boolean checkFormat( String content, ValidationContext context ) {
 		try {
 			getParser(content).durationTypeL();
 			return true;
@@ -39,7 +40,7 @@ public final class DurationType extends ConcreteType implements Comparator {
 		}
 	}
 	
-	public Object convertToValue( String content, ValidationContextProvider context ) {
+	public Object convertToValue( String content, ValidationContext context ) {
 		try {
 			return getParser(content).durationTypeV();
 		} catch( Throwable e ) {
@@ -64,7 +65,7 @@ public final class DurationType extends ConcreteType implements Comparator {
 			return NOT_ALLOWED;
 	}
 	
-	public String convertToLexicalValue( Object value, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if(!(value instanceof ITimeDurationValueType))
 			throw new IllegalArgumentException();
 		

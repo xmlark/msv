@@ -13,10 +13,11 @@ import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.State;
 import com.sun.msv.datatype.BadTypeException;
+import com.sun.msv.datatype.DataTypeImpl;
 import com.sun.msv.datatype.StringType;
-import com.sun.msv.datatype.DataType;
 import com.sun.msv.datatype.TypeIncubator;
 import com.sun.msv.util.StartTagInfo;
+import org.relaxng.datatype.DataType;
 
 /**
  * state that parses &lt;restriction&gt; element.
@@ -35,7 +36,7 @@ public class RestrictionState extends TypeWithOneChildState implements FacetStat
 		return incubator;
 	}
 
-	protected DataType annealType( DataType baseType ) throws BadTypeException {
+	protected DataTypeImpl annealType( DataTypeImpl baseType ) throws BadTypeException {
 		return incubator.derive(newTypeName);
 	}
 	
@@ -51,7 +52,7 @@ public class RestrictionState extends TypeWithOneChildState implements FacetStat
 		// if base attribute is used, try to load it.
 		String base = startTag.getAttribute("base");
 		if(base!=null) {
-			type = reader.resolveDataType(base);
+			type = (DataTypeImpl)reader.resolveDataType(base);
 			incubator = new TypeIncubator(type);
 		}
 	}
@@ -65,7 +66,7 @@ public class RestrictionState extends TypeWithOneChildState implements FacetStat
 		if( FacetState.facetNames.contains(tag.localName) ) {
 			if( incubator==null ) {
 				reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "restriction", "base" );
-				type = reader.resolveDataType("string");	// assume some type
+				type = StringType.theInstance;
 				incubator = new TypeIncubator(type);
 			}
 			return new FacetState();

@@ -12,6 +12,8 @@ package com.sun.msv.datatype;
 import org.apache.xerces.utils.regex.RegularExpression;
 import org.apache.xerces.utils.regex.ParseException;
 import java.util.Vector;
+import org.relaxng.datatype.ValidationContext;
+import org.relaxng.datatype.DataTypeException;
 
 /**
  * "pattern" facet validator
@@ -72,14 +74,14 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
 		// ignore it for now.
 	}
 	
-	protected DataTypeErrorDiagnosis diagnoseByFacet(String content, ValidationContextProvider context) {
+	protected DataTypeException diagnoseByFacet(String content, ValidationContext context) {
 		if( checkLexicalConstraint(content) )	return null;
 		
 		if( exps.length==1 )
-			return new DataTypeErrorDiagnosis( this, content, -1,
+			return new DataTypeException( this, content, -1,
 				localize(ERR_PATTERN_1,patterns[0]) );
 		else
-			return new DataTypeErrorDiagnosis( this, content, -1,
+			return new DataTypeException( this, content, -1,
 				localize(ERR_PATTERN_MANY) );
 	}
 	

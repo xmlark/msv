@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * "integer" type.
  * 
@@ -22,7 +24,7 @@ public class IntegerType extends IntegerDerivedType {
 	public static final IntegerType theInstance = new IntegerType("integer");
 	protected IntegerType(String typeName) { super(typeName); }
 	
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
+	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		return IntegerValueType.create(lexicalValue);
 	}
 }

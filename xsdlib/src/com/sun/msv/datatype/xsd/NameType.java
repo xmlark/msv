@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * "Name" type.
  * 
@@ -21,7 +23,7 @@ public class NameType extends TokenType {
 	public static final NameType theInstance = new NameType();
 	private NameType() { super("Name"); }
 	
-	public Object convertToValue( String content, ValidationContextProvider context ) {
+	public Object convertToValue( String content, ValidationContext context ) {
 		if(XmlNames.isName(content))	return content;
 		else							return null;
 	}

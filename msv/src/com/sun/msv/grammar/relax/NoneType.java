@@ -10,6 +10,7 @@
 package com.sun.msv.grammar.relax;
 
 import com.sun.msv.datatype.*;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * 'none' datatype of RELAX.
@@ -27,15 +28,15 @@ public class NoneType extends ConcreteType {
 		return NOT_ALLOWED;
 	}
 	
-	public boolean checkFormat( String literal, ValidationContextProvider context ) {
+	public boolean checkFormat( String literal, ValidationContext context ) {
 		return false;
 	}
 
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
+	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		return null;
 	}
 	
-	public String convertToLexicalValue( Object o, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object o, SerializationContext context ) {
 		throw new IllegalArgumentException();
 	}
 	

@@ -10,6 +10,7 @@
 package com.sun.msv.grammar.relax;
 
 import com.sun.msv.datatype.*;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * 'emptyString' type of RELAX.
@@ -27,16 +28,16 @@ public class EmptyStringType extends ConcreteType {
 		return NOT_ALLOWED;
 	}
 	
-	public boolean checkFormat( String literal, ValidationContextProvider context ) {
+	public boolean checkFormat( String literal, ValidationContext context ) {
 		return literal.equals("");
 	}
 
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
+	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		if( lexicalValue.equals("") )	return lexicalValue;
 		else							return null;
 	}
 	
-	public String convertToLexicalValue( Object o, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object o, SerializationContext context ) {
 		if( o.equals("") )	return "";
 		else				throw new IllegalArgumentException();
 	}

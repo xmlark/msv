@@ -11,6 +11,7 @@ package com.sun.msv.datatype;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * "decimal" type.
@@ -28,7 +29,7 @@ public class NumberType extends ConcreteType implements Comparator {
 	/** constant */
 	private static final BigInteger the10 = new BigInteger("10");
 
-	protected boolean checkFormat( String content, ValidationContextProvider context ) {
+	protected boolean checkFormat( String content, ValidationContext context ) {
 		final int len = content.length();
 		int i=0;
 		char ch;
@@ -63,7 +64,7 @@ public class NumberType extends ConcreteType implements Comparator {
 		return atLeastOneDigit;	// at least one digit must be present.
 	}
 	
-	public Object convertToValue( String content, ValidationContextProvider context ) {
+	public Object convertToValue( String content, ValidationContext context ) {
 		try	{
 			// BigDecimal accepts expressions like "1E4",
 			// but XML Schema doesn't.
@@ -101,7 +102,7 @@ public class NumberType extends ConcreteType implements Comparator {
 		}
 	}
 	
-	public String convertToLexicalValue( Object o, SerializationContextProvider context ) {
+	public String convertToLexicalValue( Object o, SerializationContext context ) {
 		if(o instanceof BigDecimal)
 			return o.toString();
 		else

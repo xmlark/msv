@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * base class for facets which constrain value space.
  * 
@@ -25,7 +27,7 @@ abstract class DataTypeWithValueConstraintFacet extends DataTypeWithFacet {
 	
 	final protected boolean needValueCheck() { return true; }
 	
-	protected final boolean checkFormat( String literal, ValidationContextProvider context ) {
+	protected final boolean checkFormat( String literal, ValidationContext context ) {
 		return convertToValue(literal,context)!=null;
 	}
 }

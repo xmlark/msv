@@ -49,10 +49,18 @@ class TemporaryClassItemRemover {
 	public static void remove( AnnotatedGrammar grammar ) {
 		// run the first pass and determine which class items can be removed.
 		Pass1 p1 = new Pass1();
+		
 		grammar.topLevel.visit(p1);
 		
 		Set cs = new java.util.HashSet(grammar.classes);
 		cs.removeAll( p1.notRemovableClasses );
+		
+		// remove non-temporary classes from the set
+		// because they cannot be removed.
+		Iterator itr = cs.iterator();
+		while( itr.hasNext() )
+			if( !((ClassItem)itr.next()).isTemporary )
+				itr.remove();
 		
 		// run the second pass and remove unnecessary class items.
 		grammar.topLevel = grammar.topLevel.visit(
@@ -119,7 +127,7 @@ class TemporaryClassItemRemover {
 		}
 		
 		public Object onClass( ClassItem item ) {
-			
+	
 			childItems.add(item);	// this has to be done before the checkedClasses field is examined.
 			
 			if((parentItem instanceof SuperClassItem)
@@ -135,11 +143,6 @@ class TemporaryClassItemRemover {
 				notRemovableClasses.add(item);
 				return null;
 			}
-			
-			if( !item.isTemporary )
-				// if this ClassItem is not a temporary one,
-				// of course it cannot be removed.
-				notRemovableClasses.add(item);
 			
 			// prepare a fresh set to collect child JavaItems.
 			Set oldChildItems = childItems;

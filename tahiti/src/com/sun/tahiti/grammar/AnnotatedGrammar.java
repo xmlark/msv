@@ -88,6 +88,11 @@ public final class AnnotatedGrammar implements Grammar
 	/** removes a ClassItem. */
 	public void removeClassItem( ClassItem c ) {
 		// only a temporary class item can be removed.
+		// DBG
+		if(!c.isTemporary) {
+			System.out.println(com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(c));
+			System.out.println(c.getTypeName());
+		}
 		assert(c.isTemporary);
 		assert(classes.contains(c));
 		

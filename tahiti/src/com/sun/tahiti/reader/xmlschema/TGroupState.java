@@ -12,7 +12,8 @@ public class TGroupState extends GroupState {
 		final TXMLSchemaReader reader = (TXMLSchemaReader)this.reader;
 		
 		if(!isGlobal())
-			// if it's not a global one, do nothing.
+			// if it's not a global one, then it is a reference to a model group.
+			// So do nothing.
 			return body;
 		
 		if(!(body instanceof GroupDeclExp ))
@@ -20,7 +21,9 @@ public class TGroupState extends GroupState {
 			// it should return GroupDeclExp.
 			return body;
 		
+		
 		// insert a temporary class item.
+		// maybe it shouldn't be temporary...
 		GroupDeclExp g = (GroupDeclExp)body;
 		ClassItem cls = reader.annGrammar.createClassItem(
 			reader.computeTypeName(this,"class"), g.exp );

@@ -37,7 +37,7 @@ public class NotAllowedRemover extends ExpressionCloner {
 		if(body==Expression.nullSet)
 			return Expression.nullSet;
 		
-		assert( exp.exp==body );	// otherwise it should be untouched.
+		exp.exp=body;
 		return exp;
 	}
 	
@@ -46,7 +46,7 @@ public class NotAllowedRemover extends ExpressionCloner {
 		if(body==Expression.nullSet)
 			return Expression.nullSet;
 		
-		assert( exp.exp==body );	// otherwise it should be untouched.
+		exp.exp=body;
 		return exp;
 	}
 	
@@ -64,7 +64,7 @@ public class NotAllowedRemover extends ExpressionCloner {
 		if( body==Expression.nullSet )
 			return Expression.nullSet;
 		
-		assert( exp.contentModel==body );
+		exp.contentModel=body;
 		return exp;
 	}
 
@@ -76,8 +76,7 @@ public class NotAllowedRemover extends ExpressionCloner {
 		if( body==Expression.nullSet )
 			return Expression.nullSet;
 		
-		assert( exp.exp==body );
-		return exp;
+		return pool.createAttribute( exp.nameClass, body );
 	}
 	
 	

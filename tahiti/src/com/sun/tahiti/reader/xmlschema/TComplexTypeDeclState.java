@@ -14,9 +14,9 @@ public class TComplexTypeDeclState extends ComplexTypeDeclState {
 			// we assign ClassItem only when the complex type is a global one.
 			return body;
 		
-		if( startTag.getAttribute(TahitiGrammarReader.TahitiNamespace,"role")
-				.equals("none") )
+		if( "none".equals(startTag.getAttribute(TahitiGrammarReader.TahitiNamespace,"role")) )
 			// if "none" is specified, suppress a ClassItem.
+			// note that t:role could be possibly missing.
 			return body;
 		
 		

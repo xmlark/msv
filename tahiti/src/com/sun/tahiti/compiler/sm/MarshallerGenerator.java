@@ -388,6 +388,7 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 		// TODO: support non-simple name class.
 		if(!(exp.nameClass instanceof SimpleNameClass))
 			throw new Error();
+		
 		onItem( "attribute", (SimpleNameClass)exp.nameClass, exp.exp );
 	}
 				
@@ -569,12 +570,12 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 	    return java.text.MessageFormat.format(format, args );
 	}
 
-	static final String UNABLE_TO_PRODUCE_MARSHALLER_ONEORMORE =
+	static final String UNABLE_TO_PRODUCE_MARSHALLER_ONEORMORE = // arg:1
 		"MarshallerGenerator.OneOrMore";
-	static final String UNABLE_TO_PRODUCE_MARSHALLER_UNDECIDABLE_CHOICE =
-		null;
-	static final String UNABLE_TO_PRODUCE_MARSHALLER_MULTIPLE_DEFAULTS =
-		null;
-	static final String UNABLE_TO_PRODUCE_MARSHALLER_IGNOREITEM =
-		null;
+	static final String UNABLE_TO_PRODUCE_MARSHALLER_UNDECIDABLE_CHOICE = // arg:1
+		"MarshallerGenerator.UndecidableChoice";
+	static final String UNABLE_TO_PRODUCE_MARSHALLER_MULTIPLE_DEFAULTS = // arg:1
+		"MarshallerGenerator.MultipleDefaults";
+	static final String UNABLE_TO_PRODUCE_MARSHALLER_IGNOREITEM = // arg:1
+		"Marshaller.IgnoreItem";
 }

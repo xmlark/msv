@@ -51,7 +51,10 @@ class FieldItemAnnotation
 	 * the number of generated classes/interfaces.
 	 */
 	private final Map annotatedRefs = new java.util.HashMap();
-
+	
+	/**
+	 * Annotate the body of one ClassItem.
+	 */
 	private class Annotator extends ExpressionCloner {
 		
 		private Annotator( AnnotatedGrammar g, ClassItem owner ) {
@@ -93,12 +96,18 @@ class FieldItemAnnotation
 			annotatedRefs.put(exp,r);	// store the annotated result.
 			
 //	debug: assertion check
+// since it is now properly annotated,
+// every ClassItem, PrimitiveItem or InterfaceItem must be wrapped by FieldItem.
 			r.visit( new ExpressionWalker(){
 				public void onOther( OtherExp exp ) {
 					if( exp instanceof FieldItem )
 						return;
-					if( exp instanceof JavaItem )
+					if( exp instanceof IgnoreItem )
+						return;
+					if( exp instanceof JavaItem ) {
+						System.err.println(exp);
 						throw new Error();
+					}
 				}
 			});
 			
@@ -458,7 +467,7 @@ class FieldItemAnnotation
 			else // increment the number
 				names.push( name.substring(0,idx)+(Integer.parseInt(name.substring(idx))+1) );
 			
-			return name;
+			return NameUtil.xmlNameToJavaName("field",name);
 		}
 	}
 

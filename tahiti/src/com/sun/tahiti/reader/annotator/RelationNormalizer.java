@@ -21,53 +21,40 @@ import java.util.Set;
 import org.xml.sax.Locator;
 
 /**
- * Normalizes JavaItem relationShip.
+ * Normalizes the relationships between JavaItems.
  * 
  * <h2>1st pass</h2>
- * <p>
- * Its first job is to find all class-class or class-interface relationships
- * and change them to class-field-class or class-field-interface respectively.
- * 
- * If class-class relationship is found, a new FieldItem object is created and
- * inserted immediately above the child class item. The same thing haapens
- * for class-interface relationship.
  * 
  * <p>
- * Its second job is to check that prohibited relationships are not used.
+ * Its first job is to check that prohibited relationships are not used.
  * For example, super-super relationship is prohibited. See the design document
  * for the complete list of the prohibited relationships.
  * 
  * <p>
- * Its third job is to find the actual ClassItem for every SuperClassItem.
+ * Its second job is to find the actual ClassItem for every SuperClassItem.
  * There has to be one and only one ClassItem for each SuperClassItem,
  * and its multiplicity must be '1'.
  * 
  * <p>
- * Its fourth job is to make sure that a ClassItem has at most one SuperClassItem,
+ * Its third job is to make sure that a ClassItem has at most one SuperClassItem,
  * and its multiplicity must be '1' or '?'.
  * 
  * <p>
- * Its fifth job is to create a FieldUse object for each class-field relationship and
+ * Its fourth job is to create a FieldUse object for each class-field relationship and
  * connects a class and its fields. It is possible and allowed for one ClassItem object
- * to have multiple FieldUse objects that point the same Field object.
- * Those multiplicity computation is done at the 2nd pass.
+ * to have multiple FieldItem objects that share the same field name.
  * 
  * <p>
- * Its sixth job is to process "interface-class" relationship. Whenever this is 
- * relationship is found, the class is recorded to implement the specified interface.
+ * Its fifth job is to process "interface-class" relationship. Whenever this is 
+ * relationship is found, the fact that this class 
+ * implements that interface is recorded.
  * Its multiplicity must be (1,1). (It can be relaxed to allow (0,1))
  * 
- * ++++++++++++ interface-class and interface-interface needs a special multiplicity check
- * to prevent things like:
- * <XMP>
- *   <group t:role="interface">
- *     <element t:role="class"/>
- *     <element t:role="class"/>
- *   </group>
- * </XMP>
  * 
  * <p>
  * It also strips any tahiti declarations found under an IgnoreItem.
+ * For the unmarshaller to work correctly, IgnoreItem cannot have any tahiti
+ * items.
  * 
  * 
  * <h2>2nd pass</h2>
@@ -125,15 +112,24 @@ class RelationNormalizer {
 	 * @return
 	 *		The top-level expression of the normalized grammar.
 	 */
-	public static Expression normalize( GrammarReader reader, Expression exp ) {
+	public static void normalize( GrammarReader reader, AnnotatedGrammar grammar ) {
 		
 		RelationNormalizer n = new RelationNormalizer(reader);
-		exp = exp.visit(n.new Pass1());
+		ClassItem[] classItems = grammar.getClasses();
+		
+		Pass1 pass1 = n.new Pass1();
+		grammar.topLevel = grammar.topLevel.visit(pass1);
+		for( int i=0; i<classItems.length; i++ ) {
+			// explicitly visit each children since some of them
+			// may be unreachable from the top level expression.
+			classItems[i].visit(pass1);
+		}
+
+		
 		
 		// for each field use in each class item,
 		// compute the total multiplicity.
 		// also, compute the type of the field.
-		ClassItem[] classItems = (ClassItem[])n.classes.toArray(new ClassItem[0]);
 		for( int i=0; i<classItems.length; i++ ) {
 			FieldUse[] fieldUses = (FieldUse[])classItems[i].fields.values().toArray(new FieldUse[0]);
 			for( int j=0; j<fieldUses.length; j++ ) {
@@ -151,17 +147,13 @@ class RelationNormalizer {
 				fieldUses[j].type = TypeUtil.getCommonBaseType( (Type[])possibleTypes.toArray(new Type[0]) );
 			}
 		}
-		
-		return exp;
 	}
 	
 	/**
-	 * set of all ClassItems found in this expression.
-	 * This field is computed during the 1st pass.
+	 * see the documentation of RelationNormalizer.
+	 * 
+	 * Pass1 walks the content models of all class items.
 	 */
-	protected final Set classes = new java.util.HashSet();
-	
-	
 	private class Pass1 implements ExpressionVisitorExpression {
 		
 		public Expression onAttribute( AttributeExp exp ) {
@@ -317,9 +309,6 @@ class RelationNormalizer {
 				if( isInterface(parentItem) && isType(exp) )
 					setImplementedInterface( (TypeItem)exp, (InterfaceItem)parentItem );
 				
-				if( isClass(exp) )
-					classes.add(exp);	// collect classes.
-					
 				if( isClass(parentItem) && isSuperClass(exp) )
 					// this is a super class to the parent class item.
 					setSuperClassForClass( (ClassItem)parentItem, (SuperClassItem)exp );

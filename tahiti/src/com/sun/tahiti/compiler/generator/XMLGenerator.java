@@ -105,10 +105,10 @@ class XMLGenerator
 	 * writes body of TypeItem.
 	 */
 	private void writeType( TypeItem t, XMLWriter out ) {
-		InterfaceItem[] is = (InterfaceItem[])t.interfaces.toArray(new InterfaceItem[0]);
+		Type[] is = (Type[])t.interfaces.toArray(new Type[0]);
 		for( int i=0; i<is.length; i++ )
 			out.element("implements",
-				new String[]{"name",is[i].name});
+				new String[]{"name",is[i].getTypeName()});
 		
 		String[] fnames = (String[])t.fields.keySet().toArray(new String[0]);
 		for( int i=0; i<fnames.length; i++ ) {

@@ -11,6 +11,7 @@ package com.sun.tahiti.reader.xmlschema;
 
 import com.sun.tahiti.grammar.AnnotatedGrammar;
 import com.sun.tahiti.grammar.ClassItem;
+import com.sun.tahiti.grammar.IgnoreItem;
 import com.sun.tahiti.reader.TahitiGrammarReader;
 import com.sun.tahiti.reader.NameUtil;
 import com.sun.tahiti.reader.annotator.Annotator;
@@ -36,6 +37,11 @@ public class TXMLSchemaReader extends XMLSchemaReader implements TahitiGrammarRe
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory ) {
 		super( controller, parserFactory, new StateFactory(), new ExpressionPool() );
+		
+		// ignore the body of ur-type.
+		complexUrType.exp = new IgnoreItem(complexUrType.exp);
+		// ignore the schema location attribute
+		xsiSchemaLocationExp.exp = new IgnoreItem( xsiSchemaLocationExp.exp );
 	}
 
 	protected final AnnotatedGrammar annGrammar = new AnnotatedGrammar( null, pool );
@@ -64,6 +70,16 @@ public class TXMLSchemaReader extends XMLSchemaReader implements TahitiGrammarRe
 	
 	/**
 	 * computes the name of the generated Java item.
+	 * 
+	 * @param owner
+	 *		State object which is currently in charge. The start tag of this
+	 *		State is used to find a name. First, the tahiti:name attribute is used.
+	 *		If not present, the name attribute is used.
+	 * @param type
+	 *		For example, "interface" or "class". This parameter specifies the
+	 *		type of the Java item. This parameter is used to modify the naming
+	 *		convention. See {@link NameUtil#xmlNameToJavaName} for available values.
+	 *		
 	 */
 	protected String computeTypeName( State owner, String type ) {
 		

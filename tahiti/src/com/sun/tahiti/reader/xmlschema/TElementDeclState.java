@@ -19,9 +19,9 @@ public class TElementDeclState extends ElementDeclState {
 			// we assign ClassItem only when the element type is a global one.
 			return body;
 
-		if( startTag.getAttribute(TahitiGrammarReader.TahitiNamespace,"role")
-				.equals("none") )
+		if( "none".equals(startTag.getAttribute(TahitiGrammarReader.TahitiNamespace,"role")) )
 			// if "none" is specified, suppress a ClassItem.
+			// note that t:role could be possibly missing.
 			return body;
 		
 		String name = startTag.getAttribute("name");
@@ -75,7 +75,7 @@ public class TElementDeclState extends ElementDeclState {
 		substitution groups, and ElementDeclExp.XSElementExp.
 		Or possibly nullSet (if there was an error or the element decl is abstract).
 		*/
-		decl.exp.visit( new ExpressionVisitorExpression(){
+		decl.exp = decl.exp.visit( new ExpressionVisitorExpression(){
 			
 			// do not touch those primitives.
 			public Expression onRef( ReferenceExp exp ) { return exp; }

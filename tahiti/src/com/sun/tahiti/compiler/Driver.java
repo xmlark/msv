@@ -9,8 +9,6 @@
  */
 package com.sun.tahiti.compiler;
 
-import com.sun.tahiti.reader.relaxng.TRELAXNGReader;
-
 import java.io.File;
 import java.io.OutputStream;
 import java.io.IOException;
@@ -28,8 +26,8 @@ import com.sun.tahiti.compiler.ll.RuleGenerator;
 import com.sun.tahiti.compiler.sm.MarshallerSerializer;
 import com.sun.tahiti.compiler.Symbolizer;
 import com.sun.tahiti.grammar.TypeItem;
-import com.sun.tahiti.grammar.util.SuperClassBodyRemover;
 import com.sun.tahiti.grammar.AnnotatedGrammar;
+import com.sun.tahiti.reader.GrammarLoader;
 import com.sun.tahiti.util.xml.XSLTUtil;
 import com.sun.msv.reader.GrammarReaderController;
 import org.apache.xml.serialize.XMLSerializer;
@@ -51,7 +49,7 @@ public class Driver
 	
 	private static void usage() {
 		System.err.println(
-			"Usage: tahiti <options> grammar.rng\n"+
+			"Usage: tahiti <options> <grammar file>\n"+
 			"[OUTPUT OPTIONS]\n"+
 			"  -out xml    compiler will produce xml files.\n"+
 			"  -out java   compiler will produce java source files.\n"+
@@ -117,16 +115,18 @@ public class Driver
 	//-----------------------------------------
 		System.err.println("parsing a schema...");
 		GrammarReaderController grammarController =
-			new com.sun.msv.driver.textui.DebugController(false,false);
-		AnnotatedGrammar grammar;
-		{// parse grammar
-			TRELAXNGReader reader = new TRELAXNGReader( grammarController, f );
-			reader.parse(grammarFileName);
-			grammar = reader.getAnnotatedResult();
-			if(grammar==null) {
-				System.err.println("bailing out");
-				return -1;
-			}
+			new com.sun.msv.driver.textui.DebugController(true,true);
+		AnnotatedGrammar grammar = null;
+		try {
+			grammar = GrammarLoader.loadSchema( grammarFileName, grammarController, f );
+		} catch( org.xml.sax.SAXException e ) {
+			if(e.getException()!=null)
+				e.getException().printStackTrace();
+			throw e;
+		}
+		if(grammar==null) {
+			System.err.println("bailing out");
+			return -1;
 		}
 		
 		
@@ -153,8 +153,6 @@ public class Driver
 			grammarReceiver = new com.sun.msv.writer.ContentHandlerAdaptor(xsltEngine);
 		}
 
-		SuperClassBodyRemover.remove(grammar);
-		
 		Map rules = RuleGenerator.create(grammar);
 		
 		Symbolizer symbolizer =

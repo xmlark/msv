@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.text.MessageFormat;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * produces Java source codes of the object model.
@@ -273,7 +274,10 @@ public class ClassSerializer
 					"\tpublic void marshall( Marshaller out ) {\n"+
 					"\t\tthrow new UnsupportedOperationException();\n"+
 					"\t}\n");
-			} catch( Exception e ) {
+			} catch( javax.xml.parsers.ParserConfigurationException e ) {
+				controller.error( null, e.getMessage(), e );
+				// TODO: what shall I do if an error happens.
+			} catch( SAXException e ) {
 				controller.error( null, e.getMessage(), e );
 				// TODO: what shall I do if an error happens.
 			}
@@ -337,7 +341,7 @@ public class ClassSerializer
 		// otherwise use Vector
 		return new FieldSerializer(){
 			public String getTypeStr() {
-				return "java.util.Vector";
+				return "java.util.Vector /* of " + toPrintName(fu.type) +" */";
 			}
 			public String getInitializer() {
 				return "new java.util.Vector()";

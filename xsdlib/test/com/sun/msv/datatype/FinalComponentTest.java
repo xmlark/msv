@@ -34,12 +34,10 @@ public class FinalComponentTest extends TestCase
 		try
 		{
 			DataTypeFactory.deriveByList( "test",
-				DataTypeFactory.deriveByUnion("intermediate",
-				  new DataType[]{
-						new FinalComponent(
-							StringType.theInstance,
-							DataType.DERIVATION_BY_LIST ),
-						NumberType.theInstance } ) );
+				new FinalComponent(
+					StringType.theInstance,
+					DataType.DERIVATION_BY_LIST )
+						);
 			fail("should throw Exception here");
 		}
 		catch( BadTypeException bte ) {;}

@@ -67,39 +67,38 @@
 	
 	
 	
+	
 	<!-- generator release -->
-	<target name="release">
-		<tstamp>
+	<target name="dist" description="build the distribution package into the dist/ dir">
+    <tstamp>
       <format property="YEAR" pattern="yyyy" locale="en"/>
     </tstamp>
-		<property name="stageName" value="xmlgen-${DSTAMP}"/>
 		
-		<delete	dir="${stageName}" />
-		<mkdir	dir="${stageName}" />
-		<mkdir	dir="${stageName}/src" />
+		<delete	dir="dist" />
+		<mkdir	dir="dist/src" />
 		
-		<!-- obtain source codes from cvs -->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="msv/generator/src"
-				command="export -d src ${cvsExportOpt}"
-				dest="${stageName}" />
-				
-		<!-- obtain document files -->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="msv/generator/doc"
-				command="export -d ${stageName} ${cvsExportOpt}"
-				dest="." />
-    <replace dir="${stageName}">
-        <include name="**/*.html"/>
-        <include name="**/*.txt"/>
-        <replacefilter token="@@VERSION@@" value="${DSTAMP}" />
-        <replacefilter token="@@YEAR@@" value="${YEAR}" />
+		<!-- copy source code -->
+		<copy todir="dist/src">
+			<fileset dir="src" />
+		</copy>
+		
+		<!-- copy document files -->
+		<copy todir="dist">
+			<fileset dir="doc" />
+		</copy>
+		
+    <replace dir="dist">
+      <include name="**/*.html"/>
+      <include name="**/*.txt"/>
+      <replacefilter token="@@VERSION@@" value="${DSTAMP}" />
+      <replacefilter token="@@YEAR@@" value="${YEAR}" />
     </replace>
+		
 		
 		
 		<!-- compile files -->
 		<mkdir	dir="temp" />
-		<javac	srcdir="${stageName}/src"
+		<javac	srcdir="dist/src"
 				destdir="temp">
 			
 			<classpath path="../package/msv.jar"/>
@@ -116,24 +115,21 @@
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
 		
 		<!-- creates the binary jar -->
-		<jar	jarfile="${stageName}/xmlgen.jar"
+		<jar	jarfile="dist/xmlgen.jar"
 				manifest="./MANIFEST.MF"
-				compress="false">
-			<fileset dir="${stageName}/src" includes="**/*.properties" />
+				compress="${compress}">
+			<fileset dir="dist/src" includes="**/*.properties" />
 			<fileset dir="temp" includes="**/*.*" />
 		</jar>
 		<delete dir="temp" />
 		
-		<!-- copy jar file to package dir -->
-		<copy file="${stageName}/xmlgen.jar" tofile="../package/xmlgen.jar" />
-		
 		
 		<!-- creates javadoc -->
-		<mkdir		dir="${stageName}/javadoc" />
+		<mkdir		dir="dist/javadoc" />
 		<javadoc	locale="en_US"
 					packagenames="com.sun.msv.generator.*"
-					sourcepath="${stageName}/src"
-					destdir="${stageName}/javadoc"
+					sourcepath="dist/src"
+					destdir="dist/javadoc"
 					windowtitle="Sun XML Generator"
 					public="yes"
 					author="yes"
@@ -142,30 +138,37 @@
 				packagelistLoc="../shared/ExternalPackageLists/CoreAPI" />
 			<link offline="true" href="http://xml.apache.org/apiDocs/"
 				packagelistLoc="../shared/ExternalPackageLists/XML" />
-			<link offline="true" href="http://xml.apache.org/apiDocs/"
-				packagelistLoc="../shared/ExternalPackageLists/XML" />
 			<link offline="true" href="http://relaxng.sourceforge.net/datatype/java/apiDocs/"
 				packagelistLoc="../shared/ExternalPackageLists/RELAXNG" />
 		</javadoc>
-
+		
 		
 <!-- temporarily, remove source codes -->
-		<delete dir="${stageName}/src" />
+		<delete dir="dist/src" />
 		
 		<!-- copy additional jars -->
-		<copy file="../package/xsdlib.jar" tofile="${stageName}/xsdlib.jar" />
-		<copy file="../package/msv.jar" tofile="${stageName}/msv.jar" />
-		<copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
-		<copy file="${isorelax.jar}" tofile="${stageName}/isorelax.jar" />
-		<copy file="${xerces.jar}" tofile="${stageName}/xerces.jar" />
+		<copy file="../package/xsdlib.jar" tofile="dist/xsdlib.jar" />
+		<copy file="../package/msv.jar" tofile="dist/msv.jar" />
+		<copy file="${relaxngDatatype.jar}" tofile="dist/relaxngDatatype.jar" />
+		<copy file="${isorelax.jar}" tofile="dist/isorelax.jar" />
+		<copy file="${xerces.jar}" tofile="dist/xerces.jar" />
+	</target>
+	
+	
+	
+	
+  <!-- generate release -->
+  <target name="release" depends="dist" description="build the distribution zip file">
+  	<tstamp />
+		<property name="stageName" value="xmlgen-${DSTAMP}"/>
+		
+		<!-- copy jar file to package dir -->
+		<copy file="dist/xmlgen.jar" tofile="../package/xmlgen.jar" />
 		
 		<!-- creates distribution package -->
-		<zip	zipfile="../package/xmlgen.${DSTAMP}.zip"
-				basedir="."
-				includes="${stageName}/**/*.*" />
-		
-		<delete	dir="${stageName}" />
+    <zip  zipfile="../package/xmlgen.${DSTAMP}.zip">
+    	<zipfileset dir="dist" prefix="${stageName}" />
+    </zip>
 	</target>
-
 	
 </project>

@@ -26,6 +26,15 @@
 	<!-- import the global configuration file -->
 	<property file="../shared/ant.config"/>
 	
+	<target name="clean" description="remove all the generated files">
+		<delete dir="bin" />
+		<delete dir="dist" />
+		<delete dir="javadoc" />
+		<delete dir="temp" />
+		<!-- TODO: delete JavaCC generated files -->
+	</target>
+	
+	
 	<!-- compile Java source files -->
 	<target name="binary" depends="javacc">
 		<mkdir dir="./bin"/>
@@ -113,30 +122,26 @@
 	
 	
 	<!-- generate XSDLib release -->
-	<target name="release">
+	<target name="dist" description="build the distribution package into the dist/ dir">
     <tstamp>
       <format property="YEAR" pattern="yyyy" locale="en"/>
     </tstamp>
-		<property name="stageName" value="xsdlib-${DSTAMP}"/>
 		
-		<mkdir	dir="${stageName}/examples" />
-		<mkdir	dir="${stageName}/src" />
+		<delete	dir="dist" />
 		
-		<!-- obtain source codes from cvs -->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="msv/xsdlib/examples"
-				command="export -d examples ${cvsExportOpt}"
-				dest="${stageName}" />
-		<cvs	cvsRoot="${cvsRoot}"
-				package="msv/xsdlib/src"
-				command="export -d src ${cvsExportOpt}"
-				dest="${stageName}" />
-		<!-- obtain document files -->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="msv/xsdlib/doc"
-				command="export -d ${stageName} ${cvsExportOpt}"
-				dest="." />
-    <replace dir="${stageName}">
+		<!-- copy source/example code -->
+		<copy todir="dist/src">
+			<fileset dir="src"/>
+		</copy>
+		<copy todir="dist/examples">
+			<fileset dir="examples" />
+		</copy>
+		
+		<!-- copy document files -->
+		<copy todir="dist">
+			<fileset dir="doc" />
+		</copy>
+    <replace dir="dist">
         <include name="**/*.html"/>
         <include name="**/*.txt"/>
         <replacefilter token="@@VERSION@@" value="${DSTAMP}" />
@@ -145,19 +150,19 @@
 		
 		
 		<!-- copy regexp lib files into the source directory -->
-		<copy todir="${stageName}/src">
+		<copy todir="dist/src">
 			<fileset dir="${regexplib.src}" />
 		</copy>
 		
 		<!-- run javacc -->
 		<antcall target="doJavacc">
-			<param name="src" value="${stageName}/src" />
+			<param name="src" value="dist/src" />
 		</antcall>
 		
 		
 		<!-- compile files -->
 		<mkdir	dir="temp" />
-		<javac	srcdir="${stageName}/src" destdir="temp" debug="on">
+		<javac	srcdir="dist/src" destdir="temp" debug="on">
 			
 			<classpath path="${relaxngDatatype.jar}"/>
 			<include name="**/*.java" />
@@ -171,28 +176,25 @@
 		<mkdir dir="temp/META-INF/services"/>
 		<echo file="temp/META-INF/services/org.relaxng.datatype.DatatypeLibraryFactory"
 			>com.sun.msv.datatype.xsd.ngimpl.DataTypeLibraryImpl</echo>
-			
+		
 		<!-- creates binary jar -->
-		<jar	jarfile="${stageName}/xsdlib.jar"
+		<jar	jarfile="dist/xsdlib.jar"
 				manifest="./MANIFEST.MF"
-				compress="false">
+				compress="${compress}">
 			<fileset dir="temp" />
 			<!-- resource files -->
-			<fileset dir="${stageName}/src" includes="**/*.properties" />
+			<fileset dir="dist/src" includes="**/*.properties" />
 		</jar>
 		<delete dir="temp" />
 		<delete dir="xerces"/>
 		
-		<!-- copy jar file to package dir -->
-		<copy file="${stageName}/xsdlib.jar" tofile="../package/xsdlib.jar" />
-		
 		
 		<!-- creates javadoc -->
-		<mkdir		dir="${stageName}/javadoc" />
+		<mkdir		dir="dist/javadoc" />
 		<javadoc	locale="en_US"
 					packagenames="com.sun.msv.*"
-					sourcepath="${stageName}/src"
-					destdir="${stageName}/javadoc"
+					sourcepath="dist/src"
+					destdir="dist/javadoc"
 					windowtitle="Sun XML Datatypes Library"
 					public="yes"
 					author="yes"
@@ -206,14 +208,27 @@
 		</javadoc>
 		
 		<!-- copy additional jar files -->
-		<copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
+		<copy file="${relaxngDatatype.jar}" tofile="dist/relaxngDatatype.jar" />
+	</target>
+	
+	
+	
+	<target name="release" depends="dist" description="build the distribution zip file">
+    <tstamp />
+		<property name="stageName" value="xsdlib-${DSTAMP}"/>
+		
+		<!-- copy jar file to package dir -->
+		<copy file="dist/xsdlib.jar" tofile="../package/xsdlib.jar" />
+    
+    <!-- build src zip file -->
+    <zip zipfile="../package/xsdlib-src.zip" compress="true">
+      <fileset dir="dist/src" />
+    </zip>
 		
 		<!-- creates distribution package -->
 		<mkdir dir="../package"/>
-		<zip	zipfile="../package/xsdlib.${DSTAMP}.zip"
-				basedir="."
-				includes="${stageName}/**/*.*" />
-		
-		<delete	dir="${stageName}" />
+		<zip	zipfile="../package/xsdlib.${DSTAMP}.zip">
+			<zipfileset dir="dist" includes="**/*.*" prefix="${stageName}" />
+		</zip>
 	</target>
 </project>

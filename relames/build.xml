@@ -29,31 +29,29 @@
     </copy>
 	</target>
 	
+	
+	
 	<!-- create a distribution package -->
-	<target name="release">
+	<target name="dist">
 		<tstamp>
       <format property="YEAR" pattern="yyyy" locale="en"/>
     </tstamp>
-    
-		<property name="stageName" value="relames-${DSTAMP}"/>
 		
-		<delete	dir="${stageName}" />
-		<mkdir	dir="${stageName}/src" />
+		<delete	dir="dist" />
+		<mkdir	dir="dist/src" />
 		
-		<!-- obtain source codes from cvs -->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="msv/relames/src"
-				command="export -d src -D now"
-				dest="${stageName}" />
-		<cvs	cvsRoot="${cvsRoot}"
-				package="msv/relames/doc"
-				command="export -d ${stageName} -D now"
-				dest="." />
-		<fixcrlf	srcdir="${stageName}"
+		<!-- copy files -->
+		<copy todir="dist/src">
+			<fileset dir="src" />
+		</copy>
+		<copy todir="dist">
+			<fileset dir="doc" />
+		</copy>
+		<fixcrlf	srcdir="dist"
 					cr="remove"
 					eof="remove"
 					includes="*.txt"/>
-    <replace dir="${stageName}">
+    <replace dir="dist">
         <include name="**/*.html"/>
         <include name="**/*.txt"/>
         <replacefilter token="@@VERSION@@" value="${DSTAMP}" />
@@ -62,7 +60,7 @@
 		
 		<!-- compile files -->
 		<mkdir	dir="temp" />
-		<javac	srcdir="${stageName}/src" destdir="temp">
+		<javac	srcdir="dist/src" destdir="temp">
 			
 			<classpath path="../package/msv.jar"/>
 			<classpath path="${relaxngDatatype.jar}"/>
@@ -75,39 +73,43 @@
 		
 		
 		<!-- creates binary jar -->
-		<jar	jarfile="${stageName}/relames.jar"
-				manifest="${stageName}/src/META-INF/MANIFEST.MF"
+		<jar	jarfile="dist/relames.jar"
+				manifest="dist/src/META-INF/MANIFEST.MF"
 				compress="false">
 				
 			<fileset dir="temp" />
 			<!-- resource files -->
-			<fileset dir="${stageName}/src" includes="**/*.properties" />
-			<fileset dir="${stageName}/src" includes="META-INF/**/*" />
+			<fileset dir="dist/src" includes="**/*.properties" />
+			<fileset dir="dist/src" includes="META-INF/**/*" />
 		</jar>
 		<delete dir="temp" />
 		
-		
-		<!-- copy jar file to package dir -->
-		<copy file="${stageName}/relames.jar" tofile="../package/relames.jar" />
-		
-		
-		<!-- remove source codes -->
-		<delete dir="${stageName}/src"/>
+		<!-- remove the source code for now -->
+		<delete dir="dist/src"/>
 		
 		<!-- copy related jars -->
-		<copy file="../package/msv.jar" todir="${stageName}"/>
-		<copy file="../package/xsdlib.jar" todir="${stageName}"/>
-		<copy file="${isorelax.jar}" todir="${stageName}"/>
-		<copy file="${relaxngDatatype.jar}" todir="${stageName}"/>
-		<copy file="${xalan.jar}" todir="${stageName}"/>
-		<copy file="${xerces.jar}" todir="${stageName}" />
-		<copy file="${xmlParserAPIs.jar}" todir="${stageName}" />
+		<copy file="../package/msv.jar" todir="dist"/>
+		<copy file="../package/xsdlib.jar" todir="dist"/>
+		<copy file="${isorelax.jar}" todir="dist"/>
+		<copy file="${relaxngDatatype.jar}" todir="dist"/>
+		<copy file="${xalan.jar}" todir="dist"/>
+		<copy file="${xerces.jar}" todir="dist" />
+		<copy file="${xmlParserAPIs.jar}" todir="dist" />
+	</target>
+	
+	
+	
+	<target name="release" depends="dist" description="build the distribution zip file">
+    <tstamp />
+		<property name="stageName" value="relames-${DSTAMP}"/>
 		
+		<!-- copy jar file to package dir -->
+		<copy file="dist/relames.jar" tofile="../package/relames.jar" />
+    
 		<!-- creates distribution package -->
-		<zip	zipfile="../package/relames.${DSTAMP}.zip"
-				basedir="."
-				includes="${stageName}/**/*.*" />
-		
-		<delete	dir="${stageName}" />
+		<mkdir dir="../package"/>
+		<zip	zipfile="../package/relames.${DSTAMP}.zip">
+			<zipfileset dir="dist" includes="**/*.*" prefix="${stageName}" />
+		</zip>
 	</target>
 </project>

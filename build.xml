@@ -9,7 +9,7 @@
 		<ant target="binary" dir="generator" />
 		<ant target="binary" dir="relames" />
 		<ant target="binary" dir="rngconverter" />
-		<ant target="binary" dir="SOX2RNG" />
+		<!--ant target="binary" dir="SOX2RNG" /-->
 	</target>
 	
 	<target name="release">
@@ -18,6 +18,6 @@
 		<ant target="release" dir="generator" />
 		<ant target="release" dir="relames" />
 		<ant target="release" dir="rngconverter" />
-		<ant target="release" dir="SOX2RNG" />
+		<!--ant target="release" dir="SOX2RNG" /-->
 	</target>
 </project>

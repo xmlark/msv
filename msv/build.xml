@@ -106,24 +106,6 @@
   
   
   
-  <target name="private-jar" depends="binary" description="build jar file from local source files">
-    <jar jarfile="msv.jar"
-        manifest="./MANIFEST.MF"
-        compress="false">
-      <fileset dir="src">
-        <patternset refid="resource.files" />
-      </fileset>
-      <fileset dir="bin" />
-    </jar>
-    <zip zipfile="msv-src.zip"
-        compress="true">
-      <fileset dir="src" />
-    </zip>
-  </target>
-  
-  
-  
-  
   
   
   
@@ -132,59 +114,46 @@
   
   
   <!-- generate MSV release -->
-  <target name="release">
+  <target name="dist" description="build the distribution package into the dist/ dir">
     <tstamp>
       <format property="YEAR" pattern="yyyy" locale="en"/>
     </tstamp>
-    <property name="stageName" value="msv-${DSTAMP}" />
     
-    <delete  dir="${stageName}" />
-    <mkdir  dir="${stageName}" />
-    <mkdir  dir="${stageName}/src" />
+    <delete  dir="dist" />
+    <mkdir  dir="dist/src" />
     <delete  dir="temp"/>
     <mkdir  dir="temp"/>
     <delete dir="temp_xsdlibsrc"/>
     <mkdir  dir="temp_xsdlibsrc"/>
     
-    <!-- obtain source codes from cvs -->
-    <cvs  cvsRoot="${cvsRoot}"
-        package="msv/msv/src"
-        command="export -d src ${cvsExportOpt}"
-        dest="${stageName}" />
+    <!-- copy source code -->
+    <copy todir="dist/src">
+    	<fileset dir="src" />
+    </copy>
     
-    <!-- obtain source code of XSDLib -->
-    <cvs  cvsRoot="${cvsRoot}"
-        package="msv/xsdlib/src"
-        command="export -d temp_xsdlibsrc ${cvsExportOpt}"
-        dest="." />
-    
-    <!-- obtain document files -->
-    <cvs  cvsRoot="${cvsRoot}"
-        package="msv/msv/doc"
-        command="export -d ${stageName} ${cvsExportOpt}"
-        dest="." />
-    <replace dir="./doc">
-        <include name="${stageName}/**/*.html"/>
-        <include name="${stageName}/**/*.txt"/>
+    <!-- copy document files -->
+    <copy todir="dist">
+    	<fileset dir="doc" />
+    </copy>
+    <replace dir="dist">
+        <include name="**/*.html"/>
+        <include name="**/*.txt"/>
         <replacefilter token="@@VERSION@@" value="${DSTAMP}" />
         <replacefilter token="@@YEAR@@" value="${YEAR}" />
     </replace>
     
-    <!-- obtain contrib files -->
-    <cvs  cvsRoot="${cvsRoot}"
-        package="msv/msv/contrib"
-        command="export -d contrib ${cvsExportOpt}"
-        dest="${stageName}" />
-  
+    <!-- copy contrib files -->
+    <copy todir="dist/contrib">
+    	<fileset dir="contrib" />
+    </copy>
+    
     <!-- obtain examples -->
-    <mkdir dir="${stageName}/examples"/>
-    <cvs  cvsRoot="${cvsRoot}"
-        package="msv/msv/examples"
-        command="export -d examples ${cvsExportOpt}"
-        dest="${stageName}" />
+    <copy todir="dist/examples">
+    	<fileset dir="examples" />
+    </copy>
     
     <!-- compile files -->
-    <javac  srcdir="${stageName}/src" debug="on"
+    <javac  srcdir="dist/src" debug="on"
         destdir="temp">
       
       <classpath path="temp"/>
@@ -199,11 +168,11 @@
       <include name="**/*.java" />
     </javac>
     
-    <copy file="../package/xsdlib.jar" tofile="${stageName}/xsdlib.jar" />
-    <copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
-    <copy file="${isorelax.jar}" tofile="${stageName}/isorelax.jar" />
-    <copy file="${xerces.jar}" tofile="${stageName}/xercesImpl.jar" />
-    <copy file="${xmlParserAPIs.jar}" tofile="${stageName}/xmlParserAPIs.jar" />
+    <copy file="../package/xsdlib.jar" tofile="dist/xsdlib.jar" />
+    <copy file="${relaxngDatatype.jar}" tofile="dist/relaxngDatatype.jar" />
+    <copy file="${isorelax.jar}" tofile="dist/isorelax.jar" />
+    <copy file="${xerces.jar}" tofile="dist/xercesImpl.jar" />
+    <copy file="${xmlParserAPIs.jar}" tofile="dist/xmlParserAPIs.jar" />
 
     
     <!-- create a time stamp file -->
@@ -215,54 +184,53 @@
       >com.sun.msv.verifier.jarv.FactoryLoaderImpl</echo>
     
     <!-- creates binary jar -->
-    <jar  jarfile="${stageName}/msv.jar"
+    <jar  jarfile="dist/msv.jar"
         manifest="./MANIFEST.MF"
-        compress="false">
-      <fileset dir="${stageName}/src">
+        compress="${compress}">
+      <fileset dir="dist/src">
         <patternset refid="resource.files" />
       </fileset>
       <fileset dir="temp" />
     </jar>
     
-    <!-- copy jar file to package dir -->
-    <copy file="${stageName}/msv.jar" tofile="../package/msv.jar" />
-    
     <!-- creates javadoc -->
-    <!-- somehow javadoc hung up. commented out temporarily -->
-    <!--mkdir    dir="${stageName}/javadoc" />
+    <mkdir    dir="dist/javadoc" />
     <javadoc  locale="en_US"
           packagenames="com.sun.msv.*"
-          sourcepath="${stageName}/src:temp_xsdlibsrc"
-          destdir="${stageName}/javadoc"
+          sourcepath="dist/src:temp_xsdlibsrc"
+          destdir="dist/javadoc"
           windowtitle="Sun Multi Schema XML Validator"
-          overview="${stageName}/src/com/sun/msv/overview.html"
+          overview="dist/src/com/sun/msv/overview.html"
           author="yes"
           public="yes"
           >
       
       <classpath path="temp"/>
       <classpath path="${isorelax.jar}"/>
-      <classpath path="${java.class.path}"/-->
+      <classpath path="${relaxngDatatype.jar}"/>
+      <classpath path="${java.class.path}"/>
       
       <!--
         if you have encountered error around here,
         please remove all offline="true" and packagelistLoc="...".
       -->
-      <!--link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
-      <link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
-      <link offline="true" href="http://iso-relax.sourceforge.net/apiDoc/" packagelistLoc="ExternalPackageLists\ISO-RELAX" />
+      <link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api"
+      	packagelistLoc="ExternalPackageLists\CoreAPI" />
+      <link offline="true" href="http://xml.apache.org/apiDocs/"
+      	packagelistLoc="ExternalPackageLists\XML" />
+      <link offline="true" href="http://iso-relax.sourceforge.net/apiDoc/"
+      	packagelistLoc="ExternalPackageLists\ISO-RELAX" />
       <link offline="true" href="http://relaxng.sourceforge.net/datatype/java/apiDocs/"
         packagelistLoc="../shared/ExternalPackageLists/RELAXNG" />
-    </javadoc-->
-    <delete dir="${stageName}" includes="**/*.vsd">
-      <!-- remove Visio files from release package -->
-    </delete>
+    </javadoc>
+    
+    <!-- remove Visio files from release package -->
+    <delete dir="dist" includes="**/*.vsd" />
     
     <delete dir="temp" />
     
     <!-- compile sample files -->
-    <javac  srcdir="${stageName}/examples">
-      
+    <javac  srcdir="dist/examples">
       <classpath path="../package/msv.jar"/>
       <classpath path="../package/xsdlib.jar"/>
       <classpath path="${relaxngDatatype.jar}"/>
@@ -272,21 +240,30 @@
       
       <include name="**/*.java" />
     </javac>
-    
-    <!-- merge XSDLib source into MSV source -->
-    <copy todir="${stageName}/src">
-      <fileset dir="temp_xsdlibsrc"/>
-    </copy>
-<!-- temporarily, remove source codes -->
-<!--    <delete dir="${stageName}/src" />  -->
-    
-    
-    <!-- creates distribution package -->
-    <zip  zipfile="../package/msv.${DSTAMP}.zip"
-        basedir="."
-        includes="${stageName}/**/*.*" />
-    
-    <delete dir="temp_xsdlibsrc"/>
-    <delete dir="${stageName}" />
   </target>
+  
+  
+  
+  <!-- generate MSV release -->
+  <target name="release" depends="dist" description="build the distribution zip file">
+    <tstamp>
+      <format property="YEAR" pattern="yyyy" locale="en"/>
+    </tstamp>
+    <property name="stageName" value="msv-${DSTAMP}" />
+    
+    <!-- copy jar file to package dir -->
+    <copy file="dist/msv.jar" tofile="../package/msv.jar" />
+    
+    <!-- build src zip file -->
+    <zip zipfile="../package/msv-src.zip" compress="true">
+      <fileset dir="dist/src" />
+    </zip>
+
+    <!-- create distribution package -->
+    <zip  zipfile="../package/msv.${DSTAMP}.zip">
+    	<zipfileset dir="dist" prefix="${stageName}" />
+    </zip>
+    
+  </target>
+  
 </project>

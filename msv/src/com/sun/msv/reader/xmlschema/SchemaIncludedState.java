@@ -28,9 +28,9 @@ public class SchemaIncludedState extends GlobalDeclState {
 		String targetNs = startTag.getAttribute("targetNamespace");
 		if( targetNs==null ) {
 			if( expectedTargetNamespace==null ) {
-				reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "schema", "targetNamespace" );
+				// this is not an error. It just means target namespace is absent.
+				// reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "schema", "targetNamespace" );
 				targetNs = "";	// recover by assuming "" namespace.
-				// TODO: maybe we should abort processing.
 			}
 			else
 				targetNs = expectedTargetNamespace;

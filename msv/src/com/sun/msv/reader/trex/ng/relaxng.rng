@@ -272,9 +272,7 @@
 
 	<define name="common-atts">
 		<optional>
-			<attribute name="ns">
-				<data type="anyURI"/>
-			</attribute>
+			<attribute name="ns" />
 		</optional>
 		<optional>
 			<attribute name="datatypeLibrary">

@@ -16,7 +16,6 @@ import org.xml.sax.Locator;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
-import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.helpers.XMLFilterImpl;
 import org.relaxng.datatype.Datatype;
 import java.util.ArrayList;
@@ -108,14 +107,60 @@ public abstract class GrammarReader
 	 * namespace prefix to URI conversion map.
 	 * this variable is evacuated to InclusionContext when the parser is switched.
 	 */
-	public NamespaceSupport namespaceSupport = new NamespaceSupport();
+	public static interface PrefixResolver {
+		/** returns URI. Or null if the prefix is not declared. */
+		String resolve( String prefix );
+	}
+	
+	/**
+	 * The namespace prefix resolver that only resolves "xml" prefix.
+	 * This class should be used as the base resolver.
+	 */
+	public static final PrefixResolver basePrefixResolver = new PrefixResolver() {
+		public String resolve( String prefix ) {
+			if(prefix.equals("xml"))	return "http://www.w3.org/1998/xml";
+			else						return null;
+		}
+	};
+	public class ChainPrefixResolver implements PrefixResolver {
+		public ChainPrefixResolver( String prefix, String uri ) {
+			this.prefix=prefix;this.uri=uri;
+			this.previous = prefixResolver;
+		}
+		public String resolve( String p ) {
+			if(p.equals(prefix))	return uri;
+			else					return previous.resolve(p);
+		}
+		public final PrefixResolver previous;
+		public final String prefix;
+		public final String uri;
+	}
+//	public NamespaceSupport namespaceSupport = new NamespaceSupport();
+	public PrefixResolver prefixResolver = basePrefixResolver;
+
+	public void startPrefixMapping( String prefix, String uri ) throws SAXException {
+		final PrefixResolver previous = prefixResolver;
+		prefixResolver = new ChainPrefixResolver(prefix,uri);
+		super.startPrefixMapping(prefix,uri);
+	}
+	public void endPrefixMapping(String prefix) throws SAXException {
+		prefixResolver = ((ChainPrefixResolver)prefixResolver).previous;
+		super.endPrefixMapping(prefix);
+	}
+	
 	
 	/**
 	 * calls processName method of NamespaceSupport.
 	 * Therefore this method returns null if it fails to process QName.
 	 */
 	public final String[] splitQName( String qName ) {
-		return namespaceSupport.processName(qName, new String[3], false );
+		int idx = qName.indexOf(':');
+		if(idx<0)	return new String[]{"",qName,qName};
+		
+		String uri = prefixResolver.resolve(qName.substring(0,idx));
+		if(uri==null)	return null;
+		
+		return new String[]{uri, qName.substring(idx+1), qName};
 	}
 	
 
@@ -183,14 +228,14 @@ public abstract class GrammarReader
 	 * It is chained by previousContext field and used as a stack.
 	 */
 	private class InclusionContext {
-		final NamespaceSupport	nsSupport;
+		final PrefixResolver	prefixResolver;
 		final Locator			locator;
 		final String			systemId;
 
 		final InclusionContext	previousContext;
 
-		InclusionContext( NamespaceSupport ns, Locator loc, String sysId, InclusionContext prev ) {
-			this.nsSupport = ns;
+		InclusionContext( PrefixResolver prefix, Locator loc, String sysId, InclusionContext prev ) {
+			this.prefixResolver = prefix;
 			this.locator = loc;
 			this.systemId = sysId;
 			this.previousContext = prev;
@@ -202,15 +247,15 @@ public abstract class GrammarReader
 	
 	private void pushInclusionContext( ) {
 		pendingIncludes = new InclusionContext(
-			namespaceSupport, locator, locator.getSystemId(),
+			prefixResolver, locator, locator.getSystemId(),
 			pendingIncludes );
 		
-		namespaceSupport = new NamespaceSupport();
+		prefixResolver = basePrefixResolver;
 		locator = null;
 	}
 	
 	private void popInclusionContext() {
-		namespaceSupport	= pendingIncludes.nsSupport;
+		prefixResolver		= pendingIncludes.prefixResolver;
 		locator				= pendingIncludes.locator;
 		
 		pendingIncludes = pendingIncludes.previousContext;
@@ -476,37 +521,10 @@ public abstract class GrammarReader
 	public abstract State createExpressionChildState( State parent, StartTagInfo tag );
 	
 	
-// SAX events interception
-//============================================
-	private boolean contextPushed = false;
-	public void startElement( String a, String b, String c, Attributes d ) throws SAXException
-	{
-		if(!contextPushed)
-			namespaceSupport.pushContext();
-		contextPushed = false;
-		super.startElement(a,b,c,d);
-	}
-	public void endElement( String a, String b, String c ) throws SAXException
-	{
-		super.endElement(a,b,c);
-		namespaceSupport.popContext();
-	}
-	public void setDocumentLocator( Locator loc )
-	{
+	
+	public void setDocumentLocator( Locator loc ) {
 		super.setDocumentLocator(loc);
 		this.locator = loc;
-	}
-	public void startPrefixMapping(String prefix, String uri ) throws SAXException
-	{
-		if( !contextPushed ) {
-			namespaceSupport.pushContext();
-			contextPushed = true;
-		}
-		namespaceSupport.declarePrefix(prefix,uri);
-		super.startPrefixMapping(prefix,uri);
-	}
-	public void endPrefixMapping(String prefix) throws SAXException {
-		super.endPrefixMapping(prefix);
 	}
 
 
@@ -517,7 +535,7 @@ public abstract class GrammarReader
 	// to correctly handle facets.
 	
 	public String resolveNamespacePrefix( String prefix ) {
-		return namespaceSupport.getURI(prefix);
+		return prefixResolver.resolve(prefix);
 	}
 	
 	public boolean isUnparsedEntity( String entityName ) {
@@ -534,33 +552,6 @@ public abstract class GrammarReader
 	public boolean onID( String uri, String local, Object token ) { return true; }
 	public void onIDREF( String uri, String local, Object token ) {}
 
-	/**
-	 * returns a persistent ValidationContextProvider.
-	 * this context provider is necessary to late-bind simple types. 
-	 */
-/*	public IDContextProvider getPersistentVCP() {
-		// dump prefix->URI mapping into a map.
-		final Map prefixes = new java.util.HashMap();
-		Enumeration e = namespaceSupport.getDeclaredPrefixes();
-		while( e.hasMoreElements() ) {
-			String prefix = (String)e.nextElement();
-			prefixes.put( prefix, namespaceSupport.getURI(prefix) );
-		}
-		
-		return new IDContextProvider(){
-			public String resolveNamespacePrefix( String prefix ) {
-				return (String)prefixes.get(prefix);
-			}
-			public boolean isUnparsedEntity( String entityName ) {
-				return true;
-			}
-			public boolean onID( String token ) {
-				return true;
-			}
-			public void onIDREF( String token ) {}
-		};
-	}
-*/	
 	
 	
 	

@@ -10,65 +10,18 @@
 package com.sun.tranquilo.verifier.jarv;
 
 import org.iso_relax.verifier.*;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.SAXParserFactory;
-import com.sun.tranquilo.grammar.relax.RELAXGrammar;
-import com.sun.tranquilo.grammar.trex.TREXPatternPool;
-import com.sun.tranquilo.reader.relax.RELAXReader;
-import com.sun.tranquilo.reader.util.IgnoreController;
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
 
-public class FactoryImpl extends VerifierFactory
+/**
+ * base implementation of RELAXFactoryImpl and TREXFactoryImpl
+ */
+abstract class FactoryImpl extends VerifierFactory
 {
 	protected final SAXParserFactory factory;
 	
-	public FactoryImpl( SAXParserFactory factory ) { this.factory = factory; }
-	
-	public Verifier newVerifier( String uri )
-		throws VerifierConfigurationException,
-			   SAXException
-	{
-		TREXPatternPool pool = new TREXPatternPool();
-		RELAXGrammar g = RELAXReader.parse(uri,factory,new IgnoreController(),pool);
-		if(g==null)		return null;	// load failure
-		return getVerifier(g);
-	}
-
-	public Verifier newVerifier( InputSource source )
-		throws VerifierConfigurationException,
-			   SAXException
-	{
-		TREXPatternPool pool = new TREXPatternPool();
-		RELAXGrammar g = RELAXReader.parse(source,factory,new IgnoreController(),pool);
-		if(g==null)		return null;	// load failure
-		return getVerifier(g);
-	}
-	
-	public Verifier newVerifier( java.io.File source )
-		throws VerifierConfigurationException,
-			   SAXException
-	{
-		return newVerifier( source.getAbsolutePath() );
-	}
-	
-	private final Verifier getVerifier( RELAXGrammar g )
-		throws VerifierConfigurationException,
-			   SAXException
-	{
-		try
-		{
-			return new VerifierImpl(
-				new TREXDocumentDeclaration(g.topLevel,(TREXPatternPool)g.pool,true),
-				factory.newSAXParser().getXMLReader() );
-		}
-		catch( javax.xml.parsers.ParserConfigurationException pce )
-		{
-			throw new VerifierConfigurationException(pce);
-		}
-	}
-	
+	protected FactoryImpl( SAXParserFactory factory ) { this.factory = factory; }
 	public boolean isFeature(String feature)
 		throws SAXNotRecognizedException
 	{

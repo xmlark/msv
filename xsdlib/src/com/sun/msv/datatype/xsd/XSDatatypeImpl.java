@@ -9,13 +9,12 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import java.io.Serializable;
 import java.util.Vector;
-import org.relaxng.datatype.ValidationContext;
+
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.DatatypeStreamingValidator;
+import org.relaxng.datatype.ValidationContext;
 import org.relaxng.datatype.helpers.StreamingValidatorImpl;
-import com.sun.msv.datatype.SerializationContext;
 
 /**
  * base implementaion for XSDatatype interface.

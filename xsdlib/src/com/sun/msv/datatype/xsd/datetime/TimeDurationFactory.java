@@ -9,8 +9,8 @@
  */
 package com.sun.msv.datatype.xsd.datetime;
 
-import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * Utility functions to create TimeDurationValueType objects.

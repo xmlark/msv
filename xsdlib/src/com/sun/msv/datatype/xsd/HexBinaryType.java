@@ -9,8 +9,9 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import com.sun.msv.datatype.SerializationContext;
 import org.relaxng.datatype.ValidationContext;
+
+import com.sun.msv.datatype.SerializationContext;
 
 /**
  * "hexBinary" type.

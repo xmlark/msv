@@ -9,7 +9,10 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.relaxng.datatype.DatatypeException;
 
 /**

@@ -9,9 +9,13 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import junit.framework.*;
-import com.sun.msv.datatype.xsd.conformance.DummyContextProvider;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.relaxng.datatype.DatatypeException;
+
+import com.sun.msv.datatype.xsd.conformance.DummyContextProvider;
 
 /**
  * tests UnionType.

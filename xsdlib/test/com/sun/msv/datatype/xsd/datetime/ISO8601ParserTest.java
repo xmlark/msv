@@ -9,10 +9,12 @@
  */
 package com.sun.msv.datatype.xsd.datetime;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import junit.framework.*;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * tests ISO8601Parser.

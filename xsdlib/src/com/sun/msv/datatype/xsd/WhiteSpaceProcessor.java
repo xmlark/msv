@@ -9,8 +9,9 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import java.io.Serializable;
 import java.io.InvalidObjectException;
+import java.io.Serializable;
+
 import org.relaxng.datatype.DatatypeException;
 
 /**

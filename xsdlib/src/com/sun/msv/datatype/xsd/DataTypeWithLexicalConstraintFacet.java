@@ -9,8 +9,8 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import org.relaxng.datatype.ValidationContext;
 import org.relaxng.datatype.DatatypeException;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * base class for facets which constrains lexical space of data

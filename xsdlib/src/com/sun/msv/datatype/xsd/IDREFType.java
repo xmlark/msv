@@ -9,11 +9,6 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import com.sun.msv.datatype.xsd.NmtokenType;
-import com.sun.msv.datatype.xsd.XSDatatypeImpl;
-import com.sun.msv.datatype.xsd.DatatypeFactory;
-import com.sun.msv.datatype.xsd.TypeIncubator;
-import org.relaxng.datatype.ValidationContext;
 
 /**
  * very limited 'IDREF' type of XML Schema Part 2.

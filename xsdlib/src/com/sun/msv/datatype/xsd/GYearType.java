@@ -9,11 +9,12 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import com.sun.msv.datatype.SerializationContext;
-import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
-import com.sun.msv.datatype.xsd.datetime.IDateTimeValueType;
-import com.sun.msv.datatype.xsd.datetime.BigDateTimeValueType;
 import java.util.Calendar;
+
+import com.sun.msv.datatype.SerializationContext;
+import com.sun.msv.datatype.xsd.datetime.BigDateTimeValueType;
+import com.sun.msv.datatype.xsd.datetime.IDateTimeValueType;
+import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
 
 /**
  * "gYear" type.
@@ -53,7 +54,7 @@ public class GYearType extends DateTimeBaseType {
 		
 		StringBuffer result = new StringBuffer();
 
-		result.append(formatYear(cal.get(cal.YEAR)));
+		result.append(formatYear(cal.get(Calendar.YEAR)));
 		result.append(formatTimeZone(cal));
 		
 		return result.toString();

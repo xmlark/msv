@@ -9,12 +9,12 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import com.sun.msv.datatype.SerializationContext;
-import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
-import com.sun.msv.datatype.xsd.datetime.IDateTimeValueType;
-import com.sun.msv.datatype.xsd.datetime.BigDateTimeValueType;
-import org.relaxng.datatype.ValidationContext;
 import java.util.Calendar;
+
+import com.sun.msv.datatype.SerializationContext;
+import com.sun.msv.datatype.xsd.datetime.BigDateTimeValueType;
+import com.sun.msv.datatype.xsd.datetime.IDateTimeValueType;
+import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
 
 /**
  * "dateTime" type.
@@ -60,19 +60,19 @@ public class DateTimeType extends DateTimeBaseType {
 		
 		StringBuffer result = new StringBuffer();
 
-		result.append(formatYear(cal.get(cal.YEAR)));
+		result.append(formatYear(cal.get(Calendar.YEAR)));
 		result.append('-');
-		result.append(formatTwoDigits(cal.get(cal.MONTH)+1));
+		result.append(formatTwoDigits(cal.get(Calendar.MONTH)+1));
 		result.append('-');
-		result.append(formatTwoDigits(cal.get(cal.DAY_OF_MONTH)));
+		result.append(formatTwoDigits(cal.get(Calendar.DAY_OF_MONTH)));
 		result.append('T');
-		result.append(formatTwoDigits(cal.get(cal.HOUR_OF_DAY)));
+		result.append(formatTwoDigits(cal.get(Calendar.HOUR_OF_DAY)));
 		result.append(':');
-		result.append(formatTwoDigits(cal.get(cal.MINUTE)));
+		result.append(formatTwoDigits(cal.get(Calendar.MINUTE)));
 		result.append(':');
-		result.append(formatTwoDigits(cal.get(cal.SECOND)));
-		if( cal.isSet(cal.MILLISECOND) ) {// milliseconds
-			String ms = Integer.toString(cal.get(cal.MILLISECOND));
+		result.append(formatTwoDigits(cal.get(Calendar.SECOND)));
+		if( cal.isSet(Calendar.MILLISECOND) ) {// milliseconds
+			String ms = Integer.toString(cal.get(Calendar.MILLISECOND));
 			while(ms.length()<3)	ms = "0"+ms;	// left 0 paddings.
 			
 			result.append('.');

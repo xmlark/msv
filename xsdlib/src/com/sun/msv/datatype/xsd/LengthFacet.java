@@ -9,7 +9,6 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import java.util.Hashtable;
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 

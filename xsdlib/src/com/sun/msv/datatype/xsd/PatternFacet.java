@@ -15,8 +15,8 @@ import java.util.Vector;
 
 import org.apache.xerces.impl.xpath.regex.ParseException;
 import org.apache.xerces.impl.xpath.regex.RegularExpression;
-import org.relaxng.datatype.ValidationContext;
 import org.relaxng.datatype.DatatypeException;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * "pattern" facet validator

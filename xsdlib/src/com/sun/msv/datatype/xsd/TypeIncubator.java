@@ -9,14 +9,13 @@
  */
 package com.sun.msv.datatype.xsd;
 
+import java.math.BigInteger;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
-import java.util.Iterator;
-import java.math.BigInteger;
-import org.relaxng.datatype.ValidationContext;
-import org.relaxng.datatype.Datatype;
-import org.relaxng.datatype.DatatypeBuilder;
+
 import org.relaxng.datatype.DatatypeException;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * derives a new type by adding facets.

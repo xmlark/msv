@@ -22,7 +22,7 @@ public class ISO8601Parser
 	public static void main(String args[]) throws Exception
 	{
 		String s = new BufferedReader( new InputStreamReader(System.in) ).readLine();
-		new ISO8601Parser(new ByteArrayInputStream(s.getBytes("UTF8"))).dateTypeL();
+		new ISO8601Parser(new StringReader(s)).dateTypeL();
 	}
 	
 	Number		yy,mm,dd;			// Integer or BigInteger

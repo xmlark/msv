@@ -9,14 +9,14 @@
  */
 package com.sun.msv.datatype.xsd.ngimpl;
 
-import com.sun.msv.datatype.xsd.DatatypeFactory;
-import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.datatype.xsd.NmtokenType;
 import org.relaxng.datatype.Datatype;
-import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.DatatypeBuilder;
+import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.DatatypeLibrary;
 import org.relaxng.datatype.DatatypeLibraryFactory;
+
+import com.sun.msv.datatype.xsd.DatatypeFactory;
+import com.sun.msv.datatype.xsd.XSDatatype;
 
 /**
  * DatatypeLibrary implementation for Sun XML Datatypes Library.

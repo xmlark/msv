@@ -8,7 +8,9 @@
  * 
  */
 package com.sun.msv.datatype.xsd.datetime;
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * tests all test cases in this package.

@@ -9,13 +9,17 @@
  */
 package com.sun.msv.datatype.xsd.conformance;
 
-import org.jdom.*;
-import org.jdom.input.SAXBuilder;
-import java.io.FileInputStream;
 import java.util.Iterator;
-import com.sun.msv.datatype.xsd.*;
+
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.DatatypeException;
+
+import com.sun.msv.datatype.xsd.TypeIncubator;
+import com.sun.msv.datatype.xsd.XSDatatype;
 
 /**
  * conformance test runner.

@@ -9,8 +9,6 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import com.sun.msv.datatype.xsd.NmtokenType;
-import org.relaxng.datatype.ValidationContext;
 
 /**
  * very limited 'ID' type of XML Schema Part 2.

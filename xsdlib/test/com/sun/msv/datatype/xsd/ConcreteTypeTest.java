@@ -9,8 +9,14 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import junit.framework.*;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * tests ConcreteType.

@@ -9,14 +9,12 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
-import com.sun.msv.datatype.xsd.datetime.IDateTimeValueType;
-import com.sun.msv.datatype.xsd.datetime.BigDateTimeValueType;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.SimpleTimeZone;
-import org.relaxng.datatype.ValidationContext;
+
 import com.sun.msv.datatype.SerializationContext;
+import com.sun.msv.datatype.xsd.datetime.BigDateTimeValueType;
+import com.sun.msv.datatype.xsd.datetime.IDateTimeValueType;
+import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
 
 /**
  * "time" type.
@@ -58,9 +56,9 @@ public class TimeType extends DateTimeBaseType {
 		
 		StringBuffer result = new StringBuffer();
 
-		result.append(formatTwoDigits(cal.get(cal.HOUR_OF_DAY)));
+		result.append(formatTwoDigits(cal.get(Calendar.HOUR_OF_DAY)));
 		result.append(':');
-		result.append(formatTwoDigits(cal.get(cal.MINUTE)));
+		result.append(formatTwoDigits(cal.get(Calendar.MINUTE)));
 		result.append(':');
 		result.append(formatSeconds(cal));
 		

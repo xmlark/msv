@@ -10,6 +10,7 @@
 package com.sun.msv.datatype.xsd;
 
 import org.relaxng.datatype.ValidationContext;
+
 import com.sun.msv.datatype.SerializationContext;
 
 /**
@@ -54,7 +55,7 @@ public class Base64BinaryType extends BinaryBaseType {
     }
     
     public static byte[] load( String lexicalValue ) {
-        final byte[] buf = lexicalValue.getBytes();
+        final char[] buf = lexicalValue.toCharArray();
 
 		final int outlen = calcLength(buf);
 		if( outlen==-1 )	return null;
@@ -91,7 +92,7 @@ public class Base64BinaryType extends BinaryBaseType {
 	}
 
 	protected boolean checkFormat( String lexicalValue, ValidationContext context ) {
-		return calcLength( lexicalValue.getBytes() ) != -1;
+		return calcLength( lexicalValue.toCharArray() ) != -1;
 	}
 
 	/**
@@ -101,7 +102,7 @@ public class Base64BinaryType extends BinaryBaseType {
 	 * @return	-1		if format is illegal.
 	 * 
 	 */
-	private static int calcLength( final byte[] buf ) {
+	private static int calcLength( final char[] buf ) {
 		final int len = buf.length;
 		int base64count=0, paddingCount=0;
 		int i;

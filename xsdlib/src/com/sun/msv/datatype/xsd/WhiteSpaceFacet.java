@@ -9,7 +9,6 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import org.relaxng.datatype.ValidationContext;
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 

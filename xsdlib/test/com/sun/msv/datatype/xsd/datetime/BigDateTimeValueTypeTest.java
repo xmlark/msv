@@ -9,11 +9,13 @@
  */
 package com.sun.msv.datatype.xsd.datetime;
 
-import java.math.BigInteger;
-import java.math.BigDecimal;
+import java.io.StringReader;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import com.sun.msv.datatype.xsd.Comparator;
-import junit.framework.*;
-import java.io.ByteArrayInputStream;
 
 /**
  * tests BigDateTimeValueType.
@@ -36,7 +38,7 @@ public class BigDateTimeValueTypeTest extends TestCase {
 	
 	private ISO8601Parser getParser( String s ) throws Exception
 	{
-		return new ISO8601Parser(new ByteArrayInputStream(s.getBytes("UTF-8")));
+		return new ISO8601Parser(new StringReader(s));
 	}
 	
 	/** Test of getBigValue method, of class com.sun.msv.datatype.datetime.BigDateTimeValueType. */

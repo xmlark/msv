@@ -12,11 +12,20 @@
 */
 package com.sun.msv.datatype.xsd.conformance;
 
-import org.jdom.*;
-import java.util.*;
-import java.io.*;
-import com.sun.msv.datatype.xsd.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.util.List;
+
+import org.jdom.Element;
 import org.relaxng.datatype.DatatypeException;
+
+import com.sun.msv.datatype.xsd.DatatypeFactory;
+import com.sun.msv.datatype.xsd.TypeIncubator;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.XSDatatypeImpl;
 
 /**
  * tests DataType.verify method with various types and various lexical values.

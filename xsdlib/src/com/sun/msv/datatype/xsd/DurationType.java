@@ -9,11 +9,13 @@
  */
 package com.sun.msv.datatype.xsd;
 
+import java.io.ByteArrayInputStream;
+
+import org.relaxng.datatype.ValidationContext;
+
 import com.sun.msv.datatype.SerializationContext;
 import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
 import com.sun.msv.datatype.xsd.datetime.ITimeDurationValueType;
-import java.io.ByteArrayInputStream;
-import org.relaxng.datatype.ValidationContext;
 
 /**
  * "duration" type.

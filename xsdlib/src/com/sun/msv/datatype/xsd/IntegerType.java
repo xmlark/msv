@@ -9,8 +9,9 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import org.relaxng.datatype.ValidationContext;
 import java.math.BigInteger;
+
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * "integer" type.

@@ -9,8 +9,8 @@
  */
 package com.sun.msv.datatype.xsd.datetime;
 
-import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.SimpleTimeZone;
 
@@ -377,14 +377,14 @@ public class BigDateTimeValueType implements IDateTimeValueType {
         Calendar cal = new java.util.GregorianCalendar(createJavaTimeZone());
         cal.clear();    // reset all fields. This method does not reset the time zone.
         
-        if( getYear()!=null )     cal.set( cal.YEAR, getYear().intValue() );
-        if( getMonth()!=null )    cal.set( cal.MONTH, getMonth().intValue() );
-        if( getDay()!=null )      cal.set( cal.DAY_OF_MONTH, getDay().intValue()+1/*offset*/ );
-        if( getHour()!=null )     cal.set( cal.HOUR_OF_DAY, getHour().intValue() );
-        if( getMinute()!=null )   cal.set( cal.MINUTE, getMinute().intValue() );
+        if( getYear()!=null )     cal.set( Calendar.YEAR, getYear().intValue() );
+        if( getMonth()!=null )    cal.set( Calendar.MONTH, getMonth().intValue() );
+        if( getDay()!=null )      cal.set( Calendar.DAY_OF_MONTH, getDay().intValue()+1/*offset*/ );
+        if( getHour()!=null )     cal.set( Calendar.HOUR_OF_DAY, getHour().intValue() );
+        if( getMinute()!=null )   cal.set( Calendar.MINUTE, getMinute().intValue() );
         if( getSecond()!=null ) {
-            cal.set( cal.SECOND, getSecond().intValue() );
-            cal.set( cal.MILLISECOND, getSecond().movePointRight(3).intValue()%1000 );
+            cal.set( Calendar.SECOND, getSecond().intValue() );
+            cal.set( Calendar.MILLISECOND, getSecond().movePointRight(3).intValue()%1000 );
         }
         
         return cal;

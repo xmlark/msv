@@ -10,7 +10,7 @@
 package com.sun.msv.datatype.xsd;
 
 import java.util.Set;
-import java.util.Vector;
+
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.ValidationContext;
 

@@ -9,9 +9,12 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import junit.framework.*;
+import java.util.Calendar;
+import java.util.TimeZone;
 
-import java.util.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * tests DateTimeBaseType.
@@ -37,7 +40,7 @@ public class DateTimeBaseTypeTest extends TestCase
 			"2001-01-02T03:04:05.678Z", null );
 		assertEquals( "2 Jan 2001 03:04:05 GMT", o.getTime().toGMTString() );
 		assertEquals( 0, o.getTimeZone().getRawOffset() );
-		assertEquals( 678, o.get(o.MILLISECOND) );
+		assertEquals( 678, o.get(Calendar.MILLISECOND) );
 		
 		// time zone less.
 		o = (Calendar)DateTimeType.theInstance.createJavaObject(
@@ -56,11 +59,11 @@ public class DateTimeBaseTypeTest extends TestCase
 		
 	// time type.
 		o = (Calendar)TimeType.theInstance.createJavaObject("08:12:30Z",null);
-		assertTrue( !o.isSet(o.YEAR) );
-		assertTrue( !o.isSet(o.MONTH) );
-		assertTrue( !o.isSet(o.DAY_OF_MONTH) );
-		assertEquals( 8, o.get(o.HOUR) );
-		assertEquals( 12, o.get(o.MINUTE) );
-		assertEquals( 30, o.get(o.SECOND) );
+		assertTrue( !o.isSet(Calendar.YEAR) );
+		assertTrue( !o.isSet(Calendar.MONTH) );
+		assertTrue( !o.isSet(Calendar.DAY_OF_MONTH) );
+		assertEquals( 8, o.get(Calendar.HOUR) );
+		assertEquals( 12, o.get(Calendar.MINUTE) );
+		assertEquals( 30, o.get(Calendar.SECOND) );
 	}
 }

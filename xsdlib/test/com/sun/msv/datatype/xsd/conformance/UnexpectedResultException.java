@@ -9,8 +9,8 @@
  */
 package com.sun.msv.datatype.xsd.conformance;
 
-import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.datatype.xsd.TypeIncubator;
+import com.sun.msv.datatype.xsd.XSDatatype;
 
 /**
  * signals unexpected test result.

@@ -9,9 +9,10 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import java.util.Map;
-import java.util.Iterator;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.relaxng.datatype.DatatypeException;
 
 /**

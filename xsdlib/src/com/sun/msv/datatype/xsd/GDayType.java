@@ -9,11 +9,12 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import com.sun.msv.datatype.SerializationContext;
-import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
-import com.sun.msv.datatype.xsd.datetime.IDateTimeValueType;
-import com.sun.msv.datatype.xsd.datetime.BigDateTimeValueType;
 import java.util.Calendar;
+
+import com.sun.msv.datatype.SerializationContext;
+import com.sun.msv.datatype.xsd.datetime.BigDateTimeValueType;
+import com.sun.msv.datatype.xsd.datetime.IDateTimeValueType;
+import com.sun.msv.datatype.xsd.datetime.ISO8601Parser;
 
 /**
  * "gDay" type.
@@ -52,7 +53,7 @@ public class GDayType extends DateTimeBaseType {
 		StringBuffer result = new StringBuffer();
 
 		result.append("---");
-		result.append(formatTwoDigits(cal.get(cal.DAY_OF_MONTH)));
+		result.append(formatTwoDigits(cal.get(Calendar.DAY_OF_MONTH)));
 		result.append(formatTimeZone(cal));
 		
 		return result.toString();

@@ -9,8 +9,9 @@
  */
 package com.sun.msv.datatype.xsd.datetime;
 
-import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import com.sun.msv.datatype.xsd.Comparator;
 
 /**

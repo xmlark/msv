@@ -11,6 +11,7 @@ package com.sun.msv.reader.trex.classic;
 
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.reader.ExpressionWithoutChildState;
+import com.sun.msv.util.StringPair;
 
 /**
  * parses &lt;data&gt; pattern.
@@ -30,7 +31,8 @@ public class DataState extends ExpressionWithoutChildState {
 			return Expression.anyString;
 		} else {
 			return reader.pool.createTypedString(
-				((TREXGrammarReader)reader).resolveDataType(typeName), typeName );
+				((TREXGrammarReader)reader).resolveDataType(typeName),
+				new StringPair("",typeName) );
 		}
 	}
 }

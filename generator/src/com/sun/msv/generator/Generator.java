@@ -25,8 +25,8 @@ import java.util.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class Generator implements ExpressionVisitorVoid
-{
+public class Generator implements ExpressionVisitorVoid {
+	
 	/** generation parameters */
 	private final GeneratorOption opts;
 	private final ExpressionPool pool;
@@ -259,6 +259,14 @@ public class Generator implements ExpressionVisitorVoid
 	}
 	
 	public void onRef( ReferenceExp exp ) {
+		exp.exp.visit(this);
+	}
+	
+	public void onOther( OtherExp exp ) {
+		exp.exp.visit(this);
+	}
+	
+	public void onKey( KeyExp exp ) {
 		exp.exp.visit(this);
 	}
 	

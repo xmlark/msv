@@ -52,8 +52,10 @@ public class RefExpRemover
 		else
 			return pool.createAttribute( exp.nameClass, content );
 	}
-	public Expression onRef( ReferenceExp exp )
-	{
+	public Expression onRef( ReferenceExp exp ) {
+		return exp.exp.visit(this);
+	}
+	public Expression onOther( OtherExp exp ) {
 		return exp.exp.visit(this);
 	}
 }

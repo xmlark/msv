@@ -52,4 +52,8 @@ public class SchemaLocationRemover extends ExpressionCloner {
 		exp.exp = exp.exp.visit(this);
 		return exp;
 	}
+
+	public Expression onOther( OtherExp exp ) {
+		return exp.exp.visit(this);
+	}
 }

@@ -10,6 +10,7 @@
 package com.sun.msv.generator;
 
 import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.util.ExpressionWalker;
 import java.util.Set;
 
 /**
@@ -18,42 +19,22 @@ import java.util.Set;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ElementDeclCollector implements ExpressionVisitorVoid
-{
-	public void onEpsilon() {}
-	public void onAnyString() {}
-	public void onNullSet() {}
-	public void onTypedString( TypedStringExp exp ) {}
-	public void onList( ListExp exp ) {}
-	
-	public void onBinExp( BinaryExp exp )
-	{
-		exp.exp1.visit(this);
-		exp.exp2.visit(this);
+public class ElementDeclCollector extends ExpressionWalker {
+	public void onConcur( ConcurExp exp ) {
+		throw new Error("concur is not supported");
 	}
 	
-	public void onChoice( ChoiceExp exp )				{ onBinExp(exp); }
-	public void onSequence( SequenceExp exp )			{ onBinExp(exp); }
-	public void onInterleave( InterleaveExp exp )		{ onBinExp(exp); }
-	public void onConcur( ConcurExp exp )				{ throw new Error("concur is not supported"); }
-	public void onMixed( MixedExp exp )					{ exp.exp.visit(this); }
-	public void onOneOrMore( OneOrMoreExp exp )			{ exp.exp.visit(this); }
-	
-	public void onRef( ReferenceExp exp )				{ exp.exp.visit(this); }
-	
 	private final Set elements = new java.util.HashSet();
-	public void onElement( ElementExp exp )
-	{
+	public void onElement( ElementExp exp ) {
 		if( elements.contains(exp) )	return;	// prevent infinite recursion
 		elements.add(exp);
-		exp.contentModel.visit(this);
+		super.onElement(exp);
 	}
 	
 	private final Set attributes = new java.util.HashSet();
-	public void onAttribute( AttributeExp exp )
-	{
+	public void onAttribute( AttributeExp exp ) {
 		attributes.add(exp);
-		exp.exp.visit(this);
+		super.onAttribute(exp);
 	}
 	
 	private ElementDeclCollector(){}
@@ -65,8 +46,7 @@ public class ElementDeclCollector implements ExpressionVisitorVoid
 	 *		r[0] : set of all distinct ElementExps.<br>
 	 *		r[1] : set of all distinct AttributeExps.
 	 */
-	public static Set[] collect( Expression exp )
-	{
+	public static Set[] collect( Expression exp ) {
 		Set[] r = new Set[2];
 		ElementDeclCollector col = new ElementDeclCollector();
 		exp.visit(col);

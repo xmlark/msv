@@ -12,6 +12,7 @@ package com.sun.msv.reader.trex.classic;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.trex.TypedString;
 import com.sun.msv.reader.ExpressionWithoutChildState;
+import com.sun.msv.util.StringPair;
 import com.sun.msv.datatype.xsd.WhiteSpaceProcessor;
 
 /**
@@ -23,20 +24,18 @@ public class StringState extends ExpressionWithoutChildState
 {
 	protected final StringBuffer text = new StringBuffer();
 	
-	public void characters( char[] buf, int from, int len )
-	{
-		text.append(buf,from,len);
-	}
-	public void ignorableWhitespace( char[] buf, int from, int len )
-	{
+	public void characters( char[] buf, int from, int len ) {
 		text.append(buf,from,len);
 	}
 	
-	protected Expression makeExpression()
-	{
+	public void ignorableWhitespace( char[] buf, int from, int len ) {
+		text.append(buf,from,len);
+	}
+	
+	protected Expression makeExpression() {
 		return reader.pool.createTypedString(
 			new TypedString(new String(text),
 				"preserve".equals(startTag.getAttribute("whiteSpace") ) ),
-			"$trex-string" );
+			new StringPair("$trex","string") );
 	}
 }

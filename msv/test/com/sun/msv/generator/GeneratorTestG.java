@@ -48,6 +48,16 @@ public class GeneratorTestG {
 			}
 		}
 		
+		// RELAX NG
+		if( System.getProperty("RELAXNGBatchTestDir")!=null) {
+			tokens = new StringTokenizer( System.getProperty("RELAXNGBatchTestDir"), ";" );
+			while( tokens.hasMoreTokens() ) {
+				GeneratorTester t = new GeneratorTester();
+				t.init("rng", tokens.nextToken(), ".rng", BatchTester.genericLoader);
+				s.addTest( t.suite() );
+			}
+		}
+		
 		// TREX
 		if( System.getProperty("TREXBatchTestDir")!=null) {
 			tokens = new StringTokenizer( System.getProperty("TREXBatchTestDir"), ";" );

@@ -17,7 +17,7 @@ import com.sun.msv.grammar.NameClass;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class XPath {
+public class XPath implements java.io.Serializable {
 	public boolean			isAnyDescendant;
 	public NameClass[]		steps;
 }

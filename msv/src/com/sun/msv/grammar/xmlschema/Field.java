@@ -16,7 +16,7 @@ import com.sun.msv.grammar.NameClass;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class Field {
+public class Field implements java.io.Serializable {
 	
 	/**
 	 * XPath that characterizes this field.

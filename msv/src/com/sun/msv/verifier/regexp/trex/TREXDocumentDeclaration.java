@@ -27,6 +27,11 @@ public final class TREXDocumentDeclaration extends REDocumentDeclaration
 		this( grammar.start, grammar.pool, false );
 	}
 	
+	public TREXDocumentDeclaration( TREXGrammar grammar, TREXPatternPool pool )
+	{
+		this( grammar.start, pool, false );
+	}
+	
 	public TREXDocumentDeclaration( Expression topLevel, TREXPatternPool pool, boolean ignoreUndeclaredAttribute )
 	{
 		this.topLevel = topLevel;

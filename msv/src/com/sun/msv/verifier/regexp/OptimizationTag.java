@@ -56,9 +56,6 @@ final class OptimizationTag
 	/** AttributePruner.prune(exp) */
 	Expression attributePrunedExpression;
 	
-	/** ContentModelRefExpRemover.remove(exp) */
-	Expression refRemovedExp;
-	
 //	/** a flag that indicates this expression doesn't have any attribute node.
 //	 * 
 //	 * null means unknown.

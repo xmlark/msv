@@ -22,16 +22,9 @@ import java.util.Set;
  */
 public class ContentModelRefExpRemover {
 	
-	public static Expression remove( Expression exp, ExpressionPool pool ) {
-		OptimizationTag tag = (OptimizationTag)exp.verifierTag;
-		if(tag==null)
-			exp.verifierTag = tag = new OptimizationTag();
-		
-		if(tag.refRemovedExp==null)
-			tag.refRemovedExp = exp.visit( new Remover(pool) );
-		
-		return tag.refRemovedExp;
-	}
+//	public static Expression remove( Expression exp, ExpressionPool pool ) {
+//		return exp.getExpandedExp(pool);
+//	}
 	
 	
 	// the class that does the actual job.

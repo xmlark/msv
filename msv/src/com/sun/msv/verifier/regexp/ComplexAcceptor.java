@@ -29,7 +29,7 @@ public final class ComplexAcceptor extends ComplexAcceptorBaseImpl {
 	private static Expression[] createDefaultContentModels( ElementExp[] owners, ExpressionPool pool ) {
 		Expression[] r = new Expression[owners.length];
 		for( int i=0; i<owners.length; i++ )
-			r[i] = ContentModelRefExpRemover.remove(owners[i].contentModel,pool);
+			r[i] = owners[i].contentModel.getExpandedExp(pool);
 		return r;
 	}
 	

@@ -538,8 +538,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		final int len = cccc.numMatchedElements();
 		for( int i=0; i<len; i++ ) {
 			
-			if( ContentModelRefExpRemover.remove(eocs[i].contentModel,docDecl.pool)
-				==Expression.nullSet )
+			if( eocs[i].contentModel.getExpandedExp(docDecl.pool)==Expression.nullSet )
 				// this element is not allowed to appear.
 				continue;
 			

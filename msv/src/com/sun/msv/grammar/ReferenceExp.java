@@ -32,7 +32,7 @@ public class ReferenceExp extends Expression {
 	 * 
 	 * Actual expression will be set once if the definition is parsed.
 	 */
-	public Expression exp;
+	public Expression exp = null;
 	
 	/** name of the referenced expression.
 	 * 

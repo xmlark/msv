@@ -75,7 +75,7 @@ public class AnyOtherElementVerifier
 			// none is valid. report an error.
 			dispatcher.getErrorHandler().error(
 				new SAXParseException(
-					Verifier.localizeMessage( Verifier.ERR_UNEXPECTED_ELEMENT, new Object[]{qName} ),
+					Localizer.localize( ERR_UNEXPECTED_NAMESPACE, new Object[]{namespaceURI} ),
 					locator ) );
 		
 	}
@@ -104,4 +104,8 @@ public class AnyOtherElementVerifier
 	public void setDocumentLocator( Locator loc ) {
 		this.locator = loc;
 	}
+	
+	
+	public static final String ERR_UNEXPECTED_NAMESPACE = 
+		"AnyOtherElementVerifier.UnexpectedNamespace";
 }

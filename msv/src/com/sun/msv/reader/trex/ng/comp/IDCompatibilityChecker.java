@@ -43,6 +43,8 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 		// a set of all ElementExps in the grammar.
 		final Set elements = new HashSet();
 		
+		final RefExpRemover remover = new RefExpRemover(reader.pool,false);
+		
 		/*
 		The first pass
 		--------------
@@ -58,8 +60,6 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 			private ElementExp curElm=null;
 			
 			private IDAttMap curAtts = null;
-			
-			private RefExpRemover remover = new RefExpRemover(reader.pool,false);
 			
 			public void onElement( ElementExp exp ) {
 				if(!elements.add(exp))
@@ -180,7 +180,7 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 							// no need to check
 			
 			// make sure that no attributes are actually competing.
-			eexp.contentModel.visit( new ExpressionWalker() {
+			eexp.contentModel.visit(remover).visit( new ExpressionWalker() {
 				public void onElement( ElementExp exp ) {
 					return;	// do not recurse child elements.
 				}

@@ -89,13 +89,19 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
 			}
 					
 			// tests if the default value matches the content model of this attribute
-			if(!resCalc.calcResidual(
-					exp.exp, new StringToken(resCalc,value,null,null)).isEpsilonReducible() )
+			StringToken token = new StringToken(resCalc,value,null,null);
+			if(!resCalc.calcResidual( exp.exp, token ).isEpsilonReducible() ) {
+				// the default value was rejected by the content model.
 				reportCompError(
 					new Locator[]{reader.getDeclaredLocationOf(exp)},
 					CERR_DEFVALUE_INVALID, new Object[]{value});
+			}
 					
 		}
+		
+		if( !grammar.isDefaultAttributeValueCompatible )
+			// if there already is an error, abort further check.
+			return;
 				
 		// a map from element names to DefAttMap
 		final Map name2value = new HashMap();
@@ -172,7 +178,10 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
 								new Locator[]{
 									reader.getDeclaredLocationOf(m.sampleDecl),
 								reader.getDeclaredLocationOf(exp)},
-								CERR_DEFVALUE_COMPETING_ELEMENTS );
+								CERR_DEFVALUE_COMPETING_ELEMENTS,
+								new Object[]{
+									((SimpleNameClass)m.sampleDecl.getNameClass()).localName
+								});
 							// make this element name fresh
 							// so that the user won't see excessive error messages.
 							name2value.remove(en);
@@ -217,7 +226,7 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
 							CERR_DEFVALUE_NOT_OPTIONAL);
 						return;	// abort
 					}
-					if(!inOneOrMore) {
+					if(inOneOrMore) {
 						reportCompError(
 							new Locator[]{reader.getDeclaredLocationOf(exp)},
 							CERR_DEFVALUE_REPEATABLE);
@@ -280,8 +289,11 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
 								new Locator[]{
 									reader.getDeclaredLocationOf(defAtts.sampleDecl),
 									reader.getDeclaredLocationOf(eexp)},
-								CERR_DEFVALUE_COMPETING_ELEMENTS );
-							throw new Error();
+								CERR_DEFVALUE_COMPETING_ELEMENTS,
+								new Object[]{
+									((SimpleNameClass)defAtts.sampleDecl.getNameClass()).localName
+								});
+							return;	// abort the check
 						}
 					}
 				}
@@ -302,7 +314,7 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
 			if(exp.dt.isContextDependent()) {
 				reportCompError(
 					null,
-					CERR_DEFVALUE_POSSIBLY_UNCOMPATIBLE_TYPE,
+					CERR_DEFVALUE_CONTEXT_DEPENDENT_TYPE,
 					new Object[]{exp.name.localName});
 				throw new Abort();
 			}
@@ -323,11 +335,11 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
 		"RELAXNGReader.Compatibility.DefaultValue.ComplexElementName";
 	public static final String CERR_DEFVALUE_DIFFERENT_VALUES	 = // arg:4
 		"RELAXNGReader.Compatibility.DefaultValue.DifferentValues";
-	public static final String CERR_DEFVALUE_POSSIBLY_UNCOMPATIBLE_TYPE = // arg:1
-		"RELAXNGReader.Compatibility.DefaultValue.PossiblyUncompatibleType";
-//	public static final String CERR_DEFVALUE_CONTEXT_DEPENDENT_TYPE = // arg:1
-//		"RELAXNGReader.Compatibility.DefaultValue.ContextDependentType";
-	public static final String CERR_DEFVALUE_COMPETING_ELEMENTS = // arg:0
+//	public static final String CERR_DEFVALUE_POSSIBLY_UNCOMPATIBLE_TYPE = // arg:1
+//		"RELAXNGReader.Compatibility.DefaultValue.PossiblyUncompatibleType";
+	public static final String CERR_DEFVALUE_CONTEXT_DEPENDENT_TYPE = // arg:1
+		"RELAXNGReader.Compatibility.DefaultValue.ContextDependentType";
+	public static final String CERR_DEFVALUE_COMPETING_ELEMENTS = // arg:1
 		"RELAXNGReader.Compatibility.DefaultValue.CompetingElements";
 	
 }

@@ -50,7 +50,7 @@ class SchemaSuite extends TestCase
 		
 	protected void runTest() throws Exception
 	{
-		final String pathName = parent.dir + schemaFileName;
+		final String pathName = parent.dir + "\\" + schemaFileName;
 		InputSource is = new InputSource(pathName);
 		is.setSystemId(pathName);
 			
@@ -125,7 +125,7 @@ class SchemaSuite extends TestCase
 							new VerificationErrorHandlerImpl() );
 					r.setContentHandler(v);
 						
-					r.parse( new InputSource(parent.dir+fileName) );
+					r.parse( new InputSource(parent.dir+"\\"+fileName) );
 					
 					assert( v.isValid() );
 				}

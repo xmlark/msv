@@ -63,11 +63,14 @@ public abstract class WhiteSpaceProcessor implements Serializable {
 			throw new InvalidObjectException("Unknown Processing Mode");
 		}
 	}
+
+// short-cut methods
+	public static String replace( String str ) { return theReplace.process(str); }
+	public static String collapse( String str ) { return theCollapse.process(str); }
 	
 /*
 	Actual processor implementation
 */
-	
 	public final static WhiteSpaceProcessor thePreserve = new WhiteSpaceProcessor() {
 		public String process( String text )	{ return text; }
 		int tightness() { return 0; }

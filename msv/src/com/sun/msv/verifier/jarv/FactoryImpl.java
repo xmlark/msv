@@ -19,32 +19,27 @@ import javax.xml.parsers.SAXParserFactory;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-abstract class FactoryImpl extends VerifierFactory
-{
+abstract class FactoryImpl extends VerifierFactory {
 	protected final SAXParserFactory factory;
 	
 	protected FactoryImpl( SAXParserFactory factory ) { this.factory = factory; }
 	public boolean isFeature(String feature)
-		throws SAXNotRecognizedException
-	{
+		throws SAXNotRecognizedException {
 		throw new SAXNotRecognizedException(feature);
 	}
 
 	public void setFeature(String feature, boolean value)
-		throws SAXNotRecognizedException
-	{
+		throws SAXNotRecognizedException {
 		throw new SAXNotRecognizedException(feature);
 	}
 
 	public Object getProperty(String property)
-		throws SAXNotRecognizedException
-	{
+		throws SAXNotRecognizedException {
 		throw new SAXNotRecognizedException(property);
 	}
 
 	public void setProperty(String property, Object value)
-		throws SAXNotRecognizedException
-	{
+		throws SAXNotRecognizedException {
 		throw new SAXNotRecognizedException(property);
 	}
 }

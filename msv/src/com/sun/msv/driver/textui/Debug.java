@@ -11,5 +11,14 @@ package com.sun.msv.driver.textui;
 
 public class Debug
 {
-	public static boolean debug = System.getProperty("DEBUG_SUN_MSV")!=null;
+	public static boolean debug;
+    
+    static {
+        try {
+            debug = System.getProperty("com.sun.msv.debug")!=null;
+        } catch( SecurityException e ) {
+            // a security manager might reject this call
+            debug = false;
+        }
+    }
 }

@@ -9,7 +9,6 @@ Design of ModuleReader
   So that some application can extend the behavior of schema object model.
   They might want to retrieve extra information from schema.
 
-* 
 
 
 Unresolved issue

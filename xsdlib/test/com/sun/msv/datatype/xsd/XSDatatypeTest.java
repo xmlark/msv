@@ -114,7 +114,7 @@ public class XSDatatypeTest extends TestCase
 		XSDatatype union3;
 		{
 			TypeIncubator inc = new TypeIncubator(union2);
-			inc.addFacet( "enumeration", "52", false, null );
+			inc.addFacet( "enumeration", "52", null );
 			union3 = inc.derive(null,null);
 		}
 		

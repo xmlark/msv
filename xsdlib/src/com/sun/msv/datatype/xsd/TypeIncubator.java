@@ -46,7 +46,7 @@ public class TypeIncubator {
 	 */
 	public void add( String name, String strValue, boolean fixed,
 					 ValidationContext context ) throws DatatypeException {
-		addFacet( name, strValue, fixed, context );
+		addFacet( name, strValue, context );
 	}
 	
 	/** adds a facet to the type.
@@ -54,8 +54,7 @@ public class TypeIncubator {
 	 * @exception	DatatypeException
 	 *		when given facet is already specified
 	 */
-	public void addFacet( String name, String strValue, boolean fixed,
-					 ValidationContext context ) throws DatatypeException {
+	public void addFacet( String name, String strValue, ValidationContext context ) throws DatatypeException {
 		
         if(baseType instanceof ErrorType)
             return; // silently ignore any further error
@@ -63,9 +62,6 @@ public class TypeIncubator {
         // checks applicability of the facet
 		switch( baseType.isFacetApplicable(name) ) {
 		case XSDatatypeImpl.APPLICABLE:	break;
-		case XSDatatypeImpl.FIXED:
-			throw new DatatypeException( XSDatatypeImpl.localize(
-				XSDatatypeImpl.ERR_OVERRIDING_FIXED_FACET, name ) );
 		case XSDatatypeImpl.NOT_ALLOWED:
 			throw new DatatypeException( XSDatatypeImpl.localize(
 				XSDatatypeImpl.ERR_NOT_APPLICABLE_FACET, name ) );
@@ -86,22 +82,18 @@ public class TypeIncubator {
 			value = strValue;
 		
 		if( isRepeatable(name) ) {
-			FacetInfo fi;
+            Vector v;
 			if( impl.containsKey(name) )
-				fi = (FacetInfo)impl.get(name);
+				v = (Vector)impl.get(name);
 			else
-				impl.put(name, fi=new FacetInfo(new Vector(),fixed));
+				impl.put(name, v=new Vector());
 			
-			((Vector)fi.value).add(value);
-			// TODO : what shall we do if
-			// <enumeration value="a" fixed="true" />
-			// <enumeration value="b" fixed="false" />
-			fi.fixed |= fixed;
+			v.add(value);
 		} else {
 			if( impl.containsKey(name) )
 				throw new DatatypeException( XSDatatypeImpl.localize(
 					XSDatatypeImpl.ERR_DUPLICATE_FACET, name ) );
-			impl.put(name, new FacetInfo(value,fixed));
+			impl.put(name,value);
 		}
 	}
 	
@@ -343,15 +335,6 @@ public class TypeIncubator {
 	}
 	
 	
-	/**
-	 * returns true if that facet is fixed.
-	 * 
-	 * the behavior is undefined when the specified facetName doesn't exist
-	 * in this map.
-	 */
-	public boolean isFixed( String facetName ) {
-		return ((FacetInfo)impl.get(facetName)).fixed;
-	}
 	
 	/**
 	 * gets a value of non-repeatable facet
@@ -360,7 +343,7 @@ public class TypeIncubator {
 	 * in this map.
 	 */
 	public Object getFacet( String facetName ) {
-		return ((FacetInfo)impl.get(facetName)).value;
+		return impl.get(facetName);
 	}
 	
 	/**
@@ -370,7 +353,7 @@ public class TypeIncubator {
 	 * in this map.
 	 */
 	public Vector getVector(String facetName) {
-		return (Vector)((FacetInfo)impl.get(facetName)).value;
+		return (Vector)impl.get(facetName);
 	}
 	
 	/**
@@ -431,16 +414,6 @@ public class TypeIncubator {
 		return impl.isEmpty();
 	}
 	
-	
-	private static class FacetInfo {
-		public Object value;
-		public boolean fixed;
-		public FacetInfo( Object value, boolean fixed ) {
-			this.value = value;
-			this.fixed = fixed;
-		}
-	}
-	
 	/**
 	 * dumps the contents to the given object.
 	 * this method is for debug use only.
@@ -449,16 +422,16 @@ public class TypeIncubator {
 		Iterator itr = impl.keySet().iterator();
 		while(itr.hasNext()) {
 			String facetName = (String)itr.next();
-			FacetInfo fi = (FacetInfo)impl.get(facetName);
+			Object value = impl.get(facetName);
 			
-			if(fi.value instanceof Vector) {
+			if(value instanceof Vector) {
 				out.println( facetName + " :");
-				Vector v = (Vector)fi.value;
+				Vector v = (Vector)value;
 				for( int i=0; i<v.size(); i++ )
 					out.println( "  " +v.elementAt(i) );
 			}
 			else
-				out.println( facetName + " : " + fi.value );
+				out.println( facetName + " : " + value );
 		}
 	}
 	

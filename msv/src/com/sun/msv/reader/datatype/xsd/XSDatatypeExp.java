@@ -83,8 +83,8 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
         return new XSTypeIncubator() {
             private final TypeIncubator core = new TypeIncubator(dt);
             
-            public void addFacet( String name, String value, boolean fixed, ValidationContext context ) throws DatatypeException {
-                core.addFacet(name,value,fixed,context);
+            public void addFacet( String name, String value, ValidationContext context ) throws DatatypeException {
+                core.addFacet(name,value,context);
             }
             public XSDatatypeExp derive(String uri,String localName) throws DatatypeException {
                 return new XSDatatypeExp( core.derive(uri,localName), pool );

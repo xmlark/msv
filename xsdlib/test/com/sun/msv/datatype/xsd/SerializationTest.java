@@ -63,7 +63,7 @@ public class SerializationTest extends TestCase
         // whose name is accidentally the same as the built-in type.
         
         TypeIncubator ti = new TypeIncubator(StringType.theInstance);
-        ti.addFacet("maxLength","120",false,null);
+        ti.addFacet("maxLength","120",null);
         XSDatatype pseudoString = ti.derive("","string");
         
         assertTrue( freezeDry(pseudoString)!=StringType.theInstance );

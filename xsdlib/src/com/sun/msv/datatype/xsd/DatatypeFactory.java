@@ -247,7 +247,7 @@ public class DatatypeFactory {
 	
 	private static XSDatatypeImpl createBuiltinList( String name, XSDatatypeImpl item ) throws DatatypeException {
 		TypeIncubator ti = new TypeIncubator(new ListType(null,null,item));
-		ti.addFacet("minLength","1",false,null);
+		ti.addFacet("minLength","1",null);
         // wrap it by a proxy object so that
         // these objects will work as singleton.
         return new Proxy(XSDatatype.XMLSCHEMA_NSURI,name,ti.derive(null,null)) {

@@ -130,7 +130,7 @@ public class AttributeState extends ExpressionWithChildState implements XSTypeOw
                     
                     try {
                         XSTypeIncubator inc = baseType.createIncubator();
-                        inc.addFacet("enumeration",fixed,false,reader);
+                        inc.addFacet("enumeration",fixed,reader);
                     
                         contentType = inc.derive(null,null);
                     } catch( DatatypeException e ) {

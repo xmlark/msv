@@ -7,12 +7,16 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype.xsd;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 import org.relaxng.datatype.DatatypeException;
+
+import com.sun.msv.datatype.xsd.DatatypeFactory;
+import com.sun.msv.datatype.xsd.StringType;
+import com.sun.msv.datatype.xsd.TypeIncubator;
+import com.sun.msv.datatype.xsd.XSDatatype;
 
 /**
  * command-line tester of datatype library.
@@ -77,7 +81,7 @@ public class CommandLineTester
 					// to add a facet, call add method.
 					// you MUST supply a valid ValidationContextProvider,
 					// although this example omits one.
-					incubator.addFacet( facetName, facetValue, false, null );
+					incubator.addFacet( facetName, facetValue, null );
 					continue;
 				}
 				if( cmd.equals("test") )

@@ -149,7 +149,7 @@
 		
 		<!-- compile files -->
 		<mkdir	dir="temp" />
-		<javac	srcdir="${stageName}/src" destdir="temp">
+		<javac	srcdir="${stageName}/src" destdir="temp" debug="on">
 			
 			<classpath path="${relaxngDatatype.jar}"/>
 			<include name="**/*.java" />

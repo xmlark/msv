@@ -176,7 +176,10 @@ public class DataTypeTester
 				oos.flush();
 				
 				// obtain byte array (just in case)
-				bos.toByteArray();
+				ObjectInputStream ois = new ObjectInputStream(
+                    new ByteArrayInputStream(bos.toByteArray()));
+                typeObj = (XSDatatype)ois.readObject();
+                ois.close();
 			}
 			
 			if(typeObj!=null)

@@ -54,7 +54,7 @@ public class FacetState extends ChildlessState
 		} else {
 			try {
 				((FacetStateParent)parentState).getIncubator().addFacet(
-					startTag.localName, value, "true".equals(startTag.getAttribute("fixed")), reader );
+					startTag.localName, value, reader );
 			} catch( DatatypeException e ) {
 				reader.reportError( e, GrammarReader.ERR_BAD_TYPE, e.getMessage() );
 				// recover by ignoring this facet

@@ -127,12 +127,12 @@ public interface XSDatatype extends Serializable, DatabindableDatatype {
 	 * One of the possible return value from the isFacetApplicable method.
 	 */
 	static final int APPLICABLE = 0;
-	/**
-	 * indicates the specified facet is fixed in this type and
-	 * therefore not appliable.
-	 * One of the possible return value from the isFacetApplicable method.
-	 */
-	static final int FIXED		= -1;
+//	/**
+//	 * indicates the specified facet is fixed in this type and
+//	 * therefore not appliable.
+//	 * One of the possible return value from the isFacetApplicable method.
+//	 */
+//	static final int FIXED		= -1;
 	/**
 	 * indicates the specified facet is not appliable to this type by definition.
 	 * One of the possible return value from the isFacetApplicable method.
@@ -144,7 +144,6 @@ public interface XSDatatype extends Serializable, DatabindableDatatype {
 	 * @return
 	 * <dl>
 	 *  <dt>APPLICABLE		<dd>if the facet is applicable
-	 *	<dt>FIXED			<dd>if the facet is already fixed (that is,not applicable)
 	 *	<dt>NOT_ALLOWED		<dd>if the facet is not applicable to this datatype at all.
 	 *							this value is also returned for unknown facets.
 	 */

@@ -12,7 +12,9 @@ package com.sun.msv.reader.trex.ng;
 import com.sun.msv.reader.ExpressionWithoutChildState;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.util.StringPair;
+
 import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * parses &lt;value&gt; pattern.
@@ -39,9 +41,16 @@ public class ValueState extends ExpressionWithoutChildState {
 		StringPair typeFullName;
 		
 		if(typeName==null) {
-			// defaults to built-in token type.
-			type = com.sun.msv.datatype.xsd.TokenType.theInstance;
-			typeFullName = new StringPair("","token");
+            try {
+    			// defaults to built-in token type.
+    			type = reader.resolveDataTypeLibrary("").createDatatype("token");
+    			typeFullName = new StringPair("","token");
+            } catch( DatatypeException e ) {
+                // since token is the built-in datatype,
+                // this can't happen
+                e.printStackTrace();
+                throw new InternalError();
+            }
 		} else {
 			type = reader.resolveDataType(typeName);
 			typeFullName = new StringPair(reader.datatypeLibURI,typeName);

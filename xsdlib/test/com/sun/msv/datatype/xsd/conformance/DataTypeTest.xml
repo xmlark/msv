@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="us-ascii" ?>
 <!-- $Id$ -->
 <suite>
 
@@ -243,7 +243,7 @@
 <case name="test for anyURI(2)">
 	<value> http://&#x125;.gr.jp/" </value>
 	<value> http://&#x937;.gr.jp/" </value>
-	<value> http://&#x295C3;.gr.jp/" </value>
+	<value> http://&#x29C3;.gr.jp/" </value>
 	
 	<answer for="anyURI"		>ooo</answer>
 	
@@ -526,7 +526,7 @@
 		<value>mal--formed</value>
 		<value>number-is-NG-1</value>
 		<value></value>
-		<value>&#x10005;</value>	<!-- non-ascii -->
+		<value>&#x1005;</value>	<!-- non-ascii -->
 	</wrongs>
 </case>
 
@@ -536,7 +536,7 @@
 	<value>&#xD;</value>
 	<value>&#xA;&#xD;</value>
 	<value>oridinary string</value>
-	<value>&#x10005;&#x10009;</value>	<!-- length 2 characters -->
+	<value>&#x1005;&#x1009;</value>	<!-- length 2 characters -->
 	
 	<value>  more   space  </value>
 	<value>  	
@@ -593,7 +593,7 @@
 	<value>&#xD;</value>
 	<value>&#xA;&#xD;</value>
 	<value>oridinary string</value>
-	<value>&#x10005;&#x10009;</value>	<!-- length 2 characters -->
+	<value>&#x1005;&#x1009;</value>	<!-- length 2 characters -->
 	
 	<value>  more   space  </value>
 	<value>  	
@@ -646,10 +646,10 @@
 	<value></value>
 	<value>x</value>
 	<value>--</value>
-	<value>&#x10005;&#x10009;</value>
+	<value>&#x1005;&#x1009;</value>
 	
 	<value>$#"</value>
-	<value>日本�?</value>	<!-- "the Japanese" in kanji. length 3 -->
+	<value>JPN</value>	<!-- "the Japanese" in kanji. length 3 -->
 	<value>lame</value>
 	<value>label</value>
 	

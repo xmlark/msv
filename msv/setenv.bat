@@ -1,7 +1,10 @@
-@set CLASSPATH=%CLASSPATH%;..\src
-@set CLASSPATH=%CLASSPATH%;..\..\testharness\bin
-@set CLASSPATH=%CLASSPATH%;..\..\xsdlib\bin
-@set CLASSPATH=%CLASSPATH%;..\..\xsdlib\src
-@set CLASSPATH=%CLASSPATH%;..\..\shared\lib\isorelax.jar
-@set CLASSPATH=%CLASSPATH%;..\..\shared\lib\relaxngDatatype.jar
-@set CLASSPATH=%CLASSPATH%;..\..\shared\lib\xerces.jar
+@set BASEPATH=c:\kohsuke\sun\msv
+@set CLASSPATH=%CLASSPATH%;%BASEPATH%\msv\src
+@set CLASSPATH=%CLASSPATH%;%BASEPATH%\testharness\bin
+@set CLASSPATH=%CLASSPATH%;%BASEPATH%\xsdlib\bin
+@set CLASSPATH=%CLASSPATH%;%BASEPATH%\xsdlib\src
+@set CLASSPATH=%CLASSPATH%;%BASEPATH%\shared\lib\isorelax.jar
+@set CLASSPATH=%CLASSPATH%;%BASEPATH%\shared\lib\relaxngDatatype.jar
+@set CLASSPATH=%CLASSPATH%;%BASEPATH%\shared\lib\xerces.jar
+@set CLASSPATH=%CLASSPATH%;%BASEPATH%\shared\lib\junit.jar
+@set CLASSPATH=%CLASSPATH%;%BASEPATH%\shared\lib\resolver.jar

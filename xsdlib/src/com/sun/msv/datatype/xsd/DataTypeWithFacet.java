@@ -30,9 +30,6 @@ public abstract class DataTypeWithFacet extends XSDatatypeImpl
 	/** name of this facet */
 	public final String facetName;
 	
-	/** a flag that indicates the facet is fixed (derived types cannot specify this value anymore) */
-	public final boolean isFacetFixed;
-	
 	/** a flag that indicates this type has value-constraint facet.
 	 * 
 	 * this value is used to cache this flag.
@@ -51,7 +48,6 @@ public abstract class DataTypeWithFacet extends XSDatatypeImpl
 		super(nsUri,typeName, whiteSpace);
 		this.baseType = baseType;
 		this.facetName = facetName;
-		this.isFacetFixed = facets.isFixed(facetName);
 		this.concreteType = baseType.getConcreteType();
 		
 		needValueCheckFlag = baseType.needValueCheck();
@@ -62,8 +58,6 @@ public abstract class DataTypeWithFacet extends XSDatatypeImpl
 		case APPLICABLE:	return;	// this facet is applicable to this type. no problem.
 		case NOT_ALLOWED:
 			throw new DatatypeException( localize(ERR_NOT_APPLICABLE_FACET, facetName) );
-		case FIXED:
-			throw new DatatypeException( localize(ERR_OVERRIDING_FIXED_FACET, facetName) );
 		}
 	}
 	
@@ -80,11 +74,7 @@ public abstract class DataTypeWithFacet extends XSDatatypeImpl
 	}
 	
 	public final int isFacetApplicable( String facetName ) {
-		if( this.facetName.equals(facetName) ) {
-			if( isFacetFixed )		return FIXED;
-			else					return APPLICABLE;
-		} else
-			return baseType.isFacetApplicable(facetName);
+		return baseType.isFacetApplicable(facetName);
 	}
 	
 	protected boolean needValueCheck() { return needValueCheckFlag; }

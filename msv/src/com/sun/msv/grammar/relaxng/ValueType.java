@@ -16,7 +16,7 @@ import org.relaxng.datatype.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ValueType implements DataType {
+public class ValueType implements DataType, java.io.Serializable {
 	
 	/** this datatype matches this value only. */
 	public final Object value;

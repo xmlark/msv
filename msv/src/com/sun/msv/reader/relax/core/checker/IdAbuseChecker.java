@@ -9,7 +9,7 @@
  */
 package com.sun.msv.reader.relax.core.checker;
 
-import com.sun.msv.datatype.DataType;
+import org.relaxng.datatype.DataType;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.relax.*;
 import com.sun.msv.reader.relax.core.RELAXCoreReader;

@@ -9,7 +9,7 @@
  */
 package com.sun.msv.verifier;
 
-import com.sun.msv.datatype.DataType;
+import org.relaxng.datatype.DataType;
 import org.xml.sax.Locator;
 
 /**

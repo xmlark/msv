@@ -16,5 +16,5 @@ package com.sun.msv.util;
  */
 public class DataTypeRef
 {
-	public com.sun.msv.datatype.DataType type = null;
+	public org.relaxng.datatype.DataType type = null;
 }

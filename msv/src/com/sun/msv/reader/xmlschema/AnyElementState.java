@@ -16,6 +16,7 @@ import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.trex.ElementPattern;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.grammar.xmlschema.ElementDeclExp;
+import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.State;
 import java.util.Iterator;
 
@@ -53,7 +54,7 @@ public class AnyElementState extends AnyState
 		
 		// "lax"/"strict" has to be back-patched later.
 		final ReferenceExp exp = new ReferenceExp("any("+process+":"+namespace+")");
-		reader.addBackPatchJob( new XMLSchemaReader.BackPatch(){
+		reader.addBackPatchJob( new GrammarReader.BackPatch(){
 			public State getOwnerState() { return AnyElementState.this; }
 			public void patch() {
 

@@ -21,6 +21,7 @@ import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.grammar.xmlschema.IdentityConstraint;
 import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.ExpressionWithChildState;
@@ -67,7 +68,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 		// so just return an empty ReferenceExp and back-patch the actual definition later.
 		final ReferenceExp ref = new ReferenceExp("elementType("+typeQName+")");
 		
-		reader.addBackPatchJob( new XMLSchemaReader.BackPatch(){
+		reader.addBackPatchJob( new GrammarReader.BackPatch(){
 			public State getOwnerState() { return ElementDeclState.this; }
 			public void patch() {
 				String[] s = reader.splitQName(typeQName);
@@ -203,6 +204,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 				new Object[]{name} );
 		
 		decl.self = exp;
+		exp.parent = decl;
 
 		String abstract_ = startTag.getAttribute("abstract");
 		if( !"true".equals(abstract_) )
@@ -222,6 +224,8 @@ public class ElementDeclState extends ExpressionWithChildState {
 				// register this declaration to the head elementDecl.
 				ElementDeclExp head = reader.getOrCreateSchema(r[0]/*uri*/).
 					elementDecls.getOrCreate(r[1]/*local name*/);
+				
+				decl.substitutionAffiliation = head;
 					
 				// TODO: where to insert it?
 				head.exp = reader.pool.createChoice( head.exp, decl );

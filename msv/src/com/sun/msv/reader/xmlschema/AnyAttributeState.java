@@ -16,6 +16,7 @@ import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.grammar.xmlschema.AttributeDeclExp;
 import com.sun.msv.reader.State;
+import com.sun.msv.reader.GrammarReader;
 import java.util.StringTokenizer;
 import java.util.Iterator;
 
@@ -41,7 +42,7 @@ public class AnyAttributeState extends AnyState {
 		
 		// "lax"/"strict" has to be back-patched later.
 		final ReferenceExp anyAttExp = new ReferenceExp("anyAttribute("+process+":"+namespace+")");
-		reader.addBackPatchJob( new XMLSchemaReader.BackPatch(){
+		reader.addBackPatchJob( new GrammarReader.BackPatch(){
 			public State getOwnerState() { return AnyAttributeState.this; }
 			public void patch() {
 				

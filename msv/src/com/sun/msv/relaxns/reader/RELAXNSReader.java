@@ -12,7 +12,6 @@ package com.sun.msv.relaxns.reader;
 import java.util.Set;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import com.sun.msv.datatype.DataType;
 import com.sun.msv.reader.relax.RELAXReader;
 import com.sun.msv.reader.*;
 import com.sun.msv.grammar.Expression;
@@ -29,6 +28,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.helpers.LocatorImpl;
 import org.iso_relax.dispatcher.IslandSchemaReader;
 import org.iso_relax.dispatcher.SchemaProvider;
+import org.relaxng.datatype.DataType;
 
 /**
  * parses RELAX Namespace XML and constructs a SchemaProvider.

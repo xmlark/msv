@@ -20,6 +20,7 @@ import com.sun.msv.grammar.NamespaceNameClass;
 import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.xmlschema.*;
 import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.State;
 import org.xml.sax.Locator;
 import java.util.Vector;
@@ -104,7 +105,7 @@ public class IdentityConstraintState extends SimpleState {
 			id = keyRef;
 			
 			// back patch "key" field of KeyRefConstraint.
-			reader.addBackPatchJob( new XMLSchemaReader.BackPatch(){
+			reader.addBackPatchJob( new GrammarReader.BackPatch(){
 				public State getOwnerState() { return IdentityConstraintState.this; }
 				public void patch() {
 					XMLSchemaSchema s = reader.grammar.getByNamespace(qn[0]);

@@ -9,7 +9,8 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import com.sun.msv.datatype.DataType;
+import org.relaxng.datatype.DataType;
+import com.sun.msv.datatype.DataTypeImpl;
 import com.sun.msv.datatype.BadTypeException;
 import com.sun.msv.datatype.TypeIncubator;
 import com.sun.msv.datatype.StringType;
@@ -43,7 +44,7 @@ public class SimpleContentBodyState extends SequenceState
 			// assertion failed.
 			// createChildState should reject 2nd <simpleType> element.
 			throw new Error();
-		incubator = new TypeIncubator(child);
+		incubator = new TypeIncubator((DataTypeImpl)child);
 	}
 	
 	protected State createChildState( StartTagInfo tag ) {
@@ -63,7 +64,7 @@ public class SimpleContentBodyState extends SequenceState
 		
 		String base	= startTag.getAttribute("base");
 		if(base!=null)
-			incubator = new TypeIncubator( reader.resolveDataType(base) );
+			incubator = new TypeIncubator( (DataTypeImpl)reader.resolveDataType(base) );
 		else {
 			if(extension) {
 				// in extension, base attribute must is mandatory.

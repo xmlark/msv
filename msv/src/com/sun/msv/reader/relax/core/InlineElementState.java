@@ -10,7 +10,7 @@
 package com.sun.msv.reader.relax.core;
 
 import com.sun.msv.datatype.BadTypeException;
-import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.DataTypeImpl;
 import com.sun.msv.datatype.TypeIncubator;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.SimpleNameClass;
@@ -58,7 +58,7 @@ public class InlineElementState extends ExpressionState implements FacetStatePar
 		if( label!=null ) {
 			incubator = null;
 		} else {
-			incubator = new TypeIncubator( reader.resolveDataType(type) );
+			incubator = new TypeIncubator( (DataTypeImpl)reader.resolveDataType(type) );
 		}
 	}
 	

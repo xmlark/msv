@@ -9,7 +9,8 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import com.sun.msv.datatype.DataType;
+import org.relaxng.datatype.DataType;
+import com.sun.msv.datatype.DataTypeImpl;
 import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
 import com.sun.msv.reader.ChildlessState;
 import com.sun.msv.reader.datatype.xsd.SimpleTypeState;
@@ -53,7 +54,7 @@ public class RedefineState extends GlobalDeclState {
 		// handle redefinition of simpleType.
 		
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
-		final String typeName = type.getName();
+		final String typeName = ((DataTypeImpl)type).getName();
 		
 		if( typeName==null ) {
 			// top-level simpleType must define a named type
@@ -70,7 +71,7 @@ public class RedefineState extends GlobalDeclState {
 		}
 		
 		// overwrite
-		exp.setType(type,reader.pool);
+		exp.setType((DataTypeImpl)type,reader.pool);
 		reader.setDeclaredLocationOf(exp);
 	}
 

@@ -259,9 +259,6 @@ public class RELAXNGWriter implements GrammarWriter, Context {
 			final DocumentHandler handler = writer.getDocumentHandler();
 			handler.setDocumentLocator( new LocatorImpl() );
 			handler.startDocument();
-//			handler.startPrefixMapping("",TREXGrammarReader.TREXNamespace);
-//			handler.startPrefixMapping("trex",TREXGrammarReader.TREXNamespace);
-//			handler.startPrefixMapping("xsd",XSDVocabulary.XMLSchemaNamespace);
 
 			// to work around the bug of current serializer,
 			// report xmlns declarations as attributes.

@@ -16,6 +16,7 @@ import com.sun.msv.reader.State;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.ExpressionState;
 import com.sun.msv.util.StartTagInfo;
+import org.relaxng.datatype.DatatypeException;
 import java.util.StringTokenizer;
 
 /**
@@ -25,8 +26,8 @@ import java.util.StringTokenizer;
  */
 public class SimpleTypeState extends TypeWithOneChildState
 {
-	protected State createChildState( StartTagInfo tag )
-	{
+	protected State createChildState( StartTagInfo tag ) {
+		
 		// accepts elements from the same namespace only.
 		if( !startTag.namespaceURI.equals(tag.namespaceURI) )	return null;
 		
@@ -40,24 +41,33 @@ public class SimpleTypeState extends TypeWithOneChildState
 		return null;	// unrecognized
 	}
 
-	protected XSDatatype annealType( XSDatatype dt )
-	{
-		final String finalValue = startTag.getAttribute("final");
-		if(finalValue!=null)
-			// wrap it by FinalComponent
-			return new FinalComponent( (XSDatatypeImpl)dt, getFinalValue(finalValue) );
-		else
+	protected XSDatatype annealType( final XSDatatype dt ) {
+		final String finalValueStr = startTag.getAttribute("final");
+		if(finalValueStr!=null) {
+			final int finalValue = getFinalValue(finalValueStr);
+			
+			// wrap it by a FinalComponent
+			if( dt instanceof LateBindDatatype ) {
+				// late-binding
+				return new LateBindDatatype( new LateBindDatatype.Renderer() {
+					public XSDatatype render() throws DatatypeException {
+						return new FinalComponent(
+							(XSDatatypeImpl)((LateBindDatatype)dt).getBody(),
+							finalValue );
+					}
+				}, this );
+			} else
+				return new FinalComponent( (XSDatatypeImpl)dt, finalValue );
+		} else
 			return dt;
 	}
 
 
 	/** parses final attribute */
-	public int getFinalValue( String list )
-	{
+	public int getFinalValue( String list ) {
 		int finalValue = 0;
 		StringTokenizer tokens = new StringTokenizer(list);
-		while(tokens.hasMoreTokens())
-		{
+		while(tokens.hasMoreTokens()) {
 			String token = tokens.nextToken();
 			
 			if( token.equals("#all") )
@@ -73,8 +83,7 @@ public class SimpleTypeState extends TypeWithOneChildState
 			else
 			if( token.equals("union") )
 				finalValue |= XSDatatype.DERIVATION_BY_UNION;
-			else
-			{
+			else {
 				reader.reportError( 
 					reader.ERR_ILLEGAL_FINAL_VALUE, token );
 				return 0;	// abort

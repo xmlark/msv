@@ -11,6 +11,7 @@ package com.sun.msv.reader.xmlschema;
 
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.datatype.xsd.BooleanType;
+import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
@@ -23,6 +24,7 @@ import com.sun.msv.grammar.trex.ElementPattern;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
+import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.IgnoreState;
@@ -36,6 +38,7 @@ import com.sun.msv.reader.RunAwayExpressionChecker;
 import com.sun.msv.reader.datatype.xsd.FacetState;
 import com.sun.msv.reader.datatype.xsd.SimpleTypeState;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
+import com.sun.msv.reader.datatype.xsd.LateBindDatatype;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringPair;
 import javax.xml.parsers.SAXParserFactory;
@@ -383,7 +386,7 @@ public class XMLSchemaReader extends GrammarReader {
 	
 	public Datatype resolveDataType( String typeQName ) {
 		
-		String[] r = splitQName(typeQName);
+		final String[] r = splitQName(typeQName);
 		if(r==null) {
 			reportError( ERR_UNDECLARED_PREFIX, typeQName );
 			// TODO: implement UndefinedType, that is used only when an error is encountered.
@@ -394,14 +397,35 @@ public class XMLSchemaReader extends GrammarReader {
 		if( isSchemaNamespace(r[0]) )
 			return resolveBuiltinDataType(r[1]);
 		
-		Datatype dt = getOrCreateSchema(r[0]/*uri*/).simpleTypes.
-			getOrCreate(r[1]/*local name*/).getType();
+		final SimpleTypeExp sexp = getOrCreateSchema(r[0]/*uri*/).simpleTypes.
+			getOrCreate(r[1]/*local name*/);
+		Datatype dt = sexp.getType();
+		backwardReference.memorizeLink(sexp);
+				 
+		if( dt!=null )	return dt;
 		
-		if( dt!=null ) return dt;
+		// the specified datatype is not defined at this moment.
+		// it is either a forward reference, or an undefined type.
+		// return a late-bind datatype object to support forward references.
 		
-		reportError( ERR_UNDEFINED_OR_FORWARD_REFERENCED_TYPE, r[2]/*qName*/ );
-		// TODO: implement error data type.
-		return StringType.theInstance;
+		dt = new LateBindDatatype( new LateBindDatatype.Renderer(){
+			public XSDatatype render() {
+				XSDatatype dt = sexp.getType();
+				
+				if( dt==null ) {
+//	this error is reported by the detectUndefinedOnes method.
+//					reportError( ERR_UNDEFINED_SIMPLE_TYPE, r[2]/*qName*/ );
+					return StringType.theInstance; // recover
+				}
+				
+				if( dt instanceof LateBindDatatype )
+					return ((LateBindDatatype)dt).getBody();
+				else
+					return dt;
+			}
+		}, getCurrentState() );
+		
+		return dt;
 	}
 	
 	/**
@@ -580,9 +604,9 @@ public class XMLSchemaReader extends GrammarReader {
 			detectUndefinedOnes( schema.attributeDecls,		ERR_UNDEFINED_ATTRIBUTE_DECL );
 			detectUndefinedOnes( schema.attributeGroups,	ERR_UNDEFINED_ATTRIBUTE_GROUP );
 			detectUndefinedOnes( schema.complexTypes,		ERR_UNDEFINED_COMPLEX_TYPE );
-			detectUndefinedOnes( schema.simpleTypes,		ERR_UNDEFINED_SIMPLE_TYPE );
 			detectUndefinedOnes( schema.elementDecls,		ERR_UNDEFINED_ELEMENT_DECL );
 			detectUndefinedOnes( schema.groupDecls,			ERR_UNDEFINED_GROUP );
+			detectUndefinedOnes( schema.simpleTypes,		ERR_UNDEFINED_SIMPLE_TYPE );
 			
 			// prepare top-level expression.
 			// TODO: make sure this is a correct implementation

@@ -10,11 +10,12 @@
 package com.sun.msv.reader.xmlschema;
 
 import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.datatype.xsd.XSDatatypeImpl;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.SimpleState;
 import com.sun.msv.reader.ExpressionOwner;
+import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.datatype.TypeOwner;
+import com.sun.msv.reader.datatype.xsd.LateBindDatatype;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
 import com.sun.msv.util.StartTagInfo;
@@ -49,8 +50,10 @@ public class GlobalDeclState extends SimpleState
 	
 	public void onEndChild( XSDatatype type ) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
-		final XSDatatypeImpl dti = (XSDatatypeImpl)type;
-		final String typeName = dti.getName();
+//		final XSDatatypeImpl dti = (XSDatatypeImpl)type;
+//		final String typeName = dti.getName();
+		
+		String typeName = reader.getCurrentState().getStartTag().getAttribute("name");
 		
 		if( typeName==null ) {
 			// top-level simpleType must define a named type
@@ -59,14 +62,27 @@ public class GlobalDeclState extends SimpleState
 		}
 		
 		// memorize this type.
-		SimpleTypeExp exp = reader.currentSchema.simpleTypes.getOrCreate(typeName);
+		final SimpleTypeExp exp = reader.currentSchema.simpleTypes.getOrCreate(typeName);
 		if(exp.getType()!=null ) {
 			reader.reportError( reader.ERR_DATATYPE_ALREADY_DEFINED, typeName );
 			return;
 			// recover by ignoring this declaration
 		}
+		if( type instanceof LateBindDatatype ) {
+			final LateBindDatatype lbdt = (LateBindDatatype)type;
+			reader.addBackPatchJob( new GrammarReader.BackPatch() {
+				public State getOwnerState() {
+					return GlobalDeclState.this;
+				}
+				public void patch() {
+					// replace the definition of the SimpleTypeExp by
+					// a real object.
+					exp.setType( lbdt.getBody(), reader.pool );
+				}
+			});
+		}
 		
-		exp.setType(dti,reader.pool);
+		exp.setType(type,reader.pool);
 		reader.setDeclaredLocationOf(exp);
 	}
 }

@@ -13,10 +13,14 @@ import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.datatype.xsd.TypeIncubator;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.SequenceState;
+import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.datatype.TypeOwner;
 import com.sun.msv.reader.datatype.xsd.FacetStateParent;
+import com.sun.msv.reader.datatype.xsd.LateBindDatatype;
+import com.sun.msv.reader.datatype.xsd.LateBindTypeIncubator;
 import com.sun.msv.util.StartTagInfo;
 import org.relaxng.datatype.DatatypeException;
 
@@ -36,6 +40,7 @@ public class SimpleContentBodyState extends SequenceState
 	
 	/** used to restrict simpleType */
 	protected TypeIncubator incubator;
+	private boolean lateBinding;
 	public TypeIncubator getIncubator() { return incubator; }
 	
 	public void onEndChild( XSDatatype child ) {
@@ -43,7 +48,7 @@ public class SimpleContentBodyState extends SequenceState
 			// assertion failed.
 			// createChildState should reject 2nd <simpleType> element.
 			throw new Error();
-		incubator = new TypeIncubator(child);
+		createTypeIncubator(child);
 	}
 	
 	protected State createChildState( StartTagInfo tag ) {
@@ -62,9 +67,9 @@ public class SimpleContentBodyState extends SequenceState
 		super.startSelf();
 		
 		String base	= startTag.getAttribute("base");
-		if(base!=null)
-			incubator = new TypeIncubator( (XSDatatype)reader.resolveDataType(base) );
-		else {
+		if(base!=null) {
+			createTypeIncubator( (XSDatatype)reader.resolveDataType(base) );
+		} else {
 			if(extension) {
 				// in extension, base attribute must is mandatory.
 				reader.reportError( reader.ERR_MISSING_ATTRIBUTE, startTag.localName, "base");
@@ -73,6 +78,14 @@ public class SimpleContentBodyState extends SequenceState
 			}
 			// in case of restriction, child <simpleType> may be present.
 		}
+	}
+
+	private void createTypeIncubator( XSDatatype baseType ) {
+		if( baseType instanceof LateBindDatatype ) {
+			lateBinding = true;
+			incubator = new LateBindTypeIncubator( (LateBindDatatype)baseType );
+		} else
+			incubator = new TypeIncubator( baseType );
 	}
 	
 	protected Expression initialExpression() {
@@ -83,20 +96,37 @@ public class SimpleContentBodyState extends SequenceState
 	
 	protected Expression annealExpression( Expression exp ) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
-		try	{
-			exp = super.annealExpression(exp);
-			
-			Expression typedStr;
-			if( incubator==null ) {
-				// neither @base nor <simpleType> was present.
-				reader.reportError( reader.ERR_MISSING_ATTRIBUTE, startTag.qName, "base" );
-				// recover by pretending some expression
-				typedStr = Expression.nullSet;
-			} else {
-				typedStr = reader.pool.createTypedString( incubator.derive(null) );
-			}
 
-			return reader.pool.createSequence( typedStr, exp );
+		exp = super.annealExpression(exp);
+			
+		Expression typedStr;
+		if( incubator==null ) {
+			// neither @base nor <simpleType> was present.
+			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, startTag.qName, "base" );
+			// recover by pretending some expression
+			typedStr = Expression.nullSet;
+		} else {
+			if(lateBinding) {
+				// in case of the late-binding
+				final ReferenceExp r = new ReferenceExp(null);
+				typedStr = r;
+				// perform a back-patch to provide the real definition
+				reader.addBackPatchJob( new GrammarReader.BackPatch() {
+					public State getOwnerState() { return SimpleContentBodyState.this; }
+					public void patch() {
+						r.exp = getDatatypeExp();
+					}
+				});
+			} else
+				typedStr = getDatatypeExp();
+		}
+
+		return reader.pool.createSequence( typedStr, exp );
+	}
+
+	private Expression getDatatypeExp() {
+		try {
+			return reader.pool.createTypedString( incubator.derive(null) );
 		} catch( DatatypeException e ) {
 			// derivation failed
 			reader.reportError( e, reader.ERR_BAD_TYPE, e.getMessage() );

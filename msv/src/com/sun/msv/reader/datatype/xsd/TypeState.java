@@ -16,9 +16,11 @@ import com.sun.msv.reader.State;
 import com.sun.msv.reader.SimpleState;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.ExpressionOwner;
+import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.datatype.TypeOwner;
 import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.datatype.xsd.StringType;
+import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -29,20 +31,42 @@ import com.sun.msv.util.StartTagInfo;
  */
 abstract class TypeState extends SimpleState
 {
-	public void endSelf()
-	{
+	public void endSelf() {
 		super.endSelf();
+		
+		XSDatatype type = _makeType();
 		
 		if( parentState instanceof TypeOwner ) {
 			// if the parent can understand what we are creating,
 			// then pass the result.
-			((TypeOwner)parentState).onEndChild( _makeType() );
+			((TypeOwner)parentState).onEndChild(type);
 			return;
 		} else
 		if( parentState instanceof ExpressionOwner ) {
-			// if the parent expects Expression, convert type into Expression
-			((ExpressionOwner)parentState).onEndChild(
-				reader.pool.createTypedString( _makeType() ) );
+			if( type instanceof LateBindDatatype ) {
+				// if this is a late-bind datatype,/
+				// return a temporary ReferenceExp now and
+				// perform a back-patching later to complete AGM.
+				final ReferenceExp ref = new ReferenceExp(null);
+				((ExpressionOwner)parentState).onEndChild(ref);
+				
+				final LateBindDatatype lbdt = (LateBindDatatype)type;
+				
+				// register a patcher to render the real object.
+				reader.addBackPatchJob(
+					new GrammarReader.BackPatch() {
+						public State getOwnerState() { return TypeState.this; }
+						public void patch() {
+							// perform binding.
+							ref.exp = reader.pool.createTypedString(lbdt.getBody());
+						}
+				});
+				
+			} else {
+				// if the parent expects Expression, convert type into Expression
+				((ExpressionOwner)parentState).onEndChild(
+					reader.pool.createTypedString(type) );
+			}
 			return;
 		}
 		
@@ -50,7 +74,7 @@ abstract class TypeState extends SimpleState
 		throw new Error();
 	}
 	
-	/** makeType method with protection against possible exception. */
+	/** the makeType method with protection against possible exception. */
 	XSDatatype _makeType() {
 		try {
 			return makeType();

@@ -25,13 +25,21 @@ import org.relaxng.datatype.DatatypeException;
 public class ListState extends TypeWithOneChildState
 {
 	protected final String newTypeName;
-	protected ListState( String newTypeName )
-	{
+	protected ListState( String newTypeName ) {
 		this.newTypeName = newTypeName;
 	}
 	
-	protected XSDatatype annealType( XSDatatype baseType ) throws DatatypeException {
-		return DatatypeFactory.deriveByList( newTypeName, baseType );
+	protected XSDatatype annealType( final XSDatatype baseType ) throws DatatypeException {
+		if( baseType instanceof LateBindDatatype )
+			// late-bind construction
+			return new LateBindDatatype( new LateBindDatatype.Renderer() {
+				public XSDatatype render() throws DatatypeException {
+					return DatatypeFactory.deriveByList( newTypeName,
+						((LateBindDatatype)baseType).getBody() );
+				}
+			}, this );
+		else
+			return DatatypeFactory.deriveByList( newTypeName, baseType );
 	}
 	
 	protected void startSelf()

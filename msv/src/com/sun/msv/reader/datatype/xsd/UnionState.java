@@ -57,10 +57,37 @@ public class UnionState extends TypeState implements TypeOwner {
 		}
 	}
 	
-	public void onEndChild( XSDatatype type )	{ memberTypes.add(type); }
+	/**
+	 * this flag is set to true if there is a child LateBindDatatype object.
+	 * In that case, the deriveByUnion method has to be called after the parsing
+	 * is completed.
+	 */
+	private boolean performLateBinding = false;
+	
+	public void onEndChild( XSDatatype type ) {
+		if( type instanceof LateBindDatatype )
+			performLateBinding = true;
+		memberTypes.add(type);
+	}
 	
 	protected final XSDatatype makeType() throws DatatypeException {
-		return DatatypeFactory.deriveByUnion( newTypeName, memberTypes );
+		if( !performLateBinding )
+			// normal construction.
+			return DatatypeFactory.deriveByUnion( newTypeName, memberTypes );
+		
+		// late binding
+		return new LateBindDatatype( new LateBindDatatype.Renderer() {
+			public XSDatatype render() throws DatatypeException {
+				int len = memberTypes.size();
+				for( int i=0; i<len; i++ ) {
+					XSDatatype dt = (XSDatatype)memberTypes.get(i);
+					if( dt instanceof LateBindDatatype )
+						memberTypes.set(i, ((LateBindDatatype)dt).getBody() );
+				}
+				
+				return DatatypeFactory.deriveByUnion( newTypeName, memberTypes );
+			}
+		}, this );
 	}
 
 }

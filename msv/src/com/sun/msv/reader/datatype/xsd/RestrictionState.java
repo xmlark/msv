@@ -37,12 +37,29 @@ public class RestrictionState extends TypeWithOneChildState implements FacetStat
 	}
 
 	protected XSDatatype annealType( XSDatatype baseType ) throws DatatypeException {
-		return incubator.derive(newTypeName);
+		if( type instanceof LateBindDatatype )
+			// late-bind construction.
+			return new LateBindDatatype(
+				new LateBindDatatype.Renderer() {
+					public XSDatatype render() throws DatatypeException {
+						return incubator.derive(newTypeName);
+					}
+				}, this );
+		else
+			return incubator.derive(newTypeName);
 	}
 	
 	public void onEndChild( XSDatatype child ) {
 		super.onEndChild(child);
-		incubator = new TypeIncubator(super.type);
+		createTypeIncubator();
+	}
+	
+	private void createTypeIncubator() {
+		if( type instanceof LateBindDatatype )
+			// this datatype is not available now. Use late-binder.
+			incubator = new LateBindTypeIncubator( (LateBindDatatype)type );
+		else
+			incubator = new TypeIncubator(type);
 	}
 
 	
@@ -53,7 +70,7 @@ public class RestrictionState extends TypeWithOneChildState implements FacetStat
 		String base = startTag.getAttribute("base");
 		if(base!=null) {
 			type = (XSDatatype)reader.resolveDataType(base);
-			incubator = new TypeIncubator(type);
+			createTypeIncubator();
 		}
 	}
 

@@ -39,7 +39,7 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
 	{
 		super.startSelf();
 		// if name attribtue is specified, use it.
-		final String name = startTag.getAttribute("name");
+		final String name = startTag.getCollapsedAttribute("name");
 
 		if( name==null )	return;
 

@@ -31,7 +31,7 @@ public class NameClassNameState extends NameClassWithoutChildState {
 	protected NameClass makeNameClass() {
 		return new SimpleNameClass(
 			getPropagatedNamespace(),
-			WhiteSpaceProcessor.theReplace.process(new String(text)) );
+			WhiteSpaceProcessor.collapse(new String(text)) );
 			
 	}
 }

@@ -44,6 +44,12 @@ public class Driver {
 		System.out.println( localize(MSG_USAGE) );
     }
     
+    /** Prints the version number. */
+    private static void printVersion() {
+	    System.out.println("Multi Schema Validator Ver."+
+	    	java.util.ResourceBundle.getBundle("version").getString("version") );
+    }
+    
 	public static void main( String[] args ) throws Exception {
         System.exit(run(args));
     }
@@ -62,6 +68,7 @@ public class Driver {
 		
 		for( int i=0; i<args.length; i++ ) {
             if( args[i].equalsIgnoreCase("-h")
+            ||  args[i].equalsIgnoreCase("-help")
             ||  args[i].equalsIgnoreCase("-?")) {
                 usage();
                 return -1;
@@ -118,8 +125,7 @@ public class Driver {
 			}
 			else
 			if( args[i].equalsIgnoreCase("-version") ) {
-				System.out.println("Multi Schema Validator Ver."+
-					java.util.ResourceBundle.getBundle("version").getString("version") );
+                printVersion();
 				return 0;
 			} else {
 				if( args[i].charAt(0)=='-' ) {
@@ -140,6 +146,9 @@ public class Driver {
 			return -1;
 		}
 		
+        if( verbose )
+            printVersion();
+
 		
 		if( factory==null )
 			factory = SAXParserFactory.newInstance();

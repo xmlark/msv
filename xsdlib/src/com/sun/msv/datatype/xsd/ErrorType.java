@@ -9,7 +9,6 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import org.apache.xerces.validators.datatype.AnySimpleType;
 import org.relaxng.datatype.ValidationContext;
 
 import com.sun.msv.datatype.SerializationContext;

@@ -47,7 +47,7 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
 		final int idx = name.indexOf(':');
 		if( idx!=-1 )
 		{// QName is specified. resolve this prefix.
-			final String[] s = reader.splitNamespacePrefix(name);
+			final String[] s = reader.splitQName(name);
 			if(s==null)
 			{
 				reader.reportError( TREXGrammarReader.ERR_UNDECLEARED_PREFIX, name );

@@ -28,6 +28,8 @@
 	<path id="RELAXNGBatchTestDir">
 		<path refid="commonTestDir"/>
 		<pathelement path="${testRoot}/relaxng"/>
+		<!-- '@' instructs the recursive subdirectory processing -->
+		<pathelement path="${testRoot}/relaxng/jamesClark@"/>
 	</path>
 	<property name="RELAXNGBatchTestDir" refid="RELAXNGBatchTestDir"/>
 	
@@ -112,11 +114,15 @@
 		-->
 		<junit haltonfailure="yes" printsummary="yes" fork="yes"
 			haltonerror="yes">
-			<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
+<!--			<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
 			<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
 			<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
-			<sysproperty key="XSDBatchTestDir"		value="${XSDBatchTestDir}"/>
+			<sysproperty key="XSDBatchTestDir"		value="${XSDBatchTestDir}"/>	-->
 			<sysproperty key="RELAXNGBatchTestDir"	value="${RELAXNGBatchTestDir}"/>
+			
+			<!-- perform strict check on schema.
+				do not define MSV_STRICT_CHECK to turn off the check -->
+			<sysproperty key="MSV_STRICT_CHECK" value="yes"/>
 			
  				<formatter type="plain" />
 			

@@ -111,6 +111,7 @@ public abstract class State implements ContentHandler
 	 * This information is avaiable after init method is called.
 	 */
 	protected Locator location;
+	public Locator getLocation() { return location; }
 	
 	protected final void init( GrammarReader reader, State parentState, StartTagInfo startTag )
 	{

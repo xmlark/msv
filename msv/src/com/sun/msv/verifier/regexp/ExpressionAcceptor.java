@@ -182,10 +182,26 @@ public abstract class ExpressionAcceptor implements Acceptor {
 					
 		if( r==Expression.nullSet ) {
 			// even the wild card was rejected.
-			// this means that this attribute
-			// is not specified by the grammar.
-			refErr.str = docDecl.localizeMessage(
-				docDecl.DIAG_UNDECLARED_ATTRIBUTE, token.qName );
+			
+			// now there are two possibilities.
+			// the first is that this attribute name is not allowed to appear,
+			// which is the most typical case. (e.g., type miss of the attribute name, etc).
+			// the second is that the content model of the element is equal to the
+			// nullSet, thus nothing can be accepted. This is usually
+			// a problem of the schema.
+			
+			if( this.expression.visit( new RefExpRemover(docDecl.pool) )==Expression.nullSet ) {
+				// the content model is equal to the nullSet.
+				refErr.str = docDecl.localizeMessage(
+					docDecl.DIAG_CONTENT_MODEL_IS_NULLSET, null );
+			} else {
+				// the content model is not equal to the nullSet.
+				
+				// this means that this attribute
+				// is not specified by the grammar.
+				refErr.str = docDecl.localizeMessage(
+					docDecl.DIAG_UNDECLARED_ATTRIBUTE, token.qName );
+			}
 			
 			// recover by using the current expression.
 			// TODO: possibly we can make all attributes optional or something.
@@ -225,15 +241,21 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		if( refErr==null )
 			return false;	// refErr was not provided. bail out.
 		
-		
-		refErr.str = diagnoseMissingAttribute(sti);
-		if( refErr.str==null )
-			// no detailed error message can be provided
-			// so use generic one.
+
+		if( this.expression.visit( new RefExpRemover(docDecl.pool) )==Expression.nullSet ) {
+			// the content model is equal to the nullSet.
 			refErr.str = docDecl.localizeMessage(
-				docDecl.DIAG_MISSING_ATTRIBUTE_GENERIC,
-				sti.qName );
-			
+				docDecl.DIAG_CONTENT_MODEL_IS_NULLSET, null );
+		} else {
+			refErr.str = diagnoseMissingAttribute(sti);
+			if( refErr.str==null )
+				// no detailed error message can be provided
+				// so use generic one.
+				refErr.str = docDecl.localizeMessage(
+					docDecl.DIAG_MISSING_ATTRIBUTE_GENERIC,
+					sti.qName );
+		}
+		
 		// remove unconsumed attributes
 		this.expression = this.expression.visit( docDecl.attRemover );
 		return true;

@@ -115,6 +115,8 @@ public class REDocumentDeclaration implements DocumentDeclaration
 	
 	public static final String DIAG_ELEMENT_NOT_ALLOWED =
 		"Diagnosis.ElementNotAllowed";
+	public static final String DIAG_CONTENT_MODEL_IS_NULLSET =
+		"Diagnosis.ContentModelIsNullset";
 	public static final String DIAG_BAD_TAGNAME_GENERIC =
 		"Diagnosis.BadTagName.Generic";
 	public static final String DIAG_BAD_TAGNAME_WRAPUP =

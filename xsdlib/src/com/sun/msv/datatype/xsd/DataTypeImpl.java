@@ -14,8 +14,8 @@ package com.sun.tranquilo.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public abstract class DataTypeImpl implements DataType
-{
+public abstract class DataTypeImpl implements DataType {
+	
 	private final String typeName;
 	public String getName()	{ return typeName; }
 	
@@ -24,14 +24,12 @@ public abstract class DataTypeImpl implements DataType
 
 	protected final WhiteSpaceProcessor whiteSpace;
 	
-	protected DataTypeImpl( String typeName, WhiteSpaceProcessor whiteSpace )
-	{
+	protected DataTypeImpl( String typeName, WhiteSpaceProcessor whiteSpace ) {
 		this.typeName	= typeName;
 		this.whiteSpace	= whiteSpace;
 	}
 
-	final public Object convertToValueObject( String lexicalValue, ValidationContextProvider context )
-	{
+	final public Object convertToValueObject( String lexicalValue, ValidationContextProvider context ) {
 		return convertToValue(whiteSpace.process(lexicalValue),context);
 	}
 	
@@ -41,8 +39,7 @@ public abstract class DataTypeImpl implements DataType
 	abstract protected Object convertToValue( String content, ValidationContextProvider context );
 
 	
-	final public DataTypeErrorDiagnosis diagnose(String content, ValidationContextProvider context)
-	{
+	final public DataTypeErrorDiagnosis diagnose(String content, ValidationContextProvider context) {
 		return diagnoseValue(whiteSpace.process(content),context);
 	}
 	
@@ -51,19 +48,16 @@ public abstract class DataTypeImpl implements DataType
 		throws UnsupportedOperationException;
 	
 
-	final public boolean verify( String literal, ValidationContextProvider context )
-	{
+	final public boolean verify( String literal, ValidationContextProvider context ) {
 		// step.1 white space processing
 		literal = whiteSpace.process(literal);
 		
 		if( needValueCheck() )
-		{// constraint facet that needs computation of value is specified.
+			// constraint facet that needs computation of value is specified.
 			return convertToValue(literal,context)!=null;
-		}
 		else
-		{// lexical validation is enough.
+			// lexical validation is enough.
 			return checkFormat(literal,context);
-		}
 	}
 	
 	abstract protected boolean checkFormat( String literal, ValidationContextProvider context );
@@ -75,8 +69,7 @@ public abstract class DataTypeImpl implements DataType
 	 * @return null
 	 *		if no such facet object exists.
 	 */
-	public DataTypeWithFacet getFacetObject( String facetName )
-	{
+	public DataTypeWithFacet getFacetObject( String facetName ) {
 		return null;
 	}
 
@@ -88,22 +81,22 @@ public abstract class DataTypeImpl implements DataType
 	
 
 	
-	public static String localize( String prop, Object[] args )
-	{
+	public static String localize( String prop, Object[] args ) {
 		return java.text.MessageFormat.format(
 			java.util.ResourceBundle.getBundle("com.sun.tranquilo.datatype.Messages").getString(prop),
 			args );
 	}
 	
-	public static String localize( String prop )
-	{ return localize( prop, null ); }
+	public static String localize( String prop ) {
+		return localize( prop, null );
+	}
+	public static String localize( String prop, Object arg1 ) {
+		return localize( prop, new Object[]{arg1} );
+	}
+	public static String localize( String prop, Object arg1, Object arg2 ) {
+		return localize( prop, new Object[]{arg1,arg2} );
+	}
 	
-	public static String localize( String prop, Object arg1 )
-	{ return localize( prop, new Object[]{arg1} ); }
-
-	public static String localize( String prop, Object arg1, Object arg2 )
-	{ return localize( prop, new Object[]{arg1,arg2} ); }
-
 	public static final String ERR_INAPPROPRIATE_FOR_TYPE =
 		"DataTypeErrorDiagnosis.InappropriateForType";
 	public static final String ERR_TOO_MUCH_PRECISION =

@@ -22,7 +22,7 @@ package com.sun.tranquilo.grammar;
  */
 public abstract class ElementExp extends Expression
 {
-	public final Expression contentModel;
+	public Expression contentModel;
 	
 	/** obtains a constraint over tag name.
 	 * 

@@ -35,9 +35,9 @@ public class NameClassSimplifierTest extends TestCase {
 				),
 				new SimpleNameClass("abc","def")));
 		
-		assert( nc instanceof NotNameClass );
+		assertTrue( nc instanceof NotNameClass );
 		NotNameClass nnc = (NotNameClass)nc;
-		assert( nnc.child instanceof SimpleNameClass );
+		assertTrue( nnc.child instanceof SimpleNameClass );
 		SimpleNameClass snc = (SimpleNameClass)nnc.child;
 		assertEquals( snc.namespaceURI, "abc" );
 		assertEquals( snc.localName, "def");
@@ -51,14 +51,14 @@ public class NameClassSimplifierTest extends TestCase {
 					new NamespaceNameClass("abc"),
 					new SimpleNameClass("abc","def"))));
 		
-		assert( nc instanceof NotNameClass );
+		assertTrue( nc instanceof NotNameClass );
 		NotNameClass nnc = (NotNameClass)nc;
-		assert( nnc.child instanceof DifferenceNameClass );
+		assertTrue( nnc.child instanceof DifferenceNameClass );
 		DifferenceNameClass dnc = (DifferenceNameClass)nnc.child;
-		assert( dnc.nc1 instanceof NamespaceNameClass );
+		assertTrue( dnc.nc1 instanceof NamespaceNameClass );
 		NamespaceNameClass nc1 = (NamespaceNameClass)dnc.nc1;
 		assertEquals( "abc",nc1.namespaceURI );
-		assert( dnc.nc2 instanceof SimpleNameClass );
+		assertTrue( dnc.nc2 instanceof SimpleNameClass );
 		SimpleNameClass nc2 = (SimpleNameClass)dnc.nc2;
 		assertEquals( "abc",nc2.namespaceURI );
 		assertEquals( "def",nc2.localName );

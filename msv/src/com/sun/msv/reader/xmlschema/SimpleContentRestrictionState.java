@@ -244,7 +244,7 @@ public class SimpleContentRestrictionState extends SequenceState
                 if(sexp!=null) {
                     // we've found the simple type
                     parentDecl.simpleBaseType = sexp.getType();
-                    assert(parentDecl.simpleBaseType!=null);
+                    _assert(parentDecl.simpleBaseType!=null);
                     return;
                 }
                 ComplexTypeExp cexp = baseSchema.complexTypes.get(baseTypeName[1]);

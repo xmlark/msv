@@ -55,14 +55,14 @@ public class ListTypeTest extends TestCase
 		// but better something than nothing.
 		XSDatatype t = createList("test","short");
 		
-		assert( t.isValid("  12  \t13 \r\n14\n \t   5  99  ",
+		assertTrue( t.isValid("  12  \t13 \r\n14\n \t   5  99  ",
 			DummyContextProvider.theInstance ));
-		assert(!t.isValid("  51 2 6 fff  ",
+		assertTrue(!t.isValid("  51 2 6 fff  ",
 			DummyContextProvider.theInstance ));
 		
-		assert( t.isValid("",	// this should be considered as a length 0 list
+		assertTrue( t.isValid("",	// this should be considered as a length 0 list
 			DummyContextProvider.theInstance ));
-		assert( t.isValid(" \t \n ",
+		assertTrue( t.isValid(" \t \n ",
 			DummyContextProvider.theInstance ));
 	}
 	
@@ -74,7 +74,7 @@ public class ListTypeTest extends TestCase
 		ListValueType v = (ListValueType)
 			t.createValue("  a b  c",DummyContextProvider.theInstance);
 		
-		assert(v.values.length==3);
+		assertTrue(v.values.length==3);
 		assertEquals(v.values[0],"a");
 		assertEquals(v.values[1],"b");
 		assertEquals(v.values[2],"c");

@@ -200,7 +200,7 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 							// and if this element contains the ID type, then
 							// this element must be simple-named.
 							// so at most one IDAttMap can match it.
-							assert(vec.size()==1);
+							_assert(vec.size()==1);
 							
 							// by the same assumption, the attribute name must be
 							// simple.
@@ -262,7 +262,7 @@ class IDCompatibilityChecker extends CompatibilityChecker {
 		}
 	}
 	
-	private static final void assert( boolean b ) {
+	private static final void _assert( boolean b ) {
 		if(!b)	throw new Error("assertion failed");
 	}
 	

@@ -107,7 +107,7 @@ public class SimpleContentExtensionState extends SequenceState
                     // we've found the simple type
                     ref.exp = sexp;
                     parentDecl.simpleBaseType = sexp.getType();
-                    assert(parentDecl.simpleBaseType!=null);
+                    _assert(parentDecl.simpleBaseType!=null);
                     return;
                 }
                 ComplexTypeExp cexp = schema.complexTypes.get(baseTypeName[1]);

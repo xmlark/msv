@@ -33,50 +33,50 @@ public class XSDatatypeTest extends TestCase
 	public void testGetBaseType() throws DatatypeException {
 		
 		// check the type hierarchy of the built-in types.
-		assert( SimpleURType.theInstance==DurationType.theInstance.getBaseType() );
-		assert( SimpleURType.theInstance==DateTimeType.theInstance.getBaseType() );
-		assert( SimpleURType.theInstance==TimeType.theInstance.getBaseType() );
-		assert( SimpleURType.theInstance==DateType.theInstance.getBaseType() );
-		assert( SimpleURType.theInstance==GYearMonthType.theInstance.getBaseType() );
-		assert( SimpleURType.theInstance==GYearType.theInstance.getBaseType() );
-		assert( SimpleURType.theInstance==GMonthDayType.theInstance.getBaseType() );
-		assert( SimpleURType.theInstance==GDayType.theInstance.getBaseType() );
-		assert( SimpleURType.theInstance==GMonthType.theInstance.getBaseType() );
-		assert( SimpleURType.theInstance==BooleanType.theInstance.getBaseType() );
-		assert( SimpleURType.theInstance==Base64BinaryType.theInstance.getBaseType() );
-		assert( SimpleURType.theInstance==HexBinaryType.theInstance.getBaseType() );
-		assert( SimpleURType.theInstance==FloatType.theInstance.getBaseType() );
-		assert( SimpleURType.theInstance==DoubleType.theInstance.getBaseType() );
-		assert( SimpleURType.theInstance==AnyURIType.theInstance.getBaseType() );
-		assert( SimpleURType.theInstance==QnameType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==DurationType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==DateTimeType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==TimeType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==DateType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==GYearMonthType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==GYearType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==GMonthDayType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==GDayType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==GMonthType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==BooleanType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==Base64BinaryType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==HexBinaryType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==FloatType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==DoubleType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==AnyURIType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==QnameType.theInstance.getBaseType() );
 		// NOTATION type
-		assert( SimpleURType.theInstance==StringType.theInstance.getBaseType() );
-		assert( SimpleURType.theInstance==NumberType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==StringType.theInstance.getBaseType() );
+		assertTrue( SimpleURType.theInstance==NumberType.theInstance.getBaseType() );
 
-		assert( StringType.theInstance==NormalizedStringType.theInstance.getBaseType() );
-		assert( NormalizedStringType.theInstance==TokenType.theInstance.getBaseType() );
-		assert( TokenType.theInstance==LanguageType.theInstance.getBaseType() );
-		assert( TokenType.theInstance==NameType.theInstance.getBaseType() );
-		assert( TokenType.theInstance==NmtokenType.theInstance.getBaseType() );
-		assert( NameType.theInstance==NcnameType.theInstance.getBaseType() );
-		assert( NcnameType.theInstance==EntityType.theInstance.getBaseType() );
+		assertTrue( StringType.theInstance==NormalizedStringType.theInstance.getBaseType() );
+		assertTrue( NormalizedStringType.theInstance==TokenType.theInstance.getBaseType() );
+		assertTrue( TokenType.theInstance==LanguageType.theInstance.getBaseType() );
+		assertTrue( TokenType.theInstance==NameType.theInstance.getBaseType() );
+		assertTrue( TokenType.theInstance==NmtokenType.theInstance.getBaseType() );
+		assertTrue( NameType.theInstance==NcnameType.theInstance.getBaseType() );
+		assertTrue( NcnameType.theInstance==EntityType.theInstance.getBaseType() );
 		// ID,IDREF
 
-		assert( NumberType.theInstance==IntegerType.theInstance.getBaseType() );
-		assert( IntegerType.theInstance==NonPositiveIntegerType.theInstance.getBaseType() );
-		assert( NonPositiveIntegerType.theInstance==NegativeIntegerType.theInstance.getBaseType() );
+		assertTrue( NumberType.theInstance==IntegerType.theInstance.getBaseType() );
+		assertTrue( IntegerType.theInstance==NonPositiveIntegerType.theInstance.getBaseType() );
+		assertTrue( NonPositiveIntegerType.theInstance==NegativeIntegerType.theInstance.getBaseType() );
 		
-		assert( IntegerType.theInstance==LongType.theInstance.getBaseType() );
-		assert( LongType.theInstance==IntType.theInstance.getBaseType() );
-		assert( IntType.theInstance==ShortType.theInstance.getBaseType() );
-		assert( ShortType.theInstance==ByteType.theInstance.getBaseType() );
+		assertTrue( IntegerType.theInstance==LongType.theInstance.getBaseType() );
+		assertTrue( LongType.theInstance==IntType.theInstance.getBaseType() );
+		assertTrue( IntType.theInstance==ShortType.theInstance.getBaseType() );
+		assertTrue( ShortType.theInstance==ByteType.theInstance.getBaseType() );
 		
-		assert( IntegerType.theInstance==NonNegativeIntegerType.theInstance.getBaseType() );
-		assert( NonNegativeIntegerType.theInstance==PositiveIntegerType.theInstance.getBaseType() );
-		assert( NonNegativeIntegerType.theInstance==UnsignedLongType.theInstance.getBaseType() );
-		assert( UnsignedLongType.theInstance==UnsignedIntType.theInstance.getBaseType() );
-		assert( UnsignedIntType.theInstance==UnsignedShortType.theInstance.getBaseType() );
-		assert( UnsignedShortType.theInstance==UnsignedByteType.theInstance.getBaseType() );
+		assertTrue( IntegerType.theInstance==NonNegativeIntegerType.theInstance.getBaseType() );
+		assertTrue( NonNegativeIntegerType.theInstance==PositiveIntegerType.theInstance.getBaseType() );
+		assertTrue( NonNegativeIntegerType.theInstance==UnsignedLongType.theInstance.getBaseType() );
+		assertTrue( UnsignedLongType.theInstance==UnsignedIntType.theInstance.getBaseType() );
+		assertTrue( UnsignedIntType.theInstance==UnsignedShortType.theInstance.getBaseType() );
+		assertTrue( UnsignedShortType.theInstance==UnsignedByteType.theInstance.getBaseType() );
 		
 	}
 	
@@ -85,26 +85,26 @@ public class XSDatatypeTest extends TestCase
 		XSDatatype urType = SimpleURType.theInstance;
 		
 		// test reflexivity
-		assert( NonPositiveIntegerType.theInstance.isDerivedTypeOf(NonPositiveIntegerType.theInstance,true) );
+		assertTrue( NonPositiveIntegerType.theInstance.isDerivedTypeOf(NonPositiveIntegerType.theInstance,true) );
 		
 		// test multi-step derivation
-		assert( ByteType.theInstance.isDerivedTypeOf(NumberType.theInstance,true) );
-		assert( EntityType.theInstance.isDerivedTypeOf(TokenType.theInstance,true) );
-		assert( EntityType.theInstance.isDerivedTypeOf(urType,true) );
+		assertTrue( ByteType.theInstance.isDerivedTypeOf(NumberType.theInstance,true) );
+		assertTrue( EntityType.theInstance.isDerivedTypeOf(TokenType.theInstance,true) );
+		assertTrue( EntityType.theInstance.isDerivedTypeOf(urType,true) );
 		
 		// test the simple ur-type
-		assert( urType.isDerivedTypeOf(urType,true) );
-		assert( !urType.isDerivedTypeOf(StringType.theInstance,true) );
-		assert( UnsignedByteType.theInstance.isDerivedTypeOf(urType,true) );
+		assertTrue( urType.isDerivedTypeOf(urType,true) );
+		assertTrue( !urType.isDerivedTypeOf(StringType.theInstance,true) );
+		assertTrue( UnsignedByteType.theInstance.isDerivedTypeOf(urType,true) );
 		
 		// test the list derivation
 		XSDatatype longList = DatatypeFactory.deriveByList("","name", LongType.theInstance );
 		XSDatatype byteList = DatatypeFactory.deriveByList("","name", ByteType.theInstance );
-		assert( !byteList.isDerivedTypeOf(longList,true) );
-		assert( !longList.isDerivedTypeOf(byteList,true) );
-		assert( byteList.isDerivedTypeOf(urType,true) );
-		assert( longList.isDerivedTypeOf(urType,true) );
-		assert( !byteList.isDerivedTypeOf(ByteType.theInstance,true) );
+		assertTrue( !byteList.isDerivedTypeOf(longList,true) );
+		assertTrue( !longList.isDerivedTypeOf(byteList,true) );
+		assertTrue( byteList.isDerivedTypeOf(urType,true) );
+		assertTrue( longList.isDerivedTypeOf(urType,true) );
+		assertTrue( !byteList.isDerivedTypeOf(ByteType.theInstance,true) );
 		
 		// test the union derivation
 		XSDatatype union1 = DatatypeFactory.deriveByUnion("","name",
@@ -118,15 +118,15 @@ public class XSDatatypeTest extends TestCase
 			union3 = inc.derive(null,null);
 		}
 		
-		assert( union1.isDerivedTypeOf(urType,true) );
-		assert( ShortType.theInstance.isDerivedTypeOf(union1,true) );
-		assert( union3.isDerivedTypeOf(urType,true) );
-		assert( union3.isDerivedTypeOf(union2,true) );
-		assert( longList.isDerivedTypeOf(union2,true) );
-		assert( union1.isDerivedTypeOf(union2,true) );
-		assert( TokenType.theInstance.isDerivedTypeOf(union2,true) );
-		assert( LongType.theInstance.isDerivedTypeOf(union2,true) );
+		assertTrue( union1.isDerivedTypeOf(urType,true) );
+		assertTrue( ShortType.theInstance.isDerivedTypeOf(union1,true) );
+		assertTrue( union3.isDerivedTypeOf(urType,true) );
+		assertTrue( union3.isDerivedTypeOf(union2,true) );
+		assertTrue( longList.isDerivedTypeOf(union2,true) );
+		assertTrue( union1.isDerivedTypeOf(union2,true) );
+		assertTrue( TokenType.theInstance.isDerivedTypeOf(union2,true) );
+		assertTrue( LongType.theInstance.isDerivedTypeOf(union2,true) );
 		
-		assert( TokenType.theInstance.isDerivedTypeOf(union3,true) );
+		assertTrue( TokenType.theInstance.isDerivedTypeOf(union3,true) );
 	}
 }

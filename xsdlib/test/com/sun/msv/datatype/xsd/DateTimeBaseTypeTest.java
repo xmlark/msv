@@ -56,9 +56,9 @@ public class DateTimeBaseTypeTest extends TestCase
 		
 	// time type.
 		o = (Calendar)TimeType.theInstance.createJavaObject("08:12:30Z",null);
-		assert( !o.isSet(o.YEAR) );
-		assert( !o.isSet(o.MONTH) );
-		assert( !o.isSet(o.DAY_OF_MONTH) );
+		assertTrue( !o.isSet(o.YEAR) );
+		assertTrue( !o.isSet(o.MONTH) );
+		assertTrue( !o.isSet(o.DAY_OF_MONTH) );
 		assertEquals( 8, o.get(o.HOUR) );
 		assertEquals( 12, o.get(o.MINUTE) );
 		assertEquals( 30, o.get(o.SECOND) );

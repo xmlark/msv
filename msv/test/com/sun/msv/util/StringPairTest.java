@@ -41,6 +41,6 @@ public class StringPairTest extends TestCase {
 					assertEquals( pairs[i], pairs[j] );
 					assertEquals( pairs[i].hashCode(), pairs[j].hashCode() );
 				} else
-					assert( !pairs[i].equals(pairs[j]) );
+					assertTrue( !pairs[i].equals(pairs[j]) );
 	}
 }

@@ -66,9 +66,9 @@ public class UnionTypeTest extends TestCase
 		// but better something than nothing.
 		XSDatatype u = createUnion(null,"integer","QName","gYearMonth");
 		
-		assert( u.isValid("1520",DummyContextProvider.theInstance) );
-		assert( u.isValid("foo:role",DummyContextProvider.theInstance) );
-		assert( u.isValid("2000-05",DummyContextProvider.theInstance) );
+		assertTrue( u.isValid("1520",DummyContextProvider.theInstance) );
+		assertTrue( u.isValid("foo:role",DummyContextProvider.theInstance) );
+		assertTrue( u.isValid("2000-05",DummyContextProvider.theInstance) );
 	}
 	
 	/** test convertToObject method */

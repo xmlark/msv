@@ -35,7 +35,7 @@ public class TimeZoneTest extends TestCase {
 	public void testCreate()
 	{
 		assertSame( TimeZone.create(0), TimeZone.GMT );
-		assert( TimeZone.create(100).minutes==100 );
+		assertTrue( TimeZone.create(100).minutes==100 );
 		
 		// range check
 		TimeZone.create(14*60);

@@ -24,9 +24,9 @@ public class TestBuilderImpl implements TestBuilder
         public void runTest() throws Exception {
             schema = validator.parseSchema(src);
             
-            assert(
+            assertNotNull(
                 "validator failed to compile a correct schema",
-                schema!=null );
+                schema );
         }
     }
     
@@ -67,9 +67,9 @@ public class TestBuilderImpl implements TestBuilder
     public Test createIncorrectSchemaTest( final File schema ) {
         return new TestCase(getName(schema)) {
             public void runTest() throws Exception {
-                assert(
+                assertNull(
                     "validator compiled an incorrect schema",
-                    validator.parseSchema(schema)==null );
+                    validator.parseSchema(schema) );
             }
         };
     }

@@ -161,7 +161,7 @@ public abstract class State implements ContentHandler
 	protected void startSelf() {}
 	
     
-    public static void assert( boolean b ) {
+    public static void _assert( boolean b ) {
         if(!b)  throw new InternalError();
     }
 

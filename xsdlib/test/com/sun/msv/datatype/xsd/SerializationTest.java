@@ -50,10 +50,10 @@ public class SerializationTest extends TestCase
             String name = Const.builtinTypeNames[i];
             
             XSDatatype dt = DatatypeFactory.getTypeByName(name);
-            assert(dt!=null);
+            assertNotNull(dt);
             
-            assert("freeze dry test for "+dt.getName(),
-                freezeDry(dt)==dt);  // it must be singleton.
+            assertEquals("freeze dry test for "+dt.getName(),
+                freezeDry(dt), dt);  // it must be singleton.
         }
     }
     
@@ -66,6 +66,6 @@ public class SerializationTest extends TestCase
         ti.addFacet("maxLength","120",false,null);
         XSDatatype pseudoString = ti.derive("","string");
         
-        assert( freezeDry(pseudoString)!=StringType.theInstance );
+        assertTrue( freezeDry(pseudoString)!=StringType.theInstance );
     }
 }

@@ -15,8 +15,11 @@ import org.xml.sax.SAXParseException;
 /**
  * default implementation of ErrorHandler.
  * 
- * If an error is found, throw it to stop further validation.
- * warnings are ignored.
+ * If an error is found, this implementation will throw it 
+ * as an exception so that no further processing of the document will be performed.
+ * 
+ * <p>
+ * All warnings are ignored.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

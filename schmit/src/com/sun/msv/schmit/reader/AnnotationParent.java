@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.schmit.reader.relaxng;
+package com.sun.msv.schmit.reader;
 
 import org.w3c.dom.Node;
 

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.schmit.reader.relaxng;
+package com.sun.msv.schmit.reader.xmlschema;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +15,12 @@ import java.util.List;
 import org.w3c.dom.Node;
 
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.NameClass;
 import com.sun.msv.reader.State;
-import com.sun.msv.reader.trex.ng.AttributeState;
-import com.sun.msv.reader.trex.ng.RELAXNGReader;
+import com.sun.msv.reader.xmlschema.AttributeState;
 import com.sun.msv.schmit.grammar.relaxng.AnnotatedAttributePattern;
-import com.sun.msv.schmit.reader.*;
+import com.sun.msv.schmit.reader.AnnotationParent;
+import com.sun.msv.schmit.reader.AnnotationState;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -29,13 +30,22 @@ import com.sun.msv.util.StartTagInfo;
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 public class SchmitAttributeState extends AttributeState implements AnnotationParent {
+   
     /** Parsed annotations. */
     private final List annotations = new ArrayList();
 
+    protected boolean isGrammarElement( StartTagInfo tag ) {
+        // this class will handle annotations.
+        if(Util.isAnnotationElement(tag))
+            return true;
+        
+        return super.isGrammarElement(tag);
+    }
+
     protected State createChildState(StartTagInfo tag) {
-        if( !RELAXNGReader.RELAXNGNamespace.equals(tag.namespaceURI) )
+        if(Util.isAnnotationElement(tag))
             // parse it as an annotation
-            return new AnnotationState( ((SchmitRELAXNGReader)reader).dom );
+            return new AnnotationState( ((SchmitXMLSchemaReader)reader).dom );
         else
             return super.createChildState(tag);
     }
@@ -43,22 +53,9 @@ public class SchmitAttributeState extends AttributeState implements AnnotationPa
     public void onEndAnnotation(Node annotation) {
         annotations.add(annotation);
     }
-    
-    protected void startSelf() {
-        super.startSelf();
-        ((SchmitRELAXNGReader)reader).parseAttributeAnnotation( startTag, this );
+
+    protected Expression createAttribute(NameClass nc, Expression exp) {
+        return new AnnotatedAttributePattern( nc, exp, annotations );
     }
 
-
-    protected Expression annealExpression( Expression contentModel ) {
-        AnnotatedAttributePattern e =
-            new AnnotatedAttributePattern( nameClass, contentModel, annotations );
-        reader.setDeclaredLocationOf(e);
-        return e;
-    }
-
-    protected boolean isGrammarElement(StartTagInfo tag) {
-        // we will need to read everything
-        return true;
-    }
 }

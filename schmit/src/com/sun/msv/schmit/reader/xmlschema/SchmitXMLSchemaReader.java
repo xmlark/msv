@@ -7,20 +7,18 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.schmit.reader.relaxng;
+package com.sun.msv.schmit.reader.xmlschema;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.State;
-import com.sun.msv.reader.trex.ng.RELAXNGReader;
-import com.sun.msv.schmit.reader.*;
+import com.sun.msv.reader.xmlschema.XMLSchemaReader;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -29,18 +27,18 @@ import com.sun.msv.util.StartTagInfo;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public class SchmitRELAXNGReader extends RELAXNGReader {
+public class SchmitXMLSchemaReader extends XMLSchemaReader {
     
     /**
      * Document object that can be used to create DOM nodes.
      */
     protected final Document dom; 
-    
-    public SchmitRELAXNGReader(
+
+    public SchmitXMLSchemaReader(
         GrammarReaderController controller,
         SAXParserFactory parserFactory,
         ExpressionPool pool) {
-        super(controller, parserFactory, new StateFactory(), pool);
+        super(controller, parserFactory, new StateFactory2(), pool);
         
         Document _dom;
         try {
@@ -52,34 +50,14 @@ public class SchmitRELAXNGReader extends RELAXNGReader {
             _dom = null;
         }
         this.dom = _dom;
-        
-    }
-
-    /**
-     * Reads external attributes in the given start tag and add them as
-     * {@link Attr} nodes.
-     */
-    protected final void parseAttributeAnnotation(StartTagInfo tag, AnnotationParent state) {
-        int len = tag.attributes.getLength();
-        for( int i=0; i<len; i++ ) {
-            String uri = tag.attributes.getURI(i);
-            if( uri.length()==0 )   continue;   // not a foreign attribute
-            
-            // create a DOM attribute node
-            Attr a = dom.createAttributeNS( uri, tag.attributes.getQName(i) );
-            a.setValue( tag.attributes.getValue(i) );
-            
-            state.onEndAnnotation(a);
-        }
     }
     
-    protected static class StateFactory extends RELAXNGReader.StateFactory {
+    private static class StateFactory2 extends StateFactory {
         public State attribute(State parent, StartTagInfo tag) {
             return new SchmitAttributeState();
         }
-        public State element(State parent, StartTagInfo tag) {
-            return new SchmitElementState();
+        public State elementDecl(State parent, StartTagInfo tag) {
+            return new SchmitElementDeclState();
         }
     }
-
 }

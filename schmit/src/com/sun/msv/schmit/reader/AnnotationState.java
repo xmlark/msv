@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.schmit.reader.relaxng;
+package com.sun.msv.schmit.reader;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -27,13 +27,15 @@ public class AnnotationState extends State {
     // so we have to start from one, rather than zero.
     private int depth=1;
     
-    private Document document;
+    private final Document document;
     private Node currentParent;
 
+    public AnnotationState( Document _document ) {
+        this.document = _document;
+    }
+    
     protected void startSelf() {
         super.startSelf();
-        
-        document = ((SchmitRELAXNGReader)reader).dom;
         
         currentParent = createElement( startTag.namespaceURI, startTag.qName, startTag.attributes );
         document.appendChild(currentParent);

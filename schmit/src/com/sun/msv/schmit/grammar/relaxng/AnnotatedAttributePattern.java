@@ -7,13 +7,14 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.schmit.grammar;
+package com.sun.msv.schmit.grammar.relaxng;
 
 import java.util.List;
 
 import com.sun.msv.grammar.AttributeExp;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.NameClass;
+import com.sun.msv.schmit.grammar.AnnotatedPattern;
 
 /**
  * {@link AttributeExp} with annotations.

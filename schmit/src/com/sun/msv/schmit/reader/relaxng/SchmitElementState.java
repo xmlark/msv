@@ -18,7 +18,8 @@ import com.sun.msv.grammar.Expression;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.trex.ng.ElementState;
 import com.sun.msv.reader.trex.ng.RELAXNGReader;
-import com.sun.msv.schmit.grammar.AnnotatedElementPattern;
+import com.sun.msv.schmit.grammar.relaxng.AnnotatedElementPattern;
+import com.sun.msv.schmit.reader.*;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -34,7 +35,7 @@ public class SchmitElementState extends ElementState implements AnnotationParent
     protected State createChildState(StartTagInfo tag) {
         if( !RELAXNGReader.RELAXNGNamespace.equals(tag.namespaceURI) )
             // parse it as an annotation
-            return new AnnotationState();
+            return new AnnotationState( ((SchmitRELAXNGReader)reader).dom );
         else
             return super.createChildState(tag);
     }

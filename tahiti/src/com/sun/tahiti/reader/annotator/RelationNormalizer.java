@@ -203,14 +203,6 @@ class RelationNormalizer {
 			// <list> itself doesn't affect the multiplicity.
 			return reader.pool.createList(exp.exp.visit(this));
 		}
-		
-		public Expression onKey( KeyExp exp ) {
-			// <key> itself doesn't affect the multiplicity.
-			if(exp.isKey)
-				return reader.pool.createKey(exp.exp.visit(this),exp.name);
-			else
-				return reader.pool.createKeyref(exp.exp.visit(this),exp.name);
-		}
 
 		public Expression onConcur( ConcurExp exp ) {
 			// possibly, it can be served by ignoring all but one branch.

@@ -316,15 +316,6 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 		return buffer.toString();
 	}
 				
-				
-				
-	public void onKey( KeyExp exp ) {
-		// ignore the identity constraint.
-		// TODO: how do we ensure that the generated document
-		// is OK wrt the key/keyref constraint.
-		exp.exp.visit(this);
-	}
-				
 	public void onEpsilon() {
 		out.element("epsilon");
 	}
@@ -528,9 +519,6 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 				if(test(exp))	exp.exp.visit(this);
 			}
 			public void onList( ListExp exp ) {
-				if(test(exp))	exp.exp.visit(this);
-			}
-			public void onKey( KeyExp exp ) {
 				if(test(exp))	exp.exp.visit(this);
 			}
 			public void onEpsilon() {}

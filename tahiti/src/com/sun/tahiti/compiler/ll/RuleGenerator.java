@@ -168,13 +168,6 @@ public class RuleGenerator
 				}
 			}
 			
-			public void onKey( KeyExp exp ) {
-				if(visit(exp)) {
-					rules.add( exp, exp.exp );
-					exp.exp.visit(this);
-				}
-			}
-			
 			public void onTypedString( TypedStringExp exp ) {
 				// this is a terminal symbol.
 			}

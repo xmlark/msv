@@ -12,17 +12,15 @@ package com.sun.tahiti.reader;
 import com.sun.tahiti.grammar.AnnotatedGrammar;
 import com.sun.tahiti.reader.relaxng.TRELAXNGReader;
 import com.sun.tahiti.reader.xmlschema.TXMLSchemaReader;
+import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.util.ForkContentHandler;
 import com.sun.msv.reader.util.GrammarReaderControllerAdaptor;
+import org.xml.sax.*;
+import org.xml.sax.helpers.DefaultHandler;
+import java.util.Vector;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * loads Tahiti-annotated grammar
@@ -68,55 +66,58 @@ public class GrammarLoader {
 	}
 	
 	private static AnnotatedGrammar _loadSchema( Object source,
-		GrammarReaderController controller,
+		final GrammarReaderController controller,
 		SAXParserFactory factory )
 		throws SAXException, ParserConfigurationException, java.io.IOException
 	{
-		TRELAXNGReader relaxNg = new TRELAXNGReader(controller,factory);
-		TXMLSchemaReader xmlSchema = new TXMLSchemaReader(controller,factory);
+		final TRELAXNGReader relaxNg = new TRELAXNGReader(controller,factory);
+		final TXMLSchemaReader xmlSchema = new TXMLSchemaReader(controller,factory);
 		
-		XMLReader parser = factory.newSAXParser().getXMLReader();
-		Sniffer sniffer = new Sniffer(relaxNg,xmlSchema,parser);
-		parser.setContentHandler(sniffer);
-		parser.setErrorHandler(new GrammarReaderControllerAdaptor(controller));
+		final XMLReader parser = factory.newSAXParser().getXMLReader();
+		final GrammarReader[] winner = new GrammarReader[1];
+
+		
+		parser.setContentHandler( new DefaultHandler() {
+
+			private Locator locator;
+			private Vector prefixes = new Vector();
+			public void setDocumentLocator( Locator loc ) {
+				this.locator = loc;
+			}
+			public void startPrefixMapping( String prefix, String uri ) {
+				prefixes.add( new String[]{prefix,uri} );
+			}
+		
+			public void startElement( String namespaceURI, String localName, String qName, Attributes atts )
+									throws SAXException {
+				if( localName.equals("schema") )
+					winner[0] = xmlSchema; // assume XML Schema
+				else
+					winner[0] = relaxNg;
+				
+				// simulate the start of the document.
+				winner[0].setDocumentLocator(locator);
+				winner[0].startDocument();
+				for( int i=0; i<prefixes.size(); i++ ) {
+					String[] d = (String[])prefixes.get(i);
+					winner[0].startPrefixMapping( d[0], d[1] );
+				}
+				winner[0].startElement(namespaceURI,localName,qName,atts);
+				// redirect all successive events to the winner.
+				parser.setContentHandler(winner[0]);
+				parser.setErrorHandler(
+					new GrammarReaderControllerAdaptor(winner[0],controller));
+			}
+		});
+		
 		if( source instanceof String )	parser.parse( (String)source );
 		else							parser.parse( (InputSource)source );
 		
 		if( relaxNg.hadError || xmlSchema.hadError )	return null;
-		if(sniffer.winner==relaxNg)		return relaxNg.getAnnotatedResult();
+		if(winner[0]==relaxNg)			return relaxNg.getAnnotatedResult();
 		else							return xmlSchema.getAnnotatedResult();
 	}
 	
 	
 	
-	private static class Sniffer extends ForkContentHandler
-	{
-		Sniffer(
-			TRELAXNGReader relaxNg, TXMLSchemaReader xmlSchema,
-			XMLReader parser ) {
-			
-			super(xmlSchema,relaxNg);
-			this.relaxNg = relaxNg;
-			this.xmlSchema = xmlSchema;
-			this.parser = parser;
-		}
-		
-		private final ContentHandler relaxNg,xmlSchema;
-		private final XMLReader parser;
-
-		protected ContentHandler winner;
-
-		
-		public void startElement( String namespaceURI, String localName, String qName, Attributes atts )
-								throws SAXException {
-			if( localName.equals("schema") )
-				winner = xmlSchema; // assume XML Schema
-			else
-				winner = relaxNg;
-			
-			winner.startElement(namespaceURI,localName,qName,atts);
-			// redirect all successive events to the winner.
-			parser.setContentHandler(winner);
-		}
-	}
 }

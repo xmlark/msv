@@ -91,12 +91,6 @@ public abstract class MultiplicityCounter implements ExpressionVisitor
 		return exp.exp.visit(this);
 	}
 	
-	public Object onKey( KeyExp exp ) {
-		Multiplicity m = isChild(exp);
-		if(m!=null)	return m;
-		return exp.exp.visit(this);
-	}
-	
 	public Object onEpsilon() {
 		Multiplicity m = isChild(Expression.epsilon);
 		if(m==null) m=Multiplicity.zero;

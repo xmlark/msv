@@ -82,13 +82,6 @@ class ExpressionSerializer {
 				assignId(exp);
 			}
 		}
-		
-		public void onKey( KeyExp exp ) {
-			if(onExpr(exp)) {
-				exp.exp.visit(this);
-				assignId(exp);
-			}
-		}
 
 		public void onOneOrMore( OneOrMoreExp exp ) {
 			if(onExpr(exp)) {
@@ -196,18 +189,6 @@ class ExpressionSerializer {
 			out.start("list");
 			serialize(exp.exp);
 			out.end("list");
-		}
-	
-		public void onKey( KeyExp exp ) {
-			String tagName;
-			
-			if(exp.isKey)	tagName="key";
-			else			tagName="keyref";
-			out.start(tagName, new String[]{
-				"ns",exp.name.namespaceURI,
-				"name",exp.name.localName});
-			serialize(exp.exp);
-			out.end(tagName);
 		}
 
 		public void onOneOrMore( OneOrMoreExp exp ) {

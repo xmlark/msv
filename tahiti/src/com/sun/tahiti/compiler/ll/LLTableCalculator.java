@@ -120,9 +120,6 @@ public class LLTableCalculator
 			public void onList( ListExp exp ) {
 				exp.exp.visit(this);
 			}
-			public void onKey( KeyExp exp ) {
-				exp.exp.visit(this);
-			}
 			public void onMixed( MixedExp exp ) {
 				exp.exp.visit(this);
 			}

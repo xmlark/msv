@@ -267,9 +267,9 @@ public class TRELAXNGReader extends RELAXNGReader implements TahitiGrammarReader
 			annGrammar.grammarName = "Grammar";
 		
 		// add missing annotations and normalizes them.
-		annGrammar.topLevel = grammar.start;
+		annGrammar.topLevel = grammar.exp;
 		Annotator.annotate( annGrammar, this );
-		grammar.start = annGrammar.topLevel;
+		grammar.exp = annGrammar.topLevel;
 	}
 
 	/**

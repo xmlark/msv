@@ -89,7 +89,6 @@ public class TElementDeclState extends ElementDeclState {
 			public Expression onNullSet() { return Expression.nullSet; }
 			public Expression onSequence( SequenceExp exp ) { return exp; }
 			public Expression onConcur( ConcurExp exp ) { return exp; }
-			public Expression onKey( KeyExp exp ) { return exp; }
 			public Expression onOther( OtherExp exp ) { return exp; }
 			public Expression onAttribute( AttributeExp exp ) { return exp; }
 			public Expression onOneOrMore( OneOrMoreExp exp ) { return exp; }

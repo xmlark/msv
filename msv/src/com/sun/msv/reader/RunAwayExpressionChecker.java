@@ -28,7 +28,7 @@ import org.xml.sax.Locator;
  * Apparently, those expressions cannot be expressed in string regular expression.
  * Therefore run-away expressions are prohibited in both RELAX and TREX.
  * 
- * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 {
@@ -134,8 +134,12 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 	}
 
 	public void onRef( ReferenceExp exp ) {
+		
 		enter(exp);
-		exp.exp.visit(this);
+		if( !testedExps.contains(exp) ) {
+			testedExps.add(exp);
+			exp.exp.visit(this);
+		}
 		leave(exp);
 	}
 	public void onOther( OtherExp exp ) {

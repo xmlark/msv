@@ -36,7 +36,7 @@ public class ReportErrorHandler
 		throw new ValidationUnrecoverableException();
 	}
 	public void warning( SAXParseException spe )		{ printSAXParseException( spe, MSG_SAXPARSEEXCEPTION_WARNING ); }
-	private void printSAXParseException( SAXParseException spe, String prop )
+	protected static void printSAXParseException( SAXParseException spe, String prop )
 	{
 		System.out.println(
 			Driver.localize( prop, new Object[]{

@@ -125,9 +125,18 @@ public class Driver
 			if( verbose )
 				System.out.println( localize( MSG_SNIFF_SCHEMA ) );
 			
-			SAXException e = SchemaDetector.detect(
-				factory.newSAXParser().getXMLReader(),
-				getInputSource(grammarName) );
+			SAXException e;
+			try
+			{
+				XMLReader r = factory.newSAXParser().getXMLReader();
+				r.setErrorHandler(new ReportErrorHandler());
+				e = SchemaDetector.detect( r, getInputSource(grammarName) );
+			}
+			catch( SAXException spe )
+			{// detailed error message is already reported by SchemaDetecter.
+				System.out.println( localize( MSG_UNKNOWN_SCHEMA, grammarName ) );
+				return;
+			}
 			
 			if( e==SchemaDetector.relax )	relax=true;
 			else

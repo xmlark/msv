@@ -55,7 +55,7 @@ public class SchemaDetector extends DefaultHandler
 	}
 	
 	public static SAXException detect( XMLReader reader, InputSource source )
-		throws java.io.IOException
+		throws java.io.IOException, SAXException
 	{
 		reader.setContentHandler(new SchemaDetector());
 		try
@@ -65,7 +65,8 @@ public class SchemaDetector extends DefaultHandler
 		}
 		catch(SAXException e)
 		{
-			return e;
+			if( e==relax || e==trex || e==unknown )	return e;
+			throw e;	// real exception
 		}
 	}
 }

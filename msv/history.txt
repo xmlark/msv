@@ -1,24 +1,35 @@
 
+(TREX)  added proprietary type extension mechanism for TREX.
+(both)  SAX parser is configured not to read external DTD by default.
+        Added error message handler for SAX parse exception.
+
+
+2000/03/23 release
+------------------
+
 (TREX)  added check of "sequenced string". Due to the lack of the formal
         description of exactly what should be prohibited, the current
         implementation is based on the reference implementation by James Clark.
 (TREX)  support QName for "name" attribute of "element"/"attribute" declaration.
 (TREX)  added support for patterns whose document element is not
         <grammar> element but other arbitrary pattern element.
-(dt)	'totalDigit' facet is now correctly implemented.
-(dt)	'fractionDigit' facet is now correctly implemented.
+(dt)    'totalDigit' facet is now correctly implemented.
+(dt)    'fractionDigit' facet is now correctly implemented.
 (both)  added a mechanism to controll inclusion
 (RELAX) Tranquilo will issue an error for <anyOtherElement> with
         both "includeNamespace" and "excludeNamespace" attributes.
 (TREX)  error diagnosis for <string> is supported
-(TREX)  implemented check for two pattern definition in the same file
+(TREX)  implemented check for two pattern definitions in the same file
         with the same name.
 (TREX)  modified to accept old "http://www.w3.org/2000/10/XMLSchema"
         namespace with a warning.
+(RELAX) RELAX reader is modified to recognize obsoleted type names
+        such as "decimal","uriReference", with warning.
 (dt)    Corrected namespace URI to "http://www.w3.org/2001/XMLSchema"
         and "http://www.w3.org/2001/XMLSchema-datatypes"
 (both)  Better error diagnosis gets produced when the user forgot to
         declare namespace URI or declared a wrong namespace.
+
 
 2000/03/20 release
 ------------------

@@ -56,7 +56,7 @@
 <hr>
 <h2><a name="intro"></a><font color="#0000FF">Introduction: Validating Strings</font></h2>
 <blockquote>
-   <p>The following example validates a string with integer datatype.</p>
+   <p>The following example validates a string with integer datatype. The <code>getTypeByName</code> method lets you obtain a reference to a built-in datatype.</p>
    <hr>
    <table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
          <tr>
@@ -75,8 +75,8 @@ void f( String v ) {
          </tr>
       </table>
    <hr>
-   <p>Several types are context-dependent. For example, the <code>QName</code> type, which validates something like <code>prefix:localPart</code>, needs to know that the given prefix is properly declared. </p>
-   <p>This information must be supplied to <code>Datatype</code> object by the caller. To do this, the caller must provide an object that implements the <code>ValidationContext</code> interface and pass it as the second parameter of the verify method.</p>
+<p>
+	Some datatypes require context information to validate. For example, the <code>QName</code> type, which validates something like <code>prefix:localPart</code>, needs to know that the given prefix is properly declared. This information must be supplied to <code>Datatype</code> object by the caller. To do this, the caller must provide an object that implements the <code>ValidationContext</code> interface and pass it as the second parameter of the verify method.
 
 <hr>
    <table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
@@ -108,7 +108,7 @@ void f( String v, MyContext context ) {
 </table>
 <hr>
 
-   <p>Although the first example passes null as a <code>ValidationContext</code>, the caller must <em>always</em> provide a valid <code>ValidationContext</code> for the library to work correctly.</p>
+   <p>When the datatype is "context-dependent", the caller must provide a valid <code>ValidationContext</code>, as in the second example. For other datatypes, the caller can pass null, as in the first example. Use the <code>isContextDependent</code> method to check if a datatype is context dependent or not.</p>
 </blockquote>
 
 <hr>
@@ -123,15 +123,15 @@ void f( String v, MyContext context ) {
          <tr>
             <td bgcolor="#eeeeee">
                <pre>XSDatatype deriveByList( XSDatatype itemType ) throws DatatypeException {
-  return DatatypeFactory.deriveByList(&quot;myType&quot;,itemType);
+  return DatatypeFactory.deriveByList("","myType",itemType);
 }</pre>
       </td>
          </tr>
       </table>
       <hr>
 
-   <p>The first parameter specifies the name of the newly created type. Note that these derived types cannot be found through the <code>getTypeByName</code> method of the <code>DatatypeFactory</code> class.</p>
-   <p>When an error is found during derivation, a <code>org.relaxng.datatype.DatatypeException</code> will be thrown. For example, if you derive a type by list from list type, an exception will be thrown.</p>
+   <p>The first two parameters specifiy the namespace URI and the local name of the newly created type. 
+   <p>When an error is found during derivation, a <code>org.relaxng.datatype.DatatypeException</code> will be thrown. For example, if you derive a type by list from another list type, an exception will be thrown.</p>
 </blockquote>
 <h3><em><font color="#0000FF">By Union</font></em></h3>
 
@@ -142,13 +142,12 @@ void f( String v, MyContext context ) {
          <tr>
           <td bgcolor="#eeeeee">
              <pre>XSDatatype deriveByUnion( XSDatatype[] memberTypes ) throws DatatypeException {
-  return DatatypeFactory.deriveByUnion(&quot;myType&quot;,memberTypes);
+  return DatatypeFactory.deriveByUnion("","myType",memberTypes);
 }</pre>
       </td>
          </tr>
       </table>
       <hr>
-   <p> The only difference between derivation by list and derivation by union (beside the semantics) is that the latter accepts more than one base type.</p>
 </blockquote>
 
 <h3><em><font color="#0000FF">By Restriction</font></em></h3>
@@ -167,11 +166,11 @@ void f( String v, MyContext context ) {
   TypeIncubator incubator = new TypeIncubator(baseType);
 
   // add facets
-  incubator.add( &quot;minLength&quot;, &quot;5&quot;, false, null );
-  incubator.add( &quot;maxLength&quot;, &quot;20&quot;, false, null );
+  incubator.addFacet( &quot;minLength&quot;, &quot;5&quot;, false, null );
+  incubator.addFacet( &quot;maxLength&quot;, &quot;20&quot;, false, null );
 
   // derive a new type by those facets
-  XSDatatype derived = incubator.derive(&quot;newTypeName&quot;);
+  XSDatatype derived = incubator.derive("","newTypeName");
 
   return derived;
 }</pre>
@@ -180,8 +179,8 @@ void f( String v, MyContext context ) {
    </table>
    <hr>
 
-   <p>The third parameter to the add method specifies whether that facet should be &quot;fixed&quot; or not. Once a facet is fixed, a derived type can no longer restrict that facet.</p>
-   <p>The fourth parameter is again <code>ValidationContext</code>. Although the above example does not supply one, the caller has to supply an object that implements <code>ValidationContext</code>.</p>
+   <p>The third parameter to the addFacet method specifies whether that facet should be &quot;fixed&quot; or not. Once a facet is fixed, a derived type can no longer restrict that facet.</p>
+   <p>The fourth parameter is again <code>ValidationContext</code>, which is sometimes necessary (imagine adding an enumeration facet to QName.) The above example does not supply one since we know the base type is a context independent datatype, but in general the caller should supply an object that implements <code>ValidationContext</code>.</p>
    <p><code>DatatypeException</code> can be thrown when you add a facet, or when you call the derive method.</p>
 </blockquote>
 
@@ -258,13 +257,5 @@ void f( String v, MyContext context ) {
 	).</p>
    </li>
 </ol>
-<hr>
-<h2><a name="misc"></a><font color="#0000FF">Miscellaneous Notes</font></h2>
-<h3><em><font color="#0000FF">Datatype Interface</font></em></h3>
-
-<blockquote>
-   <p>The <code>Datatype</code> interface is <em>not</em> intended to be used as a general interface for datatype vocabularies. This interface is strongly coupled with XSD. Providing a generic interface that can be used by various full-fledged datatype vocabularies is not trivial.</p>
-   <p>In order to overcome this shortcoming in the current release of the Sun XML Datatypes Library, developers wishing to implement their own type that implements <code>Datatype</code> should do so by deriving their class from the <code>ConcreteType</code> class.</p>
-</blockquote>
 </body>
 </html>

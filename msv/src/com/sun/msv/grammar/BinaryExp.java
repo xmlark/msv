@@ -73,31 +73,16 @@ public abstract class BinaryExp extends Expression {
 	 * (A,B, and C in this example)
 	 */
 	public Iterator children() {
-		return new ChildrenIterator(this);
+		Expression[] items = getChildren();
+		return new Iterator() {
+			private int idx =0;
+			
+			public Object next() {
+				return items[idx++];
+			}
+			public boolean hasNext() { return idx!=items.length; }
+			public void remove() { throw new UnsupportedOperationException(); }
+		}
 	}
 	
-	private static final class ChildrenIterator implements Iterator {
-		private Expression exp;
-		private final Class operator;
-		
-		ChildrenIterator( BinaryExp owner ) {
-			exp = owner;
-			operator = owner.getClass();
-		}
-		
-		public Object next() {
-			Expression r;
-			
-			if( exp.getClass()==operator ) {
-				r = ((BinaryExp)exp).exp2;
-				exp = ((BinaryExp)exp).exp1;
-			} else {
-				r = exp;
-				exp = null;
-			}
-			return r;
-		}
-		public boolean hasNext() { return exp!=null; }
-		public void remove() { throw new UnsupportedOperationException(); }
-	}
 }

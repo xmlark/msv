@@ -67,8 +67,6 @@ public class DataState extends ExpressionState implements ExpressionOwner {
 				baseTypeName = new StringPair( reader.datatypeLibURI, localName );
 				 try {
 					typeBuilder = reader.datatypeLib.createDatatypeBuilder(localName);
-					if( typeBuilder==null )
-						 reader.reportError( reader.ERR_UNDEFINED_DATATYPE, localName );
 				 } catch( DatatypeException dte ) {
 					 reader.reportError( reader.ERR_UNDEFINED_DATATYPE_1, localName, dte.getMessage() );
 				 }

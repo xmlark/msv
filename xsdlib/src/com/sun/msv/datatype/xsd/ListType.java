@@ -78,7 +78,7 @@ public final class ListType extends ConcreteType implements Discrete {
 		return true;
 	}
 	
-	public Object convertToValue( String content, ValidationContext context ) {
+	public Object _createValue( String content, ValidationContext context ) {
 		// StringTokenizer correctly implements the semantics of whiteSpace="collapse"
 		StringTokenizer tokens = new StringTokenizer(content);
 		
@@ -86,7 +86,7 @@ public final class ListType extends ConcreteType implements Discrete {
 		int i=0;
 		
 		while( tokens.hasMoreTokens() ) {
-			if( ( values[i++] = itemType.convertToValue(tokens.nextToken(),context) )==null )
+			if( ( values[i++] = itemType._createValue(tokens.nextToken(),context) )==null )
 				return null;
 		}
 			
@@ -116,12 +116,11 @@ public final class ListType extends ConcreteType implements Discrete {
 	}
 	
 	/** The current implementation detects which list item is considered wrong. */
-	protected void diagnoseValue(String content, ValidationContext context) throws DatatypeException {
+	protected void _checkValid(String content, ValidationContext context) throws DatatypeException {
 		// StringTokenizer correctly implements the semantics of whiteSpace="collapse"
 		StringTokenizer tokens = new StringTokenizer(content);
 		
-		while( tokens.hasMoreTokens() )
-		{
+		while( tokens.hasMoreTokens() ) {
 			String token = tokens.nextToken();
 			itemType.checkValid(token,context);
 		}

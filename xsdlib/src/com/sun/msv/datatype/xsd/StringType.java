@@ -34,11 +34,11 @@ public class StringType extends ConcreteType implements Discrete {
 	}
 
 	protected final boolean checkFormat( String content, ValidationContext context ) {
-		// string derived types should use convertToValue method to check its validity
-		return convertToValue(content,context)!=null;
+		// string derived types should use _createValue method to check its validity
+		return _createValue(content,context)!=null;
 	}
 	
-	public Object convertToValue( String lexicalValue, ValidationContext context ) {
+	public Object _createValue( String lexicalValue, ValidationContext context ) {
 		// for string, lexical space is value space by itself
 		return lexicalValue;
 	}

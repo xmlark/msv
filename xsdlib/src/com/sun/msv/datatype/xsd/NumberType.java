@@ -69,7 +69,7 @@ public class NumberType extends ConcreteType implements Comparator {
 		return atLeastOneDigit;	// at least one digit must be present.
 	}
 	
-	public Object convertToValue( String content, ValidationContext context ) {
+	public Object _createValue( String content, ValidationContext context ) {
 		try	{
 			// BigDecimal accepts expressions like "1E4",
 			// but XML Schema doesn't.

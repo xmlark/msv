@@ -29,7 +29,7 @@ public class DoubleType extends FloatingNumberType {
 		return SimpleURType.theInstance;
 	}
 	
-	public Object convertToValue( String lexicalValue, ValidationContext context ) {
+	public Object _createValue( String lexicalValue, ValidationContext context ) {
 		// TODO : probably the same problems exist as in the case of float
 		try {
 			if(lexicalValue.equals("NaN"))	return new Double(Double.NaN);

@@ -18,6 +18,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
+import org.relaxng.datatype.DatatypeException;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
@@ -212,10 +213,11 @@ public class TREXGrammarReader extends TREXBaseReader {
 		}
 		else
 		{
-			Datatype dt = v.getType( s[1] );	// s[1] == local name
-			if(dt!=null)	return dt;
-			
-			reportError( ERR_UNDEFINED_DATATYPE, qName );
+			try {
+				return v.getType( s[1] );	// s[1] == local name
+			} catch( DatatypeException e ) {
+				reportError( ERR_UNDEFINED_DATATYPE, qName );
+			}
 		}
 		// recover by using a dummy DataType
 		return StringType.theInstance;

@@ -43,7 +43,7 @@ public class EntityType extends ConcreteType {
 		return context.isUnparsedEntity(content);
 	}
 
-	public Object convertToValue( String content, ValidationContext context ) {
+	public Object _createValue( String content, ValidationContext context ) {
 		if(context.isUnparsedEntity(content))	return content;
 		else									return null;
 	}

@@ -31,7 +31,7 @@ public class UnsignedLongType extends IntegerType {
     private static final IntegerValueType upperBound
 		= IntegerValueType.create("18446744073709551615");
 	
-	public Object convertToValue( String lexicalValue, ValidationContext context ) {
+	public Object _createValue( String lexicalValue, ValidationContext context ) {
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		final IntegerValueType v = IntegerValueType.create(lexicalValue);
 		if(v==null)							return null;

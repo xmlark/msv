@@ -13,6 +13,7 @@ import java.util.Map;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.DatatypeException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import com.sun.msv.reader.GrammarReaderController;
@@ -138,17 +139,15 @@ public class RELAXCoreReader extends RELAXReader {
 	 */
 	public Datatype resolveDataType( String typeName ) {
 		// look up user defined types first
-		Datatype dt = (Datatype)module.userDefinedTypes.getType(typeName);
-		
-		if(dt==null) {
-			dt = getBackwardCompatibleType(typeName);
+		try {
+			return (Datatype)module.userDefinedTypes.getType(typeName);
+		} catch( DatatypeException e ) {
+			Datatype dt = getBackwardCompatibleType(typeName);
 			if(dt!=null)	return dt;
 			
 			reportError( ERR_UNDEFINED_DATATYPE, typeName );
 			return NoneType.theInstance;	// recover by assuming a valid DataType
 		}
-		else
-			return dt;
 	}
 
 	public static class StateFactory extends RELAXReader.StateFactory {

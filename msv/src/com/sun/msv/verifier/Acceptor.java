@@ -39,8 +39,6 @@ import com.sun.msv.util.DatatypeRef;
  * some form of stack. If you are using a "push" interface like SAX, you need
  * an explicit stack. If you are validating in "pull" fashion (like DOM), then
  * you can use a recursion instead of an explicit stack.
- * 
- * <p>
  * The following explanation assumes SAX-like interface.
  * 
  * <p>
@@ -57,8 +55,8 @@ import com.sun.msv.util.DatatypeRef;
  * for more details.
  * 
  * <p>
- * Then, for every attributes, call the {@link #onAttribute()} method.
- * After that you call the {@link #onEndAttributes()} method.
+ * Then, for every attributes, call the {@link #onAttribute} method.
+ * After that you call the {@link #onEndAttributes} method.
  * 
  * <pre><xmp>
  * for( int i=0; i<atts.getLength(); i++ )

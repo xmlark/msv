@@ -34,7 +34,7 @@ public class BooleanType extends ConcreteType {
 			|| "0".equals(content) || "1".equals(content);
 	}
 	
-	public Object convertToValue( String lexicalValue, ValidationContext context ) {
+	public Object _createValue( String lexicalValue, ValidationContext context ) {
 		// for string, lexical space is value space by itself
 		if( lexicalValue.equals("true") )		return Boolean.TRUE;
 		if( lexicalValue.equals("1") )			return Boolean.TRUE;

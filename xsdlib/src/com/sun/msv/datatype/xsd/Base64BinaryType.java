@@ -46,7 +46,7 @@ public class Base64BinaryType extends BinaryBaseType {
 		return map;
 	}
 
-	public Object convertToValue( String lexicalValue, ValidationContext context ) {
+	public Object _createValue( String lexicalValue, ValidationContext context ) {
 		final byte[] buf = lexicalValue.getBytes();
 
 		final int outlen = calcLength(buf);

@@ -27,8 +27,8 @@ public class NonNegativeIntegerType extends IntegerType {
 		return IntegerType.theInstance;
 	}
 	
-	public Object convertToValue( String lexicalValue, ValidationContext context ) {
-		Object o = super.convertToValue(lexicalValue,context);
+	public Object _createValue( String lexicalValue, ValidationContext context ) {
+		Object o = super._createValue(lexicalValue,context);
 		if(o==null)		return null;
 		
 		final IntegerValueType v = (IntegerValueType)o;

@@ -59,7 +59,7 @@ public interface XSDatatype extends Serializable, DatabindableDatatype {
 	 * converts value object back to the corresponding value in the lexical space.
 	 * 
 	 * <p>
-	 * This method does the reverse operation of the convertToValueObject method.
+	 * This method does the reverse operation of the createValue method.
 	 * The returned string is not necessarily the canonical representation.
 	 * 
 	 * Also note that the implementation may accept invalid values without throwing

@@ -27,7 +27,7 @@ public class NcnameType extends TokenType {
 		return NameType.theInstance;
 	}
 	
-	public Object convertToValue( String content, ValidationContext context ) {
+	public Object _createValue( String content, ValidationContext context ) {
 		if(XmlNames.isNCName(content))		return content;
 		else								return null;
 	}

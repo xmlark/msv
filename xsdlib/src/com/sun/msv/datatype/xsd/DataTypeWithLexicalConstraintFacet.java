@@ -31,8 +31,8 @@ abstract class DataTypeWithLexicalConstraintFacet extends DataTypeWithFacet {
 		return checkLexicalConstraint(literal);
 	}
 	
-	public final Object convertToValue( String literal, ValidationContext context ) {
-		Object o = baseType.convertToValue(literal,context);
+	public final Object _createValue( String literal, ValidationContext context ) {
+		Object o = baseType._createValue(literal,context);
 		if(o!=null && !checkLexicalConstraint(literal) )	return null;
 		return o;
 	}

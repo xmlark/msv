@@ -70,10 +70,10 @@ final public class UnionType extends ConcreteType {
 		return false;
 	}
 	
-	public Object convertToValue( String content, ValidationContext context ) {
+	public Object _createValue( String content, ValidationContext context ) {
 		Object o;
 		for( int i=0; i<memberTypes.length; i++ ) {
-			o = memberTypes[i].convertToValue(content,context);
+			o = memberTypes[i]._createValue(content,context);
 			if(o!=null)		return o;
 		}
 		
@@ -96,7 +96,7 @@ final public class UnionType extends ConcreteType {
 		throw new IllegalArgumentException();
 	}
 	
-	protected void diagnoseValue(String content, ValidationContext context) throws DatatypeException {
+	protected void _checkValid(String content, ValidationContext context) throws DatatypeException {
 		// what is the appropriate implementation for union?
 		if( checkFormat(content,context) )		return;
 		else	throw new DatatypeException();

@@ -20,7 +20,7 @@ abstract class FloatingNumberType extends ConcreteType implements Comparator {
 	
 	final protected boolean checkFormat( String lexicalValue, ValidationContext context ) {
 		// FloatType and DoubleType checks format by trying to convert it to value object
-		return convertToValue(lexicalValue,context)!=null;
+		return _createValue(lexicalValue,context)!=null;
 	}
 	
 	protected static boolean isDigitOrPeriodOrSign( char ch ) {

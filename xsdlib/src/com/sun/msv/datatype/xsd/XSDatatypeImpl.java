@@ -39,22 +39,29 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 	}
 
 	final public Object createValue( String lexicalValue, ValidationContext context ) {
-		return convertToValue(whiteSpace.process(lexicalValue),context);
+		return _createValue(whiteSpace.process(lexicalValue),context);
 	}
 	
 	
 	/**
-	 * converts whitespace-processed lexical value into value object
+	 * converts a whitespace-processed lexical value into the corresponding value object
 	 */
-	abstract protected Object convertToValue( String content, ValidationContext context );
+	abstract protected Object _createValue( String content, ValidationContext context );
 
 	
 	final public void checkValid(String content, ValidationContext context) throws DatatypeException {
-		diagnoseValue(whiteSpace.process(content),context);
+		_checkValid(whiteSpace.process(content),context);
 	}
 	
-	/** actual 'meat' of diagnose method */
-	abstract protected void diagnoseValue(String content, ValidationContext context) throws DatatypeException;
+	/** actual 'meat' of the checkValid method */
+	abstract protected void _checkValid(String content, ValidationContext context) throws DatatypeException;
+
+
+	final public Object createJavaObject( String literal, ValidationContext context ) {
+		return _createJavaObject(whiteSpace.process(literal),context);
+	}
+	
+	abstract protected Object _createJavaObject( String literal, ValidationContext context );
 	
 
 	final public boolean isValid( String literal, ValidationContext context ) {
@@ -63,7 +70,7 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 		
 		if( needValueCheck() )
 			// constraint facet that needs computation of value is specified.
-			return convertToValue(literal,context)!=null;
+			return _createValue(literal,context)!=null;
 		else
 			// lexical validation is enough.
 			return checkFormat(literal,context);

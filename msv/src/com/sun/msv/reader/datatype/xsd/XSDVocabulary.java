@@ -38,10 +38,10 @@ public class XSDVocabulary implements DataTypeVocabulary, java.io.Serializable {
 		else	return null;
 	}
 	
-	public Datatype getType( String localTypeName ) {
+	public Datatype getType( String localTypeName ) throws DatatypeException {
 		XSDatatype dt = (XSDatatype)userDefinedTypes.get(localTypeName);
-		if(dt==null)	dt = DatatypeFactory.getTypeByName(localTypeName);
-		return dt;
+		if(dt!=null)	return dt;
+		return DatatypeFactory.getTypeByName(localTypeName);
 	}
 
 	/** user-defined named types */

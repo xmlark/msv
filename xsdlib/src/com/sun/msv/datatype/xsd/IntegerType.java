@@ -29,12 +29,12 @@ public class IntegerType extends IntegerDerivedType {
 		return NumberType.theInstance;
 	}
 	
-	public Object convertToValue( String lexicalValue, ValidationContext context ) {
+	public Object _createValue( String lexicalValue, ValidationContext context ) {
 		return IntegerValueType.create(lexicalValue);
 	}
 	
-	public Object createJavaObject( String literal, ValidationContext context ) {
-		Object o = convertToValue(literal,context);
+	public Object _createJavaObject( String literal, ValidationContext context ) {
+		Object o = _createValue(literal,context);
 		if(o==null)		return null;
 		// o must be IntegerValueType.
 		return new BigInteger(o.toString());

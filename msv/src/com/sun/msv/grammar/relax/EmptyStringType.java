@@ -40,7 +40,7 @@ public class EmptyStringType extends ConcreteType {
 		return literal.equals("");
 	}
 
-	public Object convertToValue( String lexicalValue, ValidationContext context ) {
+	public Object _createValue( String lexicalValue, ValidationContext context ) {
 		if( lexicalValue.equals("") )	return lexicalValue;
 		else							return null;
 	}

@@ -26,8 +26,8 @@ public abstract class RangeFacet extends DataTypeWithValueConstraintFacet {
 		limitValue = facets.getFacet(facetName);
 	}
 	
-	public final Object convertToValue( String literal, ValidationContext context ) {
-		Object o = baseType.convertToValue(literal,context);
+	public final Object _createValue( String literal, ValidationContext context ) {
+		Object o = baseType._createValue(literal,context);
 		if(o==null)	return null;
 		
 		int r = ((Comparator)concreteType).compare(limitValue,o);
@@ -36,7 +36,7 @@ public abstract class RangeFacet extends DataTypeWithValueConstraintFacet {
 	}
 	
 	protected void diagnoseByFacet(String content, ValidationContext context) throws DatatypeException {
-		if( convertToValue(content,context)!=null )		return;
+		if( _createValue(content,context)!=null )		return;
 			
 		throw new DatatypeException( DatatypeException.UNKNOWN,
 			localize(ERR_OUT_OF_RANGE, facetName, limitValue) );

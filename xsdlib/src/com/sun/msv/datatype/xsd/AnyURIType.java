@@ -169,7 +169,7 @@ public class AnyURIType extends ConcreteType implements Discrete {
 	}
 	
 
-	public Object convertToValue( final String content, ValidationContext context ) {
+	public Object _createValue( final String content, ValidationContext context ) {
 		// we can't use java.net.URL (for example, it cannot handle IPv6.)
 		if(!regexp.matches(escape(content)))		return null;
 		

@@ -51,16 +51,18 @@ public abstract class ConcreteType extends XSDatatypeImpl {
 		// return the sigleton object, if any.
 		String name = getName();
 		if(name!=null) {
-			XSDatatype dt = DatatypeFactory.getTypeByName(name);
-			if(dt!=null)
-				return dt;
+			try {
+				return DatatypeFactory.getTypeByName(name);
+			} catch( DatatypeException e ) {
+				;
+			}
 		}
 		
 		return this;
 	}
 
 	// default implementation for concrete type. somewhat shabby.
-	protected void diagnoseValue(String content, ValidationContext context) throws DatatypeException {
+	protected void _checkValid(String content, ValidationContext context) throws DatatypeException {
 		if(checkFormat(content,context))	return;
 		
 		throw new DatatypeException(DatatypeException.UNKNOWN,
@@ -76,7 +78,7 @@ public abstract class ConcreteType extends XSDatatypeImpl {
 // the convertToLexicalValue method. If a derived class overrides the
 // createJavaObject method, then it must also override the serializeJavaObject method.
 //
-	public Object createJavaObject( String literal, ValidationContext context ) {
+	public Object _createJavaObject( String literal, ValidationContext context ) {
 		return createValue(literal,context);
 	}
 	public String serializeJavaObject( Object value, SerializationContext context ) {

@@ -40,7 +40,7 @@ abstract class BinaryBaseType extends ConcreteType implements Discrete {
 		return ((BinaryValueType)value).rawData.length;
 	}
 	
-	public Object createJavaObject( String literal, ValidationContext context ) {
+	public Object _createJavaObject( String literal, ValidationContext context ) {
 		BinaryValueType v = (BinaryValueType)createValue(literal,context);
 		if(v==null)		return null;
 		// return byte[]

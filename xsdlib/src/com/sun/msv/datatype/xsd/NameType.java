@@ -27,7 +27,7 @@ public class NameType extends TokenType {
 		return TokenType.theInstance;
 	}
 	
-	public Object convertToValue( String content, ValidationContext context ) {
+	public Object _createValue( String content, ValidationContext context ) {
 		if(XmlNames.isName(content))	return content;
 		else							return null;
 	}

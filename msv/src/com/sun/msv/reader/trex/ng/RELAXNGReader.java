@@ -254,13 +254,7 @@ public class RELAXNGReader extends TREXBaseReader {
 			return com.sun.msv.datatype.xsd.StringType.theInstance;
 		
 		try {
-			Datatype dt = datatypeLib.createDatatype(localName);
-			if(dt==null) {
-				reportError( ERR_UNDEFINED_DATATYPE, localName );
-				return com.sun.msv.datatype.xsd.StringType.theInstance;
-			}
-		
-			return dt;
+			return datatypeLib.createDatatype(localName);
 		} catch( DatatypeException dte ) {
 			reportError( ERR_UNDEFINED_DATATYPE_1, localName, dte.getMessage() );
 			return com.sun.msv.datatype.xsd.StringType.theInstance;

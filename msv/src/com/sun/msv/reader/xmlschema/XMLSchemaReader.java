@@ -53,6 +53,7 @@ import java.text.MessageFormat;
 import org.xml.sax.Locator;
 import org.xml.sax.InputSource;
 import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * parses XML representation of XML Schema and constructs AGM.
@@ -382,12 +383,15 @@ public class XMLSchemaReader extends GrammarReader {
 	 */
 	public Datatype resolveBuiltinDataType( String typeLocalName ) {
 		// datatypes of XML Schema part 2
-		Datatype dt = builtinTypes.getType(typeLocalName);
-		if( dt==null )  dt = getBackwardCompatibleType(typeLocalName);
-		if( dt!=null )	return dt;
+		try {
+			return builtinTypes.getType(typeLocalName);
+		} catch( DatatypeException e ) {
+			Datatype dt = getBackwardCompatibleType(typeLocalName);
+			if( dt!=null )	return dt;
 		
-		reportError( ERR_UNDEFINED_DATATYPE, typeLocalName );
-		return StringType.theInstance;	// recover by assuming string.
+			reportError( ERR_UNDEFINED_DATATYPE, typeLocalName );
+			return StringType.theInstance;	// recover by assuming string.
+		}
 	}
 	
 	public boolean isSchemaNamespace( String ns ) {

@@ -30,10 +30,10 @@ public class UnsignedByteType extends ShortType {
 		return UnsignedShortType.theInstance;
 	}
 
-	public Object convertToValue( String lexicalValue, ValidationContext context ) {
+	public Object _createValue( String lexicalValue, ValidationContext context ) {
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		try {
-			Short v = (Short)super.convertToValue(lexicalValue,context);
+			Short v = (Short)super._createValue(lexicalValue,context);
 			if( v==null )						return null;
 			if( v.shortValue()<0 )               return null;
 			if( v.shortValue()>upperBound )      return null;

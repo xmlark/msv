@@ -45,7 +45,7 @@ public final class DurationType extends ConcreteType implements Comparator {
 		}
 	}
 	
-	public Object convertToValue( String content, ValidationContext context ) {
+	public Object _createValue( String content, ValidationContext context ) {
 		try {
 			return getParser(content).durationTypeV();
 		} catch( Throwable e ) {

@@ -41,8 +41,8 @@ public class WhiteSpaceFacet extends DataTypeWithFacet {
 	protected boolean checkFormat( String content, ValidationContext context ) {
 		return baseType.checkFormat(content,context);
 	}
-	public Object convertToValue( String content, ValidationContext context ) {
-		return baseType.convertToValue(content,context);
+	public Object _createValue( String content, ValidationContext context ) {
+		return baseType._createValue(content,context);
 	}
 	
 	/** whiteSpace facet never constrain anything */

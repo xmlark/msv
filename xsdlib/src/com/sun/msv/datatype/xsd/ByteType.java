@@ -29,7 +29,7 @@ public class ByteType extends IntegerDerivedType {
 		return ShortType.theInstance;
 	}
 	
-	public Object convertToValue( String content, ValidationContext context ) {
+	public Object _createValue( String content, ValidationContext context ) {
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		try {
 			content = removeOptionalPlus(content);

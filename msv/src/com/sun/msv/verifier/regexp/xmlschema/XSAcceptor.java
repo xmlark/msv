@@ -20,6 +20,7 @@ import com.sun.msv.verifier.regexp.*;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
 import java.util.Vector;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * Acceptor implementation for XSREDocDecl.
@@ -166,10 +167,12 @@ public class XSAcceptor extends SimpleAcceptor {
 		
 		if( typeName[0].equals(XMLSchemaNamespace) ) {
 			// special handling is required for built-in datatypes.
-			XSDatatype dt = DatatypeFactory.getTypeByName(typeName[1]);
-			if(dt==null)	return onTypeResolutionFailure(sti,type,refErr);
-			
-			contentModel = _docDecl.grammar.getPool().createTypedString(dt);
+			try {
+				contentModel = _docDecl.grammar.getPool().createTypedString(
+					DatatypeFactory.getTypeByName(typeName[1]) );
+			} catch( DatatypeException e ) {
+				return onTypeResolutionFailure(sti,type,refErr);
+			}
 		} else {
 			XMLSchemaSchema schema = _docDecl.grammar.getByNamespace(typeName[0]);
 			if(schema==null)

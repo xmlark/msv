@@ -52,7 +52,7 @@ public class QnameType extends ConcreteType implements Discrete {
 			&& context.resolveNamespacePrefix(prefix)!=null;
 	}
 	
-	public Object convertToValue( String value, ValidationContext context ) {
+	public Object _createValue( String value, ValidationContext context ) {
 		String uri,localPart;
 		// [6] QName ::= (Prefix ':')? LocalPart
 		// [7] Prefix ::= NCName
@@ -130,7 +130,7 @@ public class QnameType extends ConcreteType implements Discrete {
 		else				return prefix+":"+local;
 	}
 	
-	public Object createJavaObject( String literal, ValidationContext context ) {
+	public Object _createJavaObject( String literal, ValidationContext context ) {
 		QnameValueType v = (QnameValueType)createValue(literal,context);
 		if(v==null)		return null;
 		// return String[2]

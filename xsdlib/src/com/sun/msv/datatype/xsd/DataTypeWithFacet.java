@@ -108,7 +108,7 @@ public abstract class DataTypeWithFacet extends XSDatatypeImpl
 		return concreteType.getJavaObjectType();
 	}
 // DatabindableDatatype implementation
-	final public Object createJavaObject( String literal, ValidationContext context ) {
+	final public Object _createJavaObject( String literal, ValidationContext context ) {
 		// TODO: this can be more efficient
 		if(isValid(literal,context))
 			return baseType.createJavaObject(literal,context);
@@ -119,9 +119,9 @@ public abstract class DataTypeWithFacet extends XSDatatypeImpl
 		return baseType.serializeJavaObject( value, context );
 	}
 	
-	final protected void diagnoseValue(String content, ValidationContext context ) throws DatatypeException {
+	final protected void _checkValid(String content, ValidationContext context ) throws DatatypeException {
 		// let the base type complain first.
-		baseType.diagnoseValue(content,context);
+		baseType._checkValid(content,context);
 		
 		// then see if the facet is satisfied.
 		diagnoseByFacet(content,context);

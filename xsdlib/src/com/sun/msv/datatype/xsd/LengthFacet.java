@@ -39,14 +39,14 @@ public class LengthFacet extends DataTypeWithValueConstraintFacet {
 		// consistency with minLength/maxLength is checked in XSDatatypeImpl.derive method.
 	}
 	
-	public Object convertToValue( String content, ValidationContext context ) {
-		Object o = baseType.convertToValue(content,context);
+	public Object _createValue( String content, ValidationContext context ) {
+		Object o = baseType._createValue(content,context);
 		if(o==null || ((Discrete)concreteType).countLength(o)!=length)	return null;
 		return o;
 	}
 	
 	protected void diagnoseByFacet(String content, ValidationContext context) throws DatatypeException {
-		Object o = concreteType.convertToValue(content,context);
+		Object o = concreteType._createValue(content,context);
 		// base type must have accepted this lexical value, otherwise 
 		// this method is never called.
 		if(o==null)	throw new IllegalStateException();	// assertion

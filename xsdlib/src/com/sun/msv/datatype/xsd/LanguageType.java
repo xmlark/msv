@@ -30,7 +30,7 @@ public class LanguageType extends TokenType {
 		return TokenType.theInstance;
 	}
 	
-	public Object convertToValue( String content, ValidationContext context ) {
+	public Object _createValue( String content, ValidationContext context ) {
 		/*	RFC1766 defines the following BNF
 		
 			 Language-Tag = Primary-tag *( "-" Subtag )

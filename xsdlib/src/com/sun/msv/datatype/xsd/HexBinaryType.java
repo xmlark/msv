@@ -36,7 +36,7 @@ public class HexBinaryType extends BinaryBaseType {
 		return -1;
 	}
 
-	public Object convertToValue( String lexicalValue, ValidationContext context ) {
+	public Object _createValue( String lexicalValue, ValidationContext context ) {
 		final int len = lexicalValue.length();
 
 		// "111" is not a valid hex encoding.

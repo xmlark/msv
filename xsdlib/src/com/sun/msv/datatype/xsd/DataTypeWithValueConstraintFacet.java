@@ -29,6 +29,6 @@ abstract class DataTypeWithValueConstraintFacet extends DataTypeWithFacet {
 	final protected boolean needValueCheck() { return true; }
 	
 	protected final boolean checkFormat( String literal, ValidationContext context ) {
-		return convertToValue(literal,context)!=null;
+		return _createValue(literal,context)!=null;
 	}
 }

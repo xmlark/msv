@@ -60,14 +60,14 @@ public final class FinalComponent extends XSDatatypeImpl {
 		return baseType.checkFormat(content,context);
 	}
 	
-	public Object convertToValue( String content, ValidationContext context ) {
-		return baseType.convertToValue(content,context);
+	public Object _createValue( String content, ValidationContext context ) {
+		return baseType._createValue(content,context);
 	}
 	public Class getJavaObjectType() {
 		return baseType.getJavaObjectType();
 	}
-	public Object createJavaObject( String literal, ValidationContext context ) {
-		return baseType.createJavaObject(literal,context);
+	public Object _createJavaObject( String literal, ValidationContext context ) {
+		return baseType._createJavaObject(literal,context);
 	}
 	public String serializeJavaObject( Object value, SerializationContext context ) {
 		return baseType.serializeJavaObject(value,context);
@@ -77,8 +77,8 @@ public final class FinalComponent extends XSDatatypeImpl {
 		return baseType.convertToLexicalValue(value,context);
 	}
 	
-	public void diagnoseValue( String content, ValidationContext context ) throws DatatypeException {
-		baseType.diagnoseValue(content,context);
+	public void _checkValid( String content, ValidationContext context ) throws DatatypeException {
+		baseType._checkValid(content,context);
 	}
 	
 }

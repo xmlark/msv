@@ -46,7 +46,7 @@ public class SimpleURType extends ConcreteType {
 	/**
 	 * the value object of the simple ur-type is the lexical value itself.
 	 */
-	public Object convertToValue( String lexicalValue, ValidationContext context ) {
+	public Object _createValue( String lexicalValue, ValidationContext context ) {
 		return lexicalValue;
 	}
 	public Class getJavaObjectType() {

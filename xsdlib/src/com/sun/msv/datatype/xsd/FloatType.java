@@ -29,7 +29,7 @@ public class FloatType extends FloatingNumberType {
 		return SimpleURType.theInstance;
 	}
 	
-	public Object convertToValue( String lexicalValue, ValidationContext context ) {
+	public Object _createValue( String lexicalValue, ValidationContext context ) {
 		// TODO : quick hack. Spec doesn't allow me directly to use FloatValueType.valueOf method
 		
 		/* Incompatibilities of XML Schema's float "xfloat" and Java's float "jfloat"

@@ -12,6 +12,7 @@ package com.sun.msv.reader.datatype;
 import com.sun.msv.reader.State;
 import com.sun.msv.util.StartTagInfo;
 import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * this class is used to parse foreign datatype vocabulary.
@@ -56,15 +57,17 @@ public interface DataTypeVocabulary
 	State createTopLevelReaderState( StartTagInfo tag );
 	
 	/**
-	 * resolves a type name to DataType object.
+	 * resolves a type name to Datatype object.
 	 * 
 	 * @param localTypeName
 	 *		local part of the qualified name, like "string" or "integer".
 	 *		prefix part must be removed by the caller.
 	 * 
-	 * @return null
-	 *		if the given type name is not defined. It is a caller's responeibility
-	 *		to report an error to the user.
+	 * @return
+	 *		a non-null valid datatype object.
+	 * 
+	 * @exception DatatypeException
+	 *		if the specified type name is a valid type name.
 	 */
-	Datatype getType( String localTypeName );
+	Datatype getType( String localTypeName ) throws DatatypeException;
 }

@@ -41,7 +41,7 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator {
 	}
 	
 	protected final boolean checkFormat( String content, ValidationContext context ) {
-		// string derived types should use convertToValue method to check its validity
+		// string derived types should use _createValue method to check its validity
 		try {
 			runParserL(getParser(content));
 			return true;
@@ -54,7 +54,7 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator {
 	abstract protected void runParserL( ISO8601Parser p ) throws Exception;
 
 	
-	public final Object convertToValue( String content, ValidationContext context ) {
+	public final Object _createValue( String content, ValidationContext context ) {
 		// for string, lexical space is value space by itself
 		try {
 			return runParserV(getParser(content));
@@ -209,7 +209,7 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator {
 	}
 	
 	/** converts our DateTimeValueType to a java-friendly Date type. */
-	public final Object createJavaObject( String literal, ValidationContext context ) {
+	public final Object _createJavaObject( String literal, ValidationContext context ) {
 		IDateTimeValueType _v = (IDateTimeValueType)createValue(literal,context);
 		if(_v==null)	return null;
 		BigDateTimeValueType v = _v.getBigValue();

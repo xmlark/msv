@@ -29,14 +29,14 @@ public class EnumerationFacet extends DataTypeWithValueConstraintFacet {
 	/** set of valid values */
 	public final Set values;
 
-	public Object convertToValue( String literal, ValidationContext context ) {
-		Object o = baseType.convertToValue(literal,context);
+	public Object _createValue( String literal, ValidationContext context ) {
+		Object o = baseType._createValue(literal,context);
 		if(o==null || !values.contains(o))		return null;
 		return o;
 	}
 	
 	protected void diagnoseByFacet(String content, ValidationContext context) throws DatatypeException {
-		if( convertToValue(content,context)!=null )	return;
+		if( _createValue(content,context)!=null )	return;
 		
 		// TODO: guess which item the user was trying to specify
 		

@@ -40,8 +40,8 @@ public class IDREFType extends NmtokenType {
 		return theInstance;
 	}
 	
-	public Object convertToValue( String content, ValidationContext context ) {
-		Object o = super.convertToValue(content,context);
+	public Object _createValue( String content, ValidationContext context ) {
+		Object o = super._createValue(content,context);
 		if(o==null)		return null;
 
 		((IDContextProvider)context).onIDREF("","",content);

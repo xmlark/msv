@@ -35,10 +35,10 @@ public class UnsignedIntType extends LongType {
     /** upper bound value. this is the maximum possible valid value as an unsigned int */
     private static final long upperBound = 4294967295L;
 	
-	public Object convertToValue( String lexicalValue, ValidationContext context ) {
+	public Object _createValue( String lexicalValue, ValidationContext context ) {
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		try {
-			Long v = (Long)super.convertToValue(lexicalValue,context);
+			Long v = (Long)super._createValue(lexicalValue,context);
 			if( v==null )						return null;
 			if( v.longValue()<0 )               return null;
 			if( v.longValue()>upperBound )      return null;

@@ -39,14 +39,14 @@ abstract class IntegerDerivedType extends ConcreteType implements Comparator {
 	
 	protected final boolean checkFormat( String content, ValidationContext context ) {
 		// integer-derived types always checks lexical format by trying to convert it to value object
-		return convertToValue(content,context)!=null;
+		return _createValue(content,context)!=null;
 	}
 	
 	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if( value instanceof Number || value instanceof IntegerValueType )
 			return value.toString();
 		else
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("invalid value type:"+value.getClass().toString());
 	}
 	
 	public final int compare( Object o1, Object o2 ) {

@@ -39,7 +39,7 @@ public class NoneType extends ConcreteType {
 		return false;
 	}
 
-	public Object convertToValue( String lexicalValue, ValidationContext context ) {
+	public Object _createValue( String lexicalValue, ValidationContext context ) {
 		return null;
 	}
 	
@@ -51,5 +51,5 @@ public class NoneType extends ConcreteType {
 		return Object.class;	// actually, it never returns a value.
 	}
 	
-	// TODO: implement diagnoseValue
+	// TODO: implement _checkValid
 }

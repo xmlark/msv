@@ -42,7 +42,10 @@ public abstract class AnyState extends ExpressionWithoutChildState {
 	/**
 	 * processes 'namepsace' attribute and gets corresponding NameClass object.
 	 */
-	protected NameClass getNameClass( String namespace ) {
+	protected NameClass getNameClass( String namespace, XMLSchemaSchema currentSchema ) {
+		// we have to get currentSchema through parameter because
+		// this method is also used while back-patching, and 
+		// reader.currentSchema points to the invalid schema in that case.
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		namespace = namespace.trim();
 		
@@ -50,7 +53,7 @@ public abstract class AnyState extends ExpressionWithoutChildState {
 			return AnyNameClass.theInstance;
 		
 		if( namespace.equals("##other") )
-			return new NotNameClass( new NamespaceNameClass(reader.currentSchema.targetNamespace) );
+			return new NotNameClass( new NamespaceNameClass(currentSchema.targetNamespace) );
 		
 		NameClass choices=null;
 		
@@ -60,7 +63,7 @@ public abstract class AnyState extends ExpressionWithoutChildState {
 			
 			NameClass nc;
 			if( token.equals("##targetNamespace") )
-				nc = new NamespaceNameClass(reader.currentSchema.targetNamespace);
+				nc = new NamespaceNameClass(currentSchema.targetNamespace);
 			else
 			if( token.equals("##local") )
 				nc = new NamespaceNameClass("");

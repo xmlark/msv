@@ -27,10 +27,11 @@ public class AnyAttributeState extends AnyState {
 
 	protected Expression createExpression( final String namespace, final String process ) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
+		final XMLSchemaSchema currentSchema = reader.currentSchema;
 		
 		if( process.equals("skip") ) {
 			// "skip" can be expanded now.
-			NameClass nc = getNameClass(namespace);
+			NameClass nc = getNameClass(namespace,currentSchema);
 			
 			// TODO: make sure that <zeroOrMore> is correct semantics.
 			return reader.pool.createZeroOrMore(
@@ -51,7 +52,7 @@ public class AnyAttributeState extends AnyState {
 				}
 				
 				anyAttExp.exp = Expression.epsilon;
-				NameClass nc = getNameClass(namespace);
+				NameClass nc = getNameClass(namespace,currentSchema);
 				Iterator itr = reader.grammar.schemata.values().iterator();
 				while( itr.hasNext() ) {
 					XMLSchemaSchema schema = (XMLSchemaSchema)itr.next();

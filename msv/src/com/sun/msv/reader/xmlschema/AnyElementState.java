@@ -28,10 +28,11 @@ public class AnyElementState extends AnyState
 {
 	protected Expression createExpression( final String namespace, final String process ) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
+		final XMLSchemaSchema currentSchema = reader.currentSchema;
 		
 		if( process.equals("skip") ) {
 			// "skip" can be expanded now.
-			NameClass nc = getNameClass(namespace);
+			NameClass nc = getNameClass(namespace,currentSchema);
 			
 			ElementPattern ep = new ElementPattern(nc,Expression.nullSet);
 				
@@ -64,7 +65,7 @@ public class AnyElementState extends AnyState
 				}
 				
 				exp.exp = Expression.nullSet;
-				NameClass nc = getNameClass(namespace);
+				NameClass nc = getNameClass(namespace,currentSchema);
 				Iterator itr;
 				itr = reader.grammar.schemata.values().iterator();
 				while( itr.hasNext() ) {

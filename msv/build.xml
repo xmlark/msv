@@ -64,6 +64,7 @@
 				<pathelement location="${buildDir}" />
 				<pathelement location="${sourceDir}" />
 				<pathelement location="${testDir}" />
+				<pathelement location="lib/dispatcher" />
 				<pathelement path="${java.class.path}" />
 			</classpath>
 		
@@ -97,12 +98,14 @@
 		<javadoc	locale="en_US"
 					packagenames="com.sun.tranquilo.*"
 					sourcepath="${sourceDir}"
+					classpath="lib/dispatcher;${java.class.path}"
 					destdir="${documentDir}"
 					windowtitle="Tranquilo RELAX/TREX Verifier"
 					public="yes"
 					>
 			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
 			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
+			<link offline="true" href="http://iso-relax.sourceforge.net/apiDoc/" packagelistLoc="ExternalPackageLists\ISO-RELAX" />
 		</javadoc>
 	</target>
 	
@@ -229,11 +232,15 @@
 			<param name="src" value="${stageName}/src" />
 		</antcall>
 		
+		<!-- unzip contents from iso-relax.jar into binary directory -->
+		<!-- for ease of use, iso-relax.jar is merged into tranquilo.jar -->
+		<unjar src="${libDir}/iso-relax.jar" dest="temp" />
+		
 		<!-- compile files -->
 		<mkdir	dir="temp" />
 		<javac	srcdir="${stageName}/src"
 				destdir="temp"
-				classpath="${libDir}">
+				classpath="temp;${java.class.path}">
 			<include name="**/*.java" />
 		</javac>
 		
@@ -256,15 +263,12 @@
 			<fileset dir="c:\winnt\java\classes" includes="org/xml/sax/**/*.class org/w3c/dom/**/*.class" />
 		</jar>
 		
-		<delete dir="temp" />
-		<delete dir="xerces" />
-		
-		
 		<!-- creates javadoc -->
 		<mkdir		dir="${stageName}/javadoc" />
 		<javadoc	locale="en_US"
 					packagenames="com.sun.tranquilo.*"
 					sourcepath="${stageName}/src"
+					classpath="temp;${java.class.path}"
 					destdir="${stageName}/javadoc"
 					windowtitle="Tranquilo Verifier"
 					public="yes"
@@ -277,6 +281,10 @@
 			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
 			<link offline="true" href="http://iso-relax.sourceforge.net/apiDoc/" packagelistLoc="ExternalPackageLists\ISO-RELAX" />
 		</javadoc>
+
+		<delete dir="temp" />
+		<delete dir="xerces" />
+		
 		
 		<!-- creates distribution package -->
 		<zip	zipfile="${packageDir}/tranquilo.${DSTAMP}.zip"

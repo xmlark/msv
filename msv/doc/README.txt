@@ -3,7 +3,7 @@
                     Preview Version. 1st May, 2001
                  Copyright (c) Sun Microsystems, 2001
 Document written by Kohsuke Kawaguchi (kohsuke.kawaguchi@eng.sun.com)
-            $Revision$
+                                                    $Revision$
 ======================================================================
 
 Sun Tranquilo Verifier  is  a Java tool to validate XML documents with

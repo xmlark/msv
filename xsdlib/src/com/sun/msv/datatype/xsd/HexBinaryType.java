@@ -37,7 +37,9 @@ public class HexBinaryType extends BinaryBaseType {
 	}
 
 	public Object _createValue( String lexicalValue, ValidationContext context ) {
-        return new BinaryValueType(load(lexicalValue));
+        byte[] buf = load(lexicalValue);
+        if(buf==null)   return null;
+        else            return new BinaryValueType(buf);
     }
     
     public static byte[] load( String s ) {

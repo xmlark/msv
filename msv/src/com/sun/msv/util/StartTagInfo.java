@@ -19,16 +19,23 @@ import com.sun.msv.datatype.ValidationContextProvider;
  */
 public class StartTagInfo {
 	
-	public final String		namespaceURI;
-	public final String		localName;
-	public final String		qName;
-	public final Attributes	attributes;
+	public String		namespaceURI;
+	public String		localName;
+	public String		qName;
+	public Attributes	attributes;
 	/** object that provides additional information which is necessary
 	 * for validating some datatypes
 	 */
-	public final ValidationContextProvider context;
+	public ValidationContextProvider context;
 	
 	public StartTagInfo(
+		String namespaceURI, String localName, String qName,
+		Attributes attributes, ValidationContextProvider context ) {
+		reinit(namespaceURI,localName,qName,attributes,context);
+	}
+
+	/** re-initialize the object with brand new parameters. */
+	public void reinit(
 		String namespaceURI, String localName, String qName,
 		Attributes attributes, ValidationContextProvider context ) {
 		this.namespaceURI	= namespaceURI;

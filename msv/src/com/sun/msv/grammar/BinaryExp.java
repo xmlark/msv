@@ -9,6 +9,8 @@
  */
 package com.sun.tranquilo.grammar;
 
+import java.util.Iterator;
+
 /**
  * Base implementation for those expression which has two child expressions.
  * 
@@ -34,5 +36,51 @@ public abstract class BinaryExp extends Expression
 		// therefore, == is enough. (don't need to call equals)
 		return ((BinaryExp)o).exp1 == exp1
 			&& ((BinaryExp)o).exp2 == exp2;
+	}
+	
+	/**
+	 * iterates all child expressions.
+	 * 
+	 * Since expressions are binarized, expressions like A|B|C is modeled as
+	 * A|(B|C).  This is may not be preferable for some applications.
+	 * 
+	 * <P>
+	 * This method returns an iterator that iterates all children
+	 * (A,B, and C in this example)
+	 */
+	public Iterator children()
+	{
+		return new ChildrenIterator(this);
+	}
+	
+	private static final class ChildrenIterator implements Iterator
+	{
+		private Expression exp;
+		private final Class operator;
+		
+		ChildrenIterator( BinaryExp owner )
+		{
+			exp = owner;
+			operator = owner.getClass();
+		}
+		
+		public Object next()
+		{
+			Expression r;
+			
+			if( exp.getClass()==operator )
+			{
+				r = ((BinaryExp)exp).exp1;
+				exp = ((BinaryExp)exp).exp2;
+			}
+			else
+			{
+				r = exp;
+				exp = null;
+			}
+			return r;
+		}
+		public boolean hasNext() { return exp!=null; }
+		public void remove() { throw new UnsupportedOperationException(); }
 	}
 }

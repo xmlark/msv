@@ -14,27 +14,24 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public final class SimpleNameClass implements NameClass
-{
+public final class SimpleNameClass implements NameClass {
 	public final String	namespaceURI;
 	public final String localName;
 	
-	public boolean accepts( String namespaceURI, String localName )
-	{
-		return	( this.namespaceURI.equals(namespaceURI) || NAMESPACE_WILDCARD.equals(namespaceURI) )
-			&&  ( this.localName.equals(localName) || LOCALNAME_WILDCARD.equals(localName) );
+	public boolean accepts( String namespaceURI, String localName ) {
+		// wild cards are treated as symbols, rather than strings.
+		return	( this.namespaceURI.equals(namespaceURI) || NAMESPACE_WILDCARD==namespaceURI )
+			&&  ( this.localName.equals(localName) || LOCALNAME_WILDCARD==localName );
 	}
 	
 	public Object visit( NameClassVisitor visitor ) { return visitor.onSimple(this); }
 	
-	public SimpleNameClass( String namespaceURI, String localName )
-	{
+	public SimpleNameClass( String namespaceURI, String localName ) {
 		this.namespaceURI	= namespaceURI;
 		this.localName		= localName;
 	}
 	
-	public String toString()
-	{
+	public String toString() {
 		if( namespaceURI.length()==0 )	return localName;
 		else							return /*namespaceURI+":"+*/localName;
 	}

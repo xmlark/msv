@@ -14,25 +14,21 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class NamespaceNameClass implements NameClass
-{
+public class NamespaceNameClass implements NameClass {
 	public final String	namespaceURI;
 	
-	public boolean accepts( String namespaceURI, String localName )
-	{
-		if( NAMESPACE_WILDCARD.equals(namespaceURI) )	return true;
+	public boolean accepts( String namespaceURI, String localName ) {
+		if( NAMESPACE_WILDCARD==namespaceURI )	return true;
 		return this.namespaceURI.equals(namespaceURI);
 	}
 	
 	public Object visit( NameClassVisitor visitor ) { return visitor.onNsName(this); }
 	
-	public NamespaceNameClass( String namespaceURI )
-	{
+	public NamespaceNameClass( String namespaceURI ) {
 		this.namespaceURI	= namespaceURI;
 	}
 	
-	public String toString()
-	{
+	public String toString() {
 		return namespaceURI+":*";
 	}
 }

@@ -10,8 +10,6 @@
 package batch.verifier;
 
 import junit.framework.*;
-import java.util.StringTokenizer;
-import java.io.File;
 
 /**
  * tests the entire RELAX test suite by using BatchVerifyTester.
@@ -22,17 +20,9 @@ import java.io.File;
  */
 public class XSDBatchTest {
 	public static TestSuite suite() throws Exception {
-		StringTokenizer tokens = new StringTokenizer( System.getProperty("XSDBatchTestDir"), ";" );
+		BatchVerifyTester t = new BatchVerifyTester();
+		t.init("xsd");
 		
-		TestSuite s = new TestSuite();
-		while( tokens.hasMoreTokens() ) {
-			// test file-based test cases.
-			BatchVerifyTester t = new BatchVerifyTester();
-			t.init("xsd", tokens.nextToken(), ".xsd", batch.BatchTester.genericLoader);
-			s.addTest( t.suite() );
-		}
-		
-		
-		return s;
+		return t.createFromProperty("XSDBatchTestDir");
 	}
 }

@@ -34,9 +34,7 @@ public class RELAXNGTester extends BatchWriterTester {
 	}
 
 	protected GrammarReader createReader() {
-		return new com.sun.msv.reader.trex.ng.RELAXNGReader(
-			new ThrowErrorController(),
-			factory );
+		return new com.sun.msv.reader.trex.ng.RELAXNGReader( new ThrowErrorController() );
 	}
 	protected GrammarWriter getWriter() {
 		return new com.sun.msv.writer.relaxng.RELAXNGWriter();

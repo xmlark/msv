@@ -9,9 +9,14 @@
  */
 package batch.writer;
 
+import batch.*;
+import batch.model.*;
 import junit.framework.*;
+import java.util.*;
+import org.relaxng.testharness.model.*;
+import com.sun.msv.grammar.Grammar;
 import com.sun.msv.reader.GrammarReader;
-import com.sun.msv.writer.GrammarWriter;
+import com.sun.msv.writer.*;
 
 /**
  * tests converter by using JUnit.
@@ -26,20 +31,118 @@ import com.sun.msv.writer.GrammarWriter;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class BatchWriterTester extends batch.BatchTester {
-	
-	/** gets a TestSuite that loads and verifies all test instances in the test directory. */
-	protected void populateSuite( TestSuite suite, String[] schemas ) {
-		// each schema will have its own suite.
-		if( schemas!=null ) {
-			for( int i=0; i<schemas.length; i++ ) {
-				if( !schemas[i].endsWith(".e"+ext)
-				&&  schemas[i].indexOf(".nogen.")<0 )
-					suite.addTest( new SchemaWriterSuite(this,schemas[i]).suite() );
+
+	public TestSuite suite( RNGTestSuite source ) {
+		
+		return (TestSuite)source.visit( new TestSuiteCreator(){
+			public Object onValidTest( RNGValidTestCase tcase ) {
+				if("yes".equals(tcase.header.getProperty("","skipConverter")))
+					return new TestSuite();	// skip this test case
 				
-				// ignore bad schemata
-				// ignore schemata with id constraint
+				return createTestCase(tcase);
 			}
+		});
+	}
+
+	
+	
+	/*
+		RELAX allows undeclared attributes, but no other schema language does.
+		Therefore, some RELAX test instances which are originally valid can
+		results in an invalid instance.
+	
+		this set contains all such test cases.
+	*/
+	protected static Set invalidTestCases;
+	static {
+		Set s = new java.util.HashSet();
+		s.add("relax001.v00.xml");
+		s.add("relax031.v00.xml");
+		s.add("relax039.v00.xml");
+		s.add("relax040.v00.xml");
+		s.add("relax041.v00.xml");
+		invalidTestCases = s;
+	}
+	
+	
+	/**
+	 * Creates a test case from a given RNGValidTestCase.
+	 * 
+	 * A test consists of
+	 * 
+	 * 1. converts a grammar into the target format
+	 * 2. tests the instance documents.
+	 */
+	protected Test createTestCase( final RNGValidTestCase test ) {
+		
+		TestSuite suite = new TestSuite();
+		
+		final Grammar[] grammar = new Grammar[1];
+		
+		
+		suite.addTest( new TestCase( getName(test.header) + ": schema conversion") {
+			public void runTest() throws Exception {
+				// load grammar
+				Grammar g = validator.parseSchema(
+					test.pattern.getAsInputSource(),
+					new ThrowErrorController(resolver) );
+				if( g==null )
+					fail("failed to parse the original grammar");	// unexpected result
+		
+				// then convert it to the target grammar,
+				// and parse it by the target grammar reader parser.
+				GrammarWriter writer = getWriter();
+				GrammarReader reader = createReader();
+				
+				writer.setDocumentHandler(
+					new ContentHandlerAdaptor(reader));
+				writer.write(g);
+		
+				grammar[0] = reader.getResultAsGrammar();
+				if( grammar[0]==null )
+					fail("conversion failed");	// unexpected result
+			}
+		});
+		
+		Iterator itr;
+		
+		// test valid instances
+		itr = test.iterateValidDocuments();
+		while( itr.hasNext() ) {
+			final XMLDocument document = (XMLDocument)itr.next();
+			
+			if(document.getHeader()!=null
+			&& invalidTestCases.contains(document.getHeader().getProperty("","fileName")) )
+				continue;	// this should be skipped
+				
+			suite.addTest( new TestCase(
+				getName(test.header)+"/"+getName(document.getHeader()) ){
+				public void runTest() throws Exception {
+					assert(
+						"validator fails to accept a valid document",
+						validator.validate( grammar[0], document )
+					);
+				}
+			});
 		}
+		
+		// test invalid instances
+		itr = test.iterateInvalidDocuments();
+		while( itr.hasNext() ) {
+			final XMLDocument document = (XMLDocument)itr.next();
+			
+			suite.addTest( new TestCase(
+				getName(test.header)+"/"+getName(document.getHeader()) ){
+				public void runTest() throws Exception {
+					assert(
+						"validator accepts an invalid document",
+						!validator.validate( grammar[0], document )
+					);
+				}
+			});
+		}
+		
+		return suite;
 	}
 	
 	protected abstract GrammarReader createReader();

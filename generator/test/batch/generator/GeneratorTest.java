@@ -7,20 +7,23 @@
  * Use is subject to license terms.
  * 
  */
-package batch.writer.relaxng;
+package batch.generator;
 
-import junit.framework.*;
+import junit.framework.TestSuite;
 import java.util.StringTokenizer;
-import batch.writer.*;
+import batch.*;
 
 /**
- * tests the RELAXNGWriter with the multiple test directories.
- * 
- * for use by automated test by ant.
+ * batch test class that is called from ant as a part of the whole test.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class RELAXNGWriterTest {
+public class GeneratorTest {
+	
+	public static void main( String[] args ) throws Exception {
+		junit.textui.TestRunner.run(new GeneratorTest().suite());
+	}
+	
 	public static TestSuite suite() throws Exception {
 		TestSuite s = new TestSuite();
 
@@ -32,7 +35,7 @@ public class RELAXNGWriterTest {
 	}
 	
 	private static void append( TestSuite s, String propName, String ext ) throws Exception {
-		RELAXNGTester tester = new RELAXNGTester();
+		GeneratorTester tester = new GeneratorTester();
 		tester.init( ext );
 		s.addTest( tester.createFromProperty(propName) );
 	}

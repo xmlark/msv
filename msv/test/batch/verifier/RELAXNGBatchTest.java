@@ -22,21 +22,9 @@ import java.io.File;
  */
 public class RELAXNGBatchTest {
 	public static TestSuite suite() throws Exception {
-		StringTokenizer tokens = new StringTokenizer( System.getProperty("RELAXNGBatchTestDir"), ";" );
+		BatchVerifyTester t = new BatchVerifyTester();
+		t.init("rng");
 		
-		TestSuite s = new TestSuite();
-		while( tokens.hasMoreTokens() ) {
-			String dir = tokens.nextToken();
-			BatchVerifyTester t = new BatchVerifyTester();
-			t.init("rng", dir, ".rng", batch.BatchTester.genericLoader);
-			s.addTest( t.suite() );
-			
-			// test .ssuite files
-			SuiteTester	tester = new SuiteTester(new msv.IValidatorImplForRNG());
-			s.addTest(
-				tester.createTestSuiteFromDir( new File(dir), ".rng.ssuite" ));
-		}
-		
-		return s;
+		return t.createFromProperty("RELAXNGBatchTestDir");
 	}
 }

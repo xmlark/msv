@@ -11,10 +11,12 @@ package batch;
 
 import javax.xml.parsers.*;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 import java.io.*;
-import java.net.URL;
+//import java.net.URL;
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.InputSource;
+import org.relaxng.testharness.model.*;
 import junit.framework.*;
 import com.sun.msv.verifier.*;
 import com.sun.msv.reader.GrammarReaderController;
@@ -23,6 +25,8 @@ import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.resolver.tools.CatalogResolver;
+import msv.*;
+import batch.model.DirectoryTestReader;
 
 /**
  * Test schemata/instances are expected to follow a naming convention.
@@ -47,64 +51,49 @@ public abstract class BatchTester {
 
 	public CatalogResolver resolver = new CatalogResolver();
 	
-	/** test target: "relax", "trex", or "dtd" */
-	public String target;
-	/** test directory  */
-	public String dir;
-	public File testDir;
 	/** schema file extension ".rlx", ".trex", or ".dtd" */
 	public String ext;
 	
-	public static interface Loader {
-		Grammar load(
-			InputSource source, GrammarReaderController controller, SAXParserFactory factory )
-			throws Exception;
-	}
-	public Loader loader;
-	
-	/** DTD loader. */
-	public static final Loader dtdLoader = new Loader(){
-		public Grammar load( InputSource is, GrammarReaderController controller, SAXParserFactory factory ) throws Exception {
-			is.setSystemId( toURL(is.getSystemId()) );
-			Grammar g = DTDReader.parse(is,controller,"",new ExpressionPool() );
-			if(g==null)		return null;
-			return g;
-		}
-		protected String toURL( String path ) throws Exception {
-			path = new File(path).getAbsolutePath();
-			if (File.separatorChar != '/')
-				path = path.replace(File.separatorChar, '/');
-			if (!path.startsWith("/"))
-				path = "/" + path;
-//			if (!path.endsWith("/") && isDirectory())
-//				path = path + "/";
-			return new URL("file", "", path).toExternalForm();
-		}
-	};
-	/** RELAX/TREX/XSD loader. */
-	public static final Loader genericLoader = new Loader(){
-		public Grammar load( InputSource is, GrammarReaderController controller, SAXParserFactory factory ) throws Exception {
-			return GrammarLoader.loadSchema(is,controller,factory);
-		}
-	};
+	public IValidatorEx validator;
 	
 	
 	
 	
 	
-	public void init( String target, String dir, String ext, Loader loader ) {
-		this.target = target;
-		this.dir = dir;
-		this.ext = ext;
-		this.loader = loader;
-		
-		testDir = new File(dir);
-		
-		factory.setNamespaceAware(true);
-		factory.setValidating(false);
-	}
 	
 	protected abstract void usage();
+	
+	protected abstract TestSuite suite( RNGTestSuite src );
+	
+	
+	public RNGTest parse( String target ) throws Exception {
+		File src = new File(target);
+		
+		if(src.isDirectory())
+			return DirectoryTestReader.parseDirectory(
+				src, ext, false );
+		else
+			return DirectoryTestReader.parseSchema(src);
+	}
+	
+	public void init( String target ) {
+		if( target.equals("relax") )		_init( ".rlx", new GenericValidator() );
+		else
+		if( target.equals("trex") )		_init( ".trex", new GenericValidator() );
+		else
+		if( target.equals("rng") )		_init( ".rng", new IValidatorImplForRNG() );
+		else
+		if( target.equals("xsd") )		_init( ".xsd", new IValidatorImplForXS() );
+		else
+		if( target.equals("dtd") )		_init( ".dtd", new DTDValidator() );
+		else
+			throw new Error("unrecognized language type: "+target );
+	}
+		
+	private void _init( String _ext, IValidatorEx _validator ) {
+		this.ext = _ext;
+		this.validator = _validator;
+	}
 	
 	public void run( String[] av ) throws Exception {
 		
@@ -113,52 +102,53 @@ public abstract class BatchTester {
 			return;
 		}
 		
-		if( av[0].equals("relax") )
-			init( av[0], av[1], ".rlx", genericLoader );
-		else
-		if( av[0].equals("trex") )
-			init( av[0], av[1], ".trex", genericLoader );
-		else
-		if( av[0].equals("rng") )
-			init( av[0], av[1], ".rng", genericLoader );
-		else
-		if( av[0].equals("xsd") )
-			init( av[0], av[1], ".xsd", genericLoader );
-		else
-		if( av[0].equals("dtd") )
-			init( av[0], av[1], ".dtd", dtdLoader );
-		else {
-			System.out.println("unrecognized language type: "+av[0] );
-			return;
-		}
+		init(av[0]);
 		
-		junit.textui.TestRunner.run( suite() );
-	}
-	
-	/** gets a TestSuite that loads and verifies all test instances in the test directory. */
-	public TestSuite suite() {		
-		// enumerate all schema
-		String[] schemas = testDir.list( new FilenameFilter(){
-			public boolean accept( File dir, String name ) {
-				return name.endsWith(ext);
-			}
-		} );
-
-		// each schema will have its own suite.
-		TestSuite suite = new TestSuite();
-		populateSuite( suite, schemas );
-//		if( schemas!=null )
-//			for( int i=0; i<schemas.length; i++ )
-//				suite.addTest( new SchemaSuite(this,schemas[i]).suite() );
+		// collect test cases
+		RNGTestSuite s = new RNGTestSuite();
+		for( int i=1; i<av.length; i++ )
+			s.addTest(parse(av[i]));
 		
-		return suite;
+		junit.textui.TestRunner.run( suite(s) );
 	}
-	
-	protected abstract void populateSuite( TestSuite suite, String[] schemata );
 	
 	public static void report( ValidityViolation vv ) {
 		System.out.println(
 			vv.getLineNumber()+":"+vv.getColumnNumber()+
 			"  " + vv.getMessage());
 	}
+
+	
+	
+	/**
+	 * Creates a JUnit test suite from a set of paths that are specified
+	 * by a system property.
+	 * 
+	 * Mainly used to run an automated test from Ant.
+	 */
+	public TestSuite createFromProperty( String propertyName ) throws Exception {
+		String property = System.getProperty(propertyName);
+		if(property==null)
+			return new TestSuite();	// return an empty test suite.
+		
+		StringTokenizer tokens = new StringTokenizer( property, ";" );
+
+		// collect test cases
+		RNGTestSuite s = new RNGTestSuite();
+		while( tokens.hasMoreTokens() )
+			s.addTest(parse(tokens.nextToken()));
+				
+		return suite(s);
+	}
+	
+	/**
+	 * Gets the name of the test case from a header, which can be possibly null.
+	 */
+	public String getName( RNGHeader header ) {
+		String s=null;
+		if(header!=null)	s = header.getName();
+		if(s==null)			s = "";
+		return s;
+	}
+
 }

@@ -20,16 +20,10 @@ import java.util.StringTokenizer;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RELAXBatchTest {
-	public static TestSuite suite() {
-		StringTokenizer tokens = new StringTokenizer( System.getProperty("RELAXBatchTestDir"), ";" );
+	public static TestSuite suite() throws Exception {
+		BatchVerifyTester t = new BatchVerifyTester();
+		t.init("relax");
 		
-		TestSuite s = new TestSuite();
-		while( tokens.hasMoreTokens() ) {
-			BatchVerifyTester t = new BatchVerifyTester();
-			t.init("relax", tokens.nextToken(), ".rlx", batch.BatchTester.genericLoader);
-			s.addTest( t.suite() );
-		}
-		
-		return s;
+		return t.createFromProperty("RELAXBatchTestDir");
 	}
 }

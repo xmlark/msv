@@ -20,16 +20,10 @@ import java.util.StringTokenizer;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class TREXBatchTest {
-	public static TestSuite suite() {
-		StringTokenizer tokens = new StringTokenizer( System.getProperty("TREXBatchTestDir"), ";" );
+	public static TestSuite suite() throws Exception {
+		BatchVerifyTester t = new BatchVerifyTester();
+		t.init("trex");
 		
-		TestSuite s = new TestSuite();
-		while( tokens.hasMoreTokens() ) {
-			BatchVerifyTester t = new BatchVerifyTester();
-			t.init("trex", tokens.nextToken(), ".trex", batch.BatchTester.genericLoader);
-			s.addTest( t.suite() );
-		}
-		
-		return s;
+		return t.createFromProperty("TREXBatchTestDir");
 	}
 }

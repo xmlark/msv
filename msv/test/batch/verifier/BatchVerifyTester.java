@@ -14,6 +14,8 @@ import java.util.Iterator;
 import java.io.*;
 import org.apache.xerces.parsers.SAXParser;
 import org.relaxng.testharness.validator.IValidator;
+import org.relaxng.testharness.junit.TestSuiteBuilder;
+import org.relaxng.testharness.model.*;
 import org.xml.sax.InputSource;
 import junit.framework.*;
 import com.sun.msv.verifier.*;
@@ -41,31 +43,7 @@ public class BatchVerifyTester extends batch.BatchTester {
 			"  in the specified directory.");
 	}
 
-	public TestSuite suite() {
-		
-		TestSuite suite = super.suite();
-		
-		// add test cases from the suite file.
-		IValidator val = null;
-		if( ext.equals(".xsd") )	val = new msv.IValidatorImplForXS();
-		if( ext.equals(".rng") )	val = new msv.IValidatorImplForRNG();
-		
-		try {
-			suite.addTest( new SuiteTester(val).createTestSuiteFromDir(
-				new File(dir), ext+".ssuite" ) );
-		} catch( Exception e ) {
-			e.printStackTrace();
-			throw new Error(e.getMessage());
-		}
-		
-		return suite;
-	}
-	
-	/** gets a TestSuite that loads and verifies all test instances in the test directory. */
-	protected void populateSuite( TestSuite suite, String[] schemas ) {
-		// each schema will have its own suite.
-		if( schemas!=null )
-			for( int i=0; i<schemas.length; i++ )
-				suite.addTest( new SchemaVerifySuite(this,schemas[i]).suite() );
+	public TestSuite suite( RNGTestSuite source ) {
+		return new TestSuiteBuilder(validator).create(source);
 	}
 }

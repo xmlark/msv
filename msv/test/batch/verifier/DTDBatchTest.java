@@ -21,15 +21,10 @@ import java.util.StringTokenizer;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DTDBatchTest {
-	public static TestSuite suite() {
-		StringTokenizer tokens = new StringTokenizer( System.getProperty("DTDBatchTestDir"), ";" );
+	public static TestSuite suite() throws Exception {
+		BatchVerifyTester t = new BatchVerifyTester();
+		t.init("dtd");
 		
-		TestSuite s = new TestSuite();
-		while( tokens.hasMoreTokens() ) {
-			BatchVerifyTester t = new BatchVerifyTester();
-			t.init("dtd", tokens.nextToken(), ".dtd", batch.BatchTester.dtdLoader);
-			s.addTest( t.suite() );
-		}
-		return s;
+		return t.createFromProperty("DTDBatchTestDir");
 	}
 }

@@ -2,6 +2,29 @@
 <!-- $Id$ -->
 <suite>
 
+<!--
+	test for Name,NMTOKEN,NCName.
+	Core engine of these types are tested as a part of Crimson,
+	so test here is very brief
+-->
+<case name="test for Name,NCName,NMTOKEN">
+	<value>___</value>
+	<value>_:_</value>
+	<value>125</value>
+	
+	<answer for="Name"			>oo.</answer>
+	<answer for="NCName"		>o..</answer>
+	<answer for="NMTOKEN"		>ooo</answer>
+
+	<facets>
+		<facet answer=			"ooo" name="pattern" value=".*" />
+	</facets>
+	
+	<wrongs>
+		<value></value>
+	</wrongs>
+</case>
+
 <comment>
 <!-- sloppy test -->
 <case name="test for hexBinary">

@@ -51,7 +51,7 @@ public class Driver
 	
 	private static void usage() {
 		System.err.println(
-			"Usage: tahitic <options> grammar.rng\n"+
+			"Usage: tahiti <options> grammar.rng\n"+
 			"[OUTPUT OPTIONS]\n"+
 			"  -out xml    compiler will produce xml files.\n"+
 			"  -out java   compiler will produce java source files.\n"+

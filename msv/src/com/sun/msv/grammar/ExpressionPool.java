@@ -462,7 +462,7 @@ public class ExpressionPool implements java.io.Serializable {
                 int objCnt = fields.get("count",0);
                 parent = (ClosedHash)fields.get("parent",null);
                 
-                int size = (int)(objCnt/loadFactor)*2;
+                int size = (int)(objCnt/loadFactor)*2+10;
                 threshold = count*2;
                 count = 0;
                 table = new Expression[size];

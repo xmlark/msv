@@ -336,7 +336,6 @@ public abstract class Expression implements java.io.Serializable {
 
 
     protected Object readResolve() {
-        System.out.println("resolve");
         setHashCode(calcHashCode());
         return this;
     }

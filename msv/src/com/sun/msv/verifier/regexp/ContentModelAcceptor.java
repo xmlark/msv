@@ -16,7 +16,6 @@ import com.sun.msv.verifier.regexp.ExpressionAcceptor;
 import com.sun.msv.verifier.regexp.ElementToken;
 import com.sun.msv.verifier.regexp.StartTagInfoEx;
 import com.sun.msv.verifier.regexp.CombinedChildContentExpCreator;
-import com.sun.msv.datatype.ValidationContextProvider;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
 import java.util.Set;

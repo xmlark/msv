@@ -10,7 +10,6 @@
 package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.*;
-import com.sun.msv.datatype.ValidationContextProvider;
 import org.xml.sax.Attributes;
 
 /**

@@ -48,6 +48,10 @@ public class Controller implements GrammarReaderController,ErrorHandler
         setErrorFlag();
         core.error(locs,errorMessage,nestedException);
     }
+
+    public void error( String errorMessage, Exception nestedException ) {
+        error( new Locator[0], errorMessage, nestedException );
+    }
     
 	public void fatalError( SAXParseException spe ) {
 		error(spe);

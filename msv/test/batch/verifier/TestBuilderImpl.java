@@ -29,7 +29,7 @@ public class TestBuilderImpl implements TestBuilder
             schema = validator.parseSchema(src);
             
             assertNotNull(
-                "validator failed to compile a correct schema",
+                "validator "+validator+" failed to compile a correct schema "+src,
                 schema );
         }
     }
@@ -61,9 +61,9 @@ public class TestBuilderImpl implements TestBuilder
                 if(r==expectation)  return; // OK
                 
                 if(expectation)
-                    fail("validator failed to accept a valid document");
+                    fail("validator "+validator+" failed to accept a valid document "+document);
                 else
-                    fail("validator accepted an invalid document");
+                    fail("validator "+validator+" accepted an invalid document "+document);
             }
         };
     }
@@ -72,7 +72,7 @@ public class TestBuilderImpl implements TestBuilder
         return new TestCase(getName(schema)) {
             public void runTest() throws Exception {
                 assertNull(
-                    "validator compiled an incorrect schema",
+                    "validator "+validator+" compiled an incorrect schema "+schema,
                     validator.parseSchema(schema) );
             }
         };

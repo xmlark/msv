@@ -82,8 +82,7 @@ public class REDocumentDeclaration implements DocumentDeclaration
 	
 	
 	
-	public String localizeMessage( String propertyName, Object[] args )
-	{
+	public String localizeMessage( String propertyName, Object[] args ) {
 		String format = java.util.ResourceBundle.getBundle(
 			"com.sun.msv.verifier.regexp.Messages").getString(propertyName);
 		
@@ -140,6 +139,12 @@ public class REDocumentDeclaration implements DocumentDeclaration
 		"Diagnosis.UncompletedContent.Separator";
 	public static final String DIAG_UNCOMPLETED_CONTENT_MORE =
 		"Diagnosis.UncompletedContent.More";
+	public static final String DIAG_BAD_LITERAL_WRAPUP = // arg:1
+		"Diagnosis.BadLiteral.WrapUp";
+	public static final String DIAG_BAD_LITERAL_SEPARATOR =
+		"Diagnosis.BadLiteral.Separator";
+	public static final String DIAG_BAD_LITERAL_MORE =
+		"Diagnosis.BadLiteral.More";
 	public static final String DIAG_SIMPLE_NAMECLASS =
 		"Diagnosis.SimpleNameClass";
 	public static final String DIAG_NAMESPACE_NAMECLASS =
@@ -148,7 +153,8 @@ public class REDocumentDeclaration implements DocumentDeclaration
 		"Diagnosis.NotNamespaceNameClass";
 	public static final String DIAG_STRING_NOT_ALLOWED =
 		"Diagnosis.StringNotAllowed";
-//	public static final String DIAG_BAD_LITERAL_VALUE_WRAPUP =
-//		"Diagnosis.BadLiteralValue.WrapUp";
-
+	public static final String DIAG_BAD_KEY_VALUE = // arg:1
+		"Diagnosis.BadKeyValue";
+	public static final String DIAG_BAD_KEY_VALUE2 = // arg:2
+		"Diagnosis.BadKeyValue2";
 }

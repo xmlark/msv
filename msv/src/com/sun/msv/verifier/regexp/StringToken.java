@@ -10,20 +10,20 @@
 package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.*;
-import com.sun.msv.datatype.DataType;
+import com.sun.msv.grammar.relaxng.NGTypedStringExp;
 import com.sun.msv.datatype.StringType;
-import com.sun.msv.datatype.ValidationContextProvider;
 import com.sun.msv.util.DataTypeRef;
+import org.relaxng.datatype.DataType;
 
 /**
  * chunk of string.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class StringToken extends Token
-{
+public class StringToken extends Token {
+	
 	protected final String literal;
-	protected final ValidationContextProvider context;
+	protected final IDContextProvider context;
 	protected final boolean ignorable;
 	/**
 	 * if this field is non-null,
@@ -32,13 +32,11 @@ public class StringToken extends Token
 	protected final DataTypeRef refType;
 	protected boolean saturated = false;
 	
-	public StringToken( String literal, ValidationContextProvider context )
-	{
+	public StringToken( String literal, IDContextProvider context ) {
 		this(literal,context,null);
 	}
 	
-	public StringToken( String literal, ValidationContextProvider context, DataTypeRef refType )
-	{
+	public StringToken( String literal, IDContextProvider context, DataTypeRef refType ) {
 		this.literal = literal;
 		this.context = context;
 		this.refType = refType;
@@ -46,22 +44,36 @@ public class StringToken extends Token
 	}
 	
 	/** TypedStringExp can consume this token if its datatype can accept this string */
-	boolean match( TypedStringExp exp )
-	{
-		if(!exp.dt.verify( literal, context ))	return false;
+	boolean match( TypedStringExp exp ) {
+		if(!exp.dt.allows( literal, context ))	return false;
 		if(refType!=null)	assignType(exp.dt);
-		return true;
+		
+		boolean ret = true;
+		
+		// ID/IDREF constraint check.
+		if( exp instanceof NGTypedStringExp ) {
+			// if this expression is key/keyref of RELAX NG,
+			NGTypedStringExp texp = (NGTypedStringExp)exp;
+			
+			// then report detected key/keyrefs.
+			if( texp.keyName!=null )
+				ret = context.onID( texp.keyName,
+					exp.dt.createValue(literal,context) );
+			
+			if( texp.keyrefName!=null )
+				context.onIDREF( texp.keyrefName,
+					exp.dt.createValue(literal,context) );
+		}
+		return ret;
 	}
 	
 	// anyString can match any string
-	boolean matchAnyString()
-	{
+	boolean matchAnyString() {
 		if(refType!=null)	assignType(StringType.theInstance);
 		return true;
 	}
 
-	private void assignType( DataType dt )
-	{
+	private void assignType( DataType dt ) {
 		if(saturated)
 			// more than one types are assigned. roll back to null
 			refType.type=null;

@@ -15,29 +15,28 @@ import java.util.Set;
 /**
  * special StringToken that acts as a wild card.
  * 
- * This object is used for error recovery.
+ * This object is used for error recovery. It collects all TypedStringExps
+ * that ate the token.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class StringRecoveryToken extends StringToken
-{
-	StringRecoveryToken( StringToken base )
-	{
+class StringRecoveryToken extends StringToken {
+	
+	StringRecoveryToken( StringToken base ) {
 		super( base.literal, base.context );
 	}
 	
 	/**
-	 * DataTypes that signals an error is collected into this object.
+	 * TypedStringExps that rejected this token are collected into this set.
 	 */
-	final Set failedTypes = new java.util.HashSet();
+	final Set failedExps = new java.util.HashSet();
 	
-	boolean match( TypedStringExp exp )
-	{
-		if( exp.dt.verify( literal, context ) )
+	boolean match( TypedStringExp exp ) {
+		if( super.match(exp) )
 			return true;
 		
 		// this datatype didn't accept me. so record it for diagnosis.
-		failedTypes.add( exp.dt );
+		failedExps.add( exp );
 		return true;
 	}
 }

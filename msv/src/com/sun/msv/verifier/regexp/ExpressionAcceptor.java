@@ -11,13 +11,15 @@ package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.TypedString;
+import com.sun.msv.grammar.relaxng.NGTypedStringExp;
+import com.sun.msv.grammar.relaxng.ValueType;
+import com.sun.msv.grammar.IDContextProvider;
 import com.sun.msv.verifier.*;
 import com.sun.msv.datatype.DataType;
-import com.sun.msv.datatype.DataTypeErrorDiagnosis;
-import com.sun.msv.datatype.ValidationContextProvider;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
 import com.sun.msv.util.DataTypeRef;
+import org.relaxng.datatype.DataTypeException;
 import java.util.*;
 
 /**
@@ -148,7 +150,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 		return true;
 	}
 	
-	public boolean stepForward( String literal, ValidationContextProvider provider, StringRef refErr, DataTypeRef refType )
+	public boolean stepForward( String literal, IDContextProvider provider, StringRef refErr, DataTypeRef refType )
 	{
 		return stepForward( new StringToken(literal,provider,refType), refErr );
 	}
@@ -441,13 +443,13 @@ public abstract class ExpressionAcceptor implements Acceptor
 	{
 		try
 		{
-			DataTypeErrorDiagnosis diag;
+			DataTypeException diag;
 			diag = exp.dt.diagnose(	sti.attributes.getValue(index), sti.context );
 										
 			if( diag!=null )	// diag is null if the implementation has flaw
 								// and unable to provide diagnosis.
 								// should we throw an assertion here?
-				return diag.message;
+				return diag.getMessage();
 		}
 		catch( UnsupportedOperationException uoe )
 		{
@@ -757,8 +759,10 @@ public abstract class ExpressionAcceptor implements Acceptor
 					docDecl.DIAG_MISSING_ATTRIBUTE_MORE ) );
 	}
 	
-	private final String diagnoseUnexpectedLiteral( StringToken token )
-	{
+	/**
+	 * diagnoses an error when a StringToken is rejected.
+	 */
+	private final String diagnoseUnexpectedLiteral( StringToken token ) {
 		final StringRecoveryToken srt = new StringRecoveryToken(token);
 		
 		// this residual corresponds to the expression we get
@@ -766,8 +770,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 		Expression recoveryResidual
 			= docDecl.resCalc.calcResidual(expression,srt);
 		
-		if( recoveryResidual==Expression.nullSet )
-		{
+		if( recoveryResidual==Expression.nullSet ) {
 			// we now know that no string literal was expected at all.
 			return docDecl.localizeMessage( docDecl.DIAG_STRING_NOT_ALLOWED, null );
 			// keep this.expression untouched. This is equivalent to ignore this token.
@@ -776,27 +779,71 @@ public abstract class ExpressionAcceptor implements Acceptor
 		// there are two possible "recovery" for this error.
 		//  (1) ignore this token
 		//  (2) replace this token by a valid token.
-		// by the following choice implements both of them.
+		// the following choice implements both of them.
 		expression = docDecl.pool.createChoice( expression, recoveryResidual );
 		
-		// TODO: check if expressions are complex
-		if( srt.failedTypes.size()==1 )
-		{
-			DataType dt = (DataType)srt.failedTypes.iterator().next();
-			try
-			{
-				DataTypeErrorDiagnosis diag = dt.diagnose( srt.literal, srt.context );
-				if( diag==null )// datatype implementation doesn't support diagnosis
-					return null;
+		if( srt.failedExps.size()==1 ) {
+			
+			TypedStringExp texp = (TypedStringExp)srt.failedExps.iterator().next();
+			try {
+				DataTypeException diag = texp.dt.diagnose( srt.literal, srt.context );
+				if( diag!=null )
+					// this literal is invalid for this datatype.
+					return diag.getMessage();
 				
-				return diag.message;
+				// now the literal is valid.
+				// Is this key/keyref constraint violation?
+				if( texp instanceof NGTypedStringExp ) {
+					NGTypedStringExp ntexp = (NGTypedStringExp)texp;
+					if( ntexp.keyName!=null
+						&& !token.context.onID( ntexp.keyName, ntexp.dt.createValue(token.literal,token.context) ) ) {
+						
+						if( ntexp.keyName.length()==0 )
+							// empty key name indicates that this is an ID.
+							return docDecl.localizeMessage( docDecl.DIAG_BAD_KEY_VALUE,
+								token.literal.trim() );
+						else
+							return docDecl.localizeMessage( docDecl.DIAG_BAD_KEY_VALUE2,
+								token.literal.trim(), ntexp.keyName );
+					}
+				}
+			} catch( UnsupportedOperationException uoe ) {}
+		} else {
+			// there are multiple candidates.
+			final Set items = new java.util.HashSet();
+			boolean more = false;
+			
+			Iterator itr = srt.failedExps.iterator();
+								
+			while(itr.hasNext()) {
+				TypedStringExp texp = (TypedStringExp)itr.next();
+				
+				if( texp.dt instanceof TypedString )
+					// this expression is <string> of TREX.
+					// So we can list this item as one of the candidates
+					items.add( ((TypedString)texp.dt).value );
+				else
+				if( texp.dt instanceof ValueType )
+					// this expression is <value> of RELAX NG.
+					items.add( ((ValueType)texp.dt).value.toString() );
+				else
+					// this must be some datatype
+					// that we can't provide diagnosis.
+					more = true;
 			}
-			catch( UnsupportedOperationException uoe )
-			{// datatype implementation doesn't support diagnosis
-				return null;
-			}
+			
+			// no candidates was simple. bail out.
+			if( items.size()==0 )	return null;
+			
+			// at least we have one suggestion.
+			return docDecl.localizeMessage(
+				docDecl.DIAG_BAD_LITERAL_WRAPUP,
+				concatenateMessages( items, more,
+					docDecl.DIAG_BAD_LITERAL_SEPARATOR,
+					docDecl.DIAG_BAD_LITERAL_MORE ) );
 		}
 		
+		// unable to diagnose the reason of error.
 		return null;
 	}
 	

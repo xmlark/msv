@@ -30,10 +30,25 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
 		super.startSelf();
 		// if name attribtue is specified, use it.
 		final String name = startTag.getAttribute("name");
-		if( name!=null )
+
+		if( name==null )	return;
+
+		
+		final int idx = name.indexOf(':');
+		if( idx!=-1 )
+		{// QName is specified. resolve this prefix.
+			final String[] s = reader.splitNamespacePrefix(name);
+			if(s==null)
+			{
+				reportError( ERR_UNDECLEARED_PREFIX, name );
+				// recover by using a dummy name
+				nameClass = new SimpleNameClass( "", name );
+			}
+			else
+				nameClass = new SimpleNameClass( s[0], s[1] );
+		}
+		else
 			nameClass = new SimpleNameClass( getNamespace(), name );
-//				((TREXGrammarReader)reader).targetNamespace, name );
-			
 	}
 	public void onEndChild( NameClass p )
 	{

@@ -67,6 +67,11 @@ public class RELAXNGReader extends TREXBaseReader {
 	}
 
 	/** easy-to-use constructor. */
+	public RELAXNGReader( GrammarReaderController controller ) {
+		this(controller,createParserFactory());
+	}
+	
+	/** easy-to-use constructor. */
 	public RELAXNGReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory) {
@@ -199,6 +204,10 @@ public class RELAXNGReader extends TREXBaseReader {
 		 * that the resolution was failed.
 		 */
 		public DatatypeLibrary getDatatypeLibrary( String namespaceURI ) throws Exception {
+			
+			if( namespaceURI.equals("") )
+				return BuiltinDatatypeLibrary.theInstance;
+			
 			// We have the built-in support for XML Schema Part 2.
 			if( namespaceURI.equals(XSDVocabulary.XMLSchemaNamespace)
 			||  namespaceURI.equals(XSDVocabulary.XMLSchemaNamespace2) ) {
@@ -298,7 +307,7 @@ public class RELAXNGReader extends TREXBaseReader {
 	 * In case of an error, this field may be set to null after issuing an error.
 	 * So care should be taken not to report the same error again.
 	 */
-	protected DatatypeLibrary datatypeLib = new BuiltinDatatypeLibrary();
+	protected DatatypeLibrary datatypeLib = BuiltinDatatypeLibrary.theInstance;
 	/**
 	 * the namespace URI of the currently active datatype library.
 	 * The empty string indicates the built-in datatype library.
@@ -319,7 +328,7 @@ public class RELAXNGReader extends TREXBaseReader {
 		// the datatypeLibrary attribute does not do chameleon
 		dtLibStack.push(datatypeLib);
 		dtLibURIStack.push(datatypeLibURI);
-		datatypeLib = new BuiltinDatatypeLibrary();
+		datatypeLib = BuiltinDatatypeLibrary.theInstance;
 		datatypeLibURI = "";
 
 		super.startDocument();

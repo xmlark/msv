@@ -33,7 +33,11 @@ public class InlineElementState extends ExpressionWithoutChildState
 	{
 		super.startSelf();
 		String type		= startTag.getAttribute("type");
-		if(type==null)	type="string";
+		if(type==null)
+		{
+			reader.reportError( RELAXReader.ERR_MISSING_ATTRIBUTE, "element", "type" );
+			type="string";
+		}
 		
 		incubator = new TypeIncubator(
 					((RELAXReader)reader).resolveDataType(type) );

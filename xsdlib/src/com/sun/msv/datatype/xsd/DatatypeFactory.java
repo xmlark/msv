@@ -174,7 +174,7 @@ public class DatatypeFactory {
 				add( builtinType, IDREFType.theInstance );
 			else
 			if( dataTypeName.equals("IDREFS") )
-				add( builtinType, IDREFType.theIDREFSinstance );
+				add( builtinType, createOneOrMoreList("IDREFS",IDREFType.theInstance) );
 			else
 			if( dataTypeName.equals("ENTITIES") )
 				add( builtinType, createOneOrMoreList("ENTITIES",EntityType.theInstance) );

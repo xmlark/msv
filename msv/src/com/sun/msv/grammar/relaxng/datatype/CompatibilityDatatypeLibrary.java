@@ -10,6 +10,9 @@
 package com.sun.msv.grammar.relaxng.datatype;
 
 import org.relaxng.datatype.*;
+import com.sun.msv.datatype.xsd.IDType;
+import com.sun.msv.datatype.xsd.IDREFType;
+import com.sun.msv.datatype.xsd.DatatypeFactory;
 
 /**
  * RELAX NG DTD compatibility datatype library.
@@ -27,11 +30,11 @@ public class CompatibilityDatatypeLibrary implements DatatypeLibrary {
 	
 	public Datatype createDatatype( String name ) throws DatatypeException {
 		if( name.equals("ID") )
-			return com.sun.msv.datatype.xsd.IDType.theInstance;
+			return IDType.theInstance;
 		if( name.equals("IDREF") )
-			return com.sun.msv.datatype.xsd.IDREFType.theInstance;
+			return IDREFType.theInstance;
 		if( name.equals("IDREFS") )
-			return com.sun.msv.datatype.xsd.IDREFType.theIDREFSinstance;
+			return DatatypeFactory.getTypeByName("IDREFS");
 		
 		throw new DatatypeException("undefined built-in type:"+name);
 	}

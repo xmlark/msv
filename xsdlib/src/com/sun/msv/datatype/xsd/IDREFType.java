@@ -32,19 +32,6 @@ import org.relaxng.datatype.ValidationContext;
 public class IDREFType extends NmtokenType {
 	
 	public static final IDREFType theInstance = new IDREFType();
-	public static final XSDatatypeImpl theIDREFSinstance = createIDREFS();
-		
-	private static XSDatatypeImpl createIDREFS() {
-		try {
-			TypeIncubator ti = new TypeIncubator(
-				DatatypeFactory.deriveByList("IDREFS",IDREFType.theInstance ) );
-			ti.addFacet("minLength","1",false,null);
-			return (XSDatatypeImpl)ti.derive("IDREFS");
-		} catch( Exception e ) {
-			// not possible
-			throw new Error();
-		}
-	}
 	
 	protected IDREFType()	{ super("IDREF"); }
 	

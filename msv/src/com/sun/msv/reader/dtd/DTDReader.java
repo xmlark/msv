@@ -97,11 +97,11 @@ public class DTDReader implements DTDEventListener {
 			m.put( DTDParser.TYPE_CDATA,	NormalizedStringType.theInstance );
 			m.put( DTDParser.TYPE_ID,		IDType.theInstance );
 			m.put( DTDParser.TYPE_IDREF,	IDREFType.theInstance );
-			m.put( DTDParser.TYPE_IDREFS,	IDREFType.theIDREFSinstance );
+			m.put( DTDParser.TYPE_IDREFS,	DatatypeFactory.getTypeByName(DTDParser.TYPE_IDREFS) );
 			m.put( DTDParser.TYPE_ENTITY,	EntityType.theInstance );
-			m.put( DTDParser.TYPE_ENTITIES,	DatatypeFactory.deriveByList(DTDParser.TYPE_ENTITIES, EntityType.theInstance ) );
+			m.put( DTDParser.TYPE_ENTITIES,	DatatypeFactory.getTypeByName(DTDParser.TYPE_ENTITIES) );
 			m.put( DTDParser.TYPE_NMTOKEN,	NmtokenType.theInstance );
-			m.put( DTDParser.TYPE_NMTOKENS,	DatatypeFactory.deriveByList(DTDParser.TYPE_NMTOKENS, NmtokenType.theInstance ) );
+			m.put( DTDParser.TYPE_NMTOKENS,	DatatypeFactory.getTypeByName(DTDParser.TYPE_NMTOKENS) );
     
 			// use string as a base type of enumeration.
 			// TODO: confirm whitespace handling of string type is appropriate.

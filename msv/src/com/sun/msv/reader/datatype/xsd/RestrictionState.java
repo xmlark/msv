@@ -23,24 +23,23 @@ import com.sun.tranquilo.util.StartTagInfo;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class RestrictionState extends TypeWithOneChildState implements FacetStateParent
-{
+public class RestrictionState extends TypeWithOneChildState implements FacetStateParent {
+	
 	protected final String newTypeName;
-	protected RestrictionState( String newTypeName )
-	{
+	protected RestrictionState( String newTypeName ) {
 		this.newTypeName = newTypeName;
 	}
 	
 	protected TypeIncubator incubator;
-	public final TypeIncubator getIncubator()	{ return incubator; }
+	public final TypeIncubator getIncubator() {
+		return incubator;
+	}
 
-	protected DataType annealType( DataType baseType ) throws BadTypeException
-	{
+	protected DataType annealType( DataType baseType ) throws BadTypeException {
 		return incubator.derive(newTypeName);
 	}
 	
-	public void onEndChild( DataType child )
-	{
+	public void onEndChild( DataType child ) {
 		super.onEndChild(child);
 		incubator = new TypeIncubator(super.type);
 	}
@@ -57,17 +56,14 @@ public class RestrictionState extends TypeWithOneChildState implements FacetStat
 		}
 	}
 
-	protected State createChildState( StartTagInfo tag )
-	{
+	protected State createChildState( StartTagInfo tag ) {
 		// accepts elements from the same namespace only.
 		if( !startTag.namespaceURI.equals(tag.namespaceURI) )	return null;
 		
 		if( tag.localName.equals("annotation") )	return new IgnoreState();
 		if( tag.localName.equals("simpleType") )	return new SimpleTypeState();
-		if( FacetState.facetNames.contains(tag.localName) )
-		{
-			if( incubator==null )
-			{
+		if( FacetState.facetNames.contains(tag.localName) ) {
+			if( incubator==null ) {
 				reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "restriction", "base" );
 				type = reader.resolveDataType("string");	// assume some type
 				incubator = new TypeIncubator(type);

@@ -434,15 +434,15 @@ public class TypeIncubator
 			String facetName = (String)itr.next();
 			FacetInfo fi = (FacetInfo)impl.get(facetName);
 			
-			if( fi.value instanceof String )
-				out.println( facetName + " : " + (String)fi.value );
-			else
+			if(fi.value instanceof Vector)
 			{
 				out.println( facetName + " :");
 				Vector v = (Vector)fi.value;
 				for( int i=0; i<v.size(); i++ )
 					out.println( "  " +v.elementAt(i) );
 			}
+			else
+				out.println( facetName + " : " + fi.value );
 		}
 	}
 	

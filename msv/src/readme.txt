@@ -5,7 +5,11 @@ TODO
 * add another hierarchy to better handle type dizzy-chain
 * implement SmallDateTime/SmallTimeDuration
 * test derivation and its error.
-* implement diagnose methods.
+  - it can wait.
+* prepare more test cases for DataTypeTest.xml
+* make sure that separators are correctly handled in ListType.
+
+
 
 Design of ModuleReader
 ----------------------
@@ -26,12 +30,6 @@ Unresolved issue
   specified in somewhere of the derivation chain.
 
 * enumeration may not be able to use hash, due to date/time related value types.
-
-* license of com.sun.tranquilo.datatype.FloatValueType / FloatingDecimal 
-  or otherwise tranquilo requires JDK1.3, which is probably unacceptable.
-  ( ... maybe JDK1.2.2? )
-  (FloatType is modified to use java.lang.Float, instead of FloatValueType)
-  DoubleValueType / DecimalValueType are the same.
 
 * what should it do when it find undefined facets (like "abcdef")
 
@@ -63,11 +61,6 @@ Unresolved issue
 * what happens if someone specifies "scale" for "integer"?
 
 * what happens if someone specifies maxInclusive="100" for nonPositiveInteger?
-
-* derivation by list
-  Are tab/CR/LF valid separators, or not?
-  Are more than one #x20 allowed as a single separator?
-  -> Yes, because whiteSpace is fixed to "collapse"
 
 * possible limit of maximum precision?
   

@@ -7,6 +7,7 @@ import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.ReferenceExp;
 import com.sun.tranquilo.grammar.ReferenceContainer;
 import com.sun.tranquilo.grammar.SimpleNameClass;
+import com.sun.tranquilo.grammar.ChoiceNameClass;
 import com.sun.tranquilo.grammar.trex.TREXPatternPool;
 import com.sun.tranquilo.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.tranquilo.grammar.xmlschema.XMLSchemaSchema;
@@ -55,21 +56,17 @@ public class XMLSchemaReader extends GrammarReader
 		
 		xsiSchemaLocationExp = pool.createSequence(
 			pool.createOptional(
-				pool.createChoice(
-					pool.createAttribute(
-						new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace,"schemaLocation")
-					),
-					pool.createAttribute(
+				pool.createAttribute(
+					new ChoiceNameClass(
+						new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace,"schemaLocation"),
 						new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace_old,"schemaLocation")
 					)
 				)
 			),
 			pool.createOptional(
-				pool.createChoice(
-					pool.createAttribute(
-						new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace,"noNamespaceSchemaLocation")
-					),
-					pool.createAttribute(
+				pool.createAttribute(
+					new ChoiceNameClass(
+						new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace,"noNamespaceSchemaLocation"),
 						new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace_old,"noNamespaceSchemaLocation")
 					)
 				)

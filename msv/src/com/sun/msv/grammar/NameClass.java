@@ -68,6 +68,6 @@ public abstract class NameClass implements java.io.Serializable {
     
     /** Returns true if this name class doesn't accept anything. */
     public boolean isNull() {
-        return new NameClassCollisionChecker().check(this,AnyNameClass.theInstance);
+        return !new NameClassCollisionChecker().check(this,AnyNameClass.theInstance);
     }
 }

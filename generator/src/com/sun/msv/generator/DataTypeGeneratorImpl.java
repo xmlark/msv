@@ -9,10 +9,9 @@
  */
 package com.sun.tranquilo.generator;
 
-import com.sun.tranquilo.datatype.*;
+import com.sun.msv.datatype.*;
 import java.util.Random;
 import com.sun.xml.util.XmlChars;
-import com.sun.tranquilo.datatype.XmlNames;
 
 /**
  * default implementation of DataTypeGenerator.
@@ -83,11 +82,11 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator
 		if( dt instanceof FinalComponent )	// ignore final component
 			return generate( ((FinalComponent)dt).baseType );
 		
-		if( dt instanceof com.sun.tranquilo.grammar.relax.EmptyStringType )
+		if( dt instanceof com.sun.msv.grammar.relax.EmptyStringType )
 			return "";
 		
-		if( dt instanceof com.sun.tranquilo.grammar.trex.TypedString )
-			return ((com.sun.tranquilo.grammar.trex.TypedString)dt).value;
+		if( dt instanceof com.sun.msv.grammar.trex.TypedString )
+			return ((com.sun.msv.grammar.trex.TypedString)dt).value;
 		
 		
 		throw new Error("unsupported datatype: " + dt.displayName() );

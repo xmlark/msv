@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype.conformance;
+package com.sun.msv.datatype.conformance;
 
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.BadTypeException;
-import com.sun.tranquilo.datatype.TypeIncubator;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.BadTypeException;
+import com.sun.msv.datatype.TypeIncubator;
 
 /**
  * receives conformance test error.

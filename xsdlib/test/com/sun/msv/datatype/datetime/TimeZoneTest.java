@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype.datetime;
+package com.sun.msv.datatype.datetime;
 import junit.framework.*;
 
 /**
@@ -29,7 +29,7 @@ public class TimeZoneTest extends TestCase {
 		return new TestSuite(TimeZoneTest.class);
 	}
 	
-	/** Test of create method, of class com.sun.tranquilo.datatype.datetime.TimeZone. */
+	/** Test of create method, of class com.sun.msv.datatype.datetime.TimeZone. */
 	public void testCreate()
 	{
 		assertSame( TimeZone.create(0), TimeZone.GMT );
@@ -52,7 +52,7 @@ public class TimeZoneTest extends TestCase {
 		catch( IllegalArgumentException iae ) {;}	
 	}
 	
-	/** Test of hashCode method, of class com.sun.tranquilo.datatype.datetime.TimeZone. */
+	/** Test of hashCode method, of class com.sun.msv.datatype.datetime.TimeZone. */
 	public void testHashCode()
 	{
 		assertEquals( TimeZone.create(50), TimeZone.create(50) );

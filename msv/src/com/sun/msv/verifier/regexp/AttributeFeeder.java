@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.regexp;
+package com.sun.msv.verifier.regexp;
 
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.datatype.ValidationContextProvider;
+import com.sun.msv.grammar.*;
+import com.sun.msv.datatype.ValidationContextProvider;
 import org.xml.sax.Attributes;
 
 /**
@@ -80,9 +80,9 @@ public class AttributeFeeder implements ExpressionVisitorExpression
 		// otherwise the value was wrong.
 		return Expression.nullSet;
 		
-//			if( com.sun.tranquilo.driver.textui.Debug.debug )
+//			if( com.sun.msv.driver.textui.Debug.debug )
 //				System.out.println("after feeding "+atts.getQName(i)+" attribute");
-//				System.out.println(com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter.printContentModel(exp));
+//				System.out.println(com.sun.msv.grammar.trex.util.TREXPatternPrinter.printContentModel(exp));
 	}
 	
 

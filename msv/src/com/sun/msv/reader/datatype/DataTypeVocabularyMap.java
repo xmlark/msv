@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.datatype;
+package com.sun.msv.reader.datatype;
 
 import java.util.Map;
 
@@ -32,10 +32,10 @@ public class DataTypeVocabularyMap {
 		if(v!=null)		return v;
 		
 		// TODO: generic way to load a vocabulary
-		if( namespaceURI.equals( com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace ) ) {
-			v = new com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary();
-			impl.put( com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace, v );
-			impl.put( com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace2, v );
+		if( namespaceURI.equals( com.sun.msv.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace ) ) {
+			v = new com.sun.msv.reader.datatype.xsd.XSDVocabulary();
+			impl.put( com.sun.msv.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace, v );
+			impl.put( com.sun.msv.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace2, v );
 		}
 		
 		return v;

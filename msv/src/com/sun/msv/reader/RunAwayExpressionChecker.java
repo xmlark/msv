@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader;
+package com.sun.msv.reader;
 
-import com.sun.tranquilo.grammar.*;
+import com.sun.msv.grammar.*;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;

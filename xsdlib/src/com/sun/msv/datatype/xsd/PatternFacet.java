@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype;
+package com.sun.msv.datatype;
 
 import org.apache.xerces.utils.regex.RegularExpression;
 import org.apache.xerces.utils.regex.ParseException;

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.relax;
+package com.sun.msv.grammar.relax;
 
 /**
  * exportable Expression.

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.verifier;
+package com.sun.msv.relaxns.verifier;
 
 import org.iso_relax.dispatcher.Dispatcher;
 import org.iso_relax.dispatcher.IslandSchema;
@@ -15,16 +15,16 @@ import org.iso_relax.dispatcher.IslandVerifier;
 import org.iso_relax.dispatcher.ElementDecl;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
-import com.sun.tranquilo.relaxns.grammar.relax.AnyOtherElementExp;
-import com.sun.tranquilo.relaxns.grammar.ExternalElementExp;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ElementExp;
-import com.sun.tranquilo.verifier.regexp.ElementToken;
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
-import com.sun.tranquilo.verifier.regexp.trex.ContentModelAcceptor;
-import com.sun.tranquilo.verifier.regexp.trex.ComplexAcceptor;
-import com.sun.tranquilo.verifier.regexp.trex.SimpleAcceptor;
-import com.sun.tranquilo.util.StringRef;
+import com.sun.msv.relaxns.grammar.relax.AnyOtherElementExp;
+import com.sun.msv.relaxns.grammar.ExternalElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.verifier.regexp.ElementToken;
+import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.regexp.trex.ContentModelAcceptor;
+import com.sun.msv.verifier.regexp.trex.ComplexAcceptor;
+import com.sun.msv.verifier.regexp.trex.SimpleAcceptor;
+import com.sun.msv.util.StringRef;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
@@ -35,7 +35,7 @@ import java.util.Vector;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 class TREXIslandVerifier
-	extends com.sun.tranquilo.verifier.Verifier
+	extends com.sun.msv.verifier.Verifier
 	implements org.iso_relax.dispatcher.IslandVerifier
 {
 	protected Dispatcher dispatcher;

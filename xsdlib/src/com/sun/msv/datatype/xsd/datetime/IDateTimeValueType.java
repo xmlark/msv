@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype.datetime;
+package com.sun.msv.datatype.datetime;
 
 /**
  * Interface as value type of DateTimeType
@@ -31,7 +31,7 @@ public interface IDateTimeValueType
 	IDateTimeValueType normalize();
 	
 	/** compare two DateTimeValueType as defined in
-	 *  com/sun/tranquilo/datatype/Comparator
+	 *  com.sun.msv.datatype/Comparator
 	 */
 	int compare( IDateTimeValueType rhs );
 }

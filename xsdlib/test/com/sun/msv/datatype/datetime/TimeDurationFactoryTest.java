@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype.datetime;
+package com.sun.msv.datatype.datetime;
 import java.math.BigInteger;
 
 import java.math.BigDecimal;
@@ -33,7 +33,7 @@ public class TimeDurationFactoryTest extends TestCase {
 		return new TestSuite(TimeDurationFactoryTest.class);
 	}
 	
-	/** Test of create method, of class com.sun.tranquilo.datatype.datetime.TimeDurationFactory. */
+	/** Test of create method, of class com.sun.msv.datatype.datetime.TimeDurationFactory. */
 	public void testCreate() {
 		// TODO: Add your test code here.
 	}

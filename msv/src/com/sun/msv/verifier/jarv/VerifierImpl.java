@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.jarv;
+package com.sun.msv.verifier.jarv;
 
 import org.iso_relax.verifier.*;
 import org.xml.sax.SAXNotRecognizedException;
@@ -17,9 +17,9 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
 import org.w3c.dom.Node;
-import com.sun.tranquilo.verifier.DocumentDeclaration;
-import com.sun.tranquilo.verifier.ValidityViolation;
-import com.sun.tranquilo.verifier.util.VerificationErrorHandlerImpl;
+import com.sun.msv.verifier.DocumentDeclaration;
+import com.sun.msv.verifier.ValidityViolation;
+import com.sun.msv.verifier.util.VerificationErrorHandlerImpl;
 import java.io.IOException;
 
 /**

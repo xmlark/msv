@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.regexp;
+package com.sun.msv.verifier.regexp;
 
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.verifier.Acceptor;
+import com.sun.msv.grammar.*;
+import com.sun.msv.verifier.Acceptor;
 
 /**
  * calculates how character literals should be treated.

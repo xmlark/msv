@@ -7,16 +7,16 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.xmlschema;
+package com.sun.msv.reader.xmlschema;
 
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.SimpleState;
-import com.sun.tranquilo.reader.ExpressionOwner;
-import com.sun.tranquilo.reader.datatype.TypeOwner;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.xmlschema.SimpleTypeExp;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.ExpressionOwner;
+import com.sun.msv.reader.datatype.TypeOwner;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * State that parses global declarations.

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.driver.textui;
+package com.sun.msv.driver.textui;
 
 public class Debug
 {

@@ -7,15 +7,15 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.relax.core;
+package com.sun.msv.reader.relax.core;
 
 import java.util.Map;
 import org.xml.sax.Locator;
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.reader.*;
-import com.sun.tranquilo.reader.datatype.TypeOwner;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.reader.*;
+import com.sun.msv.reader.datatype.TypeOwner;
 
 /**
  * parses &lt;div&gt; element under &lt;module&gt; element.

@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.datatype;
+package com.sun.msv.reader.datatype;
 
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.reader.State;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * this class is used to parse foreign datatype vocabulary.

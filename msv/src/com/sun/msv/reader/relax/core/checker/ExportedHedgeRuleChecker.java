@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.relax.core.checker;
+package com.sun.msv.reader.relax.core.checker;
 
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.grammar.relax.*;
+import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.relax.*;
 import java.util.Stack;
 
 /**

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype;
+package com.sun.msv.datatype;
 
 /**
  * base class for facets which constrains lexical space of data

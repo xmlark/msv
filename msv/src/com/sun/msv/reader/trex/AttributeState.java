@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.trex;
+package com.sun.msv.reader.trex;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.AttributeExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.AttributeExp;
 
 /**
  * parses &lt;attribute&gt; pattern.

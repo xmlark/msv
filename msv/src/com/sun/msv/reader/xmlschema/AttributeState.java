@@ -7,19 +7,19 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.xmlschema;
+package com.sun.msv.reader.xmlschema;
 
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ReferenceContainer;
-import com.sun.tranquilo.grammar.AttributeExp;
-import com.sun.tranquilo.grammar.SimpleNameClass;
-import com.sun.tranquilo.grammar.trex.TypedString;
-import com.sun.tranquilo.grammar.xmlschema.AttributeDeclExp;
-import com.sun.tranquilo.grammar.xmlschema.XMLSchemaSchema;
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.ExpressionWithChildState;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ReferenceContainer;
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.grammar.trex.TypedString;
+import com.sun.msv.grammar.xmlschema.AttributeDeclExp;
+import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.ExpressionWithChildState;
 import org.xml.sax.Locator;
 
 /**

@@ -7,13 +7,13 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.relax;
+package com.sun.msv.reader.relax;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ReferenceExp;
-import com.sun.tranquilo.grammar.relax.RELAXModule;
-import com.sun.tranquilo.reader.ExpressionWithoutChildState;
-import com.sun.tranquilo.reader.GrammarReader;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.relax.RELAXModule;
+import com.sun.msv.reader.ExpressionWithoutChildState;
+import com.sun.msv.reader.GrammarReader;
 
 /**
  * base implementation of HedgeRefState and ElementRefState.

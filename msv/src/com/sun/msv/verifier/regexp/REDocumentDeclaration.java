@@ -7,13 +7,13 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.regexp;
+package com.sun.msv.verifier.regexp;
 
-import com.sun.tranquilo.verifier.Acceptor;
-import com.sun.tranquilo.verifier.DocumentDeclaration;
-import com.sun.tranquilo.verifier.regexp.ExpressionAcceptor;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ExpressionPool;
+import com.sun.msv.verifier.Acceptor;
+import com.sun.msv.verifier.DocumentDeclaration;
+import com.sun.msv.verifier.regexp.ExpressionAcceptor;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
 import java.util.Map;
 
 /**
@@ -56,7 +56,7 @@ public abstract class REDocumentDeclaration implements DocumentDeclaration
 	public String localizeMessage( String propertyName, Object[] args )
 	{
 		String format = java.util.ResourceBundle.getBundle(
-			"com.sun.tranquilo.verifier.regexp.Messages").getString(propertyName);
+			"com.sun.msv.verifier.regexp.Messages").getString(propertyName);
 		
 	    return java.text.MessageFormat.format(format, args );
 	}

@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.regexp;
+package com.sun.msv.verifier.regexp;
 
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.grammar.ExpressionPool;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.grammar.ExpressionPool;
 
 /**
  * StartTagInfo plus AttributeTokens.

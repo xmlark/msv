@@ -7,12 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.regexp.trex;
+package com.sun.msv.verifier.regexp.trex;
 
-import com.sun.tranquilo.datatype.ValidationContextProvider;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ElementExp;
-import com.sun.tranquilo.verifier.Acceptor;
+import com.sun.msv.datatype.ValidationContextProvider;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.verifier.Acceptor;
 
 /**
  * Accept that is used when more than one pattern can be applicable to the current context.

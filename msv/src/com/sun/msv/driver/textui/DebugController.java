@@ -7,12 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.driver.textui;
+package com.sun.msv.driver.textui;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-import com.sun.tranquilo.reader.GrammarReaderController;
+import com.sun.msv.reader.GrammarReaderController;
 
 /**
  * GrammarReaderController that prints all errors and warnings.

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader;
+package com.sun.msv.reader;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.NamespaceSupport;
@@ -15,7 +15,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.LocatorImpl;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * base interface of 'parsing state'.

@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.relax;
+package com.sun.msv.reader.relax;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.relax.RELAXModule;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.relax.RELAXModule;
 
 /**
  * parses &lt;hedgeRef label="..." /&gt; element.

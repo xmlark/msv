@@ -7,24 +7,24 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.grammar.relax;
+package com.sun.msv.relaxns.grammar.relax;
 
 import org.iso_relax.dispatcher.ElementDecl;
 import org.iso_relax.dispatcher.IslandSchema;
 import org.iso_relax.dispatcher.SchemaProvider;
 import org.xml.sax.SAXException;
 import org.xml.sax.ErrorHandler;
-import com.sun.tranquilo.relaxns.verifier.IslandSchemaImpl;
-import com.sun.tranquilo.relaxns.grammar.DeclImpl;
-import com.sun.tranquilo.relaxns.grammar.ExternalElementExp;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ReferenceExp;
-import com.sun.tranquilo.grammar.relax.RELAXModule;
-import com.sun.tranquilo.grammar.relax.ElementRules;
-import com.sun.tranquilo.grammar.relax.HedgeRules;
-import com.sun.tranquilo.grammar.relax.AttPoolClause;
-import com.sun.tranquilo.grammar.trex.TREXPatternPool;
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.relaxns.verifier.IslandSchemaImpl;
+import com.sun.msv.relaxns.grammar.DeclImpl;
+import com.sun.msv.relaxns.grammar.ExternalElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.relax.RELAXModule;
+import com.sun.msv.grammar.relax.ElementRules;
+import com.sun.msv.grammar.relax.HedgeRules;
+import com.sun.msv.grammar.relax.AttPoolClause;
+import com.sun.msv.grammar.trex.TREXPatternPool;
+import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
 import java.util.Set;
 import java.util.Iterator;
 

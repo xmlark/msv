@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype;
+package com.sun.msv.datatype;
 
 /**
  * base interface of types to which length-related facets are applicable.

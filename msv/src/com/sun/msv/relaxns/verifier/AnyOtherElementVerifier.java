@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.verifier;
+package com.sun.msv.relaxns.verifier;
 
 import org.iso_relax.dispatcher.IslandVerifier;
 import org.iso_relax.dispatcher.IslandSchema;
@@ -18,8 +18,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.Locator;
-import com.sun.tranquilo.verifier.Verifier;
-import com.sun.tranquilo.relaxns.grammar.relax.AnyOtherElementExp;
+import com.sun.msv.verifier.Verifier;
+import com.sun.msv.relaxns.grammar.relax.AnyOtherElementExp;
 import java.util.Set;
 
 /**

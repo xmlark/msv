@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.regexp.trex;
+package com.sun.msv.verifier.regexp.trex;
 
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.grammar.trex.*;
-import com.sun.tranquilo.verifier.regexp.AttributePruner;
+import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.trex.*;
+import com.sun.msv.verifier.regexp.AttributePruner;
 
 /**
  * Creates a pattern whose AttributePattern is completely replaced by nullSet.

@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.xmlschema;
+package com.sun.msv.reader.xmlschema;
 
-import com.sun.tranquilo.reader.SimpleState;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.State;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * used to parse root of schema document.

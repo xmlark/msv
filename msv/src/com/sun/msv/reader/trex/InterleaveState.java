@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.trex;
+package com.sun.msv.reader.trex;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.reader.ExpressionWithChildState;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.reader.ExpressionWithChildState;
 
 /**
  * parses &lt;interleave&gt; pattern.

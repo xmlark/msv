@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.trex;
+package com.sun.msv.grammar.trex;
 
-import com.sun.tranquilo.grammar.ExpressionVisitor;
+import com.sun.msv.grammar.ExpressionVisitor;
 
 /**
  * Visitor interface for TREX pattern.

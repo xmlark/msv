@@ -7,19 +7,19 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.datatype.xsd;
+package com.sun.msv.reader.datatype.xsd;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.SimpleState;
-import com.sun.tranquilo.reader.IgnoreState;
-import com.sun.tranquilo.reader.ExpressionOwner;
-import com.sun.tranquilo.reader.datatype.TypeOwner;
-import com.sun.tranquilo.datatype.BadTypeException;
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.StringType;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.IgnoreState;
+import com.sun.msv.reader.ExpressionOwner;
+import com.sun.msv.reader.datatype.TypeOwner;
+import com.sun.msv.datatype.BadTypeException;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.StringType;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * Base implementation for those states which produce DataType object

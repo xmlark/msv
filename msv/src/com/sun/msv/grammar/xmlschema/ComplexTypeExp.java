@@ -7,19 +7,19 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.xmlschema;
+package com.sun.msv.grammar.xmlschema;
 
-import com.sun.tranquilo.datatype.BadTypeException;
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.TypeIncubator;
-import com.sun.tranquilo.datatype.ValidationContextProvider;
-import com.sun.tranquilo.datatype.QnameType;
-import com.sun.tranquilo.grammar.ReferenceExp;
-import com.sun.tranquilo.grammar.ElementExp;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.SimpleNameClass;
-import com.sun.tranquilo.grammar.ChoiceNameClass;
-import com.sun.tranquilo.grammar.trex.ElementPattern;
+import com.sun.msv.datatype.BadTypeException;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.TypeIncubator;
+import com.sun.msv.datatype.ValidationContextProvider;
+import com.sun.msv.datatype.QnameType;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.grammar.ChoiceNameClass;
+import com.sun.msv.grammar.trex.ElementPattern;
 
 /**
  * ComplexType definition.

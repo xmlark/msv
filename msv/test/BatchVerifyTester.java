@@ -13,12 +13,12 @@ import java.io.*;
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.InputSource;
 import junit.framework.*;
-import com.sun.tranquilo.verifier.*;
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
-import com.sun.tranquilo.reader.GrammarReaderController;
-import com.sun.tranquilo.reader.dtd.DTDReader;
-import com.sun.tranquilo.reader.util.GrammarLoader;
-import com.sun.tranquilo.grammar.Grammar;
+import com.sun.msv.verifier.*;
+import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.reader.GrammarReaderController;
+import com.sun.msv.reader.dtd.DTDReader;
+import com.sun.msv.reader.util.GrammarLoader;
+import com.sun.msv.grammar.Grammar;
 
 /**
  * integration test: reads and verifies a lot.

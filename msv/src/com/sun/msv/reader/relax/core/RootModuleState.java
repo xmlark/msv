@@ -7,19 +7,19 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.relax.core;
+package com.sun.msv.reader.relax.core;
 
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.SimpleState;
-import com.sun.tranquilo.reader.ExpressionOwner;
-import com.sun.tranquilo.reader.RunAwayExpressionChecker;
-import com.sun.tranquilo.reader.relax.core.checker.*;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ExpressionPool;
-import com.sun.tranquilo.grammar.ReferenceContainer;
-import com.sun.tranquilo.grammar.ReferenceExp;
-import com.sun.tranquilo.grammar.relax.*;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.ExpressionOwner;
+import com.sun.msv.reader.RunAwayExpressionChecker;
+import com.sun.msv.reader.relax.core.checker.*;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.ReferenceContainer;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.relax.*;
 import org.xml.sax.Locator;
 import java.util.Iterator;
 

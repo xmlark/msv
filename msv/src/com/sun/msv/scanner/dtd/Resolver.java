@@ -17,7 +17,7 @@
  * THIS SOFTWARE OR ITS DERIVATIVES.
  */
 
-package com.sun.tranquilo.scanner.dtd;
+package com.sun.msv.scanner.dtd;
 
 import java.io.File;
 import java.io.FileInputStream;

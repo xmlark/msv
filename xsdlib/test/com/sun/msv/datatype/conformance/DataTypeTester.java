@@ -10,12 +10,12 @@
 /*
  * $Id$
 */
-package com.sun.tranquilo.datatype.conformance;
+package com.sun.msv.datatype.conformance;
 
 import org.jdom.*;
 import java.util.*;
 import java.io.PrintStream;
-import com.sun.tranquilo.datatype.*;
+import com.sun.msv.datatype.*;
 
 /**
  * tests DataType.verify method with various types and various lexical values.

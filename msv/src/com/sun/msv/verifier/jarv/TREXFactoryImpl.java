@@ -7,14 +7,14 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.jarv;
+package com.sun.msv.verifier.jarv;
 
 import org.iso_relax.verifier.*;
-import com.sun.tranquilo.grammar.trex.TREXGrammar;
-import com.sun.tranquilo.grammar.trex.TREXPatternPool;
-import com.sun.tranquilo.reader.trex.TREXGrammarReader;
-import com.sun.tranquilo.reader.util.IgnoreController;
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.grammar.trex.TREXGrammar;
+import com.sun.msv.grammar.trex.TREXPatternPool;
+import com.sun.msv.reader.trex.TREXGrammarReader;
+import com.sun.msv.reader.util.IgnoreController;
+import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.SAXParserFactory;

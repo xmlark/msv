@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.trex;
+package com.sun.msv.reader.trex;
 
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.reader.*;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.reader.*;
 
 /**
  * Used to parse merged grammar.

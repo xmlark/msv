@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.verifier;
+package com.sun.msv.relaxns.verifier;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -15,12 +15,12 @@ import org.xml.sax.ErrorHandler;
 import org.iso_relax.dispatcher.IslandVerifier;
 import org.iso_relax.dispatcher.IslandSchema;
 import org.iso_relax.dispatcher.impl.AbstractSchemaProviderImpl;
-import com.sun.tranquilo.relaxns.grammar.RELAXGrammar;
-import com.sun.tranquilo.relaxns.grammar.DeclImpl;
-import com.sun.tranquilo.grammar.Grammar;
-import com.sun.tranquilo.grammar.ReferenceExp;
-import com.sun.tranquilo.grammar.trex.TREXPatternPool;
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.relaxns.grammar.RELAXGrammar;
+import com.sun.msv.relaxns.grammar.DeclImpl;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.trex.TREXPatternPool;
+import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
 import java.util.Iterator;
 
 /**

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.verifier;
+package com.sun.msv.relaxns.verifier;
 
 import org.iso_relax.dispatcher.IslandSchema;
 import org.iso_relax.dispatcher.AttributesVerifier;
@@ -18,17 +18,17 @@ import org.iso_relax.dispatcher.ElementDecl;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
 import org.xml.sax.ErrorHandler;
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
-import com.sun.tranquilo.relaxns.grammar.DeclImpl;
-import com.sun.tranquilo.relaxns.grammar.ExternalElementExp;
-import com.sun.tranquilo.relaxns.grammar.ExternalAttributeExp;
+import com.sun.msv.grammar.*;
+import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.relaxns.grammar.DeclImpl;
+import com.sun.msv.relaxns.grammar.ExternalElementExp;
+import com.sun.msv.relaxns.grammar.ExternalAttributeExp;
 import java.util.Map;
 import java.util.Set;
 import java.util.Iterator;
 
 /**
- * base implementation of IslandSchema for Tranquilo VGM.
+ * base implementation of IslandSchema for MSV VGM.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
@@ -207,7 +207,7 @@ public abstract class IslandSchemaImpl implements IslandSchema
 		 */
 		public String localize( String propertyName, Object[] args ) {
 			String format = java.util.ResourceBundle.getBundle(
-				"com.sun.tranquilo.relaxns.verifier.Messages").getString(propertyName);
+				"com.sun.msv.relaxns.verifier.Messages").getString(propertyName);
 		    return java.text.MessageFormat.format(format, args );
 		}
 		

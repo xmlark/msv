@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype.datetime;
+package com.sun.msv.datatype.datetime;
 
 /**
  * simple time zone component.

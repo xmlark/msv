@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype;
+package com.sun.msv.datatype;
 
-import com.sun.tranquilo.datatype.datetime.ISO8601Parser;
-import com.sun.tranquilo.datatype.datetime.ITimeDurationValueType;
+import com.sun.msv.datatype.datetime.ISO8601Parser;
+import com.sun.msv.datatype.datetime.ITimeDurationValueType;
 import java.io.ByteArrayInputStream;
 
 /**

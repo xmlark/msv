@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar;
+package com.sun.msv.grammar;
 
 /**
  * Visitor interface for Expression and its derived types.
@@ -29,7 +29,7 @@ package com.sun.tranquilo.grammar;
  * 
  * <p>
  * To support TREX exntension primitives, implement
- * {@link com.sun.tranquilo.grammar.trex.TREXPatternVisitor} or its family.
+ * {@link com.sun.msv.grammar.trex.TREXPatternVisitor} or its family.
  * 
  * <p>
  * onRef method is called for all subclass of ReferenceExp. So you can safely use this

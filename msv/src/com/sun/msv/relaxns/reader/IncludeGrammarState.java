@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.reader;
+package com.sun.msv.relaxns.reader;
 
-import com.sun.tranquilo.reader.ChildlessState;
+import com.sun.msv.reader.ChildlessState;
 
 /**
  * parses &lt;include&gt; element of RELAX Namespace.

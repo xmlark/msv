@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier;
+package com.sun.msv.verifier;
 
 /**
  * Represents a kind of "constraint" over XML document.

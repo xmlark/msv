@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.xmlschema;
+package com.sun.msv.grammar.xmlschema;
 
-import com.sun.tranquilo.grammar.ReferenceExp;
+import com.sun.msv.grammar.ReferenceExp;
 
 /**
  * attribute declaration.

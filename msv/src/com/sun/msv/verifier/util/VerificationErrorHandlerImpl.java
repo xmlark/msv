@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.util;
+package com.sun.msv.verifier.util;
 
-import com.sun.tranquilo.verifier.VerificationErrorHandler;
-import com.sun.tranquilo.verifier.ValidityViolation;
+import com.sun.msv.verifier.VerificationErrorHandler;
+import com.sun.msv.verifier.ValidityViolation;
 import org.xml.sax.SAXException;
 
 /**

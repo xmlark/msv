@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype;
+package com.sun.msv.datatype;
 
 import junit.framework.*;
 
@@ -33,7 +33,7 @@ public class DataTypeImplTest extends TestCase
 	/** tests the existence of all messages */
 	public void testMessages() throws Exception
 	{
-		Field[] fields = com.sun.tranquilo.datatype.DataTypeImpl.class.getDeclaredFields();
+		Field[] fields = com.sun.msv.datatype.DataTypeImpl.class.getDeclaredFields();
 		
 		for( int i=0; i<fields.length; i++ )
 		{

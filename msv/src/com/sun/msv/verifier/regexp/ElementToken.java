@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.regexp;
+package com.sun.msv.verifier.regexp;
 
-import com.sun.tranquilo.grammar.ElementExp;
+import com.sun.msv.grammar.ElementExp;
 
 /**
  * a token that represents an XML element.

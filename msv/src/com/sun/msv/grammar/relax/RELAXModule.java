@@ -16,14 +16,14 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.relax;
+package com.sun.msv.grammar.relax;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ExpressionPool;
-import com.sun.tranquilo.grammar.Grammar;
-import com.sun.tranquilo.grammar.ReferenceExp;
-import com.sun.tranquilo.grammar.ReferenceContainer;
-import com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.ReferenceContainer;
+import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 
 /**
  * "Module" of RELAX Core.
@@ -99,7 +99,7 @@ public class RELAXModule implements Grammar {
 		themselves against target namespace of the module.
 	
 		The difficult part is that we have to achieve this semantics even when
-		we use the RELAX schema with com.sun.tranquilo.verifier.trex.
+		we use the RELAX schema with com.sun.msv.verifier.trex.
 	
 		To do this, this class has separate difinition for all exported attPools.
 	*/

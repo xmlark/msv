@@ -7,17 +7,17 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.regexp;
+package com.sun.msv.verifier.regexp;
 
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.grammar.trex.TypedString;
-import com.sun.tranquilo.verifier.*;
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.DataTypeErrorDiagnosis;
-import com.sun.tranquilo.datatype.ValidationContextProvider;
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.util.StringRef;
-import com.sun.tranquilo.util.DataTypeRef;
+import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.trex.TypedString;
+import com.sun.msv.verifier.*;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.DataTypeErrorDiagnosis;
+import com.sun.msv.datatype.ValidationContextProvider;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.util.StringRef;
+import com.sun.msv.util.DataTypeRef;
 import java.util.*;
 
 /**
@@ -75,14 +75,14 @@ public abstract class ExpressionAcceptor implements Acceptor
 			return recover( sti, errRef );	// recover from error.
 		}
 		
-		if( com.sun.tranquilo.driver.textui.Debug.debug )
+		if( com.sun.msv.driver.textui.Debug.debug )
 		{
 			System.out.println("accept start tag <"+ sti.qName+">. combined content pattern is");
-			System.out.println(com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter.printContentModel(e.content));
+			System.out.println(com.sun.msv.grammar.trex.util.TREXPatternPrinter.printContentModel(e.content));
 			
 			if( e.continuation!=null )
 				System.out.println("continuation is:\n"+
-					com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter.printContentModel(e.continuation)
+					com.sun.msv.grammar.trex.util.TREXPatternPrinter.printContentModel(e.continuation)
 					);
 			else
 				System.out.println("no continuation");
@@ -109,12 +109,12 @@ public abstract class ExpressionAcceptor implements Acceptor
 		else
 			residual = residual;
 		
-		if( com.sun.tranquilo.driver.textui.Debug.debug )
+		if( com.sun.msv.driver.textui.Debug.debug )
 		{
 			System.out.println("residual of stepForward("+token+")");
-			System.out.print(com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter.printContentModel(expression));
+			System.out.print(com.sun.msv.grammar.trex.util.TREXPatternPrinter.printContentModel(expression));
 			System.out.print("   ->   ");
-			System.out.println(com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter.printContentModel(residual));
+			System.out.println(com.sun.msv.grammar.trex.util.TREXPatternPrinter.printContentModel(residual));
 		}
 		
 		if( residual==Expression.nullSet )
@@ -154,9 +154,9 @@ public abstract class ExpressionAcceptor implements Acceptor
 	{
 		if( continuation!=Expression.nullSet )
 		{// successful transition
-			if( com.sun.tranquilo.driver.textui.Debug.debug )
+			if( com.sun.msv.driver.textui.Debug.debug )
 				System.out.println("stepForwardByCont. :  " +
-					com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter.printContentModel(continuation));
+					com.sun.msv.grammar.trex.util.TREXPatternPrinter.printContentModel(continuation));
 			expression = continuation;
 			return true;
 		}
@@ -252,12 +252,12 @@ public abstract class ExpressionAcceptor implements Acceptor
 			docDecl.getPool().createChoice(combinedEoC.content,combinedEoC_EoCR.content);
 		contentModel = contentModel.visit(ar);
 		
-		if( com.sun.tranquilo.driver.textui.Debug.debug )
+		if( com.sun.msv.driver.textui.Debug.debug )
 		{
 			System.out.println("content model of recovery acceptor:"+
-				com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter.printContentModel(contentModel) );
+				com.sun.msv.grammar.trex.util.TREXPatternPrinter.printContentModel(contentModel) );
 			System.out.println("continuation of recovery acceptor:"+
-				com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter.printSmallest(continuation) );
+				com.sun.msv.grammar.trex.util.TREXPatternPrinter.printSmallest(continuation) );
 		}
 		
 		// by passing null as elements of concern and
@@ -273,10 +273,10 @@ public abstract class ExpressionAcceptor implements Acceptor
 		// get combined expression before feeding attributes.
 		Expression e = cccc.get(expression,sti,false,true).content;
 		
-		if( com.sun.tranquilo.driver.textui.Debug.debug )
+		if( com.sun.msv.driver.textui.Debug.debug )
 		{
 			System.out.print("content model by tag name only:");
-			System.out.println(com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter.printContentModel(e));
+			System.out.println(com.sun.msv.grammar.trex.util.TREXPatternPrinter.printContentModel(e));
 		}
 		
 		if( e==Expression.nullSet )
@@ -596,7 +596,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 			// for RELAX, this is the only possible case
 			TypedStringExp tse = (TypedStringExp)constraint;
 			
-			if( tse.dt == com.sun.tranquilo.grammar.relax.NoneType.theInstance )
+			if( tse.dt == com.sun.msv.grammar.relax.NoneType.theInstance )
 			{
 				// if the underlying datatype is "none",
 				// this should be reported as unexpected attribute.

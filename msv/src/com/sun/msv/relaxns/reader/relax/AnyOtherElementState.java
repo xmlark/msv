@@ -7,13 +7,13 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.reader.relax;
+package com.sun.msv.relaxns.reader.relax;
 
-import com.sun.tranquilo.reader.ExpressionWithoutChildState;
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.grammar.relax.ElementRule;
-import com.sun.tranquilo.grammar.relax.TagClause;
-import com.sun.tranquilo.relaxns.grammar.relax.AnyOtherElementExp;
+import com.sun.msv.reader.ExpressionWithoutChildState;
+import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.relax.ElementRule;
+import com.sun.msv.grammar.relax.TagClause;
+import com.sun.msv.relaxns.grammar.relax.AnyOtherElementExp;
 import org.xml.sax.Locator;
 
 /**

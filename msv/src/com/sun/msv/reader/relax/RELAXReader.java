@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.relax;
+package com.sun.msv.reader.relax;
 
 import java.text.MessageFormat;
 import java.util.Collection;
@@ -20,15 +20,15 @@ import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.DataTypeFactory;
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.grammar.relax.EmptyStringType;
-import com.sun.tranquilo.grammar.relax.NoneType;
-import com.sun.tranquilo.reader.*;
-import com.sun.tranquilo.reader.datatype.xsd.FacetState;
-import com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.DataTypeFactory;
+import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.relax.EmptyStringType;
+import com.sun.msv.grammar.relax.NoneType;
+import com.sun.msv.reader.*;
+import com.sun.msv.reader.datatype.xsd.FacetState;
+import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * reads RELAX grammar/module by SAX2 and constructs abstract grammar model.
@@ -145,11 +145,11 @@ public abstract class RELAXReader extends GrammarReader
 		
 		try
 		{
-			format = ResourceBundle.getBundle("com.sun.tranquilo.reader.relax.Messages").getString(propertyName);
+			format = ResourceBundle.getBundle("com.sun.msv.reader.relax.Messages").getString(propertyName);
 		}
 		catch( Exception e )
 		{
-			format = ResourceBundle.getBundle("com.sun.tranquilo.reader.Messages").getString(propertyName);
+			format = ResourceBundle.getBundle("com.sun.msv.reader.Messages").getString(propertyName);
 		}
 		
 	    return MessageFormat.format(format, args );

@@ -7,17 +7,17 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.relax.core;
+package com.sun.msv.reader.relax.core;
 
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.SimpleState;
-import com.sun.tranquilo.reader.ExpressionOwner;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.AnyNameClass;
-import com.sun.tranquilo.grammar.relax.TagClause;
-import com.sun.tranquilo.grammar.relax.ElementRule;
-import com.sun.tranquilo.grammar.relax.ElementRules;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.ExpressionOwner;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.AnyNameClass;
+import com.sun.msv.grammar.relax.TagClause;
+import com.sun.msv.grammar.relax.ElementRule;
+import com.sun.msv.grammar.relax.ElementRules;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * Base implementation for ElementRuleWithHedgeState and ElementRuleWithTypeState.

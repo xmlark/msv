@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.trex;
+package com.sun.msv.reader.trex;
 
-import com.sun.tranquilo.grammar.NameClass;
-import com.sun.tranquilo.grammar.trex.DifferenceNameClass;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.trex.DifferenceNameClass;
 import java.util.ArrayList;
 import java.util.List;
 

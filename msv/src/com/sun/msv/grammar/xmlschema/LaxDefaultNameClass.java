@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.xmlschema;
+package com.sun.msv.grammar.xmlschema;
 
-import com.sun.tranquilo.grammar.NameClass;
-import com.sun.tranquilo.grammar.NameClassVisitor;
-import com.sun.tranquilo.util.StringPair;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.NameClassVisitor;
+import com.sun.msv.util.StringPair;
 import java.util.Set;
 
 

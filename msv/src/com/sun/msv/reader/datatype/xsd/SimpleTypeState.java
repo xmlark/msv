@@ -7,15 +7,15 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.datatype.xsd;
+package com.sun.msv.reader.datatype.xsd;
 
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.DataTypeImpl;
-import com.sun.tranquilo.datatype.FinalComponent;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.IgnoreState;
-import com.sun.tranquilo.reader.ExpressionState;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.DataTypeImpl;
+import com.sun.msv.datatype.FinalComponent;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.IgnoreState;
+import com.sun.msv.reader.ExpressionState;
+import com.sun.msv.util.StartTagInfo;
 import java.util.StringTokenizer;
 
 /**

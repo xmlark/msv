@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.dtd;
+package com.sun.msv.grammar.dtd;
 
-import com.sun.tranquilo.grammar.NameClass;
-import com.sun.tranquilo.grammar.NameClassVisitor;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.NameClassVisitor;
 
 /**
  * a NameClass that accepts any tag name as long as its local part is specified name.

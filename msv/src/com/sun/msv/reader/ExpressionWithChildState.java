@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader;
+package com.sun.msv.reader;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * State that parses Expression which contains other expressions.

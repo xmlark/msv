@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.jarv;
+package com.sun.msv.verifier.jarv;
 
-import com.sun.tranquilo.verifier.Verifier;
-import com.sun.tranquilo.verifier.DocumentDeclaration;
-import com.sun.tranquilo.verifier.VerificationErrorHandler;
+import com.sun.msv.verifier.Verifier;
+import com.sun.msv.verifier.DocumentDeclaration;
+import com.sun.msv.verifier.VerificationErrorHandler;
 import org.iso_relax.verifier.VerifierHandler;
 
 /**

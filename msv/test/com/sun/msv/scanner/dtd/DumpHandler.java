@@ -1,4 +1,4 @@
-package com.sun.tranquilo.scanner.dtd;
+package com.sun.msv.scanner.dtd;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;

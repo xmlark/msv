@@ -16,7 +16,7 @@
  * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
  * THIS SOFTWARE OR ITS DERIVATIVES.
  */
-package com.sun.tranquilo.datatype;
+package com.sun.msv.datatype;
 
 import com.sun.xml.util.XmlChars;
 

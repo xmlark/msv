@@ -7,16 +7,16 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.regexp.trex;
+package com.sun.msv.verifier.regexp.trex;
 
-import com.sun.tranquilo.verifier.Acceptor;
-import com.sun.tranquilo.verifier.regexp.*;
-import com.sun.tranquilo.verifier.regexp.REDocumentDeclaration;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ExpressionPool;
-import com.sun.tranquilo.grammar.ElementExp;
-import com.sun.tranquilo.grammar.Grammar;
-import com.sun.tranquilo.grammar.trex.TREXPatternPool;
+import com.sun.msv.verifier.Acceptor;
+import com.sun.msv.verifier.regexp.*;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.trex.TREXPatternPool;
 import java.util.Map;
 
 /**

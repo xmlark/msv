@@ -1,6 +1,6 @@
-package com.sun.tranquilo.grammar.trex;
+package com.sun.msv.grammar.trex;
 
-import com.sun.tranquilo.grammar.*;
+import com.sun.msv.grammar.*;
 
 /**
  * &lt;interleave&gt; pattern of TREX.

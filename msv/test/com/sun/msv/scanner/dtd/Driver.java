@@ -1,4 +1,4 @@
-package com.sun.tranquilo.scanner.dtd;
+package com.sun.msv.scanner.dtd;
 
 public class Driver {
 	public static void main( String[] args ) throws Exception {

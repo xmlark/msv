@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.util;
+package com.sun.msv.reader.util;
 
-import com.sun.tranquilo.reader.GrammarReaderController;
+import com.sun.msv.reader.GrammarReaderController;
 import org.xml.sax.Locator;
 import org.xml.sax.InputSource;
 

@@ -7,14 +7,14 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.relax.core;
+package com.sun.msv.reader.relax.core;
 
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.SimpleState;
-import com.sun.tranquilo.grammar.relax.RELAXModule;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.reader.ChildlessState;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.grammar.relax.RELAXModule;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.reader.ChildlessState;
 
 /**
  * parses &lt;interface&gt; element and &lt;div&gt; in interface.

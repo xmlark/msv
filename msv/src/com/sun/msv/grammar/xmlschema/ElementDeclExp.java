@@ -7,12 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.xmlschema;
+package com.sun.msv.grammar.xmlschema;
 
-import com.sun.tranquilo.grammar.ElementExp;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.NameClass;
-import com.sun.tranquilo.grammar.ReferenceExp;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.ReferenceExp;
 
 /**
  * Element declaration.

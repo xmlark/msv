@@ -1,2 +1,2 @@
-package com.sun.tranquilo.scanner.dtd;
+package com.sun.msv.scanner.dtd;
 

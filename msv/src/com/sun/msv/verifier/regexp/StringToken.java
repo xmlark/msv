@@ -7,13 +7,13 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.regexp;
+package com.sun.msv.verifier.regexp;
 
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.StringType;
-import com.sun.tranquilo.datatype.ValidationContextProvider;
-import com.sun.tranquilo.util.DataTypeRef;
+import com.sun.msv.grammar.*;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.StringType;
+import com.sun.msv.datatype.ValidationContextProvider;
+import com.sun.msv.util.DataTypeRef;
 
 /**
  * chunk of string.

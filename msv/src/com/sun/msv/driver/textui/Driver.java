@@ -7,22 +7,22 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.driver.textui;
+package com.sun.msv.driver.textui;
 
 import javax.xml.parsers.*;
 import java.io.File;
-import com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter;
-import com.sun.tranquilo.grammar.xmlschema.*;
-import com.sun.tranquilo.grammar.trex.*;
-import com.sun.tranquilo.grammar.relax.*;
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.reader.util.GrammarLoader;
-import com.sun.tranquilo.reader.dtd.DTDReader;
-import com.sun.tranquilo.relaxns.grammar.RELAXGrammar;
-import com.sun.tranquilo.relaxns.verifier.SchemaProviderImpl;
-import com.sun.tranquilo.verifier.*;
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
-import com.sun.tranquilo.verifier.util.VerificationErrorHandlerImpl;
+import com.sun.msv.grammar.trex.util.TREXPatternPrinter;
+import com.sun.msv.grammar.xmlschema.*;
+import com.sun.msv.grammar.trex.*;
+import com.sun.msv.grammar.relax.*;
+import com.sun.msv.grammar.*;
+import com.sun.msv.reader.util.GrammarLoader;
+import com.sun.msv.reader.dtd.DTDReader;
+import com.sun.msv.relaxns.grammar.RELAXGrammar;
+import com.sun.msv.relaxns.verifier.SchemaProviderImpl;
+import com.sun.msv.verifier.*;
+import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.util.VerificationErrorHandlerImpl;
 import org.iso_relax.dispatcher.Dispatcher;
 import org.iso_relax.dispatcher.SchemaProvider;
 import org.iso_relax.dispatcher.impl.DispatcherImpl;
@@ -74,7 +74,7 @@ public class Driver {
 			if( args[i].equalsIgnoreCase("-warning") )			warning = true;
 			else
 			if( args[i].equalsIgnoreCase("-version") ) {
-				System.out.println("Tranquilo Ver."+
+				System.out.println("Multi Schema Validator Ver."+
 					java.util.ResourceBundle.getBundle("version").getString("version") );
 				return;
 			} else {
@@ -276,7 +276,7 @@ public class Driver {
 			try {
 				p.parse(instance);
 				return !errorHandler.hadError;
-			} catch( com.sun.tranquilo.verifier.ValidationUnrecoverableException vv ) {
+			} catch( com.sun.msv.verifier.ValidationUnrecoverableException vv ) {
 				System.out.println(localize(MSG_BAILOUT));
 			} catch( SAXParseException se ) {
 				; // error is already reported by ErrorHandler
@@ -305,7 +305,7 @@ public class Driver {
 			try {
 				p.parse( instance );
 				return v.isValid();
-			} catch( com.sun.tranquilo.verifier.ValidationUnrecoverableException vv ) {
+			} catch( com.sun.msv.verifier.ValidationUnrecoverableException vv ) {
 				System.out.println(localize(MSG_BAILOUT));
 			} catch( SAXParseException se ) {
 				; // error is already reported by ErrorHandler
@@ -329,7 +329,7 @@ public class Driver {
 
 	public static String localize( String propertyName, Object[] args ) {
 		String format = java.util.ResourceBundle.getBundle(
-			"com.sun.tranquilo.driver.textui.Messages").getString(propertyName);
+			"com.sun.msv.driver.textui.Messages").getString(propertyName);
 	    return java.text.MessageFormat.format(format, args );
 	}
 	public static String localize( String prop )

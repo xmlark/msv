@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype;
+package com.sun.msv.datatype;
 
 import junit.framework.*;
 import java.lang.reflect.*;
@@ -35,7 +35,7 @@ public class BadTypeExceptionTest extends TestCase
 	 */
 	public void testResource() throws Exception
 	{
-		Field[] fields = com.sun.tranquilo.datatype.BadTypeException.class.getDeclaredFields();
+		Field[] fields = com.sun.msv.datatype.BadTypeException.class.getDeclaredFields();
 		
 		for( int i=0; i<fields.length; i++ )
 			if( fields[i].getName().startsWith("ERR_") )

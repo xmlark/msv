@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.regexp;
+package com.sun.msv.verifier.regexp;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ElementExp;
 import java.util.Map;
 
 /**

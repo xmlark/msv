@@ -7,14 +7,14 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.grammar;
+package com.sun.msv.relaxns.grammar;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ReferenceExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ReferenceExp;
 import org.xml.sax.SAXNotRecognizedException;
 
 /**
- * Implementation of ElementDecl interface by Tranquilo grammar model.
+ * Implementation of ElementDecl interface by MSV grammar model.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

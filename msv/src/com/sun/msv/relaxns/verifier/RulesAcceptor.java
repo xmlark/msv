@@ -7,16 +7,16 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.verifier;
+package com.sun.msv.relaxns.verifier;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ExpressionPool;
-import com.sun.tranquilo.verifier.Acceptor;
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
-import com.sun.tranquilo.datatype.ValidationContextProvider;
-import com.sun.tranquilo.relaxns.grammar.DeclImpl;
-import com.sun.tranquilo.util.StringRef;
-import com.sun.tranquilo.util.DataTypeRef;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.verifier.Acceptor;
+import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.datatype.ValidationContextProvider;
+import com.sun.msv.relaxns.grammar.DeclImpl;
+import com.sun.msv.util.StringRef;
+import com.sun.msv.util.DataTypeRef;
 import org.iso_relax.dispatcher.ElementDecl;
 
 /**
@@ -27,7 +27,7 @@ import org.iso_relax.dispatcher.ElementDecl;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RulesAcceptor
-	extends com.sun.tranquilo.verifier.regexp.trex.ComplexAcceptorBaseImpl
+	extends com.sun.msv.verifier.regexp.trex.ComplexAcceptorBaseImpl
 {
 	protected final DeclImpl[]		owners;
 	
@@ -60,7 +60,7 @@ public class RulesAcceptor
 	/**
 	 * collects satisfied ElementDeclImpls.
 	 * 
-	 * @see com.sun.tranquilo.verifier.regexp.trex.ComplexAcceptor#getSatisfiedOwners
+	 * @see com.sun.msv.verifier.regexp.trex.ComplexAcceptor#getSatisfiedOwners
 	 */
 	ElementDecl[] getSatisfiedElementDecls()
 	{

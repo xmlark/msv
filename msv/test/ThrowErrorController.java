@@ -8,7 +8,7 @@
  * 
  */
 
-import com.sun.tranquilo.reader.GrammarReaderController;
+import com.sun.msv.reader.GrammarReaderController;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 

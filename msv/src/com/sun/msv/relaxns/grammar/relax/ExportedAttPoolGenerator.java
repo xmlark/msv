@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.grammar.relax;
+package com.sun.msv.relaxns.grammar.relax;
 
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.grammar.relax.*;
+import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.relax.*;
 
 /**
  * creates Expression that validates exported attPool.

@@ -7,13 +7,13 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.util;
+package com.sun.msv.reader.util;
 
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.LocatorImpl;
-import com.sun.tranquilo.reader.GrammarReaderController;
+import com.sun.msv.reader.GrammarReaderController;
 
 /**
  * wraps GrammarReaderController by SAX ErrorHandler interface.

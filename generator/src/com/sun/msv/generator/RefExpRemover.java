@@ -9,9 +9,9 @@
  */
 package com.sun.tranquilo.generator;
 
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.grammar.relax.*;
-import com.sun.tranquilo.grammar.trex.*;
+import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.relax.*;
+import com.sun.msv.grammar.trex.*;
 import java.util.Iterator;
 import java.util.Set;
 

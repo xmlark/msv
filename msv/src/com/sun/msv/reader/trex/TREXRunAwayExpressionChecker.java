@@ -7,14 +7,14 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.trex;
+package com.sun.msv.reader.trex;
 
-import com.sun.tranquilo.reader.RunAwayExpressionChecker;
-import com.sun.tranquilo.reader.GrammarReader;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.trex.TREXPatternVisitorVoid;
-import com.sun.tranquilo.grammar.trex.ConcurPattern;
-import com.sun.tranquilo.grammar.trex.InterleavePattern;
+import com.sun.msv.reader.RunAwayExpressionChecker;
+import com.sun.msv.reader.GrammarReader;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.trex.TREXPatternVisitorVoid;
+import com.sun.msv.grammar.trex.ConcurPattern;
+import com.sun.msv.grammar.trex.InterleavePattern;
 
 /**
  * TREX version of {@link RunAwayExpressionChecker}.

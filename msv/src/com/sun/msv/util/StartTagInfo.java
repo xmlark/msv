@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.util;
+package com.sun.msv.util;
 
 import org.xml.sax.Attributes;
-import com.sun.tranquilo.datatype.ValidationContextProvider;
+import com.sun.msv.datatype.ValidationContextProvider;
 
 /**
  * immutable start tag information

@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar;
+package com.sun.msv.grammar;
 
 import java.util.Hashtable;
-import com.sun.tranquilo.datatype.DataType;
+import com.sun.msv.datatype.DataType;
 
 /**
  * Creates a new Expression by combining existing expressions.

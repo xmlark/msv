@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.jarv;
+package com.sun.msv.verifier.jarv;
 
 import org.iso_relax.verifier.*;
 import org.xml.sax.SAXNotRecognizedException;

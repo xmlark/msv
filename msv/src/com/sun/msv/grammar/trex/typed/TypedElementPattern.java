@@ -7,16 +7,16 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.trex.typed;
+package com.sun.msv.grammar.trex.typed;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.NameClass;
-import com.sun.tranquilo.grammar.trex.ElementPattern;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.trex.ElementPattern;
 
 /**
  * ElementPattern with type.
  * 
- * Proprietary extension by Tranquilo to support type-assignment in TREX.
+ * Proprietary extension by MSV to support type-assignment in TREX.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

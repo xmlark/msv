@@ -7,35 +7,35 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.xmlschema;
+package com.sun.msv.reader.xmlschema;
 
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.StringType;
-import com.sun.tranquilo.datatype.BooleanType;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ReferenceExp;
-import com.sun.tranquilo.grammar.ReferenceContainer;
-import com.sun.tranquilo.grammar.SimpleNameClass;
-import com.sun.tranquilo.grammar.AnyNameClass;
-import com.sun.tranquilo.grammar.ChoiceNameClass;
-import com.sun.tranquilo.grammar.trex.TREXPatternPool;
-import com.sun.tranquilo.grammar.trex.ElementPattern;
-import com.sun.tranquilo.grammar.xmlschema.XMLSchemaGrammar;
-import com.sun.tranquilo.grammar.xmlschema.XMLSchemaSchema;
-import com.sun.tranquilo.grammar.xmlschema.ComplexTypeExp;
-import com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.IgnoreState;
-import com.sun.tranquilo.reader.SequenceState;
-import com.sun.tranquilo.reader.ChoiceState;
-import com.sun.tranquilo.reader.ExpressionState;
-import com.sun.tranquilo.reader.GrammarReader;
-import com.sun.tranquilo.reader.GrammarReaderController;
-import com.sun.tranquilo.reader.trex.TREXRunAwayExpressionChecker;
-import com.sun.tranquilo.reader.datatype.xsd.FacetState;
-import com.sun.tranquilo.reader.datatype.xsd.SimpleTypeState;
-import com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.StringType;
+import com.sun.msv.datatype.BooleanType;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.ReferenceContainer;
+import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.grammar.AnyNameClass;
+import com.sun.msv.grammar.ChoiceNameClass;
+import com.sun.msv.grammar.trex.TREXPatternPool;
+import com.sun.msv.grammar.trex.ElementPattern;
+import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
+import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
+import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
+import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.IgnoreState;
+import com.sun.msv.reader.SequenceState;
+import com.sun.msv.reader.ChoiceState;
+import com.sun.msv.reader.ExpressionState;
+import com.sun.msv.reader.GrammarReader;
+import com.sun.msv.reader.GrammarReaderController;
+import com.sun.msv.reader.trex.TREXRunAwayExpressionChecker;
+import com.sun.msv.reader.datatype.xsd.FacetState;
+import com.sun.msv.reader.datatype.xsd.SimpleTypeState;
+import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
+import com.sun.msv.util.StartTagInfo;
 import javax.xml.parsers.SAXParserFactory;
 import java.util.ResourceBundle;
 import java.util.Vector;
@@ -598,9 +598,9 @@ public class XMLSchemaReader extends GrammarReader {
 		String format;
 		
 		try {
-			format = ResourceBundle.getBundle("com.sun.tranquilo.reader.xmlschema.Messages").getString(propertyName);
+			format = ResourceBundle.getBundle("com.sun.msv.reader.xmlschema.Messages").getString(propertyName);
 		} catch( Exception e ) {
-			format = ResourceBundle.getBundle("com.sun.tranquilo.reader.Messages").getString(propertyName);
+			format = ResourceBundle.getBundle("com.sun.msv.reader.Messages").getString(propertyName);
 		}
 		
 	    return MessageFormat.format(format, args );

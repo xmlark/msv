@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader;
+package com.sun.msv.reader;
 
-import com.sun.tranquilo.grammar.Expression;
+import com.sun.msv.grammar.Expression;
 
 /**
  * state that creates SequenceExp.

@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar;
+package com.sun.msv.grammar;
 
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.ValidationContextProvider;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.ValidationContextProvider;
 
 /**
  * Expression that matchs characters of the particular {@link DataType}.

@@ -7,24 +7,24 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.dtd;
+package com.sun.msv.reader.dtd;
 
-import com.sun.tranquilo.datatype.BadTypeException;
-import com.sun.tranquilo.datatype.ValidationContextProvider;
-import com.sun.tranquilo.datatype.TypeIncubator;
-import com.sun.tranquilo.datatype.DataTypeFactory;
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.EntityType;
-import com.sun.tranquilo.datatype.NmtokenType;
-import com.sun.tranquilo.datatype.NormalizedStringType;
-import com.sun.tranquilo.datatype.StringType;
-import com.sun.tranquilo.reader.GrammarReaderController;
-import com.sun.tranquilo.scanner.dtd.DTDEventListener;
-import com.sun.tranquilo.scanner.dtd.DTDParser;
-import com.sun.tranquilo.scanner.dtd.InputEntity;
-import com.sun.tranquilo.grammar.relax.*;
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.grammar.dtd.*;
+import com.sun.msv.datatype.BadTypeException;
+import com.sun.msv.datatype.ValidationContextProvider;
+import com.sun.msv.datatype.TypeIncubator;
+import com.sun.msv.datatype.DataTypeFactory;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.EntityType;
+import com.sun.msv.datatype.NmtokenType;
+import com.sun.msv.datatype.NormalizedStringType;
+import com.sun.msv.datatype.StringType;
+import com.sun.msv.reader.GrammarReaderController;
+import com.sun.msv.scanner.dtd.DTDEventListener;
+import com.sun.msv.scanner.dtd.DTDParser;
+import com.sun.msv.scanner.dtd.InputEntity;
+import com.sun.msv.grammar.relax.*;
+import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.dtd.*;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.Locator;
@@ -147,7 +147,7 @@ public class DTDReader implements
 			
 			// we found element name like "html:p" but 
 			// we haven't see any "xmlns:html" attribute declaration.
-			// this is considered as an error for Tranquilo.
+			// this is considered as an error for MSV.
 			hadError = true;
 			controller.error( new Locator[]{locator},
 				Localizer.localize( ERR_UNDECLARED_PREFIX, s[0] ), null );

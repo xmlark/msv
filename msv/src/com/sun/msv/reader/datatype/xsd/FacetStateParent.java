@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.datatype.xsd;
+package com.sun.msv.reader.datatype.xsd;
 
-import com.sun.tranquilo.datatype.TypeIncubator;
+import com.sun.msv.datatype.TypeIncubator;
 
 /**
  * Interface implemented by the parent state of FacetState.

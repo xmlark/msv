@@ -7,18 +7,18 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.regexp.trex;
+package com.sun.msv.verifier.regexp.trex;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ElementExp;
-import com.sun.tranquilo.verifier.*;
-import com.sun.tranquilo.verifier.regexp.ExpressionAcceptor;
-import com.sun.tranquilo.verifier.regexp.ElementToken;
-import com.sun.tranquilo.verifier.regexp.StartTagInfoEx;
-import com.sun.tranquilo.verifier.regexp.CombinedChildContentExpCreator;
-import com.sun.tranquilo.datatype.ValidationContextProvider;
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.util.StringRef;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.verifier.*;
+import com.sun.msv.verifier.regexp.ExpressionAcceptor;
+import com.sun.msv.verifier.regexp.ElementToken;
+import com.sun.msv.verifier.regexp.StartTagInfoEx;
+import com.sun.msv.verifier.regexp.CombinedChildContentExpCreator;
+import com.sun.msv.datatype.ValidationContextProvider;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.util.StringRef;
 import java.util.Set;
 import java.util.List;
 import java.util.Iterator;
@@ -78,7 +78,7 @@ public class ContentModelAcceptor extends ExpressionAcceptor
 		// TODO: implements MultipleAcceptor for cases that
 		// combined expression is unnecessary but there are more than one primitive.
 		
-		if( com.sun.tranquilo.driver.textui.Debug.debug )
+		if( com.sun.msv.driver.textui.Debug.debug )
 			System.out.println("ComplexAcceptor is used");
 		
 		

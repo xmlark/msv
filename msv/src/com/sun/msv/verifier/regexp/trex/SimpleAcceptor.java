@@ -7,12 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.regexp.trex;
+package com.sun.msv.verifier.regexp.trex;
 
-import com.sun.tranquilo.verifier.regexp.ElementToken;
-import com.sun.tranquilo.verifier.regexp.ExpressionAcceptor;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ElementExp;
+import com.sun.msv.verifier.regexp.ElementToken;
+import com.sun.msv.verifier.regexp.ExpressionAcceptor;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ElementExp;
 
 /**
  * Acceptor that will be used when only one ElementExp matches

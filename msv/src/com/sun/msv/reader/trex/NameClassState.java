@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.trex;
+package com.sun.msv.reader.trex;
 
-import com.sun.tranquilo.grammar.NameClass;
-import com.sun.tranquilo.reader.SimpleState;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.reader.SimpleState;
 
 /**
  * Base implementation for NameClass primitives

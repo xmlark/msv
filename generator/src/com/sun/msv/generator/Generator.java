@@ -11,12 +11,12 @@ package com.sun.tranquilo.generator;
 
 import org.w3c.dom.*;
 import org.xml.sax.ContentHandler;
-import com.sun.tranquilo.datatype.NmtokenType;
-import com.sun.tranquilo.datatype.StringType;
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.grammar.trex.*;
-import com.sun.tranquilo.util.StringPair;
-import com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter;
+import com.sun.msv.datatype.NmtokenType;
+import com.sun.msv.datatype.StringType;
+import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.trex.*;
+import com.sun.msv.util.StringPair;
+import com.sun.msv.grammar.trex.util.TREXPatternPrinter;
 import com.sun.xml.util.XmlChars;
 import java.util.*;
 

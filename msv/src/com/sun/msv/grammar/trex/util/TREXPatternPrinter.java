@@ -7,12 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.trex.util;
+package com.sun.msv.grammar.trex.util;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ReferenceExp;
-import com.sun.tranquilo.grammar.trex.*;
-import com.sun.tranquilo.grammar.util.ExpressionPrinter;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.trex.*;
+import com.sun.msv.grammar.util.ExpressionPrinter;
 
 /**
  * creates a string representation of TREX pattern.

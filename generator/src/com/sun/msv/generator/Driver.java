@@ -13,12 +13,12 @@ import javax.xml.parsers.*;
 import java.io.*;
 import org.xml.sax.*;
 import java.util.*;
-import com.sun.tranquilo.grammar.trex.*;
-import com.sun.tranquilo.grammar.relax.*;
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.relaxns.grammar.RELAXGrammar;
-import com.sun.tranquilo.driver.textui.DebugController;
-import com.sun.tranquilo.reader.util.GrammarLoader;
+import com.sun.msv.grammar.trex.*;
+import com.sun.msv.grammar.relax.*;
+import com.sun.msv.grammar.*;
+import com.sun.msv.relaxns.grammar.RELAXGrammar;
+import com.sun.msv.driver.textui.DebugController;
+import com.sun.msv.reader.util.GrammarLoader;
 import org.apache.xml.serialize.*;
 
 /**

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype;
+package com.sun.msv.datatype;
 
 /**
  * signals bad type definition.
@@ -22,7 +22,7 @@ public class BadTypeException extends Exception
 	public BadTypeException(String resourcePropertyName,Object[] args)
 	{
 		super( java.text.MessageFormat.format(
-			java.util.ResourceBundle.getBundle("com.sun.tranquilo.datatype.Messages").getString(resourcePropertyName),
+			java.util.ResourceBundle.getBundle("com.sun.msv.datatype.Messages").getString(resourcePropertyName),
 			args ) );
 	}
 

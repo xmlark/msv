@@ -7,12 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.grammar;
+package com.sun.msv.relaxns.grammar;
 
 import java.util.Map;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ExpressionPool;
-import com.sun.tranquilo.grammar.Grammar;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
 import org.iso_relax.dispatcher.IslandSchema;
 
 /**

@@ -7,22 +7,22 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.reader;
+package com.sun.msv.relaxns.reader;
 
 import java.util.Set;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.reader.relax.RELAXReader;
-import com.sun.tranquilo.reader.*;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.relax.RELAXModule;
-import com.sun.tranquilo.grammar.trex.TREXPatternPool;
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.relaxns.grammar.ExternalElementExp;
-import com.sun.tranquilo.relaxns.grammar.RELAXGrammar;
-import com.sun.tranquilo.relaxns.reader.relax.RELAXCoreIslandSchemaReader;
-import com.sun.tranquilo.relaxns.reader.trex.TREXIslandSchemaReader;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.reader.relax.RELAXReader;
+import com.sun.msv.reader.*;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.relax.RELAXModule;
+import com.sun.msv.grammar.trex.TREXPatternPool;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.relaxns.grammar.ExternalElementExp;
+import com.sun.msv.relaxns.grammar.RELAXGrammar;
+import com.sun.msv.relaxns.reader.relax.RELAXCoreIslandSchemaReader;
+import com.sun.msv.relaxns.reader.trex.TREXIslandSchemaReader;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.LocatorImpl;
@@ -103,13 +103,13 @@ public class RELAXNSReader
 		
 		try {
 			if( language.equals( RELAXCoreNamespace ) )	// RELAX Core
-				return new com.sun.tranquilo.relaxns.reader.relax.RELAXCoreIslandSchemaReader(
+				return new com.sun.msv.relaxns.reader.relax.RELAXCoreIslandSchemaReader(
 					controller,parserFactory,(TREXPatternPool)pool,expectedTargetNamespace);
-			if( language.equals( com.sun.tranquilo.reader.trex.TREXGrammarReader.TREXNamespace ) ) // TREX
-				return new com.sun.tranquilo.relaxns.reader.trex.TREXIslandSchemaReader(
-					new com.sun.tranquilo.reader.trex.TREXGrammarReader(
+			if( language.equals( com.sun.msv.reader.trex.TREXGrammarReader.TREXNamespace ) ) // TREX
+				return new com.sun.msv.relaxns.reader.trex.TREXIslandSchemaReader(
+					new com.sun.msv.reader.trex.TREXGrammarReader(
 						controller,parserFactory,
-						new com.sun.tranquilo.reader.trex.TREXGrammarReader.StateFactory(),
+						new com.sun.msv.reader.trex.TREXGrammarReader.StateFactory(),
 						(TREXPatternPool)pool) );
 
 		} catch( javax.xml.parsers.ParserConfigurationException e ) {

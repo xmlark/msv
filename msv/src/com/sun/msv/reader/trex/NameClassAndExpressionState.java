@@ -7,13 +7,13 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.trex;
+package com.sun.msv.reader.trex;
 
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.SequenceState;
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.grammar.AnyNameClass;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.SequenceState;
+import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.AnyNameClass;
 
 /**
  * Base implementation for ElementState and AttributeState

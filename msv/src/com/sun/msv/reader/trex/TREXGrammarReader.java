@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.trex;
+package com.sun.msv.reader.trex;
 
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
@@ -19,13 +19,13 @@ import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.StringType;
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.grammar.trex.*;
-import com.sun.tranquilo.reader.*;
-import com.sun.tranquilo.reader.datatype.DataTypeVocabulary;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.StringType;
+import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.trex.*;
+import com.sun.msv.reader.*;
+import com.sun.msv.reader.datatype.DataTypeVocabulary;
+import com.sun.msv.util.StartTagInfo;
 import org.iso_relax.dispatcher.IslandSchema;
 
 /**
@@ -80,11 +80,11 @@ public class TREXGrammarReader
 		
 		try
 		{
-			format = ResourceBundle.getBundle("com.sun.tranquilo.reader.trex.Messages").getString(propertyName);
+			format = ResourceBundle.getBundle("com.sun.msv.reader.trex.Messages").getString(propertyName);
 		}
 		catch( Exception e )
 		{
-			format = ResourceBundle.getBundle("com.sun.tranquilo.reader.Messages").getString(propertyName);
+			format = ResourceBundle.getBundle("com.sun.msv.reader.Messages").getString(propertyName);
 		}
 		
 	    return MessageFormat.format(format, args );
@@ -206,7 +206,7 @@ public class TREXGrammarReader
 				// report warning only once.
 				reportWarning(WRN_OBSOLETED_XMLSCHEMA_NAMSPACE,namespace);
 			issueObsoletedXMLSchemaNamespace = true;
-			return com.sun.tranquilo.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace;
+			return com.sun.msv.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace;
 		}
 		return namespace;
 	}

@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.util;
+package com.sun.msv.grammar.util;
 
-import com.sun.tranquilo.grammar.*;
+import com.sun.msv.grammar.*;
 
 /**
  * creates a string representation of the expression.

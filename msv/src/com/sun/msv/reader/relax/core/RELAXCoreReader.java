@@ -7,24 +7,24 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.relax.core;
+package com.sun.msv.reader.relax.core;
 
 import java.util.Map;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import com.sun.tranquilo.reader.GrammarReaderController;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.ExpressionState;
-import com.sun.tranquilo.reader.relax.RELAXReader;
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ExpressionPool;
-import com.sun.tranquilo.grammar.relax.RELAXModule;
-import com.sun.tranquilo.grammar.relax.NoneType;
-import com.sun.tranquilo.grammar.relax.AttPoolClause;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.reader.GrammarReaderController;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.ExpressionState;
+import com.sun.msv.reader.relax.RELAXReader;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.relax.RELAXModule;
+import com.sun.msv.grammar.relax.NoneType;
+import com.sun.msv.grammar.relax.AttPoolClause;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * reads RELAX module (classic RELAX module; no namespace extension)

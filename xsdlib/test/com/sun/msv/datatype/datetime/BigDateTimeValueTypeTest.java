@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype.datetime;
+package com.sun.msv.datatype.datetime;
 
 import java.math.BigInteger;
 import java.math.BigDecimal;
-import com.sun.tranquilo.datatype.Comparator;
+import com.sun.msv.datatype.Comparator;
 import junit.framework.*;
 import java.io.ByteArrayInputStream;
 
@@ -39,14 +39,14 @@ public class BigDateTimeValueTypeTest extends TestCase {
 		return new ISO8601Parser(new ByteArrayInputStream(s.getBytes("UTF-8")));
 	}
 	
-	/** Test of getBigValue method, of class com.sun.tranquilo.datatype.datetime.BigDateTimeValueType. */
+	/** Test of getBigValue method, of class com.sun.msv.datatype.datetime.BigDateTimeValueType. */
 	public void testGetBigValue()  throws Exception
 	{
 		BigDateTimeValueType t = (BigDateTimeValueType)getParser("2000-01").yearMonthTypeV();
 		assertEquals( t, t.getBigValue() );
 	}
 	
-	/** Test of compare method, of class com.sun.tranquilo.datatype.datetime.BigDateTimeValueType. */
+	/** Test of compare method, of class com.sun.msv.datatype.datetime.BigDateTimeValueType. */
 	public void testCompare() throws Exception
 	{
 		// from examples of the spec
@@ -73,7 +73,7 @@ public class BigDateTimeValueTypeTest extends TestCase {
 		assertEquals( r, Comparator.UNDECIDABLE );
 	}
 	
-	/** Test of normalize method, of class com.sun.tranquilo.datatype.datetime.BigDateTimeValueType. */
+	/** Test of normalize method, of class com.sun.msv.datatype.datetime.BigDateTimeValueType. */
 	public void testNormalize() throws Exception
 	{
 		BigDateTimeValueType v;
@@ -86,7 +86,7 @@ public class BigDateTimeValueTypeTest extends TestCase {
 			getParser("2000-03-05T02:00:00Z").dateTimeTypeV() );
 	}
 	
-	/** Test of add method, of class com.sun.tranquilo.datatype.datetime.BigDateTimeValueType. */
+	/** Test of add method, of class com.sun.msv.datatype.datetime.BigDateTimeValueType. */
 	public void testAdd() throws Exception
 	{
 		BigDateTimeValueType v;

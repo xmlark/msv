@@ -7,17 +7,17 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.relax.core;
+package com.sun.msv.reader.relax.core;
 
-import com.sun.tranquilo.datatype.BadTypeException;
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.TypeIncubator;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.SimpleNameClass;
-import com.sun.tranquilo.reader.ExpressionState;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.datatype.xsd.FacetStateParent;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.datatype.BadTypeException;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.TypeIncubator;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.reader.ExpressionState;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.datatype.xsd.FacetStateParent;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * parses &lt;attribute&gt; element.

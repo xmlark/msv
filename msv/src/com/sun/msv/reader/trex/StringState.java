@@ -7,12 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.trex;
+package com.sun.msv.reader.trex;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.trex.TypedString;
-import com.sun.tranquilo.reader.ExpressionWithoutChildState;
-import com.sun.tranquilo.datatype.WhiteSpaceProcessor;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.trex.TypedString;
+import com.sun.msv.reader.ExpressionWithoutChildState;
+import com.sun.msv.datatype.WhiteSpaceProcessor;
 
 /**
  * parses &lt;string&gt; pattern.

@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.trex;
+package com.sun.msv.reader.trex;
 
-import com.sun.tranquilo.reader.RunAwayExpressionChecker;
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.grammar.trex.*;
+import com.sun.msv.reader.RunAwayExpressionChecker;
+import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.trex.*;
 import java.util.Set;
 
 /**

@@ -7,12 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.xmlschema;
+package com.sun.msv.reader.xmlschema;
 
 import java.util.Set;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.IgnoreState;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.IgnoreState;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * used to parse &lt;schema&gt; element of included schema.

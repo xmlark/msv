@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.xmlschema;
+package com.sun.msv.reader.xmlschema;
 
-import com.sun.tranquilo.reader.ChildlessState;
+import com.sun.msv.reader.ChildlessState;
 
 /**
  * used to parse &lt;include&gt; element.

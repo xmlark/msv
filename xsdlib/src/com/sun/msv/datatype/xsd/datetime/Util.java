@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype.datetime;
+package com.sun.msv.datatype.datetime;
 
 import java.math.BigInteger;
 import java.math.BigDecimal;
-import com.sun.tranquilo.datatype.Comparator;
+import com.sun.msv.datatype.Comparator;
 
 /**
  * date/time-related utility functions/variables.

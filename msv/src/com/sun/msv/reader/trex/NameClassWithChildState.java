@@ -7,12 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.trex;
+package com.sun.msv.reader.trex;
 
-import com.sun.tranquilo.grammar.NameClass;
-import com.sun.tranquilo.grammar.AnyNameClass;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.AnyNameClass;
+import com.sun.msv.reader.State;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * parses name class that has child name classes

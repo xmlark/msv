@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.trex;
+package com.sun.msv.grammar.trex;
 
-import com.sun.tranquilo.datatype.*;
+import com.sun.msv.datatype.*;
 
 /**
  * Datatype created by &lt;string&gt; element.

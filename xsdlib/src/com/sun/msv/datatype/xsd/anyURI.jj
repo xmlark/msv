@@ -6,7 +6,7 @@ options {
 }
 PARSER_BEGIN(AnyURIParser)
 
-package com.sun.tranquilo.datatype;
+package com.sun.msv.datatype;
 
 import java.io.*;
 

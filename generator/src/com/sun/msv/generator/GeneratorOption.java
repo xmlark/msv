@@ -10,7 +10,7 @@
 package com.sun.tranquilo.generator;
 
 import java.util.Random;
-import com.sun.tranquilo.grammar.trex.TREXPatternPool;
+import com.sun.msv.grammar.trex.TREXPatternPool;
 
 /**
  * set of options that controls generation behavior.

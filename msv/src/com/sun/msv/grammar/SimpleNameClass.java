@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar;
+package com.sun.msv.grammar;
 
 /**
  * a NameClass that accepts only one fixed tag name.

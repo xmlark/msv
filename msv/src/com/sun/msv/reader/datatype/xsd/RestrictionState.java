@@ -7,16 +7,16 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.datatype.xsd;
+package com.sun.msv.reader.datatype.xsd;
 
-import com.sun.tranquilo.reader.GrammarReader;
-import com.sun.tranquilo.reader.IgnoreState;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.datatype.BadTypeException;
-import com.sun.tranquilo.datatype.StringType;
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.TypeIncubator;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.reader.GrammarReader;
+import com.sun.msv.reader.IgnoreState;
+import com.sun.msv.reader.State;
+import com.sun.msv.datatype.BadTypeException;
+import com.sun.msv.datatype.StringType;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.TypeIncubator;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * state that parses &lt;restriction&gt; element.

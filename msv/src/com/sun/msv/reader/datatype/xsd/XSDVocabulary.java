@@ -7,16 +7,16 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.datatype.xsd;
+package com.sun.msv.reader.datatype.xsd;
 
-import com.sun.tranquilo.grammar.IDType;
-import com.sun.tranquilo.grammar.IDREFType;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.datatype.DataTypeVocabulary;
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.BadTypeException;
-import com.sun.tranquilo.datatype.DataTypeFactory;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.grammar.IDType;
+import com.sun.msv.grammar.IDREFType;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.datatype.DataTypeVocabulary;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.BadTypeException;
+import com.sun.msv.datatype.DataTypeFactory;
+import com.sun.msv.util.StartTagInfo;
 import org.xml.sax.ContentHandler;
 import java.util.Map;
 

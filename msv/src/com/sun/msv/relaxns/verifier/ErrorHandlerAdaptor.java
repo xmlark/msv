@@ -7,20 +7,20 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.verifier;
+package com.sun.msv.relaxns.verifier;
 
 import org.iso_relax.dispatcher.Dispatcher;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
-import com.sun.tranquilo.verifier.ValidityViolation;
+import com.sun.msv.verifier.ValidityViolation;
 
 /**
  * wraps ISORELAX ErrorHandler by VerificationErrorHandler interface.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ErrorHandlerAdaptor implements com.sun.tranquilo.verifier.VerificationErrorHandler
+public class ErrorHandlerAdaptor implements com.sun.msv.verifier.VerificationErrorHandler
 {
 	private final Dispatcher core;
 	

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype.datetime;
+package com.sun.msv.datatype.datetime;
 
 /**
  * interface as a value type of TimeDurationType
@@ -19,7 +19,7 @@ public interface ITimeDurationValueType
 	BigTimeDurationValueType getBigValue();
 
 	/** compare two ITimeDurationValueType as defined in
-	 *  com/sun/tranquilo/datatype/Comparator
+	 *  com.sun.msv.datatype/Comparator
 	 */
 	int compare( ITimeDurationValueType rhs );
 }

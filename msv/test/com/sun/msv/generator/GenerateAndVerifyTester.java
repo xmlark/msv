@@ -1,4 +1,4 @@
-package com.sun.tranquilo.generator;
+package com.sun.msv.generator;
 
 
 

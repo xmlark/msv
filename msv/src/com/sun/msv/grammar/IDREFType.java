@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar;
+package com.sun.msv.grammar;
 
-import com.sun.tranquilo.datatype.NmtokenType;
-import com.sun.tranquilo.datatype.ValidationContextProvider;
+import com.sun.msv.datatype.NmtokenType;
+import com.sun.msv.datatype.ValidationContextProvider;
 
 /**
  * very limited 'IDREF' type of XML Schema Part 2.

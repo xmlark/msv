@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.trex;
+package com.sun.msv.grammar.trex;
 
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.reader.datatype.DataTypeVocabularyMap;
+import com.sun.msv.grammar.*;
+import com.sun.msv.reader.datatype.DataTypeVocabularyMap;
 
 /**
  * TREX grammar, which is expressed as &lt;grammar&gt; element.

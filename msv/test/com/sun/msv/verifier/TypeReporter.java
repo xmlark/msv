@@ -7,18 +7,18 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier;
+package com.sun.msv.verifier;
 
-import com.sun.tranquilo.grammar.Grammar;
-import com.sun.tranquilo.grammar.relax.ElementRule;
-import com.sun.tranquilo.grammar.trex.TREXPatternPool;
-import com.sun.tranquilo.grammar.trex.typed.TypedElementPattern;
-import com.sun.tranquilo.reader.relax.core.RELAXCoreReader;
-import com.sun.tranquilo.relaxns.reader.RELAXNSReader;
-import com.sun.tranquilo.reader.trex.typed.TypedTREXGrammarInterceptor;
-import com.sun.tranquilo.reader.trex.TREXGrammarReader;
-import com.sun.tranquilo.verifier.VerifierFilter;
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.relax.ElementRule;
+import com.sun.msv.grammar.trex.TREXPatternPool;
+import com.sun.msv.grammar.trex.typed.TypedElementPattern;
+import com.sun.msv.reader.relax.core.RELAXCoreReader;
+import com.sun.msv.relaxns.reader.RELAXNSReader;
+import com.sun.msv.reader.trex.typed.TypedTREXGrammarInterceptor;
+import com.sun.msv.reader.trex.TREXGrammarReader;
+import com.sun.msv.verifier.VerifierFilter;
+import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.XMLReader;
 import org.xml.sax.XMLFilter;
@@ -61,18 +61,18 @@ public class TypeReporter extends DefaultHandler
 			grammar = RELAXCoreReader.parse(
 					args[1],
 					factory,
-					new com.sun.tranquilo.driver.textui.DebugController(false),
+					new com.sun.msv.driver.textui.DebugController(false),
 					new TREXPatternPool() );
 		else
 		if( args[0].equals("relaxNS") )
 			grammar = RELAXNSReader.parse(
 					args[1],
 					factory,
-					new com.sun.tranquilo.driver.textui.DebugController(false),
+					new com.sun.msv.driver.textui.DebugController(false),
 					new TREXPatternPool() );
 		else {
 			TREXGrammarReader reader = new TREXGrammarReader(
-				new com.sun.tranquilo.driver.textui.DebugController(false),
+				new com.sun.msv.driver.textui.DebugController(false),
 				factory,
 				new TypedTREXGrammarInterceptor(),
 				new TREXPatternPool() );
@@ -88,7 +88,7 @@ public class TypeReporter extends DefaultHandler
 		}
 		
 		filter = new VerifierFilter( new TREXDocumentDeclaration(grammar),
-			new com.sun.tranquilo.driver.textui.ReportErrorHandler() );
+			new com.sun.msv.driver.textui.ReportErrorHandler() );
 		
 		filter.setParent(factory.newSAXParser().getXMLReader());
 		filter.setContentHandler(this);

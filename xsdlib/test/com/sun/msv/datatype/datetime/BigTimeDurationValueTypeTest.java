@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype.datetime;
+package com.sun.msv.datatype.datetime;
 
 import java.math.BigInteger;
 import java.math.BigDecimal;
-import com.sun.tranquilo.datatype.Comparator;
+import com.sun.msv.datatype.Comparator;
 import junit.framework.*;
 import java.io.ByteArrayInputStream;
 
@@ -39,14 +39,14 @@ public class BigTimeDurationValueTypeTest extends TestCase {
 		return new ISO8601Parser(new ByteArrayInputStream(s.getBytes("UTF-8"))).durationTypeV();
 	}
 	
-	/** Test of hashCode method, of class com.sun.tranquilo.datatype.datetime.BigTimeDurationValueType. */
+	/** Test of hashCode method, of class com.sun.msv.datatype.datetime.BigTimeDurationValueType. */
 	public void testHashCode() throws Exception
 	{
 		assertEquals( get("P400Y").hashCode(), get("P146097D").hashCode() );
 		assertEquals( get("P1D").hashCode(), get("PT24H").hashCode() );
 	}
 	
-	/** Test of compare method, of class com.sun.tranquilo.datatype.datetime.BigTimeDurationValueType. */
+	/** Test of compare method, of class com.sun.msv.datatype.datetime.BigTimeDurationValueType. */
 	public void testCompare() throws Exception
 	{
 		assertEquals( get("P1D").compare( get("PT24H") ), Comparator.EQUAL );
@@ -73,13 +73,13 @@ public class BigTimeDurationValueTypeTest extends TestCase {
 		assertEquals( get("P400Y").compare( get("P146097D") ), Comparator.EQUAL );
 	}
 	
-	/** Test of getBigValue method, of class com.sun.tranquilo.datatype.datetime.BigTimeDurationValueType. */
+	/** Test of getBigValue method, of class com.sun.msv.datatype.datetime.BigTimeDurationValueType. */
 	public void testGetBigValue() throws Exception
 	{
 		ITimeDurationValueType td = get("P153D");
 		assertSame( td.getBigValue(), td );
 	}
 	
-//	/** Test of fromMinutes method, of class com.sun.tranquilo.datatype.datetime.BigTimeDurationValueType. */
+//	/** Test of fromMinutes method, of class com.sun.msv.datatype.datetime.BigTimeDurationValueType. */
 ///	public void testFromMinutes()
 }

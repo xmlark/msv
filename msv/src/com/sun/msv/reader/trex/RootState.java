@@ -7,14 +7,14 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.trex;
+package com.sun.msv.reader.trex;
 
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.SimpleState;
-import com.sun.tranquilo.reader.ExpressionOwner;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.trex.TREXGrammar;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.ExpressionOwner;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.trex.TREXGrammar;
 
 /**
  * invokes State object that parses the document element.

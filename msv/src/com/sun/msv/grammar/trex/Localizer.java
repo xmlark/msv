@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.trex;
+package com.sun.msv.grammar.trex;
 
 /**
  * formats messages by using a resource file.
@@ -19,7 +19,7 @@ class Localizer
 	public static String localize( String prop, Object[] args )
 	{
 		return java.text.MessageFormat.format(
-			java.util.ResourceBundle.getBundle("com.sun.tranquilo.grammar.trex.Messages").getString(prop),
+			java.util.ResourceBundle.getBundle("com.sun.msv.grammar.trex.Messages").getString(prop),
 			args );
 	}
 	

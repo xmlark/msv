@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.jarv;
+package com.sun.msv.verifier.jarv;
 
-import com.sun.tranquilo.verifier.DocumentDeclaration;
-import com.sun.tranquilo.verifier.VerificationErrorHandler;
+import com.sun.msv.verifier.DocumentDeclaration;
+import com.sun.msv.verifier.VerificationErrorHandler;
 
 /**
  * VerifierFilter implementation.
@@ -18,7 +18,7 @@ import com.sun.tranquilo.verifier.VerificationErrorHandler;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 class FilterImpl
-	extends com.sun.tranquilo.verifier.VerifierFilter
+	extends com.sun.msv.verifier.VerifierFilter
 	implements org.iso_relax.verifier.VerifierFilter
 {
 	FilterImpl( DocumentDeclaration documentDecl, VerificationErrorHandler errorHandler )

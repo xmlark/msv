@@ -7,17 +7,17 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.multithread;
+package com.sun.msv.verifier.multithread;
 
 import javax.xml.parsers.*;
-import com.sun.tranquilo.grammar.Grammar;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ExpressionPool;
-import com.sun.tranquilo.reader.util.GrammarLoader;
-import com.sun.tranquilo.grammar.trex.TREXPatternPool;
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
-import com.sun.tranquilo.verifier.Verifier;
-import com.sun.tranquilo.verifier.ValidityViolation;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.reader.util.GrammarLoader;
+import com.sun.msv.grammar.trex.TREXPatternPool;
+import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.verifier.Verifier;
+import com.sun.msv.verifier.ValidityViolation;
 import java.util.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
@@ -61,7 +61,7 @@ public class Daemon implements Runnable
 
 		grammar = GrammarLoader.loadSchema(
 				schemaName,
-				new com.sun.tranquilo.driver.textui.DebugController(false),
+				new com.sun.msv.driver.textui.DebugController(false),
 				factory );
 		
 		
@@ -114,7 +114,7 @@ public class Daemon implements Runnable
 				Verifier v = new Verifier(
 					new TREXDocumentDeclaration(grammar),
 //					new TREXDocumentDeclaration(grammar.getTopLevel(),localPool),
-					new com.sun.tranquilo.verifier.util.VerificationErrorHandlerImpl() );
+					new com.sun.msv.verifier.util.VerificationErrorHandlerImpl() );
 				r.setContentHandler(v);
 				try
 				{

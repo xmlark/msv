@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.util;
+package com.sun.msv.util;
 
 /**
  * reference to String.

@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.relax;
+package com.sun.msv.grammar.relax;
 
-import com.sun.tranquilo.grammar.*;
+import com.sun.msv.grammar.*;
 
 /**
  * ElementRule declaration of RELAX.

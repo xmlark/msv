@@ -7,19 +7,19 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.regexp.trex;
+package com.sun.msv.verifier.regexp.trex;
 
-import com.sun.tranquilo.datatype.ValidationContextProvider;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ElementExp;
-import com.sun.tranquilo.verifier.Acceptor;
-import com.sun.tranquilo.verifier.regexp.StringToken;
-import com.sun.tranquilo.verifier.regexp.Token;
-import com.sun.tranquilo.verifier.regexp.AnyElementToken;
-import com.sun.tranquilo.verifier.regexp.ElementToken;
-import com.sun.tranquilo.verifier.regexp.ResidualCalculator;
-import com.sun.tranquilo.util.StringRef;
-import com.sun.tranquilo.util.DataTypeRef;
+import com.sun.msv.datatype.ValidationContextProvider;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.verifier.Acceptor;
+import com.sun.msv.verifier.regexp.StringToken;
+import com.sun.msv.verifier.regexp.Token;
+import com.sun.msv.verifier.regexp.AnyElementToken;
+import com.sun.msv.verifier.regexp.ElementToken;
+import com.sun.msv.verifier.regexp.ResidualCalculator;
+import com.sun.msv.util.StringRef;
+import com.sun.msv.util.DataTypeRef;
 
 /**
  * base implementation of ComplexAcceptor.

@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.trex;
+package com.sun.msv.reader.trex;
 
-import com.sun.tranquilo.grammar.NameClass;
-import com.sun.tranquilo.grammar.AnyNameClass;
-import com.sun.tranquilo.datatype.WhiteSpaceProcessor;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.AnyNameClass;
+import com.sun.msv.datatype.WhiteSpaceProcessor;
 
 /**
  * parses &lt;anyName&gt; name class.

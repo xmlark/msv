@@ -7,15 +7,15 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.verifier;
+package com.sun.msv.relaxns.verifier;
 
 import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.LocatorImpl;
-import com.sun.tranquilo.verifier.VerificationErrorHandler;
-import com.sun.tranquilo.verifier.ValidityViolation;
+import com.sun.msv.verifier.VerificationErrorHandler;
+import com.sun.msv.verifier.ValidityViolation;
 
 /**
  * wraps VerificationErrorHandler by ISORELAX ErrorHandler interface.

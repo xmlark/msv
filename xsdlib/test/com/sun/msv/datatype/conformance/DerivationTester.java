@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype.conformance;
+package com.sun.msv.datatype.conformance;
 
 class DerivationTester
 {

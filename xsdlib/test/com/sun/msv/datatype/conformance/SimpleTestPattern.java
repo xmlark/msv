@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype.conformance;
+package com.sun.msv.datatype.conformance;
 
-import com.sun.tranquilo.datatype.*;
+import com.sun.msv.datatype.*;
 
 /**
  * test pattern that corresponds with one test case.

@@ -7,20 +7,20 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.reader;
+package com.sun.msv.relaxns.reader;
 
 import java.util.Iterator;
 import org.iso_relax.dispatcher.IslandSchema;
 import org.xml.sax.ErrorHandler;
-import com.sun.tranquilo.relaxns.verifier.SchemaProviderImpl;
-import com.sun.tranquilo.relaxns.verifier.IslandSchemaImpl;
-import com.sun.tranquilo.relaxns.grammar.relax.RELAXIslandSchema;
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.SimpleState;
-import com.sun.tranquilo.reader.ExpressionOwner;
-import com.sun.tranquilo.reader.util.GrammarReaderControllerAdaptor;
-import com.sun.tranquilo.grammar.Expression;
+import com.sun.msv.relaxns.verifier.SchemaProviderImpl;
+import com.sun.msv.relaxns.verifier.IslandSchemaImpl;
+import com.sun.msv.relaxns.grammar.relax.RELAXIslandSchema;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.ExpressionOwner;
+import com.sun.msv.reader.util.GrammarReaderControllerAdaptor;
+import com.sun.msv.grammar.Expression;
 
 /**
  * invokes State object that parses the document element.

@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.relax;
+package com.sun.msv.grammar.relax;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ExpressionVisitorExpression;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionVisitorExpression;
 
 /**
  * RELAX version of {@link ExpressionVisitorExpression}

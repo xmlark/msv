@@ -7,15 +7,15 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.datatype.xsd;
+package com.sun.msv.reader.datatype.xsd;
 
-import com.sun.tranquilo.datatype.BadTypeException;
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.StringType;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.ExpressionWithChildState;
-import com.sun.tranquilo.reader.datatype.TypeOwner;
+import com.sun.msv.datatype.BadTypeException;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.StringType;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.ExpressionWithChildState;
+import com.sun.msv.reader.datatype.TypeOwner;
 
 /**
  * State which has at most one TypeState as its child.

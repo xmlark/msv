@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.trex;
+package com.sun.msv.reader.trex;
 
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.reader.State;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.reader.State;
 
 /**
  * parses the root state of a grammar included as a pattern.

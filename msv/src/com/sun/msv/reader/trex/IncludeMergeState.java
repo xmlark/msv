@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.trex;
+package com.sun.msv.reader.trex;
 
-import com.sun.tranquilo.reader.ChildlessState;
+import com.sun.msv.reader.ChildlessState;
 
 /**
  * &lt;include&gt; element as an immediate child of &lt;grammar&gt; element.

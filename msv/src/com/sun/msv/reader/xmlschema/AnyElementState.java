@@ -7,16 +7,16 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.xmlschema;
+package com.sun.msv.reader.xmlschema;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.NameClass;
-import com.sun.tranquilo.grammar.ReferenceExp;
-import com.sun.tranquilo.grammar.ReferenceContainer;
-import com.sun.tranquilo.grammar.trex.ElementPattern;
-import com.sun.tranquilo.grammar.xmlschema.XMLSchemaSchema;
-import com.sun.tranquilo.grammar.xmlschema.ElementDeclExp;
-import com.sun.tranquilo.reader.State;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.ReferenceContainer;
+import com.sun.msv.grammar.trex.ElementPattern;
+import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
+import com.sun.msv.grammar.xmlschema.ElementDeclExp;
+import com.sun.msv.reader.State;
 import java.util.Iterator;
 
 /**

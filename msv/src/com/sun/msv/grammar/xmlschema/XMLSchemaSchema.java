@@ -7,14 +7,14 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.xmlschema;
+package com.sun.msv.grammar.xmlschema;
 
-import com.sun.tranquilo.grammar.Grammar;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ExpressionPool;
-import com.sun.tranquilo.grammar.trex.TREXPatternPool;
-import com.sun.tranquilo.grammar.ReferenceContainer;
-import com.sun.tranquilo.grammar.ReferenceExp;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.trex.TREXPatternPool;
+import com.sun.msv.grammar.ReferenceContainer;
+import com.sun.msv.grammar.ReferenceExp;
 
 /**
  * XML Schema object.

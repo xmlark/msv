@@ -7,12 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.relax.core.checker;
+package com.sun.msv.reader.relax.core.checker;
 
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.grammar.relax.*;
-import com.sun.tranquilo.reader.relax.core.RELAXCoreReader;
-import com.sun.tranquilo.util.StringPair;
+import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.relax.*;
+import com.sun.msv.reader.relax.core.RELAXCoreReader;
+import com.sun.msv.util.StringPair;
 import java.util.Map;
 import org.xml.sax.Locator;
 

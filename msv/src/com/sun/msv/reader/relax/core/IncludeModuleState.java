@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.relax.core;
+package com.sun.msv.reader.relax.core;
 
-import com.sun.tranquilo.reader.ChildlessState;
+import com.sun.msv.reader.ChildlessState;
 
 /**
  * parses &lt;include&gt; element of RELAX Core.

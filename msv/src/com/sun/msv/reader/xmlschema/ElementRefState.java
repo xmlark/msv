@@ -7,12 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.xmlschema;
+package com.sun.msv.reader.xmlschema;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ReferenceContainer;
-import com.sun.tranquilo.grammar.xmlschema.XMLSchemaSchema;
-import com.sun.tranquilo.reader.ExpressionWithoutChildState;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ReferenceContainer;
+import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
+import com.sun.msv.reader.ExpressionWithoutChildState;
 
 /**
  * used to parse &lt;element &gt; element with ref attribute.

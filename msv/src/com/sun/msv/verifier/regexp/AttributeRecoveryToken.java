@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.regexp;
+package com.sun.msv.verifier.regexp;
 
-import com.sun.tranquilo.grammar.AttributeExp;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ExpressionPool;
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
 
 /**
  * special AttributeToken that memorizes {@link AttributeExp} that fails to

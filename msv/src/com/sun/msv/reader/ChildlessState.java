@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader;
+package com.sun.msv.reader;
 
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * state that has no children.

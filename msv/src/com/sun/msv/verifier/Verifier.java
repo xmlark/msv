@@ -7,18 +7,18 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier;
+package com.sun.msv.verifier;
 
 import org.xml.sax.*;
 import org.xml.sax.helpers.NamespaceSupport;
 import java.util.Set;
 import java.util.Iterator;
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.StringType;
-import com.sun.tranquilo.grammar.IDContextProvider;
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.util.StringRef;
-import com.sun.tranquilo.util.DataTypeRef;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.StringType;
+import com.sun.msv.grammar.IDContextProvider;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.util.StringRef;
+import com.sun.msv.util.DataTypeRef;
 
 /**
  * SAX ContentHandler that verifies incoming SAX event stream.
@@ -169,7 +169,7 @@ public class Verifier implements
 	public void startElement( String namespaceUri, String localName, String qName, Attributes atts )
 		throws SAXException
 	{
-		if( com.sun.tranquilo.driver.textui.Debug.debug )
+		if( com.sun.msv.driver.textui.Debug.debug )
 			System.out.println("\n-- startElement("+qName+")" + locator.getLineNumber()+":"+locator.getColumnNumber() );
 		
 		namespaceSupport.pushContext();
@@ -187,7 +187,7 @@ public class Verifier implements
 		if( next==null )
 		{// no child element matchs this one
 			
-			if( com.sun.tranquilo.driver.textui.Debug.debug )
+			if( com.sun.msv.driver.textui.Debug.debug )
 				System.out.println("-- no children accepted: error recovery");
 
 			// let acceptor recover from this error.
@@ -198,7 +198,7 @@ public class Verifier implements
 			
 			if( next==null )
 			{
-				if( com.sun.tranquilo.driver.textui.Debug.debug )
+				if( com.sun.msv.driver.textui.Debug.debug )
 					System.out.println("-- unable to recover");
 				throw new ValidationUnrecoverableException(vv);
 			}
@@ -217,7 +217,7 @@ public class Verifier implements
 	public void endElement( String namespaceUri, String localName, String qName )
 		throws SAXException
 	{
-		if( com.sun.tranquilo.driver.textui.Debug.debug )
+		if( com.sun.msv.driver.textui.Debug.debug )
 			System.out.println("\n-- endElement("+qName+")" + locator.getLineNumber()+":"+locator.getColumnNumber() );
 		
 		namespaceSupport.popContext();
@@ -391,7 +391,7 @@ public class Verifier implements
 	public static String localizeMessage( String propertyName, Object[] args )
 	{
 		String format = java.util.ResourceBundle.getBundle(
-			"com.sun.tranquilo.verifier.Messages").getString(propertyName);
+			"com.sun.msv.verifier.Messages").getString(propertyName);
 		
 	    return java.text.MessageFormat.format(format, args );
 	}

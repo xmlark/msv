@@ -7,12 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.xmlschema;
+package com.sun.msv.reader.xmlschema;
 
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.grammar.xmlschema.SimpleTypeExp;
-import com.sun.tranquilo.reader.ChildlessState;
-import com.sun.tranquilo.reader.datatype.xsd.SimpleTypeState;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
+import com.sun.msv.reader.ChildlessState;
+import com.sun.msv.reader.datatype.xsd.SimpleTypeState;
 
 /**
  * used to parse &lt;redefine&gt; element.

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar;
+package com.sun.msv.grammar;
 
 import org.xml.sax.*;
 import java.util.Collection;
@@ -82,13 +82,13 @@ public abstract class Expression
 	public abstract void visit( ExpressionVisitorVoid visitor );
 	
 // if you don't need RELAX capability at all, cut these lines
-	public Object visit( com.sun.tranquilo.grammar.relax.RELAXExpressionVisitor visitor )
+	public Object visit( com.sun.msv.grammar.relax.RELAXExpressionVisitor visitor )
 	{ return visit((ExpressionVisitor)visitor); }
-	public Expression visit( com.sun.tranquilo.grammar.relax.RELAXExpressionVisitorExpression visitor )
+	public Expression visit( com.sun.msv.grammar.relax.RELAXExpressionVisitorExpression visitor )
 	{ return visit((ExpressionVisitorExpression)visitor); }
-	public boolean visit( com.sun.tranquilo.grammar.relax.RELAXExpressionVisitorBoolean visitor )
+	public boolean visit( com.sun.msv.grammar.relax.RELAXExpressionVisitorBoolean visitor )
 	{ return visit((ExpressionVisitorBoolean)visitor); }
-	public void visit( com.sun.tranquilo.grammar.relax.RELAXExpressionVisitorVoid visitor )
+	public void visit( com.sun.msv.grammar.relax.RELAXExpressionVisitorVoid visitor )
 	{ visit((ExpressionVisitorVoid)visitor); }
 // until here
 	

@@ -7,20 +7,20 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.xmlschema;
+package com.sun.msv.reader.xmlschema;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ReferenceExp;
-import com.sun.tranquilo.grammar.NameClass;
-import com.sun.tranquilo.grammar.NotNameClass;
-import com.sun.tranquilo.grammar.NamespaceNameClass;
-import com.sun.tranquilo.grammar.ChoiceNameClass;
-import com.sun.tranquilo.grammar.AnyNameClass;
-import com.sun.tranquilo.grammar.SimpleNameClass;
-import com.sun.tranquilo.grammar.xmlschema.ElementDeclExp;
-import com.sun.tranquilo.grammar.xmlschema.LaxDefaultNameClass;
-import com.sun.tranquilo.grammar.xmlschema.XMLSchemaSchema;
-import com.sun.tranquilo.reader.ExpressionWithoutChildState;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.NotNameClass;
+import com.sun.msv.grammar.NamespaceNameClass;
+import com.sun.msv.grammar.ChoiceNameClass;
+import com.sun.msv.grammar.AnyNameClass;
+import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.grammar.xmlschema.ElementDeclExp;
+import com.sun.msv.grammar.xmlschema.LaxDefaultNameClass;
+import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
+import com.sun.msv.reader.ExpressionWithoutChildState;
 import java.util.StringTokenizer;
 import java.util.Iterator;
 

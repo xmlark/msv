@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype.conformance;
+package com.sun.msv.datatype.conformance;
 
-import com.sun.tranquilo.datatype.ValidationContextProvider;
+import com.sun.msv.datatype.ValidationContextProvider;
 
 /**
  * dummy implementation of ValidationContextProvider.

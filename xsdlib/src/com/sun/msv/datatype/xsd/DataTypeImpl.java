@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype;
+package com.sun.msv.datatype;
 
 /**
  * base implementaion for DataType interface.
@@ -83,7 +83,7 @@ public abstract class DataTypeImpl implements DataType {
 	
 	public static String localize( String prop, Object[] args ) {
 		return java.text.MessageFormat.format(
-			java.util.ResourceBundle.getBundle("com.sun.tranquilo.datatype.Messages").getString(prop),
+			java.util.ResourceBundle.getBundle("com.sun.msv.datatype.Messages").getString(prop),
 			args );
 	}
 	

@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.trex;
+package com.sun.msv.grammar.trex;
 
-import com.sun.tranquilo.grammar.ExpressionVisitorExpression;
-import com.sun.tranquilo.grammar.Expression;
+import com.sun.msv.grammar.ExpressionVisitorExpression;
+import com.sun.msv.grammar.Expression;
 
 /**
  * TREX version of {@link ExpressionVisitorExpression}.

@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.relax.core;
+package com.sun.msv.reader.relax.core;
 
 import org.xml.sax.Locator;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.relax.AttPoolClause;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.relax.AttPoolClause;
 
 /**
  * parses &lt;attPool&gt; element.

@@ -7,18 +7,18 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.xmlschema;
+package com.sun.msv.reader.xmlschema;
 
-import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.BadTypeException;
-import com.sun.tranquilo.datatype.TypeIncubator;
-import com.sun.tranquilo.datatype.StringType;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.SequenceState;
-import com.sun.tranquilo.reader.datatype.TypeOwner;
-import com.sun.tranquilo.reader.datatype.xsd.FacetStateParent;
-import com.sun.tranquilo.util.StartTagInfo;
+import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.BadTypeException;
+import com.sun.msv.datatype.TypeIncubator;
+import com.sun.msv.datatype.StringType;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.SequenceState;
+import com.sun.msv.reader.datatype.TypeOwner;
+import com.sun.msv.reader.datatype.xsd.FacetStateParent;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * used to parse restriction/extension element as a child of &lt;simpleContent&gt; element.

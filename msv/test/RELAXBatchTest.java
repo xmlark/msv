@@ -10,9 +10,9 @@
 import junit.framework.*;
 import java.util.StringTokenizer;
 import javax.xml.parsers.SAXParserFactory;
-import com.sun.tranquilo.reader.GrammarReaderController;
-import com.sun.tranquilo.reader.util.GrammarLoader;
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.reader.GrammarReaderController;
+import com.sun.msv.reader.util.GrammarLoader;
+import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
 import org.xml.sax.InputSource;
 
 /**

@@ -9,10 +9,10 @@
  */
 package com.sun.tranquilo.generator;
 
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.grammar.trex.TREXNameClassVisitor;
-import com.sun.tranquilo.grammar.trex.DifferenceNameClass;
-import com.sun.tranquilo.util.StringPair;
+import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.trex.TREXNameClassVisitor;
+import com.sun.msv.grammar.trex.DifferenceNameClass;
+import com.sun.msv.util.StringPair;
 import java.util.Vector;
 import java.util.Stack;
 import java.util.Random;

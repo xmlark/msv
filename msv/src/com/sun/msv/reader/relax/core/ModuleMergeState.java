@@ -7,12 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.relax.core;
+package com.sun.msv.reader.relax.core;
 
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.relax.RELAXModule;
-import com.sun.tranquilo.reader.*;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.relax.RELAXModule;
+import com.sun.msv.reader.*;
 
 /**
  * Used to parse module.

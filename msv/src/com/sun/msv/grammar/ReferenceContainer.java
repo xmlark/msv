@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar;
+package com.sun.msv.grammar;
 
 import java.util.Map;
 import java.util.Iterator;
@@ -27,7 +27,7 @@ public abstract class ReferenceContainer {
 	 * Derived class should provide type-safe accesser methods.
 	 * 
 	 * Usually, this method is only necessary for some kind of grammar loader.
-	 * If you are programming an application over Tranquilo,
+	 * If you are programming an application over MSV,
 	 * {@link _get} method is probably what you need.
 	 */
 	public final ReferenceExp _getOrCreate( String name ) {

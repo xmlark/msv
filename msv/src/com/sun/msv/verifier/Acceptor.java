@@ -7,14 +7,14 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier;
+package com.sun.msv.verifier;
 
 import java.util.Collection;
 import java.util.List;
-import com.sun.tranquilo.datatype.ValidationContextProvider;
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.util.StringRef;
-import com.sun.tranquilo.util.DataTypeRef;
+import com.sun.msv.datatype.ValidationContextProvider;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.util.StringRef;
+import com.sun.msv.util.DataTypeRef;
 
 /**
  * represents a pseudo-automaton acceptor.

@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.grammar;
+package com.sun.msv.relaxns.grammar;
 
-import com.sun.tranquilo.grammar.ReferenceExp;
-import com.sun.tranquilo.grammar.ExpressionPool;
-import com.sun.tranquilo.grammar.Expression;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Expression;
 import org.xml.sax.Locator;
 
 /**
@@ -21,7 +21,7 @@ import org.xml.sax.Locator;
  * divide&validate can gracefully degrade.
  * 
  * <p>
- * In Tranquilo, importing AttributesDecl from different implementations is
+ * In MSV, importing AttributesDecl from different implementations is
  * not supported. ExternalAttributeExp is always replaced by their target Expression
  * before validation.
  * 

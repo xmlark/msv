@@ -9,7 +9,7 @@
  */
 package com.sun.tranquilo.generator;
 
-import com.sun.tranquilo.datatype.DataType;
+import com.sun.msv.datatype.DataType;
 
 /**
  * generates an text value that matchs to a datatype.

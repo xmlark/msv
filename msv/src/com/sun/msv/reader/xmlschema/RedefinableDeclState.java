@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.xmlschema;
+package com.sun.msv.reader.xmlschema;
 
-import com.sun.tranquilo.grammar.ReferenceContainer;
-import com.sun.tranquilo.grammar.xmlschema.RedefinableExp;
-import com.sun.tranquilo.reader.ExpressionWithChildState;
+import com.sun.msv.grammar.ReferenceContainer;
+import com.sun.msv.grammar.xmlschema.RedefinableExp;
+import com.sun.msv.reader.ExpressionWithChildState;
 
 /** state that parses redefinable declaration.
  * 

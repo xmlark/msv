@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.verifier.regexp.trex;
+package com.sun.msv.verifier.regexp.trex;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.trex.*;
-import com.sun.tranquilo.verifier.regexp.AttributeFeeder;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.trex.*;
+import com.sun.msv.verifier.regexp.AttributeFeeder;
 
 /**
  * {@link AttributeFeeder} which can handle TREX extension primitives.

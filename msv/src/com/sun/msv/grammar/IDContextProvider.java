@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar;
+package com.sun.msv.grammar;
 
-import com.sun.tranquilo.datatype.ValidationContextProvider;
+import com.sun.msv.datatype.ValidationContextProvider;
 
 /**
  * ValidationContextProvider that supports limited ID/IDREF implementation.

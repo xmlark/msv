@@ -7,17 +7,17 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.grammar.relax;
+package com.sun.msv.relaxns.grammar.relax;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.ElementExp;
-import com.sun.tranquilo.grammar.Grammar;
-import com.sun.tranquilo.grammar.NameClass;
-import com.sun.tranquilo.grammar.NamespaceNameClass;
-import com.sun.tranquilo.grammar.ExpressionPool;
-import com.sun.tranquilo.grammar.ReferenceExp;
-import com.sun.tranquilo.grammar.ChoiceNameClass;
-import com.sun.tranquilo.grammar.NotNameClass;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.NamespaceNameClass;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.ChoiceNameClass;
+import com.sun.msv.grammar.NotNameClass;
 import org.iso_relax.dispatcher.ElementDecl;
 import org.iso_relax.dispatcher.SchemaProvider;
 import org.xml.sax.Locator;

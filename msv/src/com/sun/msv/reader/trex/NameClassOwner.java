@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.trex;
+package com.sun.msv.reader.trex;
 
-import com.sun.tranquilo.grammar.NameClass;
+import com.sun.msv.grammar.NameClass;
 
 /**
  * interface that must be implemented by the parent state of NameClassState.

@@ -7,12 +7,12 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.reader;
+package com.sun.msv.relaxns.reader;
 
-import com.sun.tranquilo.reader.State;
-import com.sun.tranquilo.reader.IgnoreState;
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.grammar.relax.RELAXModule;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.IgnoreState;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.grammar.relax.RELAXModule;
 import org.iso_relax.dispatcher.impl.IgnoredSchema;
 import org.iso_relax.dispatcher.IslandSchema;
 import org.iso_relax.dispatcher.IslandSchemaReader;

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader;
+package com.sun.msv.reader;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.XMLReader;
@@ -28,10 +28,10 @@ import java.net.URL;
 import java.net.MalformedURLException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import com.sun.tranquilo.grammar.*;
-import com.sun.tranquilo.grammar.trex.*;
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.datatype.DataType;
+import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.trex.*;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.datatype.DataType;
 
 /**
  * base implementation of grammar readers that read grammar from SAX2 stream.
@@ -51,8 +51,8 @@ import com.sun.tranquilo.datatype.DataType;
  * Or you may want to use several pre-defined static "parse" methods for
  * ease of use.
  * 
- * @seealso com.sun.tranquilo.reader.relax.RELAXReader#parse
- * @seealso com.sun.tranquilo.reader.trex.TREXGrammarReader#parse
+ * @seealso com.sun.msv.reader.relax.RELAXReader#parse
+ * @seealso com.sun.msv.reader.trex.TREXGrammarReader#parse
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
@@ -138,15 +138,15 @@ public abstract class GrammarReader
 	private static final Map deprecatedTypes = initDeprecatedTypes();
 	private static Map initDeprecatedTypes() {
 		Map m = new java.util.HashMap();
-		m.put("uriReference",		com.sun.tranquilo.datatype.AnyURIType.theInstance );
-		m.put("number",				com.sun.tranquilo.datatype.NumberType.theInstance );
-		m.put("timeDuration",		com.sun.tranquilo.datatype.DurationType.theInstance );
-		m.put("CDATA",				com.sun.tranquilo.datatype.NormalizedStringType.theInstance );
-		m.put("year",				com.sun.tranquilo.datatype.GYearType.theInstance );
-		m.put("yearMonth",			com.sun.tranquilo.datatype.GYearMonthType.theInstance );
-		m.put("month",				com.sun.tranquilo.datatype.GMonthType.theInstance );
-		m.put("monthDay",			com.sun.tranquilo.datatype.GMonthDayType.theInstance );
-		m.put("day",				com.sun.tranquilo.datatype.GDayType.theInstance );
+		m.put("uriReference",		com.sun.msv.datatype.AnyURIType.theInstance );
+		m.put("number",				com.sun.msv.datatype.NumberType.theInstance );
+		m.put("timeDuration",		com.sun.msv.datatype.DurationType.theInstance );
+		m.put("CDATA",				com.sun.msv.datatype.NormalizedStringType.theInstance );
+		m.put("year",				com.sun.msv.datatype.GYearType.theInstance );
+		m.put("yearMonth",			com.sun.msv.datatype.GYearMonthType.theInstance );
+		m.put("month",				com.sun.msv.datatype.GMonthType.theInstance );
+		m.put("monthDay",			com.sun.msv.datatype.GMonthDayType.theInstance );
+		m.put("day",				com.sun.msv.datatype.GDayType.theInstance );
 		return m;
 	}
 	/**

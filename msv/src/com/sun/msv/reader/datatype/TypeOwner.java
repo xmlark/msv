@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.datatype;
+package com.sun.msv.reader.datatype;
 
-import com.sun.tranquilo.datatype.DataType;
+import com.sun.msv.datatype.DataType;
 
 /**
  * State can implement this method to be notified by DataType vocabulary

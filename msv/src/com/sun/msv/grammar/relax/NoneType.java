@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.relax;
+package com.sun.msv.grammar.relax;
 
-import com.sun.tranquilo.datatype.*;
+import com.sun.msv.datatype.*;
 
 /**
  * 'none' datatype of RELAX.

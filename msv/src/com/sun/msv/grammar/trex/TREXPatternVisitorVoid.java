@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.grammar.trex;
+package com.sun.msv.grammar.trex;
 
-import com.sun.tranquilo.grammar.ExpressionVisitorVoid;
+import com.sun.msv.grammar.ExpressionVisitorVoid;
 
 /**
  * TREX version of {@link ExpressionVisitorVoid}.

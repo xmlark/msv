@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.util;
+package com.sun.msv.reader.util;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;

@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.datatype.xsd;
+package com.sun.msv.reader.datatype.xsd;
 
-import com.sun.tranquilo.reader.ChildlessState;
-import com.sun.tranquilo.reader.GrammarReader;
-import com.sun.tranquilo.datatype.BadTypeException;
+import com.sun.msv.reader.ChildlessState;
+import com.sun.msv.reader.GrammarReader;
+import com.sun.msv.datatype.BadTypeException;
 import java.util.Set;
 
 /**

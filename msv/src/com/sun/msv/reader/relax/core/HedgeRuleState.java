@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.relax.core;
+package com.sun.msv.reader.relax.core;
 
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.grammar.relax.HedgeRules;
-import com.sun.tranquilo.reader.relax.HedgeRuleBaseState;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.relax.HedgeRules;
+import com.sun.msv.reader.relax.HedgeRuleBaseState;
 
 /**
  * parses &lt;hedgeRule&gt; element

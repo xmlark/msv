@@ -7,14 +7,14 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.util;
+package com.sun.msv.util;
 
 /**
- * reference to {@link com.sun.tranquilo.datatype.DataType}
+ * reference to {@link com.sun.msv.datatype.DataType}
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class DataTypeRef
 {
-	public com.sun.tranquilo.datatype.DataType type = null;
+	public com.sun.msv.datatype.DataType type = null;
 }

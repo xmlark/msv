@@ -7,19 +7,19 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.util;
+package com.sun.msv.reader.util;
 
-import com.sun.tranquilo.reader.relax.core.RELAXCoreReader;
-import com.sun.tranquilo.reader.trex.TREXGrammarReader;
-import com.sun.tranquilo.reader.xmlschema.XMLSchemaReader;
-import com.sun.tranquilo.reader.GrammarReaderController;
-import com.sun.tranquilo.relaxns.grammar.RELAXGrammar;
-import com.sun.tranquilo.relaxns.reader.RELAXNSReader;
-import com.sun.tranquilo.grammar.Grammar;
-import com.sun.tranquilo.grammar.relax.RELAXModule;
-import com.sun.tranquilo.grammar.trex.TREXPatternPool;
-import com.sun.tranquilo.grammar.trex.TREXGrammar;
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.reader.relax.core.RELAXCoreReader;
+import com.sun.msv.reader.trex.TREXGrammarReader;
+import com.sun.msv.reader.xmlschema.XMLSchemaReader;
+import com.sun.msv.reader.GrammarReaderController;
+import com.sun.msv.relaxns.grammar.RELAXGrammar;
+import com.sun.msv.relaxns.reader.RELAXNSReader;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.relax.RELAXModule;
+import com.sun.msv.grammar.trex.TREXPatternPool;
+import com.sun.msv.grammar.trex.TREXGrammar;
+import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;

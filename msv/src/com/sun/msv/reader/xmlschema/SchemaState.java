@@ -7,9 +7,9 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader.xmlschema;
+package com.sun.msv.reader.xmlschema;
 
-import com.sun.tranquilo.grammar.xmlschema.XMLSchemaSchema;
+import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 
 /**
  * used to parse &lt;schema&gt; element.

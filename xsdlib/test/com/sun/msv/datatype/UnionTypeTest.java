@@ -7,10 +7,10 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype;
+package com.sun.msv.datatype;
 
 import junit.framework.*;
-import com.sun.tranquilo.datatype.conformance.DummyContextProvider;
+import com.sun.msv.datatype.conformance.DummyContextProvider;
 
 /**
  * tests UnionType.

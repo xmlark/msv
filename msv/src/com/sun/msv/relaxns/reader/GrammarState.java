@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.reader;
+package com.sun.msv.relaxns.reader;
 
-import com.sun.tranquilo.util.StartTagInfo;
-import com.sun.tranquilo.grammar.Expression;
-import com.sun.tranquilo.reader.*;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.reader.*;
 
 /**
  * parses &lt;grammar&gt; element.

@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.reader;
+package com.sun.msv.reader;
 
 import org.xml.sax.Locator;
 import org.xml.sax.InputSource;

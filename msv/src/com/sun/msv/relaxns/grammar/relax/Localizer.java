@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.relaxns.grammar.relax;
+package com.sun.msv.relaxns.grammar.relax;
 
 /**
  * localizes messages
@@ -19,7 +19,7 @@ class Localizer
 	public static String localize( String propertyName, Object[] args )
 	{
 		String format = java.util.ResourceBundle.getBundle(
-			"com.sun.tranquilo.relaxns.grammar.relax.Messages").getString(propertyName);
+			"com.sun.msv.relaxns.grammar.relax.Messages").getString(propertyName);
 		
 	    return java.text.MessageFormat.format(format, args );
 	}

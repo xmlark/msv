@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.datatype.datetime;
+package com.sun.msv.datatype.datetime;
 
 import java.math.BigInteger;
 import java.math.BigDecimal;
-import com.sun.tranquilo.datatype.Comparator;
+import com.sun.msv.datatype.Comparator;
 import junit.framework.*;
 
 /**
@@ -33,7 +33,7 @@ public class UtilTest extends TestCase
 		return new TestSuite(UtilTest.class);
 	}
 	
-	/** Test of objEqual method, of class com.sun.tranquilo.datatype.datetime.Util. */
+	/** Test of objEqual method, of class com.sun.msv.datatype.datetime.Util. */
 	public void testObjEqual()
 	{
 		assertEquals( true,	Util.objEqual(null,null) );
@@ -43,14 +43,14 @@ public class UtilTest extends TestCase
 		assertEquals( true,	Util.objEqual("12","12") );
 	}
 	
-	/** Test of objHashCode method, of class com.sun.tranquilo.datatype.datetime.Util. */
+	/** Test of objHashCode method, of class com.sun.msv.datatype.datetime.Util. */
 	public void testObjHashCode()
 	{
 		assertEquals( this.hashCode(),	Util.objHashCode(this) );
 		assertEquals( Util.objHashCode(null), Util.objHashCode(null) );
 	}
 	
-	/** Test of objCompare method, of class com.sun.tranquilo.datatype.datetime.Util. */
+	/** Test of objCompare method, of class com.sun.msv.datatype.datetime.Util. */
 	public void testObjCompare()
 	{
 		assertEquals( Comparator.EQUAL,		Util.objCompare(null,null) );
@@ -60,14 +60,14 @@ public class UtilTest extends TestCase
 		assertEquals( Comparator.UNDECIDABLE,Util.objCompare(new Integer(1),null) );
 	}
 	
-	/** Test of int2bi method, of class com.sun.tranquilo.datatype.datetime.Util. */
+	/** Test of int2bi method, of class com.sun.msv.datatype.datetime.Util. */
 	public void testInt2bi()
 	{
 		assertEquals( Util.int2bi(15), new BigInteger("15") );
 		assertEquals( Util.int2bi(new Integer(15)), new BigInteger("15") );
 	}
 	
-	/** Test of maximumDayInMonthFor method, of class com.sun.tranquilo.datatype.datetime.Util. */
+	/** Test of maximumDayInMonthFor method, of class com.sun.msv.datatype.datetime.Util. */
 	public void testMaximumDayInMonthFor()
 	{
 		int[] test = new int[]{

@@ -10,15 +10,15 @@
 import junit.framework.*;
 import org.xml.sax.*;
 import java.io.*;
-import com.sun.tranquilo.verifier.*;
-import com.sun.tranquilo.verifier.util.VerificationErrorHandlerImpl;
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
-import com.sun.tranquilo.reader.util.GrammarLoader;
-import com.sun.tranquilo.reader.util.IgnoreController;
-import com.sun.tranquilo.reader.dtd.DTDReader;
-import com.sun.tranquilo.grammar.trex.*;
-import com.sun.tranquilo.grammar.relax.*;
-import com.sun.tranquilo.grammar.*;
+import com.sun.msv.verifier.*;
+import com.sun.msv.verifier.util.VerificationErrorHandlerImpl;
+import com.sun.msv.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.msv.reader.util.GrammarLoader;
+import com.sun.msv.reader.util.IgnoreController;
+import com.sun.msv.reader.dtd.DTDReader;
+import com.sun.msv.grammar.trex.*;
+import com.sun.msv.grammar.relax.*;
+import com.sun.msv.grammar.*;
 
 /**
  * loads a schema and creates test case for every test instances.

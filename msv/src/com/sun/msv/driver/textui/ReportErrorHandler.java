@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.tranquilo.driver.textui;
+package com.sun.msv.driver.textui;
 
-import com.sun.tranquilo.verifier.VerificationErrorHandler;
-import com.sun.tranquilo.verifier.ValidityViolation;
-import com.sun.tranquilo.verifier.ValidationUnrecoverableException;
+import com.sun.msv.verifier.VerificationErrorHandler;
+import com.sun.msv.verifier.ValidityViolation;
+import com.sun.msv.verifier.ValidationUnrecoverableException;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;

@@ -34,7 +34,6 @@ public final class TypedStringExp extends Expression {
 	
 	/**
 	 * 'except' clause of RELAX NG.
-	 * 
 	 * If a token matches this pattern, then it should be rejected.
 	 */
 	public final Expression except;
@@ -66,19 +65,6 @@ public final class TypedStringExp extends Expression {
 	public void visit( ExpressionVisitorVoid visitor )				{ visitor.onTypedString(this); }
 
 	protected boolean calcEpsilonReducibility() {
-		return dt.isValid("",dummyContext);
+		return false;
 	}
-	
-	// At this moment, ValidationContextProvider is used only by QName and ENTITY.
-	// And both of them work with the following dummy ValidationContextProvider
-	private static final ValidationContext dummyContext =
-		new ValidationContext(){
-			public boolean isUnparsedEntity( String s )
-			{ return s.length()!=0; }
-			public String resolveNamespacePrefix( String prefix )
-			{ return ""; }
-			public boolean isNotation( String s )
-			{ return s.length()!=0; }
-		};
-
 }

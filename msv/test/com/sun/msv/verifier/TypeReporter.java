@@ -37,17 +37,15 @@ import org.relaxng.datatype.Datatype;
  */
 public class TypeReporter extends DefaultHandler
 {
-	public static void main( String[] args ) throws Exception
-	{
+	
+	public static void main( String[] args ) throws Exception {
 		new TypeReporter().run(args);
 	}
 	
 	private VerifierFilter filter;
 	
-	private void run( String[] args ) throws Exception
-	{
-		if( args.length!=3 )
-		{
+	private void run( String[] args ) throws Exception {
+		if( args.length!=3 ) {
 			System.out.println("Usage: TypeReporter (relaxNS|relaxCore|trex|xsd) <schema> <XML instance>\n");
 			return;
 		}
@@ -73,8 +71,7 @@ public class TypeReporter extends DefaultHandler
 				factory );
 		}
 		
-		if( grammar==null )
-		{
+		if( grammar==null ) {
 			System.err.println("failed to load a grammar");
 			return;
 		}
@@ -90,15 +87,13 @@ public class TypeReporter extends DefaultHandler
 	
 	private int indent = 0;
 	
-	private void printIndent()
-	{
+	private void printIndent() {
 		for( int i=0; i<indent; i++ )
 			System.out.print("  ");
 	}
 	
 	
-	public void startElement( String namespaceUri, String localName, String qName, Attributes atts )
-	{
+	public void startElement( String namespaceUri, String localName, String qName, Attributes atts ) {
 		printIndent();
 		indent++;
 		System.out.print("<"+qName+"> :");
@@ -128,8 +123,7 @@ public class TypeReporter extends DefaultHandler
 		System.out.println("???");
 	}
 	
-	public void endElement( String namespaceUri, String localName, String qName )
-	{
+	public void endElement( String namespaceUri, String localName, String qName ) {
 		Datatype[] types = filter.getVerifier().getLastCharacterType();
 		if( types!=null ) {
 			String r="";

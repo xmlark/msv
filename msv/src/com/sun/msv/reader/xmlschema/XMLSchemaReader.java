@@ -146,7 +146,7 @@ public class XMLSchemaReader extends GrammarReader {
 	public final Expression xsiSchemaLocationExp;
 
 	public final static String XMLSchemaSchemaLocationAttributes = 
-		"$$internal$$ - XML schema SchemaLocation attributes";
+		"____internal_XML_schema_SchemaLocation_attributes";
 		
 	/**
 	 * expression that matches to "ur-type" when used as a complex type.
@@ -499,9 +499,14 @@ public class XMLSchemaReader extends GrammarReader {
 			maxOccurs = "1";
 		}
 		
-		if( maxOccurs.equals("unbounded") )
-			exp = pool.createSequence( exp, pool.createZeroOrMore(item) );
-		else {
+		if( maxOccurs.equals("unbounded") ) {
+			if( minOccursValue==1 )
+				// this will produce a smaller expression.
+				// it is also good for TREXWriter and ExpressionPrinter.
+				exp = pool.createOneOrMore(item);
+			else
+				exp = pool.createSequence( exp, pool.createZeroOrMore(item) );
+		} else {
 			int v;
 			try {
 				v = Integer.parseInt(maxOccurs);

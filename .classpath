@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" output="generator/bin" path="generator/src"/>
+    <classpathentry kind="src" output="generator/bin" path="generator/test"/>
+    <classpathentry kind="src" output="xsdlib/bin" path="xsdlib/src"/>
+    <classpathentry kind="src" output="xsdlib/bin" path="xsdlib/test"/>
+    <classpathentry kind="src" output="xsdlib/bin" path="xsdlib/examples"/>
+    <classpathentry kind="src" output="msv/bin" path="msv/src"/>
+    <classpathentry kind="src" output="msv/bin" path="msv/test"/>
+    <classpathentry kind="src" output="examples/servlet/bin" path="msv/examples/servlet/src"/>
+    <classpathentry excluding="servlet/src/" kind="src" path="msv/examples"/>
+    <classpathentry kind="src" output="relames/bin" path="relames/src"/>
+    <classpathentry kind="src" output="relames/bin" path="relames/test"/>
+    <classpathentry kind="src" output="rngconverter/bin" path="rngconverter/src"/>
+    <classpathentry kind="src" output="rngconverter/bin" path="rngconverter/test"/>
+    <classpathentry kind="src" output="schmit/bin" path="schmit/src"/>
+    <classpathentry kind="src" output="testharness/bin" path="testharness/src"/>
+    <classpathentry kind="lib" path="shared/lib/junit.jar"/>
+    <classpathentry kind="lib" path="shared/lib/crimson.jar" sourcepath="shared/crimson-1.1.3-src.zip"/>
+    <classpathentry kind="lib" path="shared/lib/jdom.jar"/>
+    <classpathentry kind="lib" path="shared/lib/xalan.jar" sourcepath="shared/xalan-j_2_4_0-src.zip"/>
+    <classpathentry kind="lib" path="shared/lib/isorelax.jar"/>
+    <classpathentry kind="lib" path="shared/lib/resolver.jar"/>
+    <classpathentry kind="lib" path="shared/lib/dom4j.jar"/>
+    <classpathentry kind="lib" path="shared/lib/servlet.jar"/>
+    <classpathentry kind="lib" path="shared/lib/xmlParserAPIs.jar"/>
+    <classpathentry kind="lib" path="shared/lib/saxon.jar"/>
+    <classpathentry kind="lib" path="shared/lib/relaxngDatatype.jar"/>
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+    <classpathentry kind="lib" path="shared/lib/ant.jar"/>
+    <classpathentry kind="lib" path="shared/lib/xercesImpl.jar" sourcepath="shared/Xerces-src.zip"/>
+    <classpathentry kind="output" path="xsdlib/bin"/>
+</classpath>

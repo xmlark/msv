@@ -212,7 +212,7 @@ public class IDConstraintChecker extends Verifier {
 		for( int i=0; i<len; i++ ) {
 			Matcher m = (Matcher)matchers.get(i);
 			m.onAttribute( uri, localName, value, 
-				(result==null)?null:result[0] );
+				(result==null || result.length==0)?null:result[0] );
 		}
 		
 		return result;

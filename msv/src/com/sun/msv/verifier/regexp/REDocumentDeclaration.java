@@ -105,6 +105,12 @@ public abstract class REDocumentDeclaration implements DocumentDeclaration
 		"Diagnosis.MissingAttribute.Separator";
 	public static final String DIAG_MISSING_ATTRIBUTE_MORE =
 		"Diagnosis.MissingAttribute.More";
+	public static final String DIAG_UNCOMPLETED_CONTENT_WRAPUP =
+		"Diagnosis.UncompletedContent.WrapUp";
+	public static final String DIAG_UNCOMPLETED_CONTENT_SEPARATOR =
+		"Diagnosis.UncompletedContent.Separator";
+	public static final String DIAG_UNCOMPLETED_CONTENT_MORE =
+		"Diagnosis.UncompletedContent.More";
 	public static final String DIAG_SIMPLE_NAMECLASS =
 		"Diagnosis.SimpleNameClass";
 	public static final String DIAG_NAMESPACE_NAMECLASS =

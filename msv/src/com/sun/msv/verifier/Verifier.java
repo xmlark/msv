@@ -32,12 +32,11 @@ import com.sun.msv.util.DataTypeRef;
 public class Verifier implements
 	ContentHandler,
 	DTDHandler,
-	IDContextProvider
-{
+	IDContextProvider {
+	
 	protected Acceptor current;
 	
-	private static final class Context
-	{
+	private static final class Context {
 		final Context	previous;
 		final Acceptor	acceptor;
 		final int		stringCareLevel;
@@ -95,8 +94,7 @@ public class Verifier implements
 	
 	private final static int INITIAL_PANIC_LEVEL = 3;
 
-	public Verifier( DocumentDeclaration documentDecl, VerificationErrorHandler errorHandler )
-	{
+	public Verifier( DocumentDeclaration documentDecl, VerificationErrorHandler errorHandler ) {
 		this.docDecl = documentDecl;
 		this.errorHandler = errorHandler;
 	}
@@ -120,22 +118,17 @@ public class Verifier implements
 	 */
 	public DataType getLastCharacterType() { return characterType.type; }
 	
-	private void verifyText()
-		throws SAXException
-	{
-		if(text.length()!=0)
-		{
+	private void verifyText() throws SAXException {
+		if(text.length()!=0) {
 			characterType.type=null;
-			switch( stringCareLevel )
-			{
+			switch( stringCareLevel ) {
 			case Acceptor.STRING_PROHIBITED:
 				// only whitespace is allowed.
 				final int len = text.length();
-				for( int i=0; i<len; i++ )
-				{
+				for( int i=0; i<len; i++ ) {
 					final char ch = text.charAt(i);
-					if( ch!=' ' && ch!='\t' && ch!='\r' && ch!='\n' )
-					{// error
+					if( ch!=' ' && ch!='\t' && ch!='\r' && ch!='\n' ) {
+						// error
 						onError( null, localizeMessage( ERR_UNEXPECTED_TEXT, null ) );
 						break;// recover by ignoring this token
 					}
@@ -144,8 +137,8 @@ public class Verifier implements
 				
 			case Acceptor.STRING_STRICT:
 				final String txt = new String(text);
-				if(!current.stepForward( txt, this, null, characterType ))
-				{// error
+				if(!current.stepForward( txt, this, null, characterType )) {
+					// error
 					// diagnose error, if possible
 					StringRef err = new StringRef();
 					characterType.type=null;
@@ -167,8 +160,8 @@ public class Verifier implements
 	}
 	
 	public void startElement( String namespaceUri, String localName, String qName, Attributes atts )
-		throws SAXException
-	{
+		throws SAXException {
+		
 		if( com.sun.msv.driver.textui.Debug.debug )
 			System.out.println("\n-- startElement("+qName+")" + locator.getLineNumber()+":"+locator.getColumnNumber() );
 		
@@ -184,9 +177,8 @@ public class Verifier implements
 		// get Acceptor that will be used to validate the contents of this element.
 		Acceptor next = current.createChildAcceptor(sti,null);
 		
-		if( next==null )
-		{// no child element matchs this one
-			
+		if( next==null ) {
+			// no child element matchs this one
 			if( com.sun.msv.driver.textui.Debug.debug )
 				System.out.println("-- no children accepted: error recovery");
 
@@ -196,8 +188,7 @@ public class Verifier implements
 			
 			ValidityViolation vv = onError( ref, localizeMessage( ERR_UNEXPECTED_STARTTAG, new Object[]{qName} ) );
 			
-			if( next==null )
-			{
+			if( next==null ) {
 				if( com.sun.msv.driver.textui.Debug.debug )
 					System.out.println("-- unable to recover");
 				throw new ValidationUnrecoverableException(vv);
@@ -215,18 +206,19 @@ public class Verifier implements
 	}
 	
 	public void endElement( String namespaceUri, String localName, String qName )
-		throws SAXException
-	{
+		throws SAXException {
+		
 		if( com.sun.msv.driver.textui.Debug.debug )
 			System.out.println("\n-- endElement("+qName+")" + locator.getLineNumber()+":"+locator.getColumnNumber() );
 		
 		namespaceSupport.popContext();
 		verifyText();
 
-		if( !current.isAcceptState() && panicLevel==0 )
-		{
-			// TODO: diagnosis?
-			onError( null, localizeMessage( ERR_UNCOMPLETED_CONTENT,new Object[]{qName} ) );
+		if( !current.isAcceptState(null) && panicLevel==0 ) {
+			// error diagnosis
+			StringRef errRef = new StringRef();
+			current.isAcceptState(errRef);
+			onError( errRef, localizeMessage( ERR_UNCOMPLETED_CONTENT,new Object[]{qName} ) );
 			// error recovery: pretend as if this state is satisfied
 			// fall through is enough
 		}
@@ -252,8 +244,7 @@ public class Verifier implements
 	/**
 	 * signals an error.
 	 */
-	protected ValidityViolation onError( StringRef ref, String defaultMsg ) throws SAXException
-	{
+	protected ValidityViolation onError( StringRef ref, String defaultMsg ) throws SAXException {
 		ValidityViolation vv;
 		hadError = true;
 			
@@ -283,44 +274,37 @@ public class Verifier implements
 	 *		type-assignment feature, or type-assignment is impossible
 	 *		for the current element (for example due to the ambiguous grammar).
 	 */
-	public Object getCurrentElementType()
-	{
+	public Object getCurrentElementType() {
 		return current.getOwnerType();
 	}
 	
-	public void characters( char[] buf, int start, int len )
-	{
+	public void characters( char[] buf, int start, int len ) {
 		if( stringCareLevel!=Acceptor.STRING_IGNORE )
 			text.append(buf,start,len);
 	}
-	public void ignorableWhitespace( char[] buf, int start, int len )
-	{
+	public void ignorableWhitespace( char[] buf, int start, int len ) {
 		if( stringCareLevel!=Acceptor.STRING_IGNORE )
 			text.append(buf,start,len);
 	}
-	public void setDocumentLocator( Locator loc )
-	{
+	public void setDocumentLocator( Locator loc ) {
 		this.locator = loc;
 	}
 	public void skippedEntity(String p) {}
 	public void processingInstruction(String name,String data) {}
 	
-	public void startPrefixMapping( String prefix, String uri )
-	{
+	public void startPrefixMapping( String prefix, String uri ) {
 		namespaceSupport.declarePrefix( prefix, uri );
 	}
 	public void endPrefixMapping( String prefix )	{}
 	
-	protected void init()
-	{
+	protected void init() {
 		hadError=false;
 		isFinished=false;
 		ids.clear();
 		idrefs.clear();
 	}
 	
-	public void startDocument()
-	{
+	public void startDocument() {
 		// reset everything.
 		// since Verifier maybe reused, initialization is better done here
 		// rather than constructor.
@@ -334,15 +318,12 @@ public class Verifier implements
 		current = docDecl.createAcceptor();
 	}
 	
-	public void endDocument() throws SAXException
-	{
+	public void endDocument() throws SAXException {
 		// ID/IDREF check
-		if(!ids.containsAll(idrefs))
-		{
+		if(!ids.containsAll(idrefs)) {
 			hadError = true;
 			Iterator itr = idrefs.iterator();
-			while( itr.hasNext() )
-			{
+			while( itr.hasNext() ) {
 				String idref = (String)itr.next();
 				if(!ids.contains(idref))
 					errorHandler.onError( new ValidityViolation(
@@ -353,8 +334,8 @@ public class Verifier implements
 	}
 
 	public void notationDecl( String name, String publicId, String systemId ) {}
-	public void unparsedEntityDecl( String name, String publicId, String systemId, String notationName )
-	{// store name of unparsed entities to implement ValidationContextProvider
+	public void unparsedEntityDecl( String name, String publicId, String systemId, String notationName ) {
+		// store name of unparsed entities to implement ValidationContextProvider
 		unparsedEntities.add(name);
 	}
 									
@@ -370,26 +351,22 @@ public class Verifier implements
 	private final Set unparsedEntities = new java.util.HashSet();
 	
 	// methods of ValidationContextProvider
-	public String resolveNamespacePrefix( String prefix )
-	{
+	public String resolveNamespacePrefix( String prefix ) {
 		return namespaceSupport.getURI(prefix);
 	}
-	public boolean isUnparsedEntity( String entityName )
-	{
+	public boolean isUnparsedEntity( String entityName ) {
 		return unparsedEntities.contains(entityName);
 	}
 	
 	public void onIDREF( String token )	{ idrefs.add(token); }
-	public boolean onID( String token )
-	{
+	public boolean onID( String token ) {
 		if( ids.contains(token) )	return false;	// not unique.
 		ids.add(token);
 		return true;	// they are unique, at least now.
 	}
 
 	
-	public static String localizeMessage( String propertyName, Object[] args )
-	{
+	public static String localizeMessage( String propertyName, Object[] args ) {
 		String format = java.util.ResourceBundle.getBundle(
 			"com.sun.msv.verifier.Messages").getString(propertyName);
 		

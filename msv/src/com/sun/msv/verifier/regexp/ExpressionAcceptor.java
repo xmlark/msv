@@ -169,9 +169,15 @@ public abstract class ExpressionAcceptor implements Acceptor
 	
 	
 	/** checks if this Acceptor is satisifed */
-	public boolean isAcceptState()
-	{
-		return expression.isEpsilonReducible();
+	public boolean isAcceptState( StringRef errRef ) {
+		if( errRef==null )
+			return expression.isEpsilonReducible();
+		else {
+			if(expression.isEpsilonReducible())	return true;
+			// error. provide diagnosis
+			errRef.str = diagnoseUncompletedContent();
+			return false;
+		}
 	}
 
 	public int getStringCareLevel()
@@ -789,5 +795,58 @@ public abstract class ExpressionAcceptor implements Acceptor
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * diagnoses "uncompleted content model" error.
+	 * It basically provides what we were expected.
+	 */
+	protected String diagnoseUncompletedContent() {
+		final CombinedChildContentExpCreator cccc = docDecl.getCombinedChildContentExp();
+		cccc.get( expression, null, false, false );
+		
+		Set s = new java.util.HashSet();	// this set will receive possible tag names.
+		boolean more = false;				// this flag is set to true if there are more
+											// candidate.
+		
+		CombinedChildContentExpCreator.OwnerAndContent oac;
+		for( oac=cccc.getElementsOfConcern(); oac!=null; oac=oac.next ) {
+			// test some typical name class patterns.
+			final NameClass nc = oac.owner.getNameClass();
+						
+			if( nc instanceof SimpleNameClass ) {
+				s.add( docDecl.localizeMessage(
+					docDecl.DIAG_SIMPLE_NAMECLASS, nc.toString() ) );
+				continue;
+			}
+			if( nc instanceof NamespaceNameClass ) {
+				s.add( docDecl.localizeMessage(
+					docDecl.DIAG_NAMESPACE_NAMECLASS,
+					((NamespaceNameClass)nc).namespaceURI ) );
+				continue;
+			}
+			if( nc instanceof NotNameClass ) {
+				NameClass ncc = ((NotNameClass)nc).child;
+				if( ncc instanceof NamespaceNameClass ) {
+					s.add( docDecl.localizeMessage(
+						docDecl.DIAG_NOT_NAMESPACE_NAMECLASS, ((NamespaceNameClass)ncc).namespaceURI ) );
+					continue;
+				}
+			}
+			// this name class is very complex and
+			// therefore we were unable to provide appropriate suggestion.
+			more = true;
+		}
+		
+		// no candidate was collected. bail out.
+		// this happens when we are expecting a string.
+		if( s.size()==0 )			return null;
+		
+
+		return docDecl.localizeMessage(
+			docDecl.DIAG_UNCOMPLETED_CONTENT_WRAPUP, null,
+			concatenateMessages( s, more,
+				docDecl.DIAG_UNCOMPLETED_CONTENT_SEPARATOR,
+				docDecl.DIAG_UNCOMPLETED_CONTENT_MORE ) );
 	}
 }

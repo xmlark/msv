@@ -78,8 +78,12 @@ public interface Acceptor
 	 * 
 	 * Acceptor is said to be satisfied when given sequence of elements/strings
 	 * is accepted by the content model.
+	 * 
+	 * @param errRef
+	 *		If this value is non-null, implementation can diagnose the error
+	 *		and sets the message to the object.
 	 */
-	boolean isAcceptState();
+	boolean isAcceptState( StringRef errRef );
 	
 	/** gets the "type" object for which this acceptor is working.
 	 * 

@@ -139,7 +139,13 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 		this.feeder = feeder;
 	}
 
-	/** computes a combined child content pattern, with error recovery
+	/**
+	 * computes a combined child content pattern and its continuation, with error recovery.
+	 * 
+	 * After calling this method, caller can call getElementsOfConcern to obtain
+	 * each EoC.
+	 * If both feedAttributes and checkTagName are false, then StartTagInfo is
+	 * also unnecessary.
 	 * 
 	 * @param feedAttributes
 	 *		if this flag is false, Attribute feeding & pruning are skipped and 

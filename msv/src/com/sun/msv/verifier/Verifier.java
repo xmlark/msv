@@ -322,6 +322,8 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		super.init();
 		hadError=false;
 		isFinished=false;
+		text = new StringBuffer();
+		stack = null;
 		if(duplicateIds!=null)	duplicateIds.clear();
 	}
 	

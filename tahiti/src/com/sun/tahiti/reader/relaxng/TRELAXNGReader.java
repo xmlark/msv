@@ -17,6 +17,7 @@ import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.tahiti.reader.annotator.Annotator;
 import com.sun.tahiti.reader.NameUtil;
+import com.sun.tahiti.reader.ReaderResult;
 import com.sun.tahiti.grammar.*;
 import javax.xml.parsers.SAXParserFactory;
 import java.util.Map;
@@ -32,21 +33,22 @@ public class TRELAXNGReader extends RELAXNGReader {
 		"http://www.sun.com/xml/tahiti/";
 	
 	public TRELAXNGReader(
-		GrammarReaderController controller,
-		SAXParserFactory parserFactory,
-		StateFactory stateFactory,
-		ExpressionPool pool ) {
+		GrammarReaderController controller, SAXParserFactory parserFactory,
+		StateFactory stateFactory, ExpressionPool pool,	ReaderResult result ) {
 		
 		super( controller, parserFactory, stateFactory, pool );
+		this.result = result;
 	}
 
-	public TRELAXNGReader( GrammarReaderController controller, SAXParserFactory parserFactory ) {
+	public TRELAXNGReader(
+		GrammarReaderController controller, SAXParserFactory parserFactory,
+		ReaderResult result ) {
+		
 		super( controller, parserFactory );
+		this.result = result;
 	}
 	
-	/**
-	 * gets Type of Java object from TypedStringExp.
-	 */
+	/** gets Type of Java object from TypedStringExp. */
 	protected Class getJavaType( TypedStringExp texp ) {
 		if( texp.dt instanceof DatabindableDatatype ) {
 			return ((DatabindableDatatype)texp.dt).getJavaObjectType();
@@ -61,6 +63,9 @@ public class TRELAXNGReader extends RELAXNGReader {
 	 * used to unify PrimitiveItems.
 	 */
 	private final Map primitiveItems = new java.util.HashMap();
+	
+	/** ReaderResult object that should be filled by this class. */
+	private final ReaderResult result;
 	
 	protected Expression interceptExpression( ExpressionState state, Expression exp ) {
 		// if an error was found, stop processing.
@@ -246,13 +251,14 @@ public class TRELAXNGReader extends RELAXNGReader {
 		// if we already have an error, abort further processing.
 		if(hadError)	return;
 
+		// if no package name is specified, place it to the root pacakge.
+		if(result.grammarName==null)
+			result.grammarName = "Grammar";
 		
 		// add missing annotations and normalizes them.
 		grammar.start = Annotator.annotate( grammar.start, this );
 	}
 
-	
-	
 	/**
 	 * propagatable 't:package' attribute that specifies the default package 
 	 * for unqualified java classes/interfaces.
@@ -265,6 +271,11 @@ public class TRELAXNGReader extends RELAXNGReader {
 		packageNameStack.push(defaultPackageName);
 		if( d.getIndex(TahitiNamespace,"package")!=-1 ) {
 			defaultPackageName = d.getValue(TahitiNamespace,"package");
+			
+			// if this is the first time the package name is specified,
+			// then use it for the grammar's name.
+			if(result.grammarName==null)
+				result.grammarName = defaultPackageName+".Grammar";
 		}
 		
 		super.startElement(a,b,c,d);

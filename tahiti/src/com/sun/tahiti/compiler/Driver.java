@@ -29,6 +29,7 @@ import com.sun.tahiti.compiler.ll.RuleGenerator;
 import com.sun.tahiti.compiler.Symbolizer;
 import com.sun.tahiti.grammar.TypeItem;
 import com.sun.tahiti.grammar.util.SuperClassBodyRemover;
+import com.sun.tahiti.reader.ReaderResult;
 import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xml.serialize.OutputFormat;
 import org.xml.sax.XMLReader;
@@ -108,8 +109,9 @@ public class Driver
 	//-----------------------------------------
 		System.err.println("parsing a schema...");
 		TREXGrammar g;
+		ReaderResult result = new ReaderResult();
 		{// parse grammar
-			TRELAXNGReader reader = new TRELAXNGReader( new com.sun.msv.driver.textui.DebugController(false,false), f );
+			TRELAXNGReader reader = new TRELAXNGReader( new com.sun.msv.driver.textui.DebugController(false,false), f, result );
 			reader.parse(grammar);
 			g = reader.getResult();
 			if(g==null) {
@@ -120,8 +122,8 @@ public class Driver
 		
 		
 		// grammar file will be generated as this name
-		String grammarName = "out.sub.Name";	// do not write the extension ".java".
-		
+		String grammarName = result.grammarName;	// do not write the extension ".java".
+		System.out.println("grammar:"+grammarName);
 		
 		
 	// generate a grammar file

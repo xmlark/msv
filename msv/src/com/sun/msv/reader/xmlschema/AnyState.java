@@ -107,7 +107,7 @@ public abstract class AnyState extends ExpressionWithoutChildState {
 						throw new Error();
 					SimpleNameClass snc = (SimpleNameClass)name;
 							
-					laxNc.addAllowedName(snc.namespaceURI,snc.localName);
+					laxNc.addName(snc.namespaceURI,snc.localName);
 				}
 			}
 		}

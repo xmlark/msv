@@ -128,6 +128,10 @@ public class ExpressionPool implements java.io.Serializable {
 		return unify( new DataExp(dt,typeName,except) );
 	}
 	
+	public final Expression createValue( XSDatatype dt, Object value ) {
+		return createValue( dt, new StringPair("",dt.displayName()), value );
+	}
+	
 	public final Expression createValue( Datatype dt, StringPair typeName, Object value ) {
 		return unify( new ValueExp(dt,typeName,value) );
 	}

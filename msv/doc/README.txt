@@ -1,12 +1,12 @@
 ======================================================================
-          README FILE FOR SUN'S MULTI-SCHEMA VALIDATOR
+              README FILE FOR SUN MULTI-SCHEMA VALIDATOR
                     Preview Version. 1st May, 2001
                  Copyright (c) Sun Microsystems, 2001
 Document written by Kohsuke Kawaguchi (kohsuke.kawaguchi@eng.sun.com)
                                                     $Revision$
 ======================================================================
 
-Sun's Multi-Schema Validator is  a Java tool to validate XML documents
+Sun Multi-Schema Validator is  a Java tool to validate XML documents
 against several kinds of XML schemata. It supports DTD, RELAX Namespace,
 RELAX Core, TREX, and a subset of W3C XML Schema Part 1. This release
 includes software developed by the Apache Software Foundation [1].

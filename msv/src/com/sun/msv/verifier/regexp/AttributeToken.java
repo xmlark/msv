@@ -10,7 +10,6 @@
 package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.*;
-import com.sun.msv.datatype.ValidationContextProvider;
 
 /**
  * represents attribute and its value.
@@ -27,7 +26,7 @@ class AttributeToken extends Token
 	
 	protected AttributeToken( ExpressionPool pool,
 		String namespaceURI, String localName, String value,
-		ValidationContextProvider context,
+		IDContextProvider context,
 		ResidualCalculator residual )
 	{
 		this( pool, namespaceURI, localName, new StringToken(value,context), residual );

@@ -10,7 +10,7 @@
 package com.sun.msv.util;
 
 import org.xml.sax.Attributes;
-import com.sun.msv.datatype.ValidationContextProvider;
+import com.sun.msv.grammar.IDContextProvider;
 
 /**
  * immutable start tag information
@@ -23,21 +23,24 @@ public class StartTagInfo {
 	public String		localName;
 	public String		qName;
 	public Attributes	attributes;
-	/** object that provides additional information which is necessary
+	/**
+	 * object that provides additional information which is necessary
 	 * for validating some datatypes
 	 */
-	public ValidationContextProvider context;
+	public IDContextProvider context;
+	
+	protected StartTagInfo() {}
 	
 	public StartTagInfo(
 		String namespaceURI, String localName, String qName,
-		Attributes attributes, ValidationContextProvider context ) {
+		Attributes attributes, IDContextProvider context ) {
 		reinit(namespaceURI,localName,qName,attributes,context);
 	}
 
 	/** re-initialize the object with brand new parameters. */
 	public void reinit(
 		String namespaceURI, String localName, String qName,
-		Attributes attributes, ValidationContextProvider context ) {
+		Attributes attributes, IDContextProvider context ) {
 		this.namespaceURI	= namespaceURI;
 		this.localName		= localName;
 		this.qName			= qName;

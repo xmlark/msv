@@ -9,9 +9,9 @@
  */
 package com.sun.msv.verifier.regexp;
 
-import com.sun.msv.datatype.ValidationContextProvider;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.IDContextProvider;
 import com.sun.msv.verifier.Acceptor;
 import com.sun.msv.verifier.regexp.StringToken;
 import com.sun.msv.verifier.regexp.Token;
@@ -40,7 +40,7 @@ public class ComplexAcceptorBaseImpl extends ContentModelAcceptor
 	}
 
 	/** eats string literal */
-	public final boolean stepForward( String literal, ValidationContextProvider context, StringRef refErr, DataTypeRef refType )
+	public final boolean stepForward( String literal, IDContextProvider context, StringRef refErr, DataTypeRef refType )
 	{
 		if(!super.stepForward(literal,context,refErr,refType))	return false;
 

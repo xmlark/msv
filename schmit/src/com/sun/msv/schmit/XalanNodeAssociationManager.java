@@ -9,6 +9,7 @@
  */
 package com.sun.msv.schmit;
 
+import org.apache.xalan.processor.XSLProcessorVersion;
 import org.w3c.dom.Node;
 
 /**
@@ -38,13 +39,22 @@ public abstract class XalanNodeAssociationManager {
             // a security manager might reject this call
         }
         if(className!=null) {
+            // use specified one.
             try {
                 return (XalanNodeAssociationManager)Class.forName(className).newInstance();
             } catch( Exception e ) {
                 e.printStackTrace();
                 return null;
             }
-        } else
-            return new XalanNodeAssociationManager_2_5();
+        } else {
+            // guess from the version number of Xalan
+            int ver = XSLProcessorVersion.VERSION*100 + XSLProcessorVersion.RELEASE;
+            if( Debug.debug )
+                System.err.println("Xalan version: "+ver);
+            if( ver>202 )
+                return new XalanNodeAssociationManager_2_5();
+            else
+                return new XalanNodeAssociationManager_2_0();
+        }
     }
 }

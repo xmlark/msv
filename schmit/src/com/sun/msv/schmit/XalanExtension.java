@@ -78,16 +78,14 @@ public class XalanExtension {
     public void useSchema( XSLProcessorContext context, ElemExtensionCall call ) throws TransformerException {
         try {
             // obtain the schema location
-            String href = call.getAttribute("href", context.getContextNode(), 
-                                                      context.getTransformer());
+            Node n = context.getContextNode();
+            String href = call.getAttribute("href", n, context.getTransformer());
 
             // determine the root node
-            Element root;
-//            if( call.hasAttribute("name") ) {
-//                // TODO
-//            } else {
-                root = getFirstElement(context.getContextNode().getOwnerDocument());
-//            }
+            Element root = getFirstElement(
+                // workaround a bug in Xalan. The getOwnerDocument method does't work correctly
+                // if the node itself is a document.
+                n.getNodeType()==Node.DOCUMENT_NODE?(Document)n:n.getOwnerDocument());
             
             try {
                 href = new URL( new URL(call.getBaseIdentifier()), href ).toExternalForm();

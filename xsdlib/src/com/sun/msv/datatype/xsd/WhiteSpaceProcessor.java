@@ -128,5 +128,8 @@ public abstract class WhiteSpaceProcessor implements Serializable {
 		int tightness() { return 2; }
 		public String getName() { return "collapse"; }
 	};
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }
 

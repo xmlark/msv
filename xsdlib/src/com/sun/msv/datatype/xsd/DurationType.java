@@ -82,5 +82,8 @@ public final class DurationType extends BuiltinAtomicType implements Comparator 
 		
 		return ((ITimeDurationValueType)value).getBigValue().toString();
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }
 

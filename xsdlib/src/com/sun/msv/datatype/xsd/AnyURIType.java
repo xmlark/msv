@@ -209,4 +209,7 @@ public class AnyURIType extends BuiltinAtomicType implements Discrete {
 	public XSDatatype getBaseType() {
 		return SimpleURType.theInstance;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

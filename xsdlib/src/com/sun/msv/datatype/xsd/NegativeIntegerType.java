@@ -38,4 +38,7 @@ public class NegativeIntegerType extends IntegerType {
 		if( !v.isNegative() )	return null;
 		return v;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

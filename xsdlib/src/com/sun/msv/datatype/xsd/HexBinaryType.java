@@ -105,4 +105,7 @@ public class HexBinaryType extends BinaryBaseType {
 		if( ch<10 )		return (char)('0'+ch);
 		else			return (char)('A'+(ch-10));
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

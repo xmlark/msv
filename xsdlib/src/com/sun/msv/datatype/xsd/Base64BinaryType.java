@@ -204,4 +204,7 @@ public class Base64BinaryType extends BinaryBaseType {
 		
 		return serializeJavaObject( ((BinaryValueType)value).rawData, context );
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -48,4 +48,7 @@ public class IntType extends IntegerDerivedType {
 	public Class getJavaObjectType() {
 		return Integer.class;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

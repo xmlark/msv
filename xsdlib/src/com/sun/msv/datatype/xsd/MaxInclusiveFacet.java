@@ -25,4 +25,7 @@ public class MaxInclusiveFacet extends RangeFacet {
 	protected final boolean rangeCheck( int r ) {
 		return r==Comparator.GREATER || r==Comparator.EQUAL;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -42,4 +42,7 @@ public class UnsignedByteType extends ShortType {
 			return null;
 		}
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -48,4 +48,7 @@ public class WhiteSpaceFacet extends DataTypeWithFacet {
 	protected void diagnoseByFacet(String content, ValidationContext context) {
 		;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

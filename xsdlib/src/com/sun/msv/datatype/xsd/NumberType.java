@@ -149,4 +149,7 @@ public class NumberType extends BuiltinAtomicType implements Comparator {
 		if(r>0)	return GREATER;
 		return EQUAL;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

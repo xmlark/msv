@@ -32,4 +32,7 @@ public class NcnameType extends TokenType {
 		if(XmlNames.isNCName(content))		return content;
 		else								return null;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

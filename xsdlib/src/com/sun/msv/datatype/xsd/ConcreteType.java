@@ -63,4 +63,7 @@ public abstract class ConcreteType extends XSDatatypeImpl {
 		else
 			return literal;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -52,4 +52,7 @@ public class MinLengthFacet extends DataTypeWithValueConstraintFacet {
 			throw new DatatypeException( DatatypeException.UNKNOWN,
 				localize(ERR_MINLENGTH,	new Integer(cnt), new Integer(minLength)) );
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

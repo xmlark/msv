@@ -70,4 +70,7 @@ public class BooleanType extends BuiltinAtomicType {
 	public Class getJavaObjectType() {
 		return Boolean.class;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

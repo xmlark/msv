@@ -39,4 +39,7 @@ public class UnsignedLongType extends IntegerType {
 		if( upperBound.compareTo(v)<0 )     return null;
 		return v;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

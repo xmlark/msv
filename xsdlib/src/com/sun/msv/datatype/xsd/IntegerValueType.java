@@ -182,4 +182,7 @@ public class IntegerValueType implements Comparable, java.io.Serializable {
 	public BigInteger toBigInteger() {
 		return new BigInteger(value);
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

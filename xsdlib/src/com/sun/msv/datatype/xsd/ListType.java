@@ -156,4 +156,7 @@ public final class ListType extends ConcreteType implements Discrete {
 		}
 	}
 
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

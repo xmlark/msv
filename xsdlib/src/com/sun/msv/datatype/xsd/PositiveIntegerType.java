@@ -36,4 +36,7 @@ public class PositiveIntegerType extends IntegerType {
 		if( !v.isPositive() )	return null;
 		return v;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

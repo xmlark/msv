@@ -61,4 +61,7 @@ public class LanguageType extends TokenType {
 		
 		return content.toLowerCase();
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -35,4 +35,7 @@ public class IDType extends NcnameType {
 	}
 	
 	public int getIdType() { return ID_TYPE_ID; }
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -28,4 +28,7 @@ public class TokenType extends StringType {
 	public XSDatatype getBaseType() {
 		return NormalizedStringType.theInstance;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -47,4 +47,7 @@ public class ShortType extends IntegerDerivedType {
 	public Class getJavaObjectType() {
 		return Short.class;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

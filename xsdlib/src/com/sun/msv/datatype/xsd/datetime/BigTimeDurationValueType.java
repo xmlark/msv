@@ -124,4 +124,7 @@ public class BigTimeDurationValueType implements ITimeDurationValueType {
 	public static BigTimeDurationValueType fromMinutes( BigInteger minutes )
 	{ return new BigTimeDurationValueType(null,null,null,null,minutes,null); }
 	
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -84,4 +84,7 @@ public class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 		
 		return count-trailingZero;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

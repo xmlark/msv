@@ -48,4 +48,7 @@ public class LongType extends IntegerDerivedType {
 	public Class getJavaObjectType() {
 		return Long.class;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -25,4 +25,7 @@ public class MinExclusiveFacet extends RangeFacet {
 	protected final boolean rangeCheck( int r ) {
 		return r==Comparator.LESS;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

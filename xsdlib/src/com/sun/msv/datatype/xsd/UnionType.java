@@ -130,4 +130,7 @@ final public class UnionType extends ConcreteType {
 		else	throw new DatatypeException();
 	}
 
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

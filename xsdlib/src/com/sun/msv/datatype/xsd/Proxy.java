@@ -89,4 +89,7 @@ public class Proxy extends XSDatatypeImpl {
 		baseType._checkValid(content,context);
 	}
 	
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

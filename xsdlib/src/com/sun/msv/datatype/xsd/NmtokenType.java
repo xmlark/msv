@@ -32,4 +32,7 @@ public class NmtokenType extends TokenType {
 		if(XmlNames.isNmtoken(content))		return content;
 		else								return null;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

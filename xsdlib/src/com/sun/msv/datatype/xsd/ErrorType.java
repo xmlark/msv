@@ -57,4 +57,7 @@ public class ErrorType extends BuiltinAtomicType {
         return this.getClass();
     }
 
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

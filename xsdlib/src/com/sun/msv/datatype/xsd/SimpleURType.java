@@ -67,4 +67,7 @@ public class SimpleURType extends BuiltinAtomicType {
 	public final int isFacetApplicable( String facetName ) {
 		return APPLICABLE;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -140,4 +140,7 @@ public abstract class DataTypeWithFacet extends XSDatatypeImpl
 	protected abstract void diagnoseByFacet(String content, ValidationContext context)
 		throws DatatypeException;
 
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

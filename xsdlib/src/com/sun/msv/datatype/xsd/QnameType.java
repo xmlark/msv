@@ -149,4 +149,7 @@ public class QnameType extends BuiltinAtomicType implements Discrete {
 	public Class getJavaObjectType() {
 		return String[].class;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

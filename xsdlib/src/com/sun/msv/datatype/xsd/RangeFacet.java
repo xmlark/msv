@@ -43,4 +43,7 @@ public abstract class RangeFacet extends DataTypeWithValueConstraintFacet {
 	}
 	
 	protected abstract boolean rangeCheck( int compareResult );
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

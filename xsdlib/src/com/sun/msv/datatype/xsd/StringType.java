@@ -84,4 +84,7 @@ public class StringType extends BuiltinAtomicType implements Discrete {
     public boolean isAlwaysValid() {
         return isAlwaysValid;
     }
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -113,4 +113,7 @@ public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
         compileRegExps();
     }
     
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

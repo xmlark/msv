@@ -62,4 +62,7 @@ public class EnumerationFacet extends DataTypeWithValueConstraintFacet {
 			localize(ERR_ENUMERATION) );
 	}
 
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -28,4 +28,7 @@ public class NormalizedStringType extends StringType {
 	public XSDatatype getBaseType() {
 		return StringType.theInstance;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -36,4 +36,7 @@ public class IDREFType extends NcnameType {
 		// prevent serialization from breaking the singleton.
 		return theInstance;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -85,4 +85,7 @@ public class FloatType extends FloatingNumberType {
 		if( v==Float.NEGATIVE_INFINITY )	return "-INF";
 		return value.toString();
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

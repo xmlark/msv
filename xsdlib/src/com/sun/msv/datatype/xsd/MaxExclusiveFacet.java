@@ -25,4 +25,7 @@ public class MaxExclusiveFacet extends RangeFacet {
 	protected final boolean rangeCheck( int r ) {
 		return r==Comparator.GREATER;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

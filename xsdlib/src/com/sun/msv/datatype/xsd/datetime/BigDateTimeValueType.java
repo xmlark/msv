@@ -428,5 +428,8 @@ public class BigDateTimeValueType implements IDateTimeValueType {
 		System.out.println(o2.equals(o1));
 	}
  */
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }
 

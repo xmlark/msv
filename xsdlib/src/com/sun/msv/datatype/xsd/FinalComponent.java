@@ -32,4 +32,7 @@ public final class FinalComponent extends Proxy {
 		if( (finalValue&derivationType) != 0 )	return true;
 		return super.isFinal(derivationType);
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

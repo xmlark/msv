@@ -48,4 +48,7 @@ public abstract class BuiltinAtomicType extends ConcreteType
 		
 		return this;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

@@ -280,4 +280,7 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 	public static final String ERR_EMPTY_UNION =
 		"BadTypeException.EmptyUnion";
 
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

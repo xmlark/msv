@@ -35,4 +35,7 @@ public class QnameValueType implements java.io.Serializable {
 		this.namespaceURI	= uri;
 		this.localPart		= localPart;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

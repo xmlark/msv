@@ -66,4 +66,7 @@ public class TimeType extends DateTimeBaseType {
 		
 		return result.toString();
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

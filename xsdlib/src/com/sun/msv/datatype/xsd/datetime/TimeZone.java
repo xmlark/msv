@@ -43,4 +43,7 @@ public class TimeZone implements java.io.Serializable {
 	public boolean equals( Object o )  {
 		return ((TimeZone)o).minutes==this.minutes;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

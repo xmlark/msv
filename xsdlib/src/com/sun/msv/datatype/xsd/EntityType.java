@@ -66,4 +66,7 @@ public class EntityType extends BuiltinAtomicType {
 		else
 			throw new IllegalArgumentException();
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

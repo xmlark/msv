@@ -71,4 +71,7 @@ public class DoubleType extends FloatingNumberType {
 	public Class getJavaObjectType() {
 		return Double.class;
 	}
+
+    // serialization support
+    private static final long serialVersionUID = 1;    
 }

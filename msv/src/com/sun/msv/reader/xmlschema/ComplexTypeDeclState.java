@@ -75,11 +75,11 @@ public class ComplexTypeDeclState extends ExpressionWithChildState {
 //		String targetNamespace = reader.grammar.targetNamespace;
 		
 		String abstract_ = startTag.getAttribute("abstract");
-		if( "false".equals(abstract_) )
+		if( "false".equals(abstract_) || abstract_==null )
 			// allow content model to directly appear as this type.
 			decl.exp = reader.pool.createChoice( decl.self, decl.exp );
 		else
-		if( abstract_!=null && !"true".equals(abstract_) )
+		if( !"true".equals(abstract_) )
 			reader.reportError( reader.ERR_BAD_ATTRIBUTE_VALUE, "abstract", abstract_ );
 			// recover by ignoring this error.
 		

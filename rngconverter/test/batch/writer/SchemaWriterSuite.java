@@ -13,6 +13,7 @@ import batch.*;
 import junit.framework.*;
 import org.xml.sax.*;
 import java.io.*;
+import java.util.Set;
 import com.sun.msv.verifier.*;
 import com.sun.msv.verifier.util.VerificationErrorHandlerImpl;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
@@ -71,6 +72,23 @@ class SchemaWriterSuite extends batch.SchemaSuite {
 		return (a && !b) || (!a && b);
 	}
 	
+	/*
+		RELAX allows undeclared attributes, but no other schema language does.
+		Therefore, some RELAX test instances which are originally valid can
+		results in an invalid instance.
+	
+		this set contains all such test cases.
+	*/
+	protected static Set invalidTestCases = createInvalidTestCases();
+	private static Set createInvalidTestCases() {
+		Set s = new java.util.HashSet();
+		s.add("relax001.v00.xml");
+		s.add("relax031.v00.xml");
+		s.add("relax039.v00.xml");
+		s.add("relax040.v00.xml");
+		s.add("relax041.v00.xml");
+		return s;
+	}
 		
 	/** verifies one file */
 	class VerifyCase extends TestCase {
@@ -107,8 +125,10 @@ class SchemaWriterSuite extends batch.SchemaSuite {
 						
 				final boolean supposedToBeValid = (fileName.indexOf(".v")!=-1);
 				if( xor( supposedToBeValid , vv==null ) ) {
-					if( vv!=null )		fail( vv.getMessage() );
-					else				fail( "should be invalid" );
+					if(!invalidTestCases.contains(fileName) ) {
+						if( vv!=null )		fail( vv.getMessage() );
+						else				fail( "should be invalid" );
+					}
 				}
 				
 				if( vv!=null )

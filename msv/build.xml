@@ -205,7 +205,8 @@
     <copy file="${stageName}/msv.jar" tofile="../package/msv.jar" />
     
     <!-- creates javadoc -->
-    <mkdir    dir="${stageName}/javadoc" />
+    <!-- somehow javadoc hung up. commented out temporarily -->
+    <!--mkdir    dir="${stageName}/javadoc" />
     <javadoc  locale="en_US"
           packagenames="com.sun.msv.*"
           sourcepath="${stageName}/src:temp_xsdlibsrc"
@@ -218,18 +219,18 @@
       
       <classpath path="temp"/>
       <classpath path="${isorelax.jar}"/>
-      <classpath path="${java.class.path}"/>
+      <classpath path="${java.class.path}"/-->
       
       <!--
         if you have encountered error around here,
         please remove all offline="true" and packagelistLoc="...".
       -->
-      <link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
+      <!--link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
       <link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
       <link offline="true" href="http://iso-relax.sourceforge.net/apiDoc/" packagelistLoc="ExternalPackageLists\ISO-RELAX" />
       <link offline="true" href="http://relaxng.sourceforge.net/datatype/java/apiDocs/"
         packagelistLoc="../shared/ExternalPackageLists/RELAXNG" />
-    </javadoc>
+    </javadoc-->
     <delete dir="${stageName}" includes="**/*.vsd">
       <!-- remove Visio files from release package -->
     </delete>
@@ -243,6 +244,7 @@
       <classpath path="../package/xsdlib.jar"/>
       <classpath path="${relaxngDatatype.jar}"/>
       <classpath path="${isorelax.jar}"/>
+      <classpath path="../shared/lib/servlet.jar"/>
       <classpath path="${java.class.path}"/>
       
       <include name="**/*.java" />

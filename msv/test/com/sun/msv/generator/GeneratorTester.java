@@ -8,10 +8,17 @@ import junit.framework.TestSuite;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class GeneratorTester extends BatchTester {
+public class GeneratorTester extends batch.BatchTester {
 
 	public static void main( String[] av ) throws Exception {
 		new GeneratorTester().run(av);
+	}
+	
+	protected void usage() {
+		System.out.println(
+			"usage "+this.getClass().getName()+" (relax|trex|xsd|dtd|rng) <test case directory>\n"+
+			"  tests the generator by using schema files and test instances\n"+
+			"  in the specified directory.");
 	}
 	
 	/** gets a TestSuite that loads and verifies all test instances in the test directory. */

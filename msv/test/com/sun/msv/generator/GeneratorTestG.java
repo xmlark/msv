@@ -11,6 +11,7 @@ package com.sun.msv.generator;
 
 import junit.framework.TestSuite;
 import java.util.StringTokenizer;
+import batch.*;
 
 /**
  * batch test class that is called from ant as a part of the whole test.

@@ -102,11 +102,12 @@ public abstract class BatchTester {
 		factory.setValidating(false);
 	}
 	
+	protected abstract void usage();
 	
 	public void run( String[] av ) throws Exception {
 		
 		if( av.length<2 ) {
-			System.out.println("usage "+this.getClass().getName()+" (relax|trex|xsd|dtd|rng) <test case directory>");
+			usage();
 			return;
 		}
 		

@@ -35,7 +35,7 @@ class SchemaWriterSuite extends batch.SchemaSuite {
 	}
 	
 	protected void createInstanceTestCase( String pathName, String fileName, TestSuite suite ) {
-		suite.addTest( new VerifyCase( pathName ) );
+		suite.addTest( new VerifyCase( fileName ) );
 	}
 		
 	/** set by testLoadSchema method */

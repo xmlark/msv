@@ -19,6 +19,15 @@ import com.sun.msv.writer.GrammarWriter;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RELAXNGTester extends BatchWriterTester {
+	
+	protected void usage() {
+		System.out.println(
+			"usage "+this.getClass().getName()+" (relax|trex|xsd|dtd|rng) <test case directory>\n"+
+			"  tests RELAX NG converter by\n"+
+			"  1. converting schema files of the specified type into RELAX NG\n"+
+			"  2. then parse it by RELAX NG parser\n"+
+			"  3. then use the test instances to ensure the correctness\n");
+	}
 
 	public static void main( String[] av ) throws Exception {
 		new RELAXNGTester().run(av);

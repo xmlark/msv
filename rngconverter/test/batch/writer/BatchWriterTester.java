@@ -27,10 +27,6 @@ import com.sun.msv.writer.GrammarWriter;
  */
 abstract class BatchWriterTester extends batch.BatchTester {
 	
-//	public static void main( String[] av ) throws Exception {
-//		new BatchWriterTester().run(av);
-//	}
-	
 	/** gets a TestSuite that loads and verifies all test instances in the test directory. */
 	protected void populateSuite( TestSuite suite, String[] schemas ) {
 		// each schema will have its own suite.

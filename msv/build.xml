@@ -597,6 +597,9 @@
 			<fileset dir="temp" />
 		</jar>
 		
+		<!-- copy jar file to package dir -->
+		<copy file="${stageName}/msv.jar" tofile="./package/msv.jar" />
+		
 		<!-- creates javadoc -->
 		<mkdir		dir="${stageName}/javadoc" />
 		<javadoc	locale="en_US"
@@ -653,9 +656,6 @@
 		<zip	zipfile="${packageDir}/msv.${DSTAMP}.zip"
 				basedir="."
 				includes="${stageName}/**/*.*" />
-		
-		<!-- copy jar file to package dir -->
-		<copy file="${stageName}/msv.jar" tofile="./package/msv.jar" />
 		
 		<delete dir="${stageName}" />
 	</target>

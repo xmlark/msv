@@ -252,8 +252,18 @@ public class ElementDeclState extends ExpressionWithChildState {
 		}
 		
 		// minOccurs/maxOccurs is processed through interception
-		return decl;
+        // call the hook to let derived classes modify the content model
+		return annealDeclaration(decl);
 	}
+    
+    /**
+     * This method is called after this class finishes augmenting
+     * ElementDeclExp. Derived classes can override this method
+     * and modify an ElementDeclExp further.
+     */
+    protected Expression annealDeclaration( ElementDeclExp exp ) {
+        return exp;
+    }
 
     /**
      * Returns true if this element declaration is a global element declaration.

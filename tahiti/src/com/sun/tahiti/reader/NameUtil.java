@@ -17,6 +17,11 @@ package com.sun.tahiti.reader;
  */
 public class NameUtil
 {
+	/** convert a name to Java-compatible identifier name. */
+	public static String toIdentifier( String name ) {
+		return xmlNameToJavaName("field",name);
+	}
+	
 	/**
 	 * convert XML names (like element names) to the corresponding Java names.
 	 * 

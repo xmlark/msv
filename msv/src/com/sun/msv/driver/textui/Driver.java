@@ -28,6 +28,7 @@ import org.iso_relax.dispatcher.SchemaProvider;
 import org.iso_relax.dispatcher.impl.DispatcherImpl;
 import org.xml.sax.*;
 import java.util.*;
+import java.net.URL;
 
 /**
  * command line Verifier.
@@ -320,7 +321,14 @@ public class Driver {
 	private static InputSource getInputSource( String fileOrURL ) {
 		try {
 			// try it as a file
-			return new InputSource( new File(fileOrURL).toURL().toExternalForm() );
+			String path = new File(fileOrURL).getAbsolutePath();
+			if (File.separatorChar != '/')
+				path = path.replace(File.separatorChar, '/');
+			if (!path.startsWith("/"))
+				path = "/" + path;
+//			if (!path.endsWith("/") && isDirectory())
+//				path = path + "/";
+			return new InputSource( new URL("file", "", path).toExternalForm() );
 		} catch( Exception e ) {
 			// try it as an URL
 			return new InputSource(fileOrURL);

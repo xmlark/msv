@@ -90,8 +90,26 @@ address.</DIV>
   "language" case-insensitive, it is no longer a derived type of "token" 
   type.</DIV>
   <LI>
-  <DIV>Regarding "base64Binary" type, RFC 2045 states that "any characters 
-  outside of the base64 alphabet are to be ignored in base64-encoded data." This 
-  makes "validation" of base64Binary mostly meaningless. For example, 
-  &lt;picture&gt;))))&lt;/picture&gt; is considered as valid base64Binary. 
-  Developers&nbsp;should keep this in mind.<BR></DIV></LI></OL></BODY></HTML>
+  <DIV>Regarding "base64Binary" type, RFC 2045 states that 
+  "any characters outside of the base64 alphabet are to be ignored in 
+  base64-encoded data." This makes "validation" of base64Binary mostly 
+  meaningless. For example, &lt;picture&gt;))))&lt;/picture&gt; is considered as 
+  valid base64Binary. Developers&nbsp;should keep this in mind.</DIV>
+  <LI>
+  <DIV>min/max In/Ex clusive facets&nbsp;of date/time 
+  related types does not work properly. I would rather say that the spec is plain broken about order 
+  relation of these types. This will also affect the behavior of "enumeration" facet (since 
+  equality is a part&nbsp;of order-relation.)&nbsp;See my comments to <A 
+  href="mailto:www-xml-schema-comments@w3.org">www-xml-schema-comments@w3.org</A> 
+  for details( <A 
+  href="http://lists.w3.org/Archives/Public/www-xml-schema-comments/2001JanMar/0365.html">[1]</A> 
+  <A 
+  href="http://lists.w3.org/Archives/Public/www-xml-schema-comments/2001JanMar/0366.html">[2]</A> 
+  <A 
+  href="http://lists.w3.org/Archives/Public/www-xml-schema-comments/2001JanMar/0367.html">[3]</A> 
+  and <A 
+  href="http://lists.w3.org/Archives/Public/www-xml-schema-comments/2001JanMar/0368.html">[4]</A>         
+               
+          
+        
+      ).<BR></DIV></LI></OL></BODY></HTML>

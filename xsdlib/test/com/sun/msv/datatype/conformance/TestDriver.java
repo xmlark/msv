@@ -38,10 +38,10 @@ class TestDriver implements ErrorReceiver
 		System.err.println("verify method        : "+exp.type.verify(exp.testInstance,DummyContextProvider.theInstance) );
 		System.err.println("diagnose method      : "+(exp.type.diagnose(exp.testInstance,DummyContextProvider.theInstance)==null) );
 		
-		if( exp.testCase.facets.isEmpty() )
+		if( exp.incubator.isEmpty() )
 			System.err.println("facets: none");
 		else
-			exp.testCase.facets.dump(System.err);
+			exp.incubator.dump(System.err);
 
 		DataTypeErrorDiagnosis err = exp.type.diagnose(exp.testInstance,DummyContextProvider.theInstance);
 		
@@ -56,7 +56,7 @@ class TestDriver implements ErrorReceiver
 		return false;
 	}
 
-	public boolean reportTestCaseError( DataType baseType, Facets facets, BadTypeException e )
+	public boolean reportTestCaseError( DataType baseType, TypeIncubator incubator, BadTypeException e )
 	{
 /*
 		System.err.println("---- warning ----");

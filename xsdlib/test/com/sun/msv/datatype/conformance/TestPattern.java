@@ -1,4 +1,5 @@
 package com.sun.tranquilo.datatype.conformance;
+import com.sun.tranquilo.datatype.*;
 
 public interface TestPattern
 {
@@ -8,8 +9,11 @@ public interface TestPattern
 	/** restart generating test cases */
 	void reset();
 	
-	/** get the current test case */
-	TestCase get();
+	/** decorate the given TestCase.
+	 * 
+	 * @return answer
+	 */
+	String get(TypeIncubator ti) throws BadTypeException;
 	
 	/** generate next test case */
 	void next();

@@ -1,6 +1,6 @@
 package com.sun.tranquilo.datatype.conformance;
 
-import com.sun.tranquilo.datatype.DataType;
+import com.sun.tranquilo.datatype.*;
 	
 public class UnexpectedResultException extends Exception
 {
@@ -8,15 +8,15 @@ public class UnexpectedResultException extends Exception
 	public final String baseTypeName;
 	public final String testInstance;
 	public final boolean supposedToBeValid;
-	public final TestCase testCase;
+	public final TypeIncubator incubator;
 
 	UnexpectedResultException( DataType typeObj, String baseTypeName,
-		String testInstance, boolean supposedToBeValid, TestCase testCase )
+		String testInstance, boolean supposedToBeValid, TypeIncubator ti )
 	{
 		this.type			= typeObj;
 		this.baseTypeName		= baseTypeName;
 		this.testInstance		= testInstance;
 		this.supposedToBeValid	= supposedToBeValid;
-		this.testCase			= testCase;
+		this.incubator			= ti;
 	}
 }

@@ -71,7 +71,8 @@ public class DataTypeTester
 				testDataType(
 					t,
 					values, wrongValues,
-					new BaseAnswerWrapper(item.getText(),pattern,true/*AND merge*/),
+					TestPatternGenerator.trimAnswer(item.getText()),
+					pattern,
 						// wrap it by intrisic restriction due to this datatype
 					false
 					);
@@ -112,7 +113,8 @@ public class DataTypeTester
 	 */
 	public void testDataType(
 		DataType baseType,
-		String[] values, String[] wrongs, TestPattern pattern,
+		String[] values, String[] wrongs,
+		String baseAnswer, TestPattern pattern,
 		boolean completenessOnly )
 		throws Exception
 	{
@@ -128,23 +130,32 @@ public class DataTypeTester
 			if((cnt%500)==0 && cnt!=0 )	out.print("\r"+cnt+"    ");
 			
 			if( !pattern.hasMore() )	break;
-			final TestCase testCase = pattern.get();
+			final TypeIncubator ti = new TypeIncubator(baseType);
+			String answer;
+			
+			try
+			{
+				answer = TestPatternGenerator.merge( baseAnswer, pattern.get(ti), true );
+			}
+			catch( BadTypeException bte )
+			{// ignore this error
+				pattern.next();
+				continue;
+			} 
 			
 			// derive a type with test facets.
 			DataType typeObj=null;
 			try
 			{
-				typeObj = baseType.derive("anonymous",  testCase.facets, DummyContextProvider.theInstance );
+				typeObj = ti.derive("anonymous");
 			}
 			catch( BadTypeException bte )
 			{
-				err.reportTestCaseError(baseType,testCase.facets,bte);
+				err.reportTestCaseError(baseType,ti,bte);
 			}
 			
 			if(typeObj!=null)
 			{
-				final String answer = testCase.answer;
-				
 				if( answer.length()!=values.length )
 					throw new IllegalStateException("answer and values have different length");
 
@@ -180,7 +191,7 @@ public class DataTypeTester
 					if( !err.report( new UnexpectedResultException(
 							typeObj, baseType.getName(),
 							values[i], answer.charAt(i)=='o',
-							testCase ) ) )
+							ti ) ) )
 					{
 						out.println("test aborted");
 						return;
@@ -194,7 +205,7 @@ public class DataTypeTester
 					{
 						if( !err.report( new UnexpectedResultException(
 							typeObj, baseType.getName(),
-							wrongs[i], false, TestCase.theEmptyCase ) ) )
+							wrongs[i], false, ti ) ) )
 						{
 							out.println("test aborted");
 							return;
@@ -264,42 +275,5 @@ public class DataTypeTester
 	{
 		return DataTypeFactory.getTypeByName(
 			builtinTypesList[ (int)(Math.random()*builtinTypesList.length) ] );
-	}
-	
-	static class BaseAnswerWrapper implements TestPattern
-	{
-		private final TestPattern core;
-		private final String baseAnswer;
-		private final boolean mergeMode;	// true:AND false:OR
-		
-		/** returns the number of test cases to be generated */
-		public long totalCases() { return core.totalCases(); }
-
-		/** restart generating test cases */
-		public void reset() { core.reset(); }
-
-		/** get the current test case */
-		public TestCase get()
-		{
-			// merge two answer in AND mode
-			TestCase tc = new TestCase(baseAnswer);
-			try
-			{
-				tc.merge(core.get(),mergeMode);
-			}catch(BadTypeException bte) { throw new IllegalStateException(); } // not possible
-			return tc;
-		}
-
-		/** generate next test case */
-		public void next() { core.next(); }
-
-		public boolean hasMore() { return core.hasMore(); }
-		
-		BaseAnswerWrapper( String baseAnswer, TestPattern base, boolean andMerge )
-		{
-			this.core = base;
-			this.baseAnswer = TestPatternGenerator.trimAnswer(baseAnswer);
-			this.mergeMode = andMerge;
-		}
 	}
 }

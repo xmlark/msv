@@ -1,11 +1,12 @@
 package com.sun.tranquilo.datatype.conformance;
 
+import com.sun.tranquilo.datatype.*;
+
 /** choose one from child pattern */
 class ChoiceTestPattern implements TestPattern
 {
 	private final TestPattern[] children;
 	private int idx=0;
-	private TestCase theCase;
 
 	public ChoiceTestPattern( TestPattern[] children )
 	{
@@ -16,10 +17,10 @@ class ChoiceTestPattern implements TestPattern
 	/** returns the number of test cases to be generated */
 	public long totalCases()
 	{
-		int result=1;
+		int result=0;
 		for( int i=0; i<children.length; i++ )
 			// every pattern comes with empty. So we have to remove it.
-			result += children[i].totalCases()-1;
+			result += children[i].totalCases();
 		return result;
 	}
 
@@ -29,32 +30,19 @@ class ChoiceTestPattern implements TestPattern
 		for( int i=0; i<children.length; i++ )
 			children[i].reset();
 		idx=0;
-		next();	// fetch the first one
 	}
 
 	/** get the current test case */
-	public TestCase get() { return theCase; }
+	public String get( TypeIncubator ti ) throws BadTypeException
+	{
+		return children[idx].get(ti);
+	}
 
 	/** generate next test case */
 	public void next()
 	{
-		if(idx==-1)
-		{
-			idx=-2;
-			theCase = TestCase.theEmptyCase;
-			return;
-		}
-		if(idx==-2)
-		{// indicates completion of the test
-			idx=-3;
-			return;
-		}
-		if(idx==-3)
-			throw new IllegalStateException("illegal call to next");
-
 		int prev = idx;
 
-		theCase = children[idx].get();
 		children[idx].next();
 
 		do
@@ -64,12 +52,9 @@ class ChoiceTestPattern implements TestPattern
 
 		if(!children[idx].hasMore())
 		{// all patterns of children have enumerated
-			idx=-1;	// next time, we will return empty test pattern
+			idx=-1;	// finish iterating test cases.
 		}
-
-		if( theCase==TestCase.theEmptyCase )
-			next();	// ignore empty pattern from children.
 	}
 
-	public boolean hasMore() { return idx!=-3; }
+	public boolean hasMore() { return idx!=-1; }
 }

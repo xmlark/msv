@@ -1,12 +1,11 @@
 package com.sun.tranquilo.datatype.conformance;
 
-import com.sun.tranquilo.datatype.BadTypeException;
+import com.sun.tranquilo.datatype.*;
 
 /** test every possible combination of child patterns */
 class FullCombinationPattern implements TestPattern
 {
 	private final TestPattern[] children;
-	private TestCase theCase;
 	/** True indicates 'AND' mode. False is 'OR' mode. */
 	private final boolean mergeMode;
 	
@@ -14,6 +13,8 @@ class FullCombinationPattern implements TestPattern
 	
 	public FullCombinationPattern( TestPattern[] children, boolean mergeMode )
 	{
+		for( int i=0; i<children.length; i++ )
+			children[i] = new PatternWithEmpty(children[i]);
 		this.children = children;
 		this.mergeMode = mergeMode;
 		reset();
@@ -41,29 +42,20 @@ class FullCombinationPattern implements TestPattern
 		for( int i=0; i<children.length; i++ )
 			children[i].reset();
 		noMore=false;
-		theCase=null;
 	}
 
-	public TestCase get()
+	public String get( TypeIncubator ti ) throws BadTypeException
 	{
-		if(theCase==null)
-		{
-			theCase = new TestCase();
-			try
-			{
-				for( int i=0; i<children.length; i++ )
-					theCase.merge( children[i].get(), mergeMode );
-			}
-			catch(BadTypeException bte) { throw new RuntimeException(bte.getMessage()); }
-		}
-		return theCase;
+		String answer=null;
+		for( int i=0; i<children.length; i++ )
+			answer = TestPatternGenerator.merge( answer, children[i].get(ti), mergeMode );
+		
+		return answer;
 	}
 
 	/** generate next test case */
 	public void next()
 	{
-		theCase = null;	// clear the cache
-		
 		// increment.
 		// Imagine a increment of number.
 		// 09999 + 1 => 10000
@@ -88,5 +80,47 @@ class FullCombinationPattern implements TestPattern
 	public boolean hasMore()
 	{
 		return !noMore;
+	}
+	
+	/**
+	 * adds empty test case to the base pattern
+	 */
+	private static class PatternWithEmpty implements TestPattern
+	{
+		private final TestPattern base;
+		private int mode;
+		
+		PatternWithEmpty( TestPattern base ) { this.base=base; reset(); }
+		
+		public long totalCases() { return base.totalCases()+1; }
+	
+		public void reset() { base.reset();mode=0; }
+	
+		public String get( TypeIncubator ti ) throws BadTypeException
+		{
+			switch(mode)
+			{
+			case 0:		return base.get(ti);
+			case 1:		return null;
+			default:	throw new Error();
+			}
+		}
+	
+		public void next()
+		{
+			switch(mode)
+			{
+			case 0:
+				base.next();
+				if(!base.hasMore())		mode=1;
+				return;
+			case 1:
+				mode=2; return;
+			default:
+				throw new Error();
+			}
+		}
+	
+		public boolean hasMore()	{ return mode!=2; }
 	}
 }

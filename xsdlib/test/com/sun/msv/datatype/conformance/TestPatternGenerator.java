@@ -2,7 +2,6 @@ package com.sun.tranquilo.datatype.conformance;
 
 import org.jdom.*;
 import java.util.List;
-import com.sun.tranquilo.datatype.Facets;
 
 class TestPatternGenerator
 {
@@ -40,13 +39,10 @@ class TestPatternGenerator
 		}
 		if( tagName.equals("facet") )
 		{
-			Facets facets = new Facets();
-			facets.add(
+			return new SimpleTestPattern(
 				patternElement.getAttributeValue("name"),
 				patternElement.getAttributeValue("value"),
-				true/*fixed*/ );
-			return new SimpleTestPattern( new TestCase( facets,
-				trimAnswer( patternElement.getAttributeValue("answer") ) ) );
+				trimAnswer(patternElement.getAttributeValue("answer")) );
 		}
 		
 		throw new Exception("unknown pattern:"+tagName);
@@ -63,5 +59,27 @@ class TestPatternGenerator
 		}
 		
 		return r;
+	}
+
+	/** merges another test case into this */
+	public static String merge( String a1, String a2, boolean mergeAnd )
+	{
+		if(a1==null)	return a2;
+		if(a2==null)	return a1;
+		if( a1.length()!=a2.length() )
+			throw new Error("assertion: lengths of the answers are different");
+		
+		final int len = a1.length();
+		String newAnswer ="";
+		for( int i=0; i<len; i++ )
+		{
+			if( ( mergeAnd && (a1.charAt(i)=='o' && a2.charAt(i)=='o' ) )
+			||  (!mergeAnd && (a1.charAt(i)=='o' || a2.charAt(i)=='o' ) ) )
+				newAnswer += "o";
+			else
+				newAnswer += ".";
+		}
+		
+		return newAnswer;
 	}
 }

@@ -1,9 +1,8 @@
 package com.sun.tranquilo.datatype.conformance;
 
 import com.sun.tranquilo.datatype.DataType;
-import com.sun.tranquilo.datatype.Facets;
 import com.sun.tranquilo.datatype.BadTypeException;
-
+import com.sun.tranquilo.datatype.TypeIncubator;
 
 interface ErrorReceiver
 {
@@ -19,6 +18,6 @@ interface ErrorReceiver
 	 *
 	 * return true to abort test
 	 */
-	boolean reportTestCaseError( DataType baseType, Facets facet,
+	boolean reportTestCaseError( DataType baseType, TypeIncubator incubator,
 		BadTypeException e );
 }

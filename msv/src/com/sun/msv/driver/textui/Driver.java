@@ -82,6 +82,19 @@ public class Driver
 		if( dtdValidation && verbose )
 			System.out.println( localize( MSG_DTDVALIDATION ) );
 		
+		if( !dtdValidation )
+			try
+			{
+				factory.setFeature("http://xml.org/sax/features/validation",false);
+				factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				if( verbose )
+					System.out.println( localize( MSG_FAILED_TO_IGNORE_EXTERNAL_DTD ) );
+			}
+		
 		InputSource is = new InputSource(new java.io.FileInputStream(grammarName));
 		is.setSystemId(new File(grammarName).getAbsolutePath());
 
@@ -116,7 +129,7 @@ public class Driver
 				final String fileName = (String)fileNames.elementAt(i);
 				System.out.println( localize( MSG_VALIDATING, fileName) );
 				InputSource xml = new InputSource(new java.io.FileInputStream(fileName));
-				xml.setSystemId(fileName);
+				xml.setSystemId(new File(fileName).getAbsolutePath());
 				verify( docDecl, xml );
 			}
 			
@@ -206,10 +219,12 @@ public class Driver
 	{
 		XMLReader p = factory.newSAXParser().getXMLReader();
 		
-		Verifier v = new Verifier( schema, new ReportErrorHandler() );
+		ReportErrorHandler reh = new ReportErrorHandler();
+		Verifier v = new Verifier( schema, reh );
 		
 		p.setDTDHandler(v);
 		p.setContentHandler(v);
+		p.setErrorHandler(reh);
 		
 		try
 		{
@@ -221,12 +236,7 @@ public class Driver
 		}
 		catch( SAXException se )
 		{
-			if(se.getException()!=null)
-			{
-				se.getException().printStackTrace();
-			}
-			else
-				se.printStackTrace();
+			; // error is already reported by ErrorHandler
 		}
 		
 		if( v.isValid() )	System.out.println(localize(MSG_VALID));
@@ -258,4 +268,5 @@ public class Driver
 	public static final String MSG_INVALID =			"Driver.Invalid";
 	public static final String ERR_LOAD_GRAMMAR =		"Driver.ErrLoadGrammar";
 	public static final String MSG_BAILOUT =			"Driver.BailOut";
+	public static final String MSG_FAILED_TO_IGNORE_EXTERNAL_DTD ="Driver.FailedToIgnoreExternalDTD";
 }

@@ -3,10 +3,28 @@ package com.sun.tranquilo.driver.textui;
 import com.sun.tranquilo.verifier.VerificationErrorHandler;
 import com.sun.tranquilo.verifier.ValidityViolation;
 import com.sun.tranquilo.verifier.ValidationUnrecoverableException;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXParseException;
 
-public class ReportErrorHandler implements VerificationErrorHandler
+public class ReportErrorHandler
+	implements VerificationErrorHandler,
+				ErrorHandler
 {
 	private int counter = 0;
+	
+	public void error( SAXParseException spe )			{ printSAXParseException( spe, MSG_SAXPARSEEXCEPTION_ERROR ); }
+	public void fatalError( SAXParseException spe )		{ printSAXParseException( spe, MSG_SAXPARSEEXCEPTION_FATAL ); }
+	public void warning( SAXParseException spe )		{ printSAXParseException( spe, MSG_SAXPARSEEXCEPTION_WARNING ); }
+	private void printSAXParseException( SAXParseException spe, String prop )
+	{
+		System.out.println(
+			Driver.localize( prop, new Object[]{
+				new Integer(spe.getLineNumber()), 
+				new Integer(spe.getColumnNumber()),
+				spe.getSystemId(),
+				spe.getLocalizedMessage()} ) );
+	}
+	
 	public void onError( ValidityViolation vv )
 		throws ValidationUnrecoverableException
 	{
@@ -43,4 +61,10 @@ public class ReportErrorHandler implements VerificationErrorHandler
 		"ReportErrorHandler.Error";
 	public static final String MSG_WARNING = // arg:4
 		"ReportErrorHandler.Warning";
+	public static final String MSG_SAXPARSEEXCEPTION_FATAL = // arg:4
+		"ReportErrorHandler.SAXParseException.Fatal";
+	public static final String MSG_SAXPARSEEXCEPTION_ERROR = // arg:4
+		"ReportErrorHandler.SAXParseException.Error";
+	public static final String MSG_SAXPARSEEXCEPTION_WARNING = // arg:4
+		"ReportErrorHandler.SAXParseException.Warning";
 }

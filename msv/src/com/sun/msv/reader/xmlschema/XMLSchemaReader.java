@@ -71,7 +71,14 @@ public class XMLSchemaReader extends GrammarReader {
 			// content must be empty
 			Expression.epsilon );
 		
-		xsiSchemaLocationExp = pool.createSequence(
+		// by putting them into ReferenceExp, # of expressions usually gets smaller
+		// because createSequence are right-associative and any attempt to extend
+		// this sequence will end up creating new SequenceExps.
+		// It's also good for writer: it can generate more compact XML representation.
+		ReferenceExp exp = new ReferenceExp("XMLSchema-schemaLocation");
+		xsiSchemaLocationExp = exp;
+		exp.exp =
+			pool.createSequence(
 			pool.createOptional(
 				pool.createAttribute(
 					new ChoiceNameClass(

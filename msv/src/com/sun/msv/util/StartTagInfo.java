@@ -11,6 +11,7 @@ package com.sun.msv.util;
 
 import org.xml.sax.Attributes;
 import com.sun.msv.grammar.IDContextProvider;
+import com.sun.msv.datatype.xsd.WhiteSpaceProcessor;
 
 /**
  * immutable start tag information
@@ -64,9 +65,15 @@ public class StartTagInfo {
 	public final String getAttribute( String attrName ) {
 		return getAttribute("",attrName);
 	}
-
+	
 	public final String getAttribute( String namespaceURI, String attrName ) {
 		return attributes.getValue(namespaceURI,attrName);
+	}
+	
+	public final String getCollapsedAttribute( String attrName ) {
+		String s = getAttribute(attrName);
+		if(s==null)		return null;
+		return WhiteSpaceProcessor.collapse(s);
 	}
 	
 	public final String getDefaultedAttribute( String attrName, String defaultValue ) {

@@ -10,7 +10,7 @@
 package com.sun.msv.grammar.relax;
 
 import com.sun.msv.datatype.SerializationContext;
-import com.sun.msv.datatype.xsd.ConcreteType;
+import com.sun.msv.datatype.xsd.BuiltinAtomicType;
 import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.datatype.xsd.SimpleURType;
 import org.relaxng.datatype.ValidationContext;
@@ -22,7 +22,7 @@ import org.relaxng.datatype.ValidationContext;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class NoneType extends ConcreteType {
+public class NoneType extends BuiltinAtomicType {
 	
 	public static final NoneType theInstance = new NoneType();
 	private NoneType() { super("none"); }

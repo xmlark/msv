@@ -213,7 +213,7 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
 				
 			if( x instanceof FinalComponent ) {
 				// skip FinalComponent
-				x = ((FinalComponent)x).baseType;
+				x = x.getBaseType();
 				continue;
 			}
 				

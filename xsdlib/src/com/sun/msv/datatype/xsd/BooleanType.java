@@ -51,4 +51,7 @@ public class BooleanType extends ConcreteType {
 		if(facetName.equals("pattern"))		return APPLICABLE;
 		return NOT_ALLOWED;
 	}
+	public Class getJavaObjectType() {
+		return Boolean.class;
+	}
 }

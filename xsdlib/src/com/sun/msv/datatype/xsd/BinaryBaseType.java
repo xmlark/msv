@@ -42,4 +42,7 @@ abstract class BinaryBaseType extends ConcreteType implements Discrete {
 		else			return v.rawData;
 	}
 	
+	public Class getJavaObjectType() {
+		return byte[].class;
+	}
 }

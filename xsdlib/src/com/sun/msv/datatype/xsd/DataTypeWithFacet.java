@@ -101,6 +101,9 @@ public abstract class DataTypeWithFacet extends DataTypeImpl
 	final public String convertToLexicalValue( Object o, SerializationContext context ) {
 		return concreteType.convertToLexicalValue(o,context);
 	}
+	public Class getJavaObjectType() {
+		return concreteType.getJavaObjectType();
+	}
 	
 	final protected DataTypeException diagnoseValue(String content, ValidationContext context ) {
 		// if base type complains, pass it through.

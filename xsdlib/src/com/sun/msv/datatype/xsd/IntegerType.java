@@ -35,4 +35,8 @@ public class IntegerType extends IntegerDerivedType {
 		// o must be IntegerValueType.
 		return new BigInteger(o.toString());
 	}
+	
+	public Class getJavaObjectType() {
+		return BigInteger.class;
+	}
 }

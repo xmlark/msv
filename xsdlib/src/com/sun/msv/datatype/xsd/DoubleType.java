@@ -54,4 +54,7 @@ public class DoubleType extends FloatingNumberType {
 		if( v==Double.NEGATIVE_INFINITY )	return "-INF";
 		return value.toString();
 	}
+	public Class getJavaObjectType() {
+		return Double.class;
+	}
 }

@@ -83,6 +83,9 @@ public final class ListType extends ConcreteType implements Discrete {
 			
 		return new ListValueType(values);
 	}
+	public Class getJavaObjectType() {
+		return Object[].class;
+	}
 	
 	public final int countLength( Object value ) {
 		// for list type, length is a number of items.

@@ -33,4 +33,7 @@ public class IntType extends IntegerDerivedType {
 			return null;
 		}
 	}
+	public Class getJavaObjectType() {
+		return Integer.class;
+	}
 }

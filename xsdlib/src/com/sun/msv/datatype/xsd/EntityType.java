@@ -42,6 +42,9 @@ public class EntityType extends ConcreteType {
 		if(context.isUnparsedEntity(content))	return content;
 		else									return null;
 	}
+	public Class getJavaObjectType() {
+		return String.class;
+	}
 
 	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if( value instanceof String )

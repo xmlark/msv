@@ -201,4 +201,7 @@ public class AnyURIType extends ConcreteType implements Discrete {
 		// TODO: check the update of the spec and modify this if necessary.
 		return UnicodeUtil.countLength( (String)value );
 	}
+	public Class getJavaObjectType() {
+		return String.class;
+	}
 }

@@ -33,4 +33,7 @@ public class LongType extends IntegerDerivedType {
 			return null;
 		}
 	}
+	public Class getJavaObjectType() {
+		return Long.class;
+	}
 }

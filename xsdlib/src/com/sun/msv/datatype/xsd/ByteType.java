@@ -33,4 +33,7 @@ public class ByteType extends IntegerDerivedType {
 			return null;
 		}
 	}
+	public Class getJavaObjectType() {
+		return Byte.class;
+	}
 }

@@ -47,6 +47,9 @@ public final class DurationType extends ConcreteType implements Comparator {
 			return null;
 		}
 	}
+	public Class getJavaObjectType() {
+		return ITimeDurationValueType.class;
+	}
 	
 	/** compare two TimeDurationValueType */
 	public int compare( Object lhs, Object rhs ) {

@@ -118,4 +118,8 @@ public class QnameType extends ConcreteType implements Discrete {
 		// return String[2]
 		else			return new String[]{v.namespaceURI,v.localPart};
 	}
+
+	public Class getJavaObjectType() {
+		return String[].class;
+	}
 }

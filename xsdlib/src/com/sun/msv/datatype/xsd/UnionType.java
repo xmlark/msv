@@ -65,6 +65,10 @@ final public class UnionType extends ConcreteType {
 		
 		return null;
 	}
+	public Class getJavaObjectType() {
+		// TODO: find the common base type, if it's possible.
+		return Object.class;
+	}
 	
 	public String convertToLexicalValue( Object o, SerializationContext context ) {
 		for( int i=0; i<memberTypes.length; i++ ) {

@@ -58,6 +58,9 @@ public class FloatType extends FloatingNumberType {
 			return null;
 		}
 	}
+	public Class getJavaObjectType() {
+		return Float.class;
+	}
 	
 	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if(!(value instanceof Float ))

@@ -177,4 +177,7 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator {
 		return cal;
 	}
 	
+	public Class getJavaObjectType() {
+		return Calendar.class;
+	}
 }

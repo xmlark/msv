@@ -32,4 +32,7 @@ public class ShortType extends IntegerDerivedType {
 			return null;
 		}
 	}
+	public Class getJavaObjectType() {
+		return Short.class;
+	}
 }

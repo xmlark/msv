@@ -37,6 +37,9 @@ public class StringType extends ConcreteType implements Discrete {
 		// for string, lexical space is value space by itself
 		return lexicalValue;
 	}
+	public Class getJavaObjectType() {
+		return String.class;
+	}
 
 	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if( value instanceof String )

@@ -62,7 +62,10 @@ public interface DataType extends
 	 */
 	Object createJavaObject( String literal, ValidationContext context );
 	
-	
+	/**
+	 * gets the type of the objects that are created by the createJavaObject method.
+	 */
+	Class getJavaObjectType();
 	
 	
 	/**

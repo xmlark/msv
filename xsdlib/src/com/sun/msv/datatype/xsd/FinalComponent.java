@@ -59,6 +59,9 @@ public final class FinalComponent extends DataTypeImpl {
 	public Object convertToValue( String content, ValidationContext context ) {
 		return baseType.convertToValue(content,context);
 	}
+	public Class getJavaObjectType() {
+		return baseType.getJavaObjectType();
+	}
 	
 	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		return baseType.convertToLexicalValue(value,context);

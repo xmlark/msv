@@ -84,12 +84,12 @@ class TestBuilderImpl implements TestBuilder
 				
 			// set the grammar
 			ISchema schema = validator.parseSchema(schemaFile);
-			assert( "failed to parse the schema", schema!=null );
+			assertNotNull( "failed to parse the schema", schema );
 			driver.grammar = schema.asGrammar();
 			driver.outputName = "NUL";
 				
 			// run the test
-			assert( "generator for "+schemaFile.getName(), driver.run(System.out)==0 );
+			assertEquals( "generator for "+schemaFile.getName(), driver.run(System.out), 0 );
 				
 				
 			// parse additional parameter
@@ -97,7 +97,7 @@ class TestBuilderImpl implements TestBuilder
 			// is not supported. So this is a hack.
 			driver.parseArguments(new String[]{"-error","10/100"});
 
-			assert( "generator for "+schemaFile.getName(), driver.run(System.out)==0 );
+			assertEquals( "generator for "+schemaFile.getName(), driver.run(System.out), 0 );
 		}
 	}
     

@@ -1,6 +1,7 @@
 <html>
 <head>
 	<title>Read me for MSV developer</title>
+	<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />
 </head>
 <body>
 	<h1 style="text-align:center">ReadMe for MSV development</h1>
@@ -138,21 +139,8 @@
 	
 	<h2>Build instruction</h2>
 	
-	<h3>Preparation</h3>
 	<p>
-		First, you need to create the "shared/ant.config" file, which
-		stores local preferences. You should create this file from
-		"shared/ant.config.template" file. Its default value should work,
-		but you may change it if you like.
-		This file is in the standard Java resource format.
-	</p>
-	
-	
-	
-	<h3>Build</h3>
-	<p>
-		Once you finished the preparation, you can build the entire project
-		by using "/build.xml". This build script also contains the "release" target,
+		To build the entire project, use Ant. The build script also contains the "release" target,
 		which builds the release packages for all sub projects in a proper order.
 	</p><p>
 		When preparing release packages, it is a good idea to use this target
@@ -179,11 +167,16 @@
 		</td></tr>
 		
 		<tr><td>
+			dist
+		</td><td>
+			makes a distribution package in the dist/ directory.
+		</td></tr>
+		
+		<tr><td>
 			release
 		</td><td>
-			makes a release package from CVS (not from the working copy).
-			Note that changes in your working copy
-			will not be reflected to this process.
+			Compresses the result of the dist target into a single zip file
+			and put it to the package/ directory.
 		</td></tr>
 	</table>
 </body>

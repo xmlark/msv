@@ -208,8 +208,6 @@ public class SimpleContentRestrictionState extends SequenceState
 		
         try {
             XSDatatypeExp p = getIncubator().derive(null,null);
-            if(parentDecl.name.equals("ClosedEnum_NoID"))
-                throw new InternalError();
     		exp = reader.pool.createSequence(
         		 super.annealExpression(exp),
     		     p );

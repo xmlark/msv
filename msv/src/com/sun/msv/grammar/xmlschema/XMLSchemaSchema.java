@@ -24,7 +24,7 @@ import java.util.Map;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class XMLSchemaSchema {
+public class XMLSchemaSchema implements java.io.Serializable {
 
 	public static final String XMLSchemaInstanceNamespace =
 		"http://www.w3.org/2001/XMLSchema-instance";
@@ -131,7 +131,7 @@ public class XMLSchemaSchema {
 	public final GroupDeclContainer groupDecls = new GroupDeclContainer();
 	
 	
-	final public class IdentityConstraintContainer {
+	final public class IdentityConstraintContainer implements java.io.Serializable {
 		private final Map storage = new java.util.HashMap();
 		public IdentityConstraint get( String name ) {
 			return (IdentityConstraint)storage.get(name);

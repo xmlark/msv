@@ -152,7 +152,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		sti.reinit(namespaceUri, localName, qName, atts, this );
 
 		// get Acceptor that will be used to validate the contents of this element.
-		Acceptor next = current.createChildAcceptor(sti,ref);
+		Acceptor next = current.createChildAcceptor(sti,null);
 		
 		if( next==null ) {
 			// no child element matchs this one
@@ -161,7 +161,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 
 			// let acceptor recover from this error.
 			StringRef ref = new StringRef();
-			next = getNextAcceptor(sti,ref);
+			next = current.createChildAcceptor(sti,ref);
 			
 			ValidityViolation vv = onError( ref, localizeMessage( ERR_UNEXPECTED_STARTTAG, new Object[]{qName} ) );
 			

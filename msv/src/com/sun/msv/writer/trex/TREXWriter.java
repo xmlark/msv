@@ -12,7 +12,8 @@ package com.sun.msv.writer.trex;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.TypedString;
 import com.sun.msv.datatype.*;
-import com.sun.msv.reader.trex.TREXGrammarReader;
+import org.relaxng.datatype.DataType;
+import com.sun.msv.reader.trex.classic.TREXGrammarReader;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.datatype.DataTypeImpl;
 import org.xml.sax.DocumentHandler;
@@ -742,12 +743,13 @@ public class TREXWriter {
 				}
 			
 				if( dt instanceof DataTypeImpl ) {
+					DataTypeImpl dti = (DataTypeImpl)dt;
 					
 					if( dt instanceof ConcreteType
 					 && !(dt instanceof ListType)
 					 && !(dt instanceof UnionType) ) {
 						// it's a pre-defined types.
-						element( "data", new String[]{"type","xsd:"+dt.getName()} );
+						element( "data", new String[]{"type","xsd:"+dti.getName()} );
 					} else {
 						start("xsd:simpleType", new String[]{"trex:role","datatype"});
 						serializeDataType(dt);
@@ -802,7 +804,7 @@ public class TREXWriter {
 				end("xsd:simpleType");
 			} else {
 				// now we have reached the built-in concrete type.
-				start("xsd:restriction", new String[]{"base","xsd:"+x.getName()});
+				start("xsd:restriction", new String[]{"base","xsd:"+x.displayName()});
 			}
 			
 			// serialize facets
@@ -832,7 +834,7 @@ public class TREXWriter {
 						final Vector ns = new Vector();
 						
 						String lex = dtf.convertToLexicalValue( values[i],
-							new SerializationContextProvider() {
+							new SerializationContext() {
 								public String getNamespacePrefix( String namespaceURI ) {
 									int cnt = ns.size()/2;
 //									try {

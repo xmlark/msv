@@ -11,6 +11,9 @@ public class XMLSchemaSchema {
 
 	public static final String XMLSchemaInstanceNamespace =
 		"http://www.w3.org/2001/XMLSchema-instance";
+	/** this format is obsolete, but still widely used. */
+	public static final String XMLSchemaInstanceNamespace_old =
+		"http://www.w3.org/2000/10/XMLSchema-instance";
 
 	public XMLSchemaSchema( String targetNamespace, XMLSchemaGrammar parent ) {
 		this.pool = parent.pool;
@@ -21,10 +24,7 @@ public class XMLSchemaSchema {
 	public final String targetNamespace;
 	
 	/** pool object which was used to construct this grammar. */
-	protected final TREXPatternPool pool;
-	public final ExpressionPool getPool() {
-		return pool;
-	}
+	public final TREXPatternPool pool;
 	
 	/** choice of all global element declarations. */
 	public Expression topLevel;

@@ -9,6 +9,7 @@ import com.sun.tranquilo.grammar.ReferenceExp;
 import com.sun.tranquilo.grammar.ElementExp;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.SimpleNameClass;
+import com.sun.tranquilo.grammar.ChoiceNameClass;
 import com.sun.tranquilo.grammar.trex.ElementPattern;
 
 /**
@@ -41,9 +42,15 @@ public class ComplexTypeExp extends ReferenceExp {
 		
 		this.selfWType = schema.pool.createSequence(
 							schema.pool.createAttribute(
-								new SimpleNameClass(
-									schema.XMLSchemaInstanceNamespace,
-									"type"
+								new ChoiceNameClass(
+									new SimpleNameClass(
+										schema.XMLSchemaInstanceNamespace,
+										"type"
+									),
+									new SimpleNameClass(
+										schema.XMLSchemaInstanceNamespace_old,
+										"type"
+									)
 								),
 								schema.pool.createTypedString(
 									getQNameType(schema.targetNamespace,localName)
@@ -51,8 +58,8 @@ public class ComplexTypeExp extends ReferenceExp {
 							),
 							self );
 		
-		this.exp = schema.pool.createChoice( self,
-					schema.pool.createChoice( extensions, restrictions ) );
+		// self will be added later if this complex type turns out to be non-abstract.
+		this.exp = schema.pool.createChoice( extensions, restrictions );
 	}
 	
 	/** derives a QName type that only accepts this type name. */

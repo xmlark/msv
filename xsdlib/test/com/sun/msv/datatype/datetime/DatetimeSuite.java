@@ -22,7 +22,6 @@ public class DatetimeSuite extends TestCase {
 		suite.addTest(com.sun.tranquilo.datatype.datetime.BigTimeDurationValueTypeTest.suite());
 		suite.addTest(com.sun.tranquilo.datatype.datetime.BigDateTimeValueTypeTest.suite());
 		suite.addTest(com.sun.tranquilo.datatype.datetime.TimeZoneTest.suite());
-		suite.addTest(com.sun.tranquilo.datatype.datetime.ASCII_CharStreamTest.suite());
 		suite.addTest(com.sun.tranquilo.datatype.datetime.ISO8601ParserTest.suite());
 		suite.addTest(com.sun.tranquilo.datatype.datetime.ISO8601ParserTokenManagerTest.suite());
 		suite.addTest(com.sun.tranquilo.datatype.datetime.ParseExceptionTest.suite());

@@ -41,7 +41,13 @@ public class AttributeState extends ExpressionWithChildState {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		
 		if( startTag.containsAttribute("ref") ) {
-			// this this tag has @ref.
+			if( isGlobal() ) {
+				reader.reportError( reader.ERR_DISALLOWED_ATTRIBUTE,
+					startTag.qName, "ref" );
+				return Expression.epsilon;
+			}
+			
+			// this tag has @ref.
 			Expression exp = reader.resolveQNameRef(
 				startTag, "ref",
 				new XMLSchemaReader.RefResolver() {
@@ -99,7 +105,7 @@ public class AttributeState extends ExpressionWithChildState {
 			else
 				// in local attribute declaration,
 				// targetNamespace is affected by @form and schema's @attributeFormDefault.
-				targetNamespace = ((XMLSchemaReader)reader).resolveNamespaceOfAttributeDecl(
+				targetNamespace = reader.resolveNamespaceOfAttributeDecl(
 					startTag.getAttribute("form") );
 		
 			if( fixed!=null )
@@ -124,7 +130,13 @@ public class AttributeState extends ExpressionWithChildState {
 					reader.ERR_DUPLICATE_ATTRIBUTE_DEFINITION,
 					new Object[]{name} );
 			reader.setDeclaredLocationOf(decl);
-			decl.set( (AttributeExp)exp );
+			if( exp instanceof AttributeExp )
+				decl.set( (AttributeExp)exp );
+			else {
+				// sometimes, because of the error recovery,
+				// exp can be something other than an AttributeExp.
+				if( !reader.hadError )	throw new Error();
+			}
 			
 			// TODO: @use is prohibited in global
 			

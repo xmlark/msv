@@ -24,5 +24,5 @@ public class IgnoreController implements GrammarReaderController
 {
 	public void warning( Locator[] locs, String errorMessage ) {}
 	public void error( Locator[] locs, String errorMessage, Exception nestedException ) {}
-	public InputSource resolveInclude( String url ) { return null; }
+	public InputSource resolveEntity( String p, String s ) { return null; }
 }

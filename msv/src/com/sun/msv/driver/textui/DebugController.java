@@ -61,5 +61,5 @@ public class DebugController implements GrammarReaderController
 			loc.getSystemId() );
 	}
 
-	public InputSource resolveInclude( String url ) { return null; }
+	public InputSource resolveEntity( String publicId, String systemId ) { return null; }
 }

@@ -198,7 +198,7 @@ public abstract class GrammarReader
 		} catch( MalformedURLException e ) {}
 	
 		try {
-			InputSource source = controller.resolveInclude(url);
+			InputSource source = controller.resolveEntity(null,url);
 			if(source==null)	return new InputSource(url);	// default handling
 			else				return source;
 		} catch( IOException ie ) {

@@ -17,8 +17,15 @@ import com.sun.msv.reader.datatype.xsd.LateBindDatatype;
 /**
  * Simple type declaration.
  * 
- * XML Schema allows forward reference to simple types. therefore it must be
- * indirectionalized by ReferenceExp.
+ * <p>
+ * Most of the properties of the simple type declaration component
+ * is defined in the {@link XSDatatype} object, which is obtained by the
+ * {@link #getType()} method.
+ * 
+ * <p>
+ * Note: XML Schema allows forward reference to simple types.
+ * Therefore it must be indirectionalized by ReferenceExp.
+ * And this is the only reason this class exists.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
@@ -44,7 +51,8 @@ public class SimpleTypeExp extends XMLSchemaTypeExp {
 
 	/**
 	 * gets the value of the block constraint.
-	 * SimpleTypeExp always returns 0 because it doesn't have the block constraint.
+	 * SimpleTypeExp always returns 0 because it doesn't
+	 * have the block constraint.
 	 */
 	public int getBlock() { return 0; }
 	

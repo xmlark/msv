@@ -119,111 +119,25 @@ import org.relaxng.datatype.DatatypeException;
  * 
  * 
  * 
- * <h2>ComplexTypeExp anatomy</h2>
- * <p>
- * A ComplexTypeExp is composed roughly as in the following figure:
- * <img src="doc-files/ComplexTypeExp.png">
- * <p>
- * A box indicates an instance of ReferenceExp. As shown in this figure,
- * {@link #exp} field is the choice of all subfields by default.
- * A ComplexTypeExp is constructed in this way when it's not abstract and 
- * no block attribute was specified. The type can appear by itself (in this case
- * it'll match "self" pattern), or can be substituted by itself (in this case,
- * "selfWType" pattern), or can be substituted by any of the derived types (three
- * other patterns).
- * <p>
- * <font color="red">(1)</font> through <font color="red">(4)</font> are the marks
- * that are used later.
  * 
- * <h3>derivation by restriction</h3>
- * <p>
- * When a complex type D is derived from B by restriction, two ComplexTypeExps
- * are connected as follows:
- * <img src="doc-files/ComplexTypeDeriveByRestriction.png">
+ * 
+ * <h3>Abstractness</h3>
  * 
  * <p>
- * What is done here is to register the derived type D (and types derived from D)
- * to the base type so that they can correctly substitute the base type (and
- * ancestor types of B).
+ * The <code>exp</code> field and the <code>self</code> field are very similar.
+ * In fact, the only difference is that the former is affected by the abstract
+ * property, while the latter isn't.
  * 
  * <p>
- * In this way, invariants of {@link #restrictions},{@link #extensions}, and {@link #hybrids}
- * are preserved.
- * 
- * <h3>derivation by extension</h3>
- * <p>
- * Derivation by extension is almost equal to the derivation by restriction.
- * The only difference is that the content model of the derived type uses the self
- * field of the base type.
- * <img src="doc-files/ComplexTypeDeriveByExtension.png">
+ * So if it has to be affected by the
+ * abstract property (like referencing a complex type as the element body),
+ * you should use the <code>exp</code> field.
+ * If you don't want to be affected by the abstract property
+ * (like referencing a complex type as the base type of another complex type),
+ * then you should refer to the <code>body</code> field.
  * 
  * 
  * 
- * <h3>abstract="true"</h3>
- * <p>
- * When the complex type is abstract, <font color="red">(4)</font> is cut.
- * This makes the "self" field unreachable from the "exp" field, and also makes
- * the "selfWType" field unusable (by setting nullSet to its exp field).
- * Thus achieves the effect of abstract, which
- * prevents the type definition from appearing in instance.
- * 
- * <p>
- * Note that the self field can be still referenced from the derived types
- * (as we see in the "derivation by extension" section),
- * and those derived types can appear in the document.
- * Therefore, we cannot set nullSet to the self field. Instead, we need to
- * cut <font color="red">(4)</font> so that it cannot be reached from the exp field
- * of this ComplexTypeExp.
- * 
- * 
- * 
- * <h3>block="***"</h3>
- * <p>
- * The block attribute is arbitrary combination of "restriction" or "extension".
- * If "restriction" is specified,
- * <font color="red">(2)</font> and <font color="red">(3)</font>
- * are cut. In this way, any derived type that uses restriction becomes unreachable
- * from the exp field of the ComplexTypeExp.
- * 
- * <p>
- * The point of cut is very carefully designed.
- * According to
- * <a href="http://www.w3.org/TR/xmlschema-1/#cvc-elt">
- * "Validation Rule: Element Locally Valid (Element)"</a> clause 4.3, A derived type
- * which uses "restriction" in the derivation chain cannot substitute this type.
- * Therefore, if type B has block="restriction", and De is derived from B by extension,
- * and Der is derived from De by restriction, then Der cannot substitute B.
- * 
- * <p>
- * However, things are not that easy. Now say B has the base complex type R.
- * According to <a href="http://www.w3.org/TR/xmlschema-1/#cos-ct-derived-ok">
- * "Type Derivation OK (Complex)"</a>, even if block="restriction" is specified
- * for type B, R can be still substitutable by De and Der.
- * 
- * <p>
- * As you see, cutting <font color="red">(1,2,3)</font> still allow R to be
- * substituted by De or Der.
- * 
- * <p>
- * By the similar reasoning, when "extension" is specified in the block attribute,
- * <font color="red">(1)</font> and <font color="red">(3)</font> are cut.
- * 
- * If both "extension" and "restriction" are specified, then 
- * <font color="red">(1)</font>, <font color="red">(2)</font>, and
- * <font color="red">(3)</font> are cut.
- * 
- * <p>
- * The author belives that the above design would correctly express
- * the complicated constraint of complex types.
- * 
- * 
- * 
- * <h3>Interaction with ElementDeclExp</h3>
- * 
- * <p>
- * Due to the way the block attribute of &lt;xsd:element> works, ElementDeclExp
- * and ComplexTypeExp have a rather complex interaction (sigh). See javadoc of
- * {@link ElementDeclExp} for details.
  * 
  * @see		ElementDeclExp
  * 

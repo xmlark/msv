@@ -19,18 +19,16 @@ import com.sun.msv.grammar.util.ExpressionWalker;
 import java.util.Vector;
 
 /**
- * Global Element declaration.
+ * Element declaration.
  * 
  * <p>
  * the inherited exp field holds an expression that
  * also matches to substituted element declarations.
  * 
  * <p>
- * <code>self</code> field contains an expression that matches
+ * <code>body</code> field contains an expression that matches
  * only to this element declaration without no substituted element decls.
  * 
- * <p>
- * This object is not created for local element declaration.
  * 
  * <h2>Element Declaration Schema Component Properties</h2>
  * <p>
@@ -66,27 +64,26 @@ import java.util.Vector;
  *   <td>
  *    scope
  *   </td><td>
- *    Always global. A local element declaration does not have the corresponding
- *    ElementDeclExp object.
+ *    <b>To be implemented</b>
  *   </td>
  *  </tr><tr>
  *   <td>
  *    value constraint
  *   </td><td>
- *    <b>To be implemented</b>.  Accessible through the {@link self} field.
+ *    <b>To be implemented</b>.  Accessible through the {@link body} field.
  *   </td>
  *  </tr><tr>
  *   <td>
  *    nillable
  *   </td><td>
- *    <b>To be implemented</b>. Accessible through the {@link self} field.
+ *    the {@link #isNillable} field.
  *   </td>
  *  </tr><tr>
  *   <td>
  *    identity constraints
  *   </td><td>
  *    The <code>identityConstraints</code> field of the {@link XSElementExp},
- *	  which in turn can be obtained throught the {@link self} field.
+ *	  which in turn can be obtained throught the {@link body} field.
  *   </td>
  *  </tr><tr>
  *   <td>
@@ -122,11 +119,21 @@ import java.util.Vector;
  * </table>
  * 
  * 
- * <h2>ElementDeclExp anatomy</h2>
- * <p>
- * An ElementDeclExp is composed roughly as follows:
  * 
- * <img src="doc-files/ElementDeclExp.png"/>
+ * <h3>Abstractness</h3>
+ * 
+ * <p>
+ * The <code>exp</code> field and the <code>self</code> field are very similar.
+ * In fact, the only difference is that the former is affected by the abstract
+ * property, while the latter isn't.
+ * 
+ * <p>
+ * So if it has to be affected by the
+ * abstract property (like referencing a complex type as the element body),
+ * you should use the <code>exp</code> field.
+ * If you don't want to be affected by the abstract property
+ * (like referencing a complex type as the base type of another complex type),
+ * then you should refer to the <code>body</code> field.
  * 
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
@@ -208,13 +215,30 @@ public class ElementDeclExp extends ReferenceExp
 // Schema component properties
 //======================================
 //
-	
+	/**
+	 * gets the nillable property of this component as
+	 * <a href="http://www.w3.org/TR/xmlschema-1/#nillable">
+	 * specified in the spec</a>.
+	 */
 	public boolean isNillable;
 	
 	
 	/**
+	 * gets the scope property of this component as
+	 * <a href="http://www.w3.org/TR/xmlschema-1/#e-scope">
+	 * specified in the spec</a>.
+	 * 
+	 * @return
+	 *		<b>true</b> if this component is global.
+	 *		<b>false</b> if this component is local.
+	 */
+	public boolean isGlobal() {
+		return parent.elementDecls.get(name)==this;
+	}
+	
+	/**
 	 * gets the target namespace property of this component as
-	 * <a href="http://www.w3.org/TR/xmlschema-1/#ct-target_namespace">
+	 * <a href="http://www.w3.org/TR/xmlschema-1/#e-target_namespace">
 	 * specified in the spec</a>.
 	 * 
 	 * <p>

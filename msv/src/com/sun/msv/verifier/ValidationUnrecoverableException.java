@@ -26,4 +26,10 @@ public class ValidationUnrecoverableException extends SAXException
 		error=vv;
 	}
 	
+	public ValidationUnrecoverableException()
+	{
+		super("");
+		error = null;
+	}
+	
 }

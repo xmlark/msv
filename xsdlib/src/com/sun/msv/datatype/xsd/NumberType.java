@@ -107,7 +107,7 @@ public class NumberType extends ConcreteType implements Comparator {
 		}
 	}
 	public Class getJavaObjectType() {
-		return BigInteger.class;
+		return BigDecimal.class;
 	}
 	
 	public String convertToLexicalValue( Object o, SerializationContext context ) {

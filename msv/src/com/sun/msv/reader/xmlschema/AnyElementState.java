@@ -9,6 +9,8 @@
  */
 package com.sun.msv.reader.xmlschema;
 
+import com.sun.msv.grammar.AnyNameClass;
+import com.sun.msv.grammar.AttributeExp;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.ReferenceExp;
@@ -94,9 +96,11 @@ public class AnyElementState extends AnyState
 				exp.exp = reader.pool.createChoice(
 					new ElementPattern( laxNc,
 						reader.pool.createMixed(
-							reader.pool.createZeroOrMore(exp))),
+							reader.pool.createZeroOrMore(
+                                reader.pool.createChoice(
+                                    reader.pool.createAttribute(AnyNameClass.theInstance),
+                                    exp)))),
 					 exp.exp );
-				// TODO: add attribute
 			}
 		});
 		

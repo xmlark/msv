@@ -153,7 +153,7 @@ public class BigDateTimeValueType implements IDateTimeValueType
 		if(!(o instanceof BigDateTimeValueType) )
 			o = o.getBigValue();
 		
-		return compare( (BigDateTimeValueType)o, this );
+		return compare( this, (BigDateTimeValueType)o );
 	}
 	
 	protected static int compare( BigDateTimeValueType lhs, BigDateTimeValueType rhs )
@@ -177,11 +177,11 @@ public class BigDateTimeValueType implements IDateTimeValueType
 		{
 			int r;
 			
-			r = compare( (BigDateTimeValueType)new BigDateTimeValueType(lhs,Util.timeZonePos14).normalize(), rhs );
+			r = compare( (BigDateTimeValueType)new BigDateTimeValueType(lhs,Util.timeZoneNeg14).normalize(), rhs );
 			if( r==Comparator.EQUAL || r==Comparator.LESS )
 				return Comparator.LESS;	// lhs < rhs
 			
-			r = compare( (BigDateTimeValueType)new BigDateTimeValueType(lhs,Util.timeZoneNeg14).normalize(), rhs );
+			r = compare( (BigDateTimeValueType)new BigDateTimeValueType(lhs,Util.timeZonePos14).normalize(), rhs );
 			if( r==Comparator.EQUAL || r==Comparator.GREATER )
 				return Comparator.GREATER;	// lhs > rhs
 			
@@ -191,11 +191,11 @@ public class BigDateTimeValueType implements IDateTimeValueType
 		{
 			int r;
 			
-			r = compare( lhs, (BigDateTimeValueType)new BigDateTimeValueType(rhs,Util.timeZoneNeg14) );
+			r = compare( lhs, (BigDateTimeValueType)new BigDateTimeValueType(rhs,Util.timeZonePos14) );
 			if( r==Comparator.EQUAL || r==Comparator.LESS )
 				return Comparator.LESS;	// lhs < rhs
 			
-			r = compare( lhs, (BigDateTimeValueType)new BigDateTimeValueType(rhs,Util.timeZonePos14) );
+			r = compare( lhs, (BigDateTimeValueType)new BigDateTimeValueType(rhs,Util.timeZoneNeg14) );
 			if( r==Comparator.EQUAL || r==Comparator.GREATER )
 				return Comparator.GREATER;	// lhs > rhs
 			

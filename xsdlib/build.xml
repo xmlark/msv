@@ -211,8 +211,6 @@
 		<copy file="${relaxngDatatype.jar}" tofile="dist/relaxngDatatype.jar" />
 	</target>
 	
-	
-	
 	<target name="release" depends="dist" description="build the distribution zip file">
     <tstamp />
 		<property name="stageName" value="xsdlib-${DSTAMP}"/>

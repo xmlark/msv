@@ -1,203 +1,236 @@
-<HTML>
-<HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
-	<TITLE>Usage Guide For Sun Multi-Schema Validator</TITLE>
-	<style>
-		.title
-		{
-			text-align:center;
-			font-weight:bold;
-		}
-		LI
-		{
-			margin-top: 1em;
-		}
-		PRE
-		{
-			background-color: rgb(240,240,240);
-		}
-	</style>
-</HEAD>
-<BODY>
-<P ALIGN=center>
-<B>USAGE GUIDE FOR SUN MULTI-SCHEMA VALIDATOR<BR>
-Preview Version.   1 June,2001<BR><BR>Copyright &copy; Sun
-Microsystems, 2001</B></P>
-<P><BR></P>
-<P ALIGN=right>Document written by <A href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</A> <BR>
-$Id$ 
-</P>
-<P>Sun Multi-Schema Validator(MSV) is  a Java tool to validate XML documents against XML schemata. It supports RELAX Namespace, RELAX Core, RELAX NG, TREX, XML DTDs, and a subset of W3C XML Schema Part 1.</P>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="CONTENT-TYPE" content="text/html; charset=iso-8859-1">
+	<title>Usage Guide For Sun Multi-Schema Validator</title>
+<style type="text/css">
+<!--
+pre {  background-color: #eeeeee; color: #000099}
+code {  color: #000099}
+h1 {  color: #000099}
+h2 {  color: #000099; font-style: italic}
+h3 {  font-style: italic; color: #000099; text-decoration: underline}
+h4 {  font-style: italic; color: #000099}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#dddddd">
+   <tr>
+      <td align="center" valign="middle">
+         <table width="100%" border="1" cellspacing="3" cellpadding="3">
+            <tr>
+               <td valign="top" bgcolor="#FFFFFF">
+                  <h1>Sun Multi-Schema XML Validator</h1>
+               </td>
+               <td rowspan="2" align="center" valign="middle" bgcolor="#dddddd">
+                  <p><strong>Preview Version 1<br>
+                      July, 2001</strong></p>
+                  <p><a href="mailto:kohsuke.kawaguchi@eng.sun.com"><strong>Kohsuke KAWAGUCHI</strong></a></p>
+               </td>
+               <td rowspan="2" align="right" valign="middle" bgcolor="#FFFFFF" nowrap><small><em>Copyright &copy; 2001</em></small><br>
+      <small><em>Sun Microsystems, Inc.</em></small><br>
+      <small><em>All Rights Reserved</em></small></td>
+            </tr>
+            <tr>
+               <td align="left" valign="top" bgcolor="#FFFFFF">
+                  <h2><em>Command Line Usage Guide</em></h2>
+               </td>
+            </tr>
+         </table>
+      </td>
+   </tr>
+</table>
+<blockquote>
+<p>The Sun Multi-Schema Validator(MSV) is  a Java<small><sup>TM</sup></small> technology tool to validate XML documents against a variety of XML schemata. It supports RELAX Namespace, RELAX Core, RELAX NG, TREX, XML DTDs, and a subset of W3C XML Schema Part 1.</p>
+</blockquote>
 
-<H1>Usage</H1>
-<P>
-  To validate XML documents with a RELAX grammar/module, enter a command
-  of the following form:
-</P>
-<PRE>$ java -jar msv.jar MySchema.rxg MyDocument1.xml MyDocument2.xml ...</PRE>
-<P>
-  If you'd like to use TREX, enter a command of the form
-</P>
-<PRE>$ java -jar msv.jar MySchema.trex MyDocument1.xml MyDocument2.xml ...</PRE>
-<P>
-  Or if you'd like to use W3C XML Schema, enter the command
-</P>
-<PRE>$ java -jar msv.jar MySchema.xsd MyDocument1.xml MyDocument2.xml ...</PRE>
-<P>
-  MSV will detect the schema language regardless of its file extension.
-</P>
-<P>
-  However, you have to add the <code>-dtd</code> switch to use a DTD.
-</P>
-<PRE>$ java -jar msv.jar -dtd my.dtd MyDocument1.xml MyDocument2.xml ...</PRE>
-<P>
-  Some environments support wild cards for filenames, while others
-  (e.g., "jview" VM from Microsoft) don't.
-  You can also use a URL instead of a filename. 
-</P>
-<P>
-  If the schema contains errors, you will see messages like this.
-</P>
-<PRE>
+<h2>Usage</h2>
+
+<blockquote>
+<p>To validate XML documents with a RELAX grammar/module, enter a command of the following form:</p>
+
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>$ java -jar msv.jar MySchema.rxg MyDocument1.xml MyDocument2.xml ...</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>If you'd like to use TREX, enter a command of the form:</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>$ java -jar msv.jar MySchema.trex MyDocument1.xml MyDocument2.xml ...</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>Or if you'd like to use W3C XML Schema, enter the command:</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>$ java -jar msv.jar MySchema.xsd MyDocument1.xml MyDocument2.xml ...</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>MSV will detect the schema language regardless of its file extension.</p>
+<p>However, you have to add the <code>-dtd</code> switch to use a DTD.</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>$ java -jar msv.jar -dtd my.dtd MyDocument1.xml MyDocument2.xml ...</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>Some environments support wild cards for filenames, while others (e.g., "jview" VM from Microsoft) don't. You can also use a URL instead of a filename.</p>
+<p>If the schema contains errors, you will see messages like this.</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 start parsing a grammar.
 the following hedgeRules form an infinite recursion ( y &gt; z &gt; y )
   18:23@file:///c:/work/relax/relax024.e.rlx
   14:23@file:///c:/work/relax/relax024.e.rlx
 failed to load a grammar.
-</PRE>
-<P>"18:23@XYZ" indicates that the error is located at line 18, column 23 of file XYZ.</P>
-<P>If the document and the schema are both valid, you will see messages like this.</P>
-<PRE>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p><code>18:23@XYZ</code> indicates that the error is located at line 18, column 23 of file XYZ.</p>
+<p>If the document and the schema are both valid, you will see messages like this:</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 start parsing a grammar.
 validating c:\work\relax\relax001.v00.xml
 the document is valid.
-</PRE>
-<P>
-If the schema is valid but the document has errors, you will see messages like this.
-</P>
-<PRE>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>If the schema is valid but the document has errors, you will see messages like this:</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 start parsing a grammar.
 validating c:\work\relax\relax001.n02.xml
 Error at line:5, column:5 of file:///c:/work/relax/relax001.n02.xml
   tag name "q" is not allowed. possible tag names are:
 
 the document is NOT valid.
-</PRE>
-<P>Please note that line/column infomation is sometimes 
-inaccurate, and one tab char is counted as one character, not 4 or 8. So you 
-might want to look around to find the actual error.</P>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>Please note that line/column infomation is sometimes inaccurate, and one tab char is counted as one character, not 4 or 8. So you might want to look around to find the actual error.</p>
+</blockquote>
 
+<h2>Options</h2>
+<blockquote>
+<p>The command line tool has several other options. You can see the list of available options by invoking MSV without any arguments.</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>$ java -jar msv.jar</pre>
+		</td>
+	</tr>
+</table>
 
-<H1>Options</H1>
-<P>The command line tool has several other options. You can see the list of 
-available options by invoking MSV without any arguments.</P>
-<PRE>$ java -jar msv.jar</PRE>
+<dl>
+	<dt><code><b>-warning</b></code></dt>
+	<dd><p>Display all warning messages. Warnings are useful to catch potential errors.</p></dd>
+	<dt><code><b>-loose</b></code></dt>
+	<dd><p>This switch prevents MSV from resolving external resources (such as an external DTD referenced from documents, or external entities).</p></dd>
+</dl>
+<hr>
+</blockquote>
 
-<DL>
-	<DT>-warning</DT>
-	<DD>
-		Display all warning messages. Warnings are useful
-		to catch potential errors.
-	</DD>
-	<DT>-loose</DT>
-	<DD>
-		This switch prevents MSV from resolving external resources
-		(such as an external DTD referenced from documents,
-		or external entities).
-	</DD>
-</DL>
+<h2>Known Limitations</h2>
 
+<h3>DTD</h3>
+<blockquote>
+<ol>
+	<li><p>Attribute declarations of the form of <code>xmlns:***</code> are ignored. All namespace declarations within the instance document are also ignored.</p></li>
+	<li><p>In general, MSV handles XML namespaces differently from most DTD validators. As a result, MSV may validate documents that other DTD validators reject. When this is the case, MSV always issues a warning.</p></li>
+</ol>
+</blockquote>
 
-<H1>Known Limitations</H1>
+<h3>TREX</h3>
+<blockquote>
+<p>This implementation fully conforms to the <a href="http://thaiopensource.com/trex/spec.html">current specification (2001-02-13 version).</a> </p>
+</blockquote>
 
-<H2>DTD</H2>
-<OL>
-	<LI>
-		Attribute declarations of the form of <code>xmlns:***</code> are
-		ignored. All namespace declarations within the instance document
-		are also ignored.
-	</LI>
-	<LI>
-		In general, MSV handles XML namespaces differently from
-		most DTD validators. As a result, MSV may validate documents
-		that other DTD validators reject. When this is the case,
-		MSV always issues a warning.
-	</LI>
-</OL>
+<h3>RELAX NG</h3>
+<blockquote>
+<p>This implementation attempts to fully implement the spec. But it must be considered as an experimental implementation because no official spec is available at the moment of the writing. W3C XML Schema Part 2 is the only one datatype vocabulary supported.</p>
+</blockquote>
 
-<H2>TREX</H2>
-<P>
-	This implementation fully conforms to
-	<a href="http://thaiopensource.com/trex/spec.html">
-		the current specification (2001-02-13 version).
-	</a>
-</P>
+<h3>RELAX Core</h3>
+<blockquote>
+<p>This implementation fully conforms to the current JIS TR specification. (<a href="http://www.egroups.co.jp/files/reldeve/JISTRtranslation.pdf"> English </a>, <a href="http://www.y-adagio.com/public/standards/tr_relax_c/toc.htm"> Japanese </a>) </p>
+</blockquote>
 
-<H2>RELAX NG</H2>
-<P>
-	This implementation attempts to fully implement the spec.
-	But it must be considered as an experimental implementation because
-	no official spec is available at the moment of the writing.
-	W3C XML Schema Part 2 is the only one datatype vocabulary supported.
-</P>
+<h3>RELAX Namespace</h3>
 
-<H2>RELAX Core</H2>
-<P>
-	This implementation fully conforms to the current JIS TR specification.
-	(
-	<a href="http://www.egroups.co.jp/files/reldeve/JISTRtranslation.pdf">
-		English
-	</a>,
-	<a href="http://www.y-adagio.com/public/standards/tr_relax_c/toc.htm">
-		Japanese
-	</a>
-	)
-</P>
+<blockquote>
+<p><code>&lt;anyOtherAttribute&gt;</code> is not implemented.</p>
+</blockquote>
 
-<H2>RELAX Namespace</H2>
-<OL>
-	<LI>
-		&lt;anyOtherAttribute&gt; is not implemented.
-	</LI>
-</OL>
+<h3>W3C XML Schema Part 1</h3>
+<blockquote>
+<ol>
+	<li><p>The identity constraint is only partially implemented. Specifically, keys are not considered as typed data. They are compared by their lexical values.</p></li>
+	<li><p><a href="http://www.w3.org/TR/xmlschema-1/#concepts-schemaConstraints"> "Schema component constraints" and "Schema representation constraints" </a> are not fully enforced. In other words, MSV accepts schemata that are rejected by other conforming processors.</p></li>
+	<li><p>Forward reference of <a href="http://www.w3.org/TR/xmlschema-1/#Simple_Type_Definitions">simple type</a> is not supported. Therefore, the following schema cannot be used.</p>
+		<hr>
+		<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+			<tr>
+				<td bgcolor="#eeeeee">
+<pre>&lt;xmp&gt;
+&lt;xs:simpletype name="foo"&gt;
+ &lt;xs:restriction base="bar"&gt;
+  &lt;xs:fractiondigits value="2"/&gt;
+ &lt;/xs:restriction&gt;
+&lt;/xs:simpletype&gt;
 
-<H2>W3C XML Schema Part 1</H2>
-<OL>
-	<LI>
-		The identity constraint is only partially implemented. Specifically, keys are not considered as typed data.
-		They are compared by their lexical values.
-	</LI>
-	<LI>
-		<A href="http://www.w3.org/TR/xmlschema-1/#concepts-schemaConstraints">
-		"Schema component constraints" and "Schema representation constraints"
-		</A> are not fully enforced. In other words, MSV accepts schemata
-		that are rejected by other conforming processors.
-	</LI>
-	<LI>
-		<A href="http://www.w3.org/TR/xmlschema-1/#conformance-missing">
-		"Missing sub-components" </A> are treated as immediate errors.
-		This behavior better serves the majority of users.
-	</LI>
-	<LI>
-		Default values are ignored. In fact,
-		no infoset contribution is supported: MSV validates documents,
-		but it doesn't augment them.
-		Post Schema-Validation Infoset (PSVI) is also not supported.
-	</LI>
-	<LI>
-		<code>block</code> and <code>final</code> attributes of
-		<code>element</code> and <code>complexType</code> are not supported.
-		If present, they are ignored with warnings.
-	</LI>
-</OL>
+&lt;xs:simpletype name="bar"&gt;
+ &lt;xs:restriction base="xs:decimal"&gt;
+  &lt;xs:totaldigits value="5" /&gt;
+ &lt;/xs:restriction&gt;
+&lt;/xs:simpletype&gt;
+		&lt;/xmp&gt;</pre>
+				</td>
+			</tr>
+		</table>
+		<hr>
+	</li>
+	<li><p><a href="http://www.w3.org/TR/xmlschema-1/#conformance-missing"> "Missing sub-components" </a> are treated as immediate errors. This behavior better serves the majority of users.</p></li>
+	<li><p>Default values are ignored. In fact, no infoset contribution is supported: MSV validates documents, but it doesn't augment them. Post Schema-Validation Infoset (PSVI) is also not supported.</p></li>
+	<li><p><code>block</code> and <code>final</code> attributes of <code>element</code> and <code>complexType</code> are not supported. If present, they are ignored with warnings.</p></li>
+</ol>
+</blockquote>
 
-
-<H1>Further Reading</H1>
-<P>To learn RELAX, <A href="http://www.xml.gr.jp/relax/">"How to RELAX"</A> 
-is a good starter. To learn TREX, there is the <A 
-href="http://thaiopensource.com/trex/tutorial.html">"TREX tutorial"</A>.
-RELAX NG also has its own <a href="http://www.oasis-open.org/committees/relax-ng/tutorial.html">tutorial</a>.
-For W3C XML Schema Part 2, see <A 
-href="http://www.w3.org/TR/2001/PR-xmlschema-0-20010316/#CreatDt">section 
-2.3 of XML Schema Part 0: Primer</A>.</P>
-</BODY></HTML>
+<h2>Further Reading</h2>
+<blockquote>
+<p>To learn RELAX, <a href="http://www.xml.gr.jp/relax/">"How to RELAX"</a> is a good starter. To learn TREX, there is the <a href="http://thaiopensource.com/trex/tutorial.html">"TREX tutorial"</a>. RELAX NG also has its own <a href="http://www.oasis-open.org/committees/relax-ng/tutorial.html">tutorial</a>. For W3C XML Schema Part 2, see <a href="http://www.w3.org/TR/2001/PR-xmlschema-0-20010316/#CreatDt">section 2.3 of XML Schema Part 0: Primer</a>.</p>
+</blockquote>
+</body>
+</html>

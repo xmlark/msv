@@ -1,136 +1,134 @@
-<HTML>
-<HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
-	<TITLE>MSV Developer's Guide</TITLE>
-	<style>
-		.title {
-			text-align:center;
-			font-weight:bold;
-		}
-		PRE {
-			background-color: rgb(240,240,240);
-		}
-		P {
-			margin-left: 2em;
-		}
-		PRE {
-			margin-left: 4em;
-			margin-right:4em;
-		}
-		DL {
-			margin-left: 2em;
-		}
-		DT {
-			margin-top: 0.5em;
-			font-weight: bold;
-		}
-	</style>
-</HEAD>
-<BODY>
-<P ALIGN=center STYLE="MARGIN-BOTTOM: 0in">
-  <B>DEVELOPER'S GUIDE TO SUN MULTI-SCHEMA VALIADTOR<BR>
-  Preview Version. June, 2001<BR>
-  <BR>
-  Copyright &copy; Sun Microsystems, 2001</B>
-  </P>
-<P><BR></P>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="CONTENT-TYPE" content="text/html; charset=iso-8859-1">
+	<title>MSV Developer's Guide</title>
+	<!-- $Id$ -->
+<style type="text/css">
+<!--
+pre {  background-color: #eeeeee; color: #000099}
+code {  color: #000099}
+h1 {  color: #000099}
+h2 {  color: #000099; font-style: italic}
+h3 {  font-style: italic; color: #000099; text-decoration: underline}
+h4 {  font-style: italic; color: #000099}
+-->
+</style>
+</head>
+<body bgcolor="#FFFFFF">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#dddddd">
+   <tr>
+      <td align="center" valign="middle">
+         <table width="100%" border="1" cellspacing="3" cellpadding="3">
+            <tr>
+               <td valign="top" bgcolor="#FFFFFF">
+                  <h1>Sun Multi-Schema XML Validator</h1>
+               </td>
+               <td rowspan="2" align="center" valign="middle" bgcolor="#dddddd">
+                  <p><strong>Preview Version 1<br>
+                      May, 2001</strong></p>
+                  <p><a href="mailto:kohsuke.kawaguchi@eng.sun.com"><strong>Kohsuke KAWAGUCHI</strong></a></p>
+               </td>
+               <td rowspan="2" align="right" valign="middle" bgcolor="#FFFFFF" nowrap><small><em>Copyright &copy; 2001</em></small><br>
+      <small><em>Sun Microsystems, Inc.</em></small><br>
+      <small><em>All Rights Reserved</em></small></td>
+            </tr>
+            <tr>
+               <td align="left" valign="top" bgcolor="#FFFFFF">
+                  <h2><em>Developer's Guide</em></h2>
+               </td>
+            </tr>
+         </table>
+      </td>
+   </tr>
+</table>
 
-<P ALIGN=right>
- Document written by <A href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</A><BR>
- $Id$ 
-</P>
-<P>
-  Sun Mutli-Schema Validator is  a Java tool to validate XML documents against
-  XML schemata. It supports RELAX Namespace, RELAX Core, RELAX NG, TREX, XML DTD,
-  and a subset of W3C XML Schema Part 1.
-</P>
+<blockquote>
+<p>The Sun Multi-Schema Validator(MSV) is  a Java<small><sup>TM</sup></small> technology tool to validate XML documents against a variety of XML schemata. It supports RELAX Namespace, RELAX Core, RELAX NG, TREX, XML DTDs, and a subset of W3C XML Schema Part 1.</p>
+</blockquote>
 
+<hr>
+<h2>Contents</h2>
+<ol>
+  <li><a href="#overview">Design Overview</a></li>
+  <li><a href="#qs">Quick Start</a></li>
+  <li><a href="#load">Loading Schemata</a></li>
+  <li><a href="#agm">Playing with AGM</a>
+    <ul>
+      <li><a href="#agm_dep">Schema Language Dependency</a></li>
+      <li><a href="#agm_exps">Expression and ExpressionPool</a></li>
+      <li><a href="#agm_create">Creating AGM from scratch</a></li>
+      <li><a href="#agm_access">Accessing AGM</a></li>
+      <li><a href="#agm_modify">Manipulating AGM</a></li>
+    </ul>
+  </li>
+  <li><a href="#controller">Controlling Parsing of Schemata</a></li>
+  <li><a href="#validate">Validating Documents</a>
+    <ul>
+      <li><a href="#vgm">VGM</a></li>
+      <li><a href="#thread">Multithread Environment</a></li>
+      <li><a href="#daemon">Daemon Process</a></li>
+    </ul>
+  </li>
+  <li><a href="#type">Type Assignment</a>
+    <ul>
+      <li><a href="#trexext">TREX extension</a></li>
+    </ul>
+  </li>
+</ol>
+<hr>
+<a name="overview"></a>
+<h2>Design Overview</h2>
 
+<blockquote>
+<p>MSV comprises six components.</p>
 
-<H1>Table Of Contents</H1>
-<OL>
-  <LI><A href="#overview">Design Overview</A></LI> 
-  <LI><A href="#qs">Quick Start</A></LI> 
-  <LI><A href="#load">Loading Schemata</A></LI> 
-  <LI><A href="#agm">Playing with AGM</A></LI> 
-    <OL>
-      <LI><A href="#agm_dep">Schema Language Dependency</A></LI> 
-      <LI><A href="#agm_exps">Expression and ExpressionPool</A></LI> 
-      <LI><A href="#agm_create">Creating AGM from scratch</A></LI> 
-      <LI><A href="#agm_access">Accessing AGM</A></LI> 
-      <LI><A href="#agm_modify">Manipulating AGM</A></LI> 
-    </OL>
-  <LI><A href="#controller">Controlling Parsing of Schemata</A></LI> 
-  <LI><A href="#validate">Validating Documents</A></LI> 
-    <OL>
-      <LI><A href="#vgm">VGM</A></LI> 
-      <LI><A href="#thread">Multithread Environment</A></LI> 
-      <LI><A href="#daemon">Daemon Process</A></LI> 
-    </OL></LI>
-  <LI><A href="#type">Type Assignment</A></LI> 
-    <OL>
-      <LI><A href="#trexext">TREX extension</A></LI> 
-    </OL></LI>
-</OL>
+<table width="85%" border="1" cellpadding="3" cellspacing="0" bgcolor="#ffffff">
+	<tr valign="top">
+		<th nowrap bgcolor="#000099"><font color="#ffffcc"><em>Component</em></font></th>
+		<th nowrap bgcolor="#000099"><font color="#ffffcc"><em>Description</em></font></th>
+	</tr>
+	<tr valign="top">
+		<th align="right" bgcolor="#e8fcff">Abstract grammar model (AGM)</th>
+		<td align="left">Schema-independent grammar model. All supported schemata are parsed into this internal representation. This model, coupled with the grammar reader, may be useful for other applications.</td>
+	</tr>
+	<tr valign="top">
+		<th align="right" bgcolor="#e8fcff">Grammar reader</th>
+		<td align="left">Component used to parse schemata by using SAX to construct AGMs.</td>
+	</tr>
+	<tr valign="top">
+		<th align="right" bgcolor="#e8fcff">Verification grammar model (VGM)</th>
+		<td align="left">Bridge between AGM and Validator. It works as an abstraction layer between them, thereby makeing non-automaton-based algorithms possible.</td>
+	</tr>
+	<tr valign="top">
+		<th align="right" bgcolor="#e8fcff">Validator</th>
+		<td align="left">Component to validate an XML instance with a VGM by using SAX.</td>
+	</tr>
+	<tr valign="top">
+		<th align="right" bgcolor="#e8fcff">Datatype validator</th>
+		<td align="left">Component separately available as the Sun XML Datatypes Library.</td>
+	</tr>
+	<tr valign="top">
+		<th align="right" bgcolor="#e8fcff">RELAX Namespace ("divide&amp;validate" framework)</th>
+		<td align="left">Component that allows multiple schema languages to cooperatively validate one instance. <em>The mplementation of this component is likely to change substantially in the future.</em></td>
+	</tr>
+</table>
+</blockquote>
 
-<A id="overview" />
-<H1>Design Overview</H1>
-<P>MSV consists of six components.</P>
-<DL>
-	<DT>Abstract grammar model (AGM):</DT>
-	<DD>
-		schema-independent grammar model.
-		All supported schemata are parsed into this internal representation.
-		This model, coupled with the grammar reader, may be useful for other applications.
-	</DD>
-	<DT>Grammar reader:</DT>
-	<DD>
-		a component used to parse schemata by using SAX to construct AGMs.
-	</DD>
-	
-	<DT>Verification grammar model (VGM):</DT>
-	<DD>
-		a bridge between AGM and Validator. It works as an abstraction layer between them,
-		thereby makeing non-automaton-based algorithms possible.
-	</DD>
-	
-	<DT>Validator:</DT>
-	<DD>
-		a component to validate an XML instance with a VGM by using SAX.
-	</DD>
-	
-	<DT>Datatype validator: </DT>
-	<DD>
-		a component separately available as the Sun XML Datatypes Library.
-	</DD>
-	
-	<DT>RELAX Namespace ("divide&amp;validate" framework):</DT>
-	<DD>
-		a component that allows multiple schema languages to cooperatively validate
-		one instance. <i>The mplementation of this component is likely to change substantially in
-		the future.</i>
-	</DD>
-</DL>
-  
-  
-<A id="qs" />
-<H1>Quick Start: validating documents</H1>
-<P>
-  You can use MSV to validate documents before your application reads them.
-  If this satisfies your needs, then this section is the only section you have to read.
-</P>
-<P>
-  The easiest way to do this is to 
-  use "Java API for RELAX Verifiers" (JARV). JARV is an implementation-independent 
-  interface set, so you can even switch to a different verifier implementation if 
-  you like. For information about JARV,
-  see <a href="http://iso-relax.sourceforge.net/">http://iso-relax.sourceforge.net/</a>.
-</P>
-<P>
-  Despite its name, JARV is not limited to RELAX; it can be used with TREX.
-  The following example illustrates a typical usage of JARV.
-</P>
-<PRE>
+<hr>
+<a name="qs"></a>
+<h2>Quick Start: Validating Documents</h2>
+<blockquote>
+
+<p>You can use MSV to validate documents before your application reads them. If this satisfies your needs, then this section is the only section you have to read.</p>
+
+<p>The easiest way to do this is to use <em>Java API for RELAX Verifiers</em> (JARV). JARV is an implementation-independent interface set, so you can even switch to a different verifier implementation if you like. For information about JARV, see <a href="http://iso-relax.sourceforge.net/">http://iso-relax.sourceforge.net/</a>.</p>
+<p>Despite its name, JARV is not limited to RELAX; it can be used with any schema language that MSV supports. The following example illustrates a typical usage of JARV.</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 import org.iso_relax.verifier.*;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -138,58 +136,91 @@ void f( SAXParserFactory pf )
 {
   // parser factory has to be configured to be namespace aware.
   pf.setNamespaceAware( true );
-  
+
   // create a VerifierFactory
-  // <b>if you'd like to use TREX schema, then </b>
-  // <b>create TREXFactoryImpl instead of RELAXFactoryImpl in the above line</b>
-  VerifierFactory factory = new com.sun.msv.verifier.jarv.RELAXCoreFactoryImpl(pf);
-  
-  // load RELAX schema
+  VerifierFactory factory = new com.sun.msv.verifier.jarv.TheFactoryImpl(pf);
+
+  // load a RELAX schema (or whatever schema you like)
   Verifier verifier = factory.newVerifier( new File("foo.rxg") );
-  
+
   try {
     if( !verifier.isFeature(FEATURE_FILTER) )
       return;  // this verifier doesn't support getVerifierFilter method.
   } catch( org.xml.SAXNotRecognizedException e )
   {  return; } // this verifier doesn't support getVerifierFilter method.
-  
+
   // obtain XMLFilter
   VerifierFilter filter = verifier.getVerifierFilter();
-  
+
   // parse a document
   filter.setParent( pf.newSAXParser().getXMLReader() );
   filter.setContentHandler( new MyContentHandler() );
-  filter.parse( "MyInstance.xml" );
-  
-  if( filter.isValid() )
-    // the document was valid
-  else
+  try {
+    filter.parse( "MyInstance.xml" );
+    // if the execution reaches here, the document was valid
+  } catch( ValidityViolation vv ) {
     // the document was not valid
+  }
 }
-</PRE>
-<P>
-  VerifierFilter validates the document before your ContentHandler receives
-  SAX events. You can call the <code>isValid</code> method of VerifierFilter to
-  check the validity of the document.
-</P>
-<P>
-  Currently, there is no way to use DOMBuilder with JARV.
-</P>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p><code>VerifierFilter</code> validates the document before your <code>ContentHandler</code> receives SAX events. It throws the <code>ValidityViolation</code> exception as soon as the document is judged as invalid.
+You can also call the <code>isValid</code> method of <code>VerifierFilter</code> to check the validity of the document.</p>
+<p>If your application uses DOM, then do as follows:</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
+import org.iso_relax.verifier.*;
+import javax.xml.parsers.*;
 
+void f()
+{
+  // create a VerifierFactory with the default SAX parser
+  VerifierFactory factory = new com.sun.msv.verifier.jarv.TheFactoryImpl();
 
+  // load a RELAX schema (or whatever schema you like)
+  Verifier verifier = factory.newVerifier( new File("foo.rxg") );
+  
+  
+  // parse a document
+  DocumentBuilderFactory domBuilder = DocumentBuilderFactory.newInstance();
+  domBuilder.setNamespaceAware(true);
+  
+  Document dom = domBuilder.newDocumentBuilder().parse("MyInstance.xml");
+  
+  // check the validity of this DOM.
+  // You can use the same verifier object to test multiple DOMs.
+  if( verifier.verify(dom) )
+    // the document is valid
+  else
+    // the document is not valid
+}
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>
+Either way, you can reuse the same verifier object as many times as you want.
+</p>
+</blockquote>
 
-<A id="load" />
-<H1>Loading Schemata</H1>
-<P>
-  If you need finer control, then you may want to control MSV directly
-  instead of using the generic JARV interface.
-  This section and following sections will focus on the direct use of MSV.
-</P>
-<P>
-  The easiest way to load a grammar is to use the loadSchema method of
-  <code>com.sun.msv.reader.util.GrammarLoader</code>.
-</P>
-<PRE>
+<hr>
+<a name="load"></a>
+<h2>Loading Schemata</h2>
+<blockquote>
+<p>If you need finer control, then you may want to control MSV directly instead of using the generic JARV interface. This section and following sections will focus on the direct use of MSV.</p>
+<p>The easiest way to load a grammar is to use the <code>loadSchema</code> method of <code>com.sun.msv.reader.util.GrammarLoader</code>.</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 Grammar loadGrammar( String schemaFileNameOrURL )
 {
   SAXParserFactory factory = new javax.xml.parsers.SAXParserFactory();
@@ -197,30 +228,28 @@ Grammar loadGrammar( String schemaFileNameOrURL )
   // <b>new org.apache.xerces.parsers.jaxp.SAXParserFactoryImpl();</b>
 
   factory.setNamespaceAware(true);
-  
+
   return GrammarLoader.loadSchema(
                         schemaFileNameOrURL,
                         new com.sun.msv.reader.util.IgnoreController(),
                         factory );
 }
-</PRE>
-<P>
-  GrammarLoader automatically detects the type of schema
-  (RELAX Core/TREX/RELAX Namespace/RELAX NG/W3C) and handles it appropriately.
-  
-  The second 
-  parameter specifies a "controller" object that receives notifications and controls 
-  the loading behavior. <code>IgnoreController</code> does nothing,
-  but by providing a different object, you can control the parsing
-  process.
-  
-  The third parameter specifies SAXParserFactory to be used.
-  Factory has to be configured as namespace aware.
-</P>
-<P>
-  Alternatively, to load a specific language,
-</P>
-<PRE>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p><code>GrammarLoader</code> automatically detects the type of schema (RELAX Core/TREX/RELAX Namespace/RELAX NG/W3C) and handles it appropriately.</p>
+
+<p>The second parameter specifies a <code>controller</code> object that receives notifications and controls the loading behavior. <code>IgnoreController</code> does nothing, but by providing a different object, you can control the parsing process.</p>
+
+<p>The third parameter specifies <code>SAXParserFactory</code> to be used. Factory has to be configured as namespace-aware.</p>
+<p>Alternatively, to load a specific language:</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.reader.trex.ng.RELAXNGReader;
 import javax.xml.parsers.SAXParserFactory;
@@ -229,145 +258,104 @@ TREXGrammar loadRELAXNG( String schemaFileNameOrURL )
 {
   SAXParserFactory factory = new javax.xml.parsers.SAXParserFactory();
   factory.setNamespaceAware(true);
-  
+
   return RELAXNGReader.parse(
                         schemaFileNameOrURL,
                         factory,
                         new com.sun.msv.reader.util.IgnoreController() );
 }
-</PRE>
-<P>
-  The parse method also accepts several other forms of arguments (e.g., InputSource).
-  If loading fails, the parse method returns null. 
-</P>
-<P>
-  Grammar readers implements <code>ContentHandler</code>, so you can also parse a grammar by the following way:
-</P>
-<PRE>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>The parse method also accepts several other forms of arguments (e.g., <code>InputSource</code>). If loading fails, the parse method returns null.</p>
+<p>Grammar readers implements <code>ContentHandler</code>, so you can also parse a grammar by the following way:</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 TREXGrammar loadRELAXNG( String schemaFileNameOrURL )
 {
   RELAXNGReader reader = new RELAXNGGrammar( factory, new IgnoreController() );
-  
+
   XMLReader xmlParser = new YourFavoriteXMLReader();
-  
+
   xmlParser.setContentHandler(reader);
   xmlParser.parse(schemaFileNameOrURL);  // parse
-  
+
   // this method returns null if loading fails.
   return reader.getResult();
 }
-</PRE>
-<P>
-  In these ways, you can parse the XML representation of the specific language into MSV's AGM.
-</P>
-<P>
-  Since XML DTDs are not written in XML format, they have to be parsed differently.
-  To parse an XML DTD, do as follows
-</P>
-<PRE>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>In these ways, you can parse the XML representation of the specific language into MSV's AGM.</p>
+<p>Since XML DTDs are not written in XML format, they have to be parsed differently. To parse an XML DTD, do as follows</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 Grammar loadDTD( String schemaFileNameOrURL )
 {
   return DTDReader.parse(
     new InputSource(schemaFileNameOrURL),
     new com.sun.msv.reader.util.IgnoreController() );
 }
-</PRE>
-<P>
-  The first parameter specifies the InputSource object from which the DTD is read.
-  The second paramter controls the parsing behavior.
-  Currently, MSV cannot parse an internal DTD subset.
-</P>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>The first parameter specifies the <code>InputSource</code> object from which the DTD is read. The second paramter controls the parsing behavior. Currently, MSV cannot parse an internal DTD subset.</p>
+</blockquote>
 
+<hr>
+<a name="agm"></a>
+<h2>Playing with AGM</h2>
+<blockquote>
+<p>The AGM is the internal representation of a schema used by MSV. It is a binarized regular expression commonly seen in many validating processors.</p>
+</blockquote>
+<a name="agm_dep"></a>
+<h3>Schema Language Dependency</h3>
+<blockquote>
+<p>The AGM consists of two parts.</p>
 
+<ol>
+	<li><p><strong>Core:</strong> common part of various languages. e.g., <code>ChoiceExp</code>, <code>SequenceExp</code>, <code>MixedExp</code>, and more. Also contains several abstract classes (<code>ReferenceExp</code> and <code>ElementExp</code>).</p></li>
+	<li><p><strong>Language-specific stubs:</strong> concrete implementations of abstract classes and composite expressions of the specific language.</p></li>
+</ol>
+<p>Several primitives in the core set (concur, list, and interleave) are not used by some languages. Those primitives are still placed in the core set, but the application may want to refuse to process such primitives. For example, AGMs from RELAX Core never contain <code>ConcurExp</code> or <code>InterleaveExp</code>. So an application that only processes RELAX Core can safely skip implementing concur related operations.</p>
+<p>You should also note that the AGM is designed to handle differences between schema languages.</p>
+<ul>
+	<li><p><strong>Reference to another part of the grammar</strong> -- Most of the schema languages have a mechanism to name declarations and refer to them by name from other locations. TREX has only one mechanism (<code>&lt;ref&gt;&amp;&lt;define&gt;</code>), whereas RELAX has four separate definitions/references (<code>&lt;tag&gt;</code>, <code>&lt;attPool&gt;</code>, <code>&lt;hedgeRule&gt;</code>, <code>&lt;elementRule&gt;</code> and <code>&lt;ref&gt;</code>, and <code>&lt;hedgeRef&gt;</code>). W3C XML Schema has six distinct mechanisms. To handle the difference, the core part provides an abstract <code>ReferenceExp</code> class, which is used as the base class that represents the referencable declaration. Language stubs then derive <code>ReferenceExp</code> and provide concrete implementations.</p></li>
+	<li><p><strong>Constraint of tag name</strong> -- RELAX constrains tag name by a <code>&lt;tag&gt;</code> declaration, which is in turn referenced by an <code>&lt;elementRule&gt;</code> declaration. TREX constrains tag name by element declaration itself. So RELAX has one more abstraction layer between constraint over element and that over tag name. To handle such difference, the core part provides abstract <code>ElementExp</code> class, and stubs provide concrete implementations respectively.</p></li>
+</ul>
+<p>Generally speaking, you may want to avoid dependency on the stub parts. If your code only depends on the core part, then your code will work with AGMs created from any language. <code> com.sun.msv.verifier.regexp </code> is one of such code that works with any AGM.</p>
+<p><code>InterleaveExp</code> is used only by RELAX NG, TREX, and W3C XML Schema Part1. <code>ConcurExp</code> is used solely by TREX. Application may reject those primitives if your target schema language does not use them.</p>
+</blockquote>
 
-<A id="agm" />
-<H1>Playing with AGM</H1>
-<P>
-  The AGM is the internal representation of a schema used by MSV.
-  It is a binarized regular expression commonly seen in many validating processors.
-</P>
+<a name="agm_exps"></a>
+<h3>Expression and ExpressionPool</h3>
+<blockquote>
+<p>Expression and most of the derived classes are immutable, and they have to be created through ExpressionPool. Internally, every Expression is memorized by ExpressionPool so that sub expressions can be shared and reused.</p>
+<p>Mixing two expressions created from two different pools is possible, but not recommended. If you are going to use MSV in a multithreaded environment, or you are going to use it in a daemon process, see <a href="#thread">"Multithreaded Environment"</a> and <a href="#daemon">"Daemon Process"</a> respectively.</p>
+</blockquote>
 
-<A id="agm_dep" />
-<H2>Schema Language Dependency</H2>
-<P>The AGM consists of two parts.</P>
-<OL>
-	<LI>
-		<STRONG>Core:</STRONG> common part of various languages. e.g., ChoiceExp, 
-		SequenceExp, MixedExp, and more. Also contains several abstract classes 
-		(ReferenceExp and ElementExp).
-	<LI>
-		<STRONG>language-specific stubs:</STRONG>
-		concrete implementations of abstract classes
-		and composite expressions of the specific language.
-</OL>
-<P>
-	Several primitives in the core set (concur, list, and interleave) are not used by some languages.
-	Those primitives are still placed in the core set, but the application may want to refuse
-	to process such primitives.
-	For example, AGMs from RELAX Core never contain ConcurExp or InterleaveExp. So an application that only
-	processes RELAX Core can safely skip implementing concur related operations.
-</P>
-<P>
-	You should also note that the AGM is designed to handle differences between schema languages.
-</P>
-<UL>
-	<LI>
-		Reference to another part of the grammar. Most of the schema languages
-		have a mechanism to name declarations and refer to them by name from other locations.
-		TREX has only one mechanism (&lt;ref&gt;&amp;&lt;define&gt;), whereas
-		RELAX has four separate definitions/references 
-		(&lt;tag&gt;, &lt;attPool&gt;, &lt;hedgeRule&gt;, &lt;elementRule&gt; and 
-		&lt;ref&gt;, and &lt;hedgeRef&gt;).
-		W3C XML Schema has six distinct mechanisms.
-		To handle the difference, the core part provides abstract ReferenceExp 
-		class, which is used as the base class that represents the referencable declaration.
-		Language stubs then derive RefenreceExp and provide concrete implementations.
-	<LI>
-		Constraint of tag name. RELAX constrains tag name by &lt;tag&gt; 
-		declaration, which is in turn referenced by &lt;elementRule&gt; declaration. TREX 
-		constrains tag name by element declaration itself. So RELAX has one more
-		abstraction layer between constraint over element and that over tag 
-		name. To handle such difference, the core part provides
-		abstract ElementExp class, and stubs provide 
-		concrete implementations respectively.
-</UL>
-<P>
-	Generally speaking, you may want to avoid dependency on the stub parts. If 
-	your code only depends on the core part, then your code 
-	will work with AGMs created from any language.
-	<code> com.sun.msv.verifier.regexp </code> is one of such code that works with any AGM.
-</P>
-<P>
-	<code>InterleaveExp</code> is used only by RELAX NG, TREX, and W3C XML Schema Part1.
-	<code>ConcurExp</code> is used solely by TREX. Application may reject those primitives
-	if your target schema language does not use them.
-</P>
+<a name="agm_create"></a>
+<h3>Creating AGM From Scratch</h3>
+<blockquote>
+<p><code>RELAXCoreReader</code>/<code>TREXGrammarReader</code>/<code>RELAXNSReader</code>/<code>XMLSchemaReader</code>/<code>DTDReader</code> is just one way to create an AGM. Alternatively, you can create it from scratch.</p>
 
-
-<A id="agm_exps" />
-<H2>Expression and ExpressionPool</H2>
-<P>
-  Expression and most of the derived classes are immutable, and they have to be
-  created through ExpressionPool.
-  Internally, every Expression is memorized by ExpressionPool
-  so that sub expressions can be shared and reused.
-</P>
-<P>
-  Mixing two expressions created from two different pools is possible, but not recommended.
-  If you are going to use MSV in a multithreaded environment, or
-  you are going to use it in a daemon process, see <a href="#thread">"Multithreaded Environment"</a>
-  and <a href="#daemon">"Daemon Process"</a> respectively.
-</P>
-
-
-
-<A id="agm_create" />
-<H2>Creating AGM from scratch</H2>
-<P>
-	RELAXCoreReader/TREXGrammarReader/RELAXNSReader/XMLSchemaReader/DTDReader is just one way to create 
-	an AGM. Alternatively, you can create it from scratch.
-</P>
-<PRE>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.grammar.*;
 
@@ -375,7 +363,7 @@ TREXGrammar create()
 {
   ExpressionPool pool = new ExpressionPool();
   TREXGrammar g = new TREXGrammar(pool); // create an empty grammar
-	  
+
   g.start = new ElementPattern(
     // name class that constrains tag name
     new SimpleNameClass("http://namespace.uri/","tagname"),
@@ -394,14 +382,20 @@ TREXGrammar create()
       )
     );
   // ElementPatterns are created outside ExpressionPool
-  
+
   return g;
 }
-</PRE>
-<P> 
-  The AGM created by the above example is equivalent to the following TREX grammar.
-</P>
-<PRE>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>The AGM created by the above example is equivalent to the following TREX grammar.</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 &lt;element name="tagname" ns="http://namespace.uri/"&gt;
   &lt;mixed&gt;
     &lt;group&gt;
@@ -412,69 +406,82 @@ TREXGrammar create()
     &lt;/group&gt;
   &lt;/mixed&gt;
 &lt;/element&gt;
-</PRE>
-<P>
-  As you see, you have to use the ExpressionPool to create a tree of 
-  "Expression". All the primitive operators are immutable.
-</P>
-<P>
-  Also, all associative operators like choice and sequence are binary (they 
-  can only have two operands): to create an expression of (A|B|C), create 
-  (A|(B|C)) or ((A|B)|C). For more, see javadoc of ExpressionPool.
-</P>
-<P>
-  A named expression can be created as follows:
-</P>
-<PRE>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>As you see, you have to use the <code>ExpressionPool</code> to create a tree of <code>Expression</code>. All the primitive operators are immutable.</p>
+<p>Also, all associative operators like choice and sequence are binary (they can only have two operands): to create an expression of <code>(A|B|C)</code>, create <code>(A|(B|C))</code> or <code>((A|B)|C)</code>. For more, see the JavaDoc for <code>ExpressionPool</code>.</p>
+<p>A named expression can be created as follows:</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 {
   ExpressionPool pool = new ExpressionPool();
   TREXGrammar g = new TREXGrammar(pool); // create an empty grammar
-  
+
   g.start = pool.createZeroOrMore( g.namedPatterns.getOrCreate("label") );
-  
+
   g.namedPatterns.getOrCreate("label").exp =
       pool.createChoice( ... ); // whatever expression you like
 }
-</PRE>
-<P>
-  You can refer to the named expression before the actual 
-  definition is provided. It is the responsibility of the application to
-  ensure that every named expression has a definition.
-  The grammar created by this example is equivalent to the following TREX pattern:
-</P>
-<PRE><XMP>
-<grammar>
-  <start>
-    <zeroOrMore>
-      <ref name="label" />
-    </zeroOrMore>
-  </start>
-  <define name="label">
-    <choice>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>You can refer to the named expression before the actual definition is provided. It is the responsibility of the application to ensure that every named expression has a definition. The grammar created by this example is equivalent to the following TREX pattern:</p>
+
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
+&lt;xmp&gt;
+&lt;grammar&gt;
+  &lt;start&gt;
+    &lt;zeroormore&gt;
+      &lt;ref name="label" /&gt;
+    &lt;/zeroormore&gt;
+  &lt;/start&gt;
+  &lt;define name="label"&gt;
+    &lt;choice&gt;
       ...
-    </choice>
-  </define>
-</grammar>
-</XMP></PRE>
-<P>To create a RELAX AGM, use RELAXGrammar and RELAXModule as a starting point.</P>
+    &lt;/choice&gt;
+  &lt;/define&gt;
+&lt;/grammar&gt;
+&lt;/xmp&gt;
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>To create a RELAX AGM, use <code>RELAXGrammar</code> and <code>RELAXModule</code> as a starting point.</p>
 
+</blockquote>
+<a name="agm_access"></a>
+<h3>Accessing AGM</h3>
+<blockquote>
+<p>One feature that you may find useful is the "visitor" design pattern support. You
+can write your own visitor by implementing <code>ExpressionVisitor</code>. See the JavaDoc for <code>ExpressionVisitor</code> for details.</p>
+<p>Usually, this is the easiest way to access AGMs</p>
+</blockquote>
 
-<A id="agm_access" />
-<H2>Accessing AGM</H2>
-<P>One feature that you may find useful is the "visitor" design pattern support. You 
-can write your own visitor by implementing ExpressionVisitor. See javadoc of 
-ExpressionVisitor for details.</P>
-<P>
-  Usually, this is the easiest way to access AGMs
-</P>
-
-<A id="agm_modify" />
-<H2>Manipulating AGM</H2>
-<P>Due to the immutability of the AGM, you cannot "modify" an AGM. Instead, you
-create a modified AGM. To do this, use ExpressionCloner. The following example 
-creates a new AGM that changes ChoiceExp to SequenceExp and SequenceExp to ChoiceExp.
-</P>
-<PRE>
+<a name="agm_modify"></a>
+<h3>Manipulating AGM</h3>
+<blockquote>
+<p>Due to the immutability of the AGM, you cannot "modify" an AGM. Instead, you
+create a modified AGM. To do this, use <code>ExpressionCloner</code>. The following example
+creates a new AGM that changes <code>ChoiceExp</code> to <code>SequenceExp</code> and <code>SequenceExp</code> to <code>ChoiceExp</code>.
+</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 class SwitchChoiceAndSequence extends com.sun.msv.grammar.ExpressionCloner {
 
   private ExpressionPool pool;
@@ -489,165 +496,115 @@ class SwitchChoiceAndSequence extends com.sun.msv.grammar.ExpressionCloner {
 
 // usage
 Expression modifiedExp = originalExp.visit( new SwitchChoiceAndSequence() );
-</PRE>
-<P>
-   See javadoc of ExpressionCloner for details.
-</P>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>See javadoc of ExpressionCloner for details.</p>
+</blockquote>
 
+<hr>
+<a name="controller"></a>
+<h2>Controlling Parsing of Schemata</h2>
+<blockquote>
+<p>Any application can use <code>GrammarReaderController</code> to control how a grammar is parsed. For example, it can:</p>
+<ul>
+  <li>Receive errors and warnings encountered during the parsing</li>
+  <li>Prohibit inclusions</li>
+  <li>Resolve inclusion to a different source.</li>
+</ul>
 
-<A id="controller" />
-<H1>Controlling Parsing of Schemata</H1>
+<p>See <code>GrammarReaderController</code> and <code>IgnoreController</code> for details.</p>
+</blockquote>
 
-<P>
-  Any application can use GrammarReaderController to control how a grammar is parsed.
-  For example, it can
-</P>
-<UL>
-  <LI>receive errors and warnings encountered during the parsing
-  <LI>prohibit inclusions
-  <LI>resolve inclusion to a different source.</LI>     
-</UL>
+<hr>
+<a name="validate"></a>
+<h2>Validating Documents</h2>
 
-<P>
-  See GrammarReaderController and IgnoreController for details.
-</P>
-
-
-<A id="validate" />
-<H1>Validating Documents</H1>
-
-<A id="vgm" />
-<H2>Validation Grammar Model (VGM)</H2>
-<P>
-  To validate documents with a AGM, you have to "wrap" it in a VGM.
-  The VGM can be understood as an abstraction of an AGM for the validator.
-</P>
-<P>
-  The VGM is a simple model which consists of two interfaces only:
-  Acceptor and DocumentDeclaration.
-  Any VGM implementation can be used as long as it implements them.
-</P>
-<P>
-  Currently, only one VGM implementation is available, which is placed under
-  the <code>com.sun.msv.verifier.regexp</code> package.
-</P>
-<P>
-  The following example creates a RegExp VGM from a <code>Grammar</code> object.
-  <code>Grammar</code> is an interface implemented by 
-  RELAXGrammar, RELAXModule, TREXGrammar, and XMLSchemaGrammar.
-</P>
-<PRE>
+<a name="vgm"></a>
+<h3>Validation Grammar Model (VGM)</h3>
+<blockquote>
+<p>To validate documents with a AGM, you have to "wrap" it in a VGM. The VGM can be understood as an abstraction of an AGM for the validator.</p>
+<p>The VGM is a simple model which consists of two interfaces only: <code>Acceptor</code> and <code>DocumentDeclaration</code>. Any VGM implementation can be used as long as it implements them.</p>
+<p>Currently, only one VGM implementation is available, which is placed under the <code>com.sun.msv.verifier.regexp</code> package.</p>
+<p>The following example creates a RegExp VGM from a <code>Grammar</code> object. <code>Grammar</code> is an interface implemented by <code>RELAXGrammar</code>, <code>RELAXModule</code>, <code>TREXGrammar</code>, and <code>XMLSchemaGrammar</code>.</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.grammar.Grammar;
 
 DocumentDeclaration createVGM( Grammar g ) {
   return new REDocumentDeclaration(g);
 }
-</PRE>
-<P>
-  Alternatively, you can pass an arbitrary expression as the first parameter
-  and a newly created pool as the second parameter.
-</P>
-<PRE>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>Alternatively, you can pass an arbitrary expression as the first parameter and a newly created pool as the second parameter.</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 DocumentDeclaration createVGM( Expression exp ) {
   return new REDocumentDeclaration( exp, new ExpressionPool() );
 }
-</PRE>
-<P>
-  Then VGM can be passed to the constructor of <code>Verifier</code> class to
-  actually perform a validation.
-</P>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>Then VGM can be passed to the constructor of <code>Verifier</code> class to actually perform a validation.</p>
+</blockquote>
 
-<A id="thread" />
-<H2>Multithreaded Environment</H2>
-<P>
-  AGMs are thread-safe because they are immutable.
-  A thread can safely use an AGM parsed by a different thread;
-  or two threads can safely share the same AGM.
-  ExpressionPool is also thread-safe. Multiple threads can share
-  the same pool, which is created by another thread.
-</P>
-<P>
-  VGM, on the other hand, is not thread-safe. Each thread has to
-  create its own VGM and use its own. You should never share a VGM
-  between threads.
-  Verifier is another thread-<b>un</b>safe component. Also, it's not
-  reentrant, so you can only use one object to validate one document at a time.
-</P>
-<P>
-  When a new expression is found, it is stored to the pool. To do this,
-  a thread has to acquire a lock. And the pool is very frequently called
-  during validation. So you might think that sharing a pool might cause a
-  performance bottleneck.
-</P>
-<P>
-  However, a casual experiment shows that this is not always the case.
-  Yes, a thread has to acquire a lock to modify the pool, but this update
-  can be done concurrently while other threads read the pool. And update
-  is far less frequent than retrieval.
-  So please benchmark by yourself if you need to achieve the optimal performance.
-</P>
+<a name="thread"></a>
+<h3>Multithreaded Environment</h3>
+<blockquote>
+<p>AGMs are thread-safe because they are immutable. A thread can safely use an AGM parsed by a different thread; or two threads can safely share the same AGM. <code>ExpressionPool</code> is also thread-safe. Multiple threads can share the same pool, which is created by another thread.</p>
+<p>VGM, on the other hand, is not thread-safe. Each thread has to create its own VGM and use its own. You should never share a VGM between threads. Verifier is another thread-<b>un</b>safe component. Also, it's not reentrant, so you can only use one object to validate one document at a time.</p>
+<p>When a new expression is found, it is stored to the pool. To do this, a thread has to acquire a lock. And the pool is very frequently called during validation. So you might think that sharing a pool might cause a performance bottleneck.</p>
+<p>However, a casual experiment shows that this is not always the case. Yes, a thread has to acquire a lock to modify the pool, but this update can be done concurrently while other threads read the pool. And update is far less frequent than retrieval. So please benchmark by yourself if you need to achieve the optimal performance.</p>
+</blockquote>
 
-
-<A id="daemon" />
-<H2>Daemon Process</H2>
-<P>
-  Generally, it's a good practice to keep re-using the same ExpressionPool.
-  Using the same pool makes it bigger, and
-  a bigger pool contains more expressions, which in turn results in faster validation.
-</P>
-<P>
-  If you keep using the same ExpressionPool, it gradually expands.
-  Its expansion is like a square-root function. It grows rapidly at first,
-  but its growth becomes slower and slower as time goes by.
-</P>
-<P>
-  Its size will eventually reach a certain limit, and the growth stops there.
-  If your schema is DTD, RELAX, TREX without &lt;interleave&gt;, or W3C XML Schema without &lt;all&gt;,
-  then this size limit is mostly moderate,
-  so you can keep using the same pool forever.
-</P>
-<P>
-  However, if a grammar is TREX with &lt;interleave&gt; patterns,
-  or W3C XML Schema with &lt;all&gt;s,
-  then the upper bound of a pool could be exponential to the size of the grammar
-  (especially if interleave/all contains large patterns).
-  If this is the case, and your application runs 24/7 as a daemon process,
-  then you should occasionally throw away the pool
-  to prevent its size from expanding indefinitely.
-</P>
-<P>
-  Note that pool expansion is slow; the size of a pool is proportional to the number of validated
-  documents even in the worst case. So usually it takes quite a long time to make a pool explode.
-</P>
-<P>
-  To throw away ExpressionPool, simply create a new VGM with a brand-new pool, like this.
-</P>
-<PRE>
+<a name="daemon"></a>
+<h3>Daemon Process</h3>
+<blockquote>
+<p>Generally, it's a good practice to keep re-using the same <code>ExpressionPool</code>. Using the same pool makes it bigger, and a bigger pool contains more expressions, which in turn results in faster validation.</p>
+<p>If you keep using the same <code>ExpressionPool</code>, it gradually expands. Its expansion is like a square-root function. It grows rapidly at first, but its growth becomes slower and slower as time goes by.</p>
+<p>Its size will eventually reach a certain limit, and the growth stops there. If your schema is DTD, RELAX, TREX without <code>&lt;interleave&gt;</code>, or W3C XML Schema without <code>&lt;all&gt;</code>, then this size limit is mostly moderate, so you can keep using the same pool forever.</p>
+<p>However, if a grammar is TREX with <code>&lt;interleave&gt;</code> patterns, or W3C XML Schema with <code>&lt;all&gt;</code>s, then the upper bound of a pool could be exponential to the size of the grammar (especially if interleave/all contains large patterns). If this is the case, and your application runs 24/7 as a daemon process, then you should occasionally throw away the pool to prevent its size from expanding indefinitely.</p>
+<p>Note that pool expansion is slow; the size of a pool is proportional to the number of validated documents even in the worst case. So usually it takes quite a long time to make a pool explode.</p>
+<p>To throw away <code>ExpressionPool</code>, simply create a new VGM with a brand-new pool, like this.</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 DocumentDeclaration vgm = new REDocumentDeclaration( grammar.getTopLevel(), new ExpressionPool() );
-</PRE>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+</blockquote>
 
-
-
-<A id="type" />
-<H1>Type Assignment</H1>
-<P>
-  MSV can report the element declaration which is applied to the current element,
-  and what datatype is applied to text.
-  This information is useful for deciding what to do with the reported element.
-</P>
-<P>
-  To retrieve these information, call the <code>getCurrentElementType</code> method of Verifier class.
-  This method returns the correct value only
-  when called immediately after it processed the startElement method.
-  If you are using <code>com.sun.msv.verifier.VerifierFilter</code>,
-  then you can call this method only in your handler's startElement method.
-</P>
-<P>
-  The following code illustrates how to retrieve RELAX "label" from your
-  own ContentHandler.
-</P>
-<PRE>
+<hr>
+<a name="type"></a>
+<h2>Type Assignment</h2>
+<blockquote>
+<p>MSV can report the element declaration which is applied to the current element, and what datatype is applied to text. This information is useful for deciding what to do with the reported element.</p>
+<p>To retrieve these information, call the <code>getCurrentElementType</code> method of the <code>Verifier</code> class. This method returns the correct value only when called immediately after it processed the <code>startElement</code> method. If you are using <code>com.sun.msv.verifier.VerifierFilter</code>, then you can call this method only in your handler's <code>startElement</code> method.</p>
+<p>The following code illustrates how to retrieve RELAX "label" from your own <code>ContentHandler</code>.</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 void startElement( .... )
 {// SAX startElement event
 
@@ -658,7 +615,7 @@ void startElement( .... )
   else
   {
     // er holds a reference to ElementRule object which is applied to this element.
-    
+
     if(er.getParent()==null )
       // this element is declared by inline &lt;element&gt; declaration.
       // so it doesn't have any role/label
@@ -666,44 +623,54 @@ void startElement( .... )
     {
       final String label = er.getParent().name; // obtain label name
       final String role = er.clause.name; // obtain role name
-      
+
       ....
     }
   }
-  
+
   ...
 }
-</PRE>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+</blockquote>
 
-
-<A id="trexext" />
-<H2>TREX extension</H2>
-<P>
-  TREX doesn't have a mechanism to name the &lt;element&gt; pattern. Therefore,
-  MSV introduces a proprietary extension to TREX that provides this naming mechanism.
-</P>
-<P>
-  Annotation is done by adding a "label" attribute to the &lt;element&gt; pattern.
-  The "label" attribute has to be in the "<code>http://www.sun.com/xml/msv/trex-type</code>"
-  namespace. These attributes will be ignored by other TREX validating processors.
-</P>
-<PRE><XMP>
-<grammar xmlns:ext="http://www.sun.com/xml/msv/trex-type">
-  <start>
-    <element ext:label="rootLabel" name="root">
+<a name="trexext"></a>
+<h3>TREX extension</h3>
+<blockquote>
+<p>TREX doesn't have a mechanism to name the <code>&lt;element&gt;</code> pattern. Therefore, MSV introduces a proprietary extension to TREX that provides this naming mechanism.</p>
+<p>Annotation is done by adding a "label" attribute to the <code>&lt;element&gt;</code> pattern. The "label" attribute has to be in the "<code>http://www.sun.com/xml/msv/trex-type</code>" namespace. These attributes will be ignored by other TREX validating processors.</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
+&lt;xmp&gt;
+&lt;grammar xmlns:ext="http://www.sun.com/xml/msv/trex-type"&gt;
+  &lt;start&gt;
+    &lt;element ext:label="rootLabel" name="root"&gt;
       ...
-      <element name="child"> <!-- label attribute is optional -->
+      &lt;element name="child"&gt; &lt;!-- label attribute is optional --&gt;
         ...
-      </element>
-    </element>
-  </start>
-</grammar>
-</XMP></PRE>
+      &lt;/element&gt;
+    &lt;/element&gt;
+  &lt;/start&gt;
+&lt;/grammar&gt;
+&lt;/xmp&gt;
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
 
-<P>
-  The following example illustrates how to load an annotated TREX pattern.
-</P>
-<PRE>
+<p>The following example illustrates how to load an annotated TREX pattern.</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 TREXGrammarReader reader = new TREXGrammarReader(
     myGrammarReaderControllerObject,
     saxParserFactory,
@@ -713,11 +680,17 @@ TREXGrammarReader reader = new TREXGrammarReader(
 
 // obtain parsed grammar object. it returns null in case of error
 TREXGrammar grammar = reader.getResult();
-</PRE>
-<P>
-  The following example shows how to access TREX "label" information from your ContentHandler.
-</P>
-<PRE>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+<p>The following example shows how to access TREX "label" information from your ContentHandler.</p>
+<hr>
+<table border="0" cellspacing="5" cellpadding="5" bgcolor="#eeeeee">
+	<tr>
+		<td bgcolor="#eeeeee">
+<pre>
 import com.sun.msv.grammar.trex.typed.TypedElementPattern;
 
 void startElement( .... )
@@ -731,17 +704,21 @@ void startElement( .... )
   if( o instanceod TypedElementPattern )
   {
     // the current element declaration has label attribute.
-    
+
     final String label = ((TypedElementPattern)o).label;
-      
+
     ....
   }
   else
     // the current element declaration has no label attribute.
-  
+
   ...
 }
-</PRE>
-
-
-</BODY></HTML>
+</pre>
+		</td>
+	</tr>
+</table>
+<hr>
+</blockquote>
+</body>
+</html>

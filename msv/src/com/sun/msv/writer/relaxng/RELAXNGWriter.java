@@ -542,8 +542,10 @@ public class RELAXNGWriter implements GrammarWriter {
 			start("difference");
 			Stack s = new Stack();
 			
-			while( nc.nc1 instanceof DifferenceNameClass ) {
+			while(true) {
 				s.push( nc.nc2 );
+				if(!(nc.nc1 instanceof DifferenceNameClass ))
+					break;
 				nc = (DifferenceNameClass)nc.nc1;
 			}
 			
@@ -973,11 +975,17 @@ public class RELAXNGWriter implements GrammarWriter {
 				return;
 			}
 			
-			if( dt.getFacetObject(dt.FACET_MINLENGTH)!=null
-			||  dt.getFacetObject(dt.FACET_MAXLENGTH)!=null )
-				System.err.println("warning: minLength/maxLength facet to list type is not properly converted.");
+			if( dt.getFacetObject(dt.FACET_MAXLENGTH)!=null )
+				throw new UnsupportedOperationException("warning: maxLength facet to list type is not properly converted.");
+
+			MinLengthFacet minLength = (MinLengthFacet)dt.getFacetObject(dt.FACET_MINLENGTH);
 			
 			start("list");
+			if( minLength!=null ) {
+				// list n times
+				for( int i=0; i<minLength.minLength; i++ )
+					serializeDataType(base.itemType);
+			}
 			start("zeroOrMore");
 			serializeDataType(base.itemType);
 			end("zeroOrMore");

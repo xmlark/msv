@@ -36,22 +36,29 @@ public class BooleanType extends BuiltinAtomicType {
 	
 	public Object _createValue( String lexicalValue, ValidationContext context ) {
 		// for string, lexical space is value space by itself
-		if( lexicalValue.equals("true") )		return Boolean.TRUE;
-		if( lexicalValue.equals("1") )			return Boolean.TRUE;
-		if( lexicalValue.equals("0") )			return Boolean.FALSE;
-		if( lexicalValue.equals("false") )		return Boolean.FALSE;
-		return null;
+        return load(lexicalValue);
 	}
+    
+    public static Boolean load( String s ) {
+		if( s.equals("true") )		return Boolean.TRUE;
+		if( s.equals("1") )			return Boolean.TRUE;
+		if( s.equals("0") )			return Boolean.FALSE;
+		if( s.equals("false") )		return Boolean.FALSE;
+        return null;
+    }
 
 	public String convertToLexicalValue( Object value, SerializationContext context ) {
-		if( value instanceof Boolean ) {
-			Boolean b = (Boolean)value;
-			if( b.booleanValue()==true )	return "true";
-			else							return "false";
-		} else
+		if( value instanceof Boolean )
+            return save( (Boolean)value );
+		else
 			throw new IllegalArgumentException();
 	}
-	
+
+    public static String save( Boolean b ) {
+		if( b.booleanValue()==true )	return "true";
+		else							return "false";
+    }
+    
 	public int isFacetApplicable( String facetName ) {
 		if(facetName.equals("pattern"))		return APPLICABLE;
 		return NOT_ALLOWED;

@@ -30,6 +30,10 @@ public class DoubleType extends FloatingNumberType {
 	}
 	
 	public Object _createValue( String lexicalValue, ValidationContext context ) {
+        return load(lexicalValue);
+    }
+    
+    public static Double load( String lexicalValue ) {
 		// TODO : probably the same problems exist as in the case of float
 		try {
 			if(lexicalValue.equals("NaN"))	return new Double(Double.NaN);
@@ -53,7 +57,11 @@ public class DoubleType extends FloatingNumberType {
 		if(!(value instanceof Double ))
 			throw new IllegalArgumentException();
 		
-		double v = ((Double)value).doubleValue();
+        return save((Double)value);
+    }
+    
+    public static String save( Double value ) {
+		double v = value.doubleValue();
 		if( v==Double.NaN )					return "NaN";
 		if( v==Double.POSITIVE_INFINITY )	return "INF";
 		if( v==Double.NEGATIVE_INFINITY )	return "-INF";

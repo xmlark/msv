@@ -63,7 +63,7 @@ abstract class IntegerDerivedType extends BuiltinAtomicType implements Comparato
 	 * Several Java conversion functions (e.g., Long.parseLong)
 	 * do not accept leading '+' sign.
 	 */
-	protected String removeOptionalPlus(String s) {
+	protected static String removeOptionalPlus(String s) {
 		if(s.length()<=1 || s.charAt(0)!='+')	return s;
 		
 		s = s.substring(1);

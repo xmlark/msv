@@ -29,14 +29,22 @@ public class IntType extends IntegerDerivedType {
 	}
 	
 	public Object _createValue( String lexicalValue, ValidationContext context ) {
+        return load(lexicalValue);
+    }
+    
+    public static Integer load( String s ) {
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		try {
-			lexicalValue = removeOptionalPlus(lexicalValue);
-			return new Integer(lexicalValue);
+			return new Integer(removeOptionalPlus(s));
 		} catch( NumberFormatException e ) {
 			return null;
 		}
 	}
+    
+    public static String save( Integer v ) {
+        return v.toString();
+    }
+    
 	public Class getJavaObjectType() {
 		return Integer.class;
 	}

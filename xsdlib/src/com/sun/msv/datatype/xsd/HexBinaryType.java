@@ -37,7 +37,11 @@ public class HexBinaryType extends BinaryBaseType {
 	}
 
 	public Object _createValue( String lexicalValue, ValidationContext context ) {
-		final int len = lexicalValue.length();
+        return new BinaryValueType(load(lexicalValue));
+    }
+    
+    public static byte[] load( String s ) {
+		final int len = s.length();
 
 		// "111" is not a valid hex encoding.
 		if( len%2 != 0 )	return null;
@@ -45,15 +49,15 @@ public class HexBinaryType extends BinaryBaseType {
 		byte[] out = new byte[len/2];
 
 		for( int i=0; i<len; i+=2 ) {
-			int h = hexToBin(lexicalValue.charAt(i  ));
-			int l = hexToBin(lexicalValue.charAt(i+1));
+			int h = hexToBin(s.charAt(i  ));
+			int l = hexToBin(s.charAt(i+1));
 			if( h==-1 || l==-1 )
 				return null;	// illegal character
 
 			out[i/2] = (byte)(h*16+l);
 		}
 
-		return new BinaryValueType(out);
+		return out;
 	}
 
 	protected boolean checkFormat( String lexicalValue, ValidationContext context ) {
@@ -73,7 +77,10 @@ public class HexBinaryType extends BinaryBaseType {
 		if(!(value instanceof byte[]))
 			throw new IllegalArgumentException();
 
-		byte[] data = (byte[])value;
+        return save( (byte[])value );
+    }
+    
+    public static String save( byte[] data ) {
 		StringBuffer r = new StringBuffer(data.length*2);
 		for( int i=0; i<data.length; i++ ) {
 			r.append( encode(data[i]>>4) );
@@ -90,7 +97,7 @@ public class HexBinaryType extends BinaryBaseType {
 		return serializeJavaObject( ((BinaryValueType)value).rawData, context );
 	}
 	
-	public char encode( int ch ) {
+	public static char encode( int ch ) {
 		ch &= 0xF;
 		if( ch<10 )		return (char)('0'+ch);
 		else			return (char)('A'+(ch-10));

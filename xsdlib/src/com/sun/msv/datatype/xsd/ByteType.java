@@ -30,14 +30,20 @@ public class ByteType extends IntegerDerivedType {
 	}
 	
 	public Object _createValue( String content, ValidationContext context ) {
+        return load(content);
+    }
+    
+    public static Byte load( String s ) {
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		try {
-			content = removeOptionalPlus(content);
-			return new Byte(content);
+			return new Byte(removeOptionalPlus(s));
 		} catch( NumberFormatException e ) {
 			return null;
 		}
 	}
+    public static String save( Byte v ) {
+        return v.toString();
+    }
 	public Class getJavaObjectType() {
 		return Byte.class;
 	}

@@ -30,7 +30,10 @@ public class FloatType extends FloatingNumberType {
 	}
 	
 	public Object _createValue( String lexicalValue, ValidationContext context ) {
-		// TODO : quick hack. Spec doesn't allow me directly to use FloatValueType.valueOf method
+        return load(lexicalValue);
+    }
+    
+    public static Float load( String s ) {
 		
 		/* Incompatibilities of XML Schema's float "xfloat" and Java's float "jfloat"
 		
@@ -48,17 +51,17 @@ public class FloatType extends FloatingNumberType {
 		*/
 		
 		try {
-			if(lexicalValue.equals("NaN"))	return new Float(Float.NaN);
-			if(lexicalValue.equals("INF"))	return new Float(Float.POSITIVE_INFINITY);
-			if(lexicalValue.equals("-INF"))	return new Float(Float.NEGATIVE_INFINITY);
+			if(s.equals("NaN"))	    return new Float(Float.NaN);
+			if(s.equals("INF"))	    return new Float(Float.POSITIVE_INFINITY);
+			if(s.equals("-INF"))	return new Float(Float.NEGATIVE_INFINITY);
 			
-			if(lexicalValue.length()==0
-			|| !isDigitOrPeriodOrSign(lexicalValue.charAt(0))
-			|| !isDigitOrPeriodOrSign(lexicalValue.charAt(lexicalValue.length()-1)) )
+			if(s.length()==0
+			|| !isDigitOrPeriodOrSign(s.charAt(0))
+			|| !isDigitOrPeriodOrSign(s.charAt(s.length()-1)) )
 				return null;
 			
 			// these screening process is necessary due to the wobble of Float.valueOf method
-			return Float.valueOf(lexicalValue);
+			return Float.valueOf(s);
 		} catch( NumberFormatException e ) {
 			return null;
 		}
@@ -71,7 +74,11 @@ public class FloatType extends FloatingNumberType {
 		if(!(value instanceof Float ))
 			throw new IllegalArgumentException();
 		
-		float v = ((Float)value).floatValue();
+        return save( (Float)value );
+    }
+    
+    public static String save( Float value ) {
+		float v = value.floatValue();
 		if( v==Float.NaN )					return "NaN";
 		if( v==Float.POSITIVE_INFINITY )	return "INF";
 		if( v==Float.NEGATIVE_INFINITY )	return "-INF";

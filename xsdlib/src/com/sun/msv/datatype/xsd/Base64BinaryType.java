@@ -47,7 +47,11 @@ public class Base64BinaryType extends BinaryBaseType {
 	}
 
 	public Object _createValue( String lexicalValue, ValidationContext context ) {
-		final byte[] buf = lexicalValue.getBytes();
+		return new BinaryValueType(load(lexicalValue));
+    }
+    
+    public static byte[] load( String lexicalValue ) {
+        final byte[] buf = lexicalValue.getBytes();
 
 		final int outlen = calcLength(buf);
 		if( outlen==-1 )	return null;
@@ -80,7 +84,7 @@ public class Base64BinaryType extends BinaryBaseType {
 		// assertion failed.
 		if(q!=0)	throw new IllegalStateException();
 
-		return new BinaryValueType(out);
+		return out;
 	}
 
 	protected boolean checkFormat( String lexicalValue, ValidationContext context ) {
@@ -140,7 +144,7 @@ public class Base64BinaryType extends BinaryBaseType {
 		return map;
 	}
 
-	protected char encode( int i ) {
+	protected static char encode( int i ) {
 		return encodeMap[i&0x3F];
 	}
 
@@ -148,7 +152,10 @@ public class Base64BinaryType extends BinaryBaseType {
 		if(!(value instanceof byte[]))
 			throw new IllegalArgumentException();
 		
-		byte[] input = (byte[])value;
+        return save((byte[])value);
+    }
+    
+    public static String save( byte[] input ) {
 		
 		StringBuffer r = new StringBuffer(input.length*4/3); /* rough estimate*/
 		

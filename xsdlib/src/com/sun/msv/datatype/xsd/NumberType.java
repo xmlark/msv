@@ -70,14 +70,18 @@ public class NumberType extends BuiltinAtomicType implements Comparator {
 	}
 	
 	public Object _createValue( String content, ValidationContext context ) {
-		try	{
-			// BigDecimal accepts expressions like "1E4",
-			// but XML Schema doesn't.
+		// BigDecimal accepts expressions like "1E4",
+		// but XML Schema doesn't.
 			
-			// so call checkFormat to make sure that
-			// format is XML Schema spec compliant.
-			if(!checkFormat(content,context))		return null;
+		// so call checkFormat to make sure that
+		// format is XML Schema spec compliant.
+		if(!checkFormat(content,context))		return null;
 
+        return load(content);
+    }
+    
+    public static BigDecimal load( String content ) {
+		try	{
 			// XML Schema allows optional leading '+' sign,
 			// but BigDecimal doesn't.
 			// so remove it here.

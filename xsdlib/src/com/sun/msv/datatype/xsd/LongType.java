@@ -29,14 +29,22 @@ public class LongType extends IntegerDerivedType {
 	}
 	
 	public Object _createValue( String lexicalValue, ValidationContext context ) {
+        return load(lexicalValue);
+    }
+    
+    public static Long load( String s ) {
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		try {
-			lexicalValue = removeOptionalPlus(lexicalValue);
-			return new Long(lexicalValue);
+			return new Long(removeOptionalPlus(s));
 		} catch( NumberFormatException e ) {
 			return null;
 		}
 	}
+    
+    public static String save( Long v ) {
+        return v.toString();
+    }
+    
 	public Class getJavaObjectType() {
 		return Long.class;
 	}

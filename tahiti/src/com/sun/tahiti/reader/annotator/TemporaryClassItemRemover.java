@@ -11,6 +11,7 @@ package com.sun.tahiti.reader.annotator;
 
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.ElementPattern;
+import com.sun.msv.grammar.util.ExpressionWalker;
 import com.sun.tahiti.grammar.*;
 import com.sun.tahiti.grammar.util.Multiplicity;
 import com.sun.tahiti.grammar.util.MultiplicityCounter;
@@ -53,10 +54,17 @@ class TemporaryClassItemRemover extends ExpressionCloner {
 		return exp;
 	}
 	
+	private static class TooComplex extends RuntimeException{};
+	
 	public Expression onRef( ReferenceExp exp ) {
+		if( !visitedExps.add(exp) )
+			// this exp is already processed. this check will prevent infinite recursion.
+			return exp;
+		
 		if( exp instanceof ClassItem ) {
 			ClassItem ci = (ClassItem)exp;
 			if( ci.isTemporary ) {
+/*
 				// computes the multiplicity of child JavaItem.
 				Multiplicity childOccurence = Multiplicity.calc(
 					ci.exp, MultiplicityCounter.javaItemCounter );
@@ -64,6 +72,46 @@ class TemporaryClassItemRemover extends ExpressionCloner {
 					// this temporary class item is unnecessary. remove it.
 					// but don't forget to recurse its descendants.
 					return ci.exp.visit(this);
+*/
+				// the above algorithm might be too strong.
+				// it tries to remove <neg> of the "superClass/exp.plain.rng" file.
+				
+				ExpressionWalker w = new ExpressionWalker(){
+					private PrimitiveItem child = null;
+					private Set visitedExps = new java.util.HashSet();
+					
+					public void onElement( ElementExp exp ) {
+						if(visitedExps.add(exp))	super.onElement(exp);
+					}
+					public void onAttribute( AttributeExp exp ) {
+						if(visitedExps.add(exp))	super.onAttribute(exp);
+					}
+					public void onRef( ReferenceExp exp ) {
+						if(!visitedExps.add(exp))	return;
+						if(exp instanceof JavaItem) {
+							if(exp instanceof PrimitiveItem) {
+								if(child==null)
+									child = (PrimitiveItem)exp;
+								else
+								if(child!=exp)
+									throw new TooComplex();
+							}
+							else
+								throw new TooComplex();
+						}
+						super.onRef(exp);
+					}
+				};
+				try {
+					ci.exp.visit(w);
+					// this temporary class item is unnecessary. remove it.
+					// but don't forget to recurse its descendants.
+					return ci.exp.visit(this);
+				} catch( TooComplex tc ) {
+					// the contents of this class item is too complex to be removed.
+					;
+				}
+				
 			}
 			
 			/*

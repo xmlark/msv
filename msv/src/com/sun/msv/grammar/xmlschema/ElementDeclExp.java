@@ -39,6 +39,16 @@ public class ElementDeclExp extends ReferenceExp
 	}
 	
 	/**
+	 * The substitution group affiliation of this declaration, if any.
+	 * Otherwise null.
+	 * 
+	 * This field may not be modified.
+	 * 
+	 * @see http://www.w3.org/TR/xmlschema-1/#class_exemplar
+	 */
+	public ElementDeclExp substitutionAffiliation;
+	
+	/**
 	 * those who set the value to this field is also responsible to
 	 * add self into this#exp.
 	 */
@@ -63,5 +73,12 @@ public class ElementDeclExp extends ReferenceExp
 		 * When no constraint exists, this field may be null.
 		 */
 		public final Vector identityConstraints = new Vector();
+		
+		/**
+		 * owner ElementDeclExp. If this element declaration is a global one,
+		 * then this field is non-null. If this is a local one, then this field
+		 * is null.
+		 */
+		public ElementDeclExp parent;
 	}
 }

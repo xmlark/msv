@@ -11,10 +11,13 @@ package com.sun.msv.datatype;
 
 import com.sun.msv.datatype.datetime.ISO8601Parser;
 import com.sun.msv.datatype.datetime.IDateTimeValueType;
+import com.sun.msv.datatype.datetime.BigDateTimeValueType;
 import com.sun.msv.datatype.datetime.TimeZone;
+import org.relaxng.datatype.ValidationContext;
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
-import org.relaxng.datatype.ValidationContext;
+import java.util.Calendar;
+import java.util.SimpleTimeZone;
 
 /**
  * base implementation of dateTime and dateTime-truncated types.
@@ -131,11 +134,47 @@ abstract class DateTimeBaseType extends ConcreteType implements Comparator {
 			formatTwoDigits(new Integer(Math.abs(tz.minutes)%60));
 	}
 	
-	public Object createJavaObject( String literal, ValidationContext context ) {
-		IDateTimeValueType v = (IDateTimeValueType)createValue(literal,context);
+	
+	
+	
+	/** converts Number to integer. null object is considered as 0 */
+	protected static int nullAsZero( Number n ) {
+		if(n==null)		return 0;
+		else			return n.intValue();
+	}
+	
+	/** creates the equivalent Java TimeZone object from BigDateTimeValueType. */
+	protected java.util.TimeZone createJavaTimeZone( BigDateTimeValueType v ) {
+		if(v.getTimeZone()!=null)
+			return new SimpleTimeZone( v.getTimeZone().minutes*60*1000, "custom" );
+		else
+			// if the time zone is not present, assume the system default.
+			return SimpleTimeZone.getDefault();
+	}
+	
+	/** converts our DateTimeValueType to a java-friendly Date type. */
+	public final Object createJavaObject( String literal, ValidationContext context ) {
+		BigDateTimeValueType v = ((IDateTimeValueType)createValue(literal,context)).getBigValue();
 		if(v==null)		return null;
 		
-		// TODO
-		throw new UnsupportedOperationException();
+		// set fields of Calendar.
+		// In BigDateTimeValueType, the first day of the month is 0,
+		// where it is 1 in java.util.Calendar.
+		
+		Calendar cal = new java.util.GregorianCalendar(createJavaTimeZone(v));
+		cal.clear();	// reset all fields. This method does not reset the time zone.
+		
+		if( v.getYear()!=null )		cal.set( cal.YEAR, v.getYear().intValue() );
+		if( v.getMonth()!=null )	cal.set( cal.MONTH, v.getMonth().intValue() );
+		if( v.getDay()!=null )		cal.set( cal.DAY_OF_MONTH, v.getDay().intValue()+1/*offset*/ );
+		if( v.getHour()!=null )		cal.set( cal.HOUR_OF_DAY, v.getHour().intValue() );
+		if( v.getMinute()!=null )	cal.set( cal.MINUTE, v.getMinute().intValue() );
+		if( v.getSecond()!=null ) {
+			cal.set( cal.SECOND, v.getSecond().intValue() );
+			cal.set( cal.MILLISECOND, v.getSecond().movePointRight(3).intValue()%1000 );
+		}
+		
+		return cal;
 	}
+	
 }

@@ -12,17 +12,22 @@ package com.sun.msv.reader.trex;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.reader.State;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.ExpressionOwner;
 
 /**
  * parses root state of a merged grammar.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class RootMergedGrammarState extends RootState
-{
-	protected State createChildState( StartTagInfo tag )
-	{// expects "grammar" element only, and creates MergeGrammarState
+public class RootMergedGrammarState extends SimpleState implements ExpressionOwner {
+	protected State createChildState( StartTagInfo tag ) {
+		// expects "grammar" element only, and creates MergeGrammarState
 		if( tag.localName.equals("grammar") )	return new MergeGrammarState();
 		return null;
+	}
+	
+	public void onEndChild(Expression exp) {
+		// ignore the start pattern of the child grammar.
 	}
 }

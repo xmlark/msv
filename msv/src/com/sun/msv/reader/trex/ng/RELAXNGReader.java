@@ -124,6 +124,8 @@ public class RELAXNGReader extends TREXBaseReader {
 		public State dataParam		( State parent, StartTagInfo tag ) { return new DataParamState(); }
 		public State value			( State parent, StartTagInfo tag ) { return new ValueState(); }
 		public State define			( State parent, StartTagInfo tag ) { return new DefineState(); }
+		public State redefine		( State parent, StartTagInfo tag ) { return new RedefineState(); }
+		public State includeGrammar	( State parent, StartTagInfo tag ){ return new IncludeMergeState(); }
 		/**
 		 * gets DataTypeLibrary object that is specified by the namespace URI.
 		 * 

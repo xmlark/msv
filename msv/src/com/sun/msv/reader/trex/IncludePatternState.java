@@ -24,13 +24,11 @@ public class IncludePatternState extends ExpressionWithoutChildState implements 
 	protected Expression included = Expression.nullSet;
 	// assign a default value just in case something goes wrong and onEndChild is not called.
 	
-	public void onEndChild( Expression included )
-	{
+	public void onEndChild( Expression included ) {
 		this.included = included;
 	}
 	
-	protected Expression makeExpression()
-	{
+	protected Expression makeExpression() {
 		final String href = startTag.getAttribute("href");
 		
 		if(href==null)

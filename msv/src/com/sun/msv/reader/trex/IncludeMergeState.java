@@ -9,17 +9,23 @@
  */
 package com.sun.msv.reader.trex;
 
-import com.sun.msv.reader.ChildlessState;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * &lt;include&gt; element as an immediate child of &lt;grammar&gt; element.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class IncludeMergeState extends ChildlessState
-{
-	protected void startSelf()
-	{
+public class IncludeMergeState extends SimpleState {
+	
+	protected State createChildState( StartTagInfo tag ) {
+		// no child element is allowed by default.
+		return null;
+	}
+	
+	protected void startSelf() {
 		super.startSelf();
 	
 		final String href = startTag.getAttribute("href");

@@ -29,9 +29,6 @@ public class XMLSchemaSchema implements java.io.Serializable {
 
 	public static final String XMLSchemaInstanceNamespace =
 		"http://www.w3.org/2001/XMLSchema-instance";
-	/** this format is obsolete, but still widely used. */
-	public static final String XMLSchemaInstanceNamespace_old =
-		"http://www.w3.org/2000/10/XMLSchema-instance";
 
 	public XMLSchemaSchema( String targetNamespace, XMLSchemaGrammar parent ) {
 		this.pool = parent.pool;

@@ -37,13 +37,12 @@ public class IntegerType extends IntegerDerivedType {
         return load(literal);
 	}
     
-    public BigInteger load( String s ) {
-		Object o = _createValue(s,null);
+    public static BigInteger load( String s ) {
+		IntegerValueType o = IntegerValueType.create(s);
 		if(o==null)		return null;
-		// o must be IntegerValueType.
 		return new BigInteger(o.toString());
     }
-    public String save( BigInteger v ) {
+    public static String save( BigInteger v ) {
         return v.toString();
     }
 	

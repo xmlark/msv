@@ -231,8 +231,8 @@
     
     <!-- compile sample files -->
     <javac  srcdir="dist/examples">
-      <classpath path="../package/msv.jar"/>
-      <classpath path="../package/xsdlib.jar"/>
+      <classpath path="dist/msv.jar"/>
+      <classpath path="dist/xsdlib.jar"/>
       <classpath path="${relaxngDatatype.jar}"/>
       <classpath path="${isorelax.jar}"/>
       <classpath path="../shared/lib/servlet.jar"/>

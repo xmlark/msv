@@ -9,14 +9,14 @@
  */
 package com.sun.msv.grammar;
 
-import com.sun.msv.datatype.ValidationContextProvider;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * ValidationContextProvider that supports limited ID/IDREF implementation.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface IDContextProvider extends ValidationContextProvider {
+public interface IDContextProvider extends ValidationContext {
 	
 	/**
 	 * this method is called when another ID is found to
@@ -25,13 +25,18 @@ public interface IDContextProvider extends ValidationContextProvider {
 	 * It is the callee's responsibility that stores
 	 * ID and checks doubly defined ID.
 	 * 
+	 * @param symbolSpaceName
+	 *		token has to be unique within the same symbol space,
+	 *		but two tokens can have the same name if they reside in
+	 *		different symbol spaces.
+	 * 
 	 * @return
 	 *	true
 	 *		if there is no preceding ID of the same name;
 	 *	false
 	 *		if this name is already declared as ID.
 	 */
-	boolean onID( String newIDToken );
+	boolean onID( String symbolSpaceName, Object newIDToken );
 	
 	/**
 	 * this method is called when an IDREF is found.
@@ -43,5 +48,5 @@ public interface IDContextProvider extends ValidationContextProvider {
 	 * possible to perform this check when IDREF is found.
 	 * It must be done separately after parsing the entire document.
 	 */
-	void onIDREF( String idrefToken );
+	void onIDREF( String symbolSpaceName, Object idrefToken );
 }

@@ -17,10 +17,9 @@ import com.sun.msv.verifier.VerificationErrorHandler;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class FilterImpl
-	extends com.sun.msv.verifier.VerifierFilter
-	implements org.iso_relax.verifier.VerifierFilter
-{
-	FilterImpl( DocumentDeclaration documentDecl, VerificationErrorHandler errorHandler )
-	{ super(documentDecl,errorHandler); }
+class FilterImpl extends com.sun.msv.verifier.VerifierFilter
+			implements org.iso_relax.verifier.VerifierFilter {
+	FilterImpl( DocumentDeclaration documentDecl, VerificationErrorHandler errorHandler ) {
+		super(documentDecl,errorHandler);
+	}
 }

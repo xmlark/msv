@@ -21,7 +21,7 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 /**
- * VerifierFactory implementation of TREX.
+ * VerifierFactory implementation for TREX.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

@@ -19,12 +19,9 @@ import org.iso_relax.verifier.VerifierHandler;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class HandlerImpl
-	extends Verifier
-	implements VerifierHandler
-{
-	HandlerImpl( DocumentDeclaration documentDecl, VerificationErrorHandler errorHandler )
-	{
+class HandlerImpl extends Verifier implements VerifierHandler {
+	
+	HandlerImpl( DocumentDeclaration documentDecl, VerificationErrorHandler errorHandler ) {
 		super(documentDecl,errorHandler);
 	}
 }

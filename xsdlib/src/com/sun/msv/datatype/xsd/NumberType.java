@@ -110,6 +110,11 @@ public class NumberType extends BuiltinAtomicType implements Comparator {
 			return null;
 		}
 	}
+    
+    public String save( Object o ) {
+        return ((BigDecimal)o).toString();
+    }
+    
 	public Class getJavaObjectType() {
 		return BigDecimal.class;
 	}

@@ -41,8 +41,9 @@ public class Verifier implements
 		final Context	previous;
 		final Acceptor	acceptor;
 		final int		stringCareLevel;
-		Context( Context prev, Acceptor acc, int scl )
-		{ previous=prev; acceptor=acc; stringCareLevel=scl; }
+		int				panicLevel;
+		Context( Context prev, Acceptor acc, int scl, int plv )
+		{ previous=prev; acceptor=acc; stringCareLevel=scl; panicLevel=plv; }
 	};
 	
 	/** context stack */
@@ -194,7 +195,7 @@ public class Verifier implements
 		
 
 		// push context
-		stack = new Context( stack, current, stringCareLevel );
+		stack = new Context( stack, current, stringCareLevel, panicLevel );
 		
 		StartTagInfo sti = new StartTagInfo(namespaceUri, localName, qName, atts, this );
 
@@ -238,6 +239,8 @@ public class Verifier implements
 		else
 			panicLevel = Math.max( panicLevel-1, 0 );
 		
+		stack.panicLevel = panicLevel;	// back-patching.
+		
 		stringCareLevel = next.getStringCareLevel();
 		if( stringCareLevel==Acceptor.STRING_IGNORE )
 			characterType.type = StringType.theInstance;
@@ -271,6 +274,7 @@ public class Verifier implements
 		// pop context
 		current = stack.acceptor;
 		stringCareLevel = stack.stringCareLevel;
+		panicLevel = Math.max( panicLevel, stack.panicLevel );
 		stack = stack.previous;
 		
 		if(!current.stepForward( child, null ))

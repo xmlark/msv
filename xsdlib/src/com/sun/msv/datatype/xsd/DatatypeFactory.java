@@ -25,41 +25,65 @@ import java.util.Map;
  * DataType object factory
  *
  * <p>
- * SchemaReader uses this class to get a reference to built-in DataType object.
+ * Applications use this class to get a reference to built-in DataType object.
  *
- * <p>
- * There are two kinds of built-in datatypes: one is "static", and the other
- * is "document dependent".
- *
- * "Static" datatypes have no dependency to the document that is under
- * validation. For example, "integer" is a static datatype.
- * 
- * "Document dependent" datatypes have dependency to the document. That is,
- * acceptable lexical space differs for each document. "NOTATION" and "ENTITY"
- * are the typical examples of document-dependent datatypes.
- *
- * <p>
- * static types are shared among multiple DataTypeFactory, but document
- * dependent types are not (cannot) shared.
  */
 public class DataTypeFactory
 {
-	/** a map that contains all static types */
-	private static final Map staticType = createStaticTypes();
+	/** a map that contains all built in types */
+	private static final Map builtinType = createStaticTypes();
 	
-// document-dependent types
-//------------------------------
-	/** ENTITY datatype, which is a document-dependent datatype */
-//	private EntityType	entityType = new EntityType();
 	
 	/**
-	 * obtain a DataType object from its name
+	 * derives a new type by list.
+	 *
+	 * See http://www.w3.org/TR/xmlschema-2#derivation-by-list for
+	 * what "derivation by list" means.
+	 *
+	 * @param newTypeName
+	 *		name of the new type. it can be set to null for indicating an anonymous type.
+	 * @param itemType
+	 *		Type of the list item. It must be an atom type. You cannot use
+	 *		your own DataType implementation here.
+	 *
+	 * @exception BadTypeException
+	 *		this exception is thrown when the derivation is illegal.
+	 *		For example, when you try to derive a type from non-atom type.
+	 */
+	public static DataType deriveByList( String newTypeName, DataType itemType )
+		throws BadTypeException
+	{
+		return new ListType(newTypeName,(DataTypeImpl)itemType);
+	}
+	
+	/**
+	 * derives a new type by union.
+	 *
+	 * See http://www.w3.org/TR/xmlschema-2#derivation-by-union for
+	 * what "derivation by union" means.
+	 * 
+	 * @param newTypeName
+	 *		name of the new type. it can be set to null for indicating an anonymous type.
+	 * @param memberTypes
+	 *		Types of the union member. It can be any type that implements DataType.
+	 *
+	 * @exception BadTypeException
+	 *		this exception is thrown when the derivation is illegal.
+	 */
+	public static DataType deriveByUnion( String newTypeName, DataType[] memberTypes )
+		throws BadTypeException
+	{
+		return new UnionType(newTypeName,(DataTypeImpl[])memberTypes);
+	}
+	
+	/**
+	 * obtain a built-in DataType object from its name
 	 * 
 	 * @return null	if DataType is not found
 	 */
 	public static DataType getTypeByName( String dataTypeName )
 	{
-		return (DataType)staticType.get(dataTypeName);
+		return (DataType)builtinType.get(dataTypeName);
 	}
 	
 	private static void add( Map m, DataType type )

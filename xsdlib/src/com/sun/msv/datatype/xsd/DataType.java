@@ -24,7 +24,9 @@ import java.lang.Cloneable;
 import java.util.Hashtable;
 
 /**
- * Base interfce of datatypes
+ * Publicly accesible interface of XSD Datatype
+ *
+ * Application should only rely on this interface.
  */
 public interface DataType extends Serializable,Cloneable
 {
@@ -37,20 +39,25 @@ public interface DataType extends Serializable,Cloneable
 	 *		context information provider that may be
 	 *		necessary to verify given literal.
 	 * 
-	 * @return true if 'literal' can is a member of this datatype
+	 * @return
+	 *		true if 'literal' can is a member of this datatype
+	 *		false if it's not a member of this datatype.
 	 */
 	boolean verify( String literal, ValidationContextProvider context );
 	
 	/**
-	 * computes the reason of error
+	 * diagnoses the reason of error
 	 * 
-	 * Application can call this method to provide detailed error message to user.
+	 * Application can call this method to provide detailed error message to users.
 	 * This method is kept separate from verify method to achieve higher performance
-	 * during normal validation
+	 * during normal validation. This method is optional and may not be implemented
+	 * by some of datatypes.
 	 * 
 	 * @return null
-	 *		if 'content' is accepted by this pattern, or 
-	 *		if the derived class doesn't support this operation
+	 *		if 'content' is accepted by this pattern.
+	 * 
+	 * @exception UnsupportedOperationException
+	 *		if diagnosys is not supported by the implementation.
 	 */
 	DataTypeErrorDiagnosis diagnose( String content, ValidationContextProvider context )
 		throws UnsupportedOperationException;
@@ -59,27 +66,35 @@ public interface DataType extends Serializable,Cloneable
 	 * gets the name of this datatype
 	 * 
 	 * Unnamed datatypes (e.g., derived types) must return null.
-	 * As a result, name of the datatype cannot be used as an identifier
+	 * As a result, name of the datatype cannot be used as an identifier.
 	 */
 	String getName();
 	
 	/**
-	 * derives a new datatype from this datatype, by adding facets
+	 * derives a new datatype from this datatype, by adding more facets
 	 * 
 	 * It is completely legal to use null as the newTypeName paratmer,
 	 * which means deriving anonymous datatype.
 	 *
+	 * @param facets
+	 *		these facets are added to new datatype.
 	 * @param context
 	 *		in case of deriving a type from QName, the implementation needs to
 	 *		resolve prefixs to namespace URIs. Therefore, the caller must
 	 *		supply a ValidationContextProvider.
+	 *
+	 * @exception BadTypeException
+	 *		BadTypeException is thrown if derivation is somehow invalid.
+	 *		For example, not applicable facets are applied, or enumeration
+	 *		has invalid values, ... things like that.
 	 */
 	DataType derive( String newTypeName, Facets facets, ValidationContextProvider context )
 		throws BadTypeException;
 	
 	
 	/**
-	 * converts lexcial value to the corresponding value object of the value space
+	 * converts lexcial value to the corresponding value object of the value space.
+	 * type of the value object depends on implementation.
 	 * 
 	 * @return	null
 	 *		when the given lexical value is not valid lexical value for this type.
@@ -87,6 +102,8 @@ public interface DataType extends Serializable,Cloneable
 	Object convertToValueObject( String lexicalValue, ValidationContextProvider context );
 	
 	/**
+	 * checks if this type is an atom type. List and union are not atom types. 
+	 *
 	 * @returns true if this type is an atom type
 	 */
 	boolean isAtomType();
@@ -94,11 +111,13 @@ public interface DataType extends Serializable,Cloneable
 	static final int APPLICABLE = 0;
 	static final int FIXED		= -1;
 	static final int NOT_ALLOWED= -2;
-	/** returns if the specified facet is applicable to this datatype.
+	/**
+	 * returns if the specified facet is applicable to this datatype.
 	 * 
 	 * @return	APPLICABLE		if the facet is applicable
 	 *			FIXED			if the facet is already fixed (that is,not applicable)
 	 *			NOT_ALLOWED		if the facet is not applicable to this datatype at all.
+	 *							this value is also returned for unknown facets.
 	 */
 	public int isFacetApplicable( String facetName );
 

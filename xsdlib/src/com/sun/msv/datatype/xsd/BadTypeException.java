@@ -92,4 +92,7 @@ public class BadTypeException extends Exception
 		= null; // unrecognized facet specification {0}
 	public static final String ERR_NOT_APPLICABLE_FACET
 		= null; // facet {0} is not applicable to this datatype
+	public static final String ERR_EMPTY_UNION
+		= "BadTypeException.EmptyUnion";
+
 }

@@ -2,7 +2,7 @@ package com.sun.tranquilo.datatype;
 
 import java.util.StringTokenizer;
 
-final public class ListType extends ConcreteType implements Discrete
+final class ListType extends ConcreteType implements Discrete
 {
 	/**
 	 * derives a new datatype from atomic datatype by list
@@ -27,6 +27,7 @@ final public class ListType extends ConcreteType implements Discrete
 	
 	public final int isFacetApplicable( String facetName )
 	{
+		// pattern facet is not appliable
 		if( facetName.equals(FACET_LENGTH)
 		||	facetName.equals(FACET_MINLENGTH)
 		||	facetName.equals(FACET_MAXLENGTH)

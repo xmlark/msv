@@ -100,7 +100,12 @@ public class QnameType extends ConcreteType
 		// cause range-related facets does not make sense at all.
 		// so check it with the latest version.
 		if( facetName.equals(FACET_PATTERN)
-		||	facetName.equals(FACET_ENUMERATION) )
+		||	facetName.equals(FACET_ENUMERATION)
+// TODO : what is "length" of QName? number of characters?
+//		||	facetName.equals(FACET_LENGTH)
+//		||	facetName.equals(FACET_MAXLENGTH)
+//		||	facetName.equals(FACET_MINLENGTH)
+		)
 			return APPLICABLE;
 		else
 			return NOT_ALLOWED;

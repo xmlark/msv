@@ -48,7 +48,6 @@ public class ModuleMergeState extends DivInModuleState
 		
 		String targetNamespace = startTag.getAttribute("targetNamespace");
 		
-		// TODO: make sure that this handling is correct.
 		if(targetNamespace!=null)
 		{
 			// check accordance with expected namespace

@@ -60,3 +60,13 @@ xalan.jar = ../shared/lib/xalan.jar
 # Regular expression library taken from Xerces
 #
 regexplib.src = ../shared/regexp
+
+#
+# jdom.jar taken from http://www.jdom.org
+#
+jdom.jar = ../shared/lib/jdom.jar
+
+#
+# resolver.jar, obtained from http://www.sun.com/software/xml/developers/resolver/
+#
+resolver.jar=../shared/lib/resolver.jar

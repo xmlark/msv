@@ -16,8 +16,8 @@ software developed by the Apache Software Foundation [1].
 OVERVIEW
 ----------------------------------------------------------------------
 
-This tool is can be used to generate both valid and invalid instances
-from schemata.
+This tool is a command line tool that generates both valid and invalid
+instances from schemata.
 
 See HowToUse.html for details.
 

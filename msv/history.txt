@@ -1,4 +1,7 @@
 
+(TREX)  support QName for "name" attribute of "element"/"attribute" declaration.
+(TREX)  added support for patterns whose document element is not
+        <grammar> element but other arbitrary pattern element.
 (dt)	'totalDigit' facet is now correctly implemented.
 (dt)	'fractionDigit' facet is now correctly implemented.
 (both)  added a mechanism to controll inclusion

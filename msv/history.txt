@@ -1,4 +1,9 @@
 
+(RELAX) Tranquilo will issue an error for <anyOtherElement> with
+        both "includeNamespace" and "excludeNamespace" attributes.
+(TREX)  error diagnosis for <string> is supported
+(TREX)  implemented check for two pattern definition in the same file
+        with the same name.
 (TREX)  modified to accept old "http://www.w3.org/2000/10/XMLSchema"
         namespace with a warning.
 (both)  Better error diagnosis gets produced when the user forgot to

@@ -29,3 +29,23 @@ build			binary byte codes will go into this directory.
 
 ant.xml			ant script to build everything. Contains a lot of
 				targets. Read carefully.
+
+
+To run tests
+------------
+
+To try individual test
+
+	$ java batch.verifier.BatchVerifyTester
+
+and see the usage.
+
+To split ssuites,
+
+	$ cd msv/testCases
+	$ ant
+
+To run the entire test,
+
+	$ ant test
+

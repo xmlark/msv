@@ -102,12 +102,12 @@ public class NameClassSimplifier {
         }
         
         if( nc.accepts(MAGIC,MAGIC) ) {
-            if(result==null)        result = AnyNameClass.theInstance;
+            if(result==null)        result = NameClass.ALL;
             else                    result = new NotNameClass(result);
         }
         
         if( result==null )
-            result = new NotNameClass( AnyNameClass.theInstance );
+            result = AnyNameClass.NONE;
         
         return result;
     }

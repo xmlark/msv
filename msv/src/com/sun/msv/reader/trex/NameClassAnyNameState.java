@@ -9,7 +9,6 @@
  */
 package com.sun.msv.reader.trex;
 
-import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.NameClass;
 
 /**
@@ -19,6 +18,6 @@ import com.sun.msv.grammar.NameClass;
  */
 public class NameClassAnyNameState extends NameClassWithoutChildState {
     protected NameClass makeNameClass() {
-        return AnyNameClass.theInstance;
+        return NameClass.ALL;
     }
 }

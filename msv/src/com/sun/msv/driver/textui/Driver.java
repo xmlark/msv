@@ -9,9 +9,11 @@
  */
 package com.sun.msv.driver.textui;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 
 import javax.xml.parsers.SAXParserFactory;
 
@@ -67,7 +69,8 @@ public class Driver {
     }
     
     public static int run( String[] args ) throws Exception {
-        final Vector fileNames = new Vector();
+        final List fileNames = new ArrayList();
+        final List classPaths = new ArrayList();
         
         String grammarName = null;
         boolean dump=false;
@@ -124,6 +127,10 @@ public class Driver {
                 else
                     Locale.setDefault( new Locale(
                         code.substring(0,idx), code.substring(idx+1) ));
+            }
+            else
+            if( args[i].equalsIgnoreCase("-classpath") ) {
+                classPaths.add(new File(args[++i]).toURL());
             }
             else
             if( args[i].equalsIgnoreCase("-catalog") ) {
@@ -261,7 +268,7 @@ public class Driver {
         
         for( int i=0; i<fileNames.size(); i++ )    {
             
-            final String instName = (String)fileNames.elementAt(i);
+            final String instName = (String)fileNames.get(i);
             System.out.println( localize( MSG_VALIDATING, instName) );
             
             boolean result=false;

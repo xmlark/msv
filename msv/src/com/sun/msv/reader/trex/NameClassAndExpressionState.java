@@ -9,7 +9,6 @@
  */
 package com.sun.msv.reader.trex;
 
-import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.reader.SequenceState;
@@ -78,7 +77,7 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
                 // so probably this user forgot to specify name class.
                 // report so and recover by assuming some NameClass
                 reader.reportError(TREXBaseReader.ERR_MISSING_CHILD_NAMECLASS);
-                nameClass = AnyNameClass.theInstance;
+                nameClass = NameClass.ALL;
                 return nextState;
             } else
                 // probably this user made a typo. let the default handler reports an error
@@ -91,7 +90,7 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
         if (nameClass == null) {
             // name class is missing
             reader.reportError(TREXBaseReader.ERR_MISSING_CHILD_NAMECLASS);
-            nameClass = AnyNameClass.theInstance;
+            nameClass = NameClass.ALL;
         }
 
         super.endSelf();

@@ -9,7 +9,6 @@
  */
 package com.sun.msv.reader.trex.ng;
 
-import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.DifferenceNameClass;
 import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.NamespaceNameClass;
@@ -57,7 +56,7 @@ public abstract class NGNameState extends NameClassWithChildState {
     /** Parsing state for &lt;anyName&gt; */
     public static class AnyNameState extends NGNameState {
         protected NameClass getMainNameClass() {
-            return AnyNameClass.theInstance;
+            return NameClass.ALL;
         }
     }
     

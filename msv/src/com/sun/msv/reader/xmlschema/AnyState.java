@@ -12,7 +12,6 @@ package com.sun.msv.reader.xmlschema;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
-import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.ChoiceNameClass;
 import com.sun.msv.grammar.DifferenceNameClass;
 import com.sun.msv.grammar.Expression;
@@ -54,7 +53,7 @@ public abstract class AnyState extends ExpressionWithoutChildState {
         namespace = namespace.trim();
         
         if( namespace.equals("##any") )
-            return AnyNameClass.theInstance;
+            return NameClass.ALL;
         
         if( namespace.equals("##other") )
             // ##other means anything other than the target namespace and local.
@@ -85,7 +84,7 @@ public abstract class AnyState extends ExpressionWithoutChildState {
         if( choices==null ) {
             // no item was found.
             reader.reportError( XMLSchemaReader.ERR_BAD_ATTRIBUTE_VALUE, "namespace", namespace );
-            return AnyNameClass.theInstance;
+            return NameClass.ALL;
         }
         
         return choices;

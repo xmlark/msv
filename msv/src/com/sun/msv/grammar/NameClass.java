@@ -59,7 +59,7 @@ public abstract class NameClass implements java.io.Serializable {
     
     /** Returns true if this name class doesn't accept anything. */
     public boolean isNull() {
-        return !new NameClassCollisionChecker().check(this,AnyNameClass.theInstance);
+        return !new NameClassCollisionChecker().check(this,NameClass.ALL);
     }
 
     /**
@@ -91,6 +91,13 @@ public abstract class NameClass implements java.io.Serializable {
         return NameClassSimplifier.simplify(
             new ChoiceNameClass(lhs,rhs) );
     }
+    
+    /** name class that accepts everything. */
+    public static final NameClass ALL = new AnyNameClass();
+    
+    /** Name class that accepts nothing. */
+    public static final NameClass NONE = new NotNameClass(ALL);
+
     
     // serialization support
     private static final long serialVersionUID = 1;    

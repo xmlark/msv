@@ -9,7 +9,6 @@
  */
 package com.sun.msv.reader.trex;
 
-import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.NameClass;
 import com.sun.msv.reader.State;
 import com.sun.msv.util.StartTagInfo;
@@ -43,7 +42,7 @@ public abstract class NameClassWithChildState extends NameClassState implements 
     protected final NameClass makeNameClass() {
         if( nameClass==null && !allowNullChild ) {
             reader.reportError( TREXBaseReader.ERR_MISSING_CHILD_NAMECLASS );
-            nameClass = AnyNameClass.theInstance;
+            nameClass = NameClass.ALL;
             // recover by assuming some name class.
         }
         return annealNameClass(nameClass);

@@ -14,7 +14,6 @@ import java.util.Vector;
 
 import org.xml.sax.Locator;
 
-import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.NamespaceNameClass;
 import com.sun.msv.grammar.SimpleNameClass;
@@ -215,7 +214,7 @@ public class IdentityConstraintState extends SimpleState {
             if( step.equals(".") )    continue;
                 
             if( step.equals("*") ) {
-                stepObjs.add( AnyNameClass.theInstance );
+                stepObjs.add( NameClass.ALL );
                 continue;
             }
             

@@ -26,10 +26,10 @@ import org.xml.sax.Locator;
 import com.sun.msv.datatype.xsd.DatatypeFactory;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.SimpleNameClass;
@@ -139,12 +139,12 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
         // this schema as "already defined."
 //        markSchemaAsDefined(xsdSchema);
     
-        ElementPattern e = new ElementPattern( AnyNameClass.theInstance, Expression.nullSet );
+        ElementPattern e = new ElementPattern( NameClass.ALL, Expression.nullSet );
         e.contentModel =
             pool.createMixed(
                 pool.createZeroOrMore(
                     pool.createChoice(
-                        pool.createAttribute( AnyNameClass.theInstance ),
+                        pool.createAttribute( NameClass.ALL ),
                         e )));
         complexUrType = xsdSchema.complexTypes.getOrCreate( "anyType" );
         complexUrType.body.exp = e.contentModel;

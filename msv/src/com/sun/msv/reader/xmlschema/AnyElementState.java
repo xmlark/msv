@@ -11,7 +11,6 @@ package com.sun.msv.reader.xmlschema;
 
 import java.util.Iterator;
 
-import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.ReferenceContainer;
@@ -98,7 +97,7 @@ public class AnyElementState extends AnyState
                         reader.pool.createMixed(
                             reader.pool.createZeroOrMore(
                                 reader.pool.createChoice(
-                                    reader.pool.createAttribute(AnyNameClass.theInstance),
+                                    reader.pool.createAttribute(NameClass.ALL),
                                     exp)))),
                      exp.exp );
             }

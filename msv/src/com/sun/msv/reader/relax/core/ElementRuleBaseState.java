@@ -9,8 +9,8 @@
  */
 package com.sun.msv.reader.relax.core;
 
-import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.relax.ElementRule;
 import com.sun.msv.grammar.relax.ElementRules;
 import com.sun.msv.grammar.relax.TagClause;
@@ -68,7 +68,7 @@ abstract class ElementRuleBaseState extends SimpleState
                                     "elementRule","role");
                 // recover by assuming a harmless Clause
                 clause = new TagClause();
-                clause.nameClass = AnyNameClass.theInstance;
+                clause.nameClass = NameClass.ALL;
                 clause.exp = Expression.nullSet;
             } else {
                 clause = getReader().module.tags.getOrCreate(role);

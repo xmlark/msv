@@ -19,7 +19,6 @@ import org.xml.sax.DocumentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
 
-import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.AttributeExp;
 import com.sun.msv.grammar.BinaryExp;
 import com.sun.msv.grammar.ChoiceExp;
@@ -462,9 +461,9 @@ public class RELAXNGWriter implements GrammarWriter, Context {
         
         if( src.accepts(MAGIC,MAGIC) ) {
             if( r==null )
-                r = AnyNameClass.theInstance;
+                r = NameClass.ALL;
             else
-                r = new DifferenceNameClass( AnyNameClass.theInstance, r );
+                r = new DifferenceNameClass( NameClass.ALL, r );
         } else {
             if(r==null) {
                 // this name class accepts nothing.

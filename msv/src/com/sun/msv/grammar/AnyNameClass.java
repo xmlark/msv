@@ -23,13 +23,14 @@ public final class AnyNameClass extends NameClass {
     
     public Object visit( NameClassVisitor visitor ) { return visitor.onAnyName(this); }
     
-    /** singleton instance */
+    /**
+     * Singleton instance.
+     * 
+     * @deprecated Use {@link NameClass#ALL} instead.
+     */
     public static final NameClass theInstance = new AnyNameClass();
     
-    /** empty name class instance. */
-    public static final NameClass EMPTY = new NotNameClass(theInstance);
-    
-    private AnyNameClass() {}
+    protected AnyNameClass() {}
     
     public String toString()    { return "*:*"; }
     

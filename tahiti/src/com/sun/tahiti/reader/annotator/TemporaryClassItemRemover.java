@@ -148,6 +148,12 @@ class TemporaryClassItemRemover {
 			// visit the children and see what are children of this ClassItem.
 			super.onOther(item);
 			
+			if( childItems.size()==0 ) {
+				// if there is no child item, then probably
+				// the existance of this element is significant.
+				// so keep it.
+				notRemovableClasses.add(item);
+			} else
 			if( childItems.size()>1 ) {
 				// if a ClassItem has more than one child items,
 				// then it cannot be removed.

@@ -233,14 +233,11 @@ public class TREXGrammarReader
 		if(tag.localName.equals("grammar"))		return sfactory.grammar(parent,tag);
 
 		final String role = tag.getAttribute(TREXNamespace,"role");
-		if("datatype".equals(role))
-		{
+		if("datatype".equals(role)) {
 			String namespaceURI = mapNamespace(tag.namespaceURI);
-			
 			DataTypeVocabulary v = grammar.dataTypes.get(namespaceURI);
 		
-			if(v==null)
-			{
+			if(v==null) {
 				reportError( ERR_UNKNOWN_DATATYPE_VOCABULARY, tag.namespaceURI );
 				// put a dummy vocabulary into the map
 				// so that user will never receive the same error again.
@@ -259,7 +256,7 @@ public class TREXGrammarReader
 	 */
 	public DataType resolveDataType( String qName )
 	{
-		String[] s = splitNamespacePrefix(qName);
+		String[] s = splitQName(qName);
 		if(s==null)
 		{
 			reportError( ERR_UNDECLEARED_PREFIX, qName );

@@ -21,8 +21,14 @@ import com.sun.tranquilo.reader.GrammarReaderController;
  */
 public class DebugController implements GrammarReaderController
 {
+	private boolean displayWarning;
+	
+	public DebugController( boolean displayWarning ) { this.displayWarning = displayWarning; }
+	
 	public void warning( Locator[] loc, String errorMessage )
 	{
+		if(!displayWarning)	return;
+		
 		System.out.println(errorMessage);
 		
 		for( int i=0; i<loc.length; i++ )

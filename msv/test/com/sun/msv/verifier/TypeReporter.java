@@ -61,7 +61,7 @@ public class TypeReporter extends DefaultHandler
 				RELAXReader.parse(
 					args[1],
 					factory,
-					new com.sun.tranquilo.driver.textui.DebugController(),
+					new com.sun.tranquilo.driver.textui.DebugController(false),
 					new TREXPatternPool() );
 			docDecl = new TREXDocumentDeclaration(
 				g.topLevel, (TREXPatternPool)g.pool, true );
@@ -72,7 +72,7 @@ public class TypeReporter extends DefaultHandler
 				TypedTREXGrammarReader.parse(
 					args[1],
 					factory,
-					new com.sun.tranquilo.driver.textui.DebugController() ) );
+					new com.sun.tranquilo.driver.textui.DebugController(false) ) );
 		}
 		
 		// use TREXPatternPool so that we can verify it like TREX.

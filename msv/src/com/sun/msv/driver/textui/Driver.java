@@ -42,6 +42,7 @@ public class Driver
 		boolean relax=false;
 		boolean trex=false;
 		boolean verbose = false;
+		boolean warning = false;
 		boolean dtdValidation=false;
 		
 		if( args.length==0 )
@@ -70,6 +71,9 @@ public class Driver
 			else
 			if( args[i].equalsIgnoreCase("-verbose") )
 				verbose = true;
+			else
+			if( args[i].equalsIgnoreCase("-warning") )
+				warning = true;
 			else
 			{
 				if( args[i].charAt(0)=='-' )
@@ -134,8 +138,8 @@ public class Driver
 
 		if(dump)
 		{
-			if(relax)		dumpRELAX(loadRELAX(is));
-			else			dumpTREX(loadTREX(is));
+			if(relax)		dumpRELAX(loadRELAX(is,false));
+			else			dumpTREX(loadTREX(is,false));
 			return;
 		}
 		else
@@ -147,11 +151,11 @@ public class Driver
 		
 			if(relax)
 			{
-				RELAXGrammar g = loadRELAX(is);
+				RELAXGrammar g = loadRELAX(is,warning);
 				docDecl = new TREXDocumentDeclaration(g.topLevel, (TREXPatternPool)g.pool, true );
 			}
 			else
-				docDecl = new TREXDocumentDeclaration(loadTREX(is));
+				docDecl = new TREXDocumentDeclaration(loadTREX(is,warning));
 
 			long parsingTime = System.currentTimeMillis();
 			if( verbose )
@@ -170,13 +174,13 @@ public class Driver
 		}
 	}
 	
-	public static TREXGrammar loadTREX( InputSource is ) throws Exception
+	public static TREXGrammar loadTREX( InputSource is, boolean warning ) throws Exception
 	{
 		TREXGrammar g =
 		TREXGrammarReader.parse(
 			is,
 			factory,
-			new DebugController() );
+			new DebugController(warning) );
 
 		if( g==null )
 		{
@@ -186,14 +190,14 @@ public class Driver
 		return g;
 	}
 	
-	public static RELAXGrammar loadRELAX( InputSource is ) throws Exception
+	public static RELAXGrammar loadRELAX( InputSource is, boolean warning ) throws Exception
 	{
 		
 		RELAXGrammar g =
 			RELAXReader.parse(
 				is,
 				factory,
-				new DebugController(),
+				new DebugController(warning),
 				new TREXPatternPool() );
 		// use TREXPatternPool so that we can verify it like TREX.
 		
@@ -266,7 +270,7 @@ public class Driver
 		{
 			System.out.println(localize(MSG_BAILOUT));
 		}
-		catch( SAXException se )
+		catch( SAXParseException se )
 		{
 			; // error is already reported by ErrorHandler
 		}

@@ -66,7 +66,7 @@ public class Daemon implements Runnable
 				RELAXReader.parse(
 					args[1]+".rlx",
 					factory,
-					new com.sun.tranquilo.driver.textui.DebugController(),
+					new com.sun.tranquilo.driver.textui.DebugController(false),
 					new TREXPatternPool() );
 			
 			topLevel = g.topLevel;
@@ -79,7 +79,7 @@ public class Daemon implements Runnable
 				TREXGrammarReader.parse(
 					args[1]+".trex",
 					factory,
-					new com.sun.tranquilo.driver.textui.DebugController() );
+					new com.sun.tranquilo.driver.textui.DebugController(false) );
 			
 			topLevel = g.start;
 			pool = g.pool;

@@ -22,6 +22,7 @@ import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.ChoiceNameClass;
 import com.sun.msv.grammar.trex.ElementPattern;
+import com.sun.msv.grammar.xmlschema.OccurrenceExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
@@ -638,7 +639,14 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
      * @param   maxOccurs
      *      -1 to represent "unbounded".
      */
-	public Expression processOccurs( Expression item, int minOccurs, int maxOccurs ) {
+    public Expression processOccurs( Expression item, int minOccurs, int maxOccurs ) {
+        Expression precise = _processOccurs(item,minOccurs,maxOccurs);
+        if(maxOccurs==1)                    return precise;
+        if(maxOccurs==-1 && minOccurs<=1 )  return precise;
+        return new OccurrenceExp(precise,maxOccurs,minOccurs,item);
+    }
+    
+	private Expression _processOccurs( Expression item, int minOccurs, int maxOccurs ) {
 
         Expression exp = Expression.epsilon;
 		for( int i=0; i<minOccurs; i++ )

@@ -17,7 +17,7 @@ import java.util.Iterator;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public abstract class ReferenceContainer {
+public abstract class ReferenceContainer implements java.io.Serializable {
 	
 	protected final Map impl = new java.util.HashMap();
 	

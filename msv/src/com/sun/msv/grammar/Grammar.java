@@ -16,7 +16,7 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface Grammar {
+public interface Grammar extends java.io.Serializable {
 	/**
 	 * gets top-level expression.
 	 * This expression shall be the constraint over the document element.

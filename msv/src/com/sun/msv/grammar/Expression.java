@@ -38,7 +38,7 @@ import java.util.Collection;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public abstract class Expression {
+public abstract class Expression implements java.io.Serializable {
 	/** cached value of epsilon reducibility.
 	 * 
 	 * Epsilon reducibility can only be calculated after parsing the entire expression,
@@ -68,9 +68,11 @@ public abstract class Expression {
 	
 	/**
 	 * this field can be used by Verifier implementation to speed up
-	 * validation.
+	 * validation. Due to its nature, this field is not serialized.
+	 * 
+	 * TODO: revisit this decision of not to serialize this field.
 	 */
-	public Object verifierTag = null;
+	public transient Object verifierTag = null;
 	
 	
 	public abstract Object visit( ExpressionVisitor visitor );
@@ -129,6 +131,7 @@ public abstract class Expression {
 	// values for TREX pattern
 	protected static final int HASHCODE_CONCUR =			20;
 	protected static final int HASHCODE_INTERLEAVE =		21;
+	protected static final int HASHCODE_LIST =				22;
 	
 	private static class EpsilonExpression extends Expression {
 		EpsilonExpression() { super(Expression.HASHCODE_EPSILON); }

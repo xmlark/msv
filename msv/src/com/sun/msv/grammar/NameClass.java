@@ -16,7 +16,7 @@ package com.sun.msv.grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface NameClass {
+public interface NameClass extends java.io.Serializable {
 	/**
 	 * checks if this name class accepts given namespace:localName pair.
 	 * 

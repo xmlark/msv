@@ -10,7 +10,7 @@
 package com.sun.msv.grammar;
 
 import java.util.Hashtable;
-import com.sun.msv.datatype.DataType;
+import org.relaxng.datatype.DataType;
 
 /**
  * Creates a new Expression by combining existing expressions.
@@ -36,7 +36,7 @@ import com.sun.msv.datatype.DataType;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ExpressionPool {
+public class ExpressionPool implements java.io.Serializable {
 	
 	public final Expression createAttribute( NameClass nameClass ) {
 		return unify(new AttributeExp(nameClass,Expression.anyString));
@@ -56,7 +56,7 @@ public class ExpressionPool {
 		if( left==Expression.epsilon && right.isEpsilonReducible() )	return right;
 		if( right==Expression.epsilon && left.isEpsilonReducible() )	return left;
 		
-		// TODO: should we re-order choice in cconsistent manner?
+		// TODO: should we re-order choice in a consistent manner?
 		
 		// associative operators are grouped to the right
 		if( left instanceof ChoiceExp ) {
@@ -109,6 +109,10 @@ public class ExpressionPool {
 	
 	public final Expression createTypedString( DataType dt ) {
 		return unify( new TypedStringExp(dt) );
+	}
+	
+	public final Expression createList( Expression exp ) {
+		return unify( new ListExp(exp) );
 	}
 	
 	public final Expression createMixed( Expression body ) {
@@ -236,7 +240,7 @@ public class ExpressionPool {
 	 * Special care has to be taken wrt threading.
 	 * This implementation allows get and put method to be called simulatenously.
 	 */
-	public final static class ClosedHash {
+	public final static class ClosedHash implements java.io.Serializable {
 		/** The hash table data. */
 		private Expression table[];
 

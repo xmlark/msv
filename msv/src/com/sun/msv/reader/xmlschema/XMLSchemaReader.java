@@ -55,13 +55,23 @@ public class XMLSchemaReader extends GrammarReader
 		
 		xsiSchemaLocationExp = pool.createSequence(
 			pool.createOptional(
-				pool.createAttribute(
-					new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace,"schemaLocation")
+				pool.createChoice(
+					pool.createAttribute(
+						new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace,"schemaLocation")
+					),
+					pool.createAttribute(
+						new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace_old,"schemaLocation")
+					)
 				)
 			),
 			pool.createOptional(
-				pool.createAttribute(
-					new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace,"noNamespaceSchemaLocation")
+				pool.createChoice(
+					pool.createAttribute(
+						new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace,"noNamespaceSchemaLocation")
+					),
+					pool.createAttribute(
+						new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace_old,"noNamespaceSchemaLocation")
+					)
 				)
 			)
 		);
@@ -202,17 +212,26 @@ public class XMLSchemaReader extends GrammarReader
 	
 	
 	/** namespace URI of XML Schema declarations. */
-	// TODO: confirm this value.
 	public static final String XMLSchemaNamespace = "http://www.w3.org/2001/XMLSchema";
+	public static final String XMLSchemaNamespace_old = "http://www.w3.org/2000/10/XMLSchema";
 	
 	public final TREXPatternPool getPool() {
 		return (TREXPatternPool)pool;
 	}
 	
+	private boolean issuedOldNamespaceWarning = false;
+	
 	protected boolean isGrammarElement( StartTagInfo tag ) {
 		
-		if( !XMLSchemaNamespace.equals(tag.namespaceURI) )
-			return false;
+		if( !XMLSchemaNamespace.equals(tag.namespaceURI) ) {
+			if( !XMLSchemaNamespace_old.equals(tag.namespaceURI) ) 
+				return false;
+			
+			// report a warning only once.
+			if( !issuedOldNamespaceWarning )
+				reportWarning( WRN_OBSOLETED_NAMESPACE, null );
+			issuedOldNamespaceWarning = true;
+		}
 		
 		// annotation is ignored at this level.
 		// by returning false, the entire subtree will be simply ignored.
@@ -284,9 +303,24 @@ public class XMLSchemaReader extends GrammarReader
 		if( r[0].equals(XMLSchemaNamespace) )
 			return resolveBuiltinDataType(r[1]);
 		
-		// TODO: what happens if the type is forward-referenced?
-		return getOrCreateSchema(r[0]/*uri*/).simpleTypes.
+		if( r[0].equals(XMLSchemaNamespace_old) ) {
+			// old namespace.
+			// report a warning only once.
+			if( !issuedOldNamespaceWarning )
+				reportWarning( WRN_OBSOLETED_NAMESPACE, null );
+			issuedOldNamespaceWarning = true;
+			
+			return resolveBuiltinDataType(r[1]);
+		}
+		
+		DataType dt = getOrCreateSchema(r[0]/*uri*/).simpleTypes.
 			getOrCreate(r[1]/*local name*/).getType();
+		
+		if( dt!=null ) return dt;
+		
+		reportError( ERR_UNDEFINED_OR_FORWARD_REFERENCED_TYPE, r[2]/*qName*/ );
+		// TODO: implement error data type.
+		return StringType.theInstance;
 	}
 	
 	public static interface RefResolver {
@@ -528,5 +562,9 @@ public class XMLSchemaReader extends GrammarReader
 	public static final String ERR_UNDEFINED_GROUP =
 		"XMLSchemaReader.UndefinedGroup";
 	public static final String WRN_UNSUPPORTED_ANYELEMENT = // arg:1
-		"XMLSchemaReader.UnsupportedAnyElement";
+		"XMLSchemaReader.Warning.UnsupportedAnyElement";
+	public static final String WRN_OBSOLETED_NAMESPACE = // arg:0
+		"XMLSchemaReader.Warning.ObsoletedNamespace";
+	public static final String ERR_UNDEFINED_OR_FORWARD_REFERENCED_TYPE = //arg:1
+		"XMLSchemaReader.UndefinedOrForwardReferencedType";
 }

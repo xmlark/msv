@@ -16,7 +16,7 @@ public class TypeUtil {
 		// TODO:
 		
 		for( int i=1; i<t.length; i++ )
-			if(t[0]!=t[i])
+			if(!t[0].getTypeName().equals(t[i].getTypeName()))
 				return SystemType.get(Object.class);
 		
 		return t[0];

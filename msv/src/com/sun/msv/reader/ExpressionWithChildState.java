@@ -24,8 +24,13 @@ public abstract class ExpressionWithChildState extends ExpressionState implement
 	 * See {@link castPattern} and {@link annealPattern} methods
 	 * for how will a pattern be created.
 	 */
-	protected Expression exp = initialExpression();
+	protected Expression exp;
 
+	protected void startSelf() {
+		super.startSelf();
+		exp = initialExpression();
+	}
+	
 	/** sets initial pattern */
 	protected Expression initialExpression() { return null; }
 	

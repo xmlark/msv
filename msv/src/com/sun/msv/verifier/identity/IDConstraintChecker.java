@@ -137,6 +137,7 @@ public class IDConstraintChecker extends Verifier {
 	}
 	
 	protected void reportError( Locator loc, String propKey, Object[] args ) throws SAXException {
+		hadError = true;
 		errorHandler.onError(
 			new ValidityViolation( loc,
 				localizeMessage(propKey,args) ) );

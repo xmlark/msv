@@ -29,7 +29,7 @@ public class RefState extends ExpressionWithoutChildState {
 	
 	protected Expression makeExpression()
 	{
-		final String name = startTag.getAttribute("name");
+		final String name = startTag.getCollapsedAttribute("name");
 		
 		if(name==null) {
 			// name attribute is required.

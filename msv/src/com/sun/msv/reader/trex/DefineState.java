@@ -22,7 +22,7 @@ import org.xml.sax.Locator;
 public abstract class DefineState extends SequenceState {
 	
 	protected ReferenceExp getReference() {
-		final String name = startTag.getAttribute("name");
+		final String name = startTag.getCollapsedAttribute("name");
 		
 		if(name==null) {
 			// name attribute is required.
@@ -40,7 +40,7 @@ public abstract class DefineState extends SequenceState {
 
 		final TREXBaseReader reader = (TREXBaseReader)this.reader;
 		final ReferenceExp ref = getReference();
-		final String combine = startTag.getAttribute("combine");
+		final String combine = startTag.getCollapsedAttribute("combine");
 		
 		if(ref==null)	return Expression.nullSet;
 		

@@ -237,7 +237,7 @@ void timeZoneModifierV() :
 	}
 |
 	( "+" {sign=1;} | "-" {sign=-1;} )
-	h=NN(0,14) [":" m=NN(0,59)]
+	h=NN(0,14) ":" m=NN(0,59)
 	{
 		if(h==14 && m!=0)	throw new ParseException();
 		zone = TimeZone.create( sign*(h*60+m) );

@@ -1,0 +1,201 @@
+<html>
+<head>
+	<title>Read me for MSV developer</title>
+</head>
+<body>
+	<h1 style="text-align:center">ReadMe for MSV development</h1>
+	<div style="text-align:right; font-size:smaller">by Kohsuke KAWAGUCHI</div>
+	
+	
+	
+	<h2>Obtaining a working copy</h2>
+	<p>
+		MSV is currently at <code>:pserver:<i>USERID</i>@jse.east:/jse</code>.
+	</p><p>
+		To check out the repository, enter the following command:
+	</p>
+	<pre>
+% cvs -d :pserver:<i>USERID</i>@jse.east:/jse login
+<i>enter your password</i>
+% cvs -d :pserver:<i>USERID</i>@jse.east:/jse co msv
+	</pre>
+	
+	
+	
+	
+	<h2>Directory structure</h2>
+	<p>
+		MSV consists of a number of sub projects.
+		Each sub projects has its own directory, its own build script, etc.
+	</p>
+	<table border=1>
+		<tr><td>
+			xsdlib
+		</td><td>
+			Sun XML Datatypes Library. An implementation of W3C XML Schema Part 2.
+		</td></tr>
+		
+		<tr><td>
+			testharness
+		</td><td>
+			Test harness that is used to parse composite test suite files (.ssuite).
+		</td></tr>
+		
+		<tr><td>
+			msv
+		</td><td>
+			Sun Multi-Schema XML Validator. A schema model and validator implementation. Dependent on XSDLib and test harness.
+		</td></tr>
+		
+		<tr><td>
+			rngconverter
+		</td><td>
+			Sun RELAX NG Converter. reads a schema and produces an equivalent RELAX NG schema. Dependent on MSV.
+		</td></tr>
+		
+		<tr><td>
+			generator
+		</td><td>
+			Sun XML Instance Generator. A tool that produces valid XML documents by reading a schema. Dependent on MSV.
+		</td></tr>
+		
+		<tr><td>
+			relames
+		</td><td>
+			Sun Multi-Schema XML Validator Schematron add-on. An experimental implementation of RELAX NG + Schematron validation. Dependent on MSV.
+		</td></tr>
+		
+		<tr><td>
+			sox2rng
+		</td><td>
+			SOX to RELAX NG converter. Dependent on MSV.
+		</td></tr>
+		
+		<tr><td>
+			tahiti
+		</td><td>
+			Data-binding implementation
+		</td></tr>
+		
+		<tr><td>
+			trexconverter
+		</td><td>
+			TREX Converter. Reads a schema and produces an equivalent TREX pattern.
+			This project is no longer maintained.
+		</td></tr>
+	</table>
+	
+	<p>
+		There are several other directories which are used to store other materials.
+	</p>
+	
+	<table border=1>
+		<tr><td>
+			shared
+		</td><td>
+			keeps shared information among multiple subprojects.
+		</td></tr>
+		
+		<tr><td>
+			testCases
+		</td><td>
+			keeps test instances/schemas.
+		</td></tr>
+	</table>
+	
+	
+	
+	
+	
+	<h3>Sub-project structure</h3>
+	<p>
+		Most of the sub projects have a similar directory structure.
+	</p>
+	<table border=1>
+		<tr><td>
+			src
+		</td><td>
+			keeps source files. Files in this directory will be included
+			in the release package.
+		</td></tr>
+		
+		<tr><td>
+			test
+		</td><td>
+			keeps test files. Files in this directory will NOT be included
+			in the release package. JUnit is used throughout the project,
+			and every test code must have "Test.java" as suffix to be recognized
+			as a test.
+		</td></tr>
+		
+		<tr><td>
+			bin
+		</td><td>
+			keeps the compiled .class files. both "test" and "src" are
+			compiled into this directory.
+		</td></tr>
+		
+		<tr><td>
+			doc
+		</td><td>
+			release documentation. Files in this directory will be included
+			in the release package.
+		</td></tr>
+	</table>
+	
+	
+	
+	
+	
+	<h2>Build instruction</h2>
+	
+	<h3>Preparation</h3>
+	<p>
+		First, you need to create the "shared/ant.config" file, which
+		stores local preferences. You should create this file from
+		"shared/ant.config.template" file.
+		This file is in the standard Java resource format.
+	</p><p>
+		During this process, you'll find you need to download a lot of
+		libraries from third parties.
+	</p>
+	
+	<h3>Build</h3>
+	<p>
+		Once you finished the preparation, you can build the entire project
+		by using "/build.xml". This build script also contains the "release" target,
+		which builds the release packages for all sub projects in a proper order.
+	</p><p>
+		When preparing release packages, it is a good idea to use this target
+		so that dependencies are processed correctly. (But you should run a project-local "release" first to make sure that there is no error in the repository.)
+	</p>
+	
+	<h3>Project-wise build</h3>
+	<p>
+		When you are working on a sub project, you can use the project-local build script. Most of the build scripts are similar, and usually they have
+		following targets.
+	</p>
+	<table border=1>
+		<tr><td>
+			binary (default)
+		</td><td>
+			compiles everything into bin
+		</td></tr>
+		
+		<tr><td>
+			javadoc
+		</td><td>
+			generates javadoc from the working copy.
+			Useful to check the documentation.
+		</td></tr>
+		
+		<tr><td>
+			release
+		</td><td>
+			makes a release package from CVS (not from the working copy).
+			Note that changes in your working copy
+			will not be reflected to this process.
+		</td></tr>
+	</table>
+</body>
+</html>

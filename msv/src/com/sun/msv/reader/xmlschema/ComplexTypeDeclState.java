@@ -50,7 +50,14 @@ public class ComplexTypeDeclState extends RedefinableDeclState implements AnyAtt
 				decl = new ComplexTypeExp( reader.currentSchema, name );
 			else {
 				decl = reader.currentSchema.complexTypes.getOrCreate(name);
-				if( decl.body.exp!=null )
+                // MSV has pre-defiend types in xsd namespace (such as xs:anyType)
+                // this causes a problem when we are parsing schema4schema.
+                // to avoid this problem, we won't issue this error when we are
+                // parsing schema4schema.
+                //
+                // But this is more like a quick hack. What is the correct way to
+                // solve this problem?
+				if( decl.body.exp!=null && reader.currentSchema!=reader.xsdSchema )
 					reader.reportError( 
 						new Locator[]{this.location,reader.getDeclaredLocationOf(decl)},
 						reader.ERR_DUPLICATE_COMPLEXTYPE_DEFINITION,

@@ -74,7 +74,7 @@ public abstract class TREXBaseReader extends GrammarReader {
 	private Stack nsStack = new Stack();
 	/** target namespace: currently active 'ns' attribute */
 	protected String targetNamespace ="";
-	
+	public final String getTargetNamespace() { return targetNamespace; }
 	
 	/**
 	 * creates various State object, which in turn parses grammar.

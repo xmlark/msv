@@ -94,15 +94,22 @@ public class DataState extends ExpressionState {
 			String[] key = null;
 			String[] keyref = null;
 			if( keyQName!=null ) {
-				key = reader.splitQName(keyQName);
-				if( key!=null ) {
+				if( keyQName.indexOf(':')>=0 )
+					key = reader.splitQName(keyQName);
+				else
+					key = new String[]{reader.getTargetNamespace(),keyQName,keyQName};
+				
+				if( key==null ) {
 					reader.reportError( reader.ERR_UNDECLARED_PREFIX, keyQName );
 					return Expression.nullSet;
 				}
 			}
 			if( keyrefQName!=null ) {
-				keyref = reader.splitQName(keyrefQName);
-				if( keyref!=null ) {
+				if( keyrefQName.indexOf(':')>=0 )
+					keyref = reader.splitQName(keyrefQName);
+				else
+					keyref = new String[]{reader.getTargetNamespace(),keyrefQName,keyrefQName};
+				if( keyref==null ) {
 					reader.reportError( reader.ERR_UNDECLARED_PREFIX, keyrefQName );
 					return Expression.nullSet;
 				}

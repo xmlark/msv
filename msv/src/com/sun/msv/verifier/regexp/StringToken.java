@@ -68,11 +68,11 @@ public class StringToken extends Token {
 			
 			// then report detected key/keyrefs.
 			if( texp.keyName!=null )
-				ret = context.onID( texp.keyName,
+				ret = context.onID( texp.keyName.namespaceURI, texp.keyName.localName,
 					exp.dt.createValue(literal,context) );
 			
 			if( texp.keyrefName!=null )
-				context.onIDREF( texp.keyrefName,
+				context.onIDREF( texp.keyrefName.namespaceURI, texp.keyrefName.localName,
 					exp.dt.createValue(literal,context) );
 		}
 		return ret;

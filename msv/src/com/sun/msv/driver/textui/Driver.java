@@ -17,6 +17,7 @@ import com.sun.tranquilo.grammar.relax.*;
 import com.sun.tranquilo.grammar.*;
 import com.sun.tranquilo.reader.trex.TREXGrammarReader;
 import com.sun.tranquilo.reader.relax.RELAXReader;
+import com.sun.tranquilo.reader.util.IntelligentLoader;
 import com.sun.tranquilo.verifier.*;
 import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
 import com.sun.tranquilo.verifier.util.VerificationErrorHandlerImpl;
@@ -120,72 +121,62 @@ public class Driver
 			}
 		
 		if( trex && relax )	trex=false;	// if both is specified, assume it RELAX.
-		if( !trex && !relax )
-		{// schema type is not specified. sniff it.
-			if( verbose )
-				System.out.println( localize( MSG_SNIFF_SCHEMA ) );
-			
-			SAXException e;
-			try
-			{
-				XMLReader r = factory.newSAXParser().getXMLReader();
-				r.setErrorHandler(new ReportErrorHandler());
-				e = SchemaDetector.detect( r, getInputSource(grammarName) );
-			}
-			catch( SAXException spe )
-			{// detailed error message is already reported by SchemaDetecter.
-				System.out.println( localize( MSG_UNKNOWN_SCHEMA, grammarName ) );
-				return;
-			}
-			
-			if( e==SchemaDetector.relax )	relax=true;
-			else
-			if( e==SchemaDetector.trex )	trex=true;
-			else
-			{
-				System.out.println( localize( MSG_UNKNOWN_SCHEMA, grammarName ) );
-				return;
-			}
-		}
+		
 		
 		InputSource is = getInputSource(grammarName);
 
 		if(dump)
 		{
-			if(relax)		dumpRELAX(loadRELAX(is,false));
-			else			dumpTREX(loadTREX(is,false));
+			if(!relax && !trex)
+			{
+				System.out.println( localize( MSG_UNKNOWN_SCHEMA ) );
+				return;
+			}
+			
+			if(relax)		dumpRELAX(loadRELAX(is,warning));
+			else			dumpTREX(loadTREX(is,warning));
 			return;
 		}
-		else
-		{
-			TREXDocumentDeclaration docDecl;
 		
-			final long stime = System.currentTimeMillis();
-			System.out.println( localize(MSG_START_PARSING_GRAMMAR) );
-		
-			if(relax)
-			{
-				RELAXGrammar g = loadRELAX(is,warning);
-				docDecl = new TREXDocumentDeclaration(g.topLevel, (TREXPatternPool)g.pool, true );
-			}
-			else
-				docDecl = new TREXDocumentDeclaration(loadTREX(is,warning));
 
-			long parsingTime = System.currentTimeMillis();
-			if( verbose )
-				System.out.println( localize( MSG_PARSING_TIME, new Long(parsingTime-stime) ) );
+		TREXDocumentDeclaration docDecl;
+		
+	// parse schema
+	//--------------------
+		final long stime = System.currentTimeMillis();
+		System.out.println( localize(MSG_START_PARSING_GRAMMAR) );
+
 			
-			
-			for( int i=0; i<fileNames.size(); i++ )
-			{
-				final String instName = (String)fileNames.elementAt(i);
-				System.out.println( localize( MSG_VALIDATING, instName) );
-				verify( docDecl, getInputSource(instName) );
-			}
-			
-			if( verbose )
-				System.out.println( localize( MSG_VALIDATION_TIME, new Long(System.currentTimeMillis()-parsingTime) ) );
+		if(relax)
+		{
+			RELAXGrammar g = loadRELAX(is,warning);
+			docDecl = new TREXDocumentDeclaration(g.topLevel, (TREXPatternPool)g.pool, true );
 		}
+		else
+		if(trex)
+			docDecl = new TREXDocumentDeclaration(loadTREX(is,warning));
+		else
+		{// sniff and load
+			if( verbose )
+				System.out.println( localize( MSG_SNIFF_SCHEMA ) );
+			docDecl = IntelligentLoader.loadVGM(is,new DebugController(warning),factory);
+		}
+			
+		long parsingTime = System.currentTimeMillis();
+		if( verbose )
+			System.out.println( localize( MSG_PARSING_TIME, new Long(parsingTime-stime) ) );
+		
+	// validate documents
+	//--------------------
+		for( int i=0; i<fileNames.size(); i++ )
+		{
+			final String instName = (String)fileNames.elementAt(i);
+			System.out.println( localize( MSG_VALIDATING, instName) );
+			verify( docDecl, getInputSource(instName) );
+		}
+			
+		if( verbose )
+			System.out.println( localize( MSG_VALIDATION_TIME, new Long(System.currentTimeMillis()-parsingTime) ) );
 	}
 	
 	public static TREXGrammar loadTREX( InputSource is, boolean warning ) throws Exception

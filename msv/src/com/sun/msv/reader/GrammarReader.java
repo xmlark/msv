@@ -50,8 +50,8 @@ import com.sun.tranquilo.datatype.DataType;
  * Or you may want to use several pre-defined static "parse" methods for
  * ease of use.
  * 
- * @see RELAXGrammarReader#parse
- * @see TREXGrammarReader#parse
+ * @seealso com.sun.tranquilo.reader.relax.RELAXReader#parse
+ * @seealso com.sun.tranquilo.reader.trex.TREXGrammarReader#parse
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */

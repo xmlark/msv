@@ -13,7 +13,6 @@ import java.text.MessageFormat;
 import java.util.ResourceBundle;
 import java.util.Map;
 import java.util.Stack;
-//import java.io.IOException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.Attributes;
@@ -59,7 +58,7 @@ public class TREXGrammarReader extends GrammarReader
 		else				return reader.grammar;
 	}
 	
-	protected TREXGrammarReader(
+	public TREXGrammarReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
 		TREXPatternPool pool )
@@ -122,6 +121,12 @@ public class TREXGrammarReader extends GrammarReader
 	
 	/** grammar object currently being loaded. */
 	protected TREXGrammar grammar;
+	/** obtains parsed grammar object only if parsing was successful. */
+	public final TREXGrammar getResult()
+	{
+		if(hadError)	return null;
+		else			return grammar;
+	}
 	
 	/** stack that stores value of ancestor 'ns' attribute. */
 	private Stack nsStack = new Stack();

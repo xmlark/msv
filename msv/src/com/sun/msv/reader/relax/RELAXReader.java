@@ -64,7 +64,7 @@ public class RELAXReader extends GrammarReader
 	}
 	
 	
-	protected RELAXReader(
+	public RELAXReader(
 		GrammarReaderController controller,
 		SAXParserFactory parserFactory,
 		ExpressionPool pool )
@@ -167,12 +167,22 @@ public class RELAXReader extends GrammarReader
 	}
 	
 	/** RELAX grammar that is currentlt being loaded */
-	protected final RELAXGrammar grammar;
+	public final RELAXGrammar grammar;
+
+	/** obtains parsed grammar object only if parsing was successful. */
+	public final RELAXGrammar getResult()
+	{
+		if(hadError)	return null;
+		else			return grammar;
+	}
 	
+
 	/** currently active RELAX module.
 	 * 
 	 * reference without namespace will be resolved to this module.
 	 * declarations will be added to this module.
+	 * 
+	 * this field is set to null when parsing top level declaration.
 	 */
 	protected RELAXModule currentModule;
 	

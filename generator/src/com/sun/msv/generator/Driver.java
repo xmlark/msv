@@ -16,10 +16,11 @@ import java.util.*;
 import com.sun.tranquilo.grammar.trex.*;
 import com.sun.tranquilo.grammar.relax.*;
 import com.sun.tranquilo.grammar.*;
+import com.sun.tranquilo.driver.textui.DebugController;
 import com.sun.tranquilo.reader.trex.TREXGrammarReader;
 import com.sun.tranquilo.reader.relax.RELAXReader;
+import com.sun.tranquilo.reader.util.IntelligentLoader;
 import org.apache.xml.serialize.*;
-import com.sun.tranquilo.driver.textui.SchemaDetector;
 
 /**
  * command line driver.
@@ -230,44 +231,34 @@ public class Driver
 		
 		// load a schema
 		//===========================================
+		Object grammar;
 		if( !trex && !relax )
 		{// schema type is not specified. sniff it.
-//			if( verbose )
-//				System.out.println( localize( MSG_SNIFF_SCHEMA ) );
-			
-			SAXException e = SchemaDetector.detect(
-				factory.newSAXParser().getXMLReader(),
-				getInputSource(grammarName) );
-			
-			if( e==SchemaDetector.relax )	relax=true;
-			else
-			if( e==SchemaDetector.trex )	trex=true;
-			else
-			{
-				System.out.println( "unable to detect schema type" );
-				return;
-			}
+			grammar = IntelligentLoader.loadSchema(
+				grammarName, new DebugController(false), factory );
 		}
-		
-		if( relax )
-		{
-			RELAXGrammar g =
-				RELAXReader.parse(
+		if(relax)
+			grammar = RELAXReader.parse(
 					getInputSource(grammarName),
 					factory,
 					new com.sun.tranquilo.driver.textui.DebugController(false),
 					new TREXPatternPool() );
+		else
+			grammar = TREXGrammarReader.parse(
+					getInputSource(grammarName),
+					factory,
+					new com.sun.tranquilo.driver.textui.DebugController(false) );
+		
+		if( grammar instanceof RELAXGrammar )
+		{
+			RELAXGrammar g = (RELAXGrammar)grammar;
 			NoneTypeRemover.removeNoneType(g);
 			opt.pool = (TREXPatternPool)g.pool;
 			topLevel = g.topLevel.visit( new RefExpRemover(g.pool) );
 		}
 		else
 		{
-			TREXGrammar g = 
-				TREXGrammarReader.parse(
-					getInputSource(grammarName),
-					factory,
-					new com.sun.tranquilo.driver.textui.DebugController(false) );
+			TREXGrammar g = (TREXGrammar)grammar;
 			topLevel = g.start.visit( new RefExpRemover(g.pool) );
 		}
 		

@@ -44,4 +44,22 @@ abstract class IntegerDerivedType extends ConcreteType implements Comparator
 		if(r>0)	return GREATER;
 		return EQUAL;
 	}
+
+	/**
+	 * removes leading optional '+' sign.
+	 * 
+	 * Several Java conversion functions (e.g., Long.parseLong)
+	 * do not accept leading '+' sign.
+	 */
+	protected String removeOptionalPlus(String s)
+	{
+		if(s.length()<=1 || s.charAt(0)!='+')	return s;
+		
+		s = s.substring(1);
+		char ch = s.charAt(0);
+		if('0'<=ch && ch<='9')	return s;
+		if('.'==ch )	return s;
+		
+		throw new NumberFormatException();
+	}
 }

@@ -25,6 +25,7 @@ public class LongType extends IntegerDerivedType
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		try
 		{
+			lexicalValue = removeOptionalPlus(lexicalValue);
 			return new Long(lexicalValue);
 		}
 		catch( NumberFormatException e )

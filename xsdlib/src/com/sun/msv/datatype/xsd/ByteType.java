@@ -26,6 +26,7 @@ public class ByteType extends IntegerDerivedType
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		try
 		{
+			content = removeOptionalPlus(content);
 			return new Byte(content);
 		}
 		catch( NumberFormatException e )

@@ -14,7 +14,7 @@ package com.sun.tranquilo.datatype;
  * 
  * See http://www.w3.org/TR/xmlschema-2/#unsignedByte for the spec
  */
-public class UnsignedByteType extends IntegerDerivedType
+public class UnsignedByteType extends ShortType
 {
 	public static final UnsignedByteType theInstance = new UnsignedByteType();
 	private UnsignedByteType() { super("unsignedByte"); }
@@ -27,10 +27,10 @@ public class UnsignedByteType extends IntegerDerivedType
 		// Implementation of JDK1.2.2/JDK1.3 is suitable enough
 		try
 		{
-			Short v = new Short(lexicalValue);
-			if(v==null)						return null;
-			if( v.shortValue()<0 )          return null;
-			if( v.shortValue()>upperBound ) return null;
+			Short v = (Short)super.convertToValue(lexicalValue,context);
+			if( v==null )						return null;
+			if( v.shortValue()<0 )               return null;
+			if( v.shortValue()>upperBound )      return null;
 			return v;
 		}
 		catch( NumberFormatException e )

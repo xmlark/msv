@@ -27,6 +27,7 @@ public class ElementRules extends ReferenceExp implements Exportable
 	
 	public void addElementRule( ExpressionPool pool, ElementRule newRule )
 	{
+		newRule.parent = this;
 		if( exp==null )		// the first element
 			exp = newRule;
 		else

@@ -165,6 +165,13 @@ public class RuleGenerator
 				}
 			}
 			
+			public void onKey( KeyExp exp ) {
+				if(visit(exp)) {
+					addRule( exp, new Expression[]{exp.exp} );
+					exp.exp.visit(this);
+				}
+			}
+			
 			public void onTypedString( TypedStringExp exp ) {
 				// this is a terminal symbol.
 			}

@@ -15,6 +15,7 @@ import com.sun.msv.grammar.util.ExpressionWalker;
 import com.sun.tahiti.compiler.XMLWriter;
 import com.sun.tahiti.compiler.Symbolizer;
 import com.sun.tahiti.grammar.*;
+import com.sun.tahiti.reader.TypeUtil;
 import org.relaxng.datatype.Datatype;
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.SAXException;
@@ -310,6 +311,27 @@ public class RuleFileGenerator implements Symbolizer {
 				out.end("content");
 					LLTableCalculator.calc( grammar.getTopLevel(), rules, grammar.getPool(),this ).write(out,this);
 				out.end("topLevel");
+			}
+			
+			
+			{// compute the base type of possible top-level classes
+				final Set rootClasses = new java.util.HashSet();
+				grammar.getTopLevel().visit( new ExpressionWalker(){
+					private Set visitedExps = new java.util.HashSet();
+					public void onOther( OtherExp exp ) {
+						if( exp instanceof TypeItem )
+							rootClasses.add(exp);
+						// we don't need to parse inside a JavaItem.
+					}
+					public void onElement( ElementExp exp ) {
+						if( visitedExps.add(exp) )
+							exp.contentModel.visit(this);
+					}
+				});
+				
+				Type rootType = TypeUtil.getCommonBaseType(rootClasses);
+				out.element("rootType",
+					new String[]{"name", rootType.getTypeName()});
 			}
 			
 			out.end("grammar");

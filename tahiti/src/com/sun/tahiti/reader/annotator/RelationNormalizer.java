@@ -16,6 +16,7 @@ import com.sun.msv.reader.GrammarReader;
 import com.sun.tahiti.grammar.*;
 import com.sun.tahiti.grammar.util.Multiplicity;
 import com.sun.tahiti.grammar.util.MultiplicityCounter;
+import com.sun.tahiti.reader.TypeUtil;
 import java.util.Set;
 import org.xml.sax.Locator;
 
@@ -144,7 +145,7 @@ class RelationNormalizer {
 					possibleTypes.addAll(fields[k].types);
 				
 				// then compute the base type of them.
-				fieldUses[j].type = getCommonBaseType( (Type[])possibleTypes.toArray(new Type[0]) );
+				fieldUses[j].type = TypeUtil.getCommonBaseType( (Type[])possibleTypes.toArray(new Type[0]) );
 			}
 		}
 		
@@ -206,6 +207,14 @@ class RelationNormalizer {
 		public Expression onList( ListExp exp ) {
 			// <list> itself doesn't affect the multiplicity.
 			return reader.pool.createList(exp.exp.visit(this));
+		}
+		
+		public Expression onKey( KeyExp exp ) {
+			// <key> itself doesn't affect the multiplicity.
+			if(exp.isKey)
+				return reader.pool.createKey(exp.exp.visit(this),exp.name);
+			else
+				return reader.pool.createKeyref(exp.exp.visit(this),exp.name);
 		}
 
 		public Expression onConcur( ConcurExp exp ) {
@@ -283,7 +292,7 @@ class RelationNormalizer {
 			if(!(exp instanceof JavaItem))
 				return exp.exp.visit(this);
 			
-			// skip any JavaItem if it is in the ignored item.
+			// skip any JavaItem if it is in an ignored item.
 			// this will effectively clone the entire descendants of the 
 			// IgnoreItem.
 			if( isIgnore(parentItem) )
@@ -571,23 +580,6 @@ class RelationNormalizer {
 			//  otherwise recurse to the children
 			return null;
 		}
-	}
-	
-	/**
-	 * compute the common base type of two types.
-	 * 
-	 * TODO: this is a very interesting problem. Since one type has possibly
-	 * multiple base types, it's not an easy problem.
-	 * The current implementation is very naive.
-	 */
-	protected static Type getCommonBaseType( Type[] t ) {
-		// TODO:
-		
-		for( int i=1; i<t.length; i++ )
-			if(t[0]!=t[i])
-				return SystemType.get(Object.class);
-		
-		return t[0];
 	}
 	
 	

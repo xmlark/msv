@@ -238,7 +238,8 @@ public class TRELAXNGReader extends RELAXNGReader {
 		if( role.equals("class") || role.equals("interface") ) {
 			// append the default package name, if necessary.
 			int idx = name.indexOf('.');
-			if(idx<0)	name = defaultPackageName+"."+name;
+			if(idx<0 && defaultPackageName.length()!=0 )
+				name = defaultPackageName+"."+name;
 		}
 		
 		return name;

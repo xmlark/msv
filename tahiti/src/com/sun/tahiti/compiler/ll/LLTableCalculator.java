@@ -120,6 +120,10 @@ public class LLTableCalculator
 					recordFollows(exp);
 					exp.exp.visit(this);
 				}
+				public void onKey( KeyExp exp ) {
+					recordFollows(exp);
+					exp.exp.visit(this);
+				}
 				public void onMixed( MixedExp exp ) {
 					recordFollows(exp);
 					exp.exp.visit(this);
@@ -252,6 +256,9 @@ public class LLTableCalculator
 				exp.exp2.visit(this);
 			}
 			public void onList( ListExp exp ) {
+				exp.exp.visit(this);
+			}
+			public void onKey( KeyExp exp ) {
 				exp.exp.visit(this);
 			}
 			public void onMixed( MixedExp exp ) {

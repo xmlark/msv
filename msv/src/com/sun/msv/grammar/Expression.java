@@ -122,7 +122,6 @@ public abstract class Expression
 	static final int HASHCODE_MIXED =			11;
 	
 	// values for TREX pattern
-	// TODO: move them somewhere else
 	protected static final int HASHCODE_CONCUR =			20;
 	protected static final int HASHCODE_INTERLEAVE =		21;
 	

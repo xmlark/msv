@@ -44,10 +44,20 @@ public class TypeIncubator {
 
 	/** adds a facet to this set.
 	 *
+	 * @deprecated
+	 *		please use the addFacet method, which is better named.
+	 */
+	public void add( String name, String strValue, boolean fixed,
+					 ValidationContext context ) throws DatatypeException {
+		addFacet( name, strValue, fixed, context );
+	}
+	
+	/** adds a facet to this set.
+	 *
 	 * @exception	BadTypeException
 	 *		when given facet is already specified
 	 */
-	public void add( String name, String strValue, boolean fixed,
+	public void addFacet( String name, String strValue, boolean fixed,
 					 ValidationContext context ) throws DatatypeException {
 		// checks applicability of the facet
 		switch( baseType.isFacetApplicable(name) ) {

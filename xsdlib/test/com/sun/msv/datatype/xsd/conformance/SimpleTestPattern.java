@@ -31,7 +31,7 @@ class SimpleTestPattern implements TestPattern
 		switch(idx)
 		{
 		case 0:
-			incubator.add( facetName, facetValue, false, DummyContextProvider.theInstance );
+			incubator.addFacet( facetName, facetValue, false, DummyContextProvider.theInstance );
 			return answer;
 		default:
 			throw new Error();

@@ -77,7 +77,7 @@ public class CommandLineTester
 					// to add a facet, call add method.
 					// you MUST supply a valid ValidationContextProvider,
 					// although this example omits one.
-					incubator.add( facetName, facetValue, false, null );
+					incubator.addFacet( facetName, facetValue, false, null );
 					continue;
 				}
 				if( cmd.equals("test") )

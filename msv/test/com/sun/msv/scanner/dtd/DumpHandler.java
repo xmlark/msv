@@ -2,6 +2,7 @@ package com.sun.tranquilo.scanner.dtd;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.Locator;
 
 import java.text.MessageFormat;
 
@@ -191,4 +192,6 @@ public class DumpHandler implements DTDEventListener {
 		default:			throw new Error();
 		}
 	}
+
+	public void setDocumentLocator( Locator loc ) {}
 }

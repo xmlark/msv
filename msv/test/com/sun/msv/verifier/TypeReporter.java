@@ -61,18 +61,18 @@ public class TypeReporter extends DefaultHandler
 			grammar = RELAXCoreReader.parse(
 					args[1],
 					factory,
-					new com.sun.msv.driver.textui.DebugController(false),
+					new com.sun.msv.driver.textui.DebugController(false,false),
 					new TREXPatternPool() );
 		else
 		if( args[0].equals("relaxNS") )
 			grammar = RELAXNSReader.parse(
 					args[1],
 					factory,
-					new com.sun.msv.driver.textui.DebugController(false),
+					new com.sun.msv.driver.textui.DebugController(false,false),
 					new TREXPatternPool() );
 		else {
 			TREXGrammarReader reader = new TREXGrammarReader(
-				new com.sun.msv.driver.textui.DebugController(false),
+				new com.sun.msv.driver.textui.DebugController(false,false),
 				factory,
 				new TypedTREXGrammarInterceptor(),
 				new TREXPatternPool() );

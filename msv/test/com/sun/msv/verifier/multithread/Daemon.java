@@ -61,7 +61,7 @@ public class Daemon implements Runnable
 
 		grammar = GrammarLoader.loadSchema(
 				schemaName,
-				new com.sun.msv.driver.textui.DebugController(false),
+				new com.sun.msv.driver.textui.DebugController(false,false),
 				factory );
 		
 		

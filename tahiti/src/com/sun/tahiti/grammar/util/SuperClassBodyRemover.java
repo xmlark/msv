@@ -67,30 +67,48 @@ import java.util.Set;
  * @author
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class SuperClassBodyRemover extends ExpressionWalker {
+public class SuperClassBodyRemover extends ExpressionCloner {
 	
 	private final Set visitedRefs = new java.util.HashSet();
 	
-	public static void remove( Grammar g ) {
-		g.getTopLevel().visit(new SuperClassBodyRemover(g.getPool()));
+	public static void remove( AnnotatedGrammar g ) {
+		SuperClassBodyRemover su = new SuperClassBodyRemover(g.getPool());
+		
+		ClassItem[] cls = g.getClasses();
+		for( int i=0; i<cls.length; i++ )
+			cls[i].exp = cls[i].exp.visit(su);
 	}
 	
-	public void onRef( ReferenceExp exp ) {
+	public Expression onAttribute( AttributeExp exp ) {
+		return pool.createAttribute( exp.nameClass, exp.exp.visit(this) );
+	}
+	
+	public Expression onElement( ElementExp exp ) {
 		if(visitedRefs.add(exp))
-			super.onRef(exp);	// recurse children if this is the first visit.
+			exp.contentModel = exp.contentModel;
+		return exp;
 	}
 	
-	public void onOther( OtherExp exp ) {
+	public Expression onRef( ReferenceExp exp ) {
+		if(visitedRefs.add(exp))
+			exp.exp = exp.exp.visit(this);
+		return exp;		// recurse children if this is the first visit.
+	}
+	
+	public Expression onOther( OtherExp exp ) {
 		if( exp instanceof SuperClassItem ) {
-			exp.exp = exp.exp.visit(remover);
+			return exp.exp.visit(remover);
 		}
 		if(visitedRefs.add(exp))
-			super.onOther(exp);
+			exp.exp=exp.exp.visit(this);
+		return exp;
 	}
 	
 	private ExpressionCloner remover;
 
+	
 	private SuperClassBodyRemover( ExpressionPool pool ) {
+		super(pool);
 		remover = new ExpressionCloner(pool){
 			
 			public Expression onRef( ReferenceExp exp ) {

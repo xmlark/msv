@@ -189,7 +189,7 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 					if(primitiveType==null)		primitiveType = thisType;
 					else
 					// this short cut doesn't work if the underlying datatype is
-					// possibly different.
+					// different.
 					if(primitiveType.dt!=thisType.dt)	fail = true;
 					continue;
 				}
@@ -258,6 +258,10 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 				// no "otherwise" branch.)
 				if(undecidable!=null) {
 					// unable to produce marshaller.
+//					System.out.println(
+//						com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(exp));
+//					System.out.println(
+//						com.sun.msv.grammar.util.ExpressionPrinter.printFragment(owner.exp));
 					controller.warning( null,
 						localize(
 							UNABLE_TO_PRODUCE_MARSHALLER_UNDECIDABLE_CHOICE, owner.getTypeName() ));
@@ -371,7 +375,7 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 			return;
 		}
 					
-		throw new Error();
+		throw new Error(exp.toString());
 	}
 				
 	public void onSequence( SequenceExp exp )		{ onGroup(exp); }
@@ -484,7 +488,17 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 				if( exp instanceof ClassItem || exp instanceof InterfaceItem
 				||  exp instanceof PrimitiveItem ) {
 					assert( currentField!=null );
-					branchFields.remove( currentField.name );
+					if(branchFields.remove( currentField.name )) {
+/*						System.out.println(currentField.name+" is removed");
+						System.out.println("owner is "+
+							com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(owner));
+						System.out.println("branch is "+branch.toString());
+						System.out.println(
+							com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(branch));
+						Exception e = new Exception();
+						e.fillInStackTrace();
+						e.printStackTrace(System.out);
+*/					}
 					return;
 				}
 				if( exp instanceof IgnoreItem )	return;
@@ -522,7 +536,25 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 			public void onEpsilon() {}
 			
 			private boolean test( Expression exp ) {
-				if( exp!=branch )	return true;
+				if( exp!=branch ) {
+/*					if( exp instanceof OneOrMoreExp && branch instanceof OneOrMoreExp ) {
+						try {
+						System.out.println( exp.toString()+" vs "+branch.toString() );
+						System.out.println(
+							((OneOrMoreExp)exp).exp.toString() +" , "+
+							((OneOrMoreExp)branch).exp.toString() );
+						FieldItem lhs = (FieldItem)((OneOrMoreExp)exp).exp;
+						FieldItem rhs = (FieldItem)((OneOrMoreExp)branch).exp;
+						System.out.println( lhs.name + " : " + rhs.name );
+						System.out.println( lhs.exp.toString() + " / " + rhs.exp.toString() );
+						System.out.println(
+							((InterfaceItem)lhs.exp).name
+							+ " / " +
+							((ClassItem)rhs.exp).name );
+						} catch( Exception e ) {;}
+					}
+*/					return true;
+				}
 				
 				if(visitBranch)
 					// this is the second time to visit the branch.

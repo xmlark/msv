@@ -189,7 +189,16 @@ public class RuleGenerator
 				if(visit(exp)) {
 					Expression item = exp.exp;
 					Expression intermediate = pool.createZeroOrMore(item);
-					addRule( exp, new Expression[]{item,intermediate} );
+					if( intermediate==exp ) {
+						// if item is epsilon-reducible, then createZeroOrMore returns
+						// the same expression as exp. This case has to be treated
+						// differently.
+						rules.put( exp, new Rule[]{
+							new Rule( exp, new Expression[]{Expression.epsilon} ),
+							new Rule( exp, new Expression[]{item,intermediate} ) } );
+					} else {
+						addRule( exp, new Expression[]{item,intermediate} );
+					}
 					item.visit(this);
 					// this will create rules for the "intermediate"
 					intermediate.visit(this);
@@ -227,7 +236,7 @@ public class RuleGenerator
 				rules.put( left, new Rule[]{ new Rule(left,right) } );
 			}
 		});
-		
+
 
 		
 		/*

@@ -16,6 +16,7 @@ import com.sun.tahiti.compiler.XMLWriter;
 import com.sun.tahiti.compiler.Symbolizer;
 import com.sun.tahiti.grammar.*;
 import com.sun.tahiti.reader.TypeUtil;
+import com.sun.tahiti.reader.NameUtil;
 import org.relaxng.datatype.Datatype;
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.SAXException;
@@ -376,12 +377,13 @@ public class RuleSerializer implements Symbolizer {
 	private static String computeName( NameClass nc, Map m ) {
 		if( nc instanceof SimpleNameClass ) {
 			SimpleNameClass snc = (SimpleNameClass)nc;
-			if(!m.containsValue(snc.localName))
-				return snc.localName;
+			String name = NameUtil.toIdentifier(snc.localName);
+			if(!m.containsValue(name))
+				return name;
 			
 			return getNumberedName( snc.localName, 2, m );
 		} else {
-			return getNumberedName( "", 0, m );
+			return getNumberedName( "", 1, m );
 		}
 	}
 	
@@ -389,13 +391,20 @@ public class RuleSerializer implements Symbolizer {
 	 * generate an unique name by concatenating a number to its tail.
 	 */
 	private static String getNumberedName( String prefix, int count, Map m ) {
-		while(m.containsValue( prefix+Integer.toString(count) ))	count++;
-			
-		return prefix+Integer.toString(count);
+		
+		if( NameUtil.toIdentifier(prefix).length()==0 )
+			prefix = "_" + prefix;
+		
+		String name;
+		do {
+			name = NameUtil.toIdentifier( prefix+Integer.toString(count++) );
+		} while( m.containsValue(name) );
+
+		return name;
 	}
 
 	/**
-	 * computes a unique name that is used as a field name for
+	 * computes an unique name that is used as a field name for
 	 * the Datatype.
 	 * 
 	 * @param dt
@@ -407,10 +416,13 @@ public class RuleSerializer implements Symbolizer {
 	private static String computeName( Datatype dt, Map m ) {
 		if( dt instanceof XSDatatype ) {
 			XSDatatype xsdt = (XSDatatype)dt;
-			if( xsdt.getName()!=null && !m.containsValue(xsdt.getName()) )
-				return xsdt.getName();
-			
-			return getNumberedName( xsdt.getConcreteType().getName(), 2, m );
+			if( xsdt.getName()!=null ) {
+				String name = NameUtil.toIdentifier( xsdt.getName() );
+				if(!m.containsValue(name) )	return name;
+				else
+					getNumberedName( name, 2, m );
+			} else 
+				return getNumberedName( xsdt.getConcreteType().getName(), 2, m );
 		}
 		
 		return getNumberedName( "", 0, m );

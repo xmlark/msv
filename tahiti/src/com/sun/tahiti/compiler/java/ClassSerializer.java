@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Vector;
 import java.text.MessageFormat;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -162,7 +163,23 @@ public class ClassSerializer
 		
 	// prepare field serializers
 	//----------------------------------------
-		FieldUse[] fields = (FieldUse[])type.fields.values().toArray(new FieldUse[0]);
+		FieldUse[] fields;
+		{
+			Vector f = new Vector();
+			TypeItem t = type;
+			while(true) {
+				f.addAll( t.fields.values() );
+				if( t instanceof ClassItem ) {
+					ClassItem c = (ClassItem)t;
+					if(c.superClass!=null) {
+						t = c.superClass.definition;
+						continue;
+					}
+				}
+				break;
+			}
+			fields = (FieldUse[])f.toArray(new FieldUse[0]);
+		}
 		FieldSerializer[] fieldSerializers = new FieldSerializer[fields.length];
 
 		// a map from field name to FieldSerializer.

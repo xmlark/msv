@@ -165,7 +165,10 @@ class MarshallerSerializer extends DOMVisitor {
 					
 	/** gets the FieldSerializer for the specified field. */
 	private FieldSerializer getSerializer( String fieldName ) {
-		return (FieldSerializer)fieldSerializers.get(fieldName);
+		FieldSerializer s = (FieldSerializer)fieldSerializers.get(fieldName);
+		if(s==null)	// assertion
+			throw new Error(fieldName);
+		return s;
 	}
 																					  
 	private int indent = 2;

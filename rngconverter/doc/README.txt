@@ -59,7 +59,7 @@ KNOWN LIMITATIONS
 
 
 [1] Sun Multi-Schema Validator
-     http://www.sun.com/xml/@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+     http://www.sun.com/software/xml/developers/multischema/
 
 ======================================================================
 END OF README

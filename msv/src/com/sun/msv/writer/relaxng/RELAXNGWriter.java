@@ -520,12 +520,12 @@ public class RELAXNGWriter implements GrammarWriter {
 			NameClass tmp = null;
 			
 			for( int j=0; j<values.length; j++ ) {
-				if( !values[i].namespaceURI.equals(uris[i]) )	continue;
-				if( values[i].localName==MAGIC )				continue;
+				if( !values[j].namespaceURI.equals(uris[i]) )	continue;
+				if( values[j].localName==MAGIC )				continue;
 				
-				if( src.accepts(values[i])!=src.accepts(uris[i],MAGIC) ) {
-					if(tmp==null)	tmp = new SimpleNameClass(values[i]);
-					else			tmp = new ChoiceNameClass( tmp, new SimpleNameClass(values[i]) );
+				if( src.accepts(values[j])!=src.accepts(uris[i],MAGIC) ) {
+					if(tmp==null)	tmp = new SimpleNameClass(values[j]);
+					else			tmp = new ChoiceNameClass( tmp, new SimpleNameClass(values[j]) );
 				}
 			}
 			
@@ -539,6 +539,17 @@ public class RELAXNGWriter implements GrammarWriter {
 			if(r==null)		r = tmp;
 			else			r = new ChoiceNameClass(r,tmp);
 		}
+		
+		if( src.accepts(MAGIC,MAGIC) ) {
+			if( r==null )
+				r = AnyNameClass.theInstance;
+			else
+				r = new DifferenceNameClass( AnyNameClass.theInstance, r );
+		}
+		
+//		if(r==null)	{
+//			throw new Error("assertion failed:"+src+":"+names.size() );
+//		}
 		
 		r.visit(nameClassWriter);
 		

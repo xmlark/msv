@@ -1,5 +1,6 @@
 package com.sun.msv.schematron.verifier;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
@@ -21,6 +22,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
 
 import com.sun.msv.schematron.grammar.SAction;
+import com.sun.msv.schematron.grammar.SActions;
 import com.sun.msv.schematron.grammar.SElementExp;
 import com.sun.msv.schematron.grammar.SRule;
 import com.sun.msv.schematron.util.DOMBuilder;
@@ -61,6 +63,12 @@ public class RelmesVerifier implements IVerifier {
 	/** performs schematron validation. */
 	class SchematronVerifier extends DOMBuilder {
 		
+        /**
+         * ID -> value map. We can't trust DOM to do this for us.
+         */
+        private final Map idMap = new HashMap();
+        
+        
 		SchematronVerifier() throws ParserConfigurationException {}
 		
 		public void startElement( String ns, String local, String qname, Attributes atts ) throws SAXException {
@@ -73,15 +81,29 @@ public class RelmesVerifier implements IVerifier {
 				// memorize this node so that we can check it later.
 				checks.put( super.parent, o );
 			}
-		}
-		
-		private class Loc {
-			Loc( Locator src ) {
-				this.line = src.getLineNumber();
-				this.col = src.getColumnNumber();
-			}
-			public final int line;
-			public final int col;
+            
+            // build ID map
+            for( int i=0; i<atts.getLength(); i++ ) {
+                if( "ID".equals(atts.getType(i)) ) {
+                    // since there's no way to achieve this via DOM,
+                    // we need to directly talk to the implementation.
+                    System.out.println(super.dom.getClass().getName());
+                    try {
+                        // Xerces?
+                        ((org.apache.xerces.dom.CoreDocumentImpl)super.dom).putIdentifier(
+                            atts.getValue(i), (Element)super.parent );
+                    } catch( Throwable t ) {
+                        ; // ignore any error. it wasn't Xerces.
+                    }
+                    try {
+                        // Crimson?
+                        ((org.apache.crimson.tree.ElementNode2)super.parent)
+                            .setIdAttributeName(atts.getQName(i));
+                    } catch( Throwable t ) {
+                        ; // ignore any error. it wasn't Crimson.
+                    }
+                }
+            }
 		}
 		
 		/**
@@ -94,7 +116,7 @@ public class RelmesVerifier implements IVerifier {
 		 * a map from Node to SElementExp.
 		 * These are checked later.
 		 */
-		private Map checks = new java.util.HashMap();
+		private final Map checks = new java.util.HashMap();
 		
 		public void startDocument() throws SAXException {
 			super.startDocument();
@@ -106,20 +128,6 @@ public class RelmesVerifier implements IVerifier {
 			super.endDocument();
 			schematronValid = true;
 
-/*
-			final int len = checks.size();
-			for( int i=0; i<len; i++ ) {
-				CheckItem item = (CheckItem)checks.get(i);
-				try {
-					testItem((CheckItem)checks.get(i));
-				} catch( TransformerException e ) {
-					getVErrorHandler().onError( new ValidityViolation(
-						item.location, "XPath error:"+e.getMessage() ) );
-					schematronValid = false;
-					return;
-				}
-			}
-*/		
 			try {
 				testNode(super.dom);
 			} catch( TransformerException e ) {
@@ -149,6 +157,8 @@ public class RelmesVerifier implements IVerifier {
 						numRulesAdded++;
 					}
 				}
+                // if the element decl has any direction actions, run them now.
+                testActions( exp.actions, node );
 			}
 			
 			// test effective rules against this node
@@ -182,24 +192,33 @@ public class RelmesVerifier implements IVerifier {
 					throws SAXException, TransformerException {
 			
 			if( !rule.matches(node) )	return;
-			
+            
+            testActions(rule,node);
+        }
+                    
+                    
+		private void testActions( SActions actions, Node node )	
+                throws SAXException, TransformerException {
 //			System.out.println("rule tested");
 			
 			PrefixResolverDefault resolver = new PrefixResolverDefault(node);
 			
-			synchronized(rule) {
+			synchronized(actions) {
 				// I'm not sure whether XPath object is thread-safe.
 				// so for precaution, synchronize it.
+                
+                // I'm not sure if XPathContextImpl is reusable,
+                // so again just for precaution, we will create new ones each time
 				
-				for( int i=0; i<rule.asserts.length; i++ )
-					if(!rule.asserts[i].xpath.execute(
+				for( int i=0; i<actions.asserts.length; i++ )
+					if(!actions.asserts[i].xpath.execute(
 						new XPathContext(), node, resolver ).bool() )
-						reportError( node, rule.asserts[i] );
+						reportError( node, actions.asserts[i] );
 							
-				for( int i=0; i<rule.reports.length; i++ )
-					if(rule.reports[i].xpath.execute(
+				for( int i=0; i<actions.reports.length; i++ )
+					if(actions.reports[i].xpath.execute(
 						new XPathContext(), node, resolver ).bool() )
-						reportError( node, rule.reports[i] );
+						reportError( node, actions.reports[i] );
 			}					
 		}
 
@@ -228,6 +247,14 @@ public class RelmesVerifier implements IVerifier {
 			getErrorHandler().error( new ValidityViolation(
 				src, action.document, null ));
 		}
+        
+        
+        /**
+         * XPathContext implementation that supports ID.
+         */
+        private class XPathContextImpl extends XPathContext
+        {
+        }
 	}
 	
 	

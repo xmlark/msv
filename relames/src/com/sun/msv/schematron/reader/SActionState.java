@@ -15,11 +15,11 @@ public abstract class SActionState extends ChildlessState {
 		String test = startTag.getAttribute("test");
 		
 		if( test!=null ) {
-			SAction a = new SAction();
 			try {
-				a.xpath = new XPath(test,null,new PrefixResolverImpl(this), XPath.SELECT);
-				a.document = document.toString().trim();
-				onActionReady(a);
+				onActionReady(new SAction(
+                    new XPath(test,null,new PrefixResolverImpl(this), XPath.SELECT),
+                    document.toString().trim()
+                ));
 			} catch( TransformerException e ) {
 				reader.reportError( SRELAXNGReader.ERR_INVALID_XPATH, test, e.getMessage() );
 			}

@@ -22,36 +22,34 @@ import java.util.Set;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class NoneTypeRemover
-	extends ExpressionCloner
-{
-	/** set of visited ReferenceExps */
-	private final Set visitedRefs = new java.util.HashSet();
+public class NoneTypeRemover extends ExpressionCloner {
+	
+	/** set of visited ElementExps */
+	private final Set visitedElements = new java.util.HashSet();
 	
 	public NoneTypeRemover( ExpressionPool pool ) { super(pool); }
 	
-	public Expression onElement( ElementExp exp )
-	{
+	public Expression onElement( ElementExp exp ) {
+		// this check is necessary to prevent infinite recursion.
+		if( visitedElements.contains(exp) )	return exp;
+		visitedElements.add(exp);
 		exp.contentModel = exp.contentModel.visit(this);
 		return exp;
 	}
-	public Expression onAttribute( AttributeExp exp )
-	{
+	
+	public Expression onAttribute( AttributeExp exp ) {
 		Expression content = exp.exp.visit(this);
 		if( content==Expression.nullSet )
 			return Expression.epsilon;
 		else
 			return pool.createAttribute( exp.nameClass, content );
 	}
-	public Expression onTypedString( TypedStringExp exp )
-	{
+	
+	public Expression onTypedString( TypedStringExp exp ) {
 		if( exp.dt == NoneType.theInstance )	return Expression.nullSet;
 		else									return exp;
 	}
-	public Expression onRef( ReferenceExp exp )
-	{
-		if( visitedRefs.contains(exp) )	return exp;
-		visitedRefs.add(exp);
+	public Expression onRef( ReferenceExp exp ) {
 		exp.exp = exp.exp.visit(this);
 		return exp;
 	}

@@ -1,12 +1,13 @@
 package msv;
 
 import org.relaxng.testharness.validator.ISchema;
-import com.sun.msv.verifier.DocumentDeclaration;
+import com.sun.msv.grammar.Grammar;
 	
 class ISchemaImpl implements ISchema {
-	DocumentDeclaration docDecl;
+	Grammar grammar;
 	
-	ISchemaImpl( DocumentDeclaration docDecl ) {
-		this.docDecl = docDecl;
+	ISchemaImpl( Grammar grammar ) {
+		if(grammar==null)	throw new Error("grammar is null");
+		this.grammar = grammar;
 	}
 }

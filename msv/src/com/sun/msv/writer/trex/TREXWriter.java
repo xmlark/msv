@@ -824,7 +824,7 @@ public class TREXWriter {
 					PatternFacet pf = (PatternFacet)dtf;
 					for( int i=0; i<pf.exps.length; i++ )
 						element("xsd:pattern", new String[]{"value",
-							pf.exps[i].toString()} );
+							pf.patterns[i]} );
 				} else
 				if( dtf instanceof EnumerationFacet ) {
 					Object[] values = ((EnumerationFacet)dtf).values.toArray();

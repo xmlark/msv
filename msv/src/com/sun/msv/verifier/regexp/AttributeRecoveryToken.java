@@ -36,7 +36,7 @@ final class AttributeRecoveryToken extends AttributeToken
 		if(!exp.nameClass.accepts(namespaceURI,localName))	return false;
 		
 		// content model of the attribute must consume the value
-		if(residual.calcResidual(exp.exp, value).isEpsilonReducible())
+		if(!residual.calcResidual(exp.exp, value).isEpsilonReducible())
 			failedExp = pool.createChoice( failedExp, exp.exp );
 		
 		// accept AttributeExp regardless of its content restriction

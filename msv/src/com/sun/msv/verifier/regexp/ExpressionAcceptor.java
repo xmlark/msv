@@ -283,8 +283,8 @@ public abstract class ExpressionAcceptor implements Acceptor
 		
 		if( com.sun.tranquilo.driver.textui.Debug.debug )
 		{
-			System.out.println("content model by tag name only:");
-			System.out.print(com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter.printContentModel(e));
+			System.out.print("content model by tag name only:");
+			System.out.println(com.sun.tranquilo.grammar.trex.util.TREXPatternPrinter.printContentModel(e));
 		}
 		
 		if( e==Expression.nullSet )
@@ -596,7 +596,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 			
 			return docDecl.localizeMessage(
 						docDecl.DIAG_BAD_ATTRIBUTE_VALUE_DATATYPE,
-						dtMsg );
+						sti.attributes.getQName(attIndex), dtMsg );
 		}
 		if( constraint instanceof ChoiceExp )
 		{

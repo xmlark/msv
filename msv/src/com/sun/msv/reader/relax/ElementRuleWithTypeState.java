@@ -32,7 +32,6 @@ public class ElementRuleWithTypeState extends ElementRuleBaseState implements Fa
 	{
 		try
 		{
-			// TODO: ValidationContextProvider is necessary for every facet member
 			return reader.pool.createTypedString( incubator.derive(null) );
 		}
 		catch( BadTypeException e )

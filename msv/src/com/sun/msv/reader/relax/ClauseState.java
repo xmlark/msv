@@ -23,7 +23,6 @@ abstract class ClauseState extends SimpleState implements ExpressionOwner
 		return reader.pool.createSequence(exp,child);
 	}
 	
-	// TODO: check multiple constraint over the same attribute
 
 	/** gets reader in type-safe fashion */
 	protected RELAXReader getReader() { return (RELAXReader)reader; }

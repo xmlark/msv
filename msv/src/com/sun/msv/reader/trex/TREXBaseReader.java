@@ -12,7 +12,6 @@ package com.sun.msv.reader.trex;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 import java.util.Map;
-import java.util.Stack;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.Attributes;
@@ -27,6 +26,7 @@ import com.sun.msv.grammar.trex.*;
 import com.sun.msv.reader.*;
 import com.sun.msv.reader.datatype.DataTypeVocabulary;
 import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.util.LightStack;
 
 /**
  * reads TREX grammar from SAX2 and constructs abstract grammar model.
@@ -71,7 +71,7 @@ public abstract class TREXBaseReader extends GrammarReader {
 	}
 	
 	/** stack that stores value of ancestor 'ns' attribute. */
-	private Stack nsStack = new Stack();
+	private LightStack nsStack = new LightStack();
 	/** target namespace: currently active 'ns' attribute */
 	protected String targetNamespace ="";
 	public final String getTargetNamespace() { return targetNamespace; }

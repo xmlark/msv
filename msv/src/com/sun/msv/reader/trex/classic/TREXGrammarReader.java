@@ -12,7 +12,6 @@ package com.sun.msv.reader.trex.classic;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 import java.util.Map;
-import java.util.Stack;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.Attributes;

@@ -13,6 +13,7 @@ import com.sun.msv.reader.relax.core.RELAXCoreReader;
 import com.sun.msv.reader.trex.classic.TREXGrammarReader;
 import com.sun.msv.reader.trex.ng.RELAXNGReader;
 import com.sun.msv.reader.xmlschema.XMLSchemaReader;
+import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.relaxns.grammar.RELAXGrammar;
 import com.sun.msv.relaxns.reader.RELAXNSReader;
@@ -28,7 +29,10 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
 import org.xml.sax.helpers.DefaultHandler;
+import java.util.Vector;
+
 
 /**
  * loads RELAX module, RELAX grammar, or TREX grammar
@@ -96,83 +100,78 @@ public class GrammarLoader
 	}
 	
 	private static Grammar _loadSchema( Object source,
-		GrammarReaderController controller,
-		SAXParserFactory factory )
+		final GrammarReaderController controller,
+		final SAXParserFactory factory )
 		throws SAXException, ParserConfigurationException, java.io.IOException
 	{
-		ExpressionPool pool = new ExpressionPool();
+		final ExpressionPool pool = new ExpressionPool();
 		
-		RELAXNSReader relaxNs = new RELAXNSReader(controller,factory,pool);
-		RELAXCoreReader relaxCore = new RELAXCoreReader(controller,factory,pool);
-		RELAXNGReader relaxNg = new RELAXNGReader(controller,factory,new RELAXNGReader.StateFactory(),pool);
-		TREXGrammarReader trex = new TREXGrammarReader(controller,factory,new TREXGrammarReader.StateFactory(),pool);
-		XMLSchemaReader xmlSchema = new XMLSchemaReader(controller,factory,new XMLSchemaReader.StateFactory(),pool);
+		final XMLReader parser = factory.newSAXParser().getXMLReader();
+		/*
+			Use a "sniffer" handler and decide which reader to use.
+			Once the schema language is detected, the appropriate reader
+			instance is created and events are passed to that handler.
 		
-		XMLReader parser = factory.newSAXParser().getXMLReader();
-		Sniffer sniffer = new Sniffer(relaxNs,relaxCore,relaxNg,trex,xmlSchema,parser);
-		parser.setContentHandler(sniffer);
+			From the performance perspective, it is important not to
+			create unnecessary reader objects. Because readers typically
+			have a lot of references to other classes, instanciating a
+			reader instance will cause a lot of class loadings in the first time,
+			which makes non-trivial difference in the performance.
+		*/
+		parser.setContentHandler( new DefaultHandler(){
+			private Locator locator;
+			private Vector prefixes = new Vector();
+			public void setDocumentLocator( Locator loc ) {
+				this.locator = loc;
+			}
+			public void startPrefixMapping( String prefix, String uri ) {
+				prefixes.add( new String[]{prefix,uri} );
+			}
+			public void startElement( String namespaceURI, String localName, String qName, Attributes atts )
+									throws SAXException {
+				ContentHandler winner;
+				// sniff the XML and decide the reader to use.
+				if( localName.equals("module") )
+					// assume RELAX Core.
+					winner = new RELAXCoreReader(controller,factory,pool);
+				else
+				if( localName.equals("schema") )
+					// assume W3C XML Schema
+					winner = new XMLSchemaReader(controller,factory,
+						new XMLSchemaReader.StateFactory(),pool);
+				else
+				if( RELAXNSReader.RELAXNamespaceNamespace.equals(namespaceURI) )
+					// assume RELAX Namespace
+					winner = new RELAXNSReader(controller,factory,pool);
+				else
+				if( TREXGrammarReader.TREXNamespace.equals(namespaceURI)
+				||  namespaceURI.equals("") )
+					// assume TREX
+					winner = new TREXGrammarReader(controller,factory,
+						new TREXGrammarReader.StateFactory(),pool); 
+				else
+					// otherwise assume RELAX NG
+					winner = new RELAXNGReader(controller,factory,
+						new RELAXNGReader.StateFactory(),pool);
+				
+				// simulate the start of the document.
+				winner.setDocumentLocator(locator);
+				winner.startDocument();
+				for( int i=0; i<prefixes.size(); i++ ) {
+					String[] d = (String[])prefixes.get(i);
+					winner.startPrefixMapping( d[0], d[1] );
+				}
+				winner.startElement(namespaceURI,localName,qName,atts);
+				// redirect all successive events to the winner.
+				parser.setContentHandler(winner);
+			}
+		});
 		parser.setErrorHandler(new GrammarReaderControllerAdaptor(controller));
 		if( source instanceof String )	parser.parse( (String)source );
 		else							parser.parse( (InputSource)source );
 		
-		if(sniffer.winner==relaxNg)		return relaxNg.getResult();
-		if(sniffer.winner==relaxNs)		return relaxNs.getResult();
-		if(sniffer.winner==relaxCore)	return relaxCore.getResult();
-		if(sniffer.winner==trex)		return trex.getResult();
-		else							return xmlSchema.getResult();
+		return ((GrammarReader)parser.getContentHandler()).getResultAsGrammar();
 	}
 	
 	
-	
-	private static class Sniffer extends ForkContentHandler
-	{
-		Sniffer(
-			RELAXNSReader relaxNs, RELAXCoreReader relaxCore,
-			RELAXNGReader relaxNg,
-			TREXGrammarReader trex, XMLSchemaReader xmlSchema,
-			XMLReader parser ) {
-			
-			super(trex,
-				new ForkContentHandler(xmlSchema,
-					new ForkContentHandler(relaxNg,
-						new ForkContentHandler(relaxCore,relaxNs))));
-			this.relaxCore = relaxCore;
-			this.relaxNs = relaxNs;
-			this.relaxNg = relaxNg;
-			this.trex = trex;
-			this.xmlSchema = xmlSchema;
-			this.parser = parser;
-		}
-		
-		private final ContentHandler relaxCore,relaxNs,relaxNg,trex,xmlSchema;
-		private final XMLReader parser;
-
-		protected ContentHandler winner;
-
-		
-		public void startElement( String namespaceURI, String localName, String qName, Attributes atts )
-								throws SAXException {
-			if( localName.equals("module") )
-				winner = relaxCore;	// assume RELAX Core.
-			else
-			if( localName.equals("schema") )
-				winner = xmlSchema; // assume XML Schema
-			else
-			if( RELAXNSReader.RELAXNamespaceNamespace.equals(namespaceURI) )
-				winner = relaxNs;
-			else
-			if( RELAXNGReader.RELAXNGNamespace.equals(namespaceURI) )
-				winner = relaxNg;
-			else
-			if( TREXGrammarReader.TREXNamespace.equals(namespaceURI)
-			||  namespaceURI.equals("") )
-				winner = trex;
-			else
-				winner = relaxNg;	// otherwise assume RELAX NG
-			
-			winner.startElement(namespaceURI,localName,qName,atts);
-			// redirect all successive events to the winner.
-			parser.setContentHandler(winner);
-		}
-	}
 }

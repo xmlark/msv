@@ -12,7 +12,6 @@ package com.sun.msv.reader.trex.ng;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 import java.util.Map;
-import java.util.Stack;
 import java.util.Set;
 import java.util.Vector;
 import javax.xml.parsers.SAXParserFactory;
@@ -37,6 +36,7 @@ import com.sun.msv.reader.trex.DivInGrammarState;
 import com.sun.msv.reader.trex.IncludePatternState;
 import com.sun.msv.reader.datatype.DataTypeVocabulary;
 import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.util.LightStack;
 
 /**
  * reads RELAX NG grammar from SAX2 and constructs abstract grammar model.
@@ -395,8 +395,8 @@ public class RELAXNGReader extends TREXBaseReader {
 	 */
 	protected String datatypeLibURI = "";
 	
-	private final Stack dtLibStack = new Stack();
-	private final Stack dtLibURIStack = new Stack();
+	private final LightStack dtLibStack = new LightStack();
+	private final LightStack dtLibURIStack = new LightStack();
 
 	public String resolveNamespacePrefix( String prefix ) {
 		// In RELAX NG grammar, the default namespace should be resolved 

@@ -49,13 +49,30 @@ public class Driver
 			"\n"+
 			"  <output name> must include one '$'. '$' will be replaced by number.\n"+
 			"  e.g., test.$.xml -> test.1.xml test.2.xml test.3.xml ...\n"+
-			"  if omitted, stdout will be used.\n"
+			"  if omitted, generated file will be sent to stdout.\n"
 			);
 	}
 
 	public static void main( String[] args ) throws Exception
 	{
 		new Driver().run(args);
+	}
+	
+	protected double getRatio( String s )
+	{
+		int idx = s.indexOf('/');
+		double n = Double.parseDouble(s.substring(0,idx));
+		double m = Double.parseDouble(s.substring(idx+1));
+						
+		double ratio = n/m;
+						
+		if( ratio<=0 || ratio>1 )
+		{
+			System.out.println("error ratio out of range");
+			usage();
+			System.exit(-1);
+		}
+		return ratio;
 	}
 	
 	protected void run( String[] args ) throws Exception
@@ -75,89 +92,42 @@ public class Driver
 
 		// parse options
 		//===========================================
-		for( int i=0; i<args.length; i++ )
+		try
 		{
-			if( args[i].equalsIgnoreCase("-relax") )			relax = true;
-			else
-			if( args[i].equalsIgnoreCase("-trex") )				trex = true;
-			else
-			if( args[i].equalsIgnoreCase("-ascii") )
+			for( int i=0; i<args.length; i++ )
 			{
-				((DataTypeGeneratorImpl)opt.dtGenerator).asciiOnly = true;
-			}
-			else
-			if( args[i].equalsIgnoreCase("-nocomment") )
-			{
-				opt.insertComment = false;
-			}
-			else
-			if( args[i].equalsIgnoreCase("-depth") )
-			{
-				try {
+				if( args[i].equalsIgnoreCase("-relax") )
+					relax = true;
+				else
+				if( args[i].equalsIgnoreCase("-trex") )
+					trex = true;
+				else
+				if( args[i].equalsIgnoreCase("-ascii") )
+					((DataTypeGeneratorImpl)opt.dtGenerator).asciiOnly = true;
+				else
+				if( args[i].equalsIgnoreCase("-nocomment") )
+					opt.insertComment = false;
+				else
+				if( args[i].equalsIgnoreCase("-depth") )
 					opt.cutBackDepth = new Integer(args[++i]).intValue();
-				} catch( Exception e ) {
-					usage();
-					return;
-				}
-			}
-			else
-			if( args[i].equalsIgnoreCase("-width") )
-			{
-				try {
+				else
+				if( args[i].equalsIgnoreCase("-width") )
 					opt.width = new Rand.UniformRand( opt.random, new Integer(args[++i]).intValue() );
-				}catch( Exception e ) {
-					usage();
-					return;
-				}
-			}
-			else
-			if( args[i].equalsIgnoreCase("-n") ) {
-				try {
+				else
+				if( args[i].equalsIgnoreCase("-n") )
+				{
 					number = new Integer(args[++i]).intValue();
 					if( number<1 )	number=1;
-				} catch( Exception e ) {
-					usage();
-					return;
 				}
-			}
-			else
-			if( args[i].equalsIgnoreCase("-encoding") ) {
-				try {
+				else
+				if( args[i].equalsIgnoreCase("-encoding") )
 					encoding = args[++i];
-				} catch( Exception e ) {
-					usage();
-					return;
-				}
-			}
-			else
-			if( args[i].equalsIgnoreCase("-seed") )
-			{
-				try
-				{
+				else
+				if( args[i].equalsIgnoreCase("-seed") )
 					opt.random.setSeed( new Long(args[++i]).longValue() );
-				}catch(Exception e)
+				else
+				if( args[i].equalsIgnoreCase("-error") )
 				{
-					usage(); return;
-				}
-			}
-			else
-			if( args[i].equalsIgnoreCase("-error") )
-			{
-				try
-				{
-					int idx = args[++i].indexOf('/');
-					double n = Double.parseDouble(args[i].substring(0,idx));
-					double m = Double.parseDouble(args[i].substring(idx+1));
-					
-					double ratio = n/m;
-					
-					if( ratio<=0 || ratio>1 )
-					{
-						System.out.println("error ratio out of range");
-						usage();
-						return;
-					}
-					
 					opt.probGreedyChoiceError=
 					opt.probMissingAttrError=
 					opt.probMissingElemError=
@@ -169,32 +139,66 @@ public class Driver
 					opt.probMissingPlus=
 					opt.probAttrNameTypo=
 					opt.probElemNameTypo=
-						ratio;
+						getRatio(args[++i]);
 				}
-				catch( Exception e )
+				else
+				if( args[i].equalsIgnoreCase("-error-greedyChoice") )
+					opt.probGreedyChoiceError	= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-missingAttribute") )
+					opt.probMissingAttrError	= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-missingElement") )
+					opt.probMissingElemError	= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-mutatedAttribute") )
+					opt.probMutatedAttrError	= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-mutatedElement") )
+					opt.probMutatedElemError	= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-sequenceError") )
+					opt.probSeqError			= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-slipInAttribute") )
+					opt.probSlipInAttrError		= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-slipInElement") )
+					opt.probSlipInElemError		= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-missingPlus") )
+					opt.probMissingPlus			= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-attributeNameTypo") )
+					opt.probAttrNameTypo		= getRatio(args[++i]);
+				else
+				if( args[i].equalsIgnoreCase("-error-attributeNameTypo") )
+						opt.probElemNameTypo	= getRatio(args[++i]);
+				else
 				{
-					usage(); return;
+					if( args[i].charAt(0)=='-' )
+					{
+						System.err.println("unrecognized option :" + args[i]);
+						usage();
+						return;
+					}
+					
+					if( grammarName==null )	grammarName = args[i];
+					else
+					if( outputName==null ) outputName = args[i];
+					else
+					{
+						System.err.println("too many parameters");
+						usage();
+						return;
+					}
 				}
 			}
-			else
-			{
-				if( args[i].charAt(0)=='-' )
-				{
-					System.err.println("unrecognized option :" + args[i]);
-					usage();
-					return;
-				}
-				
-				if( grammarName==null )	grammarName = args[i];
-				else
-				if( outputName==null ) outputName = args[i];
-				else
-				{
-					System.err.println("too many parameters");
-					usage();
-					return;
-				}
-			}
+		}
+		catch(Exception e)
+		{
+			usage();
+			return;
 		}
 		
 		if( grammarName==null )

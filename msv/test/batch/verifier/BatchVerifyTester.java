@@ -13,6 +13,7 @@ import javax.xml.parsers.*;
 import java.util.Iterator;
 import java.io.*;
 import org.apache.xerces.parsers.SAXParser;
+import org.relaxng.testharness.validator.IValidator;
 import org.xml.sax.InputSource;
 import junit.framework.*;
 import com.sun.msv.verifier.*;
@@ -38,6 +39,24 @@ public class BatchVerifyTester extends batch.BatchTester
 			"usage "+this.getClass().getName()+" (relax|trex|xsd|dtd|rng) <test case directory>\n"+
 			"  tests the validation engine by using schema files and test instances\n"+
 			"  in the specified directory.");
+	}
+
+	public TestSuite suite() {
+		TestSuite suite = super.suite();
+		
+		// add test cases from the suite file.
+		IValidator val = null;
+		if( ext.equals(".xsd") )	val = new msv.IValidatorImplForXS();
+		if( ext.equals(".rng") )	val = new msv.IValidatorImpl();
+		
+		try {
+			suite.addTest( new SuiteTester(val).createTestSuiteFromDir(
+				new File(dir), ext+".ssuite" ) );
+		} catch( Exception e ) {
+			throw new Error(e.getMessage());
+		}
+		
+		return suite;
 	}
 	
 	/** gets a TestSuite that loads and verifies all test instances in the test directory. */

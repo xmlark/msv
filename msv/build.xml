@@ -148,6 +148,12 @@
         package="msv/msv/doc"
         command="export -d ${stageName} ${cvsExportOpt}"
         dest="." />
+    
+    <!-- obtain contrib files -->
+    <cvs  cvsRoot="${cvsRoot}"
+        package="msv/msv/contrib"
+        command="export -d contrib ${cvsExportOpt}"
+        dest="${stageName}" />
   
     <!-- obtain examples -->
     <mkdir dir="${stageName}/examples"/>

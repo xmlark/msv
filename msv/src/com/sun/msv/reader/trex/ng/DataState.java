@@ -10,9 +10,10 @@
 package com.sun.msv.reader.trex.ng;
 
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.relaxng.NGTypedStringExp;
+import com.sun.msv.grammar.TypedStringExp;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.ExpressionState;
+import com.sun.msv.reader.ExpressionOwner;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringPair;
 import org.relaxng.datatype.*;
@@ -22,11 +23,13 @@ import org.relaxng.datatype.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class DataState extends ExpressionState {
+public class DataState extends ExpressionState implements ExpressionOwner {
 	
 	protected State createChildState( StartTagInfo tag ) {
 		final RELAXNGReader reader = (RELAXNGReader)this.reader;
 		
+		if( tag.localName.equals("except") )
+			return reader.getStateFactory().dataExcept(this,tag);
 		if( tag.localName.equals("param") )
 			return reader.getStateFactory().dataParam(this,tag);
 		
@@ -42,6 +45,18 @@ public class DataState extends ExpressionState {
 	protected void startSelf() {
 		final RELAXNGReader reader = (RELAXNGReader)this.reader;
 		super.startSelf();
+
+		if( startTag.containsAttribute("key") ) {
+			// since this attribute was allowed in early RELAX NG,
+			// it is useful to explicitly raise this as an error.
+			reader.reportError( reader.ERR_DISALLOWED_ATTRIBUTE, startTag.qName, "key" );
+		}
+		
+		if( startTag.containsAttribute("keyref") ) {
+			// since this attribute was allowed in early RELAX NG,
+			// it is useful to explicitly raise this as an error.
+			reader.reportError( reader.ERR_DISALLOWED_ATTRIBUTE, startTag.qName, "keyref" );
+		}
 		
 		final String localName = startTag.getAttribute("type");
 		if( localName==null ) {
@@ -76,55 +91,28 @@ public class DataState extends ExpressionState {
 		}
 	}
 	
+	/** the 'except' clause. Null if nothing was specified */
+	protected Expression except = null;
+	
+	public void onEndChild( Expression child ) {
+		final RELAXNGReader reader = (RELAXNGReader)this.reader;
+		
+		// this method receives the 'except' clause, if any.
+		if( except!=null )
+			reader.reportError( reader.ERR_MULTIPLE_EXCEPT );
+		
+		except = child;
+	}
+	
 	protected Expression makeExpression() {
 		final RELAXNGReader reader = (RELAXNGReader)this.reader;
 		
-		final String typeName = startTag.getAttribute("type")+"-derived";
-		
 		try {
-			String keyQName = startTag.getAttribute("key");
-			String keyrefQName = startTag.getAttribute("keyref");
-			if( keyQName==null && keyrefQName==null )
-				// avoid NGTypedStringExp if possible.
-				// it's good for other applications,
-				// and TypedStringExps are sharable.
-				return reader.pool.createTypedString(
-					typeBuilder.createDatatype(), typeName );
+			if( except==null )	except=Expression.nullSet;
 			
-			String[] key = null;
-			String[] keyref = null;
-			if( keyQName!=null ) {
-				if( keyQName.indexOf(':')>=0 )
-					key = reader.splitQName(keyQName);
-				else
-					key = new String[]{reader.getTargetNamespace(),keyQName,keyQName};
+			return reader.pool.createTypedString(
+				typeBuilder.createDatatype(), baseTypeName, except );
 				
-				if( key==null ) {
-					reader.reportError( reader.ERR_UNDECLARED_PREFIX, keyQName );
-					return Expression.nullSet;
-				}
-			}
-			if( keyrefQName!=null ) {
-				if( keyrefQName.indexOf(':')>=0 )
-					keyref = reader.splitQName(keyrefQName);
-				else
-					keyref = new String[]{reader.getTargetNamespace(),keyrefQName,keyrefQName};
-				if( keyref==null ) {
-					reader.reportError( reader.ERR_UNDECLARED_PREFIX, keyrefQName );
-					return Expression.nullSet;
-				}
-			}
-			
-			
-			
-			NGTypedStringExp exp = new NGTypedStringExp(
-				typeBuilder.createDatatype(), typeName, 
-				key   !=null?new StringPair(key[0],key[1]):null,
-				keyref!=null?new StringPair(keyref[0],keyref[1]):null, baseTypeName );
-			reader.keyKeyrefs.add(exp);
-			reader.setDeclaredLocationOf(exp);	// memorize the location.
-			return exp;
-			
 		} catch( DatatypeException dte ) {
 			reader.reportError( reader.ERR_INVALID_PARAMETERS, dte.getMessage() );
 			// recover by returning something.

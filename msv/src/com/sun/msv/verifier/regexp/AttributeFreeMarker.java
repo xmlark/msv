@@ -16,10 +16,9 @@ import com.sun.msv.grammar.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class AttributeFreeMarker implements ExpressionVisitorBoolean
-{
-	protected OptimizationTag get(Expression exp)
-	{
+public class AttributeFreeMarker implements ExpressionVisitorBoolean {
+	
+	protected OptimizationTag get(Expression exp) {
 		OptimizationTag ot = (OptimizationTag)exp.verifierTag;
 		if(ot==null)	exp.verifierTag = ot = new OptimizationTag();
 		return ot;
@@ -35,6 +34,7 @@ public class AttributeFreeMarker implements ExpressionVisitorBoolean
 	public boolean onOneOrMore( OneOrMoreExp exp )	{ return onUnaryExp(exp); }
 	public boolean onMixed( MixedExp exp )			{ return onUnaryExp(exp); }
 	public boolean onList( ListExp exp )			{ return false; }
+	public boolean onKey( KeyExp exp )				{ return false; }
 	public boolean onRef( ReferenceExp exp )		{ return exp.exp.visit(this); }
 	public boolean onOther( OtherExp exp )			{ return exp.exp.visit(this); }
 	public boolean onEpsilon()						{ return true; }

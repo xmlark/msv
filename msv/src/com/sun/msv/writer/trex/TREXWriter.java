@@ -389,6 +389,9 @@ public class TREXWriter implements GrammarWriter {
 			public Object onList( ListExp exp ) {
 				return null;
 			}
+			public Object onKey( KeyExp exp ) {
+				return null;
+			}
 		});
 	}
 	
@@ -653,6 +656,11 @@ public class TREXWriter implements GrammarWriter {
 			throw new IllegalArgumentException("beyond the expressive power of TREX");
 		}
 	
+		public void onKey( KeyExp exp ) {
+			// TODO: actually, we can continue conversion by ignoring this constraint.
+			throw new IllegalArgumentException("beyond the expressive power of TREX");
+		}
+	
 		protected void onOptional( Expression exp ) {
 			if( exp instanceof OneOrMoreExp ) {
 				// (X+)? == X*
@@ -688,15 +696,9 @@ public class TREXWriter implements GrammarWriter {
 			// <choice> a <choice> b c </choice></choice>
 			// this method print them as <choice> a b c </choice>
 			start(elementName);
-			while(true) {
-				exp.exp1.visit(this);
-				if(exp.exp2.getClass()==type) {
-					exp = (BinaryExp)exp.exp2;
-					continue;
-				}
-				break;
-			}
-			exp.exp2.visit(this);
+			Expression[] children = exp.getChildren();
+			for( int i=0; i<children.length; i++ )
+				children[i].visit(this);
 			end(elementName);
 		}
 	

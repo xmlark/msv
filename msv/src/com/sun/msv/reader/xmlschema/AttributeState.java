@@ -18,6 +18,7 @@ import com.sun.msv.grammar.trex.TypedString;
 import com.sun.msv.grammar.xmlschema.AttributeDeclExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.util.StringPair;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.ExpressionWithChildState;
 import org.xml.sax.Locator;
@@ -104,7 +105,9 @@ public class AttributeState extends ExpressionWithChildState {
 			if( fixed!=null )
 				// TODO: is this 'fixed' value should be added through enumeration facet?
 				// in that way, we can check if this value is acceptable as the base type.
-				contentType = reader.pool.createTypedString( new TypedString(fixed,false), "" );
+				contentType = reader.pool.createTypedString(
+					new TypedString(fixed,false),
+					new StringPair("$xsd","fixed") );
 		
 			exp = reader.pool.createAttribute(
 				new SimpleNameClass( targetNamespace, name ),

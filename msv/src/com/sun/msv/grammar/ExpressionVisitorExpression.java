@@ -22,6 +22,7 @@ public interface ExpressionVisitorExpression {
 	Expression onOneOrMore( OneOrMoreExp exp );
 	Expression onMixed( MixedExp exp );
 	Expression onList( ListExp exp );
+	Expression onKey( KeyExp exp );
 	Expression onRef( ReferenceExp exp );
 	Expression onOther( OtherExp exp );
 	Expression onEpsilon();

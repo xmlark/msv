@@ -81,12 +81,14 @@ public class ExpressionPrinter implements ExpressionVisitor {
 	protected String printBinary( BinaryExp exp, String op ) {
 		String r;
 		
-		if( isComplex(exp.exp1) )	r="("+exp.exp1.visit(this)+")";
-		else						r=(String)exp.exp1.visit(this);
-		
+		if( exp.exp1.getClass()==exp.getClass() || !isComplex(exp.exp1) )
+			r = (String)exp.exp1.visit(this);
+		else
+			r = "("+exp.exp1.visit(this)+")";
+
 		r+=op;
 		
-		if( exp.exp2.getClass()==exp.getClass() || !isComplex(exp.exp2) )
+		if( !isComplex(exp.exp2) )
 				r+=exp.exp2.visit(this);
 		else
 				r+="("+exp.exp2.visit(this)+")";
@@ -143,6 +145,10 @@ public class ExpressionPrinter implements ExpressionVisitor {
 		return "list["+exp.exp.visit(this)+"]";
 	}
 	
+	public Object onKey( KeyExp exp ) {
+		return "key["+exp.exp.visit(this)+"]";
+	}
+	
 	public Object onEpsilon() {
 		return "#epsilon";
 	}
@@ -160,7 +166,7 @@ public class ExpressionPrinter implements ExpressionVisitor {
 	}
 	
 	public Object onTypedString( TypedStringExp exp ) {
-		return "$"+exp.typeName;
+		return "$"+exp.name.localName;
 	}	
 
 	public Object onOther( OtherExp exp ) {

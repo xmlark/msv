@@ -11,16 +11,14 @@ package com.sun.msv.grammar;
 
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.ValidationContext;
+import com.sun.msv.util.StringPair;
 
 /**
  * Expression that matchs characters of the particular {@link DataType}.
  * 
- * <p>
- * This class can be extended.
- * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TypedStringExp extends Expression {
+public final class TypedStringExp extends Expression {
 	
 	/** datatype object that actually validates text. */
 	public final Datatype dt;
@@ -32,22 +30,34 @@ public class TypedStringExp extends Expression {
 	 * When two TypedStringExps share the same Datatype object,
 	 * then they are unified even if they have different names.
 	 */
-	public final String typeName;
+	public final StringPair name;
 	
-	protected TypedStringExp( Datatype dt, String typeName ) {
-		super(hashCode(dt,HASHCODE_TYPED_STRING));
+	/**
+	 * 'except' clause of RELAX NG.
+	 * 
+	 * If a token matches this pattern, then it should be rejected.
+	 */
+	public final Expression except;
+	
+	protected TypedStringExp( Datatype dt, StringPair typeName, Expression except ) {
+		super(hashCode(dt,except,HASHCODE_TYPED_STRING));
 		this.dt=dt;
-		this.typeName = typeName;
+		this.name = typeName;
+		this.except = except;
 	}
 	
 	public boolean equals( Object o ) {
-		// Note that equals method of this class can be sloppy, 
+		// Note that equals method of this class *can* be sloppy, 
 		// since this class does not have a pattern as its child.
 		
 		// Therefore datatype vocaburary does not necessarily provide
 		// strict equals method.
 		if(o.getClass()!=this.getClass())	return false;
-		return ((TypedStringExp)o).dt.equals(dt);
+		
+		TypedStringExp rhs = (TypedStringExp)o;
+		
+		if( this.except != rhs.except )		return false;
+		return rhs.dt.equals(dt);
 	}
 	
 	public Object visit( ExpressionVisitor visitor )				{ return visitor.onTypedString(this); }

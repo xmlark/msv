@@ -92,6 +92,10 @@ public class AttributePicker implements ExpressionVisitorExpression
 		return Expression.epsilon;
 	}
 
+	public Expression onKey( KeyExp exp ) {
+		return Expression.epsilon;
+	}
+
 	public Expression onAttribute( AttributeExp exp )
 	{
 		return exp;

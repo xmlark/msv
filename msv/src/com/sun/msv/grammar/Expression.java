@@ -136,11 +136,10 @@ public abstract class Expression implements java.io.Serializable {
 	static final int HASHCODE_NULLSET =			9;
 	static final int HASHCODE_ELEMENT =			10;
 	static final int HASHCODE_MIXED =			11;
-	
-	// values for TREX pattern
-	protected static final int HASHCODE_CONCUR =			20;
-	protected static final int HASHCODE_INTERLEAVE =		21;
-	protected static final int HASHCODE_LIST =				22;
+	static final int HASHCODE_CONCUR =			20;
+	static final int HASHCODE_INTERLEAVE =		21;
+	static final int HASHCODE_LIST =			22;
+	static final int HASHCODE_KEY =				23;
 	
 	private static class EpsilonExpression extends Expression {
 		EpsilonExpression() { super(Expression.HASHCODE_EPSILON); }

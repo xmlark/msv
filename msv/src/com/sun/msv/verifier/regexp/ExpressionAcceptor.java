@@ -11,7 +11,6 @@ package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.TypedString;
-import com.sun.msv.grammar.relaxng.NGTypedStringExp;
 import com.sun.msv.grammar.relaxng.ValueType;
 import com.sun.msv.grammar.IDContextProvider;
 import com.sun.msv.verifier.*;
@@ -27,9 +26,10 @@ import java.util.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public abstract class ExpressionAcceptor implements Acceptor
-{
-	/** current state.
+public abstract class ExpressionAcceptor implements Acceptor {
+	
+	/**
+	 * current state.
 	 * 
 	 * At the same time, right language (a regular expression that represents
 	 * the language it can accept from now on).
@@ -41,9 +41,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 	/** this object provides various function objects */
 	protected final REDocumentDeclaration docDecl;
 	
-	public ExpressionAcceptor(
-		REDocumentDeclaration docDecl, Expression exp )
-	{
+	public ExpressionAcceptor( REDocumentDeclaration docDecl, Expression exp ) {
 		this.docDecl	= docDecl;
 		this.expression	= exp;
 	}
@@ -69,9 +67,9 @@ public abstract class ExpressionAcceptor implements Acceptor
 		
 		// obtains fully combined child content pattern
 		CombinedChildContentExpCreator.ExpressionPair e = cccc.get(expression,sti);
-		if( e.content==Expression.nullSet )
-		{// no element declaration is satisfied by this start tag.
-		//	this must be an error of input document.
+		if( e.content==Expression.nullSet ) {
+			// no element declaration is satisfied by this start tag.
+			//	this must be an error of input document.
 			
 			if( errRef==null )
 				// fail immediately to notify the caller that an error is encountered.
@@ -80,8 +78,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 			return recover( sti, errRef );	// recover from error.
 		}
 		
-		if( com.sun.msv.driver.textui.Debug.debug )
-		{
+		if( com.sun.msv.driver.textui.Debug.debug ) {
 			System.out.println("accept start tag <"+ sti.qName+">. combined content pattern is");
 			System.out.println(com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(e.content));
 			
@@ -122,8 +119,8 @@ public abstract class ExpressionAcceptor implements Acceptor
 		if( residual==Expression.nullSet ) {
 			// error: we can't accept this token
 			
-			if( errRef!=null )
-			{// diagnose error.
+			if( errRef!=null ) {
+				// diagnose error.
 				if( token instanceof StringToken )
 					errRef.str = diagnoseUnexpectedLiteral( (StringToken)token );
 //						docDecl.localizeMessage( docDecl.DIAG_BAD_LITERAL_VALUE_WRAPUP,
@@ -132,9 +129,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 				// recovery by ignoring this token.
 				// TODO: should we modify this to choice(expression,EoCR)?
 				// we need some measures to prevent redundant choice
-			}
-			else
-			{
+			} else {
 				// do not mutate any member variables.
 				// caller may call stepForward again with error recovery.
 			}
@@ -150,10 +145,9 @@ public abstract class ExpressionAcceptor implements Acceptor
 		return stepForward( new StringToken(docDecl,literal,provider,refType), refErr );
 	}
 	
-	public final boolean stepForwardByContinuation( Expression continuation, StringRef errRef )
-	{
-		if( continuation!=Expression.nullSet )
-		{// successful transition
+	public final boolean stepForwardByContinuation( Expression continuation, StringRef errRef ) {
+		if( continuation!=Expression.nullSet ) {
+			// successful transition
 			if( com.sun.msv.driver.textui.Debug.debug )
 				System.out.println("stepForwardByCont. :  " +
 					com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(continuation));
@@ -180,8 +174,8 @@ public abstract class ExpressionAcceptor implements Acceptor
 		}
 	}
 
-	public int getStringCareLevel()
-	{	// if the value is cached, return cached value.
+	public int getStringCareLevel() {
+		// if the value is cached, return cached value.
 		// otherwise, calculate it now.
 		OptimizationTag ot = (OptimizationTag)expression.verifierTag;
 		if(ot==null)	expression.verifierTag = ot = new OptimizationTag();
@@ -201,8 +195,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 	
 	
 	
-	private final Expression mergeContinuation( Expression exp1, Expression exp2 )
-	{
+	private final Expression mergeContinuation( Expression exp1, Expression exp2 ) {
 		if(exp1==null && exp2==null)	return null;
 		if(exp1==null || exp1==Expression.nullSet)	return exp2;
 		if(exp2==null || exp2==Expression.nullSet)	return exp1;
@@ -226,8 +219,8 @@ public abstract class ExpressionAcceptor implements Acceptor
 	 *      ( this is for mistake like "abcXefg")
 	 * </ol>
 	 */
-	private final Acceptor createRecoveryAcceptors()
-	{
+	private final Acceptor createRecoveryAcceptors() {
+		
 		final CombinedChildContentExpCreator cccc = docDecl.cccec;
 		
 		// cccc leaves attributes. so we have to "remove" them.
@@ -629,35 +622,15 @@ public abstract class ExpressionAcceptor implements Acceptor
 								
 			
 			ChoiceExp ch = (ChoiceExp)constraint;
-								
-			while(true)
-			{
-				if( ch.exp1 instanceof TypedStringExp
-				&&  ((TypedStringExp)ch.exp1).dt instanceof TypedString )
-					items.add( ((TypedString)((TypedStringExp)ch.exp1).dt).value );
+			Expression[] children = ch.getChildren();					
+			for( int i=0; i<children.length; i++ ) {
+				if( children[i] instanceof TypedStringExp
+				&&  ((TypedStringExp)children[i]).dt instanceof TypedString )
+					items.add( ((TypedString)((TypedStringExp)children[i]).dt).value );
 				else
-					// left hand may not be ChoiceExp.
-					// so this must be some fairly complex expression
+					// this is a fairly complex expression
 					// that we can't provide diagnosis.
 					more = true;
-								
-				// right hand
-				if( ch.exp2 instanceof TypedStringExp
-				&&  ((TypedStringExp)ch.exp2).dt instanceof TypedString )
-				{
-					items.add( ((TypedString)((TypedStringExp)ch.exp2).dt).value );
-					break;	// finished.
-				}
-								
-				if( ch.exp2 instanceof ChoiceExp )
-				{
-					ch = (ChoiceExp)ch.exp2;
-					continue;
-				}
-									
-				// right hand side expression is complex.
-				more = true;	
-				break;	// bail out
 			}
 			
 			// no candidates was simple. bail out.
@@ -709,13 +682,13 @@ public abstract class ExpressionAcceptor implements Acceptor
 		{
 			ChoiceExp ch = (ChoiceExp)e;
 					
-			NameClass nc = ((AttributeExp)ch.exp1).nameClass;
+			NameClass nc = ((AttributeExp)ch.exp2).nameClass;
 			if( nc instanceof SimpleNameClass )
 				s.add( nc.toString() );
 			else
 				more = true;
 			
-			e = ch.exp2;
+			e = ch.exp1;
 		}
 		
 		if(!(e instanceof AttributeExp ))	throw new Error();	//assertion
@@ -756,11 +729,10 @@ public abstract class ExpressionAcceptor implements Acceptor
 		Expression recoveryResidual
 			= docDecl.resCalc.calcResidual(expression,srt);
 		
-		if( recoveryResidual==Expression.nullSet ) {
+		if( recoveryResidual==Expression.nullSet )
 			// we now know that no string literal was expected at all.
 			return docDecl.localizeMessage( docDecl.DIAG_STRING_NOT_ALLOWED, null );
 			// keep this.expression untouched. This is equivalent to ignore this token.
-		}
 		
 		// there are two possible "recovery" for this error.
 		//  (1) ignore this token
@@ -773,28 +745,12 @@ public abstract class ExpressionAcceptor implements Acceptor
 			TypedStringExp texp = (TypedStringExp)srt.failedExps.iterator().next();
 			try {
 				texp.dt.checkValid( srt.literal, srt.context );
-					
-				// now the literal is valid.
-				// Is this key/keyref constraint violation?
-				if( texp instanceof NGTypedStringExp ) {
-					NGTypedStringExp ntexp = (NGTypedStringExp)texp;
-					if( ntexp.keyName!=null
-						&& !token.context.onID( ntexp.keyName.namespaceURI, ntexp.keyName.localName, ntexp.dt.createValue(token.literal,token.context) ) ) {
-							
-						if( ntexp.keyName.localName.length()==0 )
-							// empty key name indicates that this is an ID.
-							return docDecl.localizeMessage( docDecl.DIAG_BAD_KEY_VALUE,
-								token.literal.trim() );
-						else
-							return docDecl.localizeMessage( docDecl.DIAG_BAD_KEY_VALUE2,
-								token.literal.trim(), ntexp.keyName );
-					}
-				}
 			} catch( DatatypeException de ) {
 				// this literal is invalid.
 				if( de.getMessage()!=null )
 					return de.getMessage();	// return the diagnosis.
-				// unable to dianogse. fall through next
+				// unable to dianogse.
+				return null;
 			}
 		} else {
 			// there are multiple candidates.
@@ -833,6 +789,25 @@ public abstract class ExpressionAcceptor implements Acceptor
 		
 		// unable to diagnose the reason of error.
 		return null;
+		// TODO: ID/IDREF violation diagnosis.
+/*					
+				// now the literal is valid.
+				// Is this key/keyref constraint violation?
+				if( texp instanceof NGTypedStringExp ) {
+					NGTypedStringExp ntexp = (NGTypedStringExp)texp;
+					if( ntexp.keyName!=null
+						&& !token.context.onID( ntexp.keyName.namespaceURI, ntexp.keyName.localName, ntexp.dt.createValue(token.literal,token.context) ) ) {
+							
+						if( ntexp.keyName.localName.length()==0 )
+							// empty key name indicates that this is an ID.
+							return docDecl.localizeMessage( docDecl.DIAG_BAD_KEY_VALUE,
+								token.literal.trim() );
+						else
+							return docDecl.localizeMessage( docDecl.DIAG_BAD_KEY_VALUE2,
+								token.literal.trim(), ntexp.keyName );
+					}
+				}
+*/
 	}
 	
 	/**

@@ -21,6 +21,7 @@ import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.grammar.xmlschema.IdentityConstraint;
 import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.util.StringPair;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.IgnoreState;
@@ -83,7 +84,9 @@ public class ElementDeclState extends ExpressionWithChildState {
 				
 				if( reader.isSchemaNamespace(s[0]) ) {
 					// datatypes of XML Schema part 2
-					e = reader.pool.createTypedString(reader.resolveBuiltinDataType(s[1]),s[1]);
+					e = reader.pool.createTypedString(
+						reader.resolveBuiltinDataType(s[1]),
+						new StringPair(s[0],s[1]) );
 				} else {
 					XMLSchemaSchema g = reader.getOrCreateSchema(s[0]/*uri*/);
 					e = g.simpleTypes.get(s[1]/*local name*/);
@@ -169,7 +172,8 @@ public class ElementDeclState extends ExpressionWithChildState {
 		if( fixed!=null )
 			// TODO: is this 'fixed' value should be added through enumeration facet?
 			// TODO: check if content model is a simpleType.
-			contentType = reader.pool.createTypedString( new TypedString(fixed,false),"" );
+			contentType = reader.pool.createTypedString(
+				new TypedString(fixed,false), new StringPair("$xsd","$fixed") );
 		
 		String nillable = startTag.getAttribute("nillable");
 		if( nillable!=null ) {

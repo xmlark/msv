@@ -149,9 +149,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 		{ this.next=next;this.owner=owner;this.content=content; }
 	}
 	
-	protected CombinedChildContentExpCreator(
-		ExpressionPool pool, AttributeFeeder feeder )
-	{
+	protected CombinedChildContentExpCreator( ExpressionPool pool, AttributeFeeder feeder ) {
 		this.pool = pool;
 		this.feeder = feeder;
 	}
@@ -171,8 +169,8 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	 *		if this flag is false, tag name check is skipped.
 	 */
 	public ExpressionPair get( Expression combinedPattern, StartTagInfoEx info,
-		boolean feedAttributes, boolean checkTagName )
-	{
+		boolean feedAttributes, boolean checkTagName ) {
+		
 		result = null;
 		numElements = 0;
 		numTagMatch = 0;
@@ -195,19 +193,17 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	}
 	
 	/** computes a combined child content pattern and (,if possible,) its continuation. */
-	public ExpressionPair get( Expression combinedPattern, StartTagInfoEx info )
-	{
+	public ExpressionPair get( Expression combinedPattern, StartTagInfoEx info ) {
 		StringPair sp=null;
 		
 		// cache
-		if( combinedPattern.verifierTag!=null )
-		{
+		if( combinedPattern.verifierTag!=null ) {
 			OptimizationTag ot = (OptimizationTag)combinedPattern.verifierTag;
 			sp = new StringPair(info.namespaceURI,info.localName);
 			OptimizationTag.OwnerAndCont cache = (OptimizationTag.OwnerAndCont)ot.transitions.get(sp);
 			
-			if(cache!=null)
-			{// cache hit
+			if(cache!=null) {
+				// cache hit
 				numElements = 1;
 				result = new OwnerAndContent(
 					null,cache.owner,
@@ -221,8 +217,8 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 		
 		ExpressionPair r = (ExpressionPair)get( combinedPattern, info, true, true );
 		
-		if( numTagMatch==1 && numElements==1 )
-		{// only one element matchs this tag name. cache this result
+		if( numTagMatch==1 && numElements==1 ) {
+			// only one element matchs this tag name. cache this result
 			OptimizationTag ot = (OptimizationTag)combinedPattern.verifierTag;
 			if(ot==null)
 				combinedPattern.verifierTag = ot = new OptimizationTag();
@@ -273,8 +269,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	 */
 	private boolean foundConcur;
 
-	public void onConcur( ConcurExp exp )
-	{
+	public void onConcur( ConcurExp exp ) {
 		foundConcur = true;
 		exp.exp1.visit(this);
 		Expression content1 = content;
@@ -285,8 +280,8 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 		content = pool.createConcur( content, content1 );
 		continuation = pool.createConcur( continuation, continuation1 );
 	}
-	public void onInterleave( InterleaveExp exp )
-	{
+	
+	public void onInterleave( InterleaveExp exp ) {
 		exp.exp1.visit(this);
 		if( content==Expression.nullSet ) {
 			exp.exp2.visit(this);
@@ -329,8 +324,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 
 	
 	
-	public void onElement( ElementExp exp )
-	{
+	public void onElement( ElementExp exp ) {
 		// TODO: may check result and remove duplicate result
 		
 		// if tag name is invalid, then remove this element from candidate.
@@ -404,6 +398,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	public void onAnyString()	{ content = continuation = Expression.nullSet; }
 	public void onTypedString( TypedStringExp exp )	{ content = continuation = Expression.nullSet; }
 	public void onList( ListExp exp )	{ content = continuation = Expression.nullSet; }
+	public void onKey( KeyExp exp )		{ content = continuation = Expression.nullSet; }
 	public void onRef( ReferenceExp exp ) {
 		exp.exp.visit(this);
 	}

@@ -12,7 +12,7 @@ package com.sun.msv.reader.trex.ng;
 import com.sun.msv.reader.ExpressionWithoutChildState;
 import com.sun.msv.grammar.relaxng.ValueType;
 import com.sun.msv.grammar.Expression;
-//import org.relaxng.datatype.DataTypeException;
+import com.sun.msv.util.StringPair;
 import org.relaxng.datatype.Datatype;
 
 /**
@@ -50,6 +50,7 @@ public class ValueState extends ExpressionWithoutChildState {
 		}
 		
 		return reader.pool.createTypedString(
-			new ValueType( type, value ), "rng-value" );
+			new ValueType( type, value ),
+			new StringPair(reader.datatypeLibURI,typeName) );
 	}
 }

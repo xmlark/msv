@@ -97,7 +97,7 @@ public class IdentityAmbiguityChecker {
 	/** collects all identity constraints used with in the expression. */
 	private final ContentModelWalker constraintsCollector = new ContentModelWalker() {
 		// TODO: do the real work
-		public void onTypedString( TypedStringExp exp ) { throw new Error(); }
+		public void onKey( KeyExp exp ) { throw new Error(); }
 	};
 	
 	/** collects all possible names for elements. */
@@ -127,6 +127,7 @@ public class IdentityAmbiguityChecker {
 		public Expression onTypedString( TypedStringExp exp ){ return Expression.epsilon; }
 		// list is ignorable. Just like TypedString.
 		public Expression onList( ListExp exp )				{ return Expression.epsilon; }
+		public Expression onKey( KeyExp exp )				{ return Expression.epsilon; }
 
 		public Expression onChoice( ChoiceExp exp )			{ return onBinExp(exp); }
 		public Expression onSequence( SequenceExp exp )		{ return onBinExp(exp); }

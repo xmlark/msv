@@ -37,6 +37,7 @@ import com.sun.msv.reader.datatype.xsd.FacetState;
 import com.sun.msv.reader.datatype.xsd.SimpleTypeState;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.util.StringPair;
 import javax.xml.parsers.SAXParserFactory;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -418,7 +419,9 @@ public class XMLSchemaReader extends GrammarReader {
 		}
 		
 		if( isSchemaNamespace(r[0]) )
-			return pool.createTypedString( resolveBuiltinDataType(r[1]), r[1] );
+			return pool.createTypedString(
+				resolveBuiltinDataType(r[1]),
+				new StringPair(r[0],r[1]) );
 		
 		Expression exp = getOrCreateSchema(r[0]/*uri*/).simpleTypes.getOrCreate(r[1]/*local name*/);
 		backwardReference.memorizeLink(exp);

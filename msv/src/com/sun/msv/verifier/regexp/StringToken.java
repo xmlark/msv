@@ -10,7 +10,6 @@
 package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.relaxng.NGTypedStringExp;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.util.DatatypeRef;
 import org.relaxng.datatype.Datatype;
@@ -32,7 +31,7 @@ public class StringToken extends Token {
 	 * if this field is non-null,
 	 * this field will receive assigned DataType object.
 	 */
-	public final DatatypeRef refType;
+	public DatatypeRef refType;
 	protected boolean saturated = false;
 	
 	private static final Datatype[] ignoredType = new Datatype[0];
@@ -56,26 +55,44 @@ public class StringToken extends Token {
 		
 		if(!exp.dt.isValid( literal, context )) return false; // not accepted.
 		
+		if( exp.except!=Expression.nullSet ) {
+			if( docDecl.resCalc.calcResidual( exp.except, this )==Expression.epsilon )
+				// due to the constraint imposed on the body of the 'except' clause,
+				// comparing the residual with the epsilon is OK and cheap.
+				// but it might be better to use the isEpsilonReducible method
+				// for the robustness.
+				return false;	// this token is accepted by its 'except' clause
+		}
+		
 		// this type accepts me.
 		if(refType!=null)		assignType(exp.dt);
+		return true;
+	}
+	
+	/** KeyExp can consume this token if its body can accept this string token. */
+	boolean match( KeyExp exp ) {
+		// we need to know what datatype is assigned to this token.
+		if( refType==null )	refType = new DatatypeRef();
 		
-		boolean ret = true;
+		if(docDecl.resCalc.calcResidual( exp.exp, this )!=Expression.epsilon)
+			return false;	// not accepted.
 		
-		// ID/IDREF constraint check.
-		if( exp instanceof NGTypedStringExp ) {
-			// if this expression is key/keyref of RELAX NG,
-			NGTypedStringExp texp = (NGTypedStringExp)exp;
-			
-			// then report detected key/keyrefs.
-			if( texp.keyName!=null )
-				ret = context.onID( texp.keyName.namespaceURI, texp.keyName.localName,
-					exp.dt.createValue(literal,context) );
-			
-			if( texp.keyrefName!=null )
-				context.onIDREF( texp.keyrefName.namespaceURI, texp.keyrefName.localName,
-					exp.dt.createValue(literal,context) );
-		}
-		return ret;
+		// then report detected key/keyrefs.
+		if( refType.types.length!=1 )
+			// if the body accepts this token, then the datatype
+			// must be uniquely decidable.
+			// this situation can happen only when we are recovering from errors.
+			// so ignore this error.
+			return true;
+
+		if( exp.isKey )
+			return context.onID( exp.name.namespaceURI, exp.name.localName,
+				refType.types[0].createValue(literal,context) );
+		else
+			context.onIDREF( exp.name.namespaceURI, exp.name.localName,
+				refType.types[0].createValue(literal,context) );
+		
+		return true;
 	}
 
 	/** ListExp can consume this token if its pattern accepts this string */

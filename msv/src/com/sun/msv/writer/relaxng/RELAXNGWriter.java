@@ -393,6 +393,9 @@ public class RELAXNGWriter implements GrammarWriter {
 			public Object onList( ListExp exp ) {
 				return null;
 			}
+			public Object onKey( KeyExp exp ) {
+				return null;
+			}
 		});
 	}
 	
@@ -658,7 +661,25 @@ public class RELAXNGWriter implements GrammarWriter {
 			visitUnary(exp.exp);
 			end("list");
 		}
+
+		public void onKey( KeyExp exp ) {
+			String tagName;
+			if( exp.isKey )	tagName = "key";
+			else			tagName = "keyref";
+			
+			if( exp.name.namespaceURI.equals(defaultNs) )
+				start(tagName,new String[]{"name",exp.name.localName});
+			else
+				start(tagName, new String[]{"name",exp.name.localName,"ns",exp.name.namespaceURI});
+			
+			// since choce,data, and value are the only possible children,
+			// it is safe to rewrite the ns attribute here.
+			
+			exp.exp.visit(this);
+			end(tagName);
+		}
 	
+		
 		protected void onOptional( Expression exp ) {
 			if( exp instanceof OneOrMoreExp ) {
 				// (X+)? == X*
@@ -694,15 +715,9 @@ public class RELAXNGWriter implements GrammarWriter {
 			// <choice> a <choice> b c </choice></choice>
 			// this method print them as <choice> a b c </choice>
 			start(elementName);
-			while(true) {
-				exp.exp1.visit(this);
-				if(exp.exp2.getClass()==type) {
-					exp = (BinaryExp)exp.exp2;
-					continue;
-				}
-				break;
-			}
-			exp.exp2.visit(this);
+			Expression[] children = exp.getChildren();
+			for( int i=0; i<children.length; i++ )
+				children[i].visit(this);
 			end(elementName);
 		}
 	
@@ -747,8 +762,8 @@ public class RELAXNGWriter implements GrammarWriter {
 		public void visitUnary( Expression exp ) {
 			// TREX treats <zeroOrMore> p q </zeroOrMore>
 			// as <zeroOrMore><group> p q </group></zeroOrMore>
-			// This method tries to exploit this capability to
-			// simplify output.
+			// This method tries to exploit this property to
+			// simplify the result.
 			if( exp instanceof SequenceExp ) {
 				SequenceExp seq = (SequenceExp)exp;
 				seq.exp1.visit(this);

@@ -48,15 +48,15 @@ public abstract class BinaryExp extends Expression {
 		Expression exp = this;
 		while( exp.getClass()==this.getClass() ) {
 			cnt++;
-			exp = ((BinaryExp)exp).exp2;
+			exp = ((BinaryExp)exp).exp1;
 		}
 		
 		Expression[] r = new Expression[cnt];
 		cnt=0;
 		exp=this;
 		while( exp.getClass()==this.getClass() ) {
-			r[cnt++] = ((BinaryExp)exp).exp1;
-			exp = ((BinaryExp)exp).exp2;
+			r[cnt++] = ((BinaryExp)exp).exp2;
+			exp = ((BinaryExp)exp).exp1;
 		}
 		r[cnt] = exp;
 		
@@ -90,8 +90,8 @@ public abstract class BinaryExp extends Expression {
 			Expression r;
 			
 			if( exp.getClass()==operator ) {
-				r = ((BinaryExp)exp).exp1;
-				exp = ((BinaryExp)exp).exp2;
+				r = ((BinaryExp)exp).exp2;
+				exp = ((BinaryExp)exp).exp1;
 			} else {
 				r = exp;
 				exp = null;

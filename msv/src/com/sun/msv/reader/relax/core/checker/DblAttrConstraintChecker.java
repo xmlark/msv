@@ -32,16 +32,12 @@ public class DblAttrConstraintChecker implements RELAXExpressionVisitorVoid
 	/** current clause. */
 	private ReferenceExp current;
 	
-	public void check( TagClause clause, RELAXCoreReader reader )
-	{
+	public void check( TagClause clause, RELAXCoreReader reader ) {
 		atts.clear();
 		current = clause;
-		try
-		{
+		try {
 			clause.visit(this);
-		}
-		catch( Eureka e )
-		{
+		} catch( Eureka e ) {
 			reader.reportError(
 				new Locator[]{reader.getDeclaredLocationOf(current),
 							  reader.getDeclaredLocationOf((ReferenceExp)atts.get(e.name)) },
@@ -50,16 +46,13 @@ public class DblAttrConstraintChecker implements RELAXExpressionVisitorVoid
 		}
 	}
 	
-	private static final class Eureka extends RuntimeException
-	{
+	private static final class Eureka extends RuntimeException {
 		final StringPair name;
 		Eureka( StringPair an ) { name=an; }
 	};
 	
-	public void onAttribute( AttributeExp exp )
-	{
-		if( exp.nameClass instanceof SimpleNameClass )
-		{
+	public void onAttribute( AttributeExp exp ) {
+		if( exp.nameClass instanceof SimpleNameClass ) {
 			// this check is only appliable for those who constrains
 			// one particular attribute.
 			SimpleNameClass nc = (SimpleNameClass)exp.nameClass;
@@ -71,8 +64,7 @@ public class DblAttrConstraintChecker implements RELAXExpressionVisitorVoid
 		}
 	}
 	
-	public void onAttPool( AttPoolClause exp )
-	{
+	public void onAttPool( AttPoolClause exp ) {
 		ReferenceExp old = current;
 		current = exp;
 		exp.exp.visit(this);
@@ -82,7 +74,7 @@ public class DblAttrConstraintChecker implements RELAXExpressionVisitorVoid
 	public void onChoice( ChoiceExp exp )		{ exp.exp1.visit(this);exp.exp2.visit(this); }
 	public void onEpsilon()							{;}
 	public void onRef( ReferenceExp exp )			{;}
-	public void onOther( OtherExp exp )			{ exp.exp.visit(this); }
+	public void onOther( OtherExp exp )				{ exp.exp.visit(this); }
 	
 	public void onElement( ElementExp exp )			{;}
 	public void onOneOrMore( OneOrMoreExp exp )		{ exp.exp.visit(this); }
@@ -98,5 +90,6 @@ public class DblAttrConstraintChecker implements RELAXExpressionVisitorVoid
 	public void onConcur( ConcurExp exp )			{;}
 	public void onInterleave( InterleaveExp exp )	{;}
 	public void onList( ListExp exp )				{;}
+	public void onKey( KeyExp exp )					{;}
 	
 }

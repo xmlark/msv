@@ -38,8 +38,8 @@ import java.util.Map;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class IdAbuseChecker implements RELAXExpressionVisitorVoid
-{
+public class IdAbuseChecker implements RELAXExpressionVisitorVoid {
+	
 	/** set of Strings: tag names that are used in this module */
 	private final Set tagNames = new java.util.HashSet();
 	/** set of Strings: tag names that are used more than once in this module */
@@ -54,19 +54,16 @@ public class IdAbuseChecker implements RELAXExpressionVisitorVoid
 	
 	private String currentTagName;
 	
-	private IdAbuseChecker(RELAXCoreReader r,RELAXModule m)
-	{
+	private IdAbuseChecker(RELAXCoreReader r,RELAXModule m) {
 		this.reader = r;
 		this.module = m;
 	}
 
-	public static void check( RELAXCoreReader reader, RELAXModule module )
-	{
+	public static void check( RELAXCoreReader reader, RELAXModule module ) {
 		new IdAbuseChecker(reader,module).run();
 	}
 	
-	private void run()
-	{
+	private void run() {
 		Iterator itr;
 		// extracts all tag names and
 		// classify attribute names into
@@ -88,8 +85,7 @@ public class IdAbuseChecker implements RELAXExpressionVisitorVoid
 			
 		// 1st filter: collect those AttributeExps which have overloaded tag names.
 		itr= module.tags.iterator();
-		while( itr.hasNext() )
-		{
+		while( itr.hasNext() ) {
 			final TagClause tag = (TagClause)itr.next();
 			if( tag.nameClass instanceof SimpleNameClass )
 				currentTagName = ((SimpleNameClass)tag.nameClass).localName;
@@ -101,24 +97,20 @@ public class IdAbuseChecker implements RELAXExpressionVisitorVoid
 		
 		// make sure that filtered AttributeExp satisifies the second statement
 		itr = idAttributes.iterator();
-		while( itr.hasNext() )
-		{
+		while( itr.hasNext() ) {
 			final AttributeExp atr = (AttributeExp)itr.next();
 			
-			if( atr.nameClass instanceof SimpleNameClass )
-			{
+			if( atr.nameClass instanceof SimpleNameClass ) {
 				final String name = ((SimpleNameClass)atr.nameClass).localName;
 				if( nonIdAttrNames.contains(name) )
 					reader.reportError( reader.ERR_ID_ABUSE_1, name );
-			}
-			else
+			} else
 				reader.reportError( reader.ERR_ID_ABUSE );
 		}
 	}
 
 
-	public void onAttribute( AttributeExp exp )
-	{
+	public void onAttribute( AttributeExp exp ) {
 		if(!(exp.nameClass instanceof SimpleNameClass ))	return;
 		if(!(exp.exp instanceof TypedStringExp ))			return;
 		
@@ -126,8 +118,7 @@ public class IdAbuseChecker implements RELAXExpressionVisitorVoid
 		if(!snc.namespaceURI.equals(""))	return;
 		
 		Datatype dt = ((TypedStringExp)exp.exp).dt;
-		if( dt==IDType.theInstance || dt==IDREFType.theInstance )
-		{
+		if( dt==IDType.theInstance || dt==IDREFType.theInstance ) {
 			if( currentTagName==null
 				// complex attribute name is used.
 				// ID/IDREF must have an unique attribute name
@@ -135,8 +126,7 @@ public class IdAbuseChecker implements RELAXExpressionVisitorVoid
 				idAttributes.add(exp);	// possibility of abuse.
 			
 			// use of ID/IDREF in this way is OK.
-		}
-		else
+		} else
 			nonIdAttrNames.add(snc.localName);
 	}
 	public void onChoice( ChoiceExp exp )		{ exp.exp1.visit(this);exp.exp2.visit(this); }
@@ -157,5 +147,6 @@ public class IdAbuseChecker implements RELAXExpressionVisitorVoid
 	public void onInterleave( InterleaveExp exp )	{ throw new Error(); }
 	public void onConcur( ConcurExp exp )			{ throw new Error(); }
 	public void onList( ListExp exp )				{ throw new Error(); }
+	public void onKey( KeyExp exp )					{ throw new Error(); }
 
 }

@@ -24,7 +24,7 @@ import org.xml.sax.Attributes;
 import org.relaxng.datatype.*;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
-import com.sun.msv.grammar.relaxng.NGTypedStringExp;
+import com.sun.msv.grammar.util.ExpressionWalker;
 import com.sun.msv.grammar.relaxng.datatype.BuiltinDatatypeLibrary;
 import com.sun.msv.reader.*;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
@@ -98,25 +98,6 @@ public class RELAXNGReader extends TREXBaseReader {
 		return grammar;
 	}
 	
-	/**
-	 * a map from ReferenceExps to strings that represents the combine method.
-	 * (e.g., "choice", "interleave".)
-	 * 
-	 * This map is used to ensure that a named pattern is combined in the consistent way.
-	 */
-//	protected final Map combineMethodMap = new java.util.HashMap();
-	
-	/**
-	 * a set that contains all ReferenceExps that have their head declarations.
-	 * This set is used to detect this error.
-	 */
-//	protected final Set headRefExps = new java.util.HashSet();
-	
-	/**
-	 * patterns being redefined.
-	 */
-//	protected final Vector redefiningPatterns = new Vector();
-	
 	/** map from ReferenceExps to RefExpParseInfos. */
 	private final Map refExpParseInfos = new java.util.HashMap();
 	
@@ -186,11 +167,15 @@ public class RELAXNGReader extends TREXBaseReader {
 		public State dataParam		( State parent, StartTagInfo tag ) { return new DataParamState(); }
 		public State value			( State parent, StartTagInfo tag ) { return new ValueState(); }
 		public State list			( State parent, StartTagInfo tag ) { return new ListState(); }
+		public State key			( State parent, StartTagInfo tag ) { return new KeyState(true); }
+		public State keyref			( State parent, StartTagInfo tag ) { return new KeyState(false); }
 		public State define			( State parent, StartTagInfo tag ) { return new DefineState(); }
+		public State start			( State parent, StartTagInfo tag ) { return new StartState(); }
 		public State redefine		( State parent, StartTagInfo tag ) { return new DefineState(); }
 		public State includeGrammar	( State parent, StartTagInfo tag ) { return new IncludeMergeState(); }
 		public State externalRef	( State parent, StartTagInfo tag ) { return new IncludePatternState(); }
 		public State divInGrammar	( State parent, StartTagInfo tag ) { return new DivInGrammarState(); }
+		public State dataExcept		( State parent, StartTagInfo tag ) { return new ChoiceState(); }
 		
 		public State ref		( State parent, StartTagInfo tag ) {
 			if( tag.containsAttribute("parent") ) {
@@ -238,12 +223,23 @@ public class RELAXNGReader extends TREXBaseReader {
 		return (StateFactory)super.sfactory;
 	}
 	
+	State createNameClassChildState( State parent, StartTagInfo tag ) {
+		if(tag.localName.equals("name"))		return sfactory.nsName(parent,tag);
+		if(tag.localName.equals("anyName"))		return sfactory.nsAnyName(parent,tag);
+		if(tag.localName.equals("nsName"))		return sfactory.nsNsName(parent,tag);
+		if(tag.localName.equals("choice"))		return sfactory.nsChoice(parent,tag);
+		
+		return null;		// unknown element. let the default error be thrown.
+	}
+	
 	public State createExpressionChildState( State parent, StartTagInfo tag ) {
 		
 		if(tag.localName.equals("text"))		return getStateFactory().text(parent,tag);
 		if(tag.localName.equals("data"))		return getStateFactory().data(parent,tag);
 		if(tag.localName.equals("value"))		return getStateFactory().value(parent,tag);
 		if(tag.localName.equals("list"))		return getStateFactory().list(parent,tag);
+		if(tag.localName.equals("key"))			return getStateFactory().key(parent,tag);
+		if(tag.localName.equals("keyref"))		return getStateFactory().keyref(parent,tag);
 		if(tag.localName.equals("externalRef"))	return getStateFactory().externalRef(parent,tag);
 		if(tag.localName.equals("parentRef"))	return getStateFactory().parentRef(parent,tag);
 		
@@ -300,64 +296,80 @@ public class RELAXNGReader extends TREXBaseReader {
 	public void wrapUp() {
 		super.wrapUp();
 		
-		{// detect undefined keys
+		if(!hadError) {
+			// detect undefined keys
 			Map keys = new java.util.HashMap();
 			
-			NGTypedStringExp[] keyKeyrefs = (NGTypedStringExp[])
-				this.keyKeyrefs.toArray( new NGTypedStringExp[0] );
+			KeyExp[] keyKeyrefs = (KeyExp[])this.keyKeyrefs.toArray( new KeyExp[0] );
+			
+			// compute the datatype for each key/keyref
+			for( int i=0; i<keyKeyrefs.length; i++ ) {
+				final KeyExp k = keyKeyrefs[i];
+				k.visit( new ExpressionWalker(){
+					public void onTypedString( TypedStringExp exp ) {
+						if( k.dataTypeName!=null
+						&&  k.dataTypeName.equals(exp.name) )
+							reportError(
+								new Locator[]{ getDeclaredLocationOf(k) },
+								ERR_INCONSISTENT_KEY_TYPE, new String[]{k.name.localName} );
+						
+						k.dataTypeName = exp.name;
+					}
+				});
+			}
 			
 			// enumerate all keys.
 			for( int i=0; i<keyKeyrefs.length; i++ )
-				if( keyKeyrefs[i].keyName!=null ) {
-					NGTypedStringExp pred = (NGTypedStringExp)keys.get(keyKeyrefs[i].keyName);
+				if( keyKeyrefs[i].isKey ) {
+					KeyExp pred = (KeyExp)keys.get(keyKeyrefs[i].name);
 					if(pred!=null) {
+						// there is another key with the same name.
 						// check the type consistency.
 						// if baseTypeName==null, then it means there was an error in that declaration.
 						// In that case, this error check is meaningless.
-						if( pred.baseTypeName!=null && keyKeyrefs[i].baseTypeName!=null
-							&&  !pred.baseTypeName.equals(keyKeyrefs[i].baseTypeName) ) {
+						if( pred.dataTypeName!=null && keyKeyrefs[i].dataTypeName!=null
+							&&  !pred.dataTypeName.equals(keyKeyrefs[i].dataTypeName) ) {
 							reportError( 
 								new Locator[]{
 									getDeclaredLocationOf(pred),
-								getDeclaredLocationOf(keyKeyrefs[i]) },
-								ERR_INCONSISTENT_KEY_TYPE, new Object[]{pred.keyName} );
+									getDeclaredLocationOf(keyKeyrefs[i]) },
+								ERR_INCONSISTENT_KEY_TYPE, new Object[]{pred.name.localName} );
 							// suppress excessive error messages by setting
-							// baseTypeName fields null.
-							pred.baseTypeName=null;
-							keyKeyrefs[i].baseTypeName=null;
+							// dataTypeName fields null.
+							pred.dataTypeName=null;
+							keyKeyrefs[i].dataTypeName=null;
 						}
 					}
 						
-					keys.put( keyKeyrefs[i].keyName, keyKeyrefs[i] );
+					keys.put( keyKeyrefs[i].name, keyKeyrefs[i] );
 				}
 			
 			// then detect undefined keys.
 			for( int i=0; i<keyKeyrefs.length; i++ ) {
-				if( keyKeyrefs[i].keyrefName!=null ) {
+				if( !keyKeyrefs[i].isKey ) {
 					
-					NGTypedStringExp pred = (NGTypedStringExp)keys.get(keyKeyrefs[i].keyrefName);
+					KeyExp pred = (KeyExp)keys.get(keyKeyrefs[i].name);
 					
 					if( pred==null )
 						reportError(
 							new Locator[]{getDeclaredLocationOf(keyKeyrefs[i])},
 							ERR_UNDEFINED_KEY,
-							new Object[]{keyKeyrefs[i].keyrefName} );
-					else
-					{
+							new Object[]{keyKeyrefs[i].name} );
+					else {
 						// check the type consistency.
-						// if baseTypeName==null, then it means there was an error in that declaration.
+						// if dataTypeName==null, then it means there was an error in that declaration.
 						// In that case, this error check is meaningless.
-						if( pred.baseTypeName!=null && keyKeyrefs[i].baseTypeName!=null
-							&&  !pred.baseTypeName.equals(keyKeyrefs[i].baseTypeName) ) {
+						if( pred.dataTypeName!=null && keyKeyrefs[i].dataTypeName!=null
+							&&  !pred.dataTypeName.equals(keyKeyrefs[i].dataTypeName) ) {
 							reportError( 
 								new Locator[]{
 									getDeclaredLocationOf(pred),
-								getDeclaredLocationOf(keyKeyrefs[i]) },
-								ERR_INCONSISTENT_KEY_TYPE, new Object[]{pred.keyName} );
+									getDeclaredLocationOf(keyKeyrefs[i]) },
+								ERR_INCONSISTENT_KEY_TYPE, new Object[]{pred.name.localName} );
 							// suppress excessive error messages by setting
 							// baseTypeName fields null.
-							pred.baseTypeName=null;
-							keyKeyrefs[i].baseTypeName=null;
+							pred.dataTypeName=null;
+							keyKeyrefs[i].dataTypeName=null;
 						}
 					}
 				}					
@@ -429,4 +441,6 @@ public class RELAXNGReader extends TREXBaseReader {
 		"RELAXNGReader.RedefiningUndefined";
 	public static final String ERR_UNKNOWN_DATATYPE_VOCABULARY_1 = // arg:2
 		"RELAXNGReader.UnknownDatatypeVocabulary1";
+	public static final String ERR_MULTIPLE_EXCEPT = // arg:0
+		"RELAXNGReader.MultipleExcept";
 }

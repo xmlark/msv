@@ -27,6 +27,8 @@ public abstract class Token
 	boolean match( TypedStringExp p )	{ return false; }
 	/** returns true if the given ListExp can consume this token */
 	boolean match( ListExp p )			{ return false; }
+	/** returns true if the given KeyExp can consume this token */
+	boolean match( KeyExp p )			{ return false; }
 	
 	/** returns true if anyString pattern can consume this token */
 	boolean matchAnyString()			{ return false; }

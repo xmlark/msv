@@ -58,18 +58,16 @@ public final class ExportedHedgeRuleChecker implements RELAXExpressionVisitorBoo
 	public boolean onInterleave( InterleaveExp exp )	{ throw new Error(); }
 	public boolean onConcur( ConcurExp exp )			{ throw new Error(); }
 	public boolean onList( ListExp exp )				{ throw new Error(); }
+	public boolean onKey( KeyExp exp )					{ throw new Error(); }
 	
-	public boolean onElementRules( ElementRules exp )
-	{
+	public boolean onElementRules( ElementRules exp ) {
 		if(exp.ownerModule==module)		return true;
 		
 		takeSnapshot(exp);
 		return false;
 	}
-	public boolean onHedgeRules( HedgeRules exp )
-	{
-		if( exp.ownerModule!=module )	// reference to the other namespace
-		{
+	public boolean onHedgeRules( HedgeRules exp ) {
+		if( exp.ownerModule!=module ) {	// reference to the other namespace
 			takeSnapshot(exp);
 			return false;
 		}
@@ -85,8 +83,7 @@ public final class ExportedHedgeRuleChecker implements RELAXExpressionVisitorBoo
 	 * takes a snap shot of traversal to this.errorSnapshot
 	 * so that the user will know what references cause this problem.
 	 */
-	private void takeSnapshot( ReferenceExp lastExp )
-	{
+	private void takeSnapshot( ReferenceExp lastExp ) {
 		errorSnapshot = new ReferenceExp[ traversalStack.size()+1 ];
 		traversalStack.toArray(errorSnapshot);
 		errorSnapshot[errorSnapshot.length-1] = lastExp;

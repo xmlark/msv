@@ -12,6 +12,7 @@ package com.sun.msv.grammar;
 import java.util.Hashtable;
 import org.relaxng.datatype.Datatype;
 import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.util.StringPair;
 
 /**
  * Creates a new Expression by combining existing expressions.
@@ -21,8 +22,8 @@ import com.sun.msv.datatype.xsd.XSDatatype;
  * For example, createChoice(P,P) will result in P. createSequence(P,nullSet)
  * will result in nullSet.
  * 
- * Furthermore, associative operators are grouped to the right.
- * createChoice( (P|Q), R ) will be P|(Q|R).
+ * Furthermore, associative operators are grouped to the left.
+ * createChoice( (P|Q), (R|S) ) will be ((P|Q)|R)|S.
  * 
  * <P>
  * Although this unification is essential, this is also the performance
@@ -59,21 +60,23 @@ public class ExpressionPool implements java.io.Serializable {
 		
 		// TODO: should we re-order choice in a consistent manner?
 		
-		// associative operators are grouped to the right
-		if( left instanceof ChoiceExp ) {
-			final ChoiceExp c = (ChoiceExp)left;
-			return createChoice( c.exp1, createChoice(c.exp2, right) );
+		// associative operators are grouped to the left
+		if( right instanceof ChoiceExp ) {
+			final ChoiceExp c = (ChoiceExp)right;
+			return createChoice( createChoice(left,c.exp1), c.exp2 );
 		}
 
-		// eliminate duplicate choice items.
-		Expression next = right;
+		// eliminate duplicate choice items by checking that the right
+		// is already included in the left.
+		Expression next = left;
+
 		while( true ) {
-			if( next==left )	return right;	// left is already in the choice
+			if( next==right )	return left;	// left is already in the choice
 			if(!(next instanceof ChoiceExp))	break;
 				
 			ChoiceExp cp = (ChoiceExp)next;
-			if( cp.exp1==left )	return right;
-			next = cp.exp2;
+			if( cp.exp2==right )	return left;
+			next = cp.exp1;
 		}
 
 		// special (optimized) unification.
@@ -109,11 +112,15 @@ public class ExpressionPool implements java.io.Serializable {
 	}
 	
 	public final Expression createTypedString( XSDatatype dt ) {
-		return unify( new TypedStringExp(dt,dt.displayName()) );
+		return createTypedString( dt, new StringPair("",dt.displayName()) );
 	}
 	
-	public final Expression createTypedString( Datatype dt, String typeName ) {
-		return unify( new TypedStringExp(dt,typeName) );
+	public final Expression createTypedString( Datatype dt, StringPair typeName ) {
+		return createTypedString( dt, typeName, Expression.nullSet );
+	}
+	
+	public final Expression createTypedString( Datatype dt, StringPair typeName, Expression except ) {
+		return unify( new TypedStringExp(dt,typeName,except) );
 	}
 	
 	public final Expression createList( Expression exp ) {
@@ -126,6 +133,18 @@ public class ExpressionPool implements java.io.Serializable {
 		
 		return unify( new MixedExp(body) );
 	}
+
+	public final Expression createKey( Expression body, StringPair name ) {
+		if( body==Expression.nullSet )		return Expression.nullSet;
+		
+		return unify( new KeyExp(body,name,true) );
+	}
+	
+	public final Expression createKeyref( Expression body, StringPair name ) {
+		if( body==Expression.nullSet )		return Expression.nullSet;
+		
+		return unify( new KeyExp(body,name,false) );
+	}
 	
 	public final Expression createSequence( Expression left, Expression right ) {
 		if( left ==Expression.nullSet
@@ -133,10 +152,10 @@ public class ExpressionPool implements java.io.Serializable {
 		if( left ==Expression.epsilon )	return right;
 		if( right==Expression.epsilon )	return left;
 		
-		// associative operators are grouped to the right
-		if( left instanceof SequenceExp ) {
-			final SequenceExp s = (SequenceExp)left;
-			return createSequence( s.exp1, createSequence(s.exp2, right) );
+		// associative operators are grouped to the left
+		if( right instanceof SequenceExp ) {
+			final SequenceExp s = (SequenceExp)right;
+			return createSequence( createSequence(left,s.exp1), s.exp2 );
 		}
 		
 		// special (optimized) unification.
@@ -160,10 +179,10 @@ public class ExpressionPool implements java.io.Serializable {
 			else								return Expression.nullSet;
 		}
 		
-		// associative operators are grouped to the right
-		if( left instanceof ConcurExp ) {
-			final ConcurExp c = (ConcurExp)left;
-			return createConcur( c.exp1, createConcur(c.exp2, right) );
+		// associative operators are grouped to the left
+		if( right instanceof ConcurExp ) {
+			final ConcurExp c = (ConcurExp)right;
+			return createConcur( createConcur(left, c.exp1), c.exp2 );
 		}
 		
 		return unify(new ConcurExp(left,right));
@@ -175,10 +194,10 @@ public class ExpressionPool implements java.io.Serializable {
 		if( left == Expression.nullSet
 		||  right== Expression.nullSet )	return Expression.nullSet;
 		
-		// associative operators are grouped to the right
-		if( left instanceof InterleaveExp ) {
-			final InterleaveExp i = (InterleaveExp)left;
-			return createInterleave( i.exp1, createInterleave(i.exp2, right) );
+		// associative operators are grouped to the left
+		if( right instanceof InterleaveExp ) {
+			final InterleaveExp i = (InterleaveExp)right;
+			return createInterleave( createInterleave(left, i.exp1), i.exp2 );
 		}
 		
 		return unify(new InterleaveExp(left,right));

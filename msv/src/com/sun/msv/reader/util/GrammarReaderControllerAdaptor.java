@@ -9,6 +9,7 @@
  */
 package com.sun.msv.reader.util;
 
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
@@ -28,12 +29,12 @@ public class GrammarReaderControllerAdaptor implements ErrorHandler
 		this.core = core;
 	}
 	
-	public void fatalError( SAXParseException spe ) throws SAXParseException {
+	public void fatalError( SAXParseException spe ) throws SAXException {
 		core.error( getLocator(spe), spe.getMessage(), spe.getException() );
 		throw spe;
 	}
 	
-	public void error( SAXParseException spe ) {
+	public void error( SAXParseException spe ) throws SAXException {
 		core.error( getLocator(spe), spe.getMessage(), spe.getException() );
 	}
 	

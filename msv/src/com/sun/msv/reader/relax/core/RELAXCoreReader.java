@@ -124,7 +124,7 @@ public class RELAXCoreReader extends RELAXReader
 	{
 		Map m = new java.util.HashMap();
 		m.put("uriReference",		com.sun.tranquilo.datatype.AnyURIType.theInstance );
-		m.put("decimal",			com.sun.tranquilo.datatype.NumberType.theInstance );
+		m.put("number",				com.sun.tranquilo.datatype.NumberType.theInstance );
 		m.put("timeDuration",		com.sun.tranquilo.datatype.DurationType.theInstance );
 		m.put("CDATA",				com.sun.tranquilo.datatype.NormalizedStringType.theInstance );
 		return m;

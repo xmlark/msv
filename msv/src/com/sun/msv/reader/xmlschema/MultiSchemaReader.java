@@ -12,6 +12,7 @@ package com.sun.msv.reader.xmlschema;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.LocatorImpl;
 
+import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.util.Util;
 
 /**
@@ -38,7 +39,20 @@ public class MultiSchemaReader
     
     private final XMLSchemaReader reader;
     
+    private boolean finalized = false;
+    
+    /**
+     * @deprecated
+     */
     public final XMLSchemaReader getReader() { return reader; }
+    
+    /**
+     * Obtains the parsed grammar.
+     */
+    public final XMLSchemaGrammar getResult() {
+        finish();
+        return reader.getResult();
+    }
     
     
     
@@ -65,7 +79,9 @@ public class MultiSchemaReader
      * This method should be called when all the schemas are parsed.
      */
     public void finish() {
-        // do the final wrap-up work.
-        reader.wrapUp();
+        if( !finalized ) {
+            finalized = true;
+            reader.wrapUp();
+        }
     }
 }

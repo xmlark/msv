@@ -28,7 +28,8 @@ class KeyValue {
 	
 	KeyValue( Object[] values, Locator loc ) {
 		this.values = values;
-		this.locator = new LocatorImpl(loc);
+        if(loc==null)   this.locator = null;
+        else            this.locator = new LocatorImpl(loc);
 	}
 	
 	public int hashCode() {

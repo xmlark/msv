@@ -49,7 +49,10 @@ public class FieldsMatcher extends MatcherBundle {
 		super(selector.owner);
 		
 		this.selector = selector;
-		this.startTag = new LocatorImpl(owner.getLocator());
+        if(owner.getLocator()==null)
+            this.startTag = null;
+        else
+    		this.startTag = new LocatorImpl(owner.getLocator());
 		
 		children = new Matcher[selector.idConst.fields.length];
 		for( int i=0; i<selector.idConst.fields.length; i++ )

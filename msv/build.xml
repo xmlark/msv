@@ -3,7 +3,7 @@
 <project name="tranquilo" basedir="." default="jars">
 	<property name="sourceDir" value="./src"/>
 	<property name="buildDir" value="./build"/>
-	<property name="documentDir" value="./doc"/>
+	<property name="documentDir" value="./doc/javadoc"/>
 	<property name="packageDir" value="./package"/>
 	<property name="libDir" value="./lib"/>
 	<property name="javaCCbin" value="C:\Progra~1\Development\JavaCC\bin\lib\JavaCC.zip" />

@@ -196,7 +196,7 @@ public class TREXGrammarReader extends TREXBaseReader {
 		String[] s = splitQName(qName);
 		if(s==null)
 		{
-			reportError( ERR_UNDECLEARED_PREFIX, qName );
+			reportError( ERR_UNDECLARED_PREFIX, qName );
 			// recover by using a dummy DataType
 			return StringType.theInstance;
 		}

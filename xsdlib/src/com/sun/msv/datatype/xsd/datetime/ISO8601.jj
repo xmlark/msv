@@ -107,39 +107,39 @@ ITimeDurationValueType durationTypeV() : { boolean neg=false; }
 
 void datePartL() : {}
 {
-	[<digits> "Y"] [<digits> "M"] <digits> "D"
+	<digits> "Y" [<digits> "M"] [ <digits> "D"]
 |
-	[<digits> "Y"] <digits> "M"
+	<digits> "M" [ <digits> "D"]
 |
-	<digits> "Y"
+	<digits> "D"
 }
 
 void datePartV(boolean neg) : {}
 {
-	[yy=intDigits(neg) "Y"] [mm=intDigits(neg) "M"] dd=intDigits(neg) "D"
+	yy=intDigits(neg) "Y" [mm=intDigits(neg) "M"] [ dd=intDigits(neg) "D"]
 |
-	[yy=intDigits(neg) "Y"] mm=intDigits(neg) "M"
+	mm=intDigits(neg) "M" [ dd=intDigits(neg) "D"]
 |
-	yy=intDigits(neg) "Y"
+	dd=intDigits(neg) "D"
 }
 
 
 void timePartL() : {}
 {
-	[<digits> "H"] [<digits> "M"] <digits> ["." <digits>] "S"
+	<digits> "H" [<digits> "M"] [ <digits> ["." <digits>] "S"]
 |
-	[<digits> "H"] <digits> "M"
+	<digits> "M" [ <digits> ["." <digits>] "S"]
 |
-	<digits> "H"
+	<digits> ["." <digits>] "S"
 }
 
 void timePartV(boolean neg) : {}
 {
-	[HH=intDigits(neg) "H"] [MM=intDigits(neg) "M"] decimalDigits(neg) "S"
+	HH=intDigits(neg) "H" [MM=intDigits(neg) "M"] [ decimalDigits(neg) "S"]
 |
-	[HH=intDigits(neg) "H"] MM=intDigits(neg) "M"
+	MM=intDigits(neg) "M" [ decimalDigits(neg) "S"]
 |
-	HH=intDigits(neg) "H"
+	decimalDigits(neg) "S"
 }
 
 Number intDigits(boolean neg) : { Token v; }

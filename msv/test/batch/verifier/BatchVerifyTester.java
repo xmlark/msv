@@ -53,6 +53,7 @@ public class BatchVerifyTester extends batch.BatchTester
 			suite.addTest( new SuiteTester(val).createTestSuiteFromDir(
 				new File(dir), ext+".ssuite" ) );
 		} catch( Exception e ) {
+			e.printStackTrace();
 			throw new Error(e.getMessage());
 		}
 		

@@ -1,3 +1,12 @@
+/*
+ * @(#)$Id$
+ *
+ * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * 
+ * This software is the proprietary information of Sun Microsystems, Inc.  
+ * Use is subject to license terms.
+ * 
+ */
 package batch.verifier;
 
 import junit.framework.*;
@@ -10,6 +19,11 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+/**
+ * incorporates .ssuite files into JUnit test suite.
+ * 
+ * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
+ */
 public class SuiteTester {
 	
 	// where to load an impl.
@@ -37,7 +51,9 @@ public class SuiteTester {
 		} );
 		
 		TestSuite suite = new TestSuite();
-		
+
+		if( suiteFiles==null )	return suite;
+
 		for( int i=0; i<suiteFiles.length; i++ )
 			suite.addTest( createTestSuiteFromFile(
 				new File( testDir, suiteFiles[i] ) ) );

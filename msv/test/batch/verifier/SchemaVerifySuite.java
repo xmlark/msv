@@ -15,7 +15,6 @@ import org.xml.sax.*;
 import java.io.*;
 import com.sun.msv.verifier.*;
 import com.sun.msv.verifier.identity.IDConstraintChecker;
-import com.sun.msv.verifier.util.VerificationErrorHandlerImpl;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.reader.util.IgnoreController;
@@ -104,25 +103,23 @@ class SchemaVerifySuite extends batch.SchemaSuite {
 				return;
 			
 			try {
-				ValidityViolation vv=null;
-				try {
-					XMLReader r =parent.factory.newSAXParser().getXMLReader();
-					Verifier v;
+				WordlessErrorReporter reporter = new WordlessErrorReporter();
+				
+				XMLReader r =parent.factory.newSAXParser().getXMLReader();
+				Verifier v;
 					
-					if( parent.target.equals("xsd") )
-						v = new IDConstraintChecker( (XMLSchemaGrammar)grammar, new VerificationErrorHandlerImpl() );
-					else
-						v = new Verifier( new REDocumentDeclaration(grammar), new VerificationErrorHandlerImpl() );
-					r.setContentHandler(v);
+				if( parent.target.equals("xsd") )
+					v = new IDConstraintChecker( (XMLSchemaGrammar)grammar, reporter );
+				else
+					v = new Verifier( new REDocumentDeclaration(grammar), reporter );
+				r.setContentHandler(v);
 						
-					r.parse( new InputSource(parent.dir+File.separatorChar+fileName) );
-					
-					assert( v.isValid() );
-				} catch( ValidityViolation _vv ) {
-					vv = _vv;
-				}
-					
-//				if(vv!=null)		parent.report(vv);
+				r.parse( new InputSource(parent.dir+File.separatorChar+fileName) );
+				
+				final ValidityViolation vv = reporter.getError();
+				
+				if( v.isValid() )		assert( vv==null );
+				else					assert( vv!=null );
 						
 				final boolean supposedToBeValid = (fileName.indexOf(".v")!=-1);
 				if( xor( supposedToBeValid , vv==null ) ) {

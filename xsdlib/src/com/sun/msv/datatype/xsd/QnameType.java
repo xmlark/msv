@@ -12,7 +12,7 @@ package com.sun.tranquilo.datatype;
 /**
  * "QName" type.
  * 
- * See http://www.w3.org/TR/xmlschema-2/#QName for the spec
+ * See http://www.w3.org/TR/xmlschema-2/#QName for the spec.
  * 
  * @author Kohsuke KAWAGUCHI
  */
@@ -84,15 +84,11 @@ public class QnameType extends ConcreteType implements Discrete
 	
 	public final int isFacetApplicable( String facetName )
 	{
-		// TODO : it seems to me that the spec has obvious typos.
-		// cause range-related facets does not make sense at all.
-		// so check it with the latest version.
 		if( facetName.equals(FACET_PATTERN)
 		||	facetName.equals(FACET_ENUMERATION)
-// TODO : what is "length" of QName? number of characters?
-//		||	facetName.equals(FACET_LENGTH)
-//		||	facetName.equals(FACET_MAXLENGTH)
-//		||	facetName.equals(FACET_MINLENGTH)
+		||	facetName.equals(FACET_LENGTH)
+		||	facetName.equals(FACET_MAXLENGTH)
+		||	facetName.equals(FACET_MINLENGTH)
 		)
 			return APPLICABLE;
 		else
@@ -101,7 +97,7 @@ public class QnameType extends ConcreteType implements Discrete
 	
 	public final int countLength( Object value )
 	{
-		QnameValueType v = (QnameValuType)value;
+		QnameValueType v = (QnameValueType)value;
 		
 		// the spec does not define what is the unit of length.
 		// TODO: check the update of the spec and modify this if necessary.

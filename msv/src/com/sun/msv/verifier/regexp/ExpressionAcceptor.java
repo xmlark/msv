@@ -296,11 +296,6 @@ public abstract class ExpressionAcceptor implements Acceptor {
         
         Expression residual = docDecl.resCalc.calcResidual( expression, token );
         
-        // if token is ignorable, make expression as so.
-        if( token.isIgnorable() ) {
-            residual = docDecl.pool.createChoice( residual, expression );
-        }
-        
         if( com.sun.msv.driver.textui.Debug.debug ) {
             System.out.println("residual of stepForward("+token+")");
             System.out.print(com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(expression));

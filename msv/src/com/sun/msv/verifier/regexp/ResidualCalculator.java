@@ -72,7 +72,13 @@ public class ResidualCalculator implements ExpressionVisitorExpression {
             return calcResidual(exp,(ElementToken)token);
         
         this.token=token;
-        return exp.visit(this);
+        Expression r = exp.visit(this);
+
+        // if token is ignorable, make expression as so.
+        if( token.isIgnorable() )
+            r = pool.createChoice(r,exp);
+        
+        return r;
     }
     
     public Expression onAttribute( AttributeExp exp ) {

@@ -183,8 +183,9 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
 			}
 			return;
 		}
-			
-		throw new UnsupportedOperationException( dt.getClass().getName() );
+        
+        // unknown datatype
+        writer.element("data-unknown",new String[]{"class",dt.getClass().getName()});
 	}
 		
 		

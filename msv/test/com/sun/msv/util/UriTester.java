@@ -13,7 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.apache.xml.utils.URI;
+//import org.apache.xml.utils.URI;
 
 /**
  * Tests the {@link Uri} class.
@@ -31,7 +31,7 @@ public class UriTester {
 //        System.out.println("Thai Open Source:");
 //        System.out.println( Uri.resolve(base,rel) );
         
-        System.out.println("Apache:");
-        System.out.println( new URI(new URI(base),rel).toString() );
+//        System.out.println("Apache:");
+//        System.out.println( new URI(new URI(base),rel).toString() );
     }
 }

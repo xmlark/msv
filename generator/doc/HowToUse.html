@@ -31,6 +31,7 @@ $Id$ </P>
 <H1>Contents of This Document</H1>
 <OL>
 	<LI><A href="#quick">Quick Start</A>
+	<LI><A href="#root">Specifying the Root Element</A>
 	<LI><A href="#example">Providing Examples</A>
 	<LI><A href="#size">Controlling the Size of Documents</A>
 	<LI><A href="#error">Generating Invalid Documents</A>
@@ -72,6 +73,24 @@ $ java -jar xmlgen.jar -error 1/100 mine.xsd invalid.xml
 </P>
 <PRE>
 $ java -jar xmlgen.jar -error 1/2 mine.xsd terrible.xml
+</PRE>
+
+
+<A name="root">
+<H1>Specifying the Root Element</H1></A>
+<P>
+  With schema languages like XML Schema, the generator cannot tell what element should be used as the root element. Therefore, by default it picks one randomly. The "-root" option allows you to change this behavior by telling the generator to use a specific element.
+</P><P>
+  To generate XML files that start with a <code>foo</code> element of the namespace <code>http://my.name.space/</code>, specify:
+</P>
+<PRE>
+$ java -jar xmlgen.jar mine.xsd -root {http://my.name.space/}foo
+</PRE>
+<P>
+  If you are not using XML namespaces, you say
+</P>
+<PRE>
+$ java -jar xmlgen.jar mine.xsd -root {}foo
 </PRE>
 
 

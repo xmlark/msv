@@ -19,13 +19,13 @@ public class EnumerationFacet extends DataTypeWithValueConstraintFacet
 		
 		for( int i=0; i<len; i++ )
 		{
-			Object o = baseType.convertToValue( (String)lexValues.elementAt(i) );
+			final String val = (String)lexValues.elementAt(i);
+			Object o = baseType.convertToValueObject(val);
 			if(o==null)
 			{
 				throw new BadTypeException(
 					BadTypeException.ERR_INVALID_VALUE_FOR_THIS_TYPE,
-					lexValues.elementAt(i),
-					baseType.getName() );
+					val, baseType.getName() );
 			}
 			
 			values.add(o);

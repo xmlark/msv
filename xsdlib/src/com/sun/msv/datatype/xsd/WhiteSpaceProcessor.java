@@ -32,15 +32,16 @@ public abstract class WhiteSpaceProcessor
 	{
 		public String process( String text )
 		{
-			String result="";
-			int len = text.length();
+			final int len = text.length();
+			StringBuffer result = new StringBuffer(len);
+			
 			for( int i=0; i<len; i++ )
 				if( this.isWhiteSpace(text.charAt(i)) )
-					result += ' ';
+					result.append(' ');
 				else
-					result += text.charAt(i);
+					result.append(text.charAt(i));
 			
-			return result;		
+			return result.toString();		
 		}
 	};
 
@@ -48,9 +49,9 @@ public abstract class WhiteSpaceProcessor
 	{
 		public String process( String text )
 		{
-			String result="";
 			char[] chars = text.toCharArray();
 			int len = text.length();
+			StringBuffer result = new StringBuffer(len/2 /**rough estimation*/ );
 			
 			boolean inStripMode = true;
 			
@@ -60,8 +61,8 @@ public abstract class WhiteSpaceProcessor
 					continue;	// skip this character
 				
 				inStripMode = this.isWhiteSpace(chars[i]);
-				if( inStripMode )	result += ' ';
-				else				result += chars[i];
+				if( inStripMode )	result.append(' ');
+				else				result.append(chars[i]);
 			}
 			
 			// remove trailing whitespaces
@@ -72,7 +73,9 @@ public abstract class WhiteSpaceProcessor
 			// so all we have to do is to remove the last one character
 			// if it's a whitespace.
 			
-			return result.substring(0,len);
+			result.setLength(len);
+			
+			return result.toString();
 		}
 	};
 }

@@ -80,8 +80,14 @@ public class DataTypeFactory
 			add( m, FloatType.theInstance );
 			add( m, DoubleType.theInstance );
 	//		duration
-	//		dateTime
-	//		time, date, yearMonth, year, monthDay, day, month
+			add( m, DateTimeType.theInstance );
+			add( m, TimeType.theInstance );
+			add( m, DateType.theInstance );
+			add( m, YearMonthType.theInstance );
+			add( m, YearType.theInstance );
+			add( m, MonthDayType.theInstance );
+			add( m, DayType.theInstance );
+			add( m, MonthType.theInstance );
 			add( m, HexBinaryType.theInstance );
 			add( m, Base64BinaryType.theInstance );
 			add( m, UriReferenceType.theInstance );

@@ -4,6 +4,7 @@ import org.jdom.*;
 import org.jdom.input.SAXBuilder;
 import java.io.FileInputStream;
 import java.util.Iterator;
+import com.sun.tranquilo.datatype.*;
 
 class TestDriver implements ErrorReceiver
 {
@@ -31,8 +32,26 @@ class TestDriver implements ErrorReceiver
 		else
 			exp.testCase.facets.dump(System.err);
 		
-		// do it again (for tracing)
+		// do it again (for trace purpose)
 		exp.type.verify(exp.testInstance);
+		
+		return false;
+	}
+
+	public boolean reportTestCaseError( DataType baseType, Facets facets, BadTypeException e )
+	{
+/*
+		System.err.println("---- warning ----");
+		System.err.println("test case error");
+		facets.dump(System.err);
+		System.err.println();
+		
+		try
+		{// do it again (for debug)
+			baseType.derive("anonymous",facets);
+		}
+		catch( Exception ee ) { ; }
+*/
 		
 		return false;
 	}

@@ -103,46 +103,58 @@ public class DataTypeTester
 			
 			final TestCase testCase = pattern.get();
 			// derive a type with test facets.
-			final DataType typeObj = baseType.derive("anonymous",  testCase.facets );
-			final String answer = testCase.answer;
-			
-//			if( testCase.facets.isEmpty())	out.println("nofacet");
-//			else	testCase.facets.dump(out);
-			
-			// test each value and see what happens
-			for( int i=0; i<values.length; i++ )
+			DataType typeObj=null;
+			try
 			{
-				if(typeObj.verify(values[i]))
-				{
-					if(answer.charAt(i)=='o')	continue;	// as predicted
-				}
-				else
-				{
-					if(answer.charAt(i)=='.')	continue;	// as predicted
-				}
-				// dump error messages
-				if( !err.report( new UnexpectedResultException(
-						typeObj, baseType.getName(),
-						values[i], answer.charAt(i)=='o',
-						testCase ) ) )
-				{
-					out.println("test aborted");
-					return;
-				}
+				typeObj = baseType.derive("anonymous",  testCase.facets );
+			}
+			catch( BadTypeException bte )
+			{
+				err.reportTestCaseError(baseType,testCase.facets,bte);
 			}
 			
-			// test each wrong values and makes sure that they are rejected.
-			for( int i=0; i<wrongs.length; i++ )
-				if(typeObj.verify(wrongs[i]))
+			if(typeObj!=null)
+			{
+				final String answer = testCase.answer;
+
+	//			if( testCase.facets.isEmpty())	out.println("nofacet");
+	//			else	testCase.facets.dump(out);
+
+				// test each value and see what happens
+				for( int i=0; i<values.length; i++ )
 				{
+					if(typeObj.verify(values[i]))
+					{
+						if(answer.charAt(i)=='o')	continue;	// as predicted
+					}
+					else
+					{
+						if(answer.charAt(i)=='.')	continue;	// as predicted
+					}
+					// dump error messages
 					if( !err.report( new UnexpectedResultException(
-						typeObj, baseType.getName(),
-						wrongs[i], false, TestCase.theEmptyCase ) ) )
+							typeObj, baseType.getName(),
+							values[i], answer.charAt(i)=='o',
+							testCase ) ) )
 					{
 						out.println("test aborted");
 						return;
 					}
 				}
+
+				// test each wrong values and makes sure that they are rejected.
+				for( int i=0; i<wrongs.length; i++ )
+					if(typeObj.verify(wrongs[i]))
+					{
+						if( !err.report( new UnexpectedResultException(
+							typeObj, baseType.getName(),
+							wrongs[i], false, TestCase.theEmptyCase ) ) )
+						{
+							out.println("test aborted");
+							return;
+						}
+					}
+			}
 			
 			cnt++;
 			if( !pattern.hasMore() )	break;

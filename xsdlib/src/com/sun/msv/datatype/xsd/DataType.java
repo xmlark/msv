@@ -73,7 +73,7 @@ public interface DataType extends Serializable,Cloneable
 	 * @return	null
 	 *		when the given lexical value is not valid lexical value for this type.
 	 */
-	Object convertToValue( String lexicalValue );
+	Object convertToValueObject( String lexicalValue );
 	
 	/**
 	 * @returns true if this type is an atom type

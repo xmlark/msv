@@ -22,7 +22,7 @@ public class ISO8601Parser
 	public static void main(String args[]) throws Exception
 	{
 		String s = new BufferedReader( new InputStreamReader(System.in) ).readLine();
-		new ISO8601Parser(new ByteArrayInputStream(s.getBytes("UTF-8"))).dateTimeTypeV();
+		new ISO8601Parser(new ByteArrayInputStream(s.getBytes("UTF-8"))).dateTypeL();
 	}
 	
 	Number		yy,mm,dd;			// Integer or BigInteger
@@ -85,6 +85,7 @@ void durationTypeL() : {}
 	|
 		"T" timePartL()
 	)
+	<EOF>
 }
 
 ITimeDurationValueType durationTypeV() : { boolean neg=false; }
@@ -238,7 +239,7 @@ void timeZoneModifierV() :
 	h=NN(0,14) ":" m=NN(0,59)
 	{
 		if(h==14 && m!=0)	throw new ParseException();
-		zone = TimeZone.create( sign*h*m );
+		zone = TimeZone.create( sign*(h*60+m) );
 	}
 }
 
@@ -260,7 +261,7 @@ void timeV() : { int h,m;}
 
 int yearL() : { Token v; }
 {// to perform leap year check, last 4 digits of the year is necessary
-	("+"|"-")
+	("+"|"-")?
 	v=<digits>
 	{
 		final int length = v.image.length();
@@ -314,7 +315,7 @@ void yearV() : { boolean neg=false; Token v; }
 void month() : { int m; }
 {
 	m = NN(1,12)
-	{ mm = new Integer(m); }
+	{ mm = new Integer(m-1); }
 }
 
 /* day of month without time zone modifier */
@@ -349,50 +350,75 @@ void dateV() : {}
 
 void dateTimeTypeL() : {}
 {
-	dateL()	"T"	timeL() [ timeZoneModifierL() ]
+	dateL()	"T"	timeL() [ timeZoneModifierL() ]	<EOF>
 }
 
 IDateTimeValueType dateTimeTypeV() : {}
 {
-	dateV()	"T"	timeV() [ timeZoneModifierV() ]
+	dateV()	"T"	timeV() [ timeZoneModifierV() ]	<EOF>
 	
 	{ return DateTimeFactory.createFromDateTime(
 		yy, (Integer)mm, (Integer)dd, (Integer)HH, (Integer)MM, mSecond, zone ); }
 }
 
+void timeTypeL() : {}
+{
+	timeL() [ timeZoneModifierL() ]	<EOF>
+}
+
 IDateTimeValueType timeTypeV() : {}
 {
-	timeV() [ timeZoneModifierV() ]
+	timeV() [ timeZoneModifierV() ]	<EOF>
 	
 	{ return DateTimeFactory.createFromTime( (Integer)HH, (Integer)MM, mSecond, zone ); }
 }
 
+void dateTypeL() : {}
+{
+	dateL() [ timeZoneModifierL() ]	<EOF>
+}
+
 IDateTimeValueType dateTypeV() : {}
 {
-	dateV() [ timeZoneModifierV() ]
+	dateV() [ timeZoneModifierV() ]	<EOF>
 	
 	{ return DateTimeFactory.createFromDate(
 		yy, (Integer)mm, (Integer)dd, zone ); }
 }
 
+void yearMonthTypeL() : {}
+{
+	yearL() "-" month() [ timeZoneModifierL() ]	<EOF>
+}
+
 IDateTimeValueType yearMonthTypeV() : {}
 {
-	yearV() "-" month() [ timeZoneModifierV() ]
+	yearV() "-" month() [ timeZoneModifierV() ]	<EOF>
 	
 	{ return DateTimeFactory.createFromDate(
 		yy, (Integer)mm, null, zone ); }
 }
 
+void yearTypeL() : {}
+{
+	yearL() [ timeZoneModifierL() ]	<EOF>
+}
+
 IDateTimeValueType yearTypeV() : {}
 {
-	yearV() [ timeZoneModifierV() ]
+	yearV() [ timeZoneModifierV() ]	<EOF>
 	
 	{ return DateTimeFactory.createFromDate( yy, null, null, zone ); }
 }
 
+void monthDayTypeL() : {}
+{
+	"--" month() "-" day() [ timeZoneModifierL() ]	<EOF>
+}
+
 IDateTimeValueType monthDayTypeV() : {}
 {
-	"--" month() "-" day() [ timeZoneModifierV() ]
+	"--" month() "-" day() [ timeZoneModifierV() ]	<EOF>
 	
 	{
 		if( dd.intValue() >= Util.maximumDayInMonthFor( 4, mm.intValue() ) )
@@ -402,17 +428,27 @@ IDateTimeValueType monthDayTypeV() : {}
 	}
 }
 
+void dayTypeL() : {}
+{
+	"---" day() [ timeZoneModifierL() ]	<EOF>
+}
+
 IDateTimeValueType dayTypeV() : {}
 {
-	"---" day() [ timeZoneModifierV() ]
+	"---" day() [ timeZoneModifierV() ]	<EOF>
 	
 	{ return DateTimeFactory.createFromDate(
 		null, null, (Integer)dd, zone ); }
 }
 
+void monthTypeL() : {}
+{
+	"--" month() "--" [ timeZoneModifierL() ]	<EOF>
+}
+
 IDateTimeValueType monthTypeV() : {}
 {
-	"--" month() "--" [ timeZoneModifierV() ]
+	"--" month() "--" [ timeZoneModifierV() ]	<EOF>
 	
 	{ return DateTimeFactory.createFromDate( null, (Integer)mm, null, zone ); }
 }

@@ -12,7 +12,7 @@ abstract class RangeFacet extends DataTypeWithValueConstraintFacet
 	{
 		super(typeName,baseType,facetName,facets);
 		
-		limitValue = baseType.convertToValue( facets.getFacet(facetName) );
+		limitValue = baseType.convertToValueObject( facets.getFacet(facetName) );
 		if( limitValue==null )
 			throw new BadTypeException(
 				BadTypeException.ERR_INAPPROPRIATE_VALUE_FOR_X,

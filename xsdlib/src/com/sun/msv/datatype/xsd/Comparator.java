@@ -10,5 +10,5 @@ public interface Comparator
 	/**
 	 * compare to value types and decides its order relation
 	 */
-	int compare( Object lhs, Object rhs );
+	int compare( Object o1, Object o2 );
 }

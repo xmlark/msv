@@ -12,16 +12,20 @@ public class DateTimeFactory
 //		if( year instanceof Integer )
 //			return new SmallDateTimeValueType( ... );
 		
-		BigDecimal second;
+		BigDecimal second=null;
 		
 		if( year instanceof Integer )		year = new BigInteger(year.toString());
-		if( mSecond instanceof Integer )	// convert it to second
-			second = new BigDecimal(mSecond.toString()).movePointLeft(3);
-		else
-		if( mSecond instanceof BigDecimal )
-			second = ((BigDecimal)mSecond).movePointLeft(3);
-		else
-			throw new UnsupportedOperationException();
+		
+		if( mSecond!=null )
+		{
+			if( mSecond instanceof Integer )	// convert it to second
+				second = new BigDecimal(mSecond.toString()).movePointLeft(3);
+			else
+			if( mSecond instanceof BigDecimal )
+				second = ((BigDecimal)mSecond).movePointLeft(3);
+			else
+				throw new UnsupportedOperationException();
+		}
 		
 		return new BigDateTimeValueType( (BigInteger)year, month, day, hour, minute, second, zone );
 	}

@@ -1,6 +1,7 @@
 package com.sun.tranquilo.datatype.datetime;
 
 import java.math.BigInteger;
+import java.math.BigDecimal;
 
 public class Util
 {
@@ -13,6 +14,8 @@ public class Util
 	protected static final BigInteger the100= new BigInteger("100");
 	protected static final BigInteger the400= new BigInteger("400");
 
+	protected static final BigDecimal decimal0 = new BigDecimal(BigInteger.ZERO,0);
+	
 	protected static TimeZone timeZonePos14 = TimeZone.create(14*60);
 	protected static TimeZone timeZoneNeg14 = TimeZone.create(-14*60);
 		

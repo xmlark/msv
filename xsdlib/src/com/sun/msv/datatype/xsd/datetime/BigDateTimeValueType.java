@@ -190,10 +190,29 @@ public class BigDateTimeValueType implements IDateTimeValueType
 		normalizedValue = 
 			this.add( BigTimeDurationValueType.fromMinutes(-zone.minutes) );
 		
+		((BigDateTimeValueType)normalizedValue).zone=TimeZone.GMT;
+		
 		return normalizedValue;
 	}
 	
 	
+	private static BigDecimal nullAs0( BigDecimal o )
+	{
+		if(o!=null)	return o;
+		else		return Util.decimal0;
+	}
+	
+	private static BigInteger[] divideAndRemainder( BigInteger x1, BigInteger x2 )
+	{
+		BigInteger[] r = x1.divideAndRemainder(x2);
+		if(r[1].signum()<0)
+		{// in BigInteger, -2/10 = -2, which is not preferable.
+		// we want -2/10 to be 8, with quodrant of -1.
+			r[1] = r[1].add(x2);
+			r[0] = r[0].subtract(BigInteger.ONE);
+		}
+		return r;
+	}
 	
 	public IDateTimeValueType add( ITimeDurationValueType _rhs )
 	{
@@ -201,7 +220,9 @@ public class BigDateTimeValueType implements IDateTimeValueType
 		{// big + big
 			BigTimeDurationValueType rhs = (BigTimeDurationValueType)_rhs;
 
-			BigInteger[] quoAndMod = Util.int2bi(this.month).add(rhs.month).divideAndRemainder(Util.the12);
+			BigInteger[] quoAndMod = divideAndRemainder(
+				Util.int2bi(this.month).add(rhs.month),
+				Util.the12);
 			
 			BigInteger oyear; int omonth;
 			int ohour, ominute; BigDecimal osecond;
@@ -210,22 +231,25 @@ public class BigDateTimeValueType implements IDateTimeValueType
 			oyear = quoAndMod[0].add(this.year).add(rhs.year);
 			
 			
-			BigDecimal sec = this.second.add(rhs.second);
+			BigDecimal sec = nullAs0(this.second).add(nullAs0(rhs.second));
 			
 			// quo = floor((this.second+rhs.second)/60)
 			//     = floor( (this.second+rhs.second)*10^scale / (60*10^scale) )
 			//     = (this.second+rhs.second).unscaled / 60*10^scale
 			
-			quoAndMod = sec.unscaledValue().divideAndRemainder(
-					Util.the60.multiply(Util.the10.pow(sec.scale())) );
+			quoAndMod = divideAndRemainder(
+				sec.unscaledValue(),
+				Util.the60.multiply(Util.the10.pow(sec.scale())) );
 			
 			osecond = new BigDecimal(quoAndMod[1], sec.scale());
 			
 			
-			quoAndMod = quoAndMod[0].add(Util.int2bi(this.minute)).add(rhs.minute).divideAndRemainder(Util.the60);
+			quoAndMod = divideAndRemainder(
+				quoAndMod[0].add(Util.int2bi(this.minute)).add(rhs.minute), Util.the60 );
 			ominute = quoAndMod[1].intValue();
 			
-			quoAndMod = quoAndMod[0].add(Util.int2bi(this.hour)).add(rhs.hour).divideAndRemainder(Util.the24);
+			quoAndMod = divideAndRemainder(
+				quoAndMod[0].add(Util.int2bi(this.hour)).add(rhs.hour), Util.the24 );
 			ohour = quoAndMod[1].intValue();
 			
 			int tempDays;
@@ -243,7 +267,7 @@ public class BigDateTimeValueType implements IDateTimeValueType
 				int carry;
 				if( oday.signum()==-1 )	// day<0
 				{
-					oday = oday.add(Util.int2bi(Util.maximumDayInMonthFor(oyear,omonth-1)));
+					oday = oday.add(Util.int2bi(Util.maximumDayInMonthFor(oyear,(omonth+11)%12)));
 					carry = -1;
 				}
 				else
@@ -259,6 +283,11 @@ public class BigDateTimeValueType implements IDateTimeValueType
 				}
 				
 				omonth += carry;
+				if( omonth<0 )
+				{
+					omonth += 12;
+					oyear = oyear.subtract(BigInteger.ONE);
+				}
 				oyear = oyear.add( Util.int2bi(omonth/12) );
 				omonth %= 12;
 			}
@@ -272,5 +301,31 @@ public class BigDateTimeValueType implements IDateTimeValueType
 			// just for now, convert it to BigTimeDurationValue and then compute the result.
 			return add( _rhs.getBigValue() );
 		}
+	}
+/*
+	public static void main( String[] args )
+	{
+		Object o1 = new BigDateTimeValueType( new BigInteger("2001"), new Integer(5), new Integer(1), null, null, null, null );
+		Object o2 = new BigDateTimeValueType( new BigInteger("2001"), new Integer(5), new Integer(1), null, null, null, null );
+		
+		System.out.println(o1.hashCode());
+		System.out.println(o2.hashCode());
+		System.out.println(o1.equals(o2));
+		System.out.println(o2.equals(o1));
+		
+		java.util.Set s = new java.util.HashSet();
+		s.add(o1);
+		System.out.println( s.contains(o2) );
+	}
+*/
+	public static void main( String[] args )
+	{
+		Object o1 = new BigDateTimeValueType( new BigInteger("1512"), new Integer(1), new Integer(4), null, null, null, TimeZone.create(-12*60) );
+		Object o2 = new BigDateTimeValueType( new BigInteger("1512"), new Integer(1), new Integer(5), null, null, null, TimeZone.create(+12*60) );
+		
+		System.out.println(o1.hashCode());
+		System.out.println(o2.hashCode());
+		System.out.println(o1.equals(o2));
+		System.out.println(o2.equals(o1));
 	}
 }

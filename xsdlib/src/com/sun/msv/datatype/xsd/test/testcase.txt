@@ -1,7 +1,167 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- $Id$ -->
 <suite>
-<!-- test case for boolean -->
+
+<case name="test for year">
+	<value>  -999999999999999999999999999999999999999999999999999999999999999999Z</value>
+	<value  >-10000</value>
+	<value > -0852+02:00</value>
+	<value>  -0312</value>
+	<value  >-0019Z</value>
+	
+	<value > -0002</value>
+	<value > -0001-09:00</value>
+	<value   >0001</value>
+	<value>   0001Z</value>
+	<value  > 0001-08:00</value>
+	<value >  0001+08:00</value>
+	<value  > 0053</value>
+	<value >  0227</value>
+	
+	<value>   1255</value>
+	<value   >2512Z</value>
+	<value  > 7522</value>
+	<value >  9999</value>
+	<value>   12555+09:00</value>
+	
+	<value   >99999999999999999999+05:00</value>
+	<value  > 999999999999999999999999999999999999999999999999999999999999999999</value>
+	
+	<answer for="year"		>ooooo oooooooo ooooo oo</answer>
+
+	<facets><combination>
+		<combination mode="or">
+			<facet answer=	"..... ..o..... ..... .." name="enumeration" value="0001" />
+			<facet answer=	"..... ........ ..... .o" name="enumeration" value="999999999999999999999999999999999999999999999999999999999999999999" />
+		</combination>
+		<combination mode="or">
+			<facet answer=	"..... ..o...oo o.oo. .." name="pattern" value="...." />
+			<facet answer=	".o.o. o.o...oo o.oo. .o" name="pattern" value="-?[0-9]+" />
+		</combination>
+	</combination></facets>
+
+	<wrongs>
+		<!-- no year 0 -->
+		<value> 0000</value>
+		<value> 0000Z</value>
+		<value> 0000+08:00</value>
+		<value>-0000</value>
+		<value> 00000000</value>
+		<value>-000000</value>
+
+		<!-- no trancated form -->
+		<value >99</value>
+		<value> 199</value>
+		<value>-115</value>
+
+		<!-- wrong time zone -->
+		<value>2000ZZ</value>
+		<value>2000+14:01</value>
+		<value>2000-14:01</value>
+		<value>2000-8:00</value>
+		<value>2000+000</value>
+		<value>2000-00:000</value>
+		<value>2000-0:0</value>
+		<value>2000 GMT</value>
+		<value>2000z</value>
+
+		<!-- with month/day -->
+		<value>2000-01-01</value>
+		<value>2000-01</value>
+
+		<!-- format related problem -->
+		<value> 1 9 9 9 </value>		<!-- illegal whitespace -->
+		<value>(1999)</value>
+		<value>1999:</value>
+		<value>1999-</value>
+		<value>01999</value>
+	</wrongs>
+</case>
+
+<case name="test for date">
+	<value>-0013-08-31</value>
+	<value>-0001-12-31 </value>
+	<value> 0001-01-01</value>
+	<value> 1996-02-29  </value>
+	
+	<value> 2001-01-01 </value>
+	<value> 2001-01-01-14:00 </value>
+	<value >2001-01-01-08:00     </value>
+	<value> 2001-01-01Z </value>
+	<value> 2001-01-01+05:00 </value>
+	<value> 2001-01-01+14:00</value>
+	<value> 2001-01-02 </value>
+
+	<value> 9999999999999999999999999999999999999999999999999999999999999999999-01-01 </value>
+	<value> 9999999999999999999999999999999999999999999999999999999999999999999-01-01Z </value>
+	<value> 9999999999999999999999999999999999999999999999999999999999999999999-01-01+05:00 </value>
+
+	<value> 1512-01-04-12:00 </value>
+	<value> 1512-01-05+12:00 </value>
+	<value>2000-02-29Z</value>
+
+	<answer for="date"		>oooo ooooooo ooo ooo</answer>
+
+	<facets><combination>
+		<combination mode="or">
+			<facet answer=	".... ....... ... oo." name="enumeration" value="1512-01-05+12:00" />
+			<facet answer=	".... o...... ... ..." name="enumeration" value="2001-01-01" />
+		</combination>
+		<combination mode="or">
+			<facet answer=	"o..o ....... ooo oo." name="pattern" value="-?..[13579].*" />
+			<facet answer=  ".ooo o...... o.. oo." name="pattern" value=".*[24680]" />
+		</combination>
+</combination></facets>
+	
+	<wrongs>
+		<!-- no year 0 -->
+		<value> 0000-01-01</value>
+		<value>-0000-05-03</value>
+		<value> 00000000-11-04</value>
+		<value>-00000000-07-09</value>
+
+		<!-- no trancated form -->
+		<value> 99-05-05 </value>
+		<value>  952-03-05</value>
+		<value> -952-02-09</value>
+		<value> 1253-1-03</value>
+		<value> 1245-09-7</value>
+		<value> 1877- 1- 1</value>
+		
+		<!-- impossible day of month -->
+		<value>1932-01-32</value>
+		<value>1159-02-29</value>
+		<value>1900-02-29Z</value>
+		<value>1168-03-32</value>
+		<value>1654-04-31-05:00</value>
+		<value>1705-05-32</value>
+		<value>1812-06-31+08:00</value>
+		<value>0432-07-32</value>
+		<value>0779-08-32Z</value>
+		<value>1425-09-31</value>
+		<value>1227-10-32-01:00</value>
+		<value>1621-11-31</value>
+		<value>0015-12-32Z+09:0</value>
+
+		<!-- wrong time zone -->
+		<value>2000-01-01ZZ</value>
+		<value>2000-01-01+14:01</value>
+		<value>2000-01-01-14:01</value>
+		<value>2000-01-01-8:00</value>
+		<value>2000-01-01+000</value>
+		<value>2000-01-01-00:000</value>
+		<value>2000-01-01-0:0</value>
+		<value>2000-01-01 GMT</value>
+		<value>2000-01-01z</value>
+
+		<!-- format related problem -->
+		<value> 1956 - 05 - 32 </value>		<!-- illegal whitespace -->
+		<value> 2000/05/05 </value>			<!-- illegal separator -->
+		<value>2000-01-01 Z +05:00</value>
+	</wrongs>
+</case>
+
+
 <case name="test for boolean">
 	<value>true</value>
 	<value>false</value>
@@ -25,6 +185,7 @@
 		<value>1</value>
 	</wrongs>
 </case>
+
 
 <!-- test case for integer and derived types -->
 <case name="test for integer and its derived types">
@@ -159,8 +320,8 @@
 	</wrongs>
 </case>
 
-<!-- test case for float and double -->
 <comment>
+<!-- test case for float and double -->
 <case>
 	<value>-INF</value>
 	<value>-999999999999999999999999999999999999999999999999999999999999999e99999999999999999999999999999999</value> <!-- way beyond the possible range of double, but valid -->

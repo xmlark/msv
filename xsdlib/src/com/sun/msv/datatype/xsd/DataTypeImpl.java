@@ -39,6 +39,16 @@ abstract class DataTypeImpl implements DataType
 		this( typeName, WhiteSpaceProcessor.theCollapse );
 	}
 
+	final public Object convertToValueObject( String lexicalValue )
+	{
+		return convertToValue(whiteSpace.process(lexicalValue));
+	}
+	
+	/**
+	 * convert whitespace-processed lexical value into value object
+	 */
+	abstract protected Object convertToValue( String content );
+
 	final public DataType derive( String newName, Facets facets )
 		throws BadTypeException
 	{
@@ -52,10 +62,6 @@ abstract class DataTypeImpl implements DataType
 		DataTypeImpl r = this;	// start from current datatype
 		
 		// TODO : length facet
-		if( localCopy.contains(FACET_PATTERN) )
-			r = new PatternFacet		( newName, r, localCopy );
-		if( localCopy.contains(FACET_ENUMERATION) )
-			r = new EnumerationFacet	( newName, r, localCopy );
 		if( localCopy.contains(FACET_PRECISION) )
 			r = new PrecisionFacet		( newName, r, localCopy );
 		if( localCopy.contains(FACET_SCALE) )
@@ -76,6 +82,10 @@ abstract class DataTypeImpl implements DataType
 			r = new MaxLengthFacet		( newName, r, localCopy );
 		if( localCopy.contains(FACET_WHITESPACE) )
 			r = new WhiteSpaceFacet		( newName, r, localCopy );
+		if( localCopy.contains(FACET_PATTERN) )
+			r = new PatternFacet		( newName, r, localCopy );
+		if( localCopy.contains(FACET_ENUMERATION) )
+			r = new EnumerationFacet	( newName, r, localCopy );
 		
 		if( !localCopy.isEmpty() )
 		{// there exists some unconsumed facet. So signal error.

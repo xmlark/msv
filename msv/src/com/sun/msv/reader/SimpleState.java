@@ -88,7 +88,7 @@ public abstract class SimpleState extends State
 			{
 				reader.reportError(GrammarReader.ERR_MALPLACED_ELEMENT, tag.qName );
 				// probably user is using a wrong namespace.
-				reader.reportWarning(GrammarReader.WRN_MAYBE_WRONG_NAMESPACE, tag.namespaceURI );
+				reader.reportError(GrammarReader.WRN_MAYBE_WRONG_NAMESPACE, tag.namespaceURI );
 			}
 		}
 		

@@ -25,6 +25,9 @@ import java.util.Set;
 import java.util.Iterator;
 import java.text.MessageFormat;
 
+/**
+ * produces an XML file that contains grammar information.
+ */
 public class RuleFileGenerator implements Symbolizer {
 	
 	private RuleFileGenerator() {}
@@ -84,7 +87,7 @@ public class RuleFileGenerator implements Symbolizer {
 					out.element("name", grammarClassName);
 				} else {
 					out.element("package", grammarClassName.substring(0,idx));
-					out.start("name", grammarClassName.substring(idx+1));
+					out.element("name", grammarClassName.substring(idx+1));
 				}
 			}
 			

@@ -54,30 +54,39 @@ class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet
 	}
 	
 	/** counts the number of digits */
-	private final int countPrecision( String literal )
+	protected static int countPrecision( String literal )
 	{
-		// count the number of digits.
 		final int len = literal.length();
 		boolean skipMode = true;
-		char[] chs = literal.toCharArray();
 
 		int count=0;
+		int trailingZero=0;
 		
 		for( int i=0; i<len; i++ )
+		{
+			final char ch = literal.charAt(i);
 			if( skipMode )
 			{// in skip mode, leading zeros are skipped
-				if( '0'<chs[i] && chs[i]<='9' )
+				if( '1'<=ch && ch<='9' )
 				{
 					count++;
 					skipMode = false;
 				}
+				if( '.'==ch )	// digits after '.' is considered significant.
+					skipMode = false;
 			}
 			else
 			{
-				if( '0'<=chs[i] && chs[i]<='9' )
+				if( ch=='0' )	trailingZero++;
+				else
+				if( ch=='.' )	;	// do nothing
+				else			trailingZero=0;
+				
+				if( '0'<=ch && ch<='9' )
 					count++;
 			}
+		}
 		
-		return count;
+		return count-trailingZero;
 	}
 }

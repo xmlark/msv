@@ -140,6 +140,13 @@ public class AnyURIType extends ConcreteType implements Discrete {
 		return content;
 	}
 	
+	public String convertToLexicalValue( Object value ) {
+		if( value instanceof String )
+			return (String)value;
+		else
+			throw new IllegalArgumentException();
+	}
+	
 
 	public final int isFacetApplicable( String facetName ) {
 		if( facetName.equals(FACET_LENGTH)

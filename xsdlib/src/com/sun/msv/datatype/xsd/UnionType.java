@@ -14,8 +14,7 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-final public class UnionType extends ConcreteType
-{
+final public class UnionType extends ConcreteType {
 	/**
 	 * derives a new datatype from atomic datatypes by union
 	 */
@@ -67,6 +66,18 @@ final public class UnionType extends ConcreteType
 		}
 		
 		return null;
+	}
+	
+	public String convertToLexicalValue( Object o ) {
+		for( int i=0; i<memberTypes.length; i++ ) {
+			try {
+				return memberTypes[i].convertToLexicalValue(o);
+			} catch( Exception e ) {
+				;	// ignore
+			}
+		}
+		
+		throw new IllegalArgumentException();
 	}
 	
 	protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context)

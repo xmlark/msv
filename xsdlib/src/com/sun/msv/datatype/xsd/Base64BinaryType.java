@@ -16,8 +16,7 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class Base64BinaryType extends BinaryBaseType
-{
+public class Base64BinaryType extends BinaryBaseType {
 	public static final Base64BinaryType theInstance = new Base64BinaryType();
 	private Base64BinaryType() { super("base64Binary"); }
 	
@@ -29,8 +28,7 @@ public class Base64BinaryType extends BinaryBaseType
 	private static final byte[] decodeMap = initDecodeMap();
 	private static final byte PADDING = 127;
 
-	private static byte[] initDecodeMap()
-	{
+	private static byte[] initDecodeMap() {
 		byte[] map = new byte[256];
 		int i;
 		for( i=0; i<256; i++ )		map[i] = -1;
@@ -45,8 +43,7 @@ public class Base64BinaryType extends BinaryBaseType
 		return map;
 	}
 
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
-	{
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
 		final byte[] buf = lexicalValue.getBytes();
 
 		final int outlen = calcLength(buf);
@@ -61,14 +58,13 @@ public class Base64BinaryType extends BinaryBaseType
 		int q=0;
 
 		// convert each quadruplet to three bytes.
-		for( i=0; i<len; i++ )
-		{
+		for( i=0; i<len; i++ ) {
 			byte v = decodeMap[buf[i]];
 			if( v!=-1 )
 				quadruplet[q++] = v;
 
-			if(q==4)
-			{// quadruplet is now filled.
+			if(q==4) {
+				// quadruplet is now filled.
 				out[o++] = (byte)((quadruplet[0]<<2)|(quadruplet[1]>>4));
 				if( quadruplet[2]!=PADDING )
 					out[o++] = (byte)((quadruplet[1]<<4)|(quadruplet[2]>>2));
@@ -84,8 +80,7 @@ public class Base64BinaryType extends BinaryBaseType
 		return new BinaryValueType(out);
 	}
 
-	protected boolean checkFormat( String lexicalValue, ValidationContextProvider context )
-	{
+	protected boolean checkFormat( String lexicalValue, ValidationContextProvider context ) {
 		return calcLength( lexicalValue.getBytes() ) != -1;
 	}
 
@@ -96,14 +91,12 @@ public class Base64BinaryType extends BinaryBaseType
 	 * @return	-1		if format is illegal.
 	 * 
 	 */
-	private static int calcLength( final byte[] buf )
-	{
+	private static int calcLength( final byte[] buf ) {
 		final int len = buf.length;
 		int base64count=0, paddingCount=0;
 		int i;
 
-		for( i=0; i<len; i++ )
-		{
+		for( i=0; i<len; i++ ) {
 			if( buf[i]=='=' )	// decodeMap['=']!=-1, so we have to check this first.
 				break;
 			if( decodeMap[buf[i]]!=-1 )
@@ -111,10 +104,8 @@ public class Base64BinaryType extends BinaryBaseType
 		}
 
 		// once we saw '=', nothing but '=' can be appeared.
-		for( ; i<len; i++ )
-		{
-			if( buf[i]=='=' )
-			{
+		for( ; i<len; i++ ) {
+			if( buf[i]=='=' ) {
 				paddingCount++;
 				continue;
 			}
@@ -128,5 +119,63 @@ public class Base64BinaryType extends BinaryBaseType
 		if( (base64count+paddingCount)%4 != 0 )	return -1;
 
 		return ((base64count+paddingCount)/4)*3-paddingCount;
+	}
+	
+	
+	
+	private static final char[] encodeMap = initEncodeMap();
+
+	private static char[] initEncodeMap() {
+		char[] map = new char[64];
+		int i;
+		for( i= 0; i<26; i++ )		map[i] = (char)('A'+i);
+		for( i=26; i<52; i++ )		map[i] = (char)('a'+(i-26));
+		for( i=52; i<62; i++ )		map[i] = (char)('0'+(i-52));
+		map[62] = '+';
+		map[63] = '/';
+
+		return map;
+	}
+
+	protected char encode( int i ) {
+		return encodeMap[i&0x3F];
+	}
+	
+	public String convertToLexicalValue( Object value ) {
+		if(!(value instanceof BinaryValueType))
+			throw new IllegalArgumentException();
+		
+		BinaryValueType v = (BinaryValueType)value;
+		StringBuffer r = new StringBuffer(v.rawData.length*4/3); /* rough estimate*/
+		
+		for( int i=0; i<v.rawData.length; i+=3 ) {
+			switch( v.rawData.length-i ) {
+			case 1:
+				r.append( encode(v.rawData[i]>>2) );
+				r.append( encode(((v.rawData[i])&0x3)<<4) );
+				r.append("==");
+				break;
+			case 2:
+				r.append( encode(v.rawData[i]>>2) );
+				r.append( encode(
+							((v.rawData[i]&0x3)<<4) |
+							((v.rawData[i+1]>>4)&0xF)) );
+				r.append( encode((v.rawData[i+1]&0xF)<<2) );
+				r.append("=");
+				break;
+			case 3:
+				r.append( encode(v.rawData[i]>>2) );
+				r.append( encode(
+							((v.rawData[i]&0x3)<<4) |
+							((v.rawData[i+1]>>4)&0xF)) );
+				r.append( encode(
+							((v.rawData[i+1]&0xF)<<2)|
+							((v.rawData[i+2]>>6)&0x3)) );
+				r.append( encode(v.rawData[i+2]&0x3F) );
+				break;
+			}
+		}
+		
+		return r.toString();
 	}
 }

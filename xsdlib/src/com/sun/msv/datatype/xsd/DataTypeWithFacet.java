@@ -36,15 +36,13 @@ abstract class DataTypeWithFacet extends DataTypeImpl
 	
 	/** constructor for facets other than WhiteSpaceFacet */
 	DataTypeWithFacet( String typeName, DataTypeImpl baseType, String facetName, TypeIncubator facets )
-		throws BadTypeException
-	{
+		throws BadTypeException {
 		this( typeName, baseType, facetName, facets, baseType.whiteSpace );
 	}
 	
 	/** constructor for WhiteSpaceFacet */
 	DataTypeWithFacet( String typeName, DataTypeImpl baseType, String facetName, TypeIncubator facets, WhiteSpaceProcessor whiteSpace )
-		throws BadTypeException
-	{
+		throws BadTypeException {
 		super(typeName, whiteSpace);
 		this.baseType = baseType;
 		this.facetName = facetName;
@@ -65,49 +63,44 @@ abstract class DataTypeWithFacet extends DataTypeImpl
 	}
 	
 	
-	public final String displayName()
-	{
+	public final String displayName() {
 		return concreteType.getName()+"-derived";
 	}
 	
-	public final int isFacetApplicable( String facetName )
-	{
-		if( this.facetName.equals(facetName) )
-		{
+	public final int isFacetApplicable( String facetName ) {
+		if( this.facetName.equals(facetName) ) {
 			if( isFacetFixed )		return FIXED;
 			else					return APPLICABLE;
-		}
-		else
+		} else
 			return baseType.isFacetApplicable(facetName);
 	}
 	
 	protected boolean needValueCheck() { return needValueCheckFlag; }
 	
-	final public DataTypeWithFacet getFacetObject( String facetName )
-	{
+	final public DataTypeWithFacet getFacetObject( String facetName ) {
 		if(this.facetName.equals(facetName))
 			return this;
 		else
 			return baseType.getFacetObject(facetName);
 	}
 	
-	final public ConcreteType getConcreteType()
-	{
+	final public ConcreteType getConcreteType() {
 		return concreteType;
 	}
 	
-	final public boolean isAtomType()
-	{
+	final public boolean isAtomType() {
 		return concreteType.isAtomType();
 	}
 	
-	final public boolean isFinal( int derivationType )
-	{
+	final public boolean isFinal( int derivationType ) {
 		return baseType.isFinal(derivationType);
 	}
 	
-	final protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context )
-	{
+	final public String convertToLexicalValue( Object o ) {
+		return concreteType.convertToLexicalValue(o);
+	}
+	
+	final protected DataTypeErrorDiagnosis diagnoseValue(String content, ValidationContextProvider context ) {
 		// if base type complains, pass it through.
 		DataTypeErrorDiagnosis err = baseType.diagnoseValue(content,context);
 		if(err!=null)		return err;

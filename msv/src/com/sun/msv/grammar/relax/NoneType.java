@@ -18,21 +18,26 @@ import com.sun.msv.datatype.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class NoneType extends ConcreteType
-{
+public class NoneType extends ConcreteType {
+	
 	public static final NoneType theInstance = new NoneType();
 	private NoneType() { super("none"); }
 	
-	public int isFacetApplicable( String facetName )
-	{
+	public int isFacetApplicable( String facetName ) {
 		return NOT_ALLOWED;
 	}
 	
-	public boolean checkFormat( String literal, ValidationContextProvider context )
-	{ return false; }
+	public boolean checkFormat( String literal, ValidationContextProvider context ) {
+		return false;
+	}
 
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
-	{ return null; }
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
+		return null;
+	}
+	
+	public String convertToLexicalValue( Object o ) {
+		throw new IllegalArgumentException();
+	}
 	
 	// TODO: implement diagnoseValue
 }

@@ -82,6 +82,17 @@ public interface DataType extends Serializable,Cloneable
 	Object convertToValueObject( String lexicalValue, ValidationContextProvider context );
 	
 	/**
+	 * converts value object into the corresponding value in the lexical space.
+	 * 
+	 * reverse operation of convertToValueObject. The resulting string is not
+	 * necessarily the canonical representation.
+	 * 
+	 * @exception IllegalArgumentException
+	 *		if the given object does not belong to the value space of this datatype.
+	 */
+	String convertToLexicalValue( Object valueObject ) throws IllegalArgumentException;
+	
+	/**
 	 * checks if this type is an atom type.
 	 * 
 	 * List, union, and types derived from them are not atom types.

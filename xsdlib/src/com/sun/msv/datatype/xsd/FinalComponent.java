@@ -61,6 +61,9 @@ public final class FinalComponent extends DataTypeImpl
 	{
 		return baseType.convertToValue(content,context);
 	}
+	public String convertToLexicalValue( Object value ) {
+		return baseType.convertToLexicalValue(value);
+	}
 	public DataTypeErrorDiagnosis diagnoseValue( String content, ValidationContextProvider context )
 	{
 		return baseType.diagnoseValue(content,context);

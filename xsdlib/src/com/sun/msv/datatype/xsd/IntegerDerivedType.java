@@ -39,6 +39,13 @@ abstract class IntegerDerivedType extends ConcreteType implements Comparator
 		return convertToValue(content,context)!=null;
 	}
 	
+	public String convertToLexicalValue( Object value ) {
+		if( value instanceof Number )
+			return value.toString();
+		else
+			throw new IllegalArgumentException();
+	}
+	
 	public final int compare( Object o1, Object o2 )
 	{// integer-derived type always uses Comparable object as its value type
 		final int r = ((Comparable)o1).compareTo(o2);

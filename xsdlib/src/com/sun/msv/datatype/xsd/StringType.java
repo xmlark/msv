@@ -16,31 +16,38 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class StringType extends ConcreteType implements Discrete
-{
+public class StringType extends ConcreteType implements Discrete {
+	
 	public static final StringType theInstance
 		= new StringType("string",WhiteSpaceProcessor.thePreserve);
 	
-	protected StringType( String typeName, WhiteSpaceProcessor whiteSpace )
-	{ super(typeName,whiteSpace); }
+	protected StringType( String typeName, WhiteSpaceProcessor whiteSpace ) {
+		super(typeName,whiteSpace);
+	}
 	
-	protected final boolean checkFormat( String content, ValidationContextProvider context )
-	{// string derived types should use convertToValue method to check its validity
+	protected final boolean checkFormat( String content, ValidationContextProvider context ) {
+		// string derived types should use convertToValue method to check its validity
 		return convertToValue(content,context)!=null;
 	}
 	
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
-	{// for string, lexical space is value space by itself
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
+		// for string, lexical space is value space by itself
 		return lexicalValue;
 	}
+
+	public String convertToLexicalValue( Object value ) {
+		if( value instanceof String )
+			return (String)value;
+		else
+			throw new IllegalArgumentException();
+	}
 	
-	public final int countLength( Object value )
-	{// for string-derived types, length means number of XML characters.
+	public final int countLength( Object value ) {
+		// for string-derived types, length means number of XML characters.
 		return UnicodeUtil.countLength( (String)value );
 	}
 	
-	public final int isFacetApplicable( String facetName )
-	{
+	public final int isFacetApplicable( String facetName ) {
 		if( facetName.equals(FACET_PATTERN)
 		||	facetName.equals(FACET_ENUMERATION)
 		||	facetName.equals(FACET_WHITESPACE)

@@ -47,6 +47,13 @@ public class TypedString implements DataType
 		if(value.equals(literal))	return literal;
 		else						return null;
 	}
+
+	public String convertToLexicalValue( Object value ) {
+		if( value instanceof String )
+			return (String)value;
+		else
+			throw new IllegalArgumentException();
+	}
 	
 	public boolean isAtomType() { return true; }
 	public boolean isFinal(int t) { return true; }

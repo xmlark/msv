@@ -11,6 +11,7 @@ package com.sun.msv.datatype;
 
 import com.sun.msv.datatype.datetime.ISO8601Parser;
 import com.sun.msv.datatype.datetime.IDateTimeValueType;
+import com.sun.msv.datatype.datetime.BigDateTimeValueType;
 
 /**
  * "gYearMonth" type.
@@ -19,18 +20,25 @@ import com.sun.msv.datatype.datetime.IDateTimeValueType;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-public class GYearMonthType extends DateTimeBaseType
-{
+public class GYearMonthType extends DateTimeBaseType {
 	public static final GYearMonthType theInstance = new GYearMonthType();
 	private GYearMonthType() { super("gYearMonth"); }
 
-	protected void runParserL( ISO8601Parser p ) throws Exception
-	{
+	protected void runParserL( ISO8601Parser p ) throws Exception {
 		p.yearMonthTypeL();
 	}
 
-	protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception
-	{
+	protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception {
 		return p.yearMonthTypeV();
+	}
+	
+	public String convertToLexicalValue( Object value ) {
+		if(!(value instanceof IDateTimeValueType ))
+			throw new IllegalArgumentException();
+		
+		BigDateTimeValueType bv = ((IDateTimeValueType)value).getBigValue();
+		return	formatYear(bv.getYear())+"-"+
+				formatTwoDigits(bv.getMonth(),1)+
+				formatTimeZone(bv.getTimeZone());
 	}
 }

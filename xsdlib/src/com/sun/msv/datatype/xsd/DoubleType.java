@@ -16,16 +16,14 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class DoubleType extends FloatingNumberType
-{
+public class DoubleType extends FloatingNumberType {
+	
 	public static final DoubleType theInstance = new DoubleType();
 	private DoubleType() { super("double"); }
 	
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
-	{
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
 		// TODO : probably the same problems exist as in the case of float
-		try
-		{
+		try {
 			if(lexicalValue.equals("NaN"))	return new Double(Double.NaN);
 			if(lexicalValue.equals("INF"))	return new Double(Double.POSITIVE_INFINITY);
 			if(lexicalValue.equals("-INF"))	return new Double(Double.NEGATIVE_INFINITY);
@@ -38,10 +36,19 @@ public class DoubleType extends FloatingNumberType
 			
 			// these screening process is necessary due to the wobble of Float.valueOf method
 			return Double.valueOf(lexicalValue);
-		}
-		catch( NumberFormatException e )
-		{
+		} catch( NumberFormatException e ) {
 			return null;
 		}
+	}
+	
+	public String convertToLexicalValue( Object value ) {
+		if(!(value instanceof Double ))
+			throw new IllegalArgumentException();
+		
+		double v = ((Double)value).doubleValue();
+		if( v==Double.NaN )					return "NaN";
+		if( v==Double.POSITIVE_INFINITY )	return "INF";
+		if( v==Double.NEGATIVE_INFINITY )	return "-INF";
+		return value.toString();
 	}
 }

@@ -11,6 +11,7 @@ package com.sun.msv.datatype;
 
 import com.sun.msv.datatype.datetime.ISO8601Parser;
 import com.sun.msv.datatype.datetime.IDateTimeValueType;
+import com.sun.msv.datatype.datetime.BigDateTimeValueType;
 
 /**
  * "gDay" type.
@@ -19,18 +20,24 @@ import com.sun.msv.datatype.datetime.IDateTimeValueType;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class GDayType extends DateTimeBaseType
-{
+public class GDayType extends DateTimeBaseType {
 	public static final GDayType theInstance = new GDayType();
 	private GDayType() { super("gDay"); }
 
-	protected void runParserL( ISO8601Parser p ) throws Exception
-	{
+	protected void runParserL( ISO8601Parser p ) throws Exception {
 		p.dayTypeL();
 	}
 
-	protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception
-	{
+	protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception {
 		return p.dayTypeV();
+	}
+
+	public String convertToLexicalValue( Object value ) {
+		if(!(value instanceof IDateTimeValueType ))
+			throw new IllegalArgumentException();
+		
+		BigDateTimeValueType bv = ((IDateTimeValueType)value).getBigValue();
+		return	"---" + formatTwoDigits(bv.getDay(),1)+
+				formatTimeZone(bv.getTimeZone());
 	}
 }

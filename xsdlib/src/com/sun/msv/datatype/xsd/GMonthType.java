@@ -11,6 +11,7 @@ package com.sun.msv.datatype;
 
 import com.sun.msv.datatype.datetime.ISO8601Parser;
 import com.sun.msv.datatype.datetime.IDateTimeValueType;
+import com.sun.msv.datatype.datetime.BigDateTimeValueType;
 
 /**
  * "gMonth" type.
@@ -24,13 +25,22 @@ public class GMonthType extends DateTimeBaseType
 	public static final GMonthType theInstance = new GMonthType();
 	private GMonthType() { super("gMonth"); }
 
-	protected void runParserL( ISO8601Parser p ) throws Exception
-	{
+	protected void runParserL( ISO8601Parser p ) throws Exception {
 		p.monthTypeL();
 	}
 
-	protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception
-	{
+	protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception {
 		return p.monthTypeV();
+	}
+	
+	
+	public String convertToLexicalValue( Object value ) {
+		if(!(value instanceof IDateTimeValueType ))
+			throw new IllegalArgumentException();
+		
+		BigDateTimeValueType bv = ((IDateTimeValueType)value).getBigValue();
+		return	"--"+
+				formatTwoDigits(bv.getMonth(),1)+"--"+
+				formatTimeZone(bv.getTimeZone());
 	}
 }

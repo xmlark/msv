@@ -43,12 +43,21 @@ class TestDriver implements ErrorReceiver
     }
 	
 	public boolean report( UnexpectedResultException exp ) {
+		Object o = exp.type.convertToValueObject(exp.testInstance,DummyContextProvider.theInstance);
+		
 		System.out.println("************* error *************");
 		System.out.println("type name            : "+exp.baseTypeName);
 		System.out.println("tested instance      : \""+exp.testInstance+"\"");
 		System.out.println("supposed to be valid : "+exp.supposedToBeValid);
 		System.out.println("verify method        : "+exp.type.verify(exp.testInstance,DummyContextProvider.theInstance) );
+		System.out.println("convertToValue method: "+(o!=null) );
 		System.out.println("diagnose method      : "+(exp.type.diagnose(exp.testInstance,DummyContextProvider.theInstance)==null) );
+		
+		try {
+			System.out.println("convertToLexical     : "+exp.type.convertToLexicalValue(o));
+		} catch( Exception e ) {
+			System.out.println("convertToLexical     : "+e);
+		}
 		
 		if( exp.incubator.isEmpty() )
 			System.out.println("facets: none");

@@ -20,49 +20,38 @@ import java.io.ByteArrayInputStream;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public final class DurationType extends ConcreteType implements Comparator
-{
+public final class DurationType extends ConcreteType implements Comparator {
+	
 	public static final DurationType theInstance = new DurationType();
 	private DurationType() { super("duration"); }
 
-	private final ISO8601Parser getParser( String content ) throws Exception
-	{
+	private final ISO8601Parser getParser( String content ) throws Exception {
 		return new ISO8601Parser( new ByteArrayInputStream( content.getBytes("UTF8") ) );
 	}
 	
-	protected boolean checkFormat( String content, ValidationContextProvider context )
-	{// string derived types should use convertToValue method to check its validity
-		try
-		{
+	protected boolean checkFormat( String content, ValidationContextProvider context ) {
+		try {
 			getParser(content).durationTypeL();
 			return true;
-		}
-		catch( Throwable e )
-		{
+		} catch( Throwable e ) {
 			return false;
 		}
 	}
 	
-	public Object convertToValue( String content, ValidationContextProvider context )
-	{// for string, lexical space is value space by itself
-		try
-		{
+	public Object convertToValue( String content, ValidationContextProvider context ) {
+		try {
 			return getParser(content).durationTypeV();
-		}
-		catch( Throwable e )
-		{
+		} catch( Throwable e ) {
 			return null;
 		}
 	}
 	
 	/** compare two TimeDurationValueType */
-	public int compare( Object lhs, Object rhs )
-	{
+	public int compare( Object lhs, Object rhs ) {
 		return ((ITimeDurationValueType)lhs).compare((ITimeDurationValueType)rhs);
 	}
 	
-	public final int isFacetApplicable( String facetName )
-	{
+	public final int isFacetApplicable( String facetName ) {
 		if( facetName.equals(FACET_PATTERN)
 		||	facetName.equals(FACET_ENUMERATION)
 		||	facetName.equals(FACET_MAXINCLUSIVE)
@@ -72,6 +61,13 @@ public final class DurationType extends ConcreteType implements Comparator
 			return APPLICABLE;
 		else
 			return NOT_ALLOWED;
+	}
+	
+	public String convertToLexicalValue( Object value ) {
+		if(!(value instanceof ITimeDurationValueType))
+			throw new IllegalArgumentException();
+		
+		return ((ITimeDurationValueType)value).getBigValue().toString();
 	}
 }
 

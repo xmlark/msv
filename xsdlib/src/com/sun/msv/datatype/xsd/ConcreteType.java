@@ -10,7 +10,8 @@
 package com.sun.msv.datatype;
 
 /**
- * base class for those types which can be used by itself (int,uriReference,string, etc) .
+ * base class for those types which can be used by itself
+ * (int,uriReference,string, etc) .
  * 
  * @author	Kohsuke Kawaguchi
  */

@@ -18,24 +18,26 @@ import com.sun.msv.datatype.*;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class EmptyStringType extends ConcreteType
-{
+public class EmptyStringType extends ConcreteType {
+	
 	public static final EmptyStringType theInstance = new EmptyStringType();
 	private EmptyStringType() { super("emptyString"); }
 	
-	public int isFacetApplicable( String facetName )
-	{
+	public int isFacetApplicable( String facetName ) {
 		return NOT_ALLOWED;
 	}
 	
-	public boolean checkFormat( String literal, ValidationContextProvider context )
-	{
+	public boolean checkFormat( String literal, ValidationContextProvider context ) {
 		return literal.equals("");
 	}
 
-	public Object convertToValue( String lexicalValue, ValidationContextProvider context )
-	{
+	public Object convertToValue( String lexicalValue, ValidationContextProvider context ) {
 		if( lexicalValue.equals("") )	return lexicalValue;
 		else							return null;
+	}
+	
+	public String convertToLexicalValue( Object o ) {
+		if( o.equals("") )	return "";
+		else				throw new IllegalArgumentException();
 	}
 }

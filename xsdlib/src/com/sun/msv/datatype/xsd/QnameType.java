@@ -47,8 +47,7 @@ public class QnameType extends ConcreteType implements Discrete
 			&& context.resolveNamespacePrefix(prefix)!=null;
 	}
 	
-	public Object convertToValue( String value, ValidationContextProvider context )
-	{
+	public Object convertToValue( String value, ValidationContextProvider context ) {
 		String uri,localPart;
 		// [6] QName ::= (Prefix ':')? LocalPart
 		// [7] Prefix ::= NCName
@@ -80,6 +79,11 @@ public class QnameType extends ConcreteType implements Discrete
 		if(uri==null)	return null;
 		
 		return new QnameValueType(uri,localPart);
+	}
+	
+	public String convertToLexicalValue( Object o ) {
+		// there is no way to convert QName into a string.
+		throw new UnsupportedOperationException();
 	}
 	
 	public final int isFacetApplicable( String facetName )

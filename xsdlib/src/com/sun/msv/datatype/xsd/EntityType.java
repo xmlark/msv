@@ -43,4 +43,11 @@ public class EntityType extends ConcreteType
 		if(context.isUnparsedEntity(content))	return content;
 		else									return null;
 	}
+
+	public String convertToLexicalValue( Object value ) {
+		if( value instanceof String )
+			return (String)value;
+		else
+			throw new IllegalArgumentException();
+	}
 }

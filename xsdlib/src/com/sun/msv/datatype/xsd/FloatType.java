@@ -59,4 +59,14 @@ public class FloatType extends FloatingNumberType
 		}
 	}
 	
+	public String convertToLexicalValue( Object value ) {
+		if(!(value instanceof Float ))
+			throw new IllegalArgumentException();
+		
+		float v = ((Float)value).floatValue();
+		if( v==Float.NaN )					return "NaN";
+		if( v==Float.POSITIVE_INFINITY )	return "INF";
+		if( v==Float.NEGATIVE_INFINITY )	return "-INF";
+		return value.toString();
+	}
 }

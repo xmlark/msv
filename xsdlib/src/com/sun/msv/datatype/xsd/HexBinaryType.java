@@ -68,4 +68,23 @@ public class HexBinaryType extends BinaryBaseType
 
 		return true;
 	}
+	
+	public String convertToLexicalValue( Object value ) {
+		if(!(value instanceof BinaryValueType))
+			throw new IllegalArgumentException();
+		
+		byte[] data = ((BinaryValueType)value).rawData;
+		StringBuffer r = new StringBuffer(data.length*2);
+		for( int i=0; i<data.length; i++ ) {
+			r.append( encode(data[i]>>4) );
+			r.append( encode(data[i]&0xF) );
+		}
+		return r.toString();
+	}
+	
+	public char encode( int ch ) {
+		ch &= 0xF;
+		if( ch<10 )		return (char)('0'+ch);
+		else			return (char)('A'+(ch-10));
+	}
 }

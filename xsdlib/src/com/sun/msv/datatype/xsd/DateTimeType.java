@@ -11,6 +11,7 @@ package com.sun.msv.datatype;
 
 import com.sun.msv.datatype.datetime.ISO8601Parser;
 import com.sun.msv.datatype.datetime.IDateTimeValueType;
+import com.sun.msv.datatype.datetime.BigDateTimeValueType;
 
 /**
  * "dateTime" type.
@@ -19,18 +20,32 @@ import com.sun.msv.datatype.datetime.IDateTimeValueType;
  * 
  * @author	Kohsuke Kawaguchi
  */
-public class DateTimeType extends DateTimeBaseType
-{
+public class DateTimeType extends DateTimeBaseType {
+	
 	public static final DateTimeType theInstance = new DateTimeType();
-	private DateTimeType() { super("dateTime"); }
+	private DateTimeType() {
+		super("dateTime");
+	}
 
-	protected void runParserL( ISO8601Parser p ) throws Exception
-	{
+	protected void runParserL( ISO8601Parser p ) throws Exception {
 		p.dateTimeTypeL();
 	}
 
-	protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception
-	{
+	protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception {
 		return p.dateTimeTypeV();
+	}
+	
+	public String convertToLexicalValue( Object value ) {
+		if(!(value instanceof IDateTimeValueType))
+			throw new IllegalArgumentException();
+		
+		BigDateTimeValueType bv = ((IDateTimeValueType)value).getBigValue();
+		return	formatYear(bv.getYear())+"-"+
+				formatTwoDigits(bv.getMonth(),1)+"-"+
+				formatTwoDigits(bv.getDay(),1)+"T"+
+				formatTwoDigits(bv.getHour())+":"+
+				formatTwoDigits(bv.getMinute())+":"+
+				formatSeconds(bv.getSecond())+
+				formatTimeZone(bv.getTimeZone());
 	}
 }

@@ -179,24 +179,46 @@ public class DataTypeTester
 					boolean v = typeObj.verify(values[i],DummyContextProvider.theInstance);
 					boolean d;
 					
-					try
-					{
-						d = (typeObj.diagnose(values[i],DummyContextProvider.theInstance)==null);
+					Object o = typeObj.convertToValueObject(
+						values[i],DummyContextProvider.theInstance);
+					
+					boolean roundTripError = false;
+					try {
+						if(o!=null) {
+							// should be able to convert it back.
+							String s = typeObj.convertToLexicalValue(o);
+							// try round trip conversion.
+							Object o2 = typeObj.convertToValueObject(s,DummyContextProvider.theInstance);
+							if( o2==null || !o.equals(o2) )
+								roundTripError = true;
+						}
+					} catch( UnsupportedOperationException uoe ) {
+						// ignore this exception
+					} catch( IllegalArgumentException iae ) {
+						roundTripError = true;
 					}
-					catch( UnsupportedOperationException uoe )
-					{
+					
+					try {
+						d = (typeObj.diagnose(values[i],DummyContextProvider.theInstance)==null);
+					} catch( UnsupportedOperationException uoe ) {
 						d = v;
 					}
 					
-					if(v && d && answer.charAt(i)=='o')
-						continue;	// as predicted
-					if(!v && !d && answer.charAt(i)=='.')
-						continue;	// as predicted
+					// if convertToValueObject and verify method differs,
+					// it's always an error.
+					// roundTripError is always an error.
+					if(!roundTripError && (o!=null)==v) {
+						
+						if(v && d && answer.charAt(i)=='o')
+							continue;	// as predicted
+						if(!v && !d && answer.charAt(i)=='.')
+							continue;	// as predicted
 					
-					if(completenessOnly && answer.charAt(i)=='.' && v==d )
-						continue;	// do not report error if
-									// the validator accepts things that
-									// may not be accepted.
+						if(completenessOnly && answer.charAt(i)=='.' && v==d )
+							continue;	// do not report error if
+										// the validator accepts things that
+										// may not be accepted.
+					}
 					
 					// dump error messages
 					if( !err.report( new UnexpectedResultException(

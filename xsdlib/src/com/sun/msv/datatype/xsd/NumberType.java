@@ -109,6 +109,13 @@ public class NumberType extends ConcreteType implements Comparator
 			return null;
 		}
 	}
+	
+	public String convertToLexicalValue( Object o ) {
+		if(o instanceof BigDecimal)
+			return o.toString();
+		else
+			throw new IllegalArgumentException();
+	}
 
 	public final int isFacetApplicable( String facetName )
 	{

@@ -11,6 +11,7 @@ package com.sun.msv.datatype;
 
 import com.sun.msv.datatype.datetime.ISO8601Parser;
 import com.sun.msv.datatype.datetime.IDateTimeValueType;
+import com.sun.msv.datatype.datetime.BigDateTimeValueType;
 
 /**
  * "gYear" type.
@@ -32,5 +33,14 @@ public class GYearType extends DateTimeBaseType
 	protected IDateTimeValueType runParserV( ISO8601Parser p ) throws Exception
 	{
 		return p.yearTypeV();
+	}
+
+	public String convertToLexicalValue( Object value ) {
+		if(!(value instanceof IDateTimeValueType ))
+			throw new IllegalArgumentException();
+		
+		BigDateTimeValueType bv = ((IDateTimeValueType)value).getBigValue();
+		return	formatYear(bv.getYear())+
+				formatTimeZone(bv.getTimeZone());
 	}
 }

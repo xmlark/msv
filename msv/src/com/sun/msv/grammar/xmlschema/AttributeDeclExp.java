@@ -10,6 +10,7 @@
 package com.sun.msv.grammar.xmlschema;
 
 import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.AttributeExp;
 
 /**
  * attribute declaration.
@@ -20,5 +21,12 @@ public class AttributeDeclExp extends ReferenceExp {
 	
 	public AttributeDeclExp( String typeLocalName ) {
 		super(typeLocalName);
+	}
+	
+	public AttributeExp self;
+	
+	public void set( AttributeExp exp ) {
+		self = exp;
+		this.exp = self;
 	}
 }

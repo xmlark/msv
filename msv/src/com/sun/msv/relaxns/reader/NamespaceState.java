@@ -11,6 +11,7 @@ package com.sun.msv.relaxns.reader;
 
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.IgnoreState;
+import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.grammar.relax.RELAXModule;
 import org.iso_relax.dispatcher.impl.IgnoredSchema;
@@ -22,7 +23,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.XMLFilter;
 import org.xml.sax.helpers.XMLFilterImpl;
-import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * parses &lt;namespace&gt; element of RELAX Namespace.
@@ -150,11 +151,18 @@ public class NamespaceState extends State
 		moduleReader.startDocument();	// simulate SAX events
 		moduleReader.setDocumentLocator(reader.locator);
 		
-		Enumeration itr = reader.namespaceSupport.getDeclaredPrefixes();
-		while(itr.hasMoreElements())
-		{// simulate prefix mappings
-			String prefix = (String)itr.nextElement();
-			moduleReader.startPrefixMapping( prefix, reader.namespaceSupport.getURI(prefix) );
+		// simulate prefix mappings
+		GrammarReader.PrefixResolver resolver = reader.prefixResolver;
+		Vector prefixes = new Vector();
+		while( resolver instanceof GrammarReader.ChainPrefixResolver ) {
+			GrammarReader.ChainPrefixResolver ch = (GrammarReader.ChainPrefixResolver)resolver;
+			prefixes.add( ch.prefix );
+			resolver = ch.previous;
+		}
+		
+		for( int i=0; i<prefixes.size(); i++ ) {
+			String p = (String)prefixes.get(i);
+			moduleReader.startPrefixMapping( p, reader.prefixResolver.resolve(p) );
 		}
 		
 		moduleReader.startElement( namespace, localName, qName, atts );

@@ -40,7 +40,7 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
 			final String[] s = reader.splitNamespacePrefix(name);
 			if(s==null)
 			{
-				reportError( ERR_UNDECLEARED_PREFIX, name );
+				reader.reportError( TREXGrammarReader.ERR_UNDECLEARED_PREFIX, name );
 				// recover by using a dummy name
 				nameClass = new SimpleNameClass( "", name );
 			}

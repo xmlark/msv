@@ -288,6 +288,7 @@ public class RELAXNGReader extends TREXBaseReader {
         public State define            ( State parent, StartTagInfo tag ) { return new DefineState(); }
         public State start            ( State parent, StartTagInfo tag ) { return new StartState(); }
         public State redefine        ( State parent, StartTagInfo tag ) { return new DefineState(); }
+        public State redefineStart   ( State parent, StartTagInfo tag ) { return new StartState(); }
         public State includeGrammar    ( State parent, StartTagInfo tag ) { return new IncludeMergeState(); }
         public State externalRef    ( State parent, StartTagInfo tag ) { return new IncludePatternState(); }
         public State divInGrammar    ( State parent, StartTagInfo tag ) { return new DivInGrammarState(); }

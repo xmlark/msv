@@ -28,6 +28,7 @@ public class IncludeMergeState extends com.sun.msv.reader.trex.IncludeMergeState
     protected State createChildState( StartTagInfo tag ) {
         final RELAXNGReader reader = (RELAXNGReader)this.reader;
         if(tag.localName.equals("define"))    return reader.getStateFactory().redefine(this,tag);
+        if(tag.localName.equals("start"))    return reader.getStateFactory().redefineStart(this,tag);
         return null;
     }
     

@@ -9,7 +9,7 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import java.io.ByteArrayInputStream;
+import java.io.StringReader;
 
 import org.relaxng.datatype.ValidationContext;
 
@@ -35,7 +35,7 @@ public final class DurationType extends BuiltinAtomicType implements Comparator 
 	}
 
 	private final ISO8601Parser getParser( String content ) throws Exception {
-		return new ISO8601Parser( new ByteArrayInputStream( content.getBytes("UTF8") ) );
+		return new ISO8601Parser( new StringReader( content ) );
 	}
 	
 	protected boolean checkFormat( String content, ValidationContext context ) {

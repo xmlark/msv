@@ -9,7 +9,7 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import java.io.ByteArrayInputStream;
+import java.io.StringReader;
 import java.math.BigInteger;
 import java.util.Calendar;
 
@@ -37,7 +37,7 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
 	}
 	
 	private static final ISO8601Parser getParser( String content ) throws Exception {
-		return new ISO8601Parser( new ByteArrayInputStream( content.getBytes("UTF8") ) );
+		return new ISO8601Parser( new StringReader(content) );
 	}
 	
 	protected final boolean checkFormat( String content, ValidationContext context ) {

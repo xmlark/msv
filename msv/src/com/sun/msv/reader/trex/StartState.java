@@ -18,14 +18,13 @@ import com.sun.msv.reader.SequenceState;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class StartState extends SequenceState
-{
+public class StartState extends SequenceState {
+	
 	protected final TREXBaseReader getReader() { return (TREXBaseReader)reader; }
 	
-	protected Expression annealExpression( Expression exp )
-	{
-		if(startTag.containsAttribute("name"))
-		{// name attribute is optional.
+	protected Expression annealExpression( Expression exp ) {
+		if(startTag.containsAttribute("name")) {
+			// name attribute is optional.
 			final String name = startTag.getAttribute("name");
 			ReferenceExp ref = getReader().grammar.namedPatterns.getOrCreate(name);
 			ref.exp = exp;

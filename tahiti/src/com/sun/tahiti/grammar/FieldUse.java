@@ -29,8 +29,8 @@ public class FieldUse {
 	}
 	
 	/**
-	 * total cardinality from the parent class to items of this field.
+	 * total multiplicity from the parent class to items of this field.
 	 * This field is computed in the 2nd pass.
 	 */
-	public Cardinality cardinality;
+	public Multiplicity multiplicity;
 }

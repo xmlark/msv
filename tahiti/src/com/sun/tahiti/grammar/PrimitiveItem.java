@@ -21,4 +21,6 @@ public class PrimitiveItem extends JavaItem implements Type {
 	public String getTypeName()		{ return type.getTypeName(); }
 	public Type[] getInterfaces()	{ return type.getInterfaces(); }
 	public Type getSuperType()		{ return type.getSuperType(); }
+	public String getPackageName()	{ return type.getPackageName(); }
+	public String getBareName()		{ return type.getBareName(); }
 }

@@ -38,6 +38,19 @@ public class SystemType implements Type {
 	public String getTypeName() {
 		return theClass.getName();
 	}
+
+	public String getPackageName() {
+		String name = getTypeName();
+		int idx = name.lastIndexOf('.');
+		if(idx<0)	return null;
+		else		return name.substring(0,idx);
+	}
+	public String getBareName() {
+		String name = getTypeName();
+		int idx = name.lastIndexOf('.');
+		if(idx<0)	return name;
+		else		return name.substring(idx+1);
+	}
 	
 	public Type[] getInterfaces() {
 		Class[] is = theClass.getInterfaces();

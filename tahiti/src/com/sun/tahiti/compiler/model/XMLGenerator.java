@@ -85,9 +85,9 @@ class XMLGenerator
 				new String[]{
 					"name",fu.name,
 					"itemType",fu.type.getTypeName(),
-					"minOccurs",Integer.toString(fu.cardinality.min),
+					"minOccurs",Integer.toString(fu.multiplicity.min),
 					"maxOccurs",
-						(fu.cardinality.max==null)?"unbounded":fu.cardinality.max.toString()} );
+						(fu.multiplicity.max==null)?"unbounded":fu.multiplicity.max.toString()} );
 			
 			Iterator itr = fu.items.iterator();
 			while( itr.hasNext() ) {

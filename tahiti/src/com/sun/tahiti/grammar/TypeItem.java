@@ -26,4 +26,15 @@ public abstract class TypeItem extends JavaItem implements Type {
 	public Type[] getInterfaces() {
 		return (Type[])interfaces.toArray(new Type[interfaces.size()]);
 	}
+
+	public String getPackageName() {
+		int idx = name.lastIndexOf('.');
+		if(idx<0)	return null;
+		else		return name.substring(0,idx);
+	}
+	public String getBareName() {
+		int idx = name.lastIndexOf('.');
+		if(idx<0)	return name;
+		else		return name.substring(idx+1);
+	}
 }

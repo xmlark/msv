@@ -8,13 +8,13 @@ public class FieldItem extends JavaItem {
 	}
 	
 	/**
-	 * cardinality of this field to its children (field-class/interface).
-	 * Note that this cardinality and class-field cardinality is completely
+	 * multiplicity of this field to its children (field-class/interface).
+	 * Note that this multiplicity and class-field multiplicity is completely
 	 * a different thing.
 	 * 
 	 * This field is computed during the first pass of the normalization.
 	 */
-	public Cardinality cardinality;
+	public Multiplicity multiplicity;
 	
 	/**
 	 * all Types that can appear as the children of this type.

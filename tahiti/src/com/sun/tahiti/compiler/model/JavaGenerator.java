@@ -62,11 +62,15 @@ class JavaGenerator
 	 */
 	private void writeClass( ClassItem type, PrintWriter out ) {
 
+		String packageName = type.getPackageName();
+		if( packageName!=null )
+			out.println(format("package {0};\n",packageName));
+		
 		out.println("import com.sun.tahiti.runtime.ll.NamedSymbol;");
 		out.println(format("import {0};",grammarClassName));
 		out.println();
 		
-		out.print(format("public class {0}",type.name));
+		out.print(format("public class {0}",type.getBareName() ));
 		
 		if( type.getSuperType()!=null )
 			out.print(format(" extends {0}",type.getSuperType().getTypeName()));
@@ -121,7 +125,10 @@ class JavaGenerator
 			out.println("\t\t\treturn;");
 			out.println("\t\t}");
 		}
-		out.println("\t\tthrow new Error();//assertion failed.this is not possible");
+		if( type.getSuperType()!=null )
+			out.println("\t\tsuper.setField(name,item);");
+		else
+			out.println("\t\tthrow new Error();//assertion failed.this is not possible");
 		out.println("\t}");
 		out.println("}");
 		out.flush();
@@ -135,8 +142,8 @@ class JavaGenerator
 	}
 	
 	private Container getContainer( final FieldUse fu ) {
-		if( fu.cardinality.max!=null ) {
-			if( fu.cardinality.max.intValue()==1 )
+		if( fu.multiplicity.max!=null ) {
+			if( fu.multiplicity.max.intValue()==1 )
 				// use item type itself.
 				return new Container(){
 					public String getTypeStr() {
@@ -149,7 +156,7 @@ class JavaGenerator
 						return format("this.{0}=({1}){2};",fieldName,getTypeStr(),objName);
 					}
 				};
-/*			if( fu.cardinality.max.intValue()==fu.cardinality.min )
+/*			if( fu.multiplicity.max.intValue()==fu.multiplicity.min )
 				// use array.
 				return new Container(){
 					public String getTypeStr() {
@@ -158,7 +165,7 @@ class JavaGenerator
 					public String getInitializer() {
 						return format("new {0}[{1}]",
 							fu.type.getTypeName(),
-							new Integer(fu.cardinality.min));
+							new Integer(fu.multiplicity.min));
 					}
 				};
 */		}

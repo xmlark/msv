@@ -21,8 +21,15 @@ public final class StringPair implements java.io.Serializable
 	public final String namespaceURI;
 	public final String localName;
 	
-	public StringPair( String ns, String ln ) { namespaceURI=ns; localName=ln; }
 	public StringPair( SimpleNameClass name ) { this(name.namespaceURI, name.localName); }
+	public StringPair( String ns, String ln ) {
+        // assertion check
+        if(ns==null)        throw new InternalError("namespace URI is null");
+        if(localName==null) throw new InternalError("local name is null");
+        
+        namespaceURI=ns;
+        localName=ln;
+    }
 	
 	public boolean equals( Object o )
 	{

@@ -57,7 +57,11 @@ public abstract class AnyState extends ExpressionWithoutChildState {
 			return AnyNameClass.theInstance;
 		
 		if( namespace.equals("##other") )
-			return new NotNameClass( new NamespaceNameClass(currentSchema.targetNamespace) );
+            // ##other means anything other than the target namespace and local.
+			return new NotNameClass(
+                new ChoiceNameClass(
+                    new NamespaceNameClass(currentSchema.targetNamespace),
+                    new NamespaceNameClass("")) );
 		
 		NameClass choices=null;
 		

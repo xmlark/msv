@@ -51,6 +51,11 @@ public class AttributeState extends ExpressionWithChildState {
 		return reader.resolveDelayedDataType( typeAttr );
 	}
 
+	protected Expression defaultExpression() {
+		// if no type definition is given, assume ur-type.
+		return Expression.anyString;
+	}
+	
 	protected Expression castExpression( Expression halfCastedExpression, Expression newChildExpression ) {
 		if( halfCastedExpression!=null )
 			// only one child is allowed.
@@ -59,7 +64,7 @@ public class AttributeState extends ExpressionWithChildState {
 		
 		return newChildExpression;
 	}
-																												   
+	
 	protected Expression annealExpression(Expression contentType) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
 		

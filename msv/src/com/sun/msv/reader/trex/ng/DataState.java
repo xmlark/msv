@@ -34,7 +34,7 @@ public class DataState extends ExpressionState {
 	}
 	
 	/** type incubator object to be used to create a type. */
-	protected DataTypeBuilder typeBuilder;
+	protected DatatypeBuilder typeBuilder;
 	
 	/** the name of the base type. */
 	protected StringPair baseTypeName;
@@ -51,10 +51,10 @@ public class DataState extends ExpressionState {
 			if( reader.datatypeLib!=null ) {// an error is already reported if lib==null.
 				baseTypeName = new StringPair( reader.datatypeLibURI, localName );
 				 try {
-					typeBuilder = reader.datatypeLib.createDataTypeBuilder(localName);
+					typeBuilder = reader.datatypeLib.createDatatypeBuilder(localName);
 					if( typeBuilder==null )
 						 reader.reportError( reader.ERR_UNDEFINED_DATATYPE, localName );
-				 } catch( DataTypeException dte ) {
+				 } catch( DatatypeException dte ) {
 					 reader.reportError( reader.ERR_UNDEFINED_DATATYPE_1, localName, dte.getMessage() );
 				 }
 			}
@@ -64,11 +64,11 @@ public class DataState extends ExpressionState {
 			// if an error is encountered, then typeIncubator field is left null.
 			// In that case, set a dummy implementation so that the successive param
 			// statements are happy.
-			typeBuilder = new DataTypeBuilder(){
-				public DataType derive() {
-					return com.sun.msv.datatype.StringType.theInstance;
+			typeBuilder = new DatatypeBuilder(){
+				public Datatype createDatatype() {
+					return com.sun.msv.datatype.xsd.StringType.theInstance;
 				}
-				public void add( String name, String value, ValidationContext context ) {
+				public void addParameter( String name, String value, ValidationContext context ) {
 					// do nothing.
 					// thereby accepts anything as a valid facet.
 				}
@@ -79,6 +79,8 @@ public class DataState extends ExpressionState {
 	protected Expression makeExpression() {
 		final RELAXNGReader reader = (RELAXNGReader)this.reader;
 		
+		final String typeName = startTag.getAttribute("type")+"-derived";
+		
 		try {
 			String key = startTag.getAttribute("key");
 			String keyref = startTag.getAttribute("keyref");
@@ -86,15 +88,16 @@ public class DataState extends ExpressionState {
 				// avoid NGTypedStringExp if possible.
 				// it's good for other applications,
 				// and TypedStringExps are sharable.
-				return reader.pool.createTypedString( typeBuilder.derive() );
+				return reader.pool.createTypedString(
+					typeBuilder.createDatatype(), typeName );
 			else {
 				NGTypedStringExp exp = new NGTypedStringExp(
-					typeBuilder.derive(), key, keyref, baseTypeName );
+					typeBuilder.createDatatype(), typeName, key, keyref, baseTypeName );
 				reader.keyKeyrefs.add(exp);
 				reader.setDeclaredLocationOf(exp);	// memorize the location.
 				return exp;
 			}
-		} catch( DataTypeException dte ) {
+		} catch( DatatypeException dte ) {
 			reader.reportError( reader.ERR_INVALID_PARAMETERS, dte.getMessage() );
 			// recover by returning something.
 			return Expression.nullSet;

@@ -12,7 +12,7 @@ package com.sun.msv.reader.relax.core;
 import java.util.Map;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import com.sun.msv.reader.GrammarReaderController;
@@ -136,9 +136,9 @@ public class RELAXCoreReader extends RELAXReader {
 	 * If undefined type name is specified, this method is responsible
 	 * to report an error, and recovers.
 	 */
-	public DataType resolveDataType( String typeName ) {
+	public Datatype resolveDataType( String typeName ) {
 		// look up user defined types first
-		DataType dt = (DataType)module.userDefinedTypes.getType(typeName);
+		Datatype dt = (Datatype)module.userDefinedTypes.getType(typeName);
 		
 		if(dt==null) {
 			dt = getBackwardCompatibleType(typeName);
@@ -224,6 +224,9 @@ public class RELAXCoreReader extends RELAXReader {
 	
 	
 // error messages	
+	protected String localizeMessage( String propertyName, Object[] args ) {
+		return super.localizeMessage(propertyName,args);
+	}
 	
 	public static final String ERR_NAMESPACE_NOT_SUPPROTED =
 		"RELAXReader.NamespaceNotSupported";		// arg:0
@@ -259,10 +262,10 @@ public class RELAXCoreReader extends RELAXReader {
 		= "RELAXReader.IdAbuse";
 	public static final String ERR_ID_ABUSE_1 // arg:1
 		= "RELAXReader.IdAbuse.1";
-	public static final String ERR_REFERENCE_TO_MERGED_ATTPOOL // arg:1
-		= "RELAXReader.ReferenceToMergedAttPool";
-	public static final String WRN_DEPRECATED_TYPENAME = // arg:2
-		"RELAXReader.Warning.DeprecatedTypeName";
+//	public static final String ERR_REFERENCE_TO_MERGED_ATTPOOL // arg:1
+//		= "RELAXReader.ReferenceToMergedAttPool";
+//	public static final String WRN_DEPRECATED_TYPENAME = // arg:2
+//		"RELAXReader.Warning.DeprecatedTypeName";
 	public static final String WRN_ILLEGAL_RELAXCORE_VERSION	// arg:1
 		= "RELAXReader.Warning.IllegalRelaxCoreVersion";
 }

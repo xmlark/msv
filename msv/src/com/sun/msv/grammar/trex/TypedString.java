@@ -9,16 +9,21 @@
  */
 package com.sun.msv.grammar.trex;
 
-import com.sun.msv.datatype.*;
+import com.sun.msv.datatype.DatabindableDatatype;
+import com.sun.msv.datatype.SerializationContext;
+import com.sun.msv.datatype.xsd.WhiteSpaceProcessor;
 import org.relaxng.datatype.ValidationContext;
-import org.relaxng.datatype.DataTypeException;
+import org.relaxng.datatype.DatatypeException;
+import org.relaxng.datatype.DatatypeStreamingValidator;
+import org.relaxng.datatype.helpers.StreamingValidatorImpl;
 
 /**
  * Datatype created by &lt;string&gt; element.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TypedString implements DataType {
+public class TypedString implements DatabindableDatatype {
+	
 	/** this type only matches this string */
 	public final String value;
 	/** true indicates that whiteSpace should be preserved. */
@@ -33,11 +38,6 @@ public class TypedString implements DataType {
 		this.preserveWhiteSpace = preserveWhiteSpace;
 	}
 
-	public int isFacetApplicable( String facetName ) {
-		// again derivation will never be required.
-		throw new UnsupportedOperationException();
-	}
-
 	public Object createValue( String literal, ValidationContext context ) {
 		if(!preserveWhiteSpace)
 			literal = WhiteSpaceProcessor.theCollapse.process(literal);
@@ -49,8 +49,10 @@ public class TypedString implements DataType {
 	public Object createJavaObject( String literal, ValidationContext context ) {
 		return createValue(literal,context);
 	}
-
-
+	public Class getJavaObjectType() {
+		return String.class;
+	}
+	
 	public String convertToLexicalValue( Object value, SerializationContext context ) {
 		if( value instanceof String )
 			return (String)value;
@@ -58,24 +60,28 @@ public class TypedString implements DataType {
 			throw new IllegalArgumentException();
 	}
 	
-	public boolean isAtomType() { return true; }
-	public boolean isFinal(int t) { return true; }
-	
-	public boolean allows( String literal, ValidationContext context ) {
+	public boolean isValid( String literal, ValidationContext context ) {
 		return createValue(literal,context)!=null;
 	}
 	
-	public DataTypeException diagnose( String content, ValidationContext context ) {
-		if( createValue(content,context)!=null )	return null;
+	public void checkValid( String content, ValidationContext context ) throws DatatypeException {
+		if( createValue(content,context)!=null )	return;
 		
-		return new DataTypeException(
-			this, content,-1,
+		throw new DatatypeException(
+			DatatypeException.UNKNOWN,
 			Localizer.localize(DIAG_TYPED_STRING,value) );
+	}
+	
+	public DatatypeStreamingValidator createStreamingValidator( ValidationContext context ) {
+		return new StreamingValidatorImpl(this,context);
 	}
 	
 // stubs
 	public final boolean sameValue( Object o1, Object o2 ) {
 		return o1.equals(o2);
+	}
+	public final int valueHashCode( Object o ) {
+		return o.hashCode();
 	}
 	
 	

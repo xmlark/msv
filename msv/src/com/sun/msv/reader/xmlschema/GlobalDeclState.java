@@ -9,8 +9,8 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import org.relaxng.datatype.DataType;
-import com.sun.msv.datatype.DataTypeImpl;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.XSDatatypeImpl;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.SimpleState;
 import com.sun.msv.reader.ExpressionOwner;
@@ -47,9 +47,9 @@ public class GlobalDeclState extends SimpleState
 	// do nothing. declarations register themselves by themselves.
 	public void onEndChild( Expression exp ) {}
 	
-	public void onEndChild( DataType type ) {
+	public void onEndChild( XSDatatype type ) {
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
-		final DataTypeImpl dti = (DataTypeImpl)type;
+		final XSDatatypeImpl dti = (XSDatatypeImpl)type;
 		final String typeName = dti.getName();
 		
 		if( typeName==null ) {

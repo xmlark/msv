@@ -20,7 +20,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
-import com.sun.msv.datatype.DataTypeFactory;
+import com.sun.msv.datatype.xsd.DatatypeFactory;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.relax.EmptyStringType;
 import com.sun.msv.grammar.relax.NoneType;
@@ -138,16 +138,12 @@ public abstract class RELAXReader extends GrammarReader
 // error related service
 //=============================================
 
-	protected String localizeMessage( String propertyName, Object[] args )
-	{
+	protected String localizeMessage( String propertyName, Object[] args ) {
 		String format;
 		
-		try
-		{
+		try {
 			format = ResourceBundle.getBundle("com.sun.msv.reader.relax.Messages").getString(propertyName);
-		}
-		catch( Exception e )
-		{
+		} catch( Exception e ) {
 			format = ResourceBundle.getBundle("com.sun.msv.reader.Messages").getString(propertyName);
 		}
 		

@@ -83,8 +83,8 @@
 	
 		<!-- internal task -->
 		<target name="doJavacc">
-			<javacc	target="${src}/com/sun/msv/datatype/datetime/ISO8601.jj"
-					outputdirectory="${src}/com/sun/msv/datatype/datetime"
+			<javacc	target="${src}/com/sun/msv/datatype/xsd/datetime/ISO8601.jj"
+					outputdirectory="${src}/com/sun/msv/datatype/xsd/datetime"
 					javacchome="${javaCClib}"
 			/>
 		</target>

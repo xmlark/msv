@@ -15,7 +15,7 @@ import com.sun.msv.verifier.Acceptor;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.relaxns.grammar.DeclImpl;
 import com.sun.msv.util.StringRef;
-import com.sun.msv.util.DataTypeRef;
+//import com.sun.msv.util.DatatypeRef;
 import org.iso_relax.dispatcher.ElementDecl;
 
 /**

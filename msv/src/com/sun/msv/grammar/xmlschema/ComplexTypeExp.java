@@ -9,10 +9,9 @@
  */
 package com.sun.msv.grammar.xmlschema;
 
-import com.sun.msv.datatype.BadTypeException;
-import com.sun.msv.datatype.DataType;
-import com.sun.msv.datatype.TypeIncubator;
-import com.sun.msv.datatype.QnameType;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.TypeIncubator;
+import com.sun.msv.datatype.xsd.QnameType;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.grammar.Expression;
@@ -20,6 +19,7 @@ import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.grammar.ChoiceNameClass;
 import com.sun.msv.grammar.trex.ElementPattern;
 import org.relaxng.datatype.ValidationContext;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * ComplexType definition.
@@ -79,7 +79,7 @@ public class ComplexTypeExp extends RedefinableExp {
 	}
 	
 	/** derives a QName type that only accepts this type name. */
-	private static DataType getQNameType( final String namespaceURI, final String localName ) {
+	private static XSDatatype getQNameType( final String namespaceURI, final String localName ) {
 		try {
 			TypeIncubator ti = new TypeIncubator( QnameType.theInstance );
 			ti.add( "enumeration", "foo:"+localName, true,
@@ -91,10 +91,13 @@ public class ComplexTypeExp extends RedefinableExp {
 					public boolean isUnparsedEntity( String entityName ) {
 						throw new Error();	// shall never be called.
 					}
+					public boolean isNotation( String notationName ) {
+						throw new Error();	// shall never be called.
+					}
 				} );
 		
 			return ti.derive(null);
-		} catch( BadTypeException e ) {
+		} catch( DatatypeException e ) {
 			// assertion failed. this can't happen.
 			throw new Error();
 		}

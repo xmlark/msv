@@ -10,13 +10,13 @@
 package com.sun.msv.util;
 
 /**
- * reference to {@link org.relaxng.datatype.DataType}
+ * reference to {@link org.relaxng.datatype.Datatype}
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class DataTypeRef {
+public class DatatypeRef {
 	/**
 	 * if the size of the array is zero, then that means this token is ignored.
 	 */
-	public org.relaxng.datatype.DataType[] types = null;
+	public org.relaxng.datatype.Datatype[] types = null;
 }

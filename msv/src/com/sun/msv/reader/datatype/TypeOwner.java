@@ -9,7 +9,7 @@
  */
 package com.sun.msv.reader.datatype;
 
-import org.relaxng.datatype.DataType;
+import com.sun.msv.datatype.xsd.XSDatatype;
 
 /**
  * State can implement this method to be notified by DataType vocabulary
@@ -18,5 +18,5 @@ import org.relaxng.datatype.DataType;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public interface TypeOwner {
-	void onEndChild( DataType child );
+	void onEndChild( XSDatatype child );
 }

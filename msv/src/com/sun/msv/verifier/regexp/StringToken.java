@@ -11,9 +11,9 @@ package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.relaxng.NGTypedStringExp;
-import com.sun.msv.datatype.StringType;
-import com.sun.msv.util.DataTypeRef;
-import org.relaxng.datatype.DataType;
+import com.sun.msv.datatype.xsd.StringType;
+import com.sun.msv.util.DatatypeRef;
+import org.relaxng.datatype.Datatype;
 import java.util.StringTokenizer;
 
 /**
@@ -32,16 +32,16 @@ public class StringToken extends Token {
 	 * if this field is non-null,
 	 * this field will receive assigned DataType object.
 	 */
-	public final DataTypeRef refType;
+	public final DatatypeRef refType;
 	protected boolean saturated = false;
 	
-	private static final DataType[] ignoredType = new DataType[0];
+	private static final Datatype[] ignoredType = new Datatype[0];
 	
 	public StringToken( REDocumentDeclaration docDecl, String literal, IDContextProvider context ) {
 		this(docDecl,literal,context,null);
 	}
 	
-	public StringToken( REDocumentDeclaration docDecl, String literal, IDContextProvider context, DataTypeRef refType ) {
+	public StringToken( REDocumentDeclaration docDecl, String literal, IDContextProvider context, DatatypeRef refType ) {
 		this.docDecl = docDecl;
 		this.literal = literal;
 		this.context = context;
@@ -54,7 +54,7 @@ public class StringToken extends Token {
 	/** TypedStringExp can consume this token if its datatype can accept this string */
 	boolean match( TypedStringExp exp ) {
 		
-		if(!exp.dt.allows( literal, context )) return false; // not accepted.
+		if(!exp.dt.isValid( literal, context )) return false; // not accepted.
 		
 		// this type accepts me.
 		if(refType!=null)		assignType(exp.dt);
@@ -85,13 +85,13 @@ public class StringToken extends Token {
 		
 		// if the application needs type information,
 		// collect them from children.
-		DataTypeRef dtRef = null;
-		DataType[] childTypes = null;
+		DatatypeRef dtRef = null;
+		Datatype[] childTypes = null;
 		int cnt=0;
 		
 		if( this.refType!=null ) {
-			dtRef = new DataTypeRef();
-			childTypes = new DataType[tokens.countTokens()];
+			dtRef = new DatatypeRef();
+			childTypes = new Datatype[tokens.countTokens()];
 		}
 		
 		while( tokens.hasMoreTokens() ) {
@@ -140,7 +140,7 @@ public class StringToken extends Token {
 		return true;
 	}
 	
-	protected StringToken createChildStringToken( String literal, DataTypeRef dtRef ) {
+	protected StringToken createChildStringToken( String literal, DatatypeRef dtRef ) {
 		return new StringToken( docDecl, literal, context, dtRef );
 	}
 
@@ -150,14 +150,14 @@ public class StringToken extends Token {
 		return true;
 	}
 
-	private void assignType( DataType dt ) {
+	private void assignType( Datatype dt ) {
 		if(saturated) {
 			if(refType.types[0]!=dt || refType.types.length!=1)
 				// different types are assigned. roll back to null
 				refType.types=null;
 		} else {
 			// this is the first assignment. remember this value.
-			refType.types=new DataType[]{dt};
+			refType.types=new Datatype[]{dt};
 			saturated=true;
 		}
 	}

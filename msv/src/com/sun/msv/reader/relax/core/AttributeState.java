@@ -9,9 +9,9 @@
  */
 package com.sun.msv.reader.relax.core;
 
-import com.sun.msv.datatype.BadTypeException;
-import com.sun.msv.datatype.DataTypeImpl;
-import com.sun.msv.datatype.TypeIncubator;
+import com.sun.msv.datatype.xsd.BadTypeException;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.TypeIncubator;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.reader.ExpressionState;
@@ -34,7 +34,7 @@ public class AttributeState extends ExpressionState implements FacetStateParent
 		super.startSelf();
 		String type		= startTag.getAttribute("type");
 		if(type==null)	type="string";
-		incubator = new TypeIncubator( (DataTypeImpl)reader.resolveDataType(type) );
+		incubator = new TypeIncubator( (XSDatatype)reader.resolveDataType(type) );
 	}
 	
 	protected Expression makeExpression() {

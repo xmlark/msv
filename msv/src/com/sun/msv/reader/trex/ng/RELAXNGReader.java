@@ -25,7 +25,7 @@ import org.relaxng.datatype.*;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.grammar.relaxng.NGTypedStringExp;
-import com.sun.msv.grammar.relaxng.datatype.BuiltinDataTypeLibrary;
+import com.sun.msv.grammar.relaxng.datatype.BuiltinDatatypeLibrary;
 import com.sun.msv.reader.*;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.reader.trex.TREXBaseReader;
@@ -209,7 +209,7 @@ public class RELAXNGReader extends TREXBaseReader {
 		 * It is also possible to throw an exception to indicate
 		 * that the resolution was failed.
 		 */
-		public DataTypeLibrary getDataTypeLibrary( String namespaceURI ) throws Exception {
+		public DatatypeLibrary getDatatypeLibrary( String namespaceURI ) throws Exception {
 			// We have the built-in support for XML Schema Part 2.
 			if( namespaceURI.equals(XSDVocabulary.XMLSchemaNamespace) )
 				return xsdlib;
@@ -225,9 +225,9 @@ public class RELAXNGReader extends TREXBaseReader {
 				return null;
 			}
 			
-			return (DataTypeLibrary)Class.forName(className).newInstance();
+			return (DatatypeLibrary)Class.forName(className).newInstance();
 		}
-		private final DataTypeLibrary xsdlib = new com.sun.msv.datatype.DataTypeLibraryImpl();
+		private final DatatypeLibrary xsdlib = new com.sun.msv.datatype.xsd.ngimpl.DataTypeLibraryImpl();
 	}
 	protected StateFactory getStateFactory() {
 		return (StateFactory)super.sfactory;
@@ -246,23 +246,23 @@ public class RELAXNGReader extends TREXBaseReader {
 	}
 	
 	/** obtains a named DataType object referenced by a local name. */
-	public DataType resolveDataType( String localName ) {
+	public Datatype resolveDataType( String localName ) {
 		
 		if(datatypeLib==null)
 			// silently recover from an error
-			return com.sun.msv.datatype.StringType.theInstance;
+			return com.sun.msv.datatype.xsd.StringType.theInstance;
 		
 		try {
-			DataType dt = datatypeLib.getType(localName);
+			Datatype dt = datatypeLib.createDatatype(localName);
 			if(dt==null) {
 				reportError( ERR_UNDEFINED_DATATYPE, localName );
-				return com.sun.msv.datatype.StringType.theInstance;
+				return com.sun.msv.datatype.xsd.StringType.theInstance;
 			}
 		
 			return dt;
-		} catch( DataTypeException dte ) {
+		} catch( DatatypeException dte ) {
 			reportError( ERR_UNDEFINED_DATATYPE_1, localName, dte.getMessage() );
-			return com.sun.msv.datatype.StringType.theInstance;
+			return com.sun.msv.datatype.xsd.StringType.theInstance;
 		}
 	}
 	
@@ -272,9 +272,9 @@ public class RELAXNGReader extends TREXBaseReader {
 	 * If the specified URI is undefined, then this method issues an error to
 	 * the user and returns null.
 	 */
-	public DataTypeLibrary resolveDataTypeLibrary( String uri ) {
+	public DatatypeLibrary resolveDataTypeLibrary( String uri ) {
 		try {
-			DataTypeLibrary lib = getStateFactory().getDataTypeLibrary(uri);
+			DatatypeLibrary lib = getStateFactory().getDatatypeLibrary(uri);
 			if(lib!=null)		return lib;
 		
 			// issue an error
@@ -371,7 +371,7 @@ public class RELAXNGReader extends TREXBaseReader {
 	 * In case of an error, this field may be set to null after issuing an error.
 	 * So care should be taken not to report the same error again.
 	 */
-	protected DataTypeLibrary datatypeLib = new BuiltinDataTypeLibrary();
+	protected DatatypeLibrary datatypeLib = new BuiltinDatatypeLibrary();
 	/** the namespace URI of the currently active datatype library. */
 	protected String datatypeLibURI = RELAXNGNamespace;
 	
@@ -391,7 +391,7 @@ public class RELAXNGReader extends TREXBaseReader {
 	}
 	public void endElement( String a, String b, String c ) throws SAXException {
 		super.endElement(a,b,c);
-		datatypeLib = (DataTypeLibrary)dtLibStack.pop();
+		datatypeLib = (DatatypeLibrary)dtLibStack.pop();
 		datatypeLibURI = (String)dtLibURIStack.pop();
 	}
 	

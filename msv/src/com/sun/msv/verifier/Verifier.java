@@ -11,15 +11,15 @@ package com.sun.msv.verifier;
 
 import org.xml.sax.*;
 import org.xml.sax.helpers.NamespaceSupport;
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
 import java.util.Set;
 import java.util.Map;
 import java.util.Iterator;
-import com.sun.msv.datatype.StringType;
+import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.IDContextProvider;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
-import com.sun.msv.util.DataTypeRef;
+import com.sun.msv.util.DatatypeRef;
 
 /**
  * SAX ContentHandler that verifies incoming SAX event stream.
@@ -90,8 +90,8 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 	}
 	
 	/** this field is used to receive type information of character literals. */
-	private final DataTypeRef characterType = new DataTypeRef();
-	public DataType[] getLastCharacterType() { return characterType.types; }
+	private final DatatypeRef characterType = new DatatypeRef();
+	public Datatype[] getLastCharacterType() { return characterType.types; }
 	
 	private void verifyText() throws SAXException {
 		if(text.length()!=0) {
@@ -176,7 +176,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 		
 		stringCareLevel = next.getStringCareLevel();
 		if( stringCareLevel==Acceptor.STRING_IGNORE )
-			characterType.types = new DataType[]{StringType.theInstance};
+			characterType.types = new Datatype[]{StringType.theInstance};
 		current = next;
 	}
 	

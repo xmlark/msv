@@ -19,14 +19,14 @@ import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
-import com.sun.msv.datatype.DataType;
-import com.sun.msv.datatype.StringType;
+import org.relaxng.datatype.Datatype;
+import org.iso_relax.dispatcher.IslandSchema;
+import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.reader.*;
 import com.sun.msv.reader.datatype.DataTypeVocabulary;
 import com.sun.msv.util.StartTagInfo;
-import org.iso_relax.dispatcher.IslandSchema;
 
 /**
  * reads TREX grammar from SAX2 and constructs abstract grammar model.

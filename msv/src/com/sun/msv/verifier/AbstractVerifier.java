@@ -11,15 +11,15 @@ package com.sun.msv.verifier;
 
 import org.xml.sax.*;
 import org.xml.sax.helpers.NamespaceSupport;
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
 import java.util.Set;
 import java.util.Map;
 import java.util.Iterator;
-import com.sun.msv.datatype.StringType;
+import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.IDContextProvider;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
-import com.sun.msv.util.DataTypeRef;
+import com.sun.msv.util.DatatypeRef;
 
 /**
  * Base implementation for various Verifier implementations.
@@ -62,7 +62,9 @@ public abstract class AbstractVerifier implements
 		idrefs.clear();
 	}
 	
-	public void notationDecl( String name, String publicId, String systemId ) {}
+	public void notationDecl( String name, String publicId, String systemId ) {
+		notations.add(name);
+	}
 	public void unparsedEntityDecl( String name, String publicId, String systemId, String notationName ) {
 		// store name of unparsed entities to implement ValidationContextProvider
 		unparsedEntities.add(name);
@@ -76,8 +78,11 @@ public abstract class AbstractVerifier implements
 	 */
 	protected final NamespaceSupport namespaceSupport = new NamespaceSupport();
 
-	/** unparsed entities found in the document */
+	/** unparsed entities found in the document. */
 	private final Set unparsedEntities = new java.util.HashSet();
+	
+	/** declared notations. */
+	private final Set notations = new java.util.HashSet();
 	
 	// methods of ValidationContextProvider
 	public String resolveNamespacePrefix( String prefix ) {
@@ -85,6 +90,9 @@ public abstract class AbstractVerifier implements
 	}
 	public boolean isUnparsedEntity( String entityName ) {
 		return unparsedEntities.contains(entityName);
+	}
+	public boolean isNotation( String notationName ) {
+		return notations.contains(notationName);
 	}
 	
 	public void onIDREF( String symbolSpace, Object token )	{

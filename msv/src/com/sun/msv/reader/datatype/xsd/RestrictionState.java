@@ -12,12 +12,12 @@ package com.sun.msv.reader.datatype.xsd;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.State;
-import com.sun.msv.datatype.BadTypeException;
-import com.sun.msv.datatype.DataTypeImpl;
-import com.sun.msv.datatype.StringType;
-import com.sun.msv.datatype.TypeIncubator;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.StringType;
+import com.sun.msv.datatype.xsd.TypeIncubator;
 import com.sun.msv.util.StartTagInfo;
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * state that parses &lt;restriction&gt; element.
@@ -36,11 +36,11 @@ public class RestrictionState extends TypeWithOneChildState implements FacetStat
 		return incubator;
 	}
 
-	protected DataTypeImpl annealType( DataTypeImpl baseType ) throws BadTypeException {
+	protected XSDatatype annealType( XSDatatype baseType ) throws DatatypeException {
 		return incubator.derive(newTypeName);
 	}
 	
-	public void onEndChild( DataType child ) {
+	public void onEndChild( XSDatatype child ) {
 		super.onEndChild(child);
 		incubator = new TypeIncubator(super.type);
 	}
@@ -52,7 +52,7 @@ public class RestrictionState extends TypeWithOneChildState implements FacetStat
 		// if base attribute is used, try to load it.
 		String base = startTag.getAttribute("base");
 		if(base!=null) {
-			type = (DataTypeImpl)reader.resolveDataType(base);
+			type = (XSDatatype)reader.resolveDataType(base);
 			incubator = new TypeIncubator(type);
 		}
 	}

@@ -9,7 +9,8 @@
  */
 package com.sun.msv.grammar.relax;
 
-import com.sun.msv.datatype.*;
+import com.sun.msv.datatype.SerializationContext;
+import com.sun.msv.datatype.xsd.ConcreteType;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -38,6 +39,10 @@ public class NoneType extends ConcreteType {
 	
 	public String convertToLexicalValue( Object o, SerializationContext context ) {
 		throw new IllegalArgumentException();
+	}
+	
+	public Class getJavaObjectType() {
+		return Object.class;	// actually, it never returns a value.
 	}
 	
 	// TODO: implement diagnoseValue

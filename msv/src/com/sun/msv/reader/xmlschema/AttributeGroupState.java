@@ -9,7 +9,7 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.xmlschema.AttributeGroupExp;

@@ -9,27 +9,26 @@
  */
 package com.sun.msv.reader.datatype.xsd;
 
-import com.sun.msv.datatype.BadTypeException;
-import com.sun.msv.datatype.DataTypeImpl;
-import com.sun.msv.datatype.DataTypeFactory;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.DatatypeFactory;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.datatype.TypeOwner;
 import com.sun.msv.util.StartTagInfo;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.DatatypeException;
 
 /**
  * State that parses &lt;union&gt; element and its children.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class UnionState extends TypeState implements TypeOwner
-{
+public class UnionState extends TypeState implements TypeOwner {
+	
 	protected final String newTypeName;
-	protected UnionState( String newTypeName )
-	{
+	protected UnionState( String newTypeName ) {
 		this.newTypeName = newTypeName;
 	}
 	
@@ -46,25 +45,22 @@ public class UnionState extends TypeState implements TypeOwner
 		return null;	// unrecognized
 	}
 	
-	protected void startSelf()
-	{
+	protected void startSelf() {
 		super.startSelf();
 		
 		// if memberTypes attribute is used, load it.
 		String memberTypes = startTag.getAttribute("memberTypes");
-		if(memberTypes!=null)
-		{
+		if(memberTypes!=null) {
 			StringTokenizer tokens = new StringTokenizer(memberTypes);
 			while( tokens.hasMoreTokens() )
-				onEndChild( reader.resolveDataType(tokens.nextToken()) );
+				onEndChild( (XSDatatype)reader.resolveDataType(tokens.nextToken()) );
 		}
 	}
 	
-	public void onEndChild( DataType type )	{ memberTypes.add(type); }
+	public void onEndChild( XSDatatype type )	{ memberTypes.add(type); }
 	
-	protected final DataTypeImpl makeType() throws BadTypeException
-	{
-		return DataTypeFactory.deriveByUnion( newTypeName, memberTypes );
+	protected final XSDatatype makeType() throws DatatypeException {
+		return DatatypeFactory.deriveByUnion( newTypeName, memberTypes );
 	}
 
 }

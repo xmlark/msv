@@ -9,9 +9,9 @@
  */
 package com.sun.msv.reader.datatype.xsd;
 
-import com.sun.msv.datatype.DataType;
-import com.sun.msv.datatype.DataTypeImpl;
-import com.sun.msv.datatype.FinalComponent;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.XSDatatypeImpl;
+import com.sun.msv.datatype.xsd.FinalComponent;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.ExpressionState;
@@ -40,12 +40,12 @@ public class SimpleTypeState extends TypeWithOneChildState
 		return null;	// unrecognized
 	}
 
-	protected DataType annealType( DataType dt )
+	protected XSDatatype annealType( XSDatatype dt )
 	{
 		final String finalValue = startTag.getAttribute("final");
 		if(finalValue!=null)
 			// wrap it by FinalComponent
-			return new FinalComponent( (DataTypeImpl)dt, getFinalValue(finalValue) );
+			return new FinalComponent( (XSDatatypeImpl)dt, getFinalValue(finalValue) );
 		else
 			return dt;
 	}
@@ -61,18 +61,18 @@ public class SimpleTypeState extends TypeWithOneChildState
 			String token = tokens.nextToken();
 			
 			if( token.equals("#all") )
-				finalValue |=	DataType.DERIVATION_BY_LIST|
-								DataType.DERIVATION_BY_RESTRICTION|
-								DataType.DERIVATION_BY_UNION;
+				finalValue |=	XSDatatype.DERIVATION_BY_LIST|
+								XSDatatype.DERIVATION_BY_RESTRICTION|
+								XSDatatype.DERIVATION_BY_UNION;
 			else
 			if( token.equals("restriction") )
-				finalValue |= DataType.DERIVATION_BY_RESTRICTION;
+				finalValue |= XSDatatype.DERIVATION_BY_RESTRICTION;
 			else
 			if( token.equals("list") )
-				finalValue |= DataType.DERIVATION_BY_LIST;
+				finalValue |= XSDatatype.DERIVATION_BY_LIST;
 			else
 			if( token.equals("union") )
-				finalValue |= DataType.DERIVATION_BY_UNION;
+				finalValue |= XSDatatype.DERIVATION_BY_UNION;
 			else
 			{
 				reader.reportError( 

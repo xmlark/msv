@@ -9,7 +9,7 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.AttributeExp;
@@ -104,7 +104,7 @@ public class AttributeState extends ExpressionWithChildState {
 			if( fixed!=null )
 				// TODO: is this 'fixed' value should be added through enumeration facet?
 				// in that way, we can check if this value is acceptable as the base type.
-				contentType = reader.pool.createTypedString( new TypedString(fixed,false) );
+				contentType = reader.pool.createTypedString( new TypedString(fixed,false), "" );
 		
 			exp = reader.pool.createAttribute(
 				new SimpleNameClass( targetNamespace, name ),

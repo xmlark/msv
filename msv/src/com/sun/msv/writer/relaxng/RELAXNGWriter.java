@@ -10,15 +10,16 @@
 package com.sun.msv.writer.relaxng;
 
 import org.relaxng.datatype.*;
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
 import com.sun.msv.grammar.trex.TypedString;
 import com.sun.msv.grammar.relaxng.ValueType;
-import com.sun.msv.datatype.*;
+import com.sun.msv.datatype.SerializationContext;
+import com.sun.msv.datatype.xsd.*;
 import com.sun.msv.reader.trex.ng.RELAXNGReader;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
-import com.sun.msv.datatype.DataTypeImpl;
+import com.sun.msv.datatype.xsd.XSDatatypeImpl;
 import com.sun.msv.writer.*;
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.SAXException;
@@ -749,7 +750,7 @@ public class RELAXNGWriter implements GrammarWriter {
 		}
 		
 		public void onTypedString( TypedStringExp exp ) {
-			DataType dt = exp.dt;
+			Datatype dt = exp.dt;
 			if( dt instanceof TypedString ) {
 				TypedString ts = (TypedString)dt;
 				if( ts.preserveWhiteSpace )
@@ -766,8 +767,8 @@ public class RELAXNGWriter implements GrammarWriter {
 			if( dt instanceof ValueType ) {
 				ValueType vt = (ValueType)dt;
 				
-				if( vt.baseType instanceof DataTypeImpl ) {
-					DataTypeImpl base = (DataTypeImpl)vt.baseType;
+				if( vt.baseType instanceof XSDatatypeImpl ) {
+					XSDatatypeImpl base = (XSDatatypeImpl)vt.baseType;
 					
 					final Vector ns = new Vector();
 						
@@ -794,14 +795,14 @@ public class RELAXNGWriter implements GrammarWriter {
 				}
 			}
 			
-			if( dt instanceof DataTypeImpl ) {
-				DataTypeImpl dti = (DataTypeImpl)dt;
+			if( dt instanceof XSDatatypeImpl ) {
+				XSDatatypeImpl dti = (XSDatatypeImpl)dt;
 					
 				if( isPredefinedType(dt) ) {
 					// it's a pre-defined types.
 					element( "data", new String[]{"type",dti.getName()} );
 				} else {
-					serializeDataType(dt);
+					serializeDataType(dti);
 				}
 				return;
 			}
@@ -816,7 +817,7 @@ public class RELAXNGWriter implements GrammarWriter {
 		 * The caller should generate events for &lt;simpleType&gt; element
 		 * if necessary.
 		 */
-		protected void serializeDataType( DataType dt ) {
+		protected void serializeDataType( XSDatatype dt ) {
 			
 			if( dt instanceof UnionType ) {
 				serializeUnionType((UnionType)dt);
@@ -830,7 +831,7 @@ public class RELAXNGWriter implements GrammarWriter {
 			// store effective facets (those which are not shadowed by another facet).
 			Vector effectiveFacets = new Vector();
 			
-			DataType x = dt;
+			XSDatatype x = dt;
 			while( x instanceof DataTypeWithFacet || x instanceof FinalComponent ) {
 				
 				if( x instanceof FinalComponent ) {
@@ -841,14 +842,14 @@ public class RELAXNGWriter implements GrammarWriter {
 				
 				String facetName = ((DataTypeWithFacet)x).facetName;
 				
-				if( facetName.equals(DataTypeImpl.FACET_ENUMERATION) ) {
+				if( facetName.equals(XSDatatypeImpl.FACET_ENUMERATION) ) {
 					// if it contains enumeration, then we will serialize this
 					// by using <value>s.
-					serializeEnumeration( (DataTypeImpl)dt, (EnumerationFacet)x );
+					serializeEnumeration( (XSDatatypeImpl)dt, (EnumerationFacet)x );
 					return;
 				}
 				
-				if( facetName.equals(DataTypeImpl.FACET_WHITESPACE) ) {
+				if( facetName.equals(XSDatatypeImpl.FACET_WHITESPACE) ) {
 					throw new UnsupportedOperationException("whiteSpace facet is not supported");
 //					throw new Error("ws"); // ((WhiteSpaceFacet)x).whiteSpace);
 				}
@@ -856,7 +857,7 @@ public class RELAXNGWriter implements GrammarWriter {
 				// find the same facet twice.
 				// pattern is allowed more than once.
 				if( !appliedFacets.contains(facetName)
-				||  appliedFacets.equals(DataTypeImpl.FACET_PATTERN) ) {
+				||  appliedFacets.equals(XSDatatypeImpl.FACET_PATTERN) ) {
 				
 					appliedFacets.add(facetName);
 					effectiveFacets.add(x);
@@ -867,7 +868,7 @@ public class RELAXNGWriter implements GrammarWriter {
 
 			if( x instanceof ListType ) {
 				// the base type is list.
-				serializeListType((DataTypeImpl)dt);
+				serializeListType((XSDatatypeImpl)dt);
 				return;
 			}
 			
@@ -901,7 +902,7 @@ public class RELAXNGWriter implements GrammarWriter {
 				start("data",new String[]{"type","NCName","keyref","XML_ID"});
 			}
 			else
-				start("data",new String[]{"type",x.displayName()});
+				start("data",new String[]{"type",x.getName()});
 			
 			
 			// serialize effective facets
@@ -964,7 +965,7 @@ public class RELAXNGWriter implements GrammarWriter {
 		 * returns true if the specified type is a pre-defined XSD type
 		 * without any facet.
 		 */
-		protected boolean isPredefinedType( DataType x ) {
+		protected boolean isPredefinedType( Datatype x ) {
 			return !(x instanceof DataTypeWithFacet
 				|| x instanceof UnionType
 				|| x instanceof ListType
@@ -993,7 +994,7 @@ public class RELAXNGWriter implements GrammarWriter {
 		 * serializes a list type.
 		 * this method is called by serializeDataType method.
 		 */
-		protected void serializeListType( DataTypeImpl dt ) {
+		protected void serializeListType( XSDatatypeImpl dt ) {
 			
 			ListType base = (ListType)dt.getConcreteType();
 			
@@ -1029,7 +1030,7 @@ public class RELAXNGWriter implements GrammarWriter {
 		 * serializes a type with enumeration.
 		 * this method is called by serializeDataType method.
 		 */
-		protected void serializeEnumeration( DataTypeImpl dt, EnumerationFacet enums ) {
+		protected void serializeEnumeration( XSDatatypeImpl dt, EnumerationFacet enums ) {
 			
 			Object[] values = enums.values.toArray();
 			
@@ -1053,7 +1054,7 @@ public class RELAXNGWriter implements GrammarWriter {
 				// sometimes, facets that are added later rejects some of
 				// enumeration values.
 				
-				boolean allowed = dt.allows( lex, 
+				boolean allowed = dt.isValid( lex, 
 					new ValidationContext(){
 						
 						public String resolveNamespacePrefix( String prefix ) {
@@ -1063,6 +1064,9 @@ public class RELAXNGWriter implements GrammarWriter {
 						}
 						
 						public boolean isUnparsedEntity( String name ) {
+							return true;
+						}
+						public boolean isNotation( String name ) {
 							return true;
 						}
 					});

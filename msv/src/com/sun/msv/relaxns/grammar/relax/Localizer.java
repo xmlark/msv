@@ -14,10 +14,9 @@ package com.sun.msv.relaxns.grammar.relax;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class Localizer
-{
-	public static String localize( String propertyName, Object[] args )
-	{
+public class Localizer {
+	
+	public static String localize( String propertyName, Object[] args ) {
 		String format = java.util.ResourceBundle.getBundle(
 			"com.sun.msv.relaxns.grammar.relax.Messages").getString(propertyName);
 		

@@ -12,16 +12,16 @@ package com.sun.msv.writer.trex;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
 import com.sun.msv.grammar.trex.TypedString;
-import com.sun.msv.datatype.*;
-import org.relaxng.datatype.DataType;
+import com.sun.msv.datatype.SerializationContext;
+import com.sun.msv.datatype.xsd.*;
 import com.sun.msv.reader.trex.classic.TREXGrammarReader;
 import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
-import com.sun.msv.datatype.DataTypeImpl;
 import com.sun.msv.writer.*;
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributeListImpl;
 import org.xml.sax.helpers.LocatorImpl;
+import org.relaxng.datatype.Datatype;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.Map;
@@ -744,7 +744,7 @@ public class TREXWriter implements GrammarWriter {
 		
 		public void onTypedString( TypedStringExp exp ) {
 //			try {
-				DataType dt = exp.dt;
+				Datatype dt = exp.dt;
 				if( dt instanceof TypedString ) {
 					TypedString ts = (TypedString)dt;
 					if( ts.preserveWhiteSpace )
@@ -758,8 +758,8 @@ public class TREXWriter implements GrammarWriter {
 					return;
 				}
 			
-				if( dt instanceof DataTypeImpl ) {
-					DataTypeImpl dti = (DataTypeImpl)dt;
+				if( dt instanceof XSDatatypeImpl ) {
+					XSDatatypeImpl dti = (XSDatatypeImpl)dt;
 					
 					if( dt instanceof ConcreteType
 					 && !(dt instanceof ListType)
@@ -768,7 +768,7 @@ public class TREXWriter implements GrammarWriter {
 						element( "data", new String[]{"type","xsd:"+dti.getName()} );
 					} else {
 						start("xsd:simpleType", new String[]{"trex:role","datatype"});
-						serializeDataType(dt);
+						serializeDataType(dti);
 						end("xsd:simpleType");
 					}
 					return;
@@ -787,7 +787,7 @@ public class TREXWriter implements GrammarWriter {
 		 * The caller should generate events for &lt;simpleType&gt; element
 		 * if necessary.
 		 */
-		protected void serializeDataType( DataType dt ) {
+		protected void serializeDataType( XSDatatype dt ) {
 			
 			if( dt instanceof UnionType ) {
 				serializeUnionType((UnionType)dt);
@@ -801,7 +801,7 @@ public class TREXWriter implements GrammarWriter {
 			// store applied facets into this set
 			Set appliedFacets = new HashSet();
 			
-			DataType x = dt;
+			XSDatatype x = dt;
 			while( x instanceof DataTypeWithFacet ) {
 				String facetName = ((DataTypeWithFacet)x).facetName;
 				if( appliedFacets.contains(facetName) )
@@ -914,7 +914,7 @@ public class TREXWriter implements GrammarWriter {
 		 * returns true if the specified type is a built-in type
 		 * without any facet.
 		 */
-		protected boolean isBuiltinType( DataType x ) {
+		protected boolean isBuiltinType( Datatype x ) {
 			return !(x instanceof DataTypeWithFacet
 				|| x instanceof UnionType
 				|| x instanceof ListType);

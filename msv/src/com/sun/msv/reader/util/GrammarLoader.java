@@ -82,6 +82,19 @@ public class GrammarLoader
 		return _loadSchema(source,controller,factory);
 	}
 	
+	/**
+	 * returns RELAXGrammar or TREXGrammar, depending on the language used.
+	 */
+	public static Grammar loadSchema( String source,
+		GrammarReaderController controller )
+			throws SAXException, ParserConfigurationException, java.io.IOException
+	{
+		
+		SAXParserFactory factory = SAXParserFactory.newInstance();
+		factory.setNamespaceAware(true);
+		return _loadSchema(source,controller,factory);
+	}
+	
 	private static Grammar _loadSchema( Object source,
 		GrammarReaderController controller,
 		SAXParserFactory factory )

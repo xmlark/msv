@@ -11,7 +11,7 @@ package com.sun.msv.reader.datatype;
 
 import com.sun.msv.reader.State;
 import com.sun.msv.util.StartTagInfo;
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
 
 /**
  * this class is used to parse foreign datatype vocabulary.
@@ -66,5 +66,5 @@ public interface DataTypeVocabulary
 	 *		if the given type name is not defined. It is a caller's responeibility
 	 *		to report an error to the user.
 	 */
-	DataType getType( String localTypeName );
+	Datatype getType( String localTypeName );
 }

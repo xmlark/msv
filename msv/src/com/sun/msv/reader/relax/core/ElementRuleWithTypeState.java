@@ -9,11 +9,11 @@
  */
 package com.sun.msv.reader.relax.core;
 
-import org.relaxng.datatype.DataType;
+//import org.relaxng.datatype.Datatype;
 import com.sun.msv.reader.State;
-import com.sun.msv.datatype.BadTypeException;
-import com.sun.msv.datatype.DataTypeImpl;
-import com.sun.msv.datatype.TypeIncubator;
+import com.sun.msv.datatype.xsd.BadTypeException;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.TypeIncubator;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.reader.datatype.xsd.FacetStateParent;
 import com.sun.msv.util.StartTagInfo;
@@ -35,7 +35,7 @@ public class ElementRuleWithTypeState extends ElementRuleBaseState implements Fa
 		// existance of type attribute has already checked before
 		// this state is created.
 		incubator = new TypeIncubator(
-			(DataTypeImpl)reader.resolveDataType( startTag.getAttribute("type") ) );
+			(XSDatatype)reader.resolveDataType( startTag.getAttribute("type") ) );
 	}
 	
 	protected Expression getContentModel() {

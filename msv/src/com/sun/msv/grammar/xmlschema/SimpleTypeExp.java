@@ -9,7 +9,7 @@
  */
 package com.sun.msv.grammar.xmlschema;
 
-import com.sun.msv.datatype.DataType;
+import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.ExpressionPool;
 
@@ -27,15 +27,15 @@ public class SimpleTypeExp extends RedefinableExp {
 		super(typeLocalName);
 	}
 	
-	public void setType( DataType dt, ExpressionPool pool ) {
+	public void setType( XSDatatype dt, ExpressionPool pool ) {
 		this.exp = pool.createTypedString(dt);
 		this.type = dt;
 	}
 	
-	/** DataType object that validates this simple type. */
-	protected DataType type;
+	/** XSDatatype object that validates this simple type. */
+	protected XSDatatype type;
 	
-	public DataType getType() {
+	public XSDatatype getType() {
 		return type;
 	}
 	

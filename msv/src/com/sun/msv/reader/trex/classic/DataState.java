@@ -20,7 +20,8 @@ import com.sun.msv.reader.ExpressionWithoutChildState;
 public class DataState extends ExpressionWithoutChildState {
 	
 	protected Expression makeExpression() {
-		if( !startTag.containsAttribute("type") ) {
+		final String typeName = startTag.getAttribute("type");
+		if( typeName==null ) {
 			// type attribute is required
 			reader.reportError( TREXGrammarReader.ERR_MISSING_ATTRIBUTE,
 				startTag.qName, "type" );
@@ -29,8 +30,7 @@ public class DataState extends ExpressionWithoutChildState {
 			return Expression.anyString;
 		} else {
 			return reader.pool.createTypedString(
-				((TREXGrammarReader)reader).resolveDataType(
-					startTag.getAttribute("type") ) );
+				((TREXGrammarReader)reader).resolveDataType(typeName), typeName );
 		}
 	}
 }

@@ -8,7 +8,7 @@ options {
 }
 PARSER_BEGIN(ISO8601Parser)
 
-package com.sun.msv.datatype.datetime;
+package com.sun.msv.datatype.xsd.datetime;
 
 import java.io.*;
 import java.math.BigDecimal;

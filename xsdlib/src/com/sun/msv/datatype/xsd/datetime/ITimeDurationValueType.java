@@ -7,7 +7,7 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype.datetime;
+package com.sun.msv.datatype.xsd.datetime;
 
 /**
  * interface as a value type of TimeDurationType

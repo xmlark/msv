@@ -11,7 +11,7 @@ package com.sun.msv.reader.datatype.xsd;
 
 import com.sun.msv.reader.ChildlessState;
 import com.sun.msv.reader.GrammarReader;
-import com.sun.msv.datatype.BadTypeException;
+import org.relaxng.datatype.DatatypeException;
 import java.util.Set;
 
 /**
@@ -51,16 +51,11 @@ public class FacetState extends ChildlessState
 		{
 			reader.reportError( GrammarReader.ERR_MISSING_ATTRIBUTE, startTag.localName, "value" );
 			// recover by ignoring this facet.
-		}
-		else
-		{
-			try
-			{
+		} else {
+			try {
 				((FacetStateParent)parentState).getIncubator().add(
 					startTag.localName, value, "true".equals(startTag.getAttribute("fixed")), reader );
-			}
-			catch( BadTypeException e )
-			{
+			} catch( DatatypeException e ) {
 				reader.reportError( e, GrammarReader.ERR_BAD_TYPE, e.getMessage() );
 				// recover by ignoring this facet
 			}

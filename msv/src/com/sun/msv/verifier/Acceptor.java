@@ -14,7 +14,7 @@ import java.util.List;
 import com.sun.msv.grammar.IDContextProvider;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
-import com.sun.msv.util.DataTypeRef;
+import com.sun.msv.util.DatatypeRef;
 
 /**
  * represents a pseudo-automaton acceptor.
@@ -61,7 +61,7 @@ public interface Acceptor
 	 * @return false
 	 *		if the literal at this position is not allowed.
 	 */
-	boolean stepForward( String literal, IDContextProvider context, StringRef refErr, DataTypeRef refType );
+	boolean stepForward( String literal, IDContextProvider context, StringRef refErr, DatatypeRef refType );
 	
 	/** eats a child element
 	 * 

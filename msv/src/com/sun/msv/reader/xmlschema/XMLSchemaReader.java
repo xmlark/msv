@@ -9,8 +9,8 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import com.sun.msv.datatype.StringType;
-import com.sun.msv.datatype.BooleanType;
+import com.sun.msv.datatype.xsd.StringType;
+import com.sun.msv.datatype.xsd.BooleanType;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
@@ -45,7 +45,7 @@ import java.util.Iterator;
 import java.text.MessageFormat;
 import org.xml.sax.Locator;
 import org.xml.sax.InputSource;
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
 
 /**
  * parses XML representation of XML Schema and constructs AGM.
@@ -354,9 +354,9 @@ public class XMLSchemaReader extends GrammarReader {
 	/**
 	 * resolves built-in datatypes (URI: http://www.w3.org/2001/XMLSchema)
 	 */
-	public DataType resolveBuiltinDataType( String typeLocalName ) {
+	public Datatype resolveBuiltinDataType( String typeLocalName ) {
 		// datatypes of XML Schema part 2
-		DataType dt = builtinTypes.getType(typeLocalName);
+		Datatype dt = builtinTypes.getType(typeLocalName);
 		if( dt==null )  dt = getBackwardCompatibleType(typeLocalName);
 		if( dt!=null )	return dt;
 		
@@ -380,7 +380,7 @@ public class XMLSchemaReader extends GrammarReader {
 	}
 		
 	
-	public DataType resolveDataType( String typeQName ) {
+	public Datatype resolveDataType( String typeQName ) {
 		
 		String[] r = splitQName(typeQName);
 		if(r==null) {
@@ -393,7 +393,7 @@ public class XMLSchemaReader extends GrammarReader {
 		if( isSchemaNamespace(r[0]) )
 			return resolveBuiltinDataType(r[1]);
 		
-		DataType dt = getOrCreateSchema(r[0]/*uri*/).simpleTypes.
+		Datatype dt = getOrCreateSchema(r[0]/*uri*/).simpleTypes.
 			getOrCreate(r[1]/*local name*/).getType();
 		
 		if( dt!=null ) return dt;
@@ -418,7 +418,7 @@ public class XMLSchemaReader extends GrammarReader {
 		}
 		
 		if( isSchemaNamespace(r[0]) )
-			return pool.createTypedString( resolveBuiltinDataType(r[1]) );
+			return pool.createTypedString( resolveBuiltinDataType(r[1]), r[1] );
 		
 		Expression exp = getOrCreateSchema(r[0]/*uri*/).simpleTypes.getOrCreate(r[1]/*local name*/);
 		backwardReference.memorizeLink(exp);

@@ -9,7 +9,7 @@
  */
 package com.sun.msv.verifier;
 
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
 import org.xml.sax.helpers.XMLFilterImpl;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -43,7 +43,7 @@ public class VerifierFilter extends XMLFilterImpl implements IVerifier {
 	public Object getCurrentElementType() {
 		return verifier.getCurrentElementType();
 	}
-	public DataType[] getLastCharacterType() {
+	public Datatype[] getLastCharacterType() {
 		return verifier.getLastCharacterType();
 	}
 	public final Locator getLocator() {

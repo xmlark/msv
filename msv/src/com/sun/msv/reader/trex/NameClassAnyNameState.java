@@ -11,7 +11,6 @@ package com.sun.msv.reader.trex;
 
 import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.AnyNameClass;
-import com.sun.msv.datatype.WhiteSpaceProcessor;
 
 /**
  * parses &lt;anyName&gt; name class.

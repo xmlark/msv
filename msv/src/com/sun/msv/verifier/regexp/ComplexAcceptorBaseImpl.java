@@ -19,7 +19,7 @@ import com.sun.msv.verifier.regexp.AnyElementToken;
 import com.sun.msv.verifier.regexp.ElementToken;
 import com.sun.msv.verifier.regexp.ResidualCalculator;
 import com.sun.msv.util.StringRef;
-import com.sun.msv.util.DataTypeRef;
+import com.sun.msv.util.DatatypeRef;
 
 /**
  * base implementation of ComplexAcceptor.
@@ -40,7 +40,7 @@ public class ComplexAcceptorBaseImpl extends ContentModelAcceptor
 	}
 
 	/** eats string literal */
-	public final boolean stepForward( String literal, IDContextProvider context, StringRef refErr, DataTypeRef refType )
+	public final boolean stepForward( String literal, IDContextProvider context, StringRef refErr, DatatypeRef refType )
 	{
 		if(!super.stepForward(literal,context,refErr,refType))	return false;
 

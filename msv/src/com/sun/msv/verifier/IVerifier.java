@@ -9,7 +9,7 @@
  */
 package com.sun.msv.verifier;
 
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
 import org.xml.sax.Locator;
 
 /**
@@ -64,7 +64,7 @@ public interface IVerifier extends org.xml.sax.ContentHandler {
 	 * @return null
 	 *		if type-assignment was not possible.
 	 */
-	DataType[] getLastCharacterType();
+	Datatype[] getLastCharacterType();
 
 
 	Locator getLocator();

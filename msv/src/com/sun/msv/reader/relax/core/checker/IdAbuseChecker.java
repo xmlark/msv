@@ -9,7 +9,7 @@
  */
 package com.sun.msv.reader.relax.core.checker;
 
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.relax.*;
 import com.sun.msv.reader.relax.core.RELAXCoreReader;
@@ -125,7 +125,7 @@ public class IdAbuseChecker implements RELAXExpressionVisitorVoid
 		SimpleNameClass snc = (SimpleNameClass)exp.nameClass;
 		if(!snc.namespaceURI.equals(""))	return;
 		
-		DataType dt = ((TypedStringExp)exp.exp).dt;
+		Datatype dt = ((TypedStringExp)exp.exp).dt;
 		if( dt==IDType.theInstance || dt==IDREFType.theInstance )
 		{
 			if( currentTagName==null

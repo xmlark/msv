@@ -9,14 +9,14 @@
  */
 package com.sun.msv.reader.dtd;
 
-import com.sun.msv.datatype.BadTypeException;
-import com.sun.msv.datatype.TypeIncubator;
-import com.sun.msv.datatype.DataTypeFactory;
-import com.sun.msv.datatype.DataType;
-import com.sun.msv.datatype.EntityType;
-import com.sun.msv.datatype.NmtokenType;
-import com.sun.msv.datatype.NormalizedStringType;
-import com.sun.msv.datatype.StringType;
+import com.sun.msv.datatype.xsd.BadTypeException;
+import com.sun.msv.datatype.xsd.TypeIncubator;
+import com.sun.msv.datatype.xsd.DatatypeFactory;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.EntityType;
+import com.sun.msv.datatype.xsd.NmtokenType;
+import com.sun.msv.datatype.xsd.NormalizedStringType;
+import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.scanner.dtd.DTDEventListener;
 import com.sun.msv.scanner.dtd.DTDParser;
@@ -37,10 +37,12 @@ import java.util.Iterator;
  * constructs {@link RELAXModule} object that exactly matches to
  * the parsed DTD.
  * 
+ * Note that this class does NOT extend GrammarReader, because DTD
+ * is not written in XML format.
+ * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class DTDReader implements
-	DTDEventListener {
+public class DTDReader implements DTDEventListener {
 	
 	public DTDReader( GrammarReaderController controller, 
 		String targetNamespace, ExpressionPool pool ) {
@@ -92,11 +94,11 @@ public class DTDReader implements
 			m.put( DTDParser.TYPE_CDATA,	NormalizedStringType.theInstance );
 			m.put( DTDParser.TYPE_ID,		IDType.theInstance );
 			m.put( DTDParser.TYPE_IDREF,	IDREFType.theInstance );
-			m.put( DTDParser.TYPE_IDREFS,	DataTypeFactory.deriveByList(DTDParser.TYPE_IDREFS, IDREFType.theInstance ) );
+			m.put( DTDParser.TYPE_IDREFS,	DatatypeFactory.deriveByList(DTDParser.TYPE_IDREFS, IDREFType.theInstance ) );
 			m.put( DTDParser.TYPE_ENTITY,	EntityType.theInstance );
-			m.put( DTDParser.TYPE_ENTITIES,	DataTypeFactory.deriveByList(DTDParser.TYPE_ENTITIES, EntityType.theInstance ) );
+			m.put( DTDParser.TYPE_ENTITIES,	DatatypeFactory.deriveByList(DTDParser.TYPE_ENTITIES, EntityType.theInstance ) );
 			m.put( DTDParser.TYPE_NMTOKEN,	NmtokenType.theInstance );
-			m.put( DTDParser.TYPE_NMTOKENS,	DataTypeFactory.deriveByList(DTDParser.TYPE_NMTOKENS, NmtokenType.theInstance ) );
+			m.put( DTDParser.TYPE_NMTOKENS,	DatatypeFactory.deriveByList(DTDParser.TYPE_NMTOKENS, NmtokenType.theInstance ) );
     
 			// use string as a base type of enumeration.
 			// TODO: confirm whitespace handling of string type is appropriate.
@@ -404,14 +406,14 @@ public class DTDReader implements
 		
 		
 		// create DataType that validates attribute value.
-		DataType dt = (DataType)dtdTypes.get(attributeType);
+		XSDatatype dt = (XSDatatype)dtdTypes.get(attributeType);
 		if(dt==null)	throw new Error(attributeType);
 		
 		try {
 			if(enums!=null) {
 				TypeIncubator incubator = new TypeIncubator(dt);
 				for( int i=0; i<enums.length; i++ )
-					incubator.add( DataType.FACET_ENUMERATION, enums[i], false, null );
+					incubator.add( XSDatatype.FACET_ENUMERATION, enums[i], false, null );
 				dt = incubator.derive(null);
 			}
 		
@@ -419,7 +421,7 @@ public class DTDReader implements
 				// in case of #FIXED, derive a datatype with default value as 
 				// an enumeration value.
 				TypeIncubator incubator = new TypeIncubator(dt);
-				incubator.add( DataType.FACET_ENUMERATION, defaultValue, false, null );
+				incubator.add( XSDatatype.FACET_ENUMERATION, defaultValue, false, null );
 				dt = incubator.derive(null);
 			}
 		} catch( BadTypeException e ) {

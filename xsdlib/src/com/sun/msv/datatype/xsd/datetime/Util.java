@@ -7,11 +7,11 @@
  * Use is subject to license terms.
  * 
  */
-package com.sun.msv.datatype.datetime;
+package com.sun.msv.datatype.xsd.datetime;
 
 import java.math.BigInteger;
 import java.math.BigDecimal;
-import com.sun.msv.datatype.Comparator;
+import com.sun.msv.datatype.xsd.Comparator;
 
 /**
  * date/time-related utility functions/variables.

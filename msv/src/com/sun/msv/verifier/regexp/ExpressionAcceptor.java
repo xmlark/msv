@@ -15,11 +15,11 @@ import com.sun.msv.grammar.relaxng.NGTypedStringExp;
 import com.sun.msv.grammar.relaxng.ValueType;
 import com.sun.msv.grammar.IDContextProvider;
 import com.sun.msv.verifier.*;
-import com.sun.msv.datatype.DataType;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
-import com.sun.msv.util.DataTypeRef;
-import org.relaxng.datatype.DataTypeException;
+import com.sun.msv.util.DatatypeRef;
+import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.DatatypeException;
 import java.util.*;
 
 /**
@@ -146,7 +146,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 		return true;
 	}
 	
-	public boolean stepForward( String literal, IDContextProvider provider, StringRef refErr, DataTypeRef refType ) {
+	public boolean stepForward( String literal, IDContextProvider provider, StringRef refErr, DatatypeRef refType ) {
 		return stepForward( new StringToken(docDecl,literal,provider,refType), refErr );
 	}
 	
@@ -434,26 +434,17 @@ public abstract class ExpressionAcceptor implements Acceptor
 	 * @return null
 	 *		if diagnosis failed.
 	 */
-	private final String getDiagnosisFromTypedString( TypedStringExp exp, StartTagInfoEx sti, int index )
-	{
-		try
-		{
-			DataTypeException diag;
-			diag = exp.dt.diagnose(	sti.attributes.getValue(index), sti.context );
-										
-			if( diag!=null )	// diag is null if the implementation has flaw
-								// and unable to provide diagnosis.
-								// should we throw an assertion here?
-				return diag.getMessage();
+	private final String getDiagnosisFromTypedString( TypedStringExp exp, StartTagInfoEx sti, int index ) {
+		try {
+			exp.dt.checkValid(	sti.attributes.getValue(index), sti.context );
+			
+			// it should throw an exception.
+			// but just in case the datatype library has a bug,
+			// we recover from this situation
+			return null;
+		} catch( DatatypeException e ) {
+			return e.getMessage();
 		}
-		catch( UnsupportedOperationException uoe )
-		{
-			// implementation may throw this exception
-			// when it doesn't implement diganose method.
-			;
-		}
-		
-		return null;
 	}
 
 
@@ -781,18 +772,15 @@ public abstract class ExpressionAcceptor implements Acceptor
 			
 			TypedStringExp texp = (TypedStringExp)srt.failedExps.iterator().next();
 			try {
-				DataTypeException diag = texp.dt.diagnose( srt.literal, srt.context );
-				if( diag!=null )
-					// this literal is invalid for this datatype.
-					return diag.getMessage();
-				
+				texp.dt.checkValid( srt.literal, srt.context );
+					
 				// now the literal is valid.
 				// Is this key/keyref constraint violation?
 				if( texp instanceof NGTypedStringExp ) {
 					NGTypedStringExp ntexp = (NGTypedStringExp)texp;
 					if( ntexp.keyName!=null
 						&& !token.context.onID( ntexp.keyName, ntexp.dt.createValue(token.literal,token.context) ) ) {
-						
+							
 						if( ntexp.keyName.length()==0 )
 							// empty key name indicates that this is an ID.
 							return docDecl.localizeMessage( docDecl.DIAG_BAD_KEY_VALUE,
@@ -802,7 +790,12 @@ public abstract class ExpressionAcceptor implements Acceptor
 								token.literal.trim(), ntexp.keyName );
 					}
 				}
-			} catch( UnsupportedOperationException uoe ) {}
+			} catch( DatatypeException de ) {
+				// this literal is invalid.
+				if( de.getMessage()!=null )
+					return de.getMessage();	// return the diagnosis.
+				// unable to dianogse. fall through next
+			}
 		} else {
 			// there are multiple candidates.
 			final Set items = new java.util.HashSet();

@@ -160,7 +160,7 @@ public class ExpressionPrinter implements ExpressionVisitor {
 	}
 	
 	public Object onTypedString( TypedStringExp exp ) {
-		return "$"+exp.dt.displayName();
+		return "$"+exp.typeName;
 	}	
 
 	public Object onRef( ReferenceExp exp ) {

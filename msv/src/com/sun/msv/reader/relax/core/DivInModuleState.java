@@ -11,8 +11,9 @@ package com.sun.msv.reader.relax.core;
 
 import java.util.Map;
 import org.xml.sax.Locator;
-import org.relaxng.datatype.DataType;
-import com.sun.msv.datatype.DataTypeImpl;
+//import org.relaxng.datatype.Datatype;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.XSDatatypeImpl;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.reader.*;
@@ -44,10 +45,10 @@ public class DivInModuleState extends SimpleState implements ExpressionOwner, Ty
 	// do nothing. declarations register themselves by themselves.
 	public void onEndChild( Expression exp ) {}
 	
-	public void onEndChild( DataType type )
+	public void onEndChild( XSDatatype type )
 	{// user-defined simple types
 		
-		final String typeName = ((DataTypeImpl)type).getName();
+		final String typeName = ((XSDatatypeImpl)type).getName();
 		
 		if( typeName==null )
 		{// top-level simpleType must define a named type
@@ -56,6 +57,6 @@ public class DivInModuleState extends SimpleState implements ExpressionOwner, Ty
 		}
 		
 		// memorize this type.
-		getReader().module.userDefinedTypes.addType( (DataTypeImpl)type );
+		getReader().module.userDefinedTypes.addType( (XSDatatypeImpl)type );
 	}
 }

@@ -9,11 +9,10 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import org.relaxng.datatype.DataType;
-import com.sun.msv.datatype.DataTypeImpl;
-import com.sun.msv.datatype.BadTypeException;
-import com.sun.msv.datatype.TypeIncubator;
-import com.sun.msv.datatype.StringType;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.BadTypeException;
+import com.sun.msv.datatype.xsd.TypeIncubator;
+import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.SequenceState;
@@ -39,12 +38,12 @@ public class SimpleContentBodyState extends SequenceState
 	protected TypeIncubator incubator;
 	public TypeIncubator getIncubator() { return incubator; }
 	
-	public void onEndChild( DataType child ) {
+	public void onEndChild( XSDatatype child ) {
 		if( incubator!=null )
 			// assertion failed.
 			// createChildState should reject 2nd <simpleType> element.
 			throw new Error();
-		incubator = new TypeIncubator((DataTypeImpl)child);
+		incubator = new TypeIncubator(child);
 	}
 	
 	protected State createChildState( StartTagInfo tag ) {
@@ -64,7 +63,7 @@ public class SimpleContentBodyState extends SequenceState
 		
 		String base	= startTag.getAttribute("base");
 		if(base!=null)
-			incubator = new TypeIncubator( (DataTypeImpl)reader.resolveDataType(base) );
+			incubator = new TypeIncubator( (XSDatatype)reader.resolveDataType(base) );
 		else {
 			if(extension) {
 				// in extension, base attribute must is mandatory.

@@ -28,8 +28,8 @@ import com.sun.msv.util.StringPair;
  */
 public class NGTypedStringExp extends TypedStringExp {
 	
-	public NGTypedStringExp( DataType dataType, String keyName, String keyRefName, StringPair baseTypeName ) {
-		super(dataType);
+	public NGTypedStringExp( Datatype dataType, String typeName, String keyName, String keyRefName, StringPair baseTypeName ) {
+		super(dataType,typeName);
 		this.keyName = keyName;
 		this.keyrefName= keyRefName;
 		this.baseTypeName = baseTypeName;

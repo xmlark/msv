@@ -9,7 +9,8 @@
  */
 package com.sun.msv.grammar.relax;
 
-import com.sun.msv.datatype.*;
+import com.sun.msv.datatype.SerializationContext;
+import com.sun.msv.datatype.xsd.ConcreteType;
 import org.relaxng.datatype.ValidationContext;
 
 /**
@@ -40,5 +41,9 @@ public class EmptyStringType extends ConcreteType {
 	public String convertToLexicalValue( Object o, SerializationContext context ) {
 		if( o.equals("") )	return "";
 		else				throw new IllegalArgumentException();
+	}
+	
+	public Class getJavaObjectType() {
+		return String.class;
 	}
 }

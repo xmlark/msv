@@ -29,16 +29,15 @@ import org.xml.sax.InputSource;
 import org.xml.sax.helpers.LocatorImpl;
 import org.iso_relax.dispatcher.IslandSchemaReader;
 import org.iso_relax.dispatcher.SchemaProvider;
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
 
 /**
  * parses RELAX Namespace XML and constructs a SchemaProvider.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class RELAXNSReader
-	extends RELAXReader
-{
+public class RELAXNSReader extends RELAXReader {
+	
 	/** namespace URI of RELAX Namespace. */
 	public static final String RELAXNamespaceNamespace = "http://www.xml.gr.jp/xmlns/relaxNamespace";
 	
@@ -126,7 +125,7 @@ public class RELAXNSReader
 		return null;
 	}
 	
-	public DataType resolveDataType( String typeName ) {
+	public Datatype resolveDataType( String typeName ) {
 		// should never be called.
 		// because in top-level content model, datatype reference can never occur.
 		throw new Error();
@@ -162,6 +161,9 @@ public class RELAXNSReader
 	
 	
 	
+	protected String localizeMessage( String propertyName, Object[] args ) {
+		return super.localizeMessage(propertyName,args);
+	}
 	
 	public static final String WRN_ILLEGAL_RELAXNAMESPACE_VERSION	// arg:1
 		= "RELAXNSReader.Warning.IllegalRelaxNamespaceVersion";

@@ -19,7 +19,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
-import com.sun.msv.datatype.StringType;
+import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.trex.*;
 import com.sun.msv.reader.*;
@@ -29,7 +29,7 @@ import com.sun.msv.reader.trex.IncludePatternState;
 import com.sun.msv.reader.trex.RootState;
 import com.sun.msv.reader.datatype.DataTypeVocabulary;
 import com.sun.msv.util.StartTagInfo;
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
 
 /**
  * reads TREX grammar from SAX2 and constructs abstract grammar model.
@@ -191,7 +191,7 @@ public class TREXGrammarReader extends TREXBaseReader {
 	
 	/** obtains a named DataType object referenced by a QName.
 	 */
-	public DataType resolveDataType( String qName )
+	public Datatype resolveDataType( String qName )
 	{
 		String[] s = splitQName(qName);
 		if(s==null)
@@ -213,7 +213,7 @@ public class TREXGrammarReader extends TREXBaseReader {
 		}
 		else
 		{
-			DataType dt = v.getType( s[1] );	// s[1] == local name
+			Datatype dt = v.getType( s[1] );	// s[1] == local name
 			if(dt!=null)	return dt;
 			
 			reportError( ERR_UNDEFINED_DATATYPE, qName );
@@ -236,7 +236,7 @@ public class TREXGrammarReader extends TREXBaseReader {
 	{
 		public State createTopLevelReaderState( StartTagInfo tag )
 		{ return new IgnoreState(); }	// ignore everything
-		public DataType getType( String localTypeName )
+		public Datatype getType( String localTypeName )
 		{ return StringType.theInstance; }	// accepts any type name
 
 	}

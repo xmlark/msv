@@ -12,7 +12,7 @@ package com.sun.msv.reader.trex.classic;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.trex.TypedString;
 import com.sun.msv.reader.ExpressionWithoutChildState;
-import com.sun.msv.datatype.WhiteSpaceProcessor;
+import com.sun.msv.datatype.xsd.WhiteSpaceProcessor;
 
 /**
  * parses &lt;string&gt; pattern.
@@ -36,6 +36,7 @@ public class StringState extends ExpressionWithoutChildState
 	{
 		return reader.pool.createTypedString(
 			new TypedString(new String(text),
-			"preserve".equals(startTag.getAttribute("whiteSpace") ) ) );
+				"preserve".equals(startTag.getAttribute("whiteSpace") ) ),
+			"$trex-string" );
 	}
 }

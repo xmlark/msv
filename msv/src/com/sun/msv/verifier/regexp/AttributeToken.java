@@ -10,7 +10,7 @@
 package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.*;
-import com.sun.msv.util.DataTypeRef;
+import com.sun.msv.util.DatatypeRef;
 
 /**
  * represents attribute and its value.
@@ -47,7 +47,7 @@ public class AttributeToken extends Token
 	protected AttributeToken( REDocumentDeclaration docDecl,
 			String namespaceURI, String localName, String value, IDContextProvider context ) {
 		this( docDecl, namespaceURI, localName,
-			new StringToken(docDecl,value,context,new DataTypeRef()) );
+			new StringToken(docDecl,value,context,new DatatypeRef()) );
 	}
 	protected AttributeToken( REDocumentDeclaration docDecl,
 			String namespaceURI, String localName, StringToken value ) {

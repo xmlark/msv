@@ -11,14 +11,14 @@ package com.sun.msv.reader.datatype.xsd;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
+import org.relaxng.datatype.DatatypeException;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.SimpleState;
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.ExpressionOwner;
 import com.sun.msv.reader.datatype.TypeOwner;
-import com.sun.msv.datatype.DataTypeImpl;
-import com.sun.msv.datatype.BadTypeException;
-import com.sun.msv.datatype.StringType;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -51,10 +51,10 @@ abstract class TypeState extends SimpleState
 	}
 	
 	/** makeType method with protection against possible exception. */
-	DataTypeImpl _makeType() {
+	XSDatatype _makeType() {
 		try {
 			return makeType();
-		} catch( BadTypeException be ) {
+		} catch( DatatypeException be ) {
 			reader.reportError( be, reader.ERR_BAD_TYPE );
 			return StringType.theInstance;	// recover by assuming a valid type.
 		}
@@ -65,7 +65,7 @@ abstract class TypeState extends SimpleState
 	 * Implementation has to provide DataType object that represents the content of
 	 * this element.
 	 */
-	protected abstract DataTypeImpl makeType() throws BadTypeException;
+	protected abstract XSDatatype makeType() throws DatatypeException;
 
 
 	public final void startElement( String namespaceURI, String localName, String qName, Attributes atts )

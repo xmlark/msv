@@ -9,7 +9,7 @@
  */
 package com.sun.msv.reader.datatype.xsd;
 
-import com.sun.msv.datatype.TypeIncubator;
+import com.sun.msv.datatype.xsd.TypeIncubator;
 
 /**
  * Interface implemented by the parent state of FacetState.
@@ -22,8 +22,7 @@ import com.sun.msv.datatype.TypeIncubator;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public interface FacetStateParent
-{
+public interface FacetStateParent {
 	/** gets an incubator object that the owner holds. */
 	TypeIncubator getIncubator();
 }

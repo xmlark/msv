@@ -13,7 +13,7 @@ import com.sun.msv.reader.ExpressionWithoutChildState;
 import com.sun.msv.grammar.relaxng.ValueType;
 import com.sun.msv.grammar.Expression;
 //import org.relaxng.datatype.DataTypeException;
-import org.relaxng.datatype.DataType;
+import org.relaxng.datatype.Datatype;
 
 /**
  * parses &lt;value&gt; pattern.
@@ -34,11 +34,11 @@ public class ValueState extends ExpressionWithoutChildState {
 	protected Expression makeExpression() {
 		final RELAXNGReader reader = (RELAXNGReader)this.reader;
 		final String typeName = startTag.getAttribute("type");
-		DataType type;
+		Datatype type;
 		
 		if(typeName==null)
 			// defaults to built-in token type.
-			type = com.sun.msv.datatype.TokenType.theInstance;
+			type = com.sun.msv.datatype.xsd.TokenType.theInstance;
 		else
 			type = reader.resolveDataType(typeName);
 
@@ -49,6 +49,7 @@ public class ValueState extends ExpressionWithoutChildState {
 			return Expression.nullSet;	// recover by returning something.
 		}
 		
-		return reader.pool.createTypedString( new ValueType( type, value ) );
+		return reader.pool.createTypedString(
+			new ValueType( type, value ), "rng-value" );
 	}
 }

@@ -14,19 +14,19 @@ package com.sun.msv.datatype;
  * 
  * @author	Kohsuke Kawaguchi
  */
-abstract class DataTypeWithFacet extends DataTypeImpl
+public abstract class DataTypeWithFacet extends DataTypeImpl
 {
 	/** immediate base type, which may be a concrete type or DataTypeWithFacet */
-	protected final DataTypeImpl baseType;
+	public final DataTypeImpl baseType;
 	
 	/** base concrete type */
 	protected final ConcreteType concreteType;
 	
 	/** name of this facet */
-	protected final String facetName;
+	public final String facetName;
 	
 	/** a flag that indicates the facet is fixed (derived types cannot specify this value anymore) */
-	protected final boolean isFacetFixed;
+	public final boolean isFacetFixed;
 	
 	/** a flag that indicates this type has value-constraint facet.
 	 * 

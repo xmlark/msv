@@ -22,7 +22,8 @@ public abstract class DataTypeImpl implements DataType {
 	// the majority is atom type
 	abstract public boolean isAtomType();
 
-	protected final WhiteSpaceProcessor whiteSpace;
+	/** this field characterizes how this datatype treats white space. */
+	public final WhiteSpaceProcessor whiteSpace;
 	
 	protected DataTypeImpl( String typeName, WhiteSpaceProcessor whiteSpace ) {
 		this.typeName	= typeName;

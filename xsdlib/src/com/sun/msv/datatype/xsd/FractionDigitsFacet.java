@@ -16,10 +16,10 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet {
+public class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 	
 	/** maximum number of fraction digits */
-	protected final int scale;
+	public final int scale;
 
 	public FractionDigitsFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException {

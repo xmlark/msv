@@ -14,8 +14,8 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-abstract class RangeFacet extends DataTypeWithValueConstraintFacet {
-	protected final Object limitValue;
+public abstract class RangeFacet extends DataTypeWithValueConstraintFacet {
+	public final Object limitValue;
 
 	protected RangeFacet( String typeName, DataTypeImpl baseType, String facetName, TypeIncubator facets )
 		throws BadTypeException {

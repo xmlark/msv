@@ -16,9 +16,9 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet {
+public class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet {
 	/** maximum number of total digits. */
-	protected final int		precision;
+	public final int		precision;
 
 	public TotalDigitsFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException {

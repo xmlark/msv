@@ -14,7 +14,7 @@ package com.sun.msv.datatype;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-class WhiteSpaceFacet extends DataTypeWithFacet {
+public class WhiteSpaceFacet extends DataTypeWithFacet {
 	
 	WhiteSpaceFacet( String typeName, DataTypeImpl baseType, TypeIncubator facets )
 		throws BadTypeException {

@@ -21,12 +21,13 @@ import java.util.Vector;
  * 
  * @author Kohsuke KAWAGUCHI
  */
-final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
+public final class PatternFacet extends DataTypeWithLexicalConstraintFacet {
+	
 	/**
 	 * actual object that performs regular expression validation.
 	 * one of the item has to match
 	 */
-	final private RegularExpression[] exps;
+	final public RegularExpression[] exps;
 
 	
 	

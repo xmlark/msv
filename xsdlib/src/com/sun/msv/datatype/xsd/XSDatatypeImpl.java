@@ -10,6 +10,7 @@
 package com.sun.msv.datatype.xsd;
 
 import java.io.Serializable;
+import java.util.Vector;
 import org.relaxng.datatype.ValidationContext;
 import org.relaxng.datatype.DatatypeException;
 import org.relaxng.datatype.DatatypeStreamingValidator;
@@ -93,6 +94,24 @@ public abstract class XSDatatypeImpl implements XSDatatype {
 		return null;
 	}
 
+    public String[] getApplicableFacetNames() {
+        Vector vec = new Vector();
+        String[] facetNames = new String[]{
+                FACET_ENUMERATION,
+                FACET_FRACTIONDIGITS,FACET_TOTALDIGITS,
+                FACET_LENGTH,FACET_MINLENGTH,FACET_MAXLENGTH,
+                FACET_MAXEXCLUSIVE,FACET_MINEXCLUSIVE,
+                FACET_MAXINCLUSIVE,FACET_MININCLUSIVE,
+                FACET_PATTERN,
+                FACET_WHITESPACE};
+        
+        for( int i=0; i<facetNames.length; i++ )
+            if(isFacetApplicable(facetNames[i])==APPLICABLE)
+                vec.add(facetNames[i]);
+        
+        return (String[])vec.toArray(new String[vec.size()]);
+    }
+    
 	/**
 	 * gets the concrete type object of the restriction chain.
 	 */

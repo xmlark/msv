@@ -145,6 +145,10 @@ public interface XSDatatype extends Serializable, DatabindableDatatype {
 	 */
 	public int isFacetApplicable( String facetName );
 
+    /**
+     * Gets the names of all applicable facets.
+     */
+    public String[] getApplicableFacetNames();
 
 	// well-known facet name constants
 	final static String	FACET_LENGTH			= "length";

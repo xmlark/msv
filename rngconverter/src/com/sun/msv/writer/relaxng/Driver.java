@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
+import org.xml.sax.SAXException;
 
 /**
  * converts any supported languages into the equivalent RELAX NG grammar.
@@ -47,11 +48,19 @@ public class Driver {
 			return;
 		}
 		
+        writeGrammar( g, System.out );
+    }
+    
+    /**
+     * Writes a grammar to the specified output.
+     */
+    public static void writeGrammar( Grammar g, java.io.OutputStream out ) throws SAXException {
+        
 		RELAXNGWriter writer = new RELAXNGWriter();
 		// use XMLSerializer of Apache to serialize SAX event into plain text.
 		// OutputFormat specifies "pretty printing".
 		writer.setDocumentHandler(
-			new XMLSerializer( new PrintWriter(System.out),
+			new XMLSerializer( out,
 			new OutputFormat("xml",null,true) ) );
 		// visit TREXGrammar and generate its XML representation.
 		writer.write( g );

@@ -410,7 +410,8 @@ public class XMLSchemaReader extends GrammarReader {
 		||  state instanceof AllState
 		||  state instanceof AnyElementState
 		||  state instanceof ElementDeclState
-		||  state instanceof ElementRefState )
+		||  state instanceof ElementRefState
+		||  state instanceof GroupState )
 			// TODO: <all/> is limited upto 1
 			return processOccurs(state.getStartTag(),exp);
 		

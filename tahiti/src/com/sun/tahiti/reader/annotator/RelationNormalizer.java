@@ -1,10 +1,12 @@
-package com.sun.tahiti.reader;
+package com.sun.tahiti.reader.annotator;
 
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
 import com.sun.msv.grammar.trex.ElementPattern;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.tahiti.grammar.*;
+import com.sun.tahiti.grammar.util.Multiplicity;
+import com.sun.tahiti.grammar.util.MultiplicityCounter;
 import java.util.Set;
 import org.xml.sax.Locator;
 
@@ -89,7 +91,7 @@ import org.xml.sax.Locator;
  * Its next job is to compute the type of the field. Field values may have
  * different types, and we need to compute the common base type.
  */
-public class RelationNormalizer {
+class RelationNormalizer {
 	
 	private RelationNormalizer( GrammarReader reader ) {
 		this.reader = reader;
@@ -111,9 +113,6 @@ public class RelationNormalizer {
 	 *		The top-level expression of the normalized grammar.
 	 */
 	public static Expression normalize( GrammarReader reader, Expression exp ) {
-		
-		// removes unreachable declarations from the grammar.
-		exp = exp.visit(new NotAllowedRemover(reader.pool));
 		
 		RelationNormalizer n = new RelationNormalizer(reader);
 		exp = exp.visit(n.new Pass1());
@@ -278,19 +277,6 @@ public class RelationNormalizer {
 			if( isIgnore(parentItem) )
 				return exp.exp.visit(this);
 			
-			if( isClass(parentItem)	&& (exp instanceof Type) ) {
-				// class-class, class-interface, or class-primitive relation.
-				// this should be converted to
-				// C-F-C, C-F-I, or C-F-P respectively
-				// before anything else.
-				
-				// create a tag and insert it between tag and its parent.
-				ReferenceExp tag = new FieldItem(typeNameToFieldName(exp.name));
-				tag.exp = exp;
-				// then process tag. so that we can process both C-F and F-C/I/P.
-				return onRef(tag);
-			}
-			
 			
 			
 			JavaItem old = parentItem;
@@ -394,18 +380,6 @@ public class RelationNormalizer {
 			else								return Multiplicity.one;
 		}
 		
-		
-		/**
-		 * generates a field name suitable to hold a reference for the specified class.
-		 */
-		protected String typeNameToFieldName( String s ) {
-			// if the type name is qualified, remove the package name
-			int idx = s.lastIndexOf('.');
-			if(idx>=0)	s = s.substring(idx+1);
-			
-			return Character.toLowerCase(s.charAt(0))+s.substring(1);
-		}
-		
 		/**
 		 * performs sanity check for the use of roles.
 		 */
@@ -435,6 +409,14 @@ public class RelationNormalizer {
 						reader.getDeclaredLocationOf(child)},
 					ERR_BAD_ITEM_USE, null );
 				return;
+			}
+
+			
+			if( isClass(parent)	&& (child instanceof Type) ) {
+				// class-class, class-interface, or class-primitive relation.
+				// FieldItemAnnotator should run before this process
+				// to prevent such situations from happening in the normalizer.
+				throw new Error("internal error. C-C/C-I/C-P relation");
 			}
 		}
 		
@@ -552,7 +534,7 @@ public class RelationNormalizer {
 	/**
 	 * computes the total multiplicity of a FieldUse.
 	 */
-	private class Pass2 implements ExpressionVisitor {
+	private class Pass2 extends MultiplicityCounter {
 		
 		Pass2( FieldUse fieldUse ) {
 			this.fieldUse = fieldUse;
@@ -560,45 +542,7 @@ public class RelationNormalizer {
 		
 		private final FieldUse fieldUse;
 		
-		public Object onEpsilon()	{ return Multiplicity.zero; }
-		public Object onNullSet()	{ return Multiplicity.zero; }
-		public Object onAnyString()	{ return Multiplicity.zero; }
-		public Object onTypedString( TypedStringExp exp ) { return Multiplicity.zero; }
-		
-		public Object onSequence( SequenceExp exp ) {
-			return Multiplicity.group(
-				(Multiplicity)exp.exp1.visit(this),
-				(Multiplicity)exp.exp2.visit(this) );
-		}
-		
-		public Object onInterleave( InterleaveExp exp ) {
-			return Multiplicity.group(
-				(Multiplicity)exp.exp1.visit(this),
-				(Multiplicity)exp.exp2.visit(this) );
-		}
-		
-		public Object onChoice( ChoiceExp exp ) {
-			return Multiplicity.choice(
-				(Multiplicity)exp.exp1.visit(this),
-				(Multiplicity)exp.exp2.visit(this) );
-		}
-		
-		public Object onList( ListExp exp )				{ return exp.exp.visit(this); }
-		public Object onMixed( MixedExp exp )			{ return exp.exp.visit(this); }
-		public Object onAttribute( AttributeExp exp )	{ return exp.exp.visit(this); }
-		public Object onElement( ElementExp exp )		{ return exp.contentModel.visit(this); }
-		
-		public Object onConcur( ConcurExp exp ) {
-			// concur can be supported at least for this method.
-			throw new Error();
-		}
-		
-		public Object onOneOrMore( OneOrMoreExp exp ) {
-			return Multiplicity.oneOrMore( (Multiplicity)exp.exp.visit(this) );
-		}
-		
-		
-		public Object onRef( ReferenceExp exp ) {
+		protected Multiplicity isChild( Expression exp ) {
 			// if this is a FieldItem and it counts, then
 			// return its multiplicity.
 			if( fieldUse.items.contains(exp) ) {
@@ -607,12 +551,12 @@ public class RelationNormalizer {
 				return ((FieldItem)exp).multiplicity;
 			}
 			
-			// otherwise if it is a JavaItem, return (0,0).
+			// if it is a JavaItem, return (0,0).
 			if( exp instanceof JavaItem )
 				return Multiplicity.zero;
 			
-			// if this is just a reference, then resolve the reference.
-			return exp.exp.visit(this);
+			//  otherwise recurse to the children
+			return null;
 		}
 	}
 	

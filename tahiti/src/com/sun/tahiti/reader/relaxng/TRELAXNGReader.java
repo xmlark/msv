@@ -6,7 +6,7 @@ import com.sun.msv.reader.trex.ng.RELAXNGReader;
 import com.sun.msv.reader.ExpressionState;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.util.StartTagInfo;
-import com.sun.tahiti.reader.RelationNormalizer;
+import com.sun.tahiti.reader.annotator.Annotator;
 import com.sun.tahiti.reader.NameUtil;
 import com.sun.tahiti.grammar.*;
 import javax.xml.parsers.SAXParserFactory;
@@ -79,15 +79,57 @@ public class TRELAXNGReader extends RELAXNGReader {
 		final StartTagInfo tag = state.getStartTag();
 		String role = tag.getAttribute(TahitiNamespace,"role");
 		
-		if( role==null )	return exp;	// the "role" attribute is not present.
+		if( role==null ) {
+			// there is no markup.
+			
+			// insert an ClassItem if this is the <element> tag.
+			// some of those temporarily added ClassItems will be removed
+			// in the final wrap up.
+			if( exp instanceof ElementExp ) {
+				ClassItem t = new ClassItem( decideName(state,exp,"class") );
+				t.isTemporary = true;	// this flag indicates that this class item is a temporary one.
+				t.exp = exp;
+				return t;
+			}
+			
+			return exp;	// the "role" attribute is not present.
+		}
 		
 		
 		ReferenceExp roleExp;
 		
+		if( role.equals("none") ) {
+			// do nothing. this will prevent automatic ClassItem insertion.
+			return exp;
+		} else
 		if( role.equals("superClass") ) {
 			roleExp = new SuperClassItem();
 		} else
 		if( role.equals("class") ) {
+			/*
+			removes silly use of temporary ClassItem.
+			Consider the following grammar fragment:
+			<define name="foo" t:role="class">
+				<element name="foo">
+					...
+				</element>
+			</define>
+			
+			Since there is no tahiti markup for <element> element, a temporary ClassItem
+			is inserted. Immediately after that, a <define> element is processed, and 
+			a new ClassItem is inserted.
+			
+			The following code is a quick hack to prevent this situation by removing
+			temporary ClassItem if it is the immediate child of the user-defined class.
+			 */
+			if( (exp instanceof ClassItem) && ((ClassItem)exp).isTemporary )
+				exp = ((ClassItem)exp).exp;
+			if( exp.getClass()==ReferenceExp.class ) {
+				ReferenceExp rexp = (ReferenceExp)exp;
+				if( (rexp.exp instanceof ClassItem) && ((ClassItem)rexp.exp).isTemporary )
+					rexp.exp = ((ClassItem)rexp.exp).exp;
+			}
+			
 			roleExp = new ClassItem(decideName(state,exp,role));
 		} else
 		if( role.equals("field") ) {
@@ -176,13 +218,10 @@ public class TRELAXNGReader extends RELAXNGReader {
 		
 		// if we already have an error, abort further processing.
 		if(hadError)	return;
+
 		
-		/*
-			2nd step. Find all class-class or class-interface relationships
-			and change them to class-field-class or class-field-interface
-			respectively.
-		*/
-		grammar.start = RelationNormalizer.normalize( this, grammar.start );
+		// add missing annotations and normalizes them.
+		grammar.start = Annotator.annotate( grammar.start, this );
 	}
 
 	

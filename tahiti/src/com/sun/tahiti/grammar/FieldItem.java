@@ -1,10 +1,17 @@
 package com.sun.tahiti.grammar;
 
+import com.sun.msv.grammar.Expression;
+import com.sun.tahiti.grammar.util.Multiplicity;
 import java.util.Set;
 
 public class FieldItem extends JavaItem {
 	public FieldItem( String name ) {
 		super(name);
+	}
+	
+	public FieldItem( String name, Expression exp ) {
+		this(name);
+		this.exp = exp;
 	}
 	
 	/**

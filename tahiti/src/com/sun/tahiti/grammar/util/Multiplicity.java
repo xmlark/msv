@@ -1,4 +1,6 @@
-package com.sun.tahiti.grammar;
+package com.sun.tahiti.grammar.util;
+
+import com.sun.msv.grammar.Expression;
 
 public class Multiplicity {
 	public final int min;
@@ -17,12 +19,29 @@ public class Multiplicity {
 		return min==1 && max.intValue()==1;
 	}
 	
+	/** returns true if the multiplicity is (0,1) or (1,1). */
+	public boolean isAtMostOnce() {
+		if(max==null)	return false;
+		return max.intValue()<=1;
+	}
+	
+	/** returns true if the multiplicity is (0,0). */
+	public boolean isZero() {
+		if(max==null)	return false;
+		return max.intValue()==0;
+	}
+	
 	/** the constant representing the (0,0) multiplicity. */
 	public static Multiplicity zero = new Multiplicity(0,0);
 	
 	/** the constante representing the (1,1) multiplicity. */
 	public static Multiplicity one = new Multiplicity(1,1);
-	
+
+
+	public static Multiplicity calc( Expression exp, MultiplicityCounter calc ) {
+		return (Multiplicity)exp.visit(calc);
+	}
+
 // arithmetic methods
 //============================
 	public static Multiplicity choice( Multiplicity lhs, Multiplicity rhs ) {

@@ -1,5 +1,6 @@
 package com.sun.tahiti.grammar;
 
+import com.sun.msv.grammar.Expression;
 import java.util.Set;
 
 /**
@@ -13,6 +14,11 @@ public class PrimitiveItem extends JavaItem implements Type {
 	public PrimitiveItem( Class type ) {
 		super(type.getName());
 		this.type = SystemType.get(type);
+	}
+
+	public PrimitiveItem( Class type, Expression exp ) {
+		this(type);
+		this.exp = exp;
 	}
 	
 	/** actual type. This object works as a proxy to this field */

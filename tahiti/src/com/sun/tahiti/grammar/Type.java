@@ -12,7 +12,10 @@ public interface Type {
 	/** gets the fully-qualified name of this type. */
 	String getTypeName();
 	
-	/** gets the package name of this type. */
+	/**
+	 * gets the package name of this type.
+	 * This method returns null if this class does not reside in any package.
+	 */
 	String getPackageName();
 	/** gets the bare type name (without the package name.) */
 	String getBareName();

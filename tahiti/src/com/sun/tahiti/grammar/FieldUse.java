@@ -1,6 +1,7 @@
 package com.sun.tahiti.grammar;
 
 import java.util.Set;
+import com.sun.tahiti.grammar.util.Multiplicity;
 
 public class FieldUse {
 	

@@ -1,4 +1,4 @@
-package com.sun.tahiti.reader;
+package com.sun.tahiti.grammar.util;
 
 import com.sun.msv.grammar.*;
 import java.util.Set;

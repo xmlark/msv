@@ -55,7 +55,7 @@ public abstract class ConcreteType extends XSDatatypeImpl {
 // createJavaObject method, then it must also override the serializeJavaObject method.
 //
 	public Object _createJavaObject( String literal, ValidationContext context ) {
-		return createValue(literal,context);
+		return _createValue(literal,context);
 	}
 	public String serializeJavaObject( Object value, SerializationContext context ) {
 		String literal = convertToLexicalValue( value, context );

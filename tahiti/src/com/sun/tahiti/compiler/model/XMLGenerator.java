@@ -33,31 +33,39 @@ class XMLGenerator
 			topLevel.visit(col);
 		
 			ClassItem[] types = (ClassItem[])col.classItems.toArray(new ClassItem[0]);
+			for( int i=0; i<types.length; i++ )
+				write( types[i] );
 		
-			for( int i=0; i<types.length; i++ ) {
-				final ClassItem type = types[i];
-				
-				DocumentHandler outHandler = new XMLSerializer(
-					outResolver.getOutput(type),
-					new OutputFormat("xml",null,true) );
-				XMLWriter out = new XMLWriter(outHandler);
-				
-				outHandler.setDocumentLocator( new LocatorImpl() );
-				outHandler.startDocument();
-				writeClass( type, out );
-				outHandler.endDocument();
-			}
+			InterfaceItem[] itfs = (InterfaceItem[])col.interfaceItems.toArray(new InterfaceItem[0]);
+			for( int i=0; i<itfs.length; i++ )
+				write( itfs[i] );
+		
 		} catch( XMLWriter.SAXWrapper w ) {
 			throw w.e;
 		}
 	}
+
+	/** writes TypeItem to an XML file. */
+	private void write( TypeItem type ) throws SAXException, IOException {
+				
+		DocumentHandler outHandler = new XMLSerializer(
+			outResolver.getOutput(type),
+			new OutputFormat("xml",null,true) );
+		XMLWriter out = new XMLWriter(outHandler);
+				
+		outHandler.setDocumentLocator( new LocatorImpl() );
+		outHandler.startDocument();
+		writeClass( type, out );
+		outHandler.endDocument();
+	}
 	
 	/**
-	 * writes body of ClassItem.
+	 * writes body of TypeItem.
 	 */
-	private void writeClass( ClassItem type, XMLWriter out ) {
+	private void writeClass( TypeItem type, XMLWriter out ) {
 		
-		out.start("class",
+		out.start(
+			(type instanceof ClassItem)?"class":"interface",
 			new String[]{"name",type.name});
 		
 		if( type.getSuperType()!=null )

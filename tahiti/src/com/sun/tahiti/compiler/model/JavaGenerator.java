@@ -34,12 +34,12 @@ class JavaGenerator
 		topLevel.visit(col);
 		
 		ClassItem[] types = (ClassItem[])col.classItems.toArray(new ClassItem[0]);
+		for( int i=0; i<types.length; i++ )
+			writeClass( types[i], new PrintWriter(outResolver.getOutput(types[i])) );
 		
-		for( int i=0; i<types.length; i++ ) {
-			final ClassItem type = types[i];
-				
-			writeClass( type, new PrintWriter(outResolver.getOutput(type)) );
-		}
+		InterfaceItem[] itfs = (InterfaceItem[])col.interfaceItems.toArray(new InterfaceItem[0]);
+		for( int i=0; i<itfs.length; i++ )
+			writeClass( itfs[i], new PrintWriter(outResolver.getOutput(itfs[i])) );
 	}
 	
 	
@@ -60,8 +60,16 @@ class JavaGenerator
 	/**
 	 * writes body of ClassItem.
 	 */
-	private void writeClass( ClassItem type, PrintWriter out ) {
+	private void writeClass( TypeItem type, PrintWriter out ) {
 
+		// one 
+		ClassItem citm = null;
+		InterfaceItem iitm = null;
+		
+		if( type instanceof ClassItem )	citm = (ClassItem)type;
+		else							iitm = (InterfaceItem)type;
+	
+		
 		String packageName = type.getPackageName();
 		if( packageName!=null )
 			out.println(format("package {0};\n",packageName));
@@ -70,14 +78,17 @@ class JavaGenerator
 		out.println(format("import {0};",grammarClassName));
 		out.println();
 		
-		out.print(format("public class {0}",type.getBareName() ));
+		out.print(format("public {0} {1}",
+			citm!=null?"class":"interface",	type.getBareName() ));
 		
-		if( type.getSuperType()!=null )
+		if( citm!=null && citm.getSuperType()!=null )
 			out.print(format(" extends {0}",type.getSuperType().getTypeName()));
 		
 		Type[] itfs = type.getInterfaces();
 		if(itfs.length!=0) {
-			out.print(format(" implements {0}",itfs[0].getTypeName()));
+			out.print(format(" {0} {1}",
+				citm!=null?"implements":"extends", itfs[0].getTypeName()));
+			
 			for( int i=1;i<itfs.length;i++ )
 				out.print(format(", {0}",itfs[i].getTypeName()));
 		}
@@ -102,34 +113,37 @@ class JavaGenerator
 		
 	// generate the setField method
 	//------------------------------------------
-		out.println("\n\n");
-		out.println("\tpublic void setField( NamedSymbol name, Object item ) throws Exception {");
-		itr = type.fields.keySet().iterator();
-		while( itr.hasNext() ) {
-			String fieldName = (String)itr.next();
-			FieldUse fu = (FieldUse)type.fields.get(fieldName);
+		if( citm!=null ) {
+			out.println("\n\n");
+			out.println("\tpublic void setField( NamedSymbol name, Object item ) throws Exception {");
+			itr = type.fields.keySet().iterator();
+			while( itr.hasNext() ) {
+				String fieldName = (String)itr.next();
+				FieldUse fu = (FieldUse)type.fields.get(fieldName);
 
-			Container cont = getContainer(fu);
-			
-			out.print("\t\tif( ");
-			FieldItem[] fi = fu.getItems();
-			for( int i=0; i<fi.length; i++ ) {
-				if(i!=0)
-					out.print(" || ");
-				out.print(format("name=={0}.{1}",
-					grammarShortClassName,
-					symbolizer.getId(fi[i])));
+				Container cont = getContainer(fu);
+				
+				out.print("\t\tif( ");
+				FieldItem[] fi = fu.getItems();
+				for( int i=0; i<fi.length; i++ ) {
+					if(i!=0)
+						out.print(" || ");
+					out.print(format("name=={0}.{1}",
+						grammarShortClassName,
+						symbolizer.getId(fi[i])));
+				}
+				out.println(" ) {");
+				out.println("\t\t\t"+cont.setField(fu.name,"item"));
+				out.println("\t\t\treturn;");
+				out.println("\t\t}");
 			}
-			out.println(" ) {");
-			out.println("\t\t\t"+cont.setField(fu.name,"item"));
-			out.println("\t\t\treturn;");
-			out.println("\t\t}");
+			if( type.getSuperType()!=null )
+				out.println("\t\tsuper.setField(name,item);");
+			else
+				out.println("\t\tthrow new Error();//assertion failed.this is not possible");
+			out.println("\t}");
 		}
-		if( type.getSuperType()!=null )
-			out.println("\t\tsuper.setField(name,item);");
-		else
-			out.println("\t\tthrow new Error();//assertion failed.this is not possible");
-		out.println("\t}");
+		
 		out.println("}");
 		out.flush();
 		out.close();

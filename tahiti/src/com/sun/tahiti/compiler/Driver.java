@@ -18,7 +18,7 @@ import com.sun.tahiti.compiler.model.OutputResolver;
 import com.sun.tahiti.compiler.Symbolizer;
 import com.sun.tahiti.compiler.ll.RuleFileGenerator;
 import com.sun.tahiti.compiler.ll.RuleGenerator;
-import com.sun.tahiti.grammar.ClassItem;
+import com.sun.tahiti.grammar.TypeItem;
 import org.apache.xml.serialize.XMLSerializer;
 import org.apache.xml.serialize.OutputFormat;
 import org.xml.sax.XMLReader;
@@ -150,7 +150,7 @@ public class Driver
 		if( out==xml ) {
 			generator = ModelGenerator.xmlGenerator;
 			resolver = new OutputResolver() {
-				public OutputStream getOutput( ClassItem item ) throws IOException {
+				public OutputStream getOutput( TypeItem item ) throws IOException {
 					return new FileOutputStream(
 						new File( od, item.getTypeName()+".xml") );
 				}
@@ -158,7 +158,7 @@ public class Driver
 		} else {
 			generator = ModelGenerator.javaGenerator;
 			resolver = new OutputResolver() {
-				public OutputStream getOutput( ClassItem item ) throws IOException {
+				public OutputStream getOutput( TypeItem item ) throws IOException {
 					return new FileOutputStream(
 						getJavaFile( od, item.getTypeName() ) );
 				}

@@ -32,24 +32,31 @@ $Id$
 a schema. It supports RELAX Namespace, RELAX Core, and TREX.</P>
 <H1>Usage</H1>
 <P>
-  To validate XML documents with a schema, do as follows
+  To validate XML documents with a RELAX grammar/module, do as follows
 </P>
 <PRE>$ java -jar tranquilo.jar MySchema.rxg MyDocument1.xml MyDocument2.xml ...</PRE>
 <P>
-  Or if you'd like to use TREX,
+  If you'd like to use TREX,
 </P>
 <PRE>$ java -jar tranquilo.jar MySchema.trex MyDocument1.xml MyDocument2.xml</PRE>
 <P>
+  Or if you'd like to use XML Schema,
+</P>
+<PRE>$ java -jar tranquilo.jar MySchema.xsd MyDocument1.xml MyDocument2.xml</PRE>
+<P>
+  Tranquilo will detect the schema language regardless of its file extension.
+</P>
+<P>
   You can also use URL instead of filename. 
   Under some Java VM, wild card for filenames is not available
-  (e.g., "jview" of Microsoft).
+  (e.g., "jview" VM from Microsoft).
 </P>
 <P>
   If the schema contains some errors, you will see messages like this.
 </P>
 <PRE>
 start parsing a grammar.
-the following hedgeRules form a infinite recursion ( y &gt; z  &gt;  y )
+the following hedgeRules form a infinite recursion ( y &gt; z &gt; y )
   18:23@file:///c:/work/relax/relax024.e.rlx
   14:23@file:///c:/work/relax/relax024.e.rlx
 failed to load a grammar.

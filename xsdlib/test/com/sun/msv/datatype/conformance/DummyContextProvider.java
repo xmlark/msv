@@ -42,7 +42,7 @@ final public class DummyContextProvider implements ValidationContext, Serializat
 		if( uri.equals("http://bar.examples.com") )
 			return "bar";
 		if( uri.equals("http://empty.examples.com") )
-			return "";
+			return null;	// the default namespace.
 		return "xyz";	// undefined
 	}
 	

@@ -64,7 +64,7 @@ import org.xml.sax.SAXException;
  * </pre>
  * 
  * @see
- *		TypeDetecter
+ *		TypeDetector
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */

@@ -36,7 +36,7 @@ import com.sun.msv.verifier.regexp.ComplexAcceptor;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TypeDetecter extends AbstractVerifier {
+public class TypeDetector extends AbstractVerifier {
 	
 	protected Acceptor current;
 	
@@ -67,15 +67,15 @@ public class TypeDetecter extends AbstractVerifier {
 	
 	protected TypedContentHandler handler;
 	
-	public TypeDetecter( Grammar grammar ) {
+	public TypeDetector( Grammar grammar ) {
 		this.docDecl = new REDocumentDeclaration(grammar);
 	}
 	
-	public TypeDetecter( REDocumentDeclaration documentDecl ) {
+	public TypeDetector( REDocumentDeclaration documentDecl ) {
 		this.docDecl = documentDecl;
 	}
 	
-	public TypeDetecter( REDocumentDeclaration documentDecl, TypedContentHandler handler ) {
+	public TypeDetector( REDocumentDeclaration documentDecl, TypedContentHandler handler ) {
 		this(documentDecl);
 		setContentHandler(handler);
 	}
@@ -265,7 +265,7 @@ public class TypeDetecter extends AbstractVerifier {
 			super(msg);
 		}
 		/** returns the source of the error. */
-		Locator getLocation() { return TypeDetecter.this.getLocator(); }
+		Locator getLocation() { return TypeDetector.this.getLocator(); }
 	};
 	
 	/**
@@ -303,6 +303,6 @@ public class TypeDetecter extends AbstractVerifier {
 			super("");
 		}
 		/** returns the source of the error. */
-		Locator getLocation() { return TypeDetecter.this.getLocator(); }
+		Locator getLocation() { return TypeDetector.this.getLocator(); }
 	};
 }

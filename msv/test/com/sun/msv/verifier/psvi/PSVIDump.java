@@ -17,8 +17,8 @@ import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.grammar.util.ExpressionPrinter;
 import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.XMLReader;
+import javax.xml.parsers.SAXParserFactory;
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.ValidationContext;
 
@@ -35,17 +35,10 @@ public class PSVIDump implements TypedContentHandler {
 			return;
 		}
 		
-		// prepare a SAXParserFactory.
-		// you must configure it to namespace aware.
-		SAXParserFactory factory = SAXParserFactory.newInstance();
-		factory.setNamespaceAware(true);
-		
 		// load a schema. GrammarLoader will detect the schema language automatically.
-		Grammar grammar = GrammarLoader.loadSchema(
-				args[0],
-				// this controller object will receive error messages.
-				new DebugController(false,false),
-				factory );
+		GrammarLoader loader = new GrammarLoader();
+		loader.setController( new DebugController(false,false) );
+		Grammar grammar = loader.loadSchema( args[0] );
 		
 		if( grammar==null ) {
 			System.err.println("failed to load a grammar");
@@ -53,10 +46,10 @@ public class PSVIDump implements TypedContentHandler {
 		}
 		
 		// create an XMLReader to be used to parse the instance document
-		XMLReader reader = factory.newSAXParser().getXMLReader();
+		XMLReader reader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 		
 		// create an instance of verifier,
-		TypeDetecter verifier = new TypeDetecter(grammar);
+		TypeDetector verifier = new TypeDetector(grammar);
 		
 		// configure a pipeline so that the verifier will receive SAX events first.
 		reader.setContentHandler(verifier);

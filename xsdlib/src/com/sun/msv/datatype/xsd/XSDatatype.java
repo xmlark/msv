@@ -177,7 +177,7 @@ public interface XSDatatype extends Serializable, DatabindableDatatype {
 	/**
 	 * gets the base type of this type.
 	 * 
-	 * This method returns null if the base type is the simple ur-type.
+	 * This method returns null if this object represents the simple ur-type.
 	 * 
 	 * <p>
 	 * This method is intended to capture the semantics of the

@@ -11,6 +11,7 @@ package com.sun.msv.reader.trex.ng;
 
 import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.util.ExpressionWalker;
+import com.sun.msv.grammar.util.NameClassCollisionChecker;
 import org.xml.sax.Locator;
 import java.util.Vector;
 
@@ -58,16 +59,15 @@ public class RestrictionChecker {
 			}, errorMsg, null );
 	}
 	
-	/**
-	 * Visited ElementExp/AttributeExps.
-	 */
+	/** Visited ElementExp/AttributeExps. */
 	private final java.util.Set visitedExps = new java.util.HashSet();
 
-	/**
-	 * Duplicate attribute checker for the current content model.
-	 */
+	/** Object that checks duplicate attributes in a content model. */
 	private DuplicateAttributesChecker attDupChecker;
 	
+	/** Object that checks conflicting elements in interleave. */
+	private DuplicateElementsChecker elemDupChecker;
+		
 /*
 	
 	content model checker
@@ -82,10 +82,13 @@ public class RestrictionChecker {
 		public void onElement( ElementExp exp ) {
 			if( !visitedExps.add(exp) )		return;
 			
+			// check conflicting elements
+			elemDupChecker.add(exp);
 			
 			// push context element,
 			final Expression oldContext = errorContext;
 			final DuplicateAttributesChecker oldADC = attDupChecker;
+			final DuplicateElementsChecker oldEDC = elemDupChecker;
 			
 			errorContext = exp;
 			attDupChecker = new DuplicateAttributesChecker();
@@ -97,12 +100,13 @@ public class RestrictionChecker {
 			exp.contentModel.getExpandedExp(reader.pool).visit(inElement);
 			errorContext = oldContext;
 			attDupChecker = oldADC;
+			elemDupChecker = oldEDC;
 		}
 		public void onAttribute( AttributeExp exp ) {
 			if( !visitedExps.add(exp) )		return;
 			
 			// check duplicate attributes
-			attDupChecker.addAttribute(exp);
+			attDupChecker.add(exp);
 			
 			Expression oldContext = errorContext;
 			errorContext = exp;
@@ -124,11 +128,22 @@ public class RestrictionChecker {
 				// there is no enclosing element, so no attDupChecker is present.
 				super.onChoice(exp);
 			else {
-				int idx = attDupChecker.getExclusionIndex();
+				int idx = attDupChecker.start();
 				exp.exp1.visit(this);
-				attDupChecker.createExclusion(idx);
+				attDupChecker.endLeftBranch(idx);
 				exp.exp2.visit(this);
-				attDupChecker.removeExclusion();
+				attDupChecker.endRightBranch();
+			}
+		}
+		public void onInterleave( InterleaveExp exp ) {
+			if(elemDupChecker==null)
+				super.onInterleave(exp);
+			else {
+				int idx = elemDupChecker.start();
+				exp.exp1.visit(this);
+				elemDupChecker.endLeftBranch(idx);
+				exp.exp2.visit(this);
+				elemDupChecker.endRightBranch();
 			}
 		}
 	}
@@ -315,156 +330,134 @@ public class RestrictionChecker {
 	duplicate attributes check
 	==========================
 */
-	private class DuplicateAttributesChecker {
-		
-		/** AttributeExps will be added into this array. */
-		private AttributeExp[] atts = new AttributeExp[16];
+	protected abstract class DuplicateNameChecker {
+		/** ElementExps will be added into this array. */
+		protected NameClassAndExpression[] exps = new NameClassAndExpression[16];
 		/** Number of items in the atts array. */
-		private int attLen=0;
-		
-		/** exclusion areas.
+		protected int expsLen=0;
+
+		/**
+		 * areas.
 		 * 
 		 * <p>
-		 * An exclusion area consists of two items.
+		 * An area is a range of index designated by the start and end.
+		 * 
+		 * Areas are stored as:
 		 * <pre>{ start, end, start, end, ... }</pre>
 		 * 
 		 * <p>
-		 * Exclusion areas are created by choice. When the second branch of
-		 * choice is being visited, attributes appeared in the first branch
-		 * should be excluded.
+		 * The start method gives the index. The endLeftBranch method creates
+		 * an area by using the start index given by the start method.
+		 * The endRightBranch method will remove the area.
+		 * 
+		 * <p>
+		 * When testing duplicate attributes, areas are created by ChoiceExp
+		 * and used to exclude test candidates (as two attributes can share the
+		 * same name if they are in different branches of choice.)
+		 * 
+		 * <p>
+		 * When testing duplicate elements, areas are created by InterleaveExp
+		 * and used to include test candidates (as two elements cannot share
+		 * the same name if they are in different branches of interleave.)
 		 */
-		private int[] exclusions = new int[8];
-		private int excLen=0;
+		protected int[] areas = new int[8];
+		protected int areaLen=0;
 		
-		public void addAttribute( AttributeExp exp ) {
-			
-			// check the consistency with existing attributes.
-			int j=0;
-			for( int i=0; i<excLen; i+=2 ) {
-				while( j<exclusions[i] )
-					check(exp,atts[j++]);
-				j=exclusions[i+1];
-			}
-			while(j<attLen)
-				check(exp,atts[j++]);
-				
+		/**
+		 * Adds newly found element or attribute.
+		 */
+		public void add( NameClassAndExpression exp ) {
+			check(exp);	// perform duplication check
 			
 			// add it to the array
-			if(atts.length==attLen) {
+			if(exps.length==expsLen) {
 				// expand buffer
-				AttributeExp[] n = new AttributeExp[attLen*2];
-				System.arraycopy(atts,0,n,0,atts.length);
-				atts = n;
+				NameClassAndExpression[] n = new NameClassAndExpression[expsLen*2];
+				System.arraycopy(exps,0,n,0,expsLen);
+				exps = n;
 			}
-			atts[attLen++] = exp;
-			
+			exps[expsLen++] = exp;
 		}
 		
+		/**
+		 * tests a given exp against existing expressions (which are stored in
+		 * the exps field.)
+		 */
+		protected abstract void check( NameClassAndExpression exp );
 		
-		public int getExclusionIndex() {
-			return attLen;
+		public int start() {
+			return areaLen;
 		}
 		
-		public void createExclusion( int start ) {
-			if( exclusions.length==excLen ) {
+		public void endLeftBranch( int start ) {
+			if( areas.length==areaLen ) {
 				// expand buffer
-				int[] n = new int[excLen*2];
-				System.arraycopy(exclusions,0,n,0,excLen);
-				exclusions = n;
+				int[] n = new int[areaLen*2];
+				System.arraycopy(areas,0,n,0,areaLen);
+				areas = n;
 			}
-			exclusions[excLen++] = start;
-			exclusions[excLen++] = attLen;
+			// create an area
+			areas[areaLen++] = start;
+			areas[areaLen++] = expsLen;
 		}
 		
-		public void removeExclusion() {
-			excLen-=2;
+		public void endRightBranch() {
+			// remove an area
+			areaLen-=2;
 		}
 
+		
 		/**
-		 * Tests two name classes to see if they collide.
+		 * Name class checker object. One object is reused throughout the test.
 		 */
-		private void check( AttributeExp newExp, AttributeExp oldExp ) {
-			if(checker.check( newExp.nameClass, oldExp.nameClass )) {
-				// two attributes collide
+		private final NameClassCollisionChecker checker =
+			new NameClassCollisionChecker();
+		
+		/** Tests two name classes to see if they collide. */
+		protected void check(
+			NameClassAndExpression newExp,
+			NameClassAndExpression oldExp ) {
+			
+			if(checker.check( newExp.getNameClass(), oldExp.getNameClass() )) {
+				// two attributes/elements collide
 				reader.reportError( 
 					new Locator[]{
 						reader.getDeclaredLocationOf(errorContext),	// the parent element
 						reader.getDeclaredLocationOf(newExp),
 						reader.getDeclaredLocationOf(oldExp)},
-					ERR_DUPLICATE_ATTRIBUTES, null );
+					getErrorMessage(), null );
 			}
 		}
 		
-		
-		private final NameClassCollisionChecker checker = new NameClassCollisionChecker();
-		private class NameClassCollisionChecker implements NameClassVisitor {
-			
-			/** Two name classes to be tested. */
-			NameClass nc1,nc2;
-			
-			/**
-			 * This exception will be thrown when a collision is found.
-			 */
-			private final RuntimeException eureka = new RuntimeException();
-			
-			/**
-			 * Returns true if two name classes collide.
-			 */
-			boolean check( NameClass _new, NameClass _old ) {
-				
-				if( _new instanceof SimpleNameClass ) {
-					// short cut for 90% of the cases
-					SimpleNameClass nnc = (SimpleNameClass)_new;
-					return _old.accepts( nnc.namespaceURI, nnc.localName );
-				}
-				
-				try {
-					nc1 = _new;
-					nc2 = _old;
-					_old.visit(this);
-					_new.visit(this);
-					return false;
-				} catch( RuntimeException e ) {
-					if(e==eureka)	return true;	// the collision was found.
-					throw e;
-				}
-			}
-			
-			private void probe( String uri, String local ) {
-				if(nc1.accepts(uri,local) && nc2.accepts(uri,local))
-					// conflict is found.
-					throw eureka;
-			}
-			
-			private /*static*/ final String MAGIC = "\u0000";
-			
-			public Object onAnyName( AnyNameClass nc ) {
-				probe(MAGIC,MAGIC);
-				return null;
-			}
-			public Object onNsName( NamespaceNameClass nc ) {
-				probe(nc.namespaceURI,MAGIC);
-				return null;
-			}
-			public Object onSimple( SimpleNameClass nc ) {
-				probe(nc.namespaceURI,nc.localName);
-				return null;
-			}
-			public Object onNot( NotNameClass nc ) {
-				nc.child.visit(this);
-				return null;
-			}
-			public Object onDifference( DifferenceNameClass nc ) {
-				nc.nc1.visit(this);
-				nc.nc2.visit(this);
-				return null;
-			}
-			public Object onChoice( ChoiceNameClass nc ) {
-				nc.nc1.visit(this);
-				nc.nc2.visit(this);
-				return null;
-			}
+		/** Gets the error message resource name. */
+		protected abstract String getErrorMessage();
+	}
+	
+	private class DuplicateElementsChecker extends DuplicateNameChecker {
+		protected void check( NameClassAndExpression exp ) {
+			// check this element with elements in the area
+			for( int i=0; i<areaLen; i+=2 )
+				for( int j=areas[i]; j<areas[i+1]; j++ )
+					check(exp,exps[j]);
 		}
+		
+		protected String getErrorMessage() { return ERR_DUPLICATE_ELEMENTS; }
+	}
+	
+	private class DuplicateAttributesChecker extends DuplicateNameChecker {
+		protected void check( NameClassAndExpression exp ) {
+			// check the consistency with attributes NOT in the area.
+			int j=0;
+			for( int i=0; i<areaLen; i+=2 ) {
+				while( j<areas[i] )
+					check(exp,exps[j++]);
+				j=areas[i+1];
+			}
+			while(j<expsLen)
+				check(exp,exps[j++]);
+		}
+		
+		protected String getErrorMessage() { return ERR_DUPLICATE_ATTRIBUTES; }
 	}
 	
 	
@@ -523,4 +516,6 @@ public class RestrictionChecker {
 	
 	private static final String ERR_DUPLICATE_ATTRIBUTES =
 		"RELAXNGReader.DuplicateAttributes";
+	private static final String ERR_DUPLICATE_ELEMENTS =
+		"RELAXNGReader.DuplicateElements";
 }

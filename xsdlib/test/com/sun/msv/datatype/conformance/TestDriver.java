@@ -22,12 +22,13 @@ import com.sun.tranquilo.datatype.*;
  */
 class TestDriver implements ErrorReceiver
 {
-	public static void main (String args[]) throws Exception
-	{
-		try
-		{
+	public static void main (String args[]) throws Exception {
+		try {
+			String parser;
+			if( args.length>=1 )	parser = args[0];
+			else					parser = "org.apache.xerces.parsers.SAXParser";
 			// reads test case file
-			Document doc = new SAXBuilder("org.apache.xerces.parsers.SAXParser").build(
+			Document doc = new SAXBuilder(parser).build(
 				TestDriver.class.getResourceAsStream("DataTypeTest.xml") );
 
 			DataTypeTester tester = new DataTypeTester(System.out,new TestDriver());
@@ -35,16 +36,13 @@ class TestDriver implements ErrorReceiver
 			Iterator itr = doc.getRootElement().getChildren("case").iterator();
 			while(itr.hasNext())
 				tester.run( (Element)itr.next() );
-		}
-		catch(JDOMException e)
-		{
+		} catch(JDOMException e) {
 			e.printStackTrace();
 			System.err.println(e.getMessage());
 		}
     }
 	
-	public boolean report( UnexpectedResultException exp )
-	{
+	public boolean report( UnexpectedResultException exp ) {
 		System.err.println("************* error *************");
 		System.err.println("type name            : "+exp.baseTypeName);
 		System.err.println("tested instance      : \""+exp.testInstance+"\"");
@@ -70,8 +68,7 @@ class TestDriver implements ErrorReceiver
 		return false;
 	}
 
-	public boolean reportTestCaseError( DataType baseType, TypeIncubator incubator, BadTypeException e )
-	{
+	public boolean reportTestCaseError( DataType baseType, TypeIncubator incubator, BadTypeException e ) {
 /*
 		System.err.println("---- warning ----");
 		System.err.println("test case error");
@@ -87,5 +84,4 @@ class TestDriver implements ErrorReceiver
 		
 		return false;
 	}
-
 }

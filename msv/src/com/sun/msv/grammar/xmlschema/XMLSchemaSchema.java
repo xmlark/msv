@@ -35,6 +35,7 @@ public class XMLSchemaSchema implements java.io.Serializable {
 	public XMLSchemaSchema( String targetNamespace, XMLSchemaGrammar parent ) {
 		this.pool = parent.pool;
 		this.targetNamespace = targetNamespace;
+		parent.schemata.put( targetNamespace, this );
 	}
 	
 	/** target namespace URI of this schema. */

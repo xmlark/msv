@@ -59,7 +59,7 @@ import java.util.Vector;
  *   <td>
  *    type definition
  *   </td><td>
- *    <b>To be implemented</b>. Accessible through the {@link self} field.
+ *    {@link getTypeDefinition()} method.
  *   </td>
  *  </tr><tr>
  *   <td>
@@ -120,6 +120,14 @@ import java.util.Vector;
  *  </tr></tbody>
  * </table>
  * 
+ * 
+ * <h2>ElementDeclExp anatomy</h2>
+ * <p>
+ * An ElementDeclExp is composed roughly as follows:
+ * 
+ * <img src="doc-files/ElementDeclExp.png"/>
+ * 
+ * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class ElementDeclExp extends ReferenceExp
@@ -176,6 +184,10 @@ public class ElementDeclExp extends ReferenceExp
 		 * identity constraints associated to this declaration.
 		 * When no constraint exists, this field may be null (or empty vector).
 		 * Items are of derived types of {@link IdentityConstraint} class.
+		 * 
+		 * <p>
+		 * These identity constraints are not enforced by the default Verifier
+		 * implementation.
 		 */
 		public final Vector identityConstraints = new Vector();
 		
@@ -266,6 +278,32 @@ public class ElementDeclExp extends ReferenceExp
 	public int block =0;
 	
 	
+	/**
+	 * the <a href="http://www.w3.org/TR/xmlschema-1/#type_definition">
+	 * type definition property</a> of this schema component.
+	 */
+	public XMLSchemaTypeExp getTypeDefinition() {
+		final RuntimeException eureka = new RuntimeException();
+		final XMLSchemaTypeExp[] r = new XMLSchemaTypeExp[1];
+		try {
+			self.contentModel.visit( new ExpressionWalker() {
+				public void onRef( ReferenceExp exp ) {
+					if( exp instanceof XMLSchemaTypeExp ) {
+						r[0] = (XMLSchemaTypeExp)exp;
+						throw eureka;
+					}
+					super.onRef(exp);
+				}
+				public void onElement( ElementExp exp ) { return; }
+			});
+			// no type object was found.
+			return null;
+		} catch( RuntimeException e ) {
+			if( e == eureka )
+				return r[0];
+			throw e;
+		}
+	}
 	
 //
 // Implementation details

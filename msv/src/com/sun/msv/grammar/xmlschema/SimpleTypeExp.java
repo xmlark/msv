@@ -22,7 +22,7 @@ import com.sun.msv.reader.datatype.xsd.LateBindDatatype;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class SimpleTypeExp extends RedefinableExp {
+public class SimpleTypeExp extends XMLSchemaTypeExp {
 	
 	SimpleTypeExp( String typeLocalName ) {
 		super(typeLocalName);

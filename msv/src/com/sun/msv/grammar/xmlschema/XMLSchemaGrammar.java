@@ -13,6 +13,7 @@ import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import java.util.Map;
+import java.util.Iterator;
 
 /**
  * set of XML Schema. This set can be used to validate a document.
@@ -41,7 +42,7 @@ public class XMLSchemaGrammar implements Grammar {
 	}
 
 	/** map from namespace URI to loaded XMLSchemaSchema object. */
-	public final Map schemata = new java.util.HashMap();
+	protected final Map schemata = new java.util.HashMap();
 	
 	/** gets XMLSchemaSchema object that has the given target namespace.
 	 * 
@@ -49,6 +50,14 @@ public class XMLSchemaGrammar implements Grammar {
 	 */
 	public XMLSchemaSchema getByNamespace( String targetNamesapce ) {
 		return (XMLSchemaSchema)schemata.get(targetNamesapce);
+	}
+	
+	/**
+	 * returns an Iterator that enumerates XMLSchemaSchema objects
+	 * that are defined in this grammar.
+	 */
+	public Iterator iterateSchemas() {
+		return schemata.values().iterator();
 	}
 	
 }

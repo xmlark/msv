@@ -166,6 +166,13 @@ public class BigDateTimeValueType implements IDateTimeValueType
 		return compare( this, (BigDateTimeValueType)o );
 	}
 	
+	/**
+	 * compares two BigDateTimeValueType and returns one of the constant defined in
+	 * {@link Comparator}.
+	 * 
+	 * Order-relation between two dateTime is defined in
+	 * http://www.w3.org/TR/xmlschema-2/#dateTime
+	 */
 	protected static int compare( BigDateTimeValueType lhs, BigDateTimeValueType rhs )
 	{
 		lhs = (BigDateTimeValueType)lhs.normalize();
@@ -233,6 +240,18 @@ public class BigDateTimeValueType implements IDateTimeValueType
 		// see if there is cached normalized value
 		if( normalizedValue!=null )			return normalizedValue;
 		
+		// for normalization to work correctly,
+		// we have to extend the precision.
+		// otherwise, addition will remove unspecified fields,
+		// and the result becomes incorrect. For example,
+		// --03-- + (+08:00)    -->  --02--
+		
+		// which is apparently not what we wanted.
+		
+		// update: it seems to me that this unintuitive behavior is 
+		//         not going to be corrected in XML Schema 1.0
+		
+		
 		// faster performance can be achieved by writing optimized inline addition code.
 		normalizedValue = 
 			this.add( BigTimeDurationValueType.fromMinutes(-zone.minutes) );
@@ -242,6 +261,11 @@ public class BigDateTimeValueType implements IDateTimeValueType
 		return normalizedValue;
 	}
 	
+	private static BigInteger nullAs0( BigInteger o )
+	{
+		if(o!=null)	return o;
+		else		return BigInteger.ZERO;
+	}
 	
 	private static BigDecimal nullAs0( BigDecimal o )
 	{
@@ -275,7 +299,7 @@ public class BigDateTimeValueType implements IDateTimeValueType
 			int ohour, ominute; BigDecimal osecond;
 			
 			omonth = quoAndMod[1].intValue();
-			oyear = quoAndMod[0].add(this.year).add(rhs.year);
+			oyear = quoAndMod[0].add(nullAs0(this.year)).add(nullAs0(rhs.year));
 			
 			
 			BigDecimal sec = nullAs0(this.second).add(nullAs0(rhs.second));

@@ -11,6 +11,7 @@ package com.sun.tranquilo.datatype.datetime;
 
 import java.math.BigInteger;
 import java.math.BigDecimal;
+import com.sun.tranquilo.datatype.Comparator;
 
 /**
  * date/time-related utility functions/variables.
@@ -27,9 +28,12 @@ public class Util
 	protected static final BigInteger the60 = new BigInteger("60");
 	protected static final BigInteger the100= new BigInteger("100");
 	protected static final BigInteger the400= new BigInteger("400");
-
+	/** number of minutes in 400 years. */
+	protected static final BigInteger the210379680 = new BigInteger("210379680");
+																	
 	protected static final BigDecimal decimal0 = new BigDecimal(BigInteger.ZERO,0);
-	
+	protected static final Integer int0 = new Integer(0);
+													  
 	protected static TimeZone timeZonePos14 = TimeZone.create(14*60);
 	protected static TimeZone timeZoneNeg14 = TimeZone.create(-14*60);
 		
@@ -56,11 +60,21 @@ public class Util
 		else			return o.hashCode();
 	}
 	
+	/**
+	 * compares two Comparable objects (possibly null) and returns
+	 * one of {@link Comparator} constant.
+	 */
 	protected static int objCompare( Comparable o1, Comparable o2 )
 	{
-		if( o1==null && o2==null )	return 0;	// equal
-		if( o1!=null && o2!=null )	return o1.compareTo(o2);
-		return 0;	// inequal
+		if( o1==null && o2==null )	return Comparator.EQUAL;
+		if( o1!=null && o2!=null )
+		{
+			int r = o1.compareTo(o2);
+			if(r<0)		return Comparator.LESS;
+			if(r>0)		return Comparator.GREATER;
+			return Comparator.EQUAL;
+		}
+		return Comparator.UNDECIDABLE;
 	}
 
 	/** creates BigInteger that corresponds with v */

@@ -81,6 +81,23 @@ public class ContentModelAcceptor extends ExpressionAcceptor
 		if( com.sun.tranquilo.driver.textui.Debug.debug )
 			System.out.println("ComplexAcceptor is used");
 		
+		
+		int i=0;
+		for( CombinedChildContentExpCreator.OwnerAndContent o = primitives;
+			 o!=null; o=o.next )	i++;
+		
+		Expression[] contents = new Expression[i];
+		Expression[] owners = new ElementExp[i];
+		
+		i=0;
+		for( CombinedChildContentExpCreator.OwnerAndContent o = primitives;
+			 o!=null; o=o.next )
+		{
+			contents[i] = o.content;
+			owners[i] = o.owner;
+			i++;
+		}
+		
 		return new ComplexAcceptor(
 			(TREXDocumentDeclaration)docDecl,
 			combined, primitives );

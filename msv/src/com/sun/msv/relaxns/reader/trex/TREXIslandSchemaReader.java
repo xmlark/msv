@@ -10,7 +10,7 @@
 package com.sun.msv.relaxns.reader.trex;
 
 import com.sun.msv.grammar.trex.TREXGrammar;
-import com.sun.msv.reader.trex.TREXGrammarReader;
+import com.sun.msv.reader.trex.classic.TREXGrammarReader;
 import com.sun.msv.relaxns.grammar.trex.TREXIslandSchema;
 import org.iso_relax.dispatcher.IslandSchemaReader;
 import org.iso_relax.dispatcher.IslandSchema;

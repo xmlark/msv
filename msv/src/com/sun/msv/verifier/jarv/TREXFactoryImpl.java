@@ -12,7 +12,7 @@ package com.sun.msv.verifier.jarv;
 import org.iso_relax.verifier.*;
 import com.sun.msv.grammar.trex.TREXGrammar;
 import com.sun.msv.grammar.ExpressionPool;
-import com.sun.msv.reader.trex.TREXGrammarReader;
+import com.sun.msv.reader.trex.classic.TREXGrammarReader;
 import com.sun.msv.reader.util.IgnoreController;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import org.xml.sax.InputSource;

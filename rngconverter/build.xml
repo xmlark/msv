@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<!--
+	Ant build script for XSDLib.
+	
+	$Id$
+	
+	
+	
+	Tasks to help development
+	=========================
+	javacc
+		run JavaCC
+	binary
+		compile everything to the bin directory.
+	javadoc
+		run javadoc on the working copy. Useful to check the documentation
+		without actually creating a distribution package.
+	test
+		test core msv codes. parser, verifier and several related codes.
+	release
+		create a distribution package
+	
+-->
+<project name="rngconverter" basedir="." default="binary">
+	
+	<!-- import the global configuration file -->
+	<property file="../shared/ant.config"/>
+	
+	<!-- compile Java source files -->
+	<target name="binary">
+		<mkdir dir="./bin"/>
+		<javac
+			srcdir="./src:./test"
+			destdir="./bin"
+			debug="on"
+			optimize="off">
+			
+			<classpath path="../msv/bin" />
+			<classpath path="../xsdlib/bin" />
+			<classpath path="../testharness/bin" />
+		</javac>
+	</target>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- test the working directory -->
+	<target name="test">
+		<ant antfile="../shared/ant.test.xml" target="test" />
+	</target>
+	
+	
+	<!-- test the distribution package -->
+	<target name="test_release">
+		<ant antfile="../shared/ant.test.xml" target="test_release">
+			<property name="testJar" value="../package/rngconv.jar"/>
+		</ant>
+	</target>
+	
+	
+	
+	
+	<!-- RELAX NG converter release -->
+	<target name="release">
+		<tstamp />
+		<property name="stageName" value="rngconv-${DSTAMP}"/>
+		
+		<delete	dir="${stageName}" />
+		<mkdir	dir="${stageName}" />
+		<mkdir	dir="${stageName}/src" />
+		
+		<!-- obtain source codes from cvs -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="msv/rngconverter/src"
+				command="export -d . ${cvsExportOpt}"
+				dest="${stageName}/src" />
+				
+		<!-- obtain document files -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="msv/rngconverter/doc"
+				command="export -d . ${cvsExportOpt}"
+				dest="${stageName}" />
+		
+		
+		<!-- compile files -->
+		<mkdir	dir="temp" />
+		<javac	srcdir="${stageName}/src" destdir="temp">
+			
+			<classpath path="../package/msv.jar"/>
+			<classpath path="../package/xsdlib.jar"/>
+			
+			<include name="**/*.java" />
+		</javac>
+		
+		<!-- create a time stamp file -->
+		<echo file="temp/version.properties">version=${DSTAMP}</echo>
+		
+		<!-- creates the complete binary jar -->
+		<jar	jarfile="${stageName}/rngconv.jar"
+				manifest="./MANIFEST.MF"
+				compress="false">
+			<fileset dir="${stageName}/src" includes="**/*.properties" />
+			<fileset dir="temp" includes="**/*.*" />
+		</jar>
+		<delete dir="temp" />
+		
+		<!-- copy jar file to package dir -->
+		<copy file="${stageName}/rngconv.jar" tofile="../package/rngconv.jar" />
+		
+		<!-- we don't create javadoc for rngconv -->
+
+<!-- temporarily, remove source codes -->
+		<delete dir="${stageName}/src" />
+		
+		<!-- copy additional jars -->
+		<copy file="../package/xsdlib.jar" tofile="${stageName}/xsdlib.jar" />
+		<copy file="../package/msv.jar" tofile="${stageName}/msv.jar" />
+		<copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
+		<copy file="${isorelax.jar}" tofile="${stageName}/isorelax.jar" />
+		<copy file="${xerces.jar}" tofile="${stageName}/xerces.jar" />
+		
+		<!-- creates distribution package -->
+		<zip	zipfile="../package/rngconv.${DSTAMP}.zip"
+				basedir="."
+				includes="${stageName}/**/*.*" />
+		
+		<delete	dir="${stageName}" />
+	</target>
+	
+
+</project>

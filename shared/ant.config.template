@@ -36,3 +36,8 @@ isorelax.jar = \
 xerces.source = \
 	C:/Program Files/Development/Xerces/src
 
+xerces.jar = \
+	c:/winnt/java/classes/xerces.jar
+
+xalan.jar = \
+	c:/winnt/java/classes/xalan.jar

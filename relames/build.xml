@@ -1,18 +1,23 @@
 <?xml version="1.0"?>
-<project name="relames" basedir="." default="release">
-	<property name="sourceDir" value="./src"/>
-	<property name="buildDir" value="./bin"/>
-	<property name="packageDir" value="./package"/>
-	<property name="cvsRoot" value=":local:/cygdrive/c/Program Files/Development/CVS Repository" />
-	<property name="cvsExportOpt" value="-D now" />	<!-- -r branch -->
+<project name="relames" basedir="." default="binary">
+
+	<!-- import the global configuration file -->
+	<property file="../shared/ant.config"/>
 	
-	<!-- environment dependend -->
-	<property name="JUnitJar" value="c:/winnt/java/classes/junit.jar"/>
-	<property name="AntJar" value="c:/progra~1/development/ant/lib/ant.jar"/>
-	<property name="msv.jar" value="../tranquilo/package/msv.jar"/>
-	<property name="xsdlib.jar" value="../tranquilo/package/xsdlib.jar"/>
-	<property name="relaxngDatatype.jar"	value="../relaxng/datatype/java/relaxngDatatype.jar"/>
-	<property name="isorelax.jar"			value="c:/winnt/java/classes/isorelax.jar"/>
+	
+	<!-- compile Java source files -->
+	<target name="binary">
+		<mkdir dir="./bin"/>
+		<javac
+			srcdir="./src"
+			destdir="./bin"
+			debug="on"
+			optimize="off">
+			
+			<classpath path="../msv/bin" />
+			<classpath path="../xsdlib/bin" />
+		</javac>
+	</target>
 	
 	<!-- create a distribution package -->
 	<target name="release">
@@ -24,11 +29,11 @@
 		
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
-				package="relames/src"
+				package="msv/relames/src"
 				command="export -d . -D now"
 				dest="${stageName}/src/" />
 		<cvs	cvsRoot="${cvsRoot}"
-				package="relames/doc"
+				package="msv/relames/doc"
 				command="export -d . -D now"
 				dest="${stageName}" />
 		<fixcrlf	srcdir="${stageName}"
@@ -40,7 +45,7 @@
 		<mkdir	dir="temp" />
 		<javac	srcdir="${stageName}/src" destdir="temp">
 			
-			<classpath path="${msv.jar}"/>
+			<classpath path="../package/msv.jar"/>
 			<include name="**/*.java" />
 		</javac>
 		
@@ -61,22 +66,22 @@
 		
 		
 		<!-- copy jar file to package dir -->
-		<copy file="${stageName}/relames.jar" tofile="./package/relames.jar" />
+		<copy file="${stageName}/relames.jar" tofile="../package/relames.jar" />
 		
 		
 		<!-- remove source codes -->
 		<delete dir="${stageName}/src"/>
 		
 		<!-- copy related jars -->
-		<copy file="${msv.jar}" todir="${stageName}"/>
-		<copy file="${xsdlib.jar}" todir="${stageName}"/>
+		<copy file="../package/msv.jar" todir="${stageName}"/>
+		<copy file="../package/xsdlib.jar" todir="${stageName}"/>
 		<copy file="${isorelax.jar}" todir="${stageName}"/>
 		<copy file="${relaxngDatatype.jar}" todir="${stageName}"/>
-		<copy file="c:/winnt/java/classes/xalan.jar" todir="${stageName}"/>
-		<copy file="c:\winnt\java\classes\xerces.jar" todir="${stageName}" />
+		<copy file="${xalan.jar}" todir="${stageName}"/>
+		<copy file="${xerces.jar}" todir="${stageName}" />
 		
 		<!-- creates distribution package -->
-		<zip	zipfile="./package/relames.${DSTAMP}.zip"
+		<zip	zipfile="../package/relames.${DSTAMP}.zip"
 				basedir="."
 				includes="${stageName}/**/*.*" />
 		

@@ -2,7 +2,7 @@
 <!--
 	Ant script for running a batch test that uses "testCases"
 -->
-<project>
+<project default="">
 	
 	<!-- import the global configuration file -->
 	<property file="../shared/ant.config"/>
@@ -99,16 +99,126 @@
 	
 	
 <!--
-	test tasks
-	========================================================================
+	run the current batch tests against
+	the working directory.
+	
+	./bin/**/*Test.class is executed
 -->
-	<!-- run all -->
-	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 	<target name="test">
-		<antcall target="doTest">
-			<param name="testPattern" value="tps.all"/>
-		</antcall>
+		<mkdir dir="./testLog" />
+		<!--
+			please remove jaxp.jar from ant directory,
+			because it uses an old one, and this test needs the latest one
+		-->
+		<junit haltonfailure="yes" printsummary="yes" fork="yes"
+			haltonerror="yes">
+			<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
+			<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
+			<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
+			<sysproperty key="XSDBatchTestDir"		value="${XSDBatchTestDir}"/>
+			<sysproperty key="RELAXNGBatchTestDir"	value="${RELAXNGBatchTestDir}"/>
+			
+ 				<formatter type="plain" />
+			
+			<classpath>
+				<pathelement location="bin" />
+				<pathelement location="src" />
+				<pathelement location="test" />
+				<pathelement location="../xsdlib/bin/" />
+				<pathelement location="../msv/bin/" />
+				<pathelement location="../testharness/bin/" />
+				<pathelement location="${relaxng.jar}" />
+				<pathelement path="${java.class.path}" />
+				<!--include CatalogManager.properties into the class path -->
+				<pathelement path="${testRoot}"/>
+			</classpath>
+			
+			<batchtest todir="./testLog">
+				<fileset dir="bin">
+					<include name="**/*Test.class"/>
+				</fileset>
+			</batchtest>
+		</junit>
 	</target>
+	
+	
+	
+	
+	
+<!--
+	run the batch tests
+	against the release package.
+	
+	./bin/**/*Test.class are executed against ${testJar} file.
+-->
+	<target name="test_release">
+		<!-- create temporary directory -->
+		<mkdir dir="./temp"/>
+		
+		<!-- extract the contents of the jar file to be tested -->
+		<unjar src="${testJar}" dest="temp" />
+		
+		<!--
+			compile test harnesses into it.
+			It is ok to rely on the working copy at this stage.
+		-->
+		<javac
+			srcdir="./test"
+			destdir="./temp"
+			debug="on"
+			optimize="off"
+			classpath="temp:bind"
+			/>
+		
+		<!-- run JUnit -->
+		<mkdir dir="./testLog" />
+		<junit haltonfailure="yes" printsummary="yes" fork="yes"
+			haltonerror="yes">
+			<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
+			<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
+			<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
+			<sysproperty key="XSDBatchTestDir"		value="${XSDBatchTestDir}"/>
+			<sysproperty key="RELAXNGBatchTestDir"	value="${RELAXNGBatchTestDir}"/>
+			
+  				<formatter type="plain" />
+			
+			<classpath>
+				<!-- do not refer to the working copy -->
+				<pathelement location="./test" />
+				<pathelement location="./temp" />
+				<pathelement location="${junit.jar}"/>
+				<pathelement location="${ant.jar}"/>
+				<pathelement location="${relaxngDatatype.jar}"/>
+				<!-- do not let whatever binaries in your classpath interfer with it. -->
+			<!-- DO NOT: <pathelement path="${java.class.path}" />-->
+			</classpath>
+			
+			<batchtest todir="./testLog">
+				<fileset dir="temp">
+					<include name="**/*Test.class"/>
+				</fileset>
+			</batchtest>
+		</junit>
+		
+		<delete dir="./temp"/>
+	</target>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	<!-- run xsdlib test                                                 -->
@@ -190,113 +300,5 @@
 	
 	
 	
-	
-	
-	<!-- internal test task                                              -->
-	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-		<!--
-			test the current working copy
-			=============================
-			
-			required parameters to call:
-				${testPattern}	ID of the pattern set to be used to filter the test case.
-		-->
-		<target name="doTest">
-			<mkdir dir="./testLog" />
-			<!--
-				please remove jaxp.jar from ant directory,
-				because it uses an old one, and this test needs the latest one
-			-->
-			<junit haltonfailure="yes" printsummary="yes" fork="yes"
-				haltonerror="yes">
-				<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
-				<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
-				<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
-				<sysproperty key="XSDBatchTestDir"		value="${XSDBatchTestDir}"/>
-				<sysproperty key="RELAXNGBatchTestDir"	value="${RELAXNGBatchTestDir}"/>
-				
- 				<formatter type="plain" />
-				
-				<classpath>
-					<pathelement location="bin" />
-					<pathelement location="src" />
-					<pathelement location="test" />
-					<pathelement location="${relaxng.jar}" />
-					<pathelement path="${java.class.path}" />
-					<!--include CatalogManager.properties into the class path -->
-					<pathelement path="${testRoot}"/>
-				</classpath>
-				
-				<batchtest todir="./testLog">
-					<fileset dir="bin">
-						<include name="**/*Test.class"/>
-					</fileset>
-				</batchtest>
-			</junit>
-		</target>
-		
-		
-		
-		
-		
-		<!--
-			test the release package
-			========================
-			
-			required parameters to call:
-				${testJar}		jar file to be tested. (e.g., msv.jar or xmlgen.jar)
-				${testPattern}	ID of the pattern set to be used to filter the test case.
-		-->
-		<target name="doReleaseTest">
-			
-			<!-- create temporary directory -->
-			<mkdir dir="./temp"/>
-			
-			<!-- extract the contents of the jar file to be tested -->
-			<unjar src="${testJar}" dest="temp" />
-			
-			<!--
-				compile test harnesses into it.
-				It is ok to rely on the working copy at this stage.
-			-->
-			<javac
-				srcdir="${testDir}"
-				destdir="./temp"
-				debug="on"
-				optimize="off"
-				classpath="temp:bind"
-				/>
-			
-			<!-- run JUnit -->
-			<mkdir dir="./testLog" />
-			<junit haltonfailure="yes" printsummary="yes" fork="yes"
-				haltonerror="yes">
-				<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
-				<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
-				<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
-				<sysproperty key="XSDBatchTestDir"		value="${XSDBatchTestDir}"/>
-				<sysproperty key="RELAXNGBatchTestDir"	value="${RELAXNGBatchTestDir}"/>
-				
-  				<formatter type="plain" />
-				
-				<classpath>
-					<!-- do not refer to the working copy -->
-					<pathelement location="${testDir}" />
-					<pathelement location="./temp" />
-					<pathelement location="${JUnitJar}"/>
-					<pathelement location="${AntJar}"/>
-					<!-- do not let whatever binaries in your classpath interfer with it. -->
-				<!-- DO NOT: <pathelement path="${java.class.path}" />-->
-				</classpath>
-				
-				<batchtest todir="./testLog">
-					<fileset dir="temp">
-						<patternset refid="${testPattern}"/>
-					</fileset>
-				</batchtest>
-			</junit>
-			
-			<delete dir="./temp"/>
-		</target>
 	
 </project>

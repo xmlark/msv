@@ -30,11 +30,10 @@
 	<target name="binary" depends="javacc">
 		<mkdir dir="./bin"/>
 		<javac
-			srcdir="src:test"
-			destdir="bin"
+			srcdir="./src:./test"
+			destdir="./bin"
 			debug="on"
 			optimize="off"
-			classpath="lib"
 			/>
 	</target>
 	
@@ -78,11 +77,11 @@
 					overview="src/com/sun/msv/overview.html"
 					>
 			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api"
-				packagelistLoc="../ExternalPackageLists/CoreAPI" />
+				packagelistLoc="../shared/ExternalPackageLists/CoreAPI" />
 			<link offline="true" href="http://xml.apache.org/apiDocs/"
-				packagelistLoc="../ExternalPackageLists/XML" />
+				packagelistLoc="../shared/ExternalPackageLists/XML" />
 			<link offline="true" href="http://iso-relax.sourceforge.net/apiDoc/"
-				packagelistLoc="../ExternalPackageLists/ISO-RELAX" />
+				packagelistLoc="../shared/ExternalPackageLists/ISO-RELAX" />
 		</javadoc>
 	</target>
 	
@@ -158,6 +157,11 @@
 		<!-- create a time stamp file -->
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
 		
+		<!-- create META-INF/services file -->
+		<mkdir dir="temp/META-INF/services"/>
+		<echo file="temp/META-INF/services/org.relaxng.datatype.DatatypeLibraryFactory"
+			>com.sun.msv.datatype.xsd.ngimpl.DataTypeLibraryImpl</echo>
+			
 		<!-- creates binary jar -->
 		<jar	jarfile="${stageName}/xsdlib.jar"
 				manifest="./MANIFEST.MF"

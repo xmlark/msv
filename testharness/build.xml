@@ -1,123 +1,18 @@
 <?xml version="1.0"?>
-<project name="rngTestHarness" basedir="." default="release">
-
-	<property name="cvsRoot" value=":local:/cygdrive/c/Program Files/Development/CVS Repository" />
-	<property name="cvsExportOpt" value="-D now" />	<!-- -r branch -->
+<project name="testHarness" basedir="." default="binary">
 	
-	<!-- environment dependend -->
-	<property name="msvJar" value="../../tranquilo/package/msv.jar"/>
+	<!-- import the global configuration file -->
+	<property file="../shared/ant.config"/>
 	
 	
-	<target name="msvDriver">
-		<mkdir	dir="temp-src" />
-		<mkdir	dir="temp-bin" />
-		
-		<!-- obtain source codes from cvs -->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="rngtsth/msvDriver"
-				command="export -d . -D now"
-				dest="temp-src" />
-				
-		<!-- creates source zip -->
-		<zip	zipfile="./package/msvDriver-src.zip"
-				basedir="temp-src"
-				includes="**/*.*" />
-		
-		<!-- compile -->
-		<javac	srcdir="temp-src"
-				destdir="temp-bin"
-				classpath="${msvJar}:bin">
-			<include name="**/*.java" />
-		</javac>
-		
-		<!-- create jar -->
-		<jar	jarfile="./package/msvDriver.jar"
-				compress="false">
-			<fileset dir="temp-bin" />
-		</jar>
-		
-		<!-- clean up -->
-		<delete dir="temp-src" />
-		<delete dir="temp-bin" />
-	</target>
-	
-	<!-- create a distribution package -->
-	<target name="release" depends="msvDriver">
-		<tstamp />
-		<property name="stageName" value="rngtsth-${DSTAMP}"/>
-		
-		<delete	dir="${stageName}" />
-		<mkdir	dir="${stageName}/src" />
-		<mkdir	dir="${stageName}/examples" />
-		
-		<!-- obtain source codes from cvs -->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="rngtsth/src"
-				command="export -d . -D now"
-				dest="${stageName}/src/" />
-		<cvs	cvsRoot="${cvsRoot}"
-				package="rngtsth/doc"
-				command="export -d . -D now"
-				dest="${stageName}" />
-		<cvs	cvsRoot="${cvsRoot}"
-				package="rngtsth/examples"
-				command="export -d . -D now"
-				dest="${stageName}/examples" />
-		<fixcrlf	srcdir="${stageName}"
-					cr="remove"
-					eof="remove"
-					includes="*.txt"/>
-		
-		<!-- compile files -->
-		<mkdir	dir="temp" />
-		<javac	srcdir="${stageName}/src"
-				destdir="temp">
-			<include name="**/*.java" />
-		</javac>
-		
-		<!-- javadoc -->
-		<mkdir		dir="${stageName}/javadoc" />
-		<javadoc	locale="en_US"
-					packagenames="org.relaxng.testharness.*"
-					sourcepath="${stageName}/src"
-					destdir="${stageName}/javadoc"
-					windowtitle="RELAX NG Conformance Test Suite  Test Harness"
-					public="yes"
-					author="yes"
-					>
-<!--
-			<link href="http://java.sun.com/products/jdk/1.2/docs/api" />
-			<link href="http://xml.apache.org/apiDocs/" />
--->
-		</javadoc>
-		
-		
-		<!-- create a time stamp file -->
-		<echo file="temp/version.properties">version=${DSTAMP}</echo>
-		
-		<!-- creates binary jar -->
-		<jar	jarfile="${stageName}/rngtsth.jar"
-				manifest="./MANIFEST.MF"
-				compress="false">
-			<fileset dir="temp" />
-			<!-- resource files -->
-			<fileset dir="${stageName}/src" includes="**/*.properties" />
-		</jar>
-		<delete dir="temp" />
-
-		
-		<!-- copy jar file to package dir -->
-		<copy file="${stageName}/rngtsth.jar" tofile="./package/rngtsth.jar" />
-		
-		<!-- include msvDriver.jar and its source code -->
-		<copy file="package/msvDriver.jar" tofile="${stageName}/msvDriver.jar"/>
-		<copy file="package/msvDriver-src.zip" tofile="${stageName}/msvDriver-src.zip"/>
-		
-		<!-- creates distribution package -->
-		<zip	zipfile="./package/rngtsth.${DSTAMP}.zip"
-				basedir="."
-				includes="${stageName}/**/*.*" />
-		
-		<delete	dir="${stageName}" />
+	<!-- compile Java source files -->
+	<target name="binary">
+		<mkdir dir="./bin"/>
+		<javac
+			srcdir="./src"
+			destdir="./bin"
+			debug="on"
+			optimize="off"
+			/>
 	</target>
 </project>

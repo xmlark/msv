@@ -9,148 +9,56 @@
 	Tasks to help development
 	=========================
 	binary
-		compile everything to the build directory. you may want to use your IDE for this.
-	javacc
-		run JavaCC. XSDLib uses JavaCC to parse date/time related types.
+		compile everything to the bin directory.
 	javadoc
-		run javadoc on the working copy. Useful to check the documentation without creating
-		a distribution package.
-	
-	Tasks to batch-test the current working copy
-	============================================
+		run javadoc on the working copy. Useful to check the documentation
+		without actually creating a distribution package.
 	test_msv
-		test core msv codes. parser, verifier, datatypes, and several related codes.
-	test_generator
-		test XML Generator.
-	test_rngconv
-		test RELAX NG converter
-	test_trexconv
-		test TREX converter
-	test_all
-		test all of the above. Time consuming.
-	
-	Tasks to create distribution packages
-	=====================================
-	release_xsdlib
-		create a distribution package of XSDLib
-	release_msv
+		test core msv codes. parser, verifier and several related codes.
+	release
 		create a distribution package of MSV
-	release_generator
-		create a distribution package of XML Generator
-	release_rngconverter
-		create a distribution package of RELAX NG Converter
-	release_trexconverter
-		create a distribution package of TREX Converter
-	
-	relase_msv_all
-		= release_msv & release_generator & release_rngconverter & release_trexconverter
 	
 -->
-<project name="tranquilo" basedir="." default="jars">
-	<property name="sourceDir" value="./src"/>
-	<property name="testDir" value="./test"/>
-	<property name="buildDir" value="./build"/>
-	<property name="documentDir" value="./doc/javadoc"/>
-	<property name="packageDir" value="./package"/>
-	<property name="libDir" value="./lib"/>
-	<property name="cvsRoot" value=":local:/cygdrive/c/Program Files/Development/CVS Repository" />
-	<property name="cvsExportOpt" value="-D now" />	<!-- -r branch -->
-	<property name="rngInterfaceSource" value="../relaxng/datatype/java/src"/>
+<project name="tranquilo" basedir="." default="binary">
 	
-	<!-- test directory where you put your files like "relaxNNN.rlx" -->
-	<property name="testRoot" value="./testCases" />
-	<path id="commonTestDir">
-		<pathelement path="${testRoot}/suites/JepaX"/>
-		<pathelement path="${testRoot}/suites/NITF"/>
-		<pathelement path="${testRoot}/suites/errorRELAXGrammar/lrgErrRatio"/>
-		<pathelement path="${testRoot}/errorRELAXGrammar/smlErrRatio" />
-	</path>
+	<!-- import the global configuration file -->
+	<property file="../shared/ant.config"/>
 	
-	<path id="RELAXBatchTestDir">
-		<path refid="commonTestDir"/>
-		<pathelement path="${testRoot}/relax"/>
-	</path>
-	<property name="RELAXBatchTestDir" refid="RELAXBatchTestDir"/>
-	
-	<path id="RELAXNGBatchTestDir">
-		<path refid="commonTestDir"/>
-		<pathelement path="${testRoot}/relaxng"/>
-	</path>
-	<property name="RELAXNGBatchTestDir" refid="RELAXNGBatchTestDir"/>
-	
-	<path id="TREXBatchTestDir">
-		<path refid="commonTestDir"/>
-		<pathelement path="${testRoot}/trex"/>
-	</path>
-	<property name="TREXBatchTestDir" refid="TREXBatchTestDir"/>
-	
-	<path id="DTDBatchTestDir">
-		<path refid="commonTestDir"/>
-		<pathelement path="${testRoot}/DTD/XHTMLm12n/examples"/>
-		<pathelement path="${testRoot}/DTD/XHTML1.0"/>
-	</path>
-	<property name="DTDBatchTestDir" refid="DTDBatchTestDir"/>
-	
-	<path id="XSDBatchTestDir">
-		<path refid="commonTestDir"/>
-		<pathelement path="${testRoot}/xmlschema"/>
-		<pathelement path="${testRoot}/xmlschema/tutorialExamples"/>
-		<pathelement path="${testRoot}/xmlschema/identity" />
-	</path>
-	<property name="XSDBatchTestDir" refid="XSDBatchTestDir"/>
-	
-	
-	<!-- environment dependend -->
-	<property name="javaCClib"				value="./ref/javacc/bin/lib" />
-	<property name="JUnitJar"				value="c:/winnt/java/classes/junit.jar"/>
-	<property name="AntJar"					value="c:/progra~1/development/ant/lib/ant.jar"/>
-	<property name="relaxngDatatype.jar"	value="../relaxng/datatype/java/relaxngDatatype.jar"/>
-	<property name="isorelax.jar"			value="c:/winnt/java/classes/isorelax.jar"/>
-
 	
 	<!-- compile Java source files -->
-	<target name="binary" depends="javacc">
+	<target name="binary">
+		<mkdir dir="./bin"/>
 		<javac
-			srcdir="${sourceDir}:${testDir}:lib\dispatcher"
-			destdir="${buildDir}"
+			srcdir="./src:./test"
+			destdir="./bin"
 			debug="on"
-			optimize="off"
-			classpath="lib"
-			/>
+			optimize="off">
+			
+			<classpath path="../package/xsdlib.jar"/>
+			<classpath path="../testharness/bin"/>
+		</javac>
 	</target>
 	
-	
-		<!-- internal task -->
-		<target name="doJavacc">
-			<javacc	target="${src}/com/sun/msv/datatype/xsd/datetime/ISO8601.jj"
-					outputdirectory="${src}/com/sun/msv/datatype/xsd/datetime"
-					javacchome="${javaCClib}"
-			/>
-		</target>
-	
-	<!-- run javacc -->
-	<target name="javacc">
-		<!-- run javacc -->
-		<antcall target="doJavacc">
-			<param name="src" value="${sourceDir}" />
-		</antcall>
-	</target>
 	
 	<!-- generate javadoc documentation from the working copy -->
 	<target name="javadoc">
+		<mkdir dir="./javadoc"/>
 		<javadoc	locale="en_US"
-					packagenames="com.sun.msv.*, org.relaxng.*, org.iso_relax.verifier.*, org.iso_relax.dispatcher.*"
-					sourcepath="${sourceDir};../relaxng/datatype/java/src;lib/dispatcher;lib"
-					classpath="lib/dispatcher;${java.class.path}"
-					destdir="${documentDir}"
-					windowtitle="Internal Use Only --- Sun Multi Schema Validator"
+					packagenames="com.sun.msv.*"
+					sourcepath="./src;${rngInterfaceSource}"
+					classpath="${java.class.path}"
+					destdir="javadoc"
+					windowtitle="Internal Use Only --- Sun Multi Schema XML Validator"
 					public="yes"
 					author="yes"
 					overview="src/com/sun/msv/overview.html"
 					>
-			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
-			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
-			<link offline="true" href="http://iso-relax.sourceforge.net/apiDoc/" packagelistLoc="ExternalPackageLists\ISO-RELAX" />
+			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api"
+				packagelistLoc="../shared/ExternalPackageLists/CoreAPI" />
+			<link offline="true" href="http://xml.apache.org/apiDocs/"
+				packagelistLoc="../shared/ExternalPackageLists/XML" />
+			<link offline="true" href="http://iso-relax.sourceforge.net/apiDoc/"
+				packagelistLoc="../shared/ExternalPackageLists/ISO-RELAX" />
 		</javadoc>
 	</target>
 	
@@ -158,246 +66,19 @@
 	
 	
 	
-	
-<!--
-	PatternSets for the partial test
-	========================================================================
-	
-	This pattern specifies which test codes should be executed.
-	The same pattern is used to test both the working copy and the release package.
--->
-	<!-- all -->
-	<patternset id="tps.all">
-		<include name="**/*Test.class"/>
-		<include name="**/*TestG.class"/>
-	</patternset>
-	
-	<!-- XSDLib -->
-	<patternset id="tps.xsdlib">
-		<include name="com/sun/msv/datatype/**/*Test.class" />
-	</patternset>
-	
-	<!-- MSV core -->
-	<patternset id="tps.msv">
-		<include name="batch/verifier/**/*Test.class" />
-		<include name="com/sun/msv/util/*Test.class" />
-	</patternset>
-	
-	<!-- generator -->
-	<patternset id="tps.generator">
-		<include name="**/generator/**/*TestG.class" />
-	</patternset>
-	
-	<!--  RELAX converter -->
-	<patternset id="tps.rngconv">
-		<include name="batch/writer/relaxng/**/*Test.class"/>
-	</patternset>
-	
-	<!-- TREX converter -->
-	<patternset id="tps.trexconv">
-		<include name="batch/writer/trex/**/*Test.class"/>
-	</patternset>
-	
-	
-	
-	
-<!--
-	test tasks
-	========================================================================
--->
-	<!-- run all -->
-	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
 	<target name="test">
-		<antcall target="doTest">
-			<param name="testPattern" value="tps.all"/>
-		</antcall>
+		<ant antfile="../shared/ant.test.xml" target="test" />
 	</target>
 	
-	
-	<!-- run xsdlib test                                                 -->
-	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-	<target name="test_xsdlib">
-		<antcall target="doTest">
-			<param name="testPattern" value="tps.xsdlib"/>
-		</antcall>
-	</target>
-	<target name="test_xsdlib_package">
-		<antcall target="doReleaseTest">
-			<param name="testPattern" value="tps.xsdlib" />
-			<param name="testJar" value="./package/xsdlib.jar"/>
-		</antcall>
-	</target>
-	
-	
-	<!-- run core msv test                                               -->
-	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-	<target name="test_msv">
-		<antcall target="doTest">
-			<param name="testPattern" value="tps.msv"/>
-		</antcall>
-	</target>
-	<target name="test_msv_package">
-		<antcall target="doReleaseTest">
-			<param name="testPattern" value="tps.msv" />
-			<param name="testJar" value="./package/msv.jar"/>
-		</antcall>
-	</target>
-	
-	
-	<!-- run generator test                                              -->
-	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-	<target name="test_xmlgen">
-		<antcall target="doTest">
-			<param name="testPattern" value="tps.generator" />
-		</antcall>
-	</target>
-	<target name="test_xmlgen_package">
-		<antcall target="doReleaseTest">
-			<param name="testPattern" value="tps.generator" />
-			<param name="testJar" value="./package/xmlgen.jar"/>
-		</antcall>
-	</target>
-	
-	
-	<!-- run RELAX NG converter test                                     -->
-	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-	<target name="test_rngconv">
-		<antcall target="doTest">
-			<param name="testPattern" value="tps.rngconv" />
-		</antcall>
-	</target>
-	<target name="test_rngconv_package">
-		<antcall target="doReleaseTest">
-			<param name="testPattern" value="tps.rngconv" />
-			<param name="testJar" value="./package/rngconv.jar"/>
-		</antcall>
-	</target>
-	
-	
-	<!-- run TREX converter test                                         -->
-	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-	<target name="test_trexconv">
-		<antcall target="doTest">
-			<param name="testPattern" value="tps.trexconv" />
-		</antcall>
-	</target>
-	<target name="test_trexconv_package">
-		<antcall target="doReleaseTest">
-			<param name="testPattern" value="tps.trexconv" />
-			<param name="testJar" value="./package/trexconv.jar"/>
-		</antcall>
+	<target name="test_release">
+		<ant antfile="../shared/ant.test.xml" target="test_release">
+			<property name="testJar" value="./package/msv.jar"/>
+		</ant>
 	</target>
 	
 	
 	
 	
-	<!-- internal test task                                              -->
-	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
-		<!--
-			test the current working copy
-			=============================
-			
-			required parameters to call:
-				${testPattern}	ID of the pattern set to be used to filter the test case.
-		-->
-		<target name="doTest">
-			<mkdir dir="./testLog" />
-			<!--
-				please remove jaxp.jar from ant directory,
-				because it uses an old one, and this test needs the latest one
-			-->
-			<junit haltonfailure="yes" printsummary="yes" fork="yes"
-				haltonerror="yes">
-				<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
-				<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
-				<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
-				<sysproperty key="XSDBatchTestDir"		value="${XSDBatchTestDir}"/>
-				<sysproperty key="RELAXNGBatchTestDir"	value="${RELAXNGBatchTestDir}"/>
-				
-  				<formatter type="plain" />
-				
-				<classpath>
-					<pathelement location="${buildDir}" />
-					<pathelement location="${sourceDir}" />
-					<pathelement location="${testDir}" />
-					<pathelement location="lib/dispatcher" />
-					<pathelement location="lib/relaxng/relaxng.jar" />
-					<pathelement path="${java.class.path}" />
-					<!--include CatalogManager.properties into the class path -->
-					<pathelement path="${testRoot}"/>
-				</classpath>
-			
-				<batchtest todir="./testLog">
-					<fileset dir="${buildDir}">
-						<patternset refid="${testPattern}"/>
-					</fileset>
-				</batchtest>
-			</junit>
-		</target>
-		
-		
-		
-		
-		
-		<!--
-			test the release package
-			========================
-			
-			required parameters to call:
-				${testJar}		jar file to be tested. (e.g., msv.jar or xmlgen.jar)
-				${testPattern}	ID of the pattern set to be used to filter the test case.
-		-->
-		<target name="doReleaseTest">
-			
-			<!-- create temporary directory -->
-			<mkdir dir="./temp"/>
-			
-			<!-- extract the contents of the jar file to be tested -->
-			<unjar src="${testJar}" dest="temp" />
-			
-			<!--
-				compile test harnesses into it.
-				It is ok to rely on the working copy at this stage.
-			-->
-			<javac
-				srcdir="${testDir}"
-				destdir="./temp"
-				debug="on"
-				optimize="off"
-				classpath="temp:build"
-				/>
-			
-			<!-- run JUnit -->
-			<mkdir dir="./testLog" />
-			<junit haltonfailure="yes" printsummary="yes" fork="yes"
-				haltonerror="yes">
-				<sysproperty key="RELAXBatchTestDir"	value="${RELAXBatchTestDir}"/>
-				<sysproperty key="TREXBatchTestDir"		value="${TREXBatchTestDir}"/>
-				<sysproperty key="DTDBatchTestDir"		value="${DTDBatchTestDir}"/>
-				<sysproperty key="XSDBatchTestDir"		value="${XSDBatchTestDir}"/>
-				<sysproperty key="RELAXNGBatchTestDir"	value="${RELAXNGBatchTestDir}"/>
-				
-  				<formatter type="plain" />
-				
-				<classpath>
-					<!-- do not refer to the working copy -->
-					<pathelement location="${testDir}" />
-					<pathelement location="./temp" />
-					<pathelement location="${JUnitJar}"/>
-					<pathelement location="${AntJar}"/>
-					<!-- do not let whatever binaries in your classpath interfer with it. -->
-				<!-- DO NOT: <pathelement path="${java.class.path}" />-->
-				</classpath>
-				
-				<batchtest todir="./testLog">
-					<fileset dir="temp">
-						<patternset refid="${testPattern}"/>
-					</fileset>
-				</batchtest>
-			</junit>
-			
-			<delete dir="./temp"/>
-		</target>
 	
 	
 	
@@ -407,115 +88,12 @@
 	
 	
 	
-<!--
-	release tasks
-	========================================================================
--->
-	
-	<!-- generate XSDLib release -->
-	<target name="release_xsdlib">
-		<tstamp />
-		<property name="stageName" value="xsdlib-${DSTAMP}"/>
-		
-		<delete	dir="${stageName}" />
-		<mkdir	dir="${stageName}" />
-		<mkdir	dir="${stageName}/src" />
-		<mkdir	dir="${stageName}/src/com/sun/msv/datatype" />
-		<mkdir	dir="${stageName}/src/com/sun/xml" />
-		
-		<!-- obtain source codes from cvs -->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/test/com/sun/msv/datatype/xsd/CommandLineTester.java"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}/src/com/sun/msv/datatype" />
-		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/src/com/sun/msv/datatype"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}/src/com/sun/msv/datatype" />
-		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/src/com/sun/xml"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}/src/com/sun/xml" />
-
-		<!-- copy Xerces files into source directory -->
-		<copy todir="${stageName}/src">
-			<fileset dir="C:\Program Files\Development\Xerces\src" includes="org/apache/xerces/utils/regex/*.*" />
-		</copy>
-		
-		<!-- obtain document files -->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/doc/datatype"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}" />
-				
-		<!-- run javacc -->
-		<antcall target="doJavacc">
-			<param name="src" value="${stageName}/src" />
-		</antcall>
-		
-		
-		<!-- compile files -->
-		<mkdir	dir="temp" />
-		<javac	srcdir="${stageName}/src" destdir="temp">
-			
-			<classpath path="${relaxngDatatype.jar}"/>
-			<include name="**/*.java" />
-		</javac>
-		
-		
-		<!-- create a time stamp file -->
-		<echo file="temp/version.properties">version=${DSTAMP}</echo>
-		
-		<!-- creates binary jar -->
-		<jar	jarfile="${stageName}/xsdlib.jar"
-				manifest="./META-INF/XSD.MANIFEST.MF"
-				compress="false">
-			<fileset dir="temp" />
-			<!-- resource files -->
-			<fileset dir="${stageName}/src" includes="**/*.properties" />
-		</jar>
-		<delete dir="temp" />
-		<delete dir="xerces"/>
-		
-		<!-- copy jar file to package dir -->
-		<copy file="${stageName}/xsdlib.jar" tofile="./package/xsdlib.jar" />
-		
-		
-		<!-- creates javadoc -->
-		<mkdir		dir="${stageName}/javadoc" />
-		<javadoc	locale="en_US"
-					packagenames="com.sun.msv.datatype.*,org.relaxng.datatype.*"
-					sourcepath="${stageName}/src:${rngInterfaceSource}"
-					destdir="${stageName}/javadoc"
-					windowtitle="Sun XML Datatypes Library"
-					public="yes"
-					author="yes"
-					>
-			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
-			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
-		</javadoc>
-		
-		<!-- copy additional jar files -->
-		<copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
-		
-		<!-- delete the source! -->
-		<delete>
-			<fileset dir="${stageName}/src" excludes="**/CommandLineTester.java" />
-		</delete>
-		
-		<!-- creates distribution package -->
-		<zip	zipfile="${packageDir}/xsdlib.${DSTAMP}.zip"
-				basedir="."
-				includes="${stageName}/**/*.*" />
-		
-		<delete	dir="${stageName}" />
-	</target>
 	
 	
 	
 	
 	<!-- generate MSV release -->
-	<target name="release_msv"> <!-- depends="release_xsdlib">	-->
+	<target name="release">
 		<tstamp />
 		<property name="stageName" value="msv-${DSTAMP}" />
 		
@@ -524,44 +102,33 @@
 		<mkdir	dir="${stageName}/src" />
 		<delete	dir="temp"/>
 		<mkdir	dir="temp"/>
+		<delete dir="temp_xsdlibsrc"/>
+		<mkdir	dir="temp_xsdlibsrc"/>
 		
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/src"
+				package="msv/msv/src"
 				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}/src/" />
 		
+		<!-- obtain source code of XSDLib -->
+		<cvs	cvsRoot="${cvsRoot}"
+				package="msv/xsdlib/src"
+				command="export -d . ${cvsExportOpt}"
+				dest="temp_xsdlibsrc" />
+		
 		<!-- obtain document files -->
 		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/doc/tranquilo"
+				package="msv/msv/doc"
 				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}" />
 	
 		<!-- obtain examples -->
 		<mkdir dir="${stageName}/examples"/>
 		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/examples/tranquilo"
+				package="msv/msv/examples"
 				command="export -d . ${cvsExportOpt}"
 				dest="${stageName}/examples" />
-	
-		<!-- obtain additional example files from the test project-->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/test/com/sun/msv/verifier/psvi"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}/src/com/sun/msv/verifier/psvi" />
-		
-		<!-- move the xsdlib part to a different temporary directory so that it won't get compiled -->
-		<mkdir dir="temp_xsdlibsrc"/>
-		<move todir="temp_xsdlibsrc">
-			<fileset dir="${stageName}/src">
-				<include name="com/sun/msv/datatype/**/*.*" />
-			</fileset>
-		</move>
-		
-		<!-- run javacc -->
-		<antcall target="doJavacc">
-			<param name="src" value="temp_xsdlibsrc" />
-		</antcall>
 		
 		<!-- compile files -->
 		<javac	srcdir="${stageName}/src"
@@ -576,10 +143,10 @@
 			<include name="**/*.java" />
 		</javac>
 		
-		<copy file="package/xsdlib.jar" tofile="${stageName}/xsdlib.jar" />
+		<copy file="../package/xsdlib.jar" tofile="${stageName}/xsdlib.jar" />
 		<copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
 		<copy file="${isorelax.jar}" tofile="${stageName}/isorelax.jar" />
-		<copy file="c:\winnt\java\classes\xerces.jar" tofile="${stageName}/xerces.jar" />
+		<copy file="${xerces.jar}" tofile="${stageName}/xerces.jar" />
 		
 		<!-- create a time stamp file -->
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
@@ -591,14 +158,14 @@
 		
 		<!-- creates binary jar -->
 		<jar	jarfile="${stageName}/msv.jar"
-				manifest="./META-INF/MANIFEST.MF"
+				manifest="./MANIFEST.MF"
 				compress="false">
 			<fileset dir="${stageName}/src" includes="**/msv/**/*.properties" />
 			<fileset dir="temp" />
 		</jar>
 		
 		<!-- copy jar file to package dir -->
-		<copy file="${stageName}/msv.jar" tofile="./package/msv.jar" />
+		<copy file="${stageName}/msv.jar" tofile="../package/msv.jar" />
 		
 		<!-- creates javadoc -->
 		<mkdir		dir="${stageName}/javadoc" />
@@ -629,13 +196,7 @@
 		</delete>
 		
 		<delete dir="temp" />
-		<delete dir="temp_xsdlibsrc"/>
 		
-		<!-- copy sample files -->
-		<copy todir="${stageName}/examples">
-			<fileset dir="${stageName}/src" includes="com/sun/msv/writer/trex/**/*.*" />
-			<fileset dir="${stageName}/src" includes="com/sun/msv/verifier/psvi/**/*.*" />
-		</copy>
 		<!-- compile sample files -->
 		<javac	srcdir="${stageName}/examples">
 			
@@ -643,275 +204,25 @@
 			<classpath path="${java.class.path}"/>
 			<classpath path="${relaxngDatatype.jar}"/>
 			<classpath path="${isorelax.jar}"/>
-			<classpath path="package/xsdlib.jar"/>
+			<classpath path="../package/xsdlib.jar"/>
 			
 			<include name="**/*.java" />
 		</javac>
 		
+		<!-- merge XSDLib source into MSV source -->
+		<copy todir="${stageName}/src">
+			<fileset dir="temp_xsdlibsrc"/>
+		</copy>
 <!-- temporarily, remove source codes -->
-		<delete dir="${stageName}/src" />
+<!--		<delete dir="${stageName}/src" />	-->
 		
 		
 		<!-- creates distribution package -->
-		<zip	zipfile="${packageDir}/msv.${DSTAMP}.zip"
+		<zip	zipfile="../package/msv.${DSTAMP}.zip"
 				basedir="."
 				includes="${stageName}/**/*.*" />
 		
+		<delete dir="temp_xsdlibsrc"/>
 		<delete dir="${stageName}" />
 	</target>
-	
-	
-	
-	
-	
-	
-	
-	<!-- generator release -->
-	<target name="release_generator">
-		<tstamp />
-		<property name="stageName" value="xmlgen-${DSTAMP}"/>
-		
-		<delete	dir="${stageName}" />
-		<mkdir	dir="${stageName}" />
-		<mkdir	dir="${stageName}/src" />
-		
-		<!-- obtain source codes from cvs -->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/generator"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}/src" />
-				
-		<!-- obtain document files -->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/doc/generator"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}" />
-		
-		
-		<!-- compile files -->
-		<mkdir	dir="temp" />
-		<javac	srcdir="${stageName}/src"
-				destdir="temp">
-			
-			<classpath path="package/msv.jar"/>
-			<classpath path="package/xsdlib.jar"/>
-			<classpath path="${java.class.path}"/>
-			
-			<include name="**/*.java" />
-		</javac>
-		
-		<!-- create a time stamp file -->
-		<echo file="temp/version.properties">version=${DSTAMP}</echo>
-		
-		<!-- creates the binary jar -->
-		<jar	jarfile="${stageName}/xmlgen.jar"
-				manifest="./META-INF/Generator.MANIFEST.MF"
-				compress="false">
-			<fileset dir="${stageName}/src" includes="**/*.properties" />
-			<fileset dir="temp" includes="**/*.*" />
-		</jar>
-		<delete dir="temp" />
-		
-		<!-- copy jar file to package dir -->
-		<copy file="${stageName}/xmlgen.jar" tofile="./package/xmlgen.jar" />
-		
-		
-		<!-- creates javadoc -->
-		<mkdir		dir="${stageName}/javadoc" />
-		<javadoc	locale="en_US"
-					packagenames="com.sun.msv.generator.*,org.relaxng.datatype.*"
-					sourcepath="${stageName}/src:${rngInterfaceSource}"
-					destdir="${stageName}/javadoc"
-					windowtitle="Sun XML Generator"
-					public="yes"
-					author="yes"
-					>
-			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
-			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
-		</javadoc>
-
-		
-<!-- temporarily, remove source codes -->
-		<delete dir="${stageName}/src" />
-		
-		<!-- copy additional jars -->
-		<copy file="package/xsdlib.jar" tofile="${stageName}/xsdlib.jar" />
-		<copy file="package/msv.jar" tofile="${stageName}/msv.jar" />
-		<copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
-		<copy file="${isorelax.jar}" tofile="${stageName}/isorelax.jar" />
-		<copy file="c:\winnt\java\classes\xerces.jar" tofile="${stageName}/xerces.jar" />
-		
-		<!-- creates distribution package -->
-		<zip	zipfile="${packageDir}/xmlgen.${DSTAMP}.zip"
-				basedir="."
-				includes="${stageName}/**/*.*" />
-		
-		<delete	dir="${stageName}" />
-	</target>
-
-
-
-
-
-	<!-- RELAX NG converter release -->
-	<target name="release_rngconverter">
-		<tstamp />
-		<property name="stageName" value="rngconv-${DSTAMP}"/>
-		
-		<delete	dir="${stageName}" />
-		<mkdir	dir="${stageName}" />
-		<mkdir	dir="${stageName}/src" />
-		
-		<!-- obtain source codes from cvs -->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/rngconverter"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}/src" />
-				
-		<!-- obtain document files -->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/doc/rngconverter"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}" />
-		
-		
-		<!-- compile files -->
-		<mkdir	dir="temp" />
-		<javac	srcdir="${stageName}/src" destdir="temp">
-			
-			<classpath path="package/msv.jar"/>
-			<classpath path="package/xsdlib.jar"/>
-			<classpath path="${java.class.path}"/>
-			
-			<include name="**/*.java" />
-		</javac>
-		
-		<!-- create a time stamp file -->
-		<echo file="temp/version.properties">version=${DSTAMP}</echo>
-		
-		<!-- creates the complete binary jar -->
-		<jar	jarfile="${stageName}/rngconv.jar"
-				manifest="./META-INF/rngconv.MANIFEST.MF"
-				compress="false">
-			<fileset dir="${stageName}/src" includes="**/*.properties" />
-			<fileset dir="temp" includes="**/*.*" />
-		</jar>
-		<delete dir="temp" />
-		
-		<!-- copy jar file to package dir -->
-		<copy file="${stageName}/rngconv.jar" tofile="./package/rngconv.jar" />
-		
-		<!-- we don't create javadoc for rngconv -->
-
-<!-- temporarily, remove source codes -->
-		<delete dir="${stageName}/src" />
-		
-		<!-- copy additional jars -->
-		<copy file="package/xsdlib.jar" tofile="${stageName}/xsdlib.jar" />
-		<copy file="package/msv.jar" tofile="${stageName}/msv.jar" />
-		<copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
-		<copy file="${isorelax.jar}" tofile="${stageName}/isorelax.jar" />
-		<copy file="c:\winnt\java\classes\xerces.jar" tofile="${stageName}/xerces.jar" />
-		
-		<!-- creates distribution package -->
-		<zip	zipfile="${packageDir}/rngconv.${DSTAMP}.zip"
-				basedir="."
-				includes="${stageName}/**/*.*" />
-		
-		<delete	dir="${stageName}" />
-	</target>
-
-
-
-
-
-
-
-	<!-- TREX converter release -->
-	<target name="release_trexconverter">
-		<tstamp />
-		<property name="stageName" value="trexconv-${DSTAMP}"/>
-		
-		<delete	dir="${stageName}" />
-		<mkdir	dir="${stageName}" />
-		<mkdir	dir="${stageName}/src" />
-		
-		<!-- obtain source codes from cvs -->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/trexconverter"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}/src" />
-				
-		<!-- obtain document files -->
-		<cvs	cvsRoot="${cvsRoot}"
-				package="tranquilo/doc/trexconverter"
-				command="export -d . ${cvsExportOpt}"
-				dest="${stageName}" />
-		
-		
-		<!-- compile files -->
-		<mkdir	dir="temp" />
-		<javac	srcdir="${stageName}/src" destdir="temp">
-			
-			<classpath path="package/msv.jar"/>
-			<classpath path="package/xsdlib.jar"/>
-			<classpath path="${java.class.path}"/>
-			
-			<include name="**/*.java" />
-		</javac>
-		
-		<!-- create a time stamp file -->
-		<echo file="temp/version.properties">version=${DSTAMP}</echo>
-		
-		
-		<!-- creates binary jar -->
-		<jar	jarfile="${stageName}/trexconv.small.jar"
-				manifest="./META-INF/trexconv.MANIFEST.MF"
-				compress="false">
-			<fileset dir="${stageName}/src" includes="**/*.properties" />
-			<fileset dir="temp" includes="**/*.*" />
-		</jar>
-		
-		
-		<!-- creates the complete binary jar -->
-		<jar	jarfile="${stageName}/trexconv.jar"
-				manifest="./META-INF/trexconv.MANIFEST.MF"
-				compress="false">
-			<fileset dir="${stageName}/src" includes="**/*.properties" />
-			<fileset dir="temp" includes="**/*.*" />
-		</jar>
-		<delete dir="temp" />
-		
-		<!-- copy jar file to package dir -->
-		<copy file="${stageName}/trexconv.jar" tofile="./package/trexconv.jar" />
-		
-		<!-- we don't create javadoc for rngconv -->
-		
-<!-- temporarily, remove source codes -->
-		<delete dir="${stageName}/src" />
-		
-		<!-- copy additional jars -->
-		<copy file="package/xsdlib.jar" tofile="${stageName}/xsdlib.jar" />
-		<copy file="package/msv.jar" tofile="${stageName}/msv.jar" />
-		<copy file="${relaxngDatatype.jar}" tofile="${stageName}/relaxngDatatype.jar" />
-		<copy file="${isorelax.jar}" tofile="${stageName}/isorelax.jar" />
-		<copy file="c:\winnt\java\classes\xerces.jar" tofile="${stageName}/xerces.jar" />
-		
-		<!-- creates distribution package -->
-		<zip	zipfile="${packageDir}/trexconv.${DSTAMP}.zip"
-				basedir="."
-				includes="${stageName}/**/*.*" />
-		
-		<delete	dir="${stageName}" />
-	</target>
-
-
-	<target name="release_msv_all"
-		depends="
-			release_msv,
-			release_generator,
-			release_rngconverter,
-			release_trexconverter
-	"/>
-
 </project>

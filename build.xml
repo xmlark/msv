@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="msv family" basedir="." default="binary">
+	
+	<target name="binary">
+		<ant target="binary" dir="xsdlib" />
+		<ant target="binary" dir="testharness" />
+		<ant target="binary" dir="msv" />
+		<ant target="binary" dir="generator" />
+		<ant target="binary" dir="relames" />
+		<ant target="binary" dir="rngconverter" />
+		<ant target="binary" dir="SOX2RNG" />
+	</target>
+	
+	<target name="release">
+		<ant target="release" dir="xsdlib" />
+		<ant target="release" dir="testharness" />
+		<ant target="release" dir="msv" />
+		<ant target="release" dir="generator" />
+		<ant target="release" dir="relames" />
+		<ant target="release" dir="rngconverter" />
+		<ant target="release" dir="SOX2RNG" />
+	</target>
+</project>

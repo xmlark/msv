@@ -9,9 +9,10 @@
  */
 package com.sun.msv.datatype.xsd;
 
-import org.apache.xerces.utils.regex.RegularExpression;
-import org.apache.xerces.utils.regex.ParseException;
 import java.util.Vector;
+
+import org.apache.xerces.impl.xpath.regex.ParseException;
+import org.apache.xerces.impl.xpath.regex.RegularExpression;
 import org.relaxng.datatype.ValidationContext;
 import org.relaxng.datatype.DatatypeException;
 

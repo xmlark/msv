@@ -16,8 +16,14 @@ software developed by the Apache Software Foundation [1].
 OVERVIEW
 ----------------------------------------------------------------------
 
-This tool is a command line tool that generates both valid and invalid
-instances from schemata.
+This is a command-line tool that can generate both valid and invalid
+instances from schemas. It can be used for generating test cases for XML
+applications that need to conform to a particular schema. For example:
+
+* to load-test applications against large documents
+* to ensure that documents are processed correctly
+* to check the behavior of XSL stylesheets
+
 
 See HowToUse.html for details.
 

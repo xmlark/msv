@@ -33,7 +33,30 @@ public class BigDateTimeValueTypeTest extends TestCase {
 	}
 	
 	/** Test of compare method, of class com.sun.tranquilo.datatype.datetime.BigDateTimeValueType. */
-	public void testCompare() {
+	public void testCompare() throws Exception
+	{
+		// from examples of the spec
+		int r;
+		
+		r = getParser("2000-01-15T00:00:00").dateTimeTypeV().compare(
+			getParser("2000-02-15T00:00:00").dateTimeTypeV() );
+		assertEquals( r, Comparator.LESS );
+			
+		r = getParser("2000-01-15T12:00:00" ).dateTimeTypeV().compare(
+			getParser("2000-01-16T12:00:00Z").dateTimeTypeV() );
+		assertEquals( r, Comparator.LESS );
+			
+		r = getParser("2000-01-01T12:00:00" ).dateTimeTypeV().compare(
+			getParser("1999-12-31T23:00:00Z").dateTimeTypeV() );
+		assertEquals( r, Comparator.UNDECIDABLE );
+		
+		r = getParser("2000-01-16T12:00:00" ).dateTimeTypeV().compare(
+			getParser("2000-01-16T12:00:00Z").dateTimeTypeV() );
+		assertEquals( r, Comparator.UNDECIDABLE );
+			
+		r = getParser("2000-01-16T00:00:00" ).dateTimeTypeV().compare(
+			getParser("2000-01-16T12:00:00Z").dateTimeTypeV() );
+		assertEquals( r, Comparator.UNDECIDABLE );
 	}
 	
 	/** Test of normalize method, of class com.sun.tranquilo.datatype.datetime.BigDateTimeValueType. */

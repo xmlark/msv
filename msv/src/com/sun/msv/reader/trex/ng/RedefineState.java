@@ -19,28 +19,17 @@ import org.xml.sax.Locator;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class RedefineState extends com.sun.msv.reader.trex.DefineState {
+public class RedefineState extends DefineState {
 	
 	protected Expression doCombine( ReferenceExp baseExp, Expression newExp, String combine ) {
 		
 		final RELAXNGReader reader = (RELAXNGReader)this.reader;
 		
-		if( combine!=null ) {
-			// combine must be null.
-			reader.reportError( reader.ERR_DISALLOWED_ATTRIBUTE, startTag.localName, "combine" );
-			return newExp;
-		}
-		
-		// make sure that this ReferenceExp is already defined.
-		if( baseExp.exp==null ) {
-			reader.reportError( reader.ERR_REDEFINING_UNDEFINED, baseExp.name );
-			return newExp;
-		}
-		
-		// makes it a head element, and reset the combine method.
+		// remove the previously defined pattern.
 		reader.headRefExps.remove(baseExp);
 		reader.combineMethodMap.remove(baseExp);
-		
-		return newExp;
+		baseExp.exp = null;
+
+		return super.doCombine(baseExp,newExp,combine);
 	}
 }

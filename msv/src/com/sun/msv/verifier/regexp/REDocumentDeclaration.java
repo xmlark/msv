@@ -138,7 +138,7 @@ public class REDocumentDeclaration implements DocumentDeclaration
 		"Diagnosis.NotNamespaceNameClass";
 	public static final String DIAG_STRING_NOT_ALLOWED =
 		"Diagnosis.StringNotAllowed";
-	public static final String DIAG_BAD_LITERAL_VALUE_WRAPUP =
-		"Diagnosis.BadLiteralValue.WrapUp";
+//	public static final String DIAG_BAD_LITERAL_VALUE_WRAPUP =
+//		"Diagnosis.BadLiteralValue.WrapUp";
 
 }

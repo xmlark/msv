@@ -123,14 +123,13 @@ public abstract class ExpressionAcceptor implements Acceptor
 			if( errRef!=null )
 			{// diagnose error.
 				if( token instanceof StringToken )
-					errRef.str = 
-						docDecl.localizeMessage( docDecl.DIAG_BAD_LITERAL_VALUE_WRAPUP,
-							diagnoseUnexpectedLiteral( (StringToken)token ) );
+					errRef.str = diagnoseUnexpectedLiteral( (StringToken)token );
+//						docDecl.localizeMessage( docDecl.DIAG_BAD_LITERAL_VALUE_WRAPUP,
 				// TODO: diagnosis for ElementToken
 				
 				// recovery by ignoring this token.
 				// TODO: should we modify this to choice(expression,EoCR)?
-				// we need some measure to prevent redundant choice
+				// we need some measures to prevent redundant choice
 			}
 			else
 			{

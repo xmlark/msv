@@ -13,6 +13,7 @@ import com.sun.tranquilo.reader.State;
 import com.sun.tranquilo.reader.SimpleState;
 import com.sun.tranquilo.reader.ExpressionOwner;
 import com.sun.tranquilo.grammar.Expression;
+import com.sun.tranquilo.grammar.AnyNameClass;
 import com.sun.tranquilo.grammar.relax.TagClause;
 import com.sun.tranquilo.grammar.relax.ElementRule;
 import com.sun.tranquilo.grammar.relax.ElementRules;
@@ -47,13 +48,11 @@ abstract class ElementRuleBaseState extends SimpleState
 		clause = inlineTag;
 	}
 	
-	protected void endSelf()
-	{
+	protected void endSelf() {
 		String role = startTag.getAttribute("role");
 		String label = startTag.getAttribute("label");
 		
-		if(role==null && label==null)
-		{
+		if(role==null && label==null) {
 			reader.reportError( reader.ERR_MISSING_ATTRIBUTE_2,
 								"elementRule", "role", "label" );
 			// recover from error by supplying dummy label
@@ -62,25 +61,24 @@ abstract class ElementRuleBaseState extends SimpleState
 		
 		if( label==null )	label=role;	// label attribute defaults to role attribute.
 		
-		if( clause==null )
-		{
+		if( clause==null ) {
 			// inline <tag> element was not found.
 			// role element must point to some TagClause
-			if( role==null )
-			{
+			if( role==null ) {
 				reader.reportError( reader.ERR_MISSING_ATTRIBUTE,
 									"elementRule","role");
 				// recover by assuming a harmless Clause
 				clause = new TagClause();
-			}
-			else
-			{
+				clause.nameClass = AnyNameClass.theInstance;
+				clause.exp = Expression.nullSet;
+			} else {
 				clause = getReader().module.tags.getOrCreate(role);
 			}
 		}
 		
 		ElementRules er = getReader().module.elementRules.getOrCreate(label);
 		getReader().setDeclaredLocationOf(er);	// remember where this ElementRules is defined
+		
 		er.addElementRule( reader.pool, new ElementRule( reader.pool, clause, getContentModel() ) );
 		
 		super.endSelf();

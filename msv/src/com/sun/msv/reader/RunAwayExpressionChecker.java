@@ -41,8 +41,6 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 	
 	protected final void binaryVisit( BinaryExp exp )	{ exp.exp1.visit(this); exp.exp2.visit(this); }
 
-	// TODO: make sure that the algorithm is correct.
-	
 	public void onRef( ReferenceExp exp )
 	{
 		if( testedExps.contains(exp) )

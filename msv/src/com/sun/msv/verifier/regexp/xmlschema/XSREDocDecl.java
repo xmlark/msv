@@ -10,6 +10,8 @@
 package com.sun.msv.verifier.regexp.xmlschema;
 
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.NamespaceNameClass;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.verifier.Acceptor;
 import com.sun.msv.verifier.regexp.AttributeFeeder;
@@ -58,7 +60,13 @@ public class XSREDocDecl extends REDocumentDeclaration {
 	 */
 	final protected XMLSchemaGrammar grammar;
 	
-	
+	/**
+	 * AttributeExp that matches to "xsi:***" attributes.
+	 */
+	final protected AttributeExp xsiAttExp =
+		new AttributeExp(
+			new NamespaceNameClass(XSAcceptor.XSINamespace),
+			Expression.anyString);
 	
 	public String localizeMessage( String propertyName, Object[] args ) {
 		try {

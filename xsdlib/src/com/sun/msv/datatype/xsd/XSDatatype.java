@@ -18,7 +18,9 @@ import org.relaxng.datatype.ValidationContext;
 /**
  * Publicly accesible interface of XSD Datatype.
  *
- * Application should use this interface to interact with datatype objects.
+ * This interface provides additional information which is not covered by
+ * {@link org.relaxng.datatype.Datatype} interface.
+ * Application can use this interface to interact with datatype objects.
  * 
  * @author	Kohsuke Kawaguchi
  */
@@ -70,7 +72,8 @@ public interface XSDatatype extends
 	 */
 	boolean isAtomType();
 	
-	/** checks if this type is declared as final for the specified kind of derivation.
+	/**
+	 * checks if this type is declared as final for the specified kind of derivation.
 	 * 
 	 * @param derivationType
 	 *		one of pre-defined values
@@ -126,7 +129,10 @@ public interface XSDatatype extends
 
 	
 	/**
-	 * gets the facet object that restricts the specified facet
+	 * gets the facet object that restricts the specified facet.
+	 * 
+	 * This method can be used to access various details of how
+	 * facets are applied to this datatype.
 	 *
 	 * @return null
 	 *		if no such facet object exists.
@@ -135,6 +141,10 @@ public interface XSDatatype extends
 
 	/**
 	 * gets the concrete type object of the restriction chain.
+	 * 
+	 * For example, if this type is derived from the "integer" type 
+	 * by restriction, this method returns a datatype object that
+	 * validates bare "integer" type.
 	 */
 	public ConcreteType getConcreteType();
 

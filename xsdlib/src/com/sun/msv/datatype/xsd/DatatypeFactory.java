@@ -15,7 +15,7 @@ import java.util.Collection;
 import org.relaxng.datatype.DatatypeException;
 
 /**
- * DataType object factory.
+ * Datatype object factory.
  *
  * <p>
  * Applications should use this class to get and derive DataType objects.

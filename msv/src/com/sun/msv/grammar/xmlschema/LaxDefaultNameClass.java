@@ -18,7 +18,7 @@ import com.sun.msv.util.StringPair;
 import java.util.Set;
 
 
-public class LaxDefaultNameClass implements NameClass {
+public class LaxDefaultNameClass extends NameClass {
 	
 	public LaxDefaultNameClass() {
 		allowedNames.add( new StringPair(NAMESPACE_WILDCARD,LOCALNAME_WILDCARD) );
@@ -35,7 +35,7 @@ public class LaxDefaultNameClass implements NameClass {
 					continue;
 				
 				nc = new DifferenceNameClass(nc,
-					new SimpleNameClass(items[i].namespaceURI,items[i].localName));
+					new SimpleNameClass(items[i]));
 			}
 			equivalentNameClass = nc;
 		}

@@ -11,6 +11,7 @@ package com.sun.tranquilo.reader.util;
 
 import com.sun.tranquilo.reader.relax.core.RELAXCoreReader;
 import com.sun.tranquilo.reader.trex.TREXGrammarReader;
+import com.sun.tranquilo.reader.xmlschema.XMLSchemaReader;
 import com.sun.tranquilo.reader.GrammarReaderController;
 import com.sun.tranquilo.relaxns.grammar.RELAXGrammar;
 import com.sun.tranquilo.relaxns.reader.RELAXNSReader;
@@ -86,12 +87,14 @@ public class GrammarLoader
 		throws SAXException, ParserConfigurationException, java.io.IOException
 	{
 		TREXPatternPool pool = new TREXPatternPool();
+		
 		RELAXNSReader relaxNs = new RELAXNSReader(controller,factory,pool);
 		RELAXCoreReader relaxCore = new RELAXCoreReader(controller,factory,pool);
 		TREXGrammarReader trex = new TREXGrammarReader(controller,factory,new TREXGrammarReader.StateFactory(),pool);
+		XMLSchemaReader xmlSchema = new XMLSchemaReader(controller,factory,new XMLSchemaReader.StateFactory(),pool);
 		
 		XMLReader parser = factory.newSAXParser().getXMLReader();
-		Sniffer sniffer = new Sniffer(relaxNs,relaxCore,trex,parser);
+		Sniffer sniffer = new Sniffer(relaxNs,relaxCore,trex,xmlSchema,parser);
 		parser.setContentHandler(sniffer);
 		parser.setErrorHandler(new GrammarReaderControllerAdaptor(controller));
 		if( source instanceof String )	parser.parse( (String)source );
@@ -99,33 +102,40 @@ public class GrammarLoader
 		
 		if(sniffer.winner==relaxNs)		return relaxNs.getResult();
 		if(sniffer.winner==relaxCore)	return relaxCore.getResult();
-		else							return trex.getResult();
+		if(sniffer.winner==trex)		return trex.getResult();
+		else							return xmlSchema.getResult();
 	}
 	
 	
 	
 	private static class Sniffer extends ForkContentHandler
 	{
-		Sniffer( RELAXNSReader relaxNs, RELAXCoreReader relaxCore, TREXGrammarReader trex, XMLReader parser )
-		{
-			super(trex,new ForkContentHandler(relaxCore,relaxNs));
+		Sniffer(
+			RELAXNSReader relaxNs, RELAXCoreReader relaxCore,
+			TREXGrammarReader trex, XMLSchemaReader xmlSchema,
+			XMLReader parser ) {
+			
+			super(trex,new ForkContentHandler(xmlSchema,new ForkContentHandler(relaxCore,relaxNs)));
 			this.relaxCore = relaxCore;
 			this.relaxNs = relaxNs;
 			this.trex = trex;
+			this.xmlSchema = xmlSchema;
 			this.parser = parser;
 		}
 		
-		private final ContentHandler relaxCore,relaxNs,trex;
+		private final ContentHandler relaxCore,relaxNs,trex,xmlSchema;
 		private final XMLReader parser;
 
 		protected ContentHandler winner;
 
 		
 		public void startElement( String namespaceURI, String localName, String qName, Attributes atts )
-			throws SAXException
-		{
+								throws SAXException {
 			if( localName.equals("module") )
 				winner = relaxCore;	// assume RELAX Core.
+			else
+			if( localName.equals("schema") )
+				winner = xmlSchema; // assume XML Schema
 			else
 			if( TREXGrammarReader.TREXNamespace.equals(namespaceURI)
 			||  namespaceURI.equals("") )

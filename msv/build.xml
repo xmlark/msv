@@ -237,6 +237,7 @@
       <classpath path="${isorelax.jar}"/>
       <classpath path="../shared/lib/servlet.jar"/>
       <classpath path="${java.class.path}"/>
+      <classpath path="${resolver.jar}"/>
       
       <include name="**/*.java" />
     </javac>

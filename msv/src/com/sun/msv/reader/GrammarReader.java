@@ -464,11 +464,6 @@ public abstract class GrammarReader
         } catch( SAXParseException e ) {
             controller.error(e);
 		} catch( SAXException e ) {
-			// this means that a runtime exception was thrown by the reader
-			// rethrow it.
-			if(e.getException() instanceof RuntimeException)
-				throw (RuntimeException)e.getException();
-
             controller.error( e, errorSource );
 		}
 	}

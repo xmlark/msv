@@ -88,8 +88,6 @@ public class DTDReader implements DTDEventListener {
 	
 	protected static final Map dtdTypes = createDTDTypes();
 	
-	protected boolean hadError = false;
-	
 	/**
 	 * creates a map from DTD type name to corresponding
 	 * {@link DataType} object.
@@ -161,7 +159,6 @@ public class DTDReader implements DTDEventListener {
 			// we found element name like "html:p" but 
 			// we haven't see any "xmlns:html" attribute declaration.
 			// this is considered as an error for MSV.
-			hadError = true;
 			controller.error( new Locator[]{locator},
 				Localizer.localize( ERR_UNDECLARED_PREFIX, s[0] ), null );
 			
@@ -209,8 +206,8 @@ public class DTDReader implements DTDEventListener {
 	 *		object will be returned.
 	 */
 	public TREXGrammar getResult() {
-		if(hadError)	return null;
-		else			return grammar;
+		if(controller.hadError())	return null;
+		else			            return grammar;
 	}
 		
 	protected Locator locator;
@@ -563,33 +560,21 @@ public class DTDReader implements DTDEventListener {
 		for( int i=0; i<exps.length; i++ )
 			if( exps[i].exp==null ) {
 				// this element is referenced but not defined.
-				hadError = true;
 				controller.error( new Locator[]{locator},
 					Localizer.localize( ERR_UNDEFINED_ELEMENT, new Object[]{exps[i].name} ), null );
 			}
 	}
 
-	protected Locator[] getLocation( SAXParseException e ) {
-		LocatorImpl loc = new LocatorImpl();
-		loc.setColumnNumber(e.getColumnNumber());
-		loc.setLineNumber(e.getLineNumber());
-		loc.setSystemId(e.getSystemId());
-		loc.setPublicId(e.getPublicId());
-		return new Locator[]{loc};
-	}
-	
     public void fatalError(SAXParseException e) throws SAXException {
-		hadError = true;
-		controller.error( getLocation(e), e.getMessage(), null );
+        controller.fatalError(e);
     }
 
     public void error(SAXParseException e) throws SAXException {
-		hadError = true;
-		controller.error( getLocation(e), e.getMessage(), null );
+        controller.error(e);
     }
 
     public void warning(SAXParseException e) throws SAXException {
-		controller.warning( getLocation(e), e.getMessage() );
+        controller.warning(e);
     }
 	
     

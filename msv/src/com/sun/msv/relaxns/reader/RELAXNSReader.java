@@ -75,8 +75,8 @@ public class RELAXNSReader extends RELAXReader {
 
 	/** obtains parsed grammar object only if parsing was successful. */
 	public final RELAXGrammar getResult() {
-		if(hadError)	return null;
-		else			return grammar;
+		if(controller.hadError())	return null;
+		else			            return grammar;
 	}
 	public Grammar getResultAsGrammar() {
 		return getResult();
@@ -86,8 +86,8 @@ public class RELAXNSReader extends RELAXReader {
 	/** obtains parsed grammar object as SchemaProvider
 	 * only if parsing was successful. */
 	public final SchemaProvider getSchemaProvider() {
-		if(hadError)	return null;
-		else			return schemaProvider;
+		if(controller.hadError())	return null;
+		else			            return schemaProvider;
 	}
 	
 	
@@ -117,9 +117,9 @@ public class RELAXNSReader extends RELAXReader {
 						pool) );
 
 		} catch( javax.xml.parsers.ParserConfigurationException e ) {
-			reportError( e, ERR_XMLPARSERFACTORY_EXCEPTION, e.getMessage() );
+            controller.error(e, null );
 		} catch( SAXException e ) {
-			reportError( e, ERR_SAX_EXCEPTION, e.getMessage() );
+            controller.error(e, null );
 		}
 
 		return null;

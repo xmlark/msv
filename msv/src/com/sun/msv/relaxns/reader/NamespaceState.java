@@ -102,11 +102,11 @@ public class NamespaceState extends State
 				parser.setContentHandler(moduleReader);
 				parser.parse(is);
 			} catch( javax.xml.parsers.ParserConfigurationException e ) {
-				reader.reportError( e, reader.ERR_XMLPARSERFACTORY_EXCEPTION, e.getMessage() );
+                reader.controller.error( e, getLocation() );
 			} catch( java.io.IOException e ) {
-				reader.reportError( e, reader.ERR_IO_EXCEPTION, e.getMessage() );
+                reader.controller.error( e, getLocation() );
 			} catch( SAXException e ) {
-				reader.reportError( e, reader.ERR_SAX_EXCEPTION, e.getMessage() );
+                reader.controller.error( e, getLocation() );
 			}
 			
 			getSchema(moduleReader);
@@ -123,7 +123,7 @@ public class NamespaceState extends State
 		IslandSchema schema = moduleReader.getSchema();
 		if( schema==null ) {
 			// failed to load a module.
-			reader.hadError = true;
+			reader.controller.setErrorFlag();
 			schema = new IgnoredSchema();	// use a dummy schema
 		}
 			

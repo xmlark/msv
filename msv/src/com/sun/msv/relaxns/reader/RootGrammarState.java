@@ -19,7 +19,6 @@ import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.SimpleState;
 import com.sun.msv.reader.ExpressionOwner;
-import com.sun.msv.reader.util.GrammarReaderControllerAdaptor;
 import com.sun.msv.grammar.Expression;
 
 /**
@@ -47,14 +46,12 @@ public class RootGrammarState extends SimpleState implements ExpressionOwner
 		SchemaProviderImpl schemaProvider = new SchemaProviderImpl(reader.grammar);
 		reader.schemaProvider = schemaProvider;
 		
-		ErrorHandler handler = new GrammarReaderControllerAdaptor(reader);
-		
-		if(!reader.hadError) {
+		if(!reader.controller.hadError()) {
 			// abort further wrap up if there was an error.
 			
 			// then bind it as the final wrap-up.
-			if( !schemaProvider.bind(handler) )
-				reader.hadError = true;
+			if( !schemaProvider.bind(reader.controller) )
+				reader.controller.setErrorFlag();
 		
 			// also bind top-level expression
 			if( reader.grammar.topLevel!=null )
@@ -62,7 +59,7 @@ public class RootGrammarState extends SimpleState implements ExpressionOwner
 				// <topLevel> is not specified (which is an error, and already reported.)
 				reader.grammar.topLevel = 
 					reader.grammar.topLevel.visit(
-						new IslandSchemaImpl.Binder(schemaProvider, handler, reader.pool ) );
+						new IslandSchemaImpl.Binder(schemaProvider, reader.controller, reader.pool ) );
 		}
 	}
 	

@@ -28,7 +28,7 @@ public class Controller implements GrammarReaderController,ErrorHandler
     public boolean hadError() { return _hadError; }
     
     /** Force set the error flag to true. */
-    public void setErrorFlag() { _hadError=true; }
+    public final void setErrorFlag() { _hadError=true; }
         
     public Controller( GrammarReaderController _core ) {
         this.core = _core;
@@ -43,6 +43,7 @@ public class Controller implements GrammarReaderController,ErrorHandler
     }
     
     public void error( Locator[] locs, String errorMessage, Exception nestedException ) {
+        setErrorFlag();
         core.error(locs,errorMessage,nestedException);
     }
     
@@ -63,6 +64,11 @@ public class Controller implements GrammarReaderController,ErrorHandler
     }
 	
     public void error( SAXException e, Locator source ) {
+        // if a nested exception is a RuntimeException,
+        // this shouldn't be handled.
+        if( e.getException() instanceof RuntimeException )
+            throw (RuntimeException)e.getException();
+        
         if(e instanceof SAXParseException)
             error( (SAXParseException)e );
         else

@@ -56,6 +56,13 @@ public abstract class NameClass implements java.io.Serializable {
         
         return !r;
     }
+
+    /**
+     * Computes the equivalent but simple name class.
+     */
+    public NameClass simplify() {
+        return NameClassSimplifier.simplify(this);
+    }
     
 	
 	/**

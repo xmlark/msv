@@ -178,30 +178,23 @@ public class RELAXNGReader extends TREXBaseReader {
 		return super.createExpressionChildState(parent,tag);
 	}
 	
-	/** obtains a named DataType object referenced by a QName. */
-	public DataType resolveDataType( String qName ) {
-		String[] s = splitQName(qName);
-		if(s==null) {
-			reportError( ERR_UNDECLEARED_PREFIX, qName );
-			// recover by returning some datatype.
-			return com.sun.msv.datatype.StringType.theInstance;
-		}
+	/** obtains a named DataType object referenced by a local name. */
+	public DataType resolveDataType( String localName ) {
 		
-		DataTypeLibrary lib = resolveDataTypeLibrary(s[0]);
-		if(lib==null)
-			// recover from an error
+		if(datatypeLib==null)
+			// silently recover from an error
 			return com.sun.msv.datatype.StringType.theInstance;
 		
 		try {
-			DataType dt = lib.getType(s[1]/*local*/);
+			DataType dt = datatypeLib.getType(localName);
 			if(dt==null) {
-				reportError( ERR_UNRECOGNIZED_LOCAL_TYPENAME, s[0], s[1] );
+				reportError( ERR_UNDEFINED_DATATYPE, localName );
 				return com.sun.msv.datatype.StringType.theInstance;
 			}
 		
 			return dt;
 		} catch( DataTypeException dte ) {
-			reportError( ERR_UNRECOGNIZED_LOCAL_TYPENAME1, s[0], s[1], dte.getMessage() );
+			reportError( ERR_UNDEFINED_DATATYPE_1, localName, dte.getMessage() );
 			return com.sun.msv.datatype.StringType.theInstance;
 		}
 	}
@@ -336,10 +329,8 @@ public class RELAXNGReader extends TREXBaseReader {
 		"RELAXNGReader.BadDataValue";
 	public static final String ERR_UNDEFINED_KEY = // arg:1
 		"RELAXNGReader.UndefinedKey";
-	public static final String ERR_UNRECOGNIZED_LOCAL_TYPENAME = // arg:2
-		"RELAXNGReader.UnrecognizedLocalTypeName";
-	public static final String ERR_UNRECOGNIZED_LOCAL_TYPENAME1 = // arg:3
-		"RELAXNGReader.UnrecognizedLocalTypeName1";
+	public static final String ERR_UNDEFINED_DATATYPE_1 = // arg:2
+		"RELAXNGReader.UndefinedDataType1";
 	public static final String ERR_INCONSISTENT_KEY_TYPE = // arg:1
 		"RELAXNGReader.InconsistentKeyType";
 	public static final String ERR_INCONSISTENT_COMBINE = // arg:1

@@ -54,8 +54,7 @@ public class DataState extends ExpressionState {
 					if( typeBuilder==null )
 						 reader.reportError( reader.ERR_UNDEFINED_DATATYPE, baseType );
 				 } catch( DataTypeException dte ) {
-					 // TODO: attach the message of dte, if any.
-					 reader.reportError( reader.ERR_UNDEFINED_DATATYPE, baseType );
+					 reader.reportError( reader.ERR_UNDEFINED_DATATYPE_1, baseType, dte.getMessage() );
 				 }
 			}
 		}

@@ -9,16 +9,13 @@
  */
 package com.sun.msv.reader.datatype.xsd;
 
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.datatype.DataTypeVocabulary;
-import com.sun.msv.datatype.xsd.DatatypeFactory;
-import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.datatype.xsd.XSDatatypeImpl;
-import com.sun.msv.util.StartTagInfo;
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.DatatypeException;
-import org.xml.sax.ContentHandler;
-import java.util.Map;
+
+import com.sun.msv.datatype.xsd.DatatypeFactory;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.datatype.DataTypeVocabulary;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * XSD implementation of {@link DataTypeVocabulary}.

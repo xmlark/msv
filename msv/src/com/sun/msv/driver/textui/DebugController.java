@@ -9,12 +9,14 @@
  */
 package com.sun.msv.driver.textui;
 
+import java.io.PrintStream;
+
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-import org.xml.sax.EntityResolver;
+
 import com.sun.msv.reader.GrammarReaderController;
-import java.io.PrintStream;
 
 /**
  * GrammarReaderController that prints all errors and warnings.

@@ -9,10 +9,10 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import com.sun.msv.reader.ExpressionWithChildState;
-import com.sun.msv.reader.State;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
+import com.sun.msv.reader.ExpressionWithChildState;
+import com.sun.msv.reader.State;
 import com.sun.msv.util.StartTagInfo;
 
 /**

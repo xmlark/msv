@@ -9,14 +9,14 @@
  */
 package com.sun.msv.relaxns.grammar;
 
-import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.ElementExp;
-import com.sun.msv.grammar.NameClass;
-import com.sun.msv.grammar.NamespaceNameClass;
-import com.sun.msv.grammar.ExpressionPool;
-import com.sun.msv.grammar.ReferenceExp;
 import org.iso_relax.dispatcher.ElementDecl;
 import org.xml.sax.Locator;
+
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.NamespaceNameClass;
 
 /**
  * place holder for imported element declaration.

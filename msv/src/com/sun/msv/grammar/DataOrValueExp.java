@@ -10,6 +10,7 @@
 package com.sun.msv.grammar;
 
 import org.relaxng.datatype.Datatype;
+
 import com.sun.msv.util.StringPair;
 
 /**

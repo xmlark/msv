@@ -9,9 +9,9 @@
  */
 package com.sun.msv.relaxns.reader;
 
-import com.sun.msv.util.StartTagInfo;
-import com.sun.msv.reader.State;
 import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.State;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * invokes State object that parses the document element.

@@ -1,8 +1,16 @@
 package com.sun.msv.writer.relaxng;
 
-import com.sun.msv.grammar.*;
-import com.sun.msv.writer.*;
 import java.util.Stack;
+
+import com.sun.msv.grammar.AnyNameClass;
+import com.sun.msv.grammar.ChoiceNameClass;
+import com.sun.msv.grammar.DifferenceNameClass;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.NameClassVisitor;
+import com.sun.msv.grammar.NamespaceNameClass;
+import com.sun.msv.grammar.NotNameClass;
+import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.writer.XMLWriter;
 
 /**
  * Visits NameClass and writes its XML representation.

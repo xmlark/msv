@@ -9,7 +9,13 @@
  */
 package com.sun.msv.reader.trex.ng;
 
-import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.AnyNameClass;
+import com.sun.msv.grammar.ChoiceNameClass;
+import com.sun.msv.grammar.DifferenceNameClass;
+import com.sun.msv.grammar.NameClassVisitor;
+import com.sun.msv.grammar.NamespaceNameClass;
+import com.sun.msv.grammar.NotNameClass;
+import com.sun.msv.grammar.SimpleNameClass;
 
 /**
  * parses &lt;attribute&gt; pattern.

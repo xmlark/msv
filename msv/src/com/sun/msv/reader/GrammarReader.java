@@ -9,30 +9,32 @@
  */
 package com.sun.msv.reader;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.XMLReader;
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.LocatorImpl;
-import org.xml.sax.helpers.XMLFilterImpl;
-import org.relaxng.datatype.Datatype;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
-import java.util.Enumeration;
-import java.io.IOException;
-//import java.net.URL;
-//import java.net.MalformedURLException;
-import javax.xml.parsers.SAXParserFactory;
+
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.relaxng.datatype.Datatype;
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.LocatorImpl;
+import org.xml.sax.helpers.XMLFilterImpl;
+
 import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.trex.*;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.IDContextProvider;
+import com.sun.msv.grammar.ReferenceContainer;
+import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.Uri;

@@ -9,13 +9,12 @@
  */
 package com.sun.msv.verifier.jarv;
 
-import org.iso_relax.verifier.*;
-import com.sun.msv.grammar.Grammar;
+import org.xml.sax.InputSource;
+
 import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.relax.core.RELAXCoreReader;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * VerifierFactory implementation of RELAX Core.

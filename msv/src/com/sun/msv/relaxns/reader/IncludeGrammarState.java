@@ -27,7 +27,7 @@ public class IncludeGrammarState extends ChildlessState
 
 		if(href==null) {
             // name attribute is required.
-			reader.reportError( reader.ERR_MISSING_ATTRIBUTE,
+			reader.reportError( RELAXNSReader.ERR_MISSING_ATTRIBUTE,
 				"include","grammarLocation");
 			// recover by ignoring this include element
 		} else

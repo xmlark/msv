@@ -9,10 +9,10 @@
  */
 package com.sun.msv.reader.trex;
 
-import com.sun.msv.reader.ExpressionWithoutChildState;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.trex.TREXGrammar;
+import com.sun.msv.reader.ExpressionWithoutChildState;
 														   
 /**
  * parses &lt;ref&gt; pattern.

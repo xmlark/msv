@@ -9,13 +9,13 @@
  */
 package com.sun.msv.grammar.xmlschema;
 
-import com.sun.msv.grammar.NameClass;
-import com.sun.msv.grammar.AnyNameClass;
-import com.sun.msv.grammar.SimpleNameClass;
-import com.sun.msv.grammar.NameClassVisitor;
-import com.sun.msv.grammar.DifferenceNameClass;
-import com.sun.msv.util.StringPair;
 import java.util.Set;
+
+import com.sun.msv.grammar.DifferenceNameClass;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.NameClassVisitor;
+import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.util.StringPair;
 
 /**
  * Special name class implementation used for the wild card of the "lax" mode.

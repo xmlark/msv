@@ -1,20 +1,28 @@
 package batch.driver;
 
-import batch.model.*;
-import org.iso_relax.verifier.*;
-import org.xml.sax.*;
+import java.io.File;
+
+import javax.xml.parsers.SAXParserFactory;
+
+import org.iso_relax.verifier.Schema;
+import org.iso_relax.verifier.VerifierFilter;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+
+import batch.model.ISchema;
+
 import com.sun.msv.driver.textui.ReportErrorHandler;
-import com.sun.msv.driver.textui.DebugController;
 import com.sun.msv.grammar.Grammar;
-import com.sun.msv.verifier.IVerifier;
-import com.sun.msv.verifier.Verifier;
-import com.sun.msv.verifier.ValidityViolation;
-import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.util.GrammarLoader;
-import java.io.File;
-import javax.xml.parsers.SAXParserFactory;
+import com.sun.msv.verifier.IVerifier;
+import com.sun.msv.verifier.ValidityViolation;
+import com.sun.msv.verifier.Verifier;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 
 /**
  * Test harness for RELAX NG conformance test suite.

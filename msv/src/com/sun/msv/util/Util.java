@@ -9,10 +9,11 @@
  */
 package com.sun.msv.util;
 
-import org.xml.sax.InputSource;
 import java.io.File;
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.xml.sax.InputSource;
 
 /**
  * Collection of utility methods.

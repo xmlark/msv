@@ -1,18 +1,23 @@
 package batch.driver;
 
-import batch.WordlessErrorReporter;
-import batch.model.*;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import com.sun.resolver.tools.CatalogResolver;
-import com.sun.msv.grammar.Grammar;
-import com.sun.msv.reader.GrammarReaderController;
-import com.sun.msv.verifier.*;
-import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import com.sun.msv.driver.textui.DebugController;
 import java.io.File;
 import java.io.InputStream;
+
 import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+
+import batch.WordlessErrorReporter;
+import batch.model.ISchema;
+
+import com.sun.msv.driver.textui.DebugController;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.reader.GrammarReaderController;
+import com.sun.msv.verifier.IVerifier;
+import com.sun.msv.verifier.Verifier;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
+import com.sun.resolver.tools.CatalogResolver;
 
 abstract class AbstractValidatorExImpl implements IValidatorEx
 {

@@ -10,12 +10,10 @@
 package com.sun.msv.reader;
 
 import org.xml.sax.ContentHandler;
-import org.xml.sax.helpers.NamespaceSupport;
-import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
-import org.xml.sax.helpers.AttributesImpl;
-import org.xml.sax.helpers.LocatorImpl;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.LocatorImpl;
+
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -173,7 +171,7 @@ public abstract class State implements ContentHandler
 			case ' ': case '\t': case '\n': case '\r':
 				break;
 			default:
-				reader.reportError( reader.ERR_CHARACTERS, new String(buffer,from,len).trim() );
+				reader.reportError( GrammarReader.ERR_CHARACTERS, new String(buffer,from,len).trim() );
 				return;
 			}
 	}

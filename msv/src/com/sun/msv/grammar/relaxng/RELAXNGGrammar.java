@@ -11,9 +11,6 @@ package com.sun.msv.grammar.relaxng;
 
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.trex.TREXGrammar;
-import com.sun.msv.util.StringPair;
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * Grammar for RELAX NG (with DTD compatibility annotation).

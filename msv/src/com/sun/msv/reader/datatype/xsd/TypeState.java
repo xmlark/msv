@@ -9,18 +9,17 @@
  */
 package com.sun.msv.reader.datatype.xsd;
 
+import org.relaxng.datatype.DatatypeException;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
-import org.relaxng.datatype.DatatypeException;
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.SimpleState;
-import com.sun.msv.reader.IgnoreState;
+
+import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.reader.ExpressionOwner;
 import com.sun.msv.reader.GrammarReader;
+import com.sun.msv.reader.IgnoreState;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.State;
 import com.sun.msv.reader.datatype.TypeOwner;
-import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.datatype.xsd.StringType;
-import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -76,7 +75,7 @@ abstract class TypeState extends SimpleState
 		try {
 			return makeType();
 		} catch( DatatypeException be ) {
-			reader.reportError( be, reader.ERR_BAD_TYPE );
+			reader.reportError( be, GrammarReader.ERR_BAD_TYPE );
             // recover by assuming a valid type.
 			return new XSDatatypeExp(StringType.theInstance,reader.pool);
 		}
@@ -103,7 +102,7 @@ abstract class TypeState extends SimpleState
 		}
 				
 		// unacceptable element
-		reader.reportError(reader.ERR_MALPLACED_ELEMENT, tag.qName );
+		reader.reportError(GrammarReader.ERR_MALPLACED_ELEMENT, tag.qName );
 		// try to recover from error by just ignoring it.
 		// element of a foreign namespace. skip subtree
 		reader.pushState(new IgnoreState(),this,tag);

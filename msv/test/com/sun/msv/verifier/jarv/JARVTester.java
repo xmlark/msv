@@ -9,7 +9,9 @@
  */
 package com.sun.msv.verifier.jarv;
 
-import org.iso_relax.verifier.*;
+import org.iso_relax.verifier.Schema;
+import org.iso_relax.verifier.Verifier;
+import org.iso_relax.verifier.VerifierFactory;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 

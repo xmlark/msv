@@ -9,11 +9,12 @@
  */
 package batch;
 
-import com.sun.msv.reader.GrammarReaderController;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
-import org.xml.sax.EntityResolver;
 import org.xml.sax.SAXException;
+
+import com.sun.msv.reader.GrammarReaderController;
 
 /**
  * GrammarReaderController implementation that throws an Error

@@ -9,11 +9,10 @@
  */
 package com.sun.msv.verifier.identity;
 
-import com.sun.msv.grammar.xmlschema.IdentityConstraint;
-import com.sun.msv.grammar.xmlschema.XPath;
 import org.relaxng.datatype.Datatype;
-import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+
+import com.sun.msv.grammar.xmlschema.IdentityConstraint;
 
 /**
  * XPath matcher that tests the selector of an identity constraint.

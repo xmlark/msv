@@ -9,11 +9,13 @@
  */
 package com.sun.msv.verifier.regexp;
 
-import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.relax.*;
-import com.sun.msv.grammar.trex.*;
-import java.util.Iterator;
-import java.util.Set;
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionCloner;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.OtherExp;
+import com.sun.msv.grammar.ReferenceExp;
 
 /**
  * Non-recursive ReferenceExpRemover with a cache.

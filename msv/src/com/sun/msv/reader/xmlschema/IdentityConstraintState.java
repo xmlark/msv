@@ -9,19 +9,27 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import com.sun.msv.reader.ChildlessState;
-import com.sun.msv.reader.SimpleState;
-import com.sun.msv.grammar.NameClass;
-import com.sun.msv.grammar.SimpleNameClass;
-import com.sun.msv.grammar.NamespaceNameClass;
-import com.sun.msv.grammar.AnyNameClass;
-import com.sun.msv.grammar.xmlschema.*;
-import com.sun.msv.util.StartTagInfo;
-import com.sun.msv.reader.GrammarReader;
-import com.sun.msv.reader.State;
-import org.xml.sax.Locator;
-import java.util.Vector;
 import java.util.StringTokenizer;
+import java.util.Vector;
+
+import org.xml.sax.Locator;
+
+import com.sun.msv.grammar.AnyNameClass;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.NamespaceNameClass;
+import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.grammar.xmlschema.Field;
+import com.sun.msv.grammar.xmlschema.IdentityConstraint;
+import com.sun.msv.grammar.xmlschema.KeyConstraint;
+import com.sun.msv.grammar.xmlschema.KeyRefConstraint;
+import com.sun.msv.grammar.xmlschema.UniqueConstraint;
+import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
+import com.sun.msv.grammar.xmlschema.XPath;
+import com.sun.msv.reader.ChildlessState;
+import com.sun.msv.reader.GrammarReader;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.State;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * used to parse &lt;unique&gt;,&lt;key&gt;, and &lt;keyref&gt; element.
@@ -40,7 +48,7 @@ public class IdentityConstraintState extends SimpleState {
 			if(v!=null)
 				selector = parseSelector(v);
 			else {
-				reader.reportError(reader.ERR_MISSING_ATTRIBUTE, "selector", "xpath" );
+				reader.reportError(XMLSchemaReader.ERR_MISSING_ATTRIBUTE, "selector", "xpath" );
 				selector = new XPath[0];	// recover by providing a dummy selector
 			}
 			
@@ -51,7 +59,7 @@ public class IdentityConstraintState extends SimpleState {
 			if(v!=null)
 				fields.add( parseField(v) );
 			else {
-				reader.reportError(reader.ERR_MISSING_ATTRIBUTE, "field", "xpath" );
+				reader.reportError(XMLSchemaReader.ERR_MISSING_ATTRIBUTE, "field", "xpath" );
 				// recover by ignoring this field.
 			}
 			return new ChildlessState();
@@ -71,7 +79,7 @@ public class IdentityConstraintState extends SimpleState {
 		
 		String name = startTag.getAttribute("name");
 		if(name==null) {
-			reader.reportError( reader.ERR_MISSING_ATTRIBUTE,
+			reader.reportError( XMLSchemaReader.ERR_MISSING_ATTRIBUTE,
 				startTag.localName, "name" );
 			return;	// recover by ignoring this constraint.
 		}
@@ -87,13 +95,13 @@ public class IdentityConstraintState extends SimpleState {
 		if( startTag.localName.equals("keyref") ) {
 			final String refer = startTag.getAttribute("refer");
 			if(refer==null) {
-				reader.reportError( reader.ERR_MISSING_ATTRIBUTE,
+				reader.reportError( XMLSchemaReader.ERR_MISSING_ATTRIBUTE,
 					startTag.localName, "refer" );
 				return;	// recover by ignoring this constraint.
 			}
 			final String[] qn = reader.splitQName(refer);
 			if(qn==null) {
-				reader.reportError( reader.ERR_UNDECLARED_PREFIX, qn );
+				reader.reportError( XMLSchemaReader.ERR_UNDECLARED_PREFIX, qn );
 				return;
 			}
 			
@@ -107,16 +115,16 @@ public class IdentityConstraintState extends SimpleState {
 				public void patch() {
 					XMLSchemaSchema s = reader.grammar.getByNamespace(qn[0]);
 					if(s==null) {
-						reader.reportError( reader.ERR_UNDEFINED_SCHEMA, qn[0] );
+						reader.reportError( XMLSchemaReader.ERR_UNDEFINED_SCHEMA, qn[0] );
 						return;
 					}
 					IdentityConstraint idc = s.identityConstraints.get(qn[1]);
 					if(idc==null) {
-						reader.reportError( reader.ERR_UNDEFINED_KEY, refer );
+						reader.reportError( XMLSchemaReader.ERR_UNDEFINED_KEY, refer );
 						return;
 					}
 					if(!(idc instanceof KeyConstraint )) {
-						reader.reportError( reader.ERR_KEYREF_REFERRING_NON_KEY, refer );
+						reader.reportError( XMLSchemaReader.ERR_KEYREF_REFERRING_NON_KEY, refer );
 						return;
 					}
 					if( idc.fields.length != keyRef.fields.length ) {
@@ -124,7 +132,7 @@ public class IdentityConstraintState extends SimpleState {
 							new Locator[]{
 								getLocation(),
 								reader.getDeclaredLocationOf(idc) },
-							reader.ERR_KEY_FIELD_NUMBER_MISMATCH,
+                            XMLSchemaReader.ERR_KEY_FIELD_NUMBER_MISMATCH,
 							new Object[]{
 								idc.localName,
 								new Integer(idc.fields.length),
@@ -143,7 +151,7 @@ public class IdentityConstraintState extends SimpleState {
 		if( reader.currentSchema.identityConstraints.get(name)!=null ) {
 			reader.reportError(
 				new Locator[]{ this.location, reader.getDeclaredLocationOf(id) },
-				reader.ERR_DUPLICATE_IDENTITY_CONSTRAINT_DEFINITION,
+                XMLSchemaReader.ERR_DUPLICATE_IDENTITY_CONSTRAINT_DEFINITION,
 				new Object[]{name} );
 		} else {
 			reader.currentSchema.identityConstraints.add(name,id);

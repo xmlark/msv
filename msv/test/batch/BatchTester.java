@@ -9,21 +9,22 @@
  */
 package batch;
 
-import javax.xml.parsers.*;
-import java.util.Iterator;
+import java.io.File;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.io.*;
-import org.apache.xerces.parsers.SAXParser;
-import org.xml.sax.InputSource;
-import junit.framework.*;
-import com.sun.msv.verifier.*;
-import com.sun.msv.reader.GrammarReaderController;
-import com.sun.msv.grammar.Grammar;
-import com.sun.msv.grammar.ExpressionPool;
+
+import javax.xml.parsers.SAXParserFactory;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import batch.driver.DTDValidator;
+import batch.driver.GenericValidator;
+import batch.driver.IValidatorEx;
+import batch.driver.IValidatorImplForRNG;
+import batch.driver.IValidatorImplForXS;
+import batch.model.TestReader;
+
 import com.sun.resolver.tools.CatalogResolver;
-import batch.driver.*;
-import batch.model.*;
 
 /**
  * Test schemata/instances are expected to follow a naming convention.

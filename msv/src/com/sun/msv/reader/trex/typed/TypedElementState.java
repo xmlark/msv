@@ -10,8 +10,8 @@
 package com.sun.msv.reader.trex.typed;
 
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.reader.trex.ElementState;
 import com.sun.msv.grammar.trex.typed.TypedElementPattern;
+import com.sun.msv.reader.trex.ElementState;
 
 /**
  * reads &lt;element&gt; element with 'label' annotation.

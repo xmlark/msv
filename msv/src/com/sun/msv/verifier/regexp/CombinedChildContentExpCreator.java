@@ -9,9 +9,24 @@
  */
 package com.sun.msv.verifier.regexp;
 
-import com.sun.msv.grammar.*;
-import com.sun.msv.util.StringPair;
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.ChoiceExp;
+import com.sun.msv.grammar.ConcurExp;
+import com.sun.msv.grammar.DataExp;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.ExpressionVisitorVoid;
+import com.sun.msv.grammar.InterleaveExp;
+import com.sun.msv.grammar.ListExp;
+import com.sun.msv.grammar.MixedExp;
+import com.sun.msv.grammar.OneOrMoreExp;
+import com.sun.msv.grammar.OtherExp;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.SequenceExp;
+import com.sun.msv.grammar.ValueExp;
 import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.util.StringPair;
 
 /**
  * creates "combined child content expression" and gathers "elements of concern"

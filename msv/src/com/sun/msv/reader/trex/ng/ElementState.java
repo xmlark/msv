@@ -9,8 +9,6 @@
  */
 package com.sun.msv.reader.trex.ng;
 
-import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.trex.ElementPattern;
 
 /**
  * parses &lt;element&gt; pattern.

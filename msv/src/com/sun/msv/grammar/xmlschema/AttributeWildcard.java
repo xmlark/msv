@@ -9,8 +9,12 @@
  */
 package com.sun.msv.grammar.xmlschema;
 
-import com.sun.msv.grammar.*;
 import java.util.Iterator;
+
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.ReferenceExp;
 
 /**
  * Attribute wildcard property of the schema component.
@@ -69,7 +73,7 @@ public class AttributeWildcard {
 				// nc is built by using NamespaceNameClass.
 				// "strict" allows global element declarations of 
 				// specified namespaces.
-				if(name.accepts( schema.targetNamespace, name.LOCALNAME_WILDCARD )) {
+				if(name.accepts( schema.targetNamespace, NameClass.LOCALNAME_WILDCARD )) {
 					
 					// gather global attributes.
 					ReferenceExp[] atts = schema.attributeDecls.getAll();

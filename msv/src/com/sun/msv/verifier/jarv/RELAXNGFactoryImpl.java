@@ -9,16 +9,14 @@
  */
 package com.sun.msv.verifier.jarv;
 
-import org.iso_relax.verifier.*;
-import com.sun.msv.grammar.Grammar;
-import com.sun.msv.reader.trex.ng.RELAXNGReader;
-import com.sun.msv.reader.GrammarReaderController;
-
 import org.relaxng.datatype.DatatypeLibraryFactory;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
+
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.reader.GrammarReaderController;
+import com.sun.msv.reader.trex.ng.RELAXNGReader;
 
 /**
  * VerifierFactory implementation of RELAX NG.

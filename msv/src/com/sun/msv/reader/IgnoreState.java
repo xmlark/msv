@@ -9,7 +9,6 @@
  */
 package com.sun.msv.reader;
 
-import com.sun.msv.util.StartTagInfo;
 import org.xml.sax.Attributes;
 
 /**

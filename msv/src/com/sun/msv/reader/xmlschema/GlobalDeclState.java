@@ -9,15 +9,13 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.SimpleState;
-import com.sun.msv.reader.ExpressionOwner;
-import com.sun.msv.reader.GrammarReader;
-import com.sun.msv.reader.datatype.xsd.XSTypeOwner;
-import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
+import com.sun.msv.reader.ExpressionOwner;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
+import com.sun.msv.reader.datatype.xsd.XSTypeOwner;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -62,14 +60,14 @@ public class GlobalDeclState extends SimpleState
 		
 		if( typeName==null ) {
 			// top-level simpleType must define a named type
-			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "simpleType", "name" );
+			reader.reportError( XMLSchemaReader.ERR_MISSING_ATTRIBUTE, "simpleType", "name" );
 			return;	// recover by ignoring this declaration
 		}
 		
 		// memorize this type.
 		final SimpleTypeExp exp = reader.currentSchema.simpleTypes.getOrCreate(typeName);
 		if(exp.getType()!=null ) {
-			reader.reportError( reader.ERR_DATATYPE_ALREADY_DEFINED, typeName );
+			reader.reportError( XMLSchemaReader.ERR_DATATYPE_ALREADY_DEFINED, typeName );
 			return;
 			// recover by ignoring this declaration
 		}

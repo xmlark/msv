@@ -9,14 +9,10 @@
  */
 package com.sun.msv.reader.datatype.xsd;
 
-import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.datatype.xsd.StringType;
-import com.sun.msv.grammar.Expression;
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.ExpressionWithChildState;
-import com.sun.msv.reader.datatype.TypeOwner;
-import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.DatatypeException;
+
+import com.sun.msv.datatype.xsd.StringType;
+import com.sun.msv.reader.GrammarReader;
 
 /**
  * State which has at most one TypeState as its child.
@@ -30,7 +26,7 @@ abstract class TypeWithOneChildState extends TypeState implements XSTypeOwner
 	/** receives a Pattern object that is contained in this element. */
 	public void onEndChild( XSDatatypeExp child ) {
 		if( type!=null )
-			reader.reportError( reader.ERR_MORE_THAN_ONE_CHILD_TYPE );
+			reader.reportError( GrammarReader.ERR_MORE_THAN_ONE_CHILD_TYPE );
 			// recover by ignoring this child
 		else
 			type = child;
@@ -39,7 +35,7 @@ abstract class TypeWithOneChildState extends TypeState implements XSTypeOwner
 	
 	protected final XSDatatypeExp makeType() throws DatatypeException {
 		if( type==null ) {
-			reader.reportError( reader.ERR_MISSING_CHILD_TYPE );
+			reader.reportError( GrammarReader.ERR_MISSING_CHILD_TYPE );
             // recover by supplying a dummy DataType
 			return new XSDatatypeExp( StringType.theInstance, reader.pool );
 		}

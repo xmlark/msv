@@ -2,8 +2,12 @@ package batch.model;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import javax.xml.parsers.*;
-import junit.framework.*;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParserFactory;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * Parses a directory into the test suite.

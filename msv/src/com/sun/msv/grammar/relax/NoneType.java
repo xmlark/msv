@@ -9,11 +9,12 @@
  */
 package com.sun.msv.grammar.relax;
 
+import org.relaxng.datatype.ValidationContext;
+
 import com.sun.msv.datatype.SerializationContext;
 import com.sun.msv.datatype.xsd.BuiltinAtomicType;
-import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.datatype.xsd.SimpleURType;
-import org.relaxng.datatype.ValidationContext;
+import com.sun.msv.datatype.xsd.XSDatatype;
 
 /**
  * 'none' datatype of RELAX.

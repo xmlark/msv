@@ -9,7 +9,13 @@
  */
 package com.sun.msv.verifier.regexp;
 
-import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.DataExp;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ListExp;
+import com.sun.msv.grammar.MixedExp;
+import com.sun.msv.grammar.ValueExp;
 import com.sun.msv.grammar.util.ExpressionFinder;
 import com.sun.msv.verifier.Acceptor;
 

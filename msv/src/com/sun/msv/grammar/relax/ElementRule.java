@@ -9,7 +9,10 @@
  */
 package com.sun.msv.grammar.relax;
 
-import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.NameClass;
 
 /**
  * ElementRule declaration of RELAX.

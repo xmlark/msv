@@ -1,7 +1,8 @@
 package batch.model;
 
-import junit.framework.*;
 import java.io.File;
+
+import junit.framework.Test;
 
 /**
  * Builds test cases from individual schema/document files.

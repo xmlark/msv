@@ -12,15 +12,9 @@ package com.sun.msv.reader.xmlschema;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.ReferenceExp;
-import com.sun.msv.grammar.ReferenceContainer;
-import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.grammar.xmlschema.AttributeDeclExp;
 import com.sun.msv.grammar.xmlschema.AttributeWildcard;
-import com.sun.msv.grammar.xmlschema.AttWildcardExp;
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.GrammarReader;
-import java.util.StringTokenizer;
-import java.util.Iterator;
+import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 
 /**
  * used to parse &lt;anyAttribute &gt; element.
@@ -41,7 +35,7 @@ public class AnyAttributeState extends AnyState {
 		else
 		if(process.equals("strict"))	mode = AttributeWildcard.STRICT;
 		else {
-			reader.reportError( reader.ERR_BAD_ATTRIBUTE_VALUE, "processContents", process );
+			reader.reportError( XMLSchemaReader.ERR_BAD_ATTRIBUTE_VALUE, "processContents", process );
 			mode = AttributeWildcard.SKIP;
 		}
 		

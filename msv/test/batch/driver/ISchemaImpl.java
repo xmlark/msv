@@ -1,6 +1,7 @@
 package batch.driver;
 
-import batch.model.*;
+import batch.model.ISchema;
+
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.relaxng.RELAXNGGrammar;
 	

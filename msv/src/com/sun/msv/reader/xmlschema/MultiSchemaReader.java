@@ -9,15 +9,10 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
-import com.sun.msv.util.Util;
-import java.io.IOException;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.XMLReader;
-import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.LocatorImpl;
-import org.xml.sax.helpers.XMLFilterImpl;
+
+import com.sun.msv.util.Util;
 
 /**
  * An utility class that

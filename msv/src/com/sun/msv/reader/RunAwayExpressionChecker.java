@@ -9,12 +9,29 @@
  */
 package com.sun.msv.reader;
 
-import com.sun.msv.grammar.*;
-import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
+
 import org.xml.sax.Locator;
+
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.BinaryExp;
+import com.sun.msv.grammar.ChoiceExp;
+import com.sun.msv.grammar.ConcurExp;
+import com.sun.msv.grammar.DataExp;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionVisitorVoid;
+import com.sun.msv.grammar.InterleaveExp;
+import com.sun.msv.grammar.ListExp;
+import com.sun.msv.grammar.MixedExp;
+import com.sun.msv.grammar.OneOrMoreExp;
+import com.sun.msv.grammar.OtherExp;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.SequenceExp;
+import com.sun.msv.grammar.UnaryExp;
+import com.sun.msv.grammar.ValueExp;
 
 /**
  * makes sure that the expression does not run away.

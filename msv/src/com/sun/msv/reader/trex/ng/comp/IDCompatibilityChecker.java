@@ -1,18 +1,26 @@
 package com.sun.msv.reader.trex.ng.comp;
 
-import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.relaxng.RELAXNGGrammar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+
+import org.relaxng.datatype.Datatype;
+import org.xml.sax.Locator;
+
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.DataExp;
+import com.sun.msv.grammar.DataOrValueExp;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.ListExp;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.grammar.ValueExp;
 import com.sun.msv.grammar.util.ExpressionWalker;
 import com.sun.msv.grammar.util.RefExpRemover;
 import com.sun.msv.util.StringPair;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Vector;
-import org.relaxng.datatype.Datatype;
-import org.xml.sax.Locator;
 
 /**
  * checks the compatibility of RELAX NG grammar with the ID/IDREF feature.

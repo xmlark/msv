@@ -9,14 +9,15 @@
  */
 package com.sun.msv.grammar.xmlschema;
 
+import java.util.Vector;
+
 import com.sun.msv.grammar.ChoiceExp;
 import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.grammar.util.ExpressionWalker;
-import java.util.Vector;
 
 /**
  * Element declaration.
@@ -290,7 +291,8 @@ public class ElementDeclExp extends ReferenceExp
 	
 	public static final int RESTRICTION	= 0x1;
 	public static final int EXTENSION	= 0x2;
-	public static final int SUBSTITUTION= 0x4;
+	public static final int SUBSTITUTION   = 0x4;
+    public static final int ALL             = 0x7;
 
 	/**
 	 * The <a href="http://www.w3.org/TR/xmlschema-1/#e-final">

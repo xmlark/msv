@@ -9,26 +9,26 @@
  */
 package com.sun.msv.verifier.psvi;
 
-import org.xml.sax.*;
-import org.relaxng.datatype.Datatype;
-import java.util.Set;
-import java.util.Iterator;
 import java.util.StringTokenizer;
+
+import org.relaxng.datatype.Datatype;
+import org.xml.sax.Attributes;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+
 import com.sun.msv.grammar.ElementExp;
-import com.sun.msv.grammar.Grammar;
-import com.sun.msv.util.StartTagInfo;
-import com.sun.msv.util.StringPair;
-import com.sun.msv.util.StringRef;
 import com.sun.msv.util.DatatypeRef;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.util.StringRef;
 import com.sun.msv.verifier.Acceptor;
 import com.sun.msv.verifier.DocumentDeclaration;
 import com.sun.msv.verifier.ErrorInfo;
 import com.sun.msv.verifier.ValidityViolation;
 import com.sun.msv.verifier.Verifier;
-import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-//import com.sun.msv.verifier.regexp.AttributeToken;
-import com.sun.msv.verifier.regexp.SimpleAcceptor;
 import com.sun.msv.verifier.regexp.ComplexAcceptor;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
+import com.sun.msv.verifier.regexp.SimpleAcceptor;
 
 /**
  * assign types to the incoming SAX2 events and reports them to

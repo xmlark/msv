@@ -1,18 +1,11 @@
 package batch.driver;
 
+import org.xml.sax.InputSource;
+
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.dtd.DTDReader;
-import com.sun.msv.driver.textui.DebugController;
-import com.sun.msv.driver.textui.ReportErrorHandler;
-import com.sun.msv.grammar.*;
-import com.sun.msv.verifier.IVerifier;
-import com.sun.msv.verifier.Verifier;
-import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import com.sun.resolver.tools.CatalogResolver;
-import batch.model.*;
-import org.xml.sax.*;
-import java.io.File;
-import java.net.URL;
 
 public class DTDValidator extends AbstractValidatorExImpl {
 

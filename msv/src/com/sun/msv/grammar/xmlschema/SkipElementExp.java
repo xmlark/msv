@@ -9,8 +9,8 @@
  */
 package com.sun.msv.grammar.xmlschema;
 
-import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.NameClass;
 
 /**
  * ElementExp that is used for &lt;any processContents="skip"/&gt;.

@@ -9,8 +9,8 @@
  */
 package com.sun.msv.grammar.xmlschema;
 
-import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.ReferenceExp;
 
 /**
  * global attribute declaration.

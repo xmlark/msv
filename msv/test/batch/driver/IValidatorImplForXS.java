@@ -1,17 +1,15 @@
 package batch.driver;
 
-import com.sun.msv.verifier.identity.IDConstraintChecker;
+import org.iso_relax.verifier.Schema;
+
 import com.sun.msv.driver.textui.ReportErrorHandler;
-import com.sun.msv.driver.textui.DebugController;
-import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.xmlschema.XMLSchemaReader;
 import com.sun.msv.verifier.IVerifier;
 import com.sun.msv.verifier.identity.IDConstraintChecker;
-import batch.model.*;
-import org.iso_relax.verifier.Schema;
 
 /**
  * Driver for MSV as XML Schema validator.

@@ -11,15 +11,16 @@ package com.sun.msv.verifier.jaxp;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.IOException;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
+import org.iso_relax.verifier.Schema;
+import org.iso_relax.verifier.VerifierFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.iso_relax.verifier.VerifierFactory;
-//import org.iso_relax.verifier.VerifierConfigurationException;
-import org.iso_relax.verifier.Schema;
+
 import com.sun.msv.verifier.jarv.TheFactoryImpl;
 
 /**

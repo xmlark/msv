@@ -10,7 +10,6 @@
 package com.sun.msv.reader;
 
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.reader.ExpressionWithChildState;
 
 /**
  * state that creates an InterleaveExp.

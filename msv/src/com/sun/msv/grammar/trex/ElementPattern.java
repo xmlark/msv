@@ -9,7 +9,9 @@
  */
 package com.sun.msv.grammar.trex;
 
-import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.NameClass;
 
 /**
  * &lt;element&gt; pattern of TREX.

@@ -9,14 +9,12 @@
  */
 package com.sun.msv.verifier.identity;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
-import com.sun.msv.grammar.xmlschema.IdentityConstraint;
+
 import com.sun.msv.grammar.xmlschema.KeyConstraint;
 import com.sun.msv.grammar.xmlschema.KeyRefConstraint;
-import java.util.Set;
 
 /**
  * Coordinator of FieldMatcher.
@@ -76,7 +74,7 @@ public class FieldsMatcher extends MatcherBundle {
 				// if this is the key constraint, it is an error
 				owner.reportError(
 					startTag, null, 
-					owner.ERR_UNMATCHED_KEY_FIELD,
+                    IDConstraintChecker.ERR_UNMATCHED_KEY_FIELD,
 					new Object[]{
 						selector.idConst.namespaceURI,
 						selector.idConst.localName,
@@ -109,12 +107,12 @@ public class FieldsMatcher extends MatcherBundle {
 		// this set already has this value.
 		owner.reportError(
 			startTag, null,
-			owner.ERR_NOT_UNIQUE,
+            IDConstraintChecker.ERR_NOT_UNIQUE,
 			new Object[]{
 				selector.idConst.namespaceURI, selector.idConst.localName} );
 		owner.reportError(
 			((KeyValue)items[i]).locator, null,
-			owner.ERR_NOT_UNIQUE_DIAG,
+            IDConstraintChecker.ERR_NOT_UNIQUE_DIAG,
 			new Object[]{
 				selector.idConst.namespaceURI, selector.idConst.localName} );
 	}

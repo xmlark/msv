@@ -1,7 +1,11 @@
 package com.sun.msv.reader.xmlschema;
 
-import junit.framework.*;
-import util.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import util.Checker;
+import util.ResourceChecker;
+
 import com.sun.msv.reader.GrammarReader;
 
 public class XMLSchemaReaderTest extends TestCase

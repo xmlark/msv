@@ -9,8 +9,9 @@
  */
 package com.sun.msv.reader.trex.ng;
 
-import com.sun.msv.reader.ChildlessState;
 import org.relaxng.datatype.DatatypeException;
+
+import com.sun.msv.reader.ChildlessState;
 
 /**
  * parses &lt;param&gt; element inside &lt;data&gt; element.
@@ -30,7 +31,7 @@ public class DataParamState extends ChildlessState {
 	protected void endSelf() {
 		final String facet = startTag.getAttribute("name");
 		if(facet==null)
-			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, startTag.qName, "name" );
+			reader.reportError( RELAXNGReader.ERR_MISSING_ATTRIBUTE, startTag.qName, "name" );
 		else {
 			try {
 				((DataState)parentState).typeBuilder.addParameter(

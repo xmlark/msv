@@ -28,7 +28,7 @@ public class ImportState extends ChildlessState {
 		if( namespace==null )   namespace="";
 		
 		if( namespace.equals(reader.currentSchema.targetNamespace) ) {
-			reader.reportError( reader.ERR_IMPORTING_SAME_NAMESPACE );
+			reader.reportError( XMLSchemaReader.ERR_IMPORTING_SAME_NAMESPACE );
 			return;
 		}
 		

@@ -9,10 +9,14 @@
  */
 package com.sun.msv.grammar.relaxng.datatype;
 
-import org.relaxng.datatype.*;
-import com.sun.msv.datatype.xsd.IDType;
-import com.sun.msv.datatype.xsd.IDREFType;
+import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.DatatypeBuilder;
+import org.relaxng.datatype.DatatypeException;
+import org.relaxng.datatype.DatatypeLibrary;
+
 import com.sun.msv.datatype.xsd.DatatypeFactory;
+import com.sun.msv.datatype.xsd.IDREFType;
+import com.sun.msv.datatype.xsd.IDType;
 
 /**
  * RELAX NG DTD compatibility datatype library.

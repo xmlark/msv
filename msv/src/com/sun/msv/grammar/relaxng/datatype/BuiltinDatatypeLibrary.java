@@ -9,7 +9,10 @@
  */
 package com.sun.msv.grammar.relaxng.datatype;
 
-import org.relaxng.datatype.*;
+import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.DatatypeBuilder;
+import org.relaxng.datatype.DatatypeException;
+import org.relaxng.datatype.DatatypeLibrary;
 
 /**
  * RELAX NG built-in datatypes.

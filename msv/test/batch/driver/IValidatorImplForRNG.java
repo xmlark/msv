@@ -1,12 +1,10 @@
 package batch.driver;
 
-import com.sun.msv.reader.trex.ng.comp.RELAXNGCompReader;
-import com.sun.msv.grammar.Grammar;
+import org.iso_relax.verifier.Schema;
+
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.reader.GrammarReader;
-import com.sun.msv.grammar.relaxng.RELAXNGGrammar;
-import batch.model.*;
-import org.iso_relax.verifier.Schema;
+import com.sun.msv.reader.trex.ng.comp.RELAXNGCompReader;
 
 /**
  * Driver for MSV as XML Schema validator.

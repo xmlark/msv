@@ -9,9 +9,11 @@
  */
 package com.sun.msv.reader.trex;
 
-import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.reader.*;
+import com.sun.msv.reader.ExpressionOwner;
+import com.sun.msv.reader.ExpressionState;
+import com.sun.msv.reader.State;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * Used to parse merged grammars. Also &lt;div&gt; element in the grammar element

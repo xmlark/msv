@@ -9,7 +9,7 @@
  */
 package batch.verifier;
 
-import junit.framework.*;
+import junit.framework.TestSuite;
 
 /**
  * tests the entire RELAX test suite by using BatchVerifyTester.

@@ -10,21 +10,20 @@
 package com.sun.msv.verifier.jaxp;
 
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
+
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.iso_relax.verifier.Schema;
+import org.iso_relax.verifier.Verifier;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
-//import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
-import org.iso_relax.verifier.Verifier;
-//import org.iso_relax.verifier.VerifierConfigurationException;
-import org.iso_relax.verifier.Schema;
-import com.sun.msv.verifier.jarv.TheFactoryImpl;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * DocumentBuilder implementation that supports validation.

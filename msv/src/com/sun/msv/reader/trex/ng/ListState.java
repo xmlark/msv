@@ -9,8 +9,8 @@
  */
 package com.sun.msv.reader.trex.ng;
 
-import com.sun.msv.reader.SequenceState;
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.reader.SequenceState;
 
 /**
  * state that parses &lt;list&gt; pattern of RELAX NG.

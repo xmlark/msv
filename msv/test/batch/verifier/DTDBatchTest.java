@@ -9,8 +9,7 @@
  */
 package batch.verifier;
 
-import junit.framework.*;
-import java.util.StringTokenizer;
+import junit.framework.TestSuite;
 
 
 /**

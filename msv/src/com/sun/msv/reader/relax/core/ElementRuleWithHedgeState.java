@@ -9,9 +9,9 @@
  */
 package com.sun.msv.reader.relax.core;
 
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.ExpressionOwner;
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.reader.ExpressionOwner;
+import com.sun.msv.reader.State;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -26,7 +26,7 @@ public class ElementRuleWithHedgeState extends ElementRuleBaseState implements E
 	public void onEndChild( Expression exp )
 	{// this method is called after child expression is found and parsed
 		if( contentModel!=null )
-			reader.reportError( reader.ERR_MORE_THAN_ONE_CHILD_EXPRESSION );
+			reader.reportError( RELAXCoreReader.ERR_MORE_THAN_ONE_CHILD_EXPRESSION );
 			// recover by ignoring previous expression
 		
 		contentModel = exp;
@@ -34,7 +34,7 @@ public class ElementRuleWithHedgeState extends ElementRuleBaseState implements E
 	
 	protected Expression getContentModel() {
 		if( contentModel==null ) {
-			reader.reportError( reader.ERR_MISSING_CHILD_EXPRESSION );
+			reader.reportError( RELAXCoreReader.ERR_MISSING_CHILD_EXPRESSION );
 			// recover by assuming a harmless content model
 			return Expression.epsilon;	// anything will do.
 		}

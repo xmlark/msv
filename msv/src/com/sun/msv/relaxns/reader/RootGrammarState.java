@@ -9,17 +9,13 @@
  */
 package com.sun.msv.relaxns.reader;
 
-import java.util.Iterator;
-import org.iso_relax.dispatcher.IslandSchema;
-import org.xml.sax.ErrorHandler;
-import com.sun.msv.relaxns.verifier.SchemaProviderImpl;
-import com.sun.msv.relaxns.verifier.IslandSchemaImpl;
-import com.sun.msv.relaxns.grammar.relax.RELAXIslandSchema;
-import com.sun.msv.util.StartTagInfo;
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.SimpleState;
-import com.sun.msv.reader.ExpressionOwner;
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.reader.ExpressionOwner;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.State;
+import com.sun.msv.relaxns.verifier.IslandSchemaImpl;
+import com.sun.msv.relaxns.verifier.SchemaProviderImpl;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * invokes State object that parses the document element.

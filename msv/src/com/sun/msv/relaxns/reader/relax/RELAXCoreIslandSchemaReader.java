@@ -9,26 +9,29 @@
  */
 package com.sun.msv.relaxns.reader.relax;
 
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.iso_relax.dispatcher.IslandSchema;
+import org.iso_relax.dispatcher.IslandSchemaReader;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.LocatorImpl;
+
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.relax.RELAXModule;
-import com.sun.msv.reader.relax.core.RELAXCoreReader;
+import com.sun.msv.reader.ExpressionState;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.State;
-import com.sun.msv.reader.ExpressionState;
-import com.sun.msv.relaxns.grammar.relax.RELAXIslandSchema;
-import com.sun.msv.relaxns.grammar.ExternalElementExp;
+import com.sun.msv.reader.relax.core.RELAXCoreReader;
 import com.sun.msv.relaxns.grammar.ExternalAttributeExp;
+import com.sun.msv.relaxns.grammar.ExternalElementExp;
+import com.sun.msv.relaxns.grammar.relax.RELAXIslandSchema;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringPair;
-import org.iso_relax.dispatcher.IslandSchemaReader;
-import org.iso_relax.dispatcher.IslandSchema;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.LocatorImpl;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * reads RELAX-Namespace-extended RELAX Core.

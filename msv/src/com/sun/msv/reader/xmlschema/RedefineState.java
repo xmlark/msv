@@ -9,12 +9,9 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
 import com.sun.msv.reader.AbortException;
-import com.sun.msv.reader.ChildlessState;
 import com.sun.msv.reader.State;
-import com.sun.msv.reader.datatype.xsd.SimpleTypeState;
 import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 import com.sun.msv.util.StartTagInfo;
 
@@ -49,7 +46,7 @@ public class RedefineState extends GlobalDeclState {
             
             SimpleTypeExp sexp = reader.currentSchema.simpleTypes.get(name);
 		    if( sexp==null ) {
-		    	reader.reportError( reader.ERR_REDEFINE_UNDEFINED, name );
+		    	reader.reportError( XMLSchemaReader.ERR_REDEFINE_UNDEFINED, name );
 		    	// recover by using an empty declaration
                 sexp = reader.currentSchema.simpleTypes.getOrCreate(name);
 		    }
@@ -97,7 +94,7 @@ public class RedefineState extends GlobalDeclState {
 		
 		if( typeName==null ) {
 			// top-level simpleType must define a named type
-			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "simpleType", "name" );
+			reader.reportError( XMLSchemaReader.ERR_MISSING_ATTRIBUTE, "simpleType", "name" );
 			return;	// recover by ignoring this declaration
 		}
 		

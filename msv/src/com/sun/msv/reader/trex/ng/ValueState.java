@@ -9,12 +9,12 @@
  */
 package com.sun.msv.reader.trex.ng;
 
-import com.sun.msv.reader.ExpressionWithoutChildState;
-import com.sun.msv.grammar.Expression;
-import com.sun.msv.util.StringPair;
-
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.DatatypeException;
+
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.reader.ExpressionWithoutChildState;
+import com.sun.msv.util.StringPair;
 
 /**
  * parses &lt;value&gt; pattern.
@@ -59,7 +59,7 @@ public class ValueState extends ExpressionWithoutChildState {
 		Object value = type.createValue(text.toString(),reader);
 		if( value==null ) {
 			// this is not a good value for this type.
-			reader.reportError( reader.ERR_BAD_DATA_VALUE, typeName, text.toString().trim() );
+			reader.reportError( RELAXNGReader.ERR_BAD_DATA_VALUE, typeName, text.toString().trim() );
 			return Expression.nullSet;	// recover by returning something.
 		}
 		

@@ -9,7 +9,11 @@
  */
 package com.sun.msv.grammar.trex;
 
-import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.ReferenceContainer;
+import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.reader.datatype.DataTypeVocabularyMap;
 
 /**

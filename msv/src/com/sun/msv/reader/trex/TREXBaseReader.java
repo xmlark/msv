@@ -11,23 +11,25 @@ package com.sun.msv.reader.trex;
 
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
-import java.util.Map;
+
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
+
 import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
-import org.relaxng.datatype.Datatype;
-import org.iso_relax.dispatcher.IslandSchema;
-import org.iso_relax.verifier.Schema;
-import com.sun.msv.datatype.xsd.StringType;
-import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.trex.*;
-import com.sun.msv.reader.*;
-import com.sun.msv.reader.datatype.DataTypeVocabulary;
-import com.sun.msv.util.StartTagInfo;
+
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.trex.TREXGrammar;
+import com.sun.msv.reader.ChoiceState;
+import com.sun.msv.reader.GrammarReader;
+import com.sun.msv.reader.GrammarReaderController;
+import com.sun.msv.reader.InterleaveState;
+import com.sun.msv.reader.SequenceState;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.TerminalState;
 import com.sun.msv.util.LightStack;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * reads TREX grammar from SAX2 and constructs abstract grammar model.

@@ -9,12 +9,10 @@
  */
 package com.sun.msv.verifier;
 
-import java.util.Collection;
-import java.util.List;
 import com.sun.msv.grammar.IDContextProvider;
+import com.sun.msv.util.DatatypeRef;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
-import com.sun.msv.util.DatatypeRef;
 
 /**
  * exposes the low-level validation engine interface.

@@ -10,19 +10,9 @@
 package com.sun.msv.grammar.xmlschema;
 
 import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.datatype.xsd.TypeIncubator;
-import com.sun.msv.datatype.xsd.QnameType;
-import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
-import com.sun.msv.grammar.ReferenceExp;
-import com.sun.msv.grammar.OtherExp;
-import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.SimpleNameClass;
-import com.sun.msv.grammar.ChoiceNameClass;
-import com.sun.msv.grammar.trex.ElementPattern;
-import com.sun.msv.grammar.util.ExpressionWalker;
-import org.relaxng.datatype.ValidationContext;
-import org.relaxng.datatype.DatatypeException;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 
 /**
  * ComplexType definition.

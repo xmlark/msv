@@ -9,11 +9,12 @@
  */
 package com.sun.msv.grammar.xmlschema;
 
-import com.sun.msv.grammar.Grammar;
+import java.util.Iterator;
+import java.util.Map;
+
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
-import java.util.Map;
-import java.util.Iterator;
+import com.sun.msv.grammar.Grammar;
 
 /**
  * set of XML Schema. This set can be used to validate a document.

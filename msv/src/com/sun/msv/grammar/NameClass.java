@@ -9,9 +9,9 @@
  */
 package com.sun.msv.grammar;
 
-import com.sun.msv.util.StringPair;
 import com.sun.msv.grammar.util.NameClassCollisionChecker;
 import com.sun.msv.grammar.util.NameClassSimplifier;
+import com.sun.msv.util.StringPair;
 
 /**
  * validator of (namespaceURI,localPart) pair.

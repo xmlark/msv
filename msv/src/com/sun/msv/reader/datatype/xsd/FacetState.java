@@ -9,10 +9,12 @@
  */
 package com.sun.msv.reader.datatype.xsd;
 
+import java.util.Set;
+
+import org.relaxng.datatype.DatatypeException;
+
 import com.sun.msv.reader.ChildlessState;
 import com.sun.msv.reader.GrammarReader;
-import org.relaxng.datatype.DatatypeException;
-import java.util.Set;
 
 /**
  * state that reads facets.
@@ -54,7 +56,7 @@ public class FacetState extends ChildlessState
 		} else {
 			try {
 				((FacetStateParent)parentState).getIncubator().addFacet(
-					startTag.localName, value, reader );
+					startTag.localName, value, "true".equals(startTag.getAttribute("fixed")), reader );
 			} catch( DatatypeException e ) {
 				reader.reportError( e, GrammarReader.ERR_BAD_TYPE, e.getMessage() );
 				// recover by ignoring this facet

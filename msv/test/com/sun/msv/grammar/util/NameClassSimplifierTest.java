@@ -1,7 +1,16 @@
 package com.sun.msv.grammar.util;
 
-import junit.framework.*;
-import com.sun.msv.grammar.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import com.sun.msv.grammar.AnyNameClass;
+import com.sun.msv.grammar.ChoiceNameClass;
+import com.sun.msv.grammar.DifferenceNameClass;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.NamespaceNameClass;
+import com.sun.msv.grammar.NotNameClass;
+import com.sun.msv.grammar.SimpleNameClass;
 
 public class NameClassSimplifierTest extends TestCase {
 	

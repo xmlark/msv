@@ -9,11 +9,10 @@
  */
 package com.sun.msv.reader.util;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 
 /**
  * feeds SAX events to two ContentHandlers.

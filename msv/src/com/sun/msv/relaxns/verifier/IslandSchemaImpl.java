@@ -9,23 +9,33 @@
  */
 package com.sun.msv.relaxns.verifier;
 
-import org.iso_relax.dispatcher.IslandSchema;
-import org.iso_relax.dispatcher.AttributesVerifier;
-import org.iso_relax.dispatcher.IslandVerifier;
-import org.iso_relax.dispatcher.SchemaProvider;
-import org.iso_relax.dispatcher.AttributesDecl;
-import org.iso_relax.dispatcher.ElementDecl;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.SAXException;
-import org.xml.sax.ErrorHandler;
-import com.sun.msv.grammar.*;
-import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import com.sun.msv.relaxns.grammar.DeclImpl;
-import com.sun.msv.relaxns.grammar.ExternalElementExp;
-import com.sun.msv.relaxns.grammar.ExternalAttributeExp;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Iterator;
+
+import org.iso_relax.dispatcher.AttributesDecl;
+import org.iso_relax.dispatcher.AttributesVerifier;
+import org.iso_relax.dispatcher.ElementDecl;
+import org.iso_relax.dispatcher.IslandSchema;
+import org.iso_relax.dispatcher.IslandVerifier;
+import org.iso_relax.dispatcher.SchemaProvider;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionCloner;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.OtherExp;
+import com.sun.msv.grammar.ReferenceContainer;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.relaxns.grammar.DeclImpl;
+import com.sun.msv.relaxns.grammar.ExternalAttributeExp;
+import com.sun.msv.relaxns.grammar.ExternalElementExp;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 
 /**
  * base implementation of IslandSchema for MSV.

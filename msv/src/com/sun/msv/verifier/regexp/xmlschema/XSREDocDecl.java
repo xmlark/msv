@@ -9,17 +9,14 @@
  */
 package com.sun.msv.verifier.regexp.xmlschema;
 
-import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.NamespaceNameClass;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.verifier.Acceptor;
 import com.sun.msv.verifier.regexp.AttributeFeeder;
 import com.sun.msv.verifier.regexp.CombinedChildContentExpCreator;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import com.sun.msv.verifier.identity.IDConstraintChecker;
-import com.sun.msv.util.StartTagInfo;
-import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * {@link REDocumentDeclaration} that supports several W3C XML Schema

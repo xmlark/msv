@@ -9,7 +9,6 @@
  */
 package com.sun.msv.grammar.xmlschema;
 
-import com.sun.msv.grammar.NameClass;
 
 /**
  * represents one field of an identity constraint.

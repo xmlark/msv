@@ -9,8 +9,8 @@
  */
 package com.sun.msv.grammar;
 
-import org.relaxng.datatype.ValidationContext;
 import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * ValidationContextProvider that supports limited ID/IDREF implementation.

@@ -10,10 +10,9 @@
 package com.sun.msv.reader.trex;
 
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.trex.TREXGrammar;
-import com.sun.msv.reader.ExpressionWithoutChildState;
-import com.sun.msv.reader.ExpressionOwner;
 import com.sun.msv.reader.AbortException;
+import com.sun.msv.reader.ExpressionOwner;
+import com.sun.msv.reader.ExpressionWithoutChildState;
 
 /**
  * &lt;include&gt; element in the pattern. (&lt;externalRef&gt; of RELAX NG).

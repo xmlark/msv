@@ -12,15 +12,15 @@ package com.sun.msv.reader.xmlschema;
 import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ReferenceExp;
-import com.sun.msv.grammar.xmlschema.*;
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.SequenceState;
+import com.sun.msv.grammar.xmlschema.AttributeWildcard;
+import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
+import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
+import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.reader.GrammarReader;
-import com.sun.msv.reader.datatype.xsd.XSTypeOwner;
-import com.sun.msv.reader.datatype.xsd.XSTypeIncubator;
+import com.sun.msv.reader.SequenceState;
+import com.sun.msv.reader.State;
 import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 import com.sun.msv.util.StartTagInfo;
-import org.relaxng.datatype.DatatypeException;
 
 /**
  * used to parse extension element as a child of &lt;simpleContent&gt; element.
@@ -54,7 +54,7 @@ public class SimpleContentExtensionState extends SequenceState
 	}
 	
 	protected Expression annealExpression( Expression exp ) {
-        parentDecl.derivationMethod = parentDecl.EXTENSION;
+        parentDecl.derivationMethod = ComplexTypeExp.EXTENSION;
         return reader.pool.createSequence(
             super.annealExpression(exp),
             getBody());
@@ -69,13 +69,13 @@ public class SimpleContentExtensionState extends SequenceState
 		final String base = startTag.getAttribute("base");
 		if(base==null) {
 			// in extension, base attribute must is mandatory.
-			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, startTag.localName, "base");
+			reader.reportError( XMLSchemaReader.ERR_MISSING_ATTRIBUTE, startTag.localName, "base");
             return Expression.nullSet;
 		}
         
         final String[] baseTypeName = reader.splitQName(base);
         if( baseTypeName==null ) {
-            reader.reportError( reader.ERR_UNDECLARED_PREFIX, base );
+            reader.reportError( XMLSchemaReader.ERR_UNDECLARED_PREFIX, base );
             return Expression.nullSet;
         }
         
@@ -119,7 +119,7 @@ public class SimpleContentExtensionState extends SequenceState
                 }
                 
                 // there is no base type.
-                reader.reportError( reader.ERR_UNDEFINED_COMPLEX_OR_SIMPLE_TYPE, base );
+                reader.reportError( XMLSchemaReader.ERR_UNDEFINED_COMPLEX_OR_SIMPLE_TYPE, base );
             }
         });
         

@@ -9,12 +9,22 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.xmlschema.*;
-import com.sun.msv.grammar.util.ExpressionWalker;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
+
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.ChoiceExp;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.grammar.util.ExpressionWalker;
+import com.sun.msv.grammar.xmlschema.AttWildcardExp;
+import com.sun.msv.grammar.xmlschema.AttributeGroupExp;
+import com.sun.msv.grammar.xmlschema.AttributeWildcard;
+import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
 
 /**
  * Processes the attribtue wildcard according to the spec.
@@ -135,7 +145,7 @@ public class AttributeWildcardComputer extends ExpressionWalker {
 						
 						// process the base type first.
 						cexp.complexBaseType.visit(this);
-						if(cexp.derivationMethod==cexp.EXTENSION)
+						if(cexp.derivationMethod==ComplexTypeExp.EXTENSION)
 							cexp.wildcard = calcComplexTypeWildcard(
 								cexp.wildcard,
 								cexp.complexBaseType.wildcard );
@@ -212,7 +222,7 @@ public class AttributeWildcardComputer extends ExpressionWalker {
 	private void propagateAttributes( final ComplexTypeExp cexp ) {
 		// propagation will be done only if this type is derived from
 		// another complex type by restriction.
-		if(cexp.derivationMethod!=cexp.RESTRICTION || cexp.complexBaseType==null)
+		if(cexp.derivationMethod!=ComplexTypeExp.RESTRICTION || cexp.complexBaseType==null)
 			return;
 
 		// strangely, this computation does not apply if the base type is

@@ -34,7 +34,7 @@ public class SchemaState extends SchemaIncludedState {
 		reader.currentSchema = reader.getOrCreateSchema(targetNs);
 		
 		if( reader.isSchemaDefined(reader.currentSchema) )  {
-			reader.reportError( reader.ERR_DUPLICATE_SCHEMA_DEFINITION, targetNs );
+			reader.reportError( XMLSchemaReader.ERR_DUPLICATE_SCHEMA_DEFINITION, targetNs );
 			// recover by providing dummy grammar object.
 			// this object is not registered to the map,
 			// so it cannot be referenced.

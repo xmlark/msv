@@ -9,16 +9,14 @@
  */
 package com.sun.msv.reader.datatype.xsd;
 
-import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.datatype.xsd.DatatypeFactory;
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.IgnoreState;
-import com.sun.msv.reader.datatype.TypeOwner;
-import com.sun.msv.util.StartTagInfo;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-import org.relaxng.datatype.Datatype;
+
 import org.relaxng.datatype.DatatypeException;
+
+import com.sun.msv.reader.IgnoreState;
+import com.sun.msv.reader.State;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * State that parses &lt;union&gt; element and its children.

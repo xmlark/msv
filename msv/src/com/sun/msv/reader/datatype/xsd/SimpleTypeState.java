@@ -9,15 +9,13 @@
  */
 package com.sun.msv.reader.datatype.xsd;
 
-import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.datatype.xsd.XSDatatypeImpl;
-import com.sun.msv.datatype.xsd.FinalComponent;
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.IgnoreState;
-import com.sun.msv.reader.ExpressionState;
-import com.sun.msv.util.StartTagInfo;
-import org.relaxng.datatype.DatatypeException;
 import java.util.StringTokenizer;
+
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.reader.GrammarReader;
+import com.sun.msv.reader.IgnoreState;
+import com.sun.msv.reader.State;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * State that parses &lt;simpleType&gt; element and its children.
@@ -76,7 +74,7 @@ public class SimpleTypeState extends TypeWithOneChildState
 				finalValue |= XSDatatype.DERIVATION_BY_UNION;
 			else {
 				reader.reportError( 
-					reader.ERR_ILLEGAL_FINAL_VALUE, token );
+                    GrammarReader.ERR_ILLEGAL_FINAL_VALUE, token );
 				return 0;	// abort
 			}
 		}

@@ -11,8 +11,6 @@ package com.sun.msv.grammar.xmlschema;
 
 import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
-import com.sun.msv.grammar.ReferenceExp;
-import com.sun.msv.grammar.ExpressionPool;
 
 /**
  * Simple type declaration.

@@ -9,20 +9,20 @@
  */
 package com.sun.msv.relaxns.verifier;
 
+import java.util.Iterator;
+
+import org.iso_relax.dispatcher.IslandSchema;
+import org.iso_relax.dispatcher.IslandVerifier;
+import org.iso_relax.dispatcher.impl.AbstractSchemaProviderImpl;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import org.xml.sax.ErrorHandler;
-import org.iso_relax.dispatcher.IslandVerifier;
-import org.iso_relax.dispatcher.IslandSchema;
-import org.iso_relax.dispatcher.impl.AbstractSchemaProviderImpl;
-import com.sun.msv.relaxns.grammar.RELAXGrammar;
-import com.sun.msv.relaxns.grammar.DeclImpl;
-import com.sun.msv.grammar.Grammar;
+
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.ExpressionPool;
-//import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import java.util.Iterator;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.relaxns.grammar.DeclImpl;
+import com.sun.msv.relaxns.grammar.RELAXGrammar;
 
 /**
  * implementation of SchemaProvider by using RELAX Grammar.

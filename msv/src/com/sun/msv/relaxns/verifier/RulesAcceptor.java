@@ -9,14 +9,13 @@
  */
 package com.sun.msv.relaxns.verifier;
 
+import org.iso_relax.dispatcher.ElementDecl;
+
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.relaxns.grammar.DeclImpl;
 import com.sun.msv.verifier.Acceptor;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import com.sun.msv.relaxns.grammar.DeclImpl;
-import com.sun.msv.util.StringRef;
-//import com.sun.msv.util.DatatypeRef;
-import org.iso_relax.dispatcher.ElementDecl;
 
 /**
  * Acceptor that is used to validate root node of the island.

@@ -18,13 +18,14 @@
  */
 package com.sun.msv.grammar.relax;
 
+import java.util.Map;
+
+import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
-import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.ReferenceContainer;
-import com.sun.msv.datatype.xsd.XSDatatype;
-import java.util.Map;
+import com.sun.msv.grammar.ReferenceExp;
 
 /**
  * "Module" of RELAX Core.

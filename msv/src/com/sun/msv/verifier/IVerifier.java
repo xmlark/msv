@@ -9,10 +9,10 @@
  */
 package com.sun.msv.verifier;
 
-import org.relaxng.datatype.Datatype;
-import org.xml.sax.Locator;
-import org.xml.sax.ErrorHandler;
 import org.iso_relax.verifier.VerifierHandler;
+import org.relaxng.datatype.Datatype;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.Locator;
 
 /**
  * Interface of verifier.

@@ -9,7 +9,6 @@
  */
 package com.sun.msv.reader.datatype.xsd;
 
-import org.relaxng.datatype.Datatype;
 
 /**
  * Type owner for XML Schema datatypes.

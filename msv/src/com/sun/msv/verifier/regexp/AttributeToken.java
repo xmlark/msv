@@ -9,7 +9,8 @@
  */
 package com.sun.msv.verifier.regexp;
 
-import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.IDContextProvider;
 import com.sun.msv.util.DatatypeRef;
 
 /**

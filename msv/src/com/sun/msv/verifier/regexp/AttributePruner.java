@@ -9,7 +9,13 @@
  */
 package com.sun.msv.verifier.regexp;
 
-import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionCloner;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.OtherExp;
+import com.sun.msv.grammar.ReferenceExp;
 
 /**
  * Creates an expression whose AttributeExp is completely replaced by nullSet.

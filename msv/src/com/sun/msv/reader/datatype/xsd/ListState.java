@@ -9,13 +9,11 @@
  */
 package com.sun.msv.reader.datatype.xsd;
 
-import com.sun.msv.reader.GrammarReader;
+import org.relaxng.datatype.DatatypeException;
+
 import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.State;
-import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.datatype.xsd.DatatypeFactory;
 import com.sun.msv.util.StartTagInfo;
-import org.relaxng.datatype.DatatypeException;
 
 /**
  * state that parses &lt;list&gt; element of XSD.

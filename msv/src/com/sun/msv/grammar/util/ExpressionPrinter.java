@@ -9,7 +9,23 @@
  */
 package com.sun.msv.grammar.util;
 
-import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.BinaryExp;
+import com.sun.msv.grammar.ChoiceExp;
+import com.sun.msv.grammar.ConcurExp;
+import com.sun.msv.grammar.DataExp;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionVisitor;
+import com.sun.msv.grammar.InterleaveExp;
+import com.sun.msv.grammar.ListExp;
+import com.sun.msv.grammar.MixedExp;
+import com.sun.msv.grammar.OneOrMoreExp;
+import com.sun.msv.grammar.OtherExp;
+import com.sun.msv.grammar.ReferenceContainer;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.SequenceExp;
+import com.sun.msv.grammar.ValueExp;
 
 /**
  * creates a string representation of the expression.

@@ -9,14 +9,14 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import com.sun.msv.datatype.xsd.XSDatatype;
+import org.xml.sax.Locator;
+
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.xmlschema.GroupDeclExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
-import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.reader.State;
-import org.xml.sax.Locator;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * used to parse &lt;group&gt; element.
@@ -56,7 +56,7 @@ public class GroupState extends RedefinableDeclState {
 
 	protected Expression castExpression( Expression halfCastedExpression, Expression newChildExpression ) {
 		if( halfCastedExpression!=null ) {
-			reader.reportError( reader.ERR_MORE_THAN_ONE_CHILD_EXPRESSION );
+			reader.reportError( XMLSchemaReader.ERR_MORE_THAN_ONE_CHILD_EXPRESSION );
 			return halfCastedExpression;
 		}
 		
@@ -75,13 +75,13 @@ public class GroupState extends RedefinableDeclState {
 			
 		String name = startTag.getAttribute("name");
 		if( name==null ) {
-			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "group", "name" );
+			reader.reportError( XMLSchemaReader.ERR_MISSING_ATTRIBUTE, "group", "name" );
 			// recover by returning a meaningless value, thereby ignoring this declaration.
 			return Expression.nullSet;
 		}
 		
 		if( contentType==null ) {
-			reader.reportError( reader.ERR_MISSING_CHILD_EXPRESSION );
+			reader.reportError( XMLSchemaReader.ERR_MISSING_CHILD_EXPRESSION );
 			return Expression.nullSet;
 		}
 		
@@ -93,7 +93,7 @@ public class GroupState extends RedefinableDeclState {
 			if( decl.exp!=null )
 				reader.reportError( 
 					new Locator[]{this.location,reader.getDeclaredLocationOf(decl)},
-					reader.ERR_DUPLICATE_GROUP_DEFINITION,
+                    XMLSchemaReader.ERR_DUPLICATE_GROUP_DEFINITION,
 					new Object[]{name} );
 		}
 		reader.setDeclaredLocationOf(decl);

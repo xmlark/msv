@@ -11,11 +11,20 @@ package com.sun.msv.verifier.jaxp;
 
 import java.io.File;
 import java.io.InputStream;
-import javax.xml.parsers.*;
-import org.xml.sax.*;
-import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.SAXParser;
+
+import org.iso_relax.verifier.Schema;
+import org.iso_relax.verifier.Verifier;
+import org.iso_relax.verifier.VerifierFactory;
+import org.xml.sax.InputSource;
+import org.xml.sax.Parser;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLFilter;
+import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderAdapter;
-import org.iso_relax.verifier.*;
 
 /**
  * SAXParser implementation that supports validation.

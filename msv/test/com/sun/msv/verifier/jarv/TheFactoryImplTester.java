@@ -9,7 +9,7 @@
  */
 package com.sun.msv.verifier.jarv;
 
-import org.iso_relax.verifier.*;
+import org.iso_relax.verifier.VerifierFactory;
 
 /**
  * test <code>org/iso_relax/verifier/FactoryLoader</code>.

@@ -9,9 +9,6 @@
  */
 package com.sun.msv.reader.relax.core;
 
-import com.sun.msv.util.StartTagInfo;
-import com.sun.msv.reader.State;
-import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.relax.RELAXModule;
 
 /**

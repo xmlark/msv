@@ -9,8 +9,8 @@
  */
 package com.sun.msv.reader.trex;
 
-import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.Expression;
 
 /**
  * parses &lt;attribute&gt; pattern.

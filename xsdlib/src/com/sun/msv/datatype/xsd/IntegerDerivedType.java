@@ -35,8 +35,11 @@ abstract class IntegerDerivedType extends BuiltinAtomicType implements Comparato
 		||	facetName.equals(FACET_MAXEXCLUSIVE)
 		||	facetName.equals(FACET_MINEXCLUSIVE) )
 			return APPLICABLE;
-		else
-			return NOT_ALLOWED;
+		
+        if( facetName.equals(FACET_FRACTIONDIGITS) )
+            return FIXED;
+            
+	   return NOT_ALLOWED;
 	}
 	
 	protected final boolean checkFormat( String content, ValidationContext context ) {

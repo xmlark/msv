@@ -9,17 +9,10 @@
  */
 package com.sun.msv.verifier.regexp;
 
-import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ElementExp;
-import com.sun.msv.verifier.*;
-import com.sun.msv.verifier.regexp.ExpressionAcceptor;
-import com.sun.msv.verifier.regexp.ElementToken;
-import com.sun.msv.verifier.regexp.CombinedChildContentExpCreator;
-import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.grammar.Expression;
 import com.sun.msv.util.StringRef;
-import java.util.Set;
-import java.util.List;
-import java.util.Iterator;
+import com.sun.msv.verifier.Acceptor;
 
 /**
  * base implementation for SimpleAcceptor and ComplexAcceptor

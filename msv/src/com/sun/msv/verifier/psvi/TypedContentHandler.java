@@ -9,11 +9,12 @@
  */
 package com.sun.msv.verifier.psvi;
 
-import com.sun.msv.grammar.AttributeExp;
-import com.sun.msv.grammar.ElementExp;
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.ValidationContext;
 import org.xml.sax.SAXException;
+
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.ElementExp;
 
 /**
  * Receives notification of the typed content of the document.

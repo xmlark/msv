@@ -9,11 +9,12 @@
  */
 package com.sun.msv.verifier.regexp;
 
-import com.sun.msv.grammar.DataExp;
-import com.sun.msv.grammar.ValueExp;
-import com.sun.msv.grammar.ListExp;
-import com.sun.msv.util.DatatypeRef;
 import java.util.Set;
+
+import com.sun.msv.grammar.DataExp;
+import com.sun.msv.grammar.ListExp;
+import com.sun.msv.grammar.ValueExp;
+import com.sun.msv.util.DatatypeRef;
 
 /**
  * special StringToken that acts as a wild card.

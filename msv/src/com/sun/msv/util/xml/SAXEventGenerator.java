@@ -9,10 +9,10 @@
  */
 package com.sun.msv.util.xml;
 
-import org.w3c.dom.Node;
 import org.w3c.dom.Attr;
-import org.w3c.dom.Element;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -62,8 +62,8 @@ public class SAXEventGenerator {
 			}
 			
 			public void visitNode( Node n ) {
-				if( n.getNodeType()==n.TEXT_NODE
-				||  n.getNodeType()==n.CDATA_SECTION_NODE ) {
+				if( n.getNodeType()==Node.TEXT_NODE
+				||  n.getNodeType()==Node.CDATA_SECTION_NODE ) {
 					String text = n.getNodeValue();
 					try {
 						handler.characters( text.toCharArray(), 0, text.length() );

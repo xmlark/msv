@@ -9,10 +9,10 @@
  */
 package com.sun.msv.util.xml;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.Locator;
-import org.xml.sax.DocumentHandler;
 import org.xml.sax.AttributeList;
+import org.xml.sax.DocumentHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 
 /**
  * SAX DocumentHandler event interceptor.

@@ -10,11 +10,11 @@
 package com.sun.msv.verifier;
 
 import org.relaxng.datatype.Datatype;
-import org.xml.sax.helpers.XMLFilterImpl;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.Locator;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.XMLFilterImpl;
 
 /**
  * SAX XMLFilter that verifies incoming SAX event stream.

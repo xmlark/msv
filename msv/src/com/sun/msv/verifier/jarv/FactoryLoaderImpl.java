@@ -1,7 +1,8 @@
 package com.sun.msv.verifier.jarv;
 
-import org.iso_relax.verifier.VerifierFactoryLoader;
 import org.iso_relax.verifier.VerifierFactory;
+import org.iso_relax.verifier.VerifierFactoryLoader;
+
 import com.sun.msv.reader.relax.core.RELAXCoreReader;
 import com.sun.msv.reader.trex.classic.TREXGrammarReader;
 import com.sun.msv.reader.trex.ng.RELAXNGReader;

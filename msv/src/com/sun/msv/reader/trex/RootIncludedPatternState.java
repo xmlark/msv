@@ -9,12 +9,11 @@
  */
 package com.sun.msv.reader.trex;
 
-import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.trex.TREXGrammar;
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.SimpleState;
 import com.sun.msv.reader.ExpressionOwner;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.State;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * parses the root state of a grammar included as a pattern.

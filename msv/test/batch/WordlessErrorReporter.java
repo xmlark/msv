@@ -9,8 +9,8 @@
  */
 package batch;
 
-import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXParseException;
 
 /**
  * {@link ErrorHandler} that reports only the first error.

@@ -9,7 +9,6 @@
  */
 package com.sun.msv.reader;
 
-import com.sun.msv.reader.State;
 import com.sun.msv.util.StartTagInfo;
 
 /**

@@ -10,38 +10,42 @@
 package com.sun.msv.reader.trex.ng;
 
 import java.text.MessageFormat;
-import java.util.ResourceBundle;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Stack;
-import java.util.Iterator;
 import java.util.Vector;
+
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
+
+import org.iso_relax.verifier.Schema;
+import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.DatatypeException;
+import org.relaxng.datatype.DatatypeLibrary;
+import org.relaxng.datatype.DatatypeLibraryFactory;
+import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-import org.xml.sax.Attributes;
-import org.relaxng.datatype.*;
-import org.relaxng.datatype.helpers.DatatypeLibraryLoader;
-import org.iso_relax.verifier.Schema;
+
 import com.sun.msv.datatype.ErrorDatatypeLibrary;
-import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.trex.*;
-import com.sun.msv.grammar.util.ExpressionWalker;
-import com.sun.msv.grammar.relaxng.datatype.BuiltinDatatypeLibrary;
-import com.sun.msv.grammar.relaxng.datatype.CompatibilityDatatypeLibrary;
-import com.sun.msv.reader.*;
-import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
-import com.sun.msv.reader.trex.TREXBaseReader;
-import com.sun.msv.reader.trex.RootState;
-import com.sun.msv.reader.trex.NameClassChoiceState;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.trex.TREXGrammar;
+import com.sun.msv.reader.ChoiceState;
+import com.sun.msv.reader.GrammarReaderController;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.TerminalState;
 import com.sun.msv.reader.trex.DivInGrammarState;
 import com.sun.msv.reader.trex.IncludePatternState;
+import com.sun.msv.reader.trex.NameClassChoiceState;
+import com.sun.msv.reader.trex.RootState;
+import com.sun.msv.reader.trex.TREXBaseReader;
 import com.sun.msv.reader.trex.TREXSequencedStringChecker;
-import com.sun.msv.reader.datatype.DataTypeVocabulary;
-import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.LightStack;
+import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.Util;
 
 /**

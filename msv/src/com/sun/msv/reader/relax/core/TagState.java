@@ -10,9 +10,9 @@
 package com.sun.msv.reader.relax.core;
 
 import org.xml.sax.Locator;
-import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.relax.TagClause;
+
 import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.grammar.relax.TagClause;
 
 /**
  * parses &lt;tag&gt; element.
@@ -31,7 +31,7 @@ public class TagState extends ClauseState
 		
 		if(name==null)
 		{
-			reader.reportError(reader.ERR_MISSING_ATTRIBUTE, "tag","name");
+			reader.reportError(RELAXCoreReader.ERR_MISSING_ATTRIBUTE, "tag","name");
 			return;
 		}
 		

@@ -9,33 +9,41 @@
  */
 package com.sun.msv.reader.relax.core;
 
-import java.util.Map;
 import java.util.Iterator;
-import org.xml.sax.SAXException;
+import java.util.Map;
+
+import javax.xml.parsers.SAXParserFactory;
+
+import org.iso_relax.verifier.Schema;
+import org.relaxng.datatype.DatatypeException;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
-import org.relaxng.datatype.Datatype;
-import org.relaxng.datatype.DatatypeException;
-import org.iso_relax.verifier.Schema;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import com.sun.msv.datatype.xsd.XSDatatype;
+
 import com.sun.msv.datatype.xsd.DatatypeFactory;
-import com.sun.msv.reader.GrammarReaderController;
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.ExpressionState;
-import com.sun.msv.reader.RunAwayExpressionChecker;
-import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
-import com.sun.msv.reader.datatype.xsd.XSDatatypeResolver;
-import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
-import com.sun.msv.reader.relax.RELAXReader;
-import com.sun.msv.reader.relax.core.checker.*;
+import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.ReferenceExp;
-import com.sun.msv.grammar.relax.*;
+import com.sun.msv.grammar.relax.AttPoolClause;
+import com.sun.msv.grammar.relax.EmptyStringType;
+import com.sun.msv.grammar.relax.Exportable;
+import com.sun.msv.grammar.relax.HedgeRules;
+import com.sun.msv.grammar.relax.NoneType;
+import com.sun.msv.grammar.relax.RELAXModule;
+import com.sun.msv.grammar.relax.TagClause;
+import com.sun.msv.reader.ExpressionState;
+import com.sun.msv.reader.GrammarReaderController;
+import com.sun.msv.reader.RunAwayExpressionChecker;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeResolver;
+import com.sun.msv.reader.relax.RELAXReader;
+import com.sun.msv.reader.relax.core.checker.DblAttrConstraintChecker;
+import com.sun.msv.reader.relax.core.checker.ExportedHedgeRuleChecker;
+import com.sun.msv.reader.relax.core.checker.IdAbuseChecker;
 import com.sun.msv.util.StartTagInfo;
 
 /**

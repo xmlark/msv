@@ -9,19 +9,7 @@
  */
 package batch.verifier;
 
-import java.util.Iterator;
-import java.io.*;
-import javax.xml.parsers.*;
-import org.apache.xerces.parsers.SAXParser;
-import org.xml.sax.InputSource;
-import batch.model.*;
-import junit.framework.*;
-import com.sun.msv.verifier.*;
-import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import com.sun.msv.reader.GrammarReaderController;
-import com.sun.msv.reader.dtd.DTDReader;
-import com.sun.msv.reader.util.GrammarLoader;
-import com.sun.msv.grammar.Grammar;
+import batch.model.TestReader;
 
 /**
  * validates instances by schemata.

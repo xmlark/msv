@@ -19,7 +19,13 @@
 
 package com.sun.msv.scanner.dtd;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.CharConversionException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PushbackInputStream;
+import java.io.Reader;
 import java.util.Hashtable;
 
 

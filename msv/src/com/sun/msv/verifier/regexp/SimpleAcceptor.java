@@ -9,11 +9,9 @@
  */
 package com.sun.msv.verifier.regexp;
 
-import com.sun.msv.verifier.Acceptor;
-import com.sun.msv.verifier.regexp.ElementToken;
-import com.sun.msv.verifier.regexp.ExpressionAcceptor;
-import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.verifier.Acceptor;
 
 /**
  * Acceptor that will be used when only one ElementExp matches

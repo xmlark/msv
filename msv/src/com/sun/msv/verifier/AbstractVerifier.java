@@ -9,19 +9,18 @@
  */
 package com.sun.msv.verifier;
 
-import org.xml.sax.*;
-import org.xml.sax.helpers.NamespaceSupport;
-import org.relaxng.datatype.Datatype;
 import java.util.Set;
-import java.util.Map;
-import java.util.Iterator;
 import java.util.StringTokenizer;
-import com.sun.msv.datatype.xsd.StringType;
+
+import org.relaxng.datatype.Datatype;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.NamespaceSupport;
+
 import com.sun.msv.grammar.IDContextProvider;
-import com.sun.msv.util.StartTagInfo;
-import com.sun.msv.util.StringRef;
-import com.sun.msv.util.StringPair;
-import com.sun.msv.util.DatatypeRef;
 
 /**
  * Base implementation for various Verifier implementations.
@@ -131,18 +130,18 @@ public abstract class AbstractVerifier implements
 		if(!performIDcheck)		return;
 		
 		int idType = dt.getIdType();
-		if(idType==dt.ID_TYPE_ID) {
+		if(idType==Datatype.ID_TYPE_ID) {
 			literal = literal.trim();
 			if(!ids.add(literal))
 				// duplicate id value
 				onDuplicateId(literal);
 			return;
 		}
-		if(idType==dt.ID_TYPE_IDREF) {
+		if(idType==Datatype.ID_TYPE_IDREF) {
 			idrefs.add(literal.trim());
 			return;
 		}
-		if(idType==dt.ID_TYPE_IDREFS) {
+		if(idType==Datatype.ID_TYPE_IDREFS) {
 			StringTokenizer tokens = new StringTokenizer(literal);
 			while(tokens.hasMoreTokens())
 				idrefs.add(tokens.nextToken());

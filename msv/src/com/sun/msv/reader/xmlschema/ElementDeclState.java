@@ -9,28 +9,22 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import com.sun.msv.datatype.xsd.XSDatatype;
+import java.util.Vector;
+
+import org.xml.sax.Locator;
+
 import com.sun.msv.datatype.xsd.BooleanType;
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.AttributeExp;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.SimpleNameClass;
-import com.sun.msv.grammar.trex.ElementPattern;
 import com.sun.msv.grammar.xmlschema.ElementDeclExp;
-import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
-import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
-import com.sun.msv.grammar.xmlschema.XMLSchemaTypeExp;
 import com.sun.msv.grammar.xmlschema.IdentityConstraint;
-import com.sun.msv.util.StartTagInfo;
-import com.sun.msv.util.StringPair;
+import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
+import com.sun.msv.reader.ExpressionWithChildState;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.State;
-import com.sun.msv.reader.IgnoreState;
-import com.sun.msv.reader.ExpressionWithChildState;
-import org.xml.sax.Locator;
-import org.relaxng.datatype.Datatype;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.util.StringPair;
 
 /**
  * used to parse &lt;element &gt; element without ref attribute.
@@ -86,7 +80,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 		
 		final String[] s = reader.splitQName(typeQName);
 		if(s==null) {
-			reader.reportError( reader.ERR_UNDECLARED_PREFIX, typeQName );
+			reader.reportError( XMLSchemaReader.ERR_UNDECLARED_PREFIX, typeQName );
 			ref.exp = Expression.nullSet;	// recover by setting a dummy definition.
 			return ref;
 		}
@@ -107,7 +101,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 					if(e==null)	e = g.complexTypes.get(s[1]);
 					if(e==null ) {
 						// both simpleType and complexType are undefined.
-						reader.reportError( reader.ERR_UNDEFINED_ELEMENTTYPE, typeQName );
+						reader.reportError( XMLSchemaReader.ERR_UNDEFINED_ELEMENTTYPE, typeQName );
 						e = Expression.nullSet;	// recover by dummy definition.
 					}
 				}
@@ -138,7 +132,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 		// if no content model is given, then this element type is ur-type.
 		// TODO: confirm it.
 		final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
-		reader.reportWarning( reader.WRN_IMPLICIT_URTYPE_FOR_ELEMENT, null );
+		reader.reportWarning( XMLSchemaReader.WRN_IMPLICIT_URTYPE_FOR_ELEMENT, null );
 		return reader.complexUrType;
 	}
 	
@@ -147,7 +141,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 		
 		String name = startTag.getAttribute("name");
 		if( name==null ) {
-			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "element", "name" );
+			reader.reportError( XMLSchemaReader.ERR_MISSING_ATTRIBUTE, "element", "name" );
 			// recover by abandoning this element.
 			return Expression.nullSet;
 		}
@@ -179,7 +173,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 			if( decl.getElementExp()!=null )
 				reader.reportError( 
 					new Locator[]{this.location,reader.getDeclaredLocationOf(decl)},
-					reader.ERR_DUPLICATE_ELEMENT_DEFINITION,
+                    XMLSchemaReader.ERR_DUPLICATE_ELEMENT_DEFINITION,
 					new Object[]{name} );
 			
 		} else {
@@ -218,7 +212,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 		if( substitutionGroupQName!=null ) {
 			String[] r = reader.splitQName(substitutionGroupQName);
 			if(r==null) {
-				reader.reportError( reader.ERR_UNDECLARED_PREFIX, substitutionGroupQName );
+				reader.reportError( XMLSchemaReader.ERR_UNDECLARED_PREFIX, substitutionGroupQName );
 				// recover by ignoring substitutionGroup.
 			} else {
 				// register this declaration to the head elementDecl.
@@ -237,24 +231,24 @@ public class ElementDeclState extends ExpressionWithChildState {
 		if(block==null)		block = reader.blockDefault;
 		if(block!=null) {
 			if( block.indexOf("#all")>=0 )
-				decl.block |= decl.RESTRICTION|decl.EXTENSION|decl.SUBSTITUTION;
+				decl.block |= ElementDeclExp.ALL;
 			if( block.indexOf("extension")>=0 )
-				decl.block |= decl.EXTENSION;
+				decl.block |= ElementDeclExp.EXTENSION;
 			if( block.indexOf("restriction")>=0 )
-				decl.block |= decl.RESTRICTION;
+				decl.block |= ElementDeclExp.RESTRICTION;
 			if( block.indexOf("substitution")>=0 )
-				decl.block |= decl.SUBSTITUTION;
+				decl.block |= ElementDeclExp.SUBSTITUTION;
 		}
 		
 		String finalValue = startTag.getAttribute("final");
 		if(finalValue==null)	finalValue = reader.finalDefault;
 		if(finalValue!=null) {
 			if( finalValue.indexOf("#all")>=0 )
-				decl.finalValue |= decl.RESTRICTION|decl.EXTENSION|decl.SUBSTITUTION;
+				decl.finalValue |= ElementDeclExp.ALL;
 			if( finalValue.indexOf("extension")>=0 )
-				decl.finalValue |= decl.EXTENSION;
+				decl.finalValue |= ElementDeclExp.EXTENSION;
 			if( finalValue.indexOf("restriction")>=0 )
-				decl.finalValue |= decl.RESTRICTION;
+				decl.finalValue |= ElementDeclExp.RESTRICTION;
 		}
 		
 		// minOccurs/maxOccurs is processed through interception

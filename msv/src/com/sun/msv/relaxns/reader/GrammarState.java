@@ -9,9 +9,9 @@
  */
 package com.sun.msv.relaxns.reader;
 
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.State;
 import com.sun.msv.util.StartTagInfo;
-import com.sun.msv.grammar.Expression;
-import com.sun.msv.reader.*;
 
 /**
  * parses &lt;grammar&gt; element.
@@ -39,7 +39,7 @@ public class GrammarState extends SimpleState
 		{// check relaxNamespaceVersion
 			final String nsVersion = startTag.getAttribute("relaxNamespaceVersion");
 			if( nsVersion==null )
-				reader.reportWarning( reader.ERR_MISSING_ATTRIBUTE, "module", "relaxNamespaceVersion" );
+				reader.reportWarning( RELAXNSReader.ERR_MISSING_ATTRIBUTE, "module", "relaxNamespaceVersion" );
 			else
 			if(!"1.0".equals(nsVersion))
 				reader.reportWarning( RELAXNSReader.WRN_ILLEGAL_RELAXNAMESPACE_VERSION, nsVersion );

@@ -9,9 +9,10 @@
  */
 package com.sun.msv.writer;
 
-import com.sun.msv.grammar.Grammar;
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.SAXException;
+
+import com.sun.msv.grammar.Grammar;
 
 /**
  * Converter from AGM to the XML representation.

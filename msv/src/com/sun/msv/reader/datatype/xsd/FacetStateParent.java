@@ -9,7 +9,6 @@
  */
 package com.sun.msv.reader.datatype.xsd;
 
-import com.sun.msv.datatype.xsd.TypeIncubator;
 
 /**
  * Interface implemented by the parent state of FacetState.

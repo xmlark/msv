@@ -9,12 +9,11 @@
  */
 package com.sun.msv.relaxns.reader.relax;
 
-import com.sun.msv.reader.ExpressionWithoutChildState;
-import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.relax.ElementRule;
-import com.sun.msv.grammar.relax.TagClause;
-import com.sun.msv.relaxns.grammar.relax.AnyOtherElementExp;
 import org.xml.sax.Locator;
+
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.reader.ExpressionWithoutChildState;
+import com.sun.msv.relaxns.grammar.relax.AnyOtherElementExp;
 
 /**
  * parses &lt;anyOtherElement&gt; state.
@@ -37,7 +36,7 @@ public class AnyOtherElementState extends ExpressionWithoutChildState
 		if( in!=null && ex!=null ) {
 			reader.reportError(
 				new Locator[]{this.location},
-				reader.ERR_CONFLICTING_ATTRIBUTES,
+				RELAXCoreIslandSchemaReader.ERR_CONFLICTING_ATTRIBUTES,
 				new Object[]{"includeNamespace", "excludeNamespace"} );
 			ex=null;
 		}

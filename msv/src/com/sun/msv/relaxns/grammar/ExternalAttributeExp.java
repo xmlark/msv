@@ -9,10 +9,11 @@
  */
 package com.sun.msv.relaxns.grammar;
 
-import com.sun.msv.grammar.OtherExp;
-import com.sun.msv.grammar.ExpressionPool;
-import com.sun.msv.grammar.Expression;
 import org.xml.sax.Locator;
+
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.OtherExp;
 
 /**
  * place holder for imported attributes declaration.

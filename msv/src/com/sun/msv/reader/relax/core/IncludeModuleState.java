@@ -9,8 +9,8 @@
  */
 package com.sun.msv.reader.relax.core;
 
-import com.sun.msv.reader.ChildlessState;
 import com.sun.msv.reader.AbortException;
+import com.sun.msv.reader.ChildlessState;
 
 /**
  * parses &lt;include&gt; element of RELAX Core.

@@ -9,27 +9,24 @@
  */
 package com.sun.msv.relaxns.reader;
 
-import java.util.Set;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import com.sun.msv.reader.relax.RELAXReader;
-import com.sun.msv.reader.*;
-import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.ExpressionPool;
-import com.sun.msv.grammar.Grammar;
-import com.sun.msv.grammar.relax.RELAXModule;
-import com.sun.msv.util.StartTagInfo;
-import com.sun.msv.relaxns.grammar.ExternalElementExp;
-import com.sun.msv.relaxns.grammar.RELAXGrammar;
-import com.sun.msv.relaxns.reader.relax.RELAXCoreIslandSchemaReader;
-import com.sun.msv.relaxns.reader.trex.TREXIslandSchemaReader;
-import com.sun.msv.reader.trex.classic.TREXGrammarReader;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
-import org.xml.sax.helpers.LocatorImpl;
+
 import org.iso_relax.dispatcher.IslandSchemaReader;
 import org.iso_relax.dispatcher.SchemaProvider;
 import org.relaxng.datatype.Datatype;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.LocatorImpl;
+
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.reader.GrammarReaderController;
+import com.sun.msv.reader.relax.RELAXReader;
+import com.sun.msv.reader.trex.classic.TREXGrammarReader;
+import com.sun.msv.relaxns.grammar.ExternalElementExp;
+import com.sun.msv.relaxns.grammar.RELAXGrammar;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * parses RELAX Namespace XML and constructs a SchemaProvider.

@@ -9,9 +9,10 @@
  */
 package com.sun.msv.reader.util;
 
-import com.sun.msv.reader.GrammarReaderController;
-import org.xml.sax.Locator;
 import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+
+import com.sun.msv.reader.GrammarReaderController;
 
 /**
  * Default implementation of GrammarReaderController.

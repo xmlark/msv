@@ -5,6 +5,6 @@
 @set CLASSPATH=%CLASSPATH%;%BASEPATH%\xsdlib\src
 @set CLASSPATH=%CLASSPATH%;%BASEPATH%\shared\lib\isorelax.jar
 @set CLASSPATH=%CLASSPATH%;%BASEPATH%\shared\lib\relaxngDatatype.jar
-@set CLASSPATH=%CLASSPATH%;%BASEPATH%\shared\lib\xerces.jar
+@set CLASSPATH=%CLASSPATH%;%BASEPATH%\shared\lib\xercesImpl.jar
 @set CLASSPATH=%CLASSPATH%;%BASEPATH%\shared\lib\junit.jar
 @set CLASSPATH=%CLASSPATH%;%BASEPATH%\shared\lib\resolver.jar

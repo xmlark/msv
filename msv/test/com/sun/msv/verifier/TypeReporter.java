@@ -9,24 +9,24 @@
  */
 package com.sun.msv.verifier;
 
-import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.grammar.Grammar;
-import com.sun.msv.grammar.ExpressionPool;
-import com.sun.msv.grammar.relax.ElementRule;
-import com.sun.msv.grammar.trex.typed.TypedElementPattern;
-import com.sun.msv.grammar.trex.ElementPattern;
-import com.sun.msv.grammar.util.ExpressionPrinter;
-import com.sun.msv.reader.trex.typed.TypedTREXGrammarInterceptor;
-import com.sun.msv.reader.trex.classic.TREXGrammarReader;
-import com.sun.msv.reader.util.GrammarLoader;
-import com.sun.msv.verifier.VerifierFilter;
-import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import javax.xml.parsers.SAXParserFactory;
-import org.xml.sax.XMLReader;
-import org.xml.sax.XMLFilter;
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.DefaultHandler;
+
 import org.relaxng.datatype.Datatype;
+import org.xml.sax.Attributes;
+import org.xml.sax.XMLFilter;
+import org.xml.sax.helpers.DefaultHandler;
+
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.Grammar;
+import com.sun.msv.grammar.relax.ElementRule;
+import com.sun.msv.grammar.trex.ElementPattern;
+import com.sun.msv.grammar.trex.typed.TypedElementPattern;
+import com.sun.msv.grammar.util.ExpressionPrinter;
+import com.sun.msv.reader.trex.classic.TREXGrammarReader;
+import com.sun.msv.reader.trex.typed.TypedTREXGrammarInterceptor;
+import com.sun.msv.reader.util.GrammarLoader;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 
 /**
  * dumps RELAX label assigned to each element.

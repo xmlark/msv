@@ -9,10 +9,10 @@
  */
 package com.sun.msv.reader.trex.ng;
 
+import org.xml.sax.Locator;
+
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ReferenceExp;
-import com.sun.msv.reader.SequenceState;
-import org.xml.sax.Locator;
 
 /**
  * parses &lt;define&gt; declaration.
@@ -42,7 +42,7 @@ public class DefineState extends com.sun.msv.reader.trex.DefineState {
 			reader.currentNamedPattern = reader.getRefExpParseInfo(exp);
 			
 			if(reader.currentNamedPattern.redefinition!=
-				reader.currentNamedPattern.notBeingRedefined )
+				RELAXNGReader.RefExpParseInfo.notBeingRedefined )
 				// if this pattern is being redefined,
 				// we must not augument RefParseInfo.refs from this pattern.
 				reader.currentNamedPattern = null;
@@ -74,7 +74,7 @@ public class DefineState extends com.sun.msv.reader.trex.DefineState {
 			// this is a head declaration
 			if( info.haveHead ) {
 				// two head declarations: an error.
-				reader.reportError( reader.ERR_COMBINE_MISSING, baseExp.name );
+				reader.reportError( RELAXNGReader.ERR_COMBINE_MISSING, baseExp.name );
 				return baseExp.exp;
 			}
 			info.haveHead = true;
@@ -87,12 +87,12 @@ public class DefineState extends com.sun.msv.reader.trex.DefineState {
 				// make sure that the value is ok.
 				if( !info.combineMethod.equals("choice")
 				&&	!info.combineMethod.equals("interleave") )
-					reader.reportError( reader.ERR_BAD_COMBINE, info.combineMethod );
+					reader.reportError( RELAXNGReader.ERR_BAD_COMBINE, info.combineMethod );
 			} else {
 				if( !info.combineMethod.equals(combine) ) {
 					// different combine method.
 					reader.reportError( new Locator[]{location, reader.getDeclaredLocationOf(baseExp)},
-								reader.ERR_INCONSISTENT_COMBINE, new Object[]{baseExp.name} );
+                        RELAXNGReader.ERR_INCONSISTENT_COMBINE, new Object[]{baseExp.name} );
 					
 					// reset the combine method to null
 					// to surpress excessive error messages.
@@ -106,13 +106,13 @@ public class DefineState extends com.sun.msv.reader.trex.DefineState {
 		if( baseExp.exp==null )	// the first definition
 			return newExp;
 		
-		if( info.redefinition!=info.notBeingRedefined ) {
+		if( info.redefinition!=RELAXNGReader.RefExpParseInfo.notBeingRedefined ) {
 			// ignore the new definition
 			// because this definition is currently being redefined by
 			// the caller.
 			
 			// the original definition was found.
-			info.redefinition = info.originalFound;
+			info.redefinition = RELAXNGReader.RefExpParseInfo.originalFound;
 			return baseExp.exp;
 		}
 		

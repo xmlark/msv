@@ -9,14 +9,13 @@
  */
 package com.sun.msv.reader.relax.core;
 
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.SimpleState;
-import com.sun.msv.reader.ExpressionOwner;
-import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.AnyNameClass;
-import com.sun.msv.grammar.relax.TagClause;
+import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.relax.ElementRule;
 import com.sun.msv.grammar.relax.ElementRules;
+import com.sun.msv.grammar.relax.TagClause;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.State;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -53,7 +52,7 @@ abstract class ElementRuleBaseState extends SimpleState
 		String label = startTag.getAttribute("label");
 		
 		if(role==null && label==null) {
-			reader.reportError( reader.ERR_MISSING_ATTRIBUTE_2,
+			reader.reportError( RELAXCoreReader.ERR_MISSING_ATTRIBUTE_2,
 								"elementRule", "role", "label" );
 			// recover from error by supplying dummy label
 			label = "<undefined>";
@@ -65,7 +64,7 @@ abstract class ElementRuleBaseState extends SimpleState
 			// inline <tag> element was not found.
 			// role element must point to some TagClause
 			if( role==null ) {
-				reader.reportError( reader.ERR_MISSING_ATTRIBUTE,
+				reader.reportError( RELAXCoreReader.ERR_MISSING_ATTRIBUTE,
 									"elementRule","role");
 				// recover by assuming a harmless Clause
 				clause = new TagClause();

@@ -27,7 +27,7 @@ public class HedgeRuleState extends HedgeRuleBaseState
 		final String label = startTag.getAttribute("label");
 		if( label==null )
 		{
-			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "hedgeRule", "label" );
+			reader.reportError( RELAXCoreReader.ERR_MISSING_ATTRIBUTE, "hedgeRule", "label" );
 			return;	// recover by ignoring this hedgeRule
 		}
 		

@@ -9,7 +9,11 @@
  */
 package com.sun.msv.verifier.regexp;
 
-import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.DataExp;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.ListExp;
+import com.sun.msv.grammar.ValueExp;
 
 /**
  * primitive unit of XML instance.

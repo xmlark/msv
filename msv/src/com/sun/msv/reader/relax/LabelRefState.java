@@ -10,8 +10,6 @@
 package com.sun.msv.reader.relax;
 
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.ReferenceExp;
-import com.sun.msv.grammar.relax.RELAXModule;
 import com.sun.msv.reader.ExpressionWithoutChildState;
 import com.sun.msv.reader.GrammarReader;
 

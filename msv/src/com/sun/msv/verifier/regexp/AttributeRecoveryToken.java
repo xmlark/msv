@@ -11,7 +11,6 @@ package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.AttributeExp;
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.ExpressionPool;
 
 /**
  * special AttributeToken that memorizes {@link AttributeExp} that fails to

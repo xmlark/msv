@@ -9,8 +9,8 @@
  */
 package com.sun.msv.grammar;
 
-import java.util.Map;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Container of ReferenceExp. a map from name to ReferenceExp.

@@ -9,12 +9,12 @@
  */
 package com.sun.msv.reader.trex.classic;
 
-import com.sun.msv.grammar.Expression;
-import com.sun.msv.reader.ExpressionWithoutChildState;
-import com.sun.msv.util.StringPair;
 import com.sun.msv.datatype.xsd.StringType;
 import com.sun.msv.datatype.xsd.TokenType;
 import com.sun.msv.datatype.xsd.WhiteSpaceProcessor;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.reader.ExpressionWithoutChildState;
+import com.sun.msv.util.StringPair;
 
 /**
  * parses &lt;string&gt; pattern.

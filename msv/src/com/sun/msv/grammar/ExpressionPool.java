@@ -9,8 +9,8 @@
  */
 package com.sun.msv.grammar;
 
-import java.util.Hashtable;
 import org.relaxng.datatype.Datatype;
+
 import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.util.StringPair;
 

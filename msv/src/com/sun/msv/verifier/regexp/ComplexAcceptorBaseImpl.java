@@ -9,18 +9,13 @@
  */
 package com.sun.msv.verifier.regexp;
 
-import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.IDContextProvider;
-import com.sun.msv.verifier.Acceptor;
-import com.sun.msv.verifier.regexp.StringToken;
-import com.sun.msv.verifier.regexp.Token;
-import com.sun.msv.verifier.regexp.AnyElementToken;
-import com.sun.msv.verifier.regexp.ElementToken;
-import com.sun.msv.verifier.regexp.ResidualCalculator;
-import com.sun.msv.util.StringRef;
 import com.sun.msv.util.DatatypeRef;
 import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.util.StringRef;
+import com.sun.msv.verifier.Acceptor;
 
 /**
  * base implementation of ComplexAcceptor.

@@ -9,11 +9,12 @@
  */
 package com.sun.msv.driver.textui;
 
-import com.sun.msv.verifier.ValidityViolation;
-import com.sun.msv.verifier.ValidationUnrecoverableException;
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import com.sun.msv.verifier.ValidationUnrecoverableException;
+import com.sun.msv.verifier.ValidityViolation;
 
 /**
  * {@link VerificationErrorHandler} that reports all errors and warnings.

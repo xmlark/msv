@@ -10,10 +10,10 @@
 package com.sun.msv.relaxns.grammar;
 
 import java.util.Map;
+
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
-import org.iso_relax.dispatcher.IslandSchema;
 
 /**
  * "Grammar" of RELAX Namespace.

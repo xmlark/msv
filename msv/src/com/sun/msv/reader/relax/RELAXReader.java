@@ -10,24 +10,20 @@
 package com.sun.msv.reader.relax;
 
 import java.text.MessageFormat;
-import java.util.Collection;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
+
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-import org.xml.sax.XMLReader;
-import org.xml.sax.SAXException;
-import org.iso_relax.verifier.Schema;
-import com.sun.msv.datatype.xsd.DatatypeFactory;
-import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.relax.EmptyStringType;
-import com.sun.msv.grammar.relax.NoneType;
-import com.sun.msv.reader.*;
+
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.reader.ChoiceState;
+import com.sun.msv.reader.ExpressionState;
+import com.sun.msv.reader.GrammarReader;
+import com.sun.msv.reader.GrammarReaderController;
+import com.sun.msv.reader.SequenceState;
+import com.sun.msv.reader.State;
+import com.sun.msv.reader.TerminalState;
 import com.sun.msv.reader.datatype.xsd.FacetState;
-import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
 import com.sun.msv.util.StartTagInfo;
 
 /**

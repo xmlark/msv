@@ -24,7 +24,7 @@ public class AttPoolRefState extends ExpressionWithoutChildState
 		final String role = startTag.getAttribute("role");
 		if( role==null )
 		{
-			reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "ref", "role" );
+			reader.reportError( RELAXCoreReader.ERR_MISSING_ATTRIBUTE, "ref", "role" );
 			return Expression.epsilon;
 		}
 		

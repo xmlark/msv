@@ -1,19 +1,29 @@
 package com.sun.msv.reader.trex.ng.comp;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashSet;
-import java.util.HashMap;
-import com.sun.msv.verifier.regexp.ResidualCalculator;
-import com.sun.msv.verifier.regexp.StringToken;
-import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.util.ExpressionWalker;
-import com.sun.msv.grammar.util.RefExpRemover;
-import com.sun.msv.grammar.relaxng.RELAXNGGrammar;
-import com.sun.msv.util.StringPair;
+
 import org.relaxng.datatype.Datatype;
 import org.xml.sax.Locator;
+
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.ChoiceExp;
+import com.sun.msv.grammar.DataExp;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ListExp;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.OneOrMoreExp;
+import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.grammar.ValueExp;
+import com.sun.msv.grammar.util.ExpressionWalker;
+import com.sun.msv.grammar.util.RefExpRemover;
+import com.sun.msv.util.StringPair;
+import com.sun.msv.verifier.regexp.ResidualCalculator;
+import com.sun.msv.verifier.regexp.StringToken;
 
 class DefAttCompatibilityChecker extends CompatibilityChecker {
 	

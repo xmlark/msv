@@ -9,12 +9,11 @@
  */
 package com.sun.msv.reader.relax.core;
 
-import com.sun.msv.util.StartTagInfo;
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.SimpleState;
 import com.sun.msv.grammar.relax.RELAXModule;
-import com.sun.msv.grammar.Expression;
 import com.sun.msv.reader.ChildlessState;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.State;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * parses &lt;interface&gt; element and &lt;div&gt; in interface.
@@ -38,7 +37,7 @@ public class InterfaceState extends SimpleState
 			if(label!=null)
 				module.elementRules.getOrCreate(label).exported = true;
 			else
-				reader.reportError(reader.ERR_MISSING_ATTRIBUTE,
+				reader.reportError(RELAXCoreReader.ERR_MISSING_ATTRIBUTE,
 								   "export", "label" );
 				// recover by ignoring this export
 			

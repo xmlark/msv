@@ -10,7 +10,6 @@
 package com.sun.msv.verifier.identity;
 
 import org.relaxng.datatype.Datatype;
-import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**

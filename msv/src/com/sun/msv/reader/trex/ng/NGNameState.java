@@ -9,10 +9,10 @@
  */
 package com.sun.msv.reader.trex.ng;
 
-import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.AnyNameClass;
-import com.sun.msv.grammar.NamespaceNameClass;
 import com.sun.msv.grammar.DifferenceNameClass;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.NamespaceNameClass;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.trex.NameClassWithChildState;
 import com.sun.msv.util.StartTagInfo;

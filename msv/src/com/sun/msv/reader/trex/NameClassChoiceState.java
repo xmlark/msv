@@ -9,10 +9,8 @@
  */
 package com.sun.msv.reader.trex;
 
-import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.ChoiceNameClass;
-import java.util.ArrayList;
-import java.util.List;
+import com.sun.msv.grammar.NameClass;
 
 /**
  * parses &lt;choice&gt; name class.

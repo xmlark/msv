@@ -9,12 +9,11 @@
  */
 package com.sun.msv.relaxns.reader.relax;
 
-import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.grammar.relax.RELAXModule;
+import com.sun.msv.reader.ChildlessState;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.relax.core.InterfaceState;
-import com.sun.msv.grammar.relax.RELAXModule;
-import com.sun.msv.grammar.Expression;
-import com.sun.msv.reader.ChildlessState;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * parses &lt;interface&gt; element and &lt;div&gt; in interface.
@@ -26,7 +25,7 @@ class InterfaceStateEx extends InterfaceState
 	protected State createChildState( StartTagInfo tag )
 	{
 		RELAXCoreIslandSchemaReader reader = (RELAXCoreIslandSchemaReader)this.reader;
-		if(!tag.namespaceURI.equals(reader.RELAXCoreNamespace))	return null;
+		if(!tag.namespaceURI.equals(RELAXCoreIslandSchemaReader.RELAXCoreNamespace))	return null;
 		
 		if(tag.localName.equals("div"))		return new InterfaceStateEx();
 		
@@ -48,7 +47,7 @@ class InterfaceStateEx extends InterfaceState
 		{
 			final String label = tag.getAttribute("label");
 			if(label==null)
-				reader.reportError(reader.ERR_MISSING_ATTRIBUTE,"hedgeExport","label");
+				reader.reportError(RELAXCoreIslandSchemaReader.ERR_MISSING_ATTRIBUTE,"hedgeExport","label");
 				// recover by ignoring this hedgeExport
 			else
 				module.hedgeRules.getOrCreate(label).exported = true;

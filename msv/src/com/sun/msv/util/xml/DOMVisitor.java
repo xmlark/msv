@@ -11,8 +11,8 @@ package com.sun.msv.util.xml;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * visits all DOM elements in the depth-first order (in-order).
@@ -31,7 +31,7 @@ public abstract class DOMVisitor
 		int len = lst.getLength();
 		for( int i=0; i<lst.getLength(); i++ ) {
 			Node n = lst.item(i);
-			if( n.getNodeType() == n.ELEMENT_NODE )
+			if( n.getNodeType() == Node.ELEMENT_NODE )
 				visit( (Element)n );
 			else
 				visitNode( n );

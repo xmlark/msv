@@ -10,8 +10,8 @@
 package com.sun.msv.reader.trex;
 
 import com.sun.msv.reader.AbortException;
-import com.sun.msv.reader.State;
 import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.State;
 import com.sun.msv.util.StartTagInfo;
 
 /**

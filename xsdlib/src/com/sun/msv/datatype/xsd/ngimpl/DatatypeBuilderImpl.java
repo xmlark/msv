@@ -26,7 +26,7 @@ class DatatypeBuilderImpl implements DatatypeBuilder {
 				XSDatatypeImpl.localize(XSDatatypeImpl.ERR_NOT_APPLICABLE_FACET, name) );
 			
 		
-		incubator.addFacet( name, value, context );
+		incubator.addFacet( name, value, false, context );
 		
 		if( name.equals(XSDatatype.FACET_PATTERN) )
 			// if the pattern facet is specified, we have to

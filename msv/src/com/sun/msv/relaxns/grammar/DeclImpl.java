@@ -9,9 +9,10 @@
  */
 package com.sun.msv.relaxns.grammar;
 
+import org.xml.sax.SAXNotRecognizedException;
+
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ReferenceExp;
-import org.xml.sax.SAXNotRecognizedException;
 
 /**
  * Implementation of ElementDecl interface by MSV grammar model.

@@ -9,18 +9,17 @@
  */
 package com.sun.msv.relaxns.verifier;
 
-import org.iso_relax.dispatcher.IslandVerifier;
-import org.iso_relax.dispatcher.IslandSchema;
 import org.iso_relax.dispatcher.Dispatcher;
 import org.iso_relax.dispatcher.ElementDecl;
-import org.xml.sax.helpers.DefaultHandler;
+import org.iso_relax.dispatcher.IslandSchema;
+import org.iso_relax.dispatcher.IslandVerifier;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import org.xml.sax.Locator;
-import com.sun.msv.verifier.Verifier;
+import org.xml.sax.helpers.DefaultHandler;
+
 import com.sun.msv.relaxns.grammar.relax.AnyOtherElementExp;
-import java.util.Set;
 
 /**
  * IslandVerifier that validates &lt;anyOtherElement /&gt; of RELAX.

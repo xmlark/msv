@@ -118,7 +118,7 @@ public abstract class RedefinableDeclState extends ExpressionWithChildState {
 			
 			oldDecl = (RedefinableExp)getContainer()._get(name);
 			if(oldDecl==null) {
-				reader.reportError( reader.ERR_REDEFINE_UNDEFINED, name );
+				reader.reportError( XMLSchemaReader.ERR_REDEFINE_UNDEFINED, name );
 				// recover by creating a dummy object.
 				oldDecl = (RedefinableExp)getContainer()._getOrCreate(name);
 				return;

@@ -12,7 +12,6 @@ package com.sun.msv.reader.trex;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.reader.SequenceState;
-import org.xml.sax.Locator;
 
 /**
  * parses &lt;define&gt; declaration.
@@ -26,7 +25,7 @@ public abstract class DefineState extends SequenceState {
 		
 		if(name==null) {
 			// name attribute is required.
-			reader.reportError( reader.ERR_MISSING_ATTRIBUTE,
+			reader.reportError( TREXBaseReader.ERR_MISSING_ATTRIBUTE,
 				"ref","name");
 			return null;
 		}
@@ -46,7 +45,7 @@ public abstract class DefineState extends SequenceState {
 		// combine two patterns
 		Expression newexp = doCombine( ref, exp, combine );
 		if( newexp==null )
-			reader.reportError( reader.ERR_BAD_COMBINE, combine );
+			reader.reportError( TREXBaseReader.ERR_BAD_COMBINE, combine );
 			// recover by ignoring this definition
 		else
 			ref.exp = newexp;

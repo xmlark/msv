@@ -9,21 +9,12 @@
  */
 package com.sun.msv.verifier.jarv;
 
-import org.iso_relax.verifier.*;
-import org.xml.sax.SAXNotRecognizedException;
+import org.iso_relax.verifier.VerifierConfigurationException;
+import org.iso_relax.verifier.VerifierHandler;
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.w3c.dom.Node;
-import org.w3c.dom.Document;
-import com.sun.msv.verifier.ValidityViolation;
+
 import com.sun.msv.verifier.IVerifier;
-import com.sun.msv.verifier.util.ErrorHandlerImpl;
-import java.io.IOException;
-import jp.gr.xml.relax.sax.DOMSAXProducer;
 
 /**
  * Verifier implementation.

@@ -1,9 +1,11 @@
 package batch.driver;
 
+import org.xml.sax.InputSource;
+
+import batch.model.IValidator;
+
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.reader.GrammarReaderController;
-import org.xml.sax.InputSource;
-import batch.model.*;
 
 public interface IValidatorEx extends IValidator
 {

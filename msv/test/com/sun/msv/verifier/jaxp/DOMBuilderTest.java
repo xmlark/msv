@@ -1,8 +1,14 @@
 package com.sun.msv.verifier.jaxp;
 
-import junit.framework.*;
-import javax.xml.parsers.*;
-import java.io.*;
+import java.io.StringReader;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 

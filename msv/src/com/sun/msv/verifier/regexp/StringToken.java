@@ -9,11 +9,17 @@
  */
 package com.sun.msv.verifier.regexp;
 
-import com.sun.msv.grammar.*;
-import com.sun.msv.datatype.xsd.StringType;
-import com.sun.msv.util.DatatypeRef;
-import org.relaxng.datatype.Datatype;
 import java.util.StringTokenizer;
+
+import org.relaxng.datatype.Datatype;
+
+import com.sun.msv.datatype.xsd.StringType;
+import com.sun.msv.grammar.DataExp;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.IDContextProvider;
+import com.sun.msv.grammar.ListExp;
+import com.sun.msv.grammar.ValueExp;
+import com.sun.msv.util.DatatypeRef;
 
 /**
  * chunk of string.
@@ -72,7 +78,7 @@ public class StringToken extends Token {
 		if(refType!=null)		assignType(exp.dt);
 		
 		// if the type has ID semantics, report it.
-		if( exp.dt.getIdType()!=exp.dt.ID_TYPE_NULL && context!=null )
+		if( exp.dt.getIdType()!=Datatype.ID_TYPE_NULL && context!=null )
 			// context can be legally null when this datatype is not context dependent.
 			context.onID( exp.dt, literal );
 		
@@ -88,7 +94,7 @@ public class StringToken extends Token {
 		if(refType!=null)		assignType(exp.dt);
 		
 		// if the type has ID semantics, report it.
-		if( exp.dt.getIdType()!=exp.dt.ID_TYPE_NULL && context!=null )
+		if( exp.dt.getIdType()!=Datatype.ID_TYPE_NULL && context!=null )
 			// context can be legally null when this datatype is not context dependent.
 			context.onID( exp.dt, literal );
 		

@@ -9,10 +9,6 @@
  */
 package com.sun.msv.reader.relax.core;
 
-import com.sun.msv.util.StartTagInfo;
-import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.relax.RELAXModule;
-import com.sun.msv.reader.*;
 
 /**
  * Used to parse module.
@@ -62,7 +58,7 @@ public class ModuleMergeState extends DivInModuleState
 		{// check relaxCoreVersion
 			final String coreVersion = startTag.getAttribute("relaxCoreVersion");
 			if( coreVersion==null )
-				reader.reportWarning( reader.ERR_MISSING_ATTRIBUTE, "module", "relaxCoreVersion" );
+				reader.reportWarning( RELAXCoreReader.ERR_MISSING_ATTRIBUTE, "module", "relaxCoreVersion" );
 			else
 			if(!"1.0".equals(coreVersion))
 				reader.reportWarning( RELAXCoreReader.WRN_ILLEGAL_RELAXCORE_VERSION, coreVersion );

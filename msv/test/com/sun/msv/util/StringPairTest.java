@@ -9,7 +9,9 @@
  */
 package com.sun.msv.util;
 
-import junit.framework.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
  * tests StringPair.

@@ -9,9 +9,10 @@
  */
 package com.sun.msv.verifier.regexp;
 
-import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.ElementExp;
 import java.util.Map;
+
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
 
 /**
  * this object will be added to Expression.verifierTag

@@ -9,38 +9,35 @@
  */
 package com.sun.msv.reader.dtd;
 
-import com.sun.msv.datatype.xsd.TypeIncubator;
-import com.sun.msv.datatype.xsd.DatatypeFactory;
-import com.sun.msv.datatype.xsd.XSDatatype;
-import com.sun.msv.datatype.xsd.EntityType;
-import com.sun.msv.datatype.xsd.NmtokenType;
-import com.sun.msv.datatype.xsd.NormalizedStringType;
-import com.sun.msv.datatype.xsd.StringType;
-import com.sun.msv.datatype.xsd.IDType;
-import com.sun.msv.datatype.xsd.IDREFType;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.relaxng.datatype.Datatype;
+import org.relaxng.datatype.DatatypeException;
+import org.relaxng.datatype.DatatypeLibrary;
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.LocatorImpl;
+
 import com.sun.msv.datatype.xsd.ngimpl.DataTypeLibraryImpl;
+import com.sun.msv.grammar.ChoiceNameClass;
+import com.sun.msv.grammar.Expression;
+import com.sun.msv.grammar.ExpressionPool;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.grammar.dtd.LocalNameClass;
+import com.sun.msv.grammar.trex.ElementPattern;
+import com.sun.msv.grammar.trex.TREXGrammar;
 import com.sun.msv.reader.Controller;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.scanner.dtd.DTDEventListener;
 import com.sun.msv.scanner.dtd.DTDParser;
 import com.sun.msv.scanner.dtd.InputEntity;
 import com.sun.msv.util.StringPair;
-import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.trex.TREXGrammar;
-import com.sun.msv.grammar.trex.ElementPattern;
-import com.sun.msv.grammar.dtd.*;
-
-import org.relaxng.datatype.Datatype;
-import org.relaxng.datatype.DatatypeException;
-import org.relaxng.datatype.DatatypeLibrary;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.Locator;
-import org.xml.sax.InputSource;
-import org.xml.sax.helpers.LocatorImpl;
-import java.util.Map;
-import java.util.Set;
-import java.util.Iterator;
 
 /**
  * constructs {@link TREXGrammar} object that exactly matches to

@@ -9,24 +9,24 @@
  */
 package com.sun.msv.relaxns.grammar.relax;
 
-import com.sun.msv.grammar.Expression;
+import java.util.Iterator;
+import java.util.StringTokenizer;
+
+import org.iso_relax.dispatcher.ElementDecl;
+import org.iso_relax.dispatcher.SchemaProvider;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXParseException;
+
+import com.sun.msv.grammar.ChoiceNameClass;
 import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.NamespaceNameClass;
-import com.sun.msv.grammar.ExpressionPool;
-import com.sun.msv.grammar.ReferenceExp;
-import com.sun.msv.grammar.ChoiceNameClass;
 import com.sun.msv.grammar.NotNameClass;
-import org.iso_relax.dispatcher.ElementDecl;
-import org.iso_relax.dispatcher.SchemaProvider;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.ErrorHandler;
-import java.util.Iterator;
-import java.util.StringTokenizer;
 
 /**
  * place holder for &lt;anyOtherElement&gt; of RELAX.

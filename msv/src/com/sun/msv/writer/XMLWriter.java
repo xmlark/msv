@@ -3,7 +3,6 @@ package com.sun.msv.writer;
 import org.xml.sax.DocumentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributeListImpl;
-import org.xml.sax.helpers.LocatorImpl;
 
 /**
  * Helper class that wraps {@link DocumentHandler} and provides utility methods.

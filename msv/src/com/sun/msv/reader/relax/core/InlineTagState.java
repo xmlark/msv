@@ -9,9 +9,8 @@
  */
 package com.sun.msv.reader.relax.core;
 
-import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.relax.TagClause;
 import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.grammar.relax.TagClause;
 
 /**
  * parses &lt;tag&gt; element inlined in &lt;elementRule&gt;

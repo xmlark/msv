@@ -9,10 +9,10 @@
  */
 package com.sun.msv.reader.relax;
 
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.SimpleState;
-import com.sun.msv.reader.ExpressionOwner;
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.reader.ExpressionOwner;
+import com.sun.msv.reader.SimpleState;
+import com.sun.msv.reader.State;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -29,7 +29,7 @@ public abstract class HedgeRuleBaseState extends SimpleState implements Expressi
 	public void onEndChild( Expression exp )
 	{// this method is called after child expression is found and parsed
 		if( contentModel!=null )
-			reader.reportError( reader.ERR_MORE_THAN_ONE_CHILD_EXPRESSION );
+			reader.reportError( RELAXReader.ERR_MORE_THAN_ONE_CHILD_EXPRESSION );
 			// recover by ignoring previous expression
 		
 		contentModel = exp;
@@ -41,7 +41,7 @@ public abstract class HedgeRuleBaseState extends SimpleState implements Expressi
 		
 		if( contentModel==null )
 		{
-			reader.reportError( reader.ERR_MISSING_CHILD_EXPRESSION );
+			reader.reportError( RELAXReader.ERR_MISSING_CHILD_EXPRESSION );
 			return;	// recover by ignoring this hedgeRule.
 		}
 		

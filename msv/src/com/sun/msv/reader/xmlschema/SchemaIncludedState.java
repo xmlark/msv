@@ -10,8 +10,9 @@
 package com.sun.msv.reader.xmlschema;
 
 import java.util.Set;
-import com.sun.msv.reader.State;
+
 import com.sun.msv.reader.IgnoreState;
+import com.sun.msv.reader.State;
 import com.sun.msv.util.StartTagInfo;
 
 /**
@@ -86,7 +87,7 @@ public class SchemaIncludedState extends GlobalDeclState {
 		} else {
 			if( expectedTargetNamespace!=null
 			&& !expectedTargetNamespace.equals(targetNs) )
-				reader.reportError( reader.ERR_INCONSISTENT_TARGETNAMESPACE, targetNs, expectedTargetNamespace );
+				reader.reportError( XMLSchemaReader.ERR_INCONSISTENT_TARGETNAMESPACE, targetNs, expectedTargetNamespace );
 				// recover by adopting the one specified in the schema.
 		}
 
@@ -112,7 +113,7 @@ public class SchemaIncludedState extends GlobalDeclState {
 		else {
 			reader.elementFormDefault = "";
 			if( !form.equals("unqualified") )
-				reader.reportError( reader.ERR_BAD_ATTRIBUTE_VALUE, "elementFormDefault", form );
+				reader.reportError( XMLSchemaReader.ERR_BAD_ATTRIBUTE_VALUE, "elementFormDefault", form );
 		}
 		
 		form = startTag.getDefaultedAttribute("attributeFormDefault","unqualified");
@@ -121,7 +122,7 @@ public class SchemaIncludedState extends GlobalDeclState {
 		else {
 			reader.attributeFormDefault = "";
 			if( !form.equals("unqualified") )
-				reader.reportError( reader.ERR_BAD_ATTRIBUTE_VALUE, "attributeFormDefault", form );
+				reader.reportError( XMLSchemaReader.ERR_BAD_ATTRIBUTE_VALUE, "attributeFormDefault", form );
 		}
 		
 		reader.finalDefault = startTag.getAttribute("finalDefault");

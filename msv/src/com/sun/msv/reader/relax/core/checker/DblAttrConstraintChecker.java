@@ -9,12 +9,31 @@
  */
 package com.sun.msv.reader.relax.core.checker;
 
-import com.sun.msv.grammar.*;
-import com.sun.msv.grammar.relax.*;
+import java.util.Map;
+
+import org.xml.sax.Locator;
+
+import com.sun.msv.grammar.AttributeExp;
+import com.sun.msv.grammar.ChoiceExp;
+import com.sun.msv.grammar.ConcurExp;
+import com.sun.msv.grammar.DataExp;
+import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.InterleaveExp;
+import com.sun.msv.grammar.ListExp;
+import com.sun.msv.grammar.MixedExp;
+import com.sun.msv.grammar.OneOrMoreExp;
+import com.sun.msv.grammar.OtherExp;
+import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.SequenceExp;
+import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.grammar.ValueExp;
+import com.sun.msv.grammar.relax.AttPoolClause;
+import com.sun.msv.grammar.relax.ElementRules;
+import com.sun.msv.grammar.relax.HedgeRules;
+import com.sun.msv.grammar.relax.RELAXExpressionVisitorVoid;
+import com.sun.msv.grammar.relax.TagClause;
 import com.sun.msv.reader.relax.core.RELAXCoreReader;
 import com.sun.msv.util.StringPair;
-import java.util.Map;
-import org.xml.sax.Locator;
 
 /**
  * makes sure that no two AttributeExps have the same attribute name as their target.
@@ -41,7 +60,7 @@ public class DblAttrConstraintChecker implements RELAXExpressionVisitorVoid
 			reader.reportError(
 				new Locator[]{reader.getDeclaredLocationOf(current),
 							  reader.getDeclaredLocationOf((ReferenceExp)atts.get(e.name)) },
-				reader.ERR_MULTIPLE_ATTRIBUTE_CONSTRAINT,
+                RELAXCoreReader.ERR_MULTIPLE_ATTRIBUTE_CONSTRAINT,
 				new Object[]{ e.name.localName } );
 		}
 	}

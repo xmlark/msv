@@ -1,8 +1,12 @@
 package batch.verifier;
 
-import batch.model.*;
 import java.io.File;
-import junit.framework.*;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import batch.model.ISchema;
+import batch.model.IValidator;
+import batch.model.TestBuilder;
 
 public class TestBuilderImpl implements TestBuilder
 {

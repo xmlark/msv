@@ -9,10 +9,17 @@
  */
 package com.sun.msv.grammar.util;
 
-import com.sun.msv.grammar.*;
-import com.sun.msv.util.StringPair;
-import java.util.Set;
 import java.util.Iterator;
+import java.util.Set;
+
+import com.sun.msv.grammar.AnyNameClass;
+import com.sun.msv.grammar.ChoiceNameClass;
+import com.sun.msv.grammar.DifferenceNameClass;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.NamespaceNameClass;
+import com.sun.msv.grammar.NotNameClass;
+import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.util.StringPair;
 
 /**
  * Minimizes a name class.

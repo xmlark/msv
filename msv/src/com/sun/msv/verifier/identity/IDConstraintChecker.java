@@ -9,30 +9,26 @@
  */
 package com.sun.msv.verifier.identity;
 
-import java.util.Vector;
 import java.util.Map;
 import java.util.Set;
-import com.sun.msv.util.LightStack;
-import com.sun.msv.verifier.IVerifier;
-import com.sun.msv.verifier.ValidityViolation;
-import com.sun.msv.verifier.Verifier;
-import com.sun.msv.verifier.ErrorInfo;
-import com.sun.msv.verifier.Acceptor;
-import com.sun.msv.verifier.regexp.REDocumentDeclaration;
-import com.sun.msv.verifier.regexp.xmlschema.XSREDocDecl;
-import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.ElementExp;
+import java.util.Vector;
+
+import org.relaxng.datatype.Datatype;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+
 import com.sun.msv.grammar.xmlschema.ElementDeclExp;
 import com.sun.msv.grammar.xmlschema.IdentityConstraint;
 import com.sun.msv.grammar.xmlschema.KeyRefConstraint;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
-import com.sun.msv.grammar.xmlschema.XMLSchemaTypeExp;
+import com.sun.msv.util.LightStack;
 import com.sun.msv.util.StartTagInfo;
-import org.relaxng.datatype.Datatype;
-import org.xml.sax.SAXException;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
+import com.sun.msv.verifier.Acceptor;
+import com.sun.msv.verifier.ErrorInfo;
+import com.sun.msv.verifier.ValidityViolation;
+import com.sun.msv.verifier.Verifier;
+import com.sun.msv.verifier.regexp.xmlschema.XSREDocDecl;
 
 /**
  * Verifier with XML Schema-related enforcement.

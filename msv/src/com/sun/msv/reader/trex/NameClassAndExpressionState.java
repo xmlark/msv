@@ -9,11 +9,12 @@
  */
 package com.sun.msv.reader.trex;
 
-import com.sun.msv.util.StartTagInfo;
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.SequenceState;
-import com.sun.msv.grammar.*;
 import com.sun.msv.grammar.AnyNameClass;
+import com.sun.msv.grammar.NameClass;
+import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.reader.SequenceState;
+import com.sun.msv.reader.State;
+import com.sun.msv.util.StartTagInfo;
 
 /**
  * Base implementation for ElementState and AttributeState

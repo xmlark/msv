@@ -10,9 +10,9 @@
 package com.sun.msv.relaxns.verifier;
 
 import org.iso_relax.dispatcher.Dispatcher;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import org.xml.sax.ErrorHandler;
 
 /**
  * wraps ISORELAX ErrorHandler by VerificationErrorHandler interface.

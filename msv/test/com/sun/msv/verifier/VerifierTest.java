@@ -1,7 +1,10 @@
 package com.sun.msv.verifier;
 
-import junit.framework.*;
-import util.*;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import util.Checker;
+import util.ResourceChecker;
 
 public class VerifierTest extends TestCase
 {

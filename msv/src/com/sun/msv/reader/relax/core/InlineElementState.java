@@ -9,20 +9,18 @@
  */
 package com.sun.msv.reader.relax.core;
 
-import com.sun.msv.datatype.xsd.XSDatatype;
-//import com.sun.msv.datatype.xsd.TypeIncubator;
+import org.relaxng.datatype.DatatypeException;
+
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.SimpleNameClass;
+import com.sun.msv.grammar.relax.AttPoolClause;
 import com.sun.msv.grammar.relax.ElementRule;
 import com.sun.msv.grammar.relax.TagClause;
-import com.sun.msv.grammar.relax.AttPoolClause;
-import com.sun.msv.reader.State;
 import com.sun.msv.reader.ExpressionState;
+import com.sun.msv.reader.State;
 import com.sun.msv.reader.datatype.xsd.FacetStateParent;
-import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 import com.sun.msv.reader.datatype.xsd.XSTypeIncubator;
 import com.sun.msv.util.StartTagInfo;
-import org.relaxng.datatype.DatatypeException;
 
 /**
  * parses &lt;element&gt; element.
@@ -51,11 +49,11 @@ public class InlineElementState extends ExpressionState implements FacetStatePar
 		String label	= startTag.getAttribute("label");
 		
 		if( type!=null && label!=null )
-			reader.reportError( reader.ERR_CONFLICTING_ATTRIBUTES, "type", "label" );
+			reader.reportError( RELAXCoreReader.ERR_CONFLICTING_ATTRIBUTES, "type", "label" );
 			// recover by ignoring one attribute.
 		
 		if( type==null && label==null ) {
-			reader.reportError( reader.ERR_MISSING_ATTRIBUTE_2, "element", "type", "label" );
+			reader.reportError( RELAXCoreReader.ERR_MISSING_ATTRIBUTE_2, "element", "type", "label" );
 			type="string";
 		}
 		
@@ -72,7 +70,7 @@ public class InlineElementState extends ExpressionState implements FacetStatePar
 			final String name		= startTag.getAttribute("name");
 			
 			if( name==null ) {
-				reader.reportError( reader.ERR_MISSING_ATTRIBUTE, "element","name" );
+				reader.reportError( RELAXCoreReader.ERR_MISSING_ATTRIBUTE, "element","name" );
 				// recover by ignoring this element.
 				return Expression.nullSet;
 			}
@@ -107,7 +105,7 @@ public class InlineElementState extends ExpressionState implements FacetStatePar
 			return new ElementRule( reader.pool, c, contentModel );
 		} catch( DatatypeException e ) {
 			// derivation failed
-			reader.reportError( e, reader.ERR_BAD_TYPE, e.getMessage() );
+			reader.reportError( e, RELAXCoreReader.ERR_BAD_TYPE, e.getMessage() );
 			// recover by using harmless expression. anything will do.
 			return Expression.nullSet;
 		}

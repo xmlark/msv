@@ -9,10 +9,10 @@
  */
 package com.sun.msv.reader.trex.classic;
 
+import org.xml.sax.Locator;
+
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ReferenceExp;
-import com.sun.msv.reader.SequenceState;
-import org.xml.sax.Locator;
 
 /**
  * parses &lt;define&gt; declaration.
@@ -35,7 +35,7 @@ public class DefineState extends com.sun.msv.reader.trex.DefineState {
 			// this is the first time definition
 			if( combine!=null )
 				// "combine" attribute will be ignored
-				reader.reportWarning( reader.WRN_COMBINE_IGNORED, baseExp.name );
+				reader.reportWarning( TREXGrammarReader.WRN_COMBINE_IGNORED, baseExp.name );
 			return newExp;
 		}
 
@@ -44,7 +44,7 @@ public class DefineState extends com.sun.msv.reader.trex.DefineState {
 		// make sure that the previous definition was in a different file.
 		if( reader.getDeclaredLocationOf(baseExp).getSystemId().equals(
 				reader.locator.getSystemId() ) ) {
-			reader.reportError( reader.ERR_DUPLICATE_DEFINITION, baseExp.name );
+			reader.reportError( TREXGrammarReader.ERR_DUPLICATE_DEFINITION, baseExp.name );
 			// recovery by ignoring this definition
 			return baseExp.exp;
 		}
@@ -52,7 +52,7 @@ public class DefineState extends com.sun.msv.reader.trex.DefineState {
 		if( combine==null ) {
 			// second definition without @combine.
 			reader.reportError( new Locator[]{location, reader.getDeclaredLocationOf(baseExp)},
-								reader.ERR_COMBINE_MISSING, new Object[]{baseExp.name} );
+                TREXGrammarReader.ERR_COMBINE_MISSING, new Object[]{baseExp.name} );
 			// recover by ignoring this definition
 			return baseExp.exp;
 		}

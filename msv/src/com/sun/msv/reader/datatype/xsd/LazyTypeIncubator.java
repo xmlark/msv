@@ -12,13 +12,15 @@ package com.sun.msv.reader.datatype.xsd;
 /*
 import com.sun.msv.datatype.xsd.StringType;
  */
+import java.util.Iterator;
+import java.util.List;
+
+import org.relaxng.datatype.DatatypeException;
+import org.relaxng.datatype.ValidationContext;
+
 import com.sun.msv.datatype.xsd.TypeIncubator;
 import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.reader.GrammarReader;
-import org.relaxng.datatype.ValidationContext;
-import org.relaxng.datatype.DatatypeException;
-import java.util.List;
-import java.util.Iterator;
 
 /**
  * Lazy XSTypeIncubator
@@ -52,8 +54,9 @@ class LazyTypeIncubator implements XSTypeIncubator { // package local
 	 */
 	private final List facets = new java.util.LinkedList();
 	
-	public void addFacet( String name, String strValue, ValidationContext context ) {
-		facets.add( new Facet(name,strValue,context) );
+	public void addFacet( String name, String strValue, boolean fixed,
+					 ValidationContext context ) {
+		facets.add( new Facet(name,strValue,fixed,context) );
 	}
 
 	public XSDatatypeExp derive( final String nsUri, final String localName ) throws DatatypeException {
@@ -72,7 +75,7 @@ class LazyTypeIncubator implements XSTypeIncubator { // package local
 		        Iterator itr = facets.iterator();
 		        for( int i=0; i<facetSize; i++ ) {
 		        	Facet f = (Facet)itr.next();
-		        	ti.addFacet( f.name, f.value, f.context );
+		        	ti.addFacet( f.name, f.value, f.fixed, f.context );
 		        }
 		        return ti.derive(nsUri,localName);
             }
@@ -83,9 +86,10 @@ class LazyTypeIncubator implements XSTypeIncubator { // package local
 	private class Facet {
 		String name;
 		String value;
+		boolean fixed;
 		ValidationContext context;
-		public Facet( String name, String value, ValidationContext context ) {
-			this.name=name; this.value=value; this.context=context;
+		public Facet( String name, String value, boolean fixed, ValidationContext context ) {
+			this.name=name; this.value=value; this.fixed=fixed; this.context=context;
 		}
 	}
 }

@@ -10,7 +10,6 @@
 package com.sun.msv.reader.relax;
 
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.relax.RELAXModule;
 
 /**
  * parses &lt;hedgeRef label="..." /&gt; element.

@@ -9,18 +9,18 @@
  */
 package com.sun.msv.verifier;
 
-import org.xml.sax.*;
-import org.xml.sax.helpers.NamespaceSupport;
-import org.relaxng.datatype.Datatype;
-import java.util.Set;
-import java.util.Map;
 import java.util.Iterator;
+import java.util.Set;
+
+import org.relaxng.datatype.Datatype;
+import org.xml.sax.Attributes;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+
 import com.sun.msv.datatype.xsd.StringType;
-import com.sun.msv.grammar.IDContextProvider;
-import com.sun.msv.util.StringRef;
-import com.sun.msv.util.StringPair;
-import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.DatatypeRef;
+import com.sun.msv.util.StartTagInfo;
+import com.sun.msv.util.StringRef;
 
 /**
  * SAX ContentHandler that verifies incoming SAX event stream.

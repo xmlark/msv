@@ -9,59 +9,54 @@
  */
 package com.sun.msv.reader.xmlschema;
 
-import com.sun.msv.datatype.xsd.StringType;
-import com.sun.msv.datatype.xsd.BooleanType;
-import com.sun.msv.datatype.xsd.XSDatatype;
+import java.text.MessageFormat;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+
+import javax.xml.parsers.SAXParserFactory;
+
+import org.iso_relax.verifier.Schema;
+import org.relaxng.datatype.DatatypeException;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+
 import com.sun.msv.datatype.xsd.DatatypeFactory;
+import com.sun.msv.datatype.xsd.StringType;
+import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.grammar.AnyNameClass;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
-import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.ReferenceContainer;
+import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.grammar.SimpleNameClass;
-import com.sun.msv.grammar.AnyNameClass;
-import com.sun.msv.grammar.ChoiceNameClass;
 import com.sun.msv.grammar.trex.ElementPattern;
+import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
+import com.sun.msv.grammar.xmlschema.ElementDeclExp;
 import com.sun.msv.grammar.xmlschema.OccurrenceExp;
+import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
-import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
-import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
-import com.sun.msv.grammar.xmlschema.ElementDeclExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaTypeExp;
-import com.sun.msv.grammar.xmlschema.AttWildcardExp;
 import com.sun.msv.reader.AbortException;
-import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
-import com.sun.msv.reader.datatype.xsd.XSDatatypeResolver;
-import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
-import com.sun.msv.reader.State;
-import com.sun.msv.reader.IgnoreState;
-import com.sun.msv.reader.SequenceState;
 import com.sun.msv.reader.ChoiceState;
-import com.sun.msv.reader.InterleaveState;
 import com.sun.msv.reader.ExpressionState;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.GrammarReaderController;
+import com.sun.msv.reader.IgnoreState;
+import com.sun.msv.reader.InterleaveState;
 import com.sun.msv.reader.RunAwayExpressionChecker;
+import com.sun.msv.reader.SequenceState;
+import com.sun.msv.reader.State;
 import com.sun.msv.reader.datatype.xsd.FacetState;
 import com.sun.msv.reader.datatype.xsd.SimpleTypeState;
-import com.sun.msv.reader.datatype.xsd.XSDVocabulary;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
+import com.sun.msv.reader.datatype.xsd.XSDatatypeResolver;
 import com.sun.msv.util.StartTagInfo;
-import com.sun.msv.util.StringPair;
 import com.sun.msv.verifier.jarv.XSFactoryImpl;
-import javax.xml.parsers.SAXParserFactory;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.Map;
-import java.util.Vector;
-import java.util.Iterator;
-import java.text.MessageFormat;
-import org.xml.sax.Locator;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.relaxng.datatype.Datatype;
-import org.relaxng.datatype.DatatypeException;
-import org.iso_relax.verifier.Schema;
 
 
 /**
@@ -128,12 +123,12 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
 			pool.createSequence(
 			pool.createOptional(
 				pool.createAttribute(
-					new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace,"schemaLocation")
+					new SimpleNameClass(XMLSchemaSchema.XMLSchemaInstanceNamespace,"schemaLocation")
 				)
 			),
 			pool.createOptional(
 				pool.createAttribute(
-					new SimpleNameClass(currentSchema.XMLSchemaInstanceNamespace,"noNamespaceSchemaLocation")
+					new SimpleNameClass(XMLSchemaSchema.XMLSchemaInstanceNamespace,"noNamespaceSchemaLocation")
 				)
 			)
 		);

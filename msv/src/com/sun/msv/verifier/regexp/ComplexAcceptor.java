@@ -9,9 +9,9 @@
  */
 package com.sun.msv.verifier.regexp;
 
+import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
-import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.verifier.Acceptor;
 
 /**

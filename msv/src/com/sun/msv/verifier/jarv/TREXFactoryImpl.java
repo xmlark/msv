@@ -9,11 +9,11 @@
  */
 package com.sun.msv.verifier.jarv;
 
-import org.iso_relax.verifier.*;
+import org.xml.sax.InputSource;
+
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.trex.classic.TREXGrammarReader;
-import org.xml.sax.InputSource;
 
 /**
  * VerifierFactory implementation for TREX.

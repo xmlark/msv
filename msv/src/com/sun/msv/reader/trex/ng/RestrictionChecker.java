@@ -83,7 +83,8 @@ public class RestrictionChecker {
 			if( !visitedExps.add(exp) )		return;
 			
 			// check conflicting elements
-			elemDupChecker.add(exp);
+			if(elemDupChecker!=null)
+				elemDupChecker.add(exp);
 			
 			// push context element,
 			final Expression oldContext = errorContext;
@@ -92,6 +93,7 @@ public class RestrictionChecker {
 			
 			errorContext = exp;
 			attDupChecker = new DuplicateAttributesChecker();
+			elemDupChecker = new DuplicateElementsChecker();
 
 			exp.getNameClass().visit(inNameClass);	// check the name
 			

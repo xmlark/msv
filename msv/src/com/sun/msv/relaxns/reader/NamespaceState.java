@@ -134,7 +134,7 @@ public class NamespaceState extends State
 	{
 		if(bailOut) {
 			// in bail-out mode, ignore all children.
-			reader.pushState( new IgnoreState(), new StartTagInfo(namespace,localName,qName,atts,reader) );
+			reader.pushState( new IgnoreState(), this, new StartTagInfo(namespace,localName,qName,atts,reader) );
 			return;
 		}
 		

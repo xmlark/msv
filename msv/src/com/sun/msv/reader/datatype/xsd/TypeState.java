@@ -77,7 +77,7 @@ abstract class TypeState extends SimpleState
 		State nextState = createChildState(tag);
 		if(nextState!=null)
 		{
-			reader.pushState(nextState,tag);
+			reader.pushState(nextState,this,tag);
 			return;
 		}
 				
@@ -85,7 +85,7 @@ abstract class TypeState extends SimpleState
 		reader.reportError(reader.ERR_MALPLACED_ELEMENT, tag.qName );
 		// try to recover from error by just ignoring it.
 		// element of a foreign namespace. skip subtree
-		reader.pushState(new IgnoreState(),tag);
+		reader.pushState(new IgnoreState(),this,tag);
 	}
 }
 	

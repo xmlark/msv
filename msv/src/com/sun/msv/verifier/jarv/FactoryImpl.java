@@ -9,12 +9,14 @@
  */
 package com.sun.msv.verifier.jarv;
 
+import java.io.IOException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.iso_relax.verifier.*;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXException;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import com.sun.msv.grammar.Grammar;
+import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 
 /**
  * base implementation of RELAXFactoryImpl and TREXFactoryImpl
@@ -48,7 +50,7 @@ abstract class FactoryImpl extends VerifierFactory {
 	
 	
 	public Verifier newVerifier( java.io.File source )
-		throws VerifierConfigurationException, SAXException {
+		throws VerifierConfigurationException, SAXException, IOException {
 		return newVerifier( source.getAbsolutePath() );
 	}
 	

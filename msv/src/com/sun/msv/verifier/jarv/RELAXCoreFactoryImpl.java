@@ -47,24 +47,4 @@ public class RELAXCoreFactoryImpl extends FactoryImpl
 		if(m==null)		return null;	// load failure
 		return getVerifier(m);
 	}
-	
-	public Verifier newVerifier( java.io.File source )
-		throws VerifierConfigurationException,
-			   SAXException
-	{
-		return newVerifier( source.getAbsolutePath() );
-	}
-	
-	private final Verifier getVerifier( RELAXModule m )
-		throws VerifierConfigurationException,
-			   SAXException
-	{
-		try {
-			return new VerifierImpl(
-				new REDocumentDeclaration(m),
-				factory.newSAXParser().getXMLReader() );
-		} catch( javax.xml.parsers.ParserConfigurationException pce ) {
-			throw new VerifierConfigurationException(pce);
-		}
-	}
 }

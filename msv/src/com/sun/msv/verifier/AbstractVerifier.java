@@ -130,23 +130,25 @@ public abstract class AbstractVerifier implements
 	public void onID( Datatype dt, String literal ) {
 		if(!performIDcheck)		return;
 		
-		switch(dt.getIdType()) {
-		case dt.ID_TYPE_ID:
+		int idType = dt.getIdType();
+		if(idType==dt.ID_TYPE_ID) {
 			literal = literal.trim();
 			if(!ids.add(literal))
 				// duplicate id value
 				onDuplicateId(literal);
 			return;
-		case dt.ID_TYPE_IDREF:
+		}
+		if(idType==dt.ID_TYPE_IDREF) {
 			idrefs.add(literal.trim());
 			return;
-		case dt.ID_TYPE_IDREFS:
+		}
+		if(idType==dt.ID_TYPE_IDREFS) {
 			StringTokenizer tokens = new StringTokenizer(literal);
 			while(tokens.hasMoreTokens())
 				idrefs.add(tokens.nextToken());
 			return;
-		default:
-			throw new Error();	// assertion failed. unknown Id type.
 		}
+		
+		throw new Error();	// assertion failed. unknown Id type.
 	}
 }

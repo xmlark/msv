@@ -9,6 +9,11 @@
  */
 package com.sun.msv.grammar;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamField;
+
 import org.relaxng.datatype.Datatype;
 
 import com.sun.msv.datatype.xsd.XSDatatype;
@@ -285,11 +290,16 @@ public class ExpressionPool implements java.io.Serializable {
         private static final float loadFactor = 0.3f;
         private static final int initialCapacity = 191;
 
-        /** the parent hash table.
-         *  can be null. items in the parent hash table will be returned by
-         *  get method.
+        /**
+         * The parent hash table.
+         * can be null. items in the parent hash table will be returned by
+         * get method.
+         * 
+         * <p>
+         * The field is essentially final but because of the serialization
+         * support we cannot mark it as such.
          */
-        private final ClosedHash parent;
+        private ClosedHash parent;
 
         public ClosedHash() {
             this(null);
@@ -416,8 +426,56 @@ public class ExpressionPool implements java.io.Serializable {
         
         // serialization support
         private static final long serialVersionUID = -2924295970572669668L;
+        
+        private static final ObjectStreamField[] serialPersistentFields = { 
+            new ObjectStreamField("count", Integer.TYPE),
+            new ObjectStreamField("streamVersion", Byte.TYPE),
+            new ObjectStreamField("parent", ExpressionPool.class) 
+        }; 
+        
+        private void writeObject(ObjectOutputStream s) throws IOException {
+            ObjectOutputStream.PutField fields = s.putFields();
+            fields.put("count",count);
+            fields.put("parent",parent);
+            fields.put("streamVersion",(byte)1);
+            s.writeFields();
+            
+            for( int i=0; i<table.length; i++ )
+                if( table[i]!=null )
+                    s.writeObject(table[i]);
+        }
+        
+        private void readObject(ObjectInputStream s) throws IOException {
+            try { 
+                // prepare to read the alternate persistent fields
+                ObjectInputStream.GetField fields = s.readFields();
+                
+                byte version = fields.get("streamVersion",(byte)0);
+                
+                if( version==0 ) {
+                    // read in the old version format
+                    count = fields.get("count",0);
+                    parent = (ClosedHash)fields.get("parent",null);
+                    table = (Expression[])fields.get("table",null);
+                    threshold = fields.get("threshold",0);
+                } else {
+                    // read the new format
+                    int objCnt = fields.get("count",0);
+                    parent = (ClosedHash)fields.get("parent",null);
+                    
+                    int size = (int)(objCnt/loadFactor)*2;
+                    threshold = count*2;
+                    count = 0;
+                    table = new Expression[size];
+                    for( int i=0; i<count; i++ )
+                        put( (Expression)s.readObject() );
+                }
+           } catch (ClassNotFoundException e) {
+               throw new NoClassDefFoundError(e.getMessage());
+           }
+        }
     }
     
     // serialization support
-    private static final long serialVersionUID = 1;    
+    private static final long serialVersionUID = 1;
 }

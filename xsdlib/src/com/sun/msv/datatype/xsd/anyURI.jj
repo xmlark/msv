@@ -15,7 +15,7 @@ public class AnyURIParser
 	public static void main(String args[]) throws Exception
 	{
 		String s = new BufferedReader( new InputStreamReader(System.in) ).readLine();
-		new AnyURIParser(new ByteArrayInputStream(s.getBytes("UTF-8"))).start();
+		new AnyURIParser(new ByteArrayInputStream(s.getBytes("UTF8"))).start();
 	}
 }
 

@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 Main-Class: com.sun.msv.generator.Driver
 Created-By: 1.2.2 (Sun Microsystems Inc.)
-Class-Path: msv.jar
+Class-Path: msv.jar xsdlib.jar relaxngDatatype.jar isorelax.jar xerces.jar
 

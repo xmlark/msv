@@ -97,9 +97,14 @@ public class DebugController implements GrammarReaderController {
 	}
 	
 	private void printLocation( Locator loc ) {
+		String col="";
+		if(loc.getColumnNumber()>=0)
+			col = ":"+loc.getColumnNumber();
+		
 		out.println( "  "+
-			(loc.getLineNumber()+1)+":"+
-			loc.getColumnNumber()+"@"+
+			loc.getLineNumber()+
+			col+
+			"@"+
 			loc.getSystemId() );
 	}
 

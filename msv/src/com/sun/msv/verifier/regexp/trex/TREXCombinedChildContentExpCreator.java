@@ -37,35 +37,32 @@ class TREXCombinedChildContentExpCreator
 	public Object onConcur( ConcurPattern exp )
 	{
 		foundConcur = true;
-		return new ExpressionPair(
-			((TREXPatternPool)pool).createConcur(
-			((ExpressionPair)exp.exp1.visit(this)).content,
-			((ExpressionPair)exp.exp2.visit(this)).content),
-			Expression.nullSet );
-		// for concur to be a successful combined child content expression,
-		// more than two ElementExps must match the start tag.
-		// In that case, continuation will never be used.
-		// If concur fails, then we should return nullSet.
+		TREXPatternPool pool = (TREXPatternPool)this.pool;
+		ExpressionPair p1 = (ExpressionPair)exp.exp1.visit(this);
+		ExpressionPair p2 = (ExpressionPair)exp.exp2.visit(this);
 		
-		// so returning nullSet may looks strange, but it is correct.
+		return new ExpressionPair(
+			pool.createConcur(p1.content,p2.content),
+			pool.createConcur(p1.continuation,p2.continuation) );
 	}
 	public Object onInterleave( InterleavePattern exp )
 	{
+		TREXPatternPool pool = (TREXPatternPool)this.pool;
 		ExpressionPair p1 = (ExpressionPair)exp.exp1.visit(this);
 		ExpressionPair p2 = (ExpressionPair)exp.exp2.visit(this);
 		
 		if(p2.content==Expression.nullSet)
 			return new ExpressionPair( p1.content,
-				((TREXPatternPool)pool).createInterleave(p1.continuation,exp.exp2) );
+				pool.createInterleave(p1.continuation,exp.exp2) );
 		
 		if(p1.content==Expression.nullSet)
 			return new ExpressionPair( p2.content,
-				((TREXPatternPool)pool).createInterleave(p2.continuation,exp.exp1) );
-		
-		// in this case, continuation will never be used because
-		// it has more than one element of concern.
+				pool.createInterleave(p2.continuation,exp.exp1) );
+
+		// now the situation is (A,X)^(A,Y).
+		// so the continuation after eating A will be X^Y.
 		return new ExpressionPair(
 			pool.createChoice( p1.content, p2.content ),
-			Expression.nullSet );
+			pool.createInterleave( p1.continuation, p2.continuation ) );
 	}
 }

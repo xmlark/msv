@@ -58,7 +58,29 @@ import com.sun.tranquilo.util.StringPair;
  * respectively.
  * 
  * Note that combined child pattern contains only <choice> and <concur> as 
- * its grue (of course, except ..(A').. , ..(B').. , and ..(C').. )
+ * its grue (of course, except ..(A').. , ..(B').. , and ..(C').. ).
+ * 
+ * 
+ * This function object also calculates "continuation", which is the residual
+ * expression after eating elements of concern.
+ * 
+ * For example, say the expression is "(A|(B,C))?,D".
+ * 
+ * When EoC is B, then the continuation will be C,D.
+ * When EoC is A, then the continuation will be D.
+ * When EoC is D, then the continuation will be epsilon.
+ * 
+ * When there are multiple EoC, (say A and B), then
+ * the continuation will be meaningless (because it depends on which EoC will
+ * be accepted), and thus won't be used.
+ * 
+ * However, the implementator must be aware that it is possible for a
+ * binary operator to have EoC on both branch and EoC is still unique.
+ * The following expression is an example.
+ * 
+ * (A|B)*,C?,(A|B)*
+ * 
+ * when A is EoC, SequenceExp of (A|B)* and C?,(A|B)* has EoC on both branch.
  */
 public class CombinedChildContentExpCreator implements ExpressionVisitor
 {
@@ -234,7 +256,20 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 		// if tag name is invalid, then remove this element from candidate.
 		if(checkTagName && !exp.getNameClass().accepts(tagInfo.namespaceURI,tagInfo.localName))
 			return nullPair;
-
+		
+		// check result and see if the same element is already registered.
+		// this will reduce the complex of the result.
+		// some RELAX grammar may contain something like
+		// (A|B)* C? (A|B)* to implement interleaving of (A|B)* and C.
+		// this check becomes important for cases like this.
+		for( OwnerAndContent o=result; o!=null; o=o.next )
+			if(o.owner==exp)	// the same element is found.
+				return new ExpressionPair(o.content,Expression.epsilon);
+		
+		// also, feeding and pruning attributes are relatively expensive operation.
+		// so this is the good place to check redundancy.
+		
+		
 		Expression prunedContentModel;
 		numTagMatch++;
 		
@@ -264,6 +299,7 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 			// in this class, we are interested only in the content model of child elements.
 			// therefore, repeatable parts can be simply ignored.
 	
+			// continuation of (AB)+ after A will be B,(AB)*
 			pool.createSequence( p.continuation, pool.createZeroOrMore(exp.exp) )
 		);
 	}
@@ -295,11 +331,16 @@ public class CombinedChildContentExpCreator implements ExpressionVisitor
 			{
 				if(p1.content==Expression.nullSet)		return p2;
 
-				// in this case, the number of elements of concern is more than one,
-				// so continuation will be ignored.
+				// now, we have candidates in both left and right.
+				// say,
+				// exp = (A,X),(A,Y) and AX can be nullable.
+				// continuation will be (X,A,Y)|Y.
 				return new ExpressionPair( 
 					pool.createChoice( p1.content, p2.content ),
-					Expression.nullSet );
+					
+					pool.createChoice(
+						pool.createSequence(p1.continuation, exp.exp2 ),
+						p2.continuation ) );
 			}
 		}
 

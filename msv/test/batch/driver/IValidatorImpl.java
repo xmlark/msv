@@ -2,6 +2,8 @@ package msv;
 
 import org.relaxng.testharness.validator.*;
 import org.relaxng.testharness.model.XMLDocument;
+import org.relaxng.testharness.model.RNGHeader;
+import org.xml.sax.*;
 import com.sun.msv.driver.textui.ReportErrorHandler;
 import com.sun.msv.driver.textui.DebugController;
 import com.sun.msv.grammar.Grammar;
@@ -10,35 +12,33 @@ import com.sun.msv.verifier.Verifier;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.GrammarReaderController;
-import com.sun.msv.reader.trex.ng.RELAXNGReader;
+import com.sun.msv.reader.util.GrammarLoader;
 import javax.xml.parsers.SAXParserFactory;
 
 /**
  * Test harness for RELAX NG conformance test suite.
  */
-public class IValidatorImpl implements IValidator
+public abstract class IValidatorImpl extends AbstractValidatorExImpl
 {
-	protected final SAXParserFactory factory;
+//	protected final SAXParserFactory factory;
 	
 	public IValidatorImpl() {
-		factory = SAXParserFactory.newInstance();
-		factory.setNamespaceAware(true);
+//		factory = SAXParserFactory.newInstance();
+//		factory.setNamespaceAware(true);
 	}
 	
-	public boolean validate( ISchema schema, XMLDocument instance ) throws Exception {
-		IVerifier verifier = getVerifier( ((ISchemaImpl)schema).grammar );
-		instance.getAsSAX( verifier );
-		return verifier.isValid();
-	}
-	
-	public ISchema parseSchema( XMLDocument pattern ) throws Exception {
-		GrammarReader reader = getReader();
+	public ISchema parseSchema( XMLDocument pattern, RNGHeader header ) throws Exception {
+		GrammarReader reader = getReader(header);
 		pattern.getAsSAX( reader );
 		
-		Grammar grammar = reader.getResultAsGrammar();
+		Grammar grammar = getGrammarFromReader(reader,header);
 		
 		if( grammar==null )	return null;
 		else				return new ISchemaImpl( grammar );
+	}
+
+	public Grammar parseSchema( InputSource is, GrammarReaderController controller ) throws Exception {
+		return GrammarLoader.loadSchema(is,createController());
 	}
 
 	/**
@@ -48,12 +48,10 @@ public class IValidatorImpl implements IValidator
 	 * override this method to use different reader implementation.
 	 * RELAX NG test harness can be used to test XML Schema, TREX, etc.
 	 */
-	protected GrammarReader getReader() {
-		return new RELAXNGReader( createController(), factory );;
-	}
+	protected abstract GrammarReader getReader( RNGHeader header );
 	
-	protected GrammarReaderController createController() {
-		return new DebugController(false,true);
+	protected Grammar getGrammarFromReader( GrammarReader reader, RNGHeader header ) {
+		return reader.getResultAsGrammar();
 	}
 	
 	/**

@@ -100,7 +100,12 @@ class VerifierImpl implements Verifier
 
     public VerifierFilter getVerifierFilter() {
 		if(filter==null)
-			filter = new VerifierFilterImpl(verifier);
+			filter = new VerifierFilterImpl(verifier) {
+					public void setErrorHandler( ErrorHandler handler ) {
+						super.setErrorHandler(handler);
+						verifier.setErrorHandler(handler);
+					}
+				};
 		
 		return filter;
     }

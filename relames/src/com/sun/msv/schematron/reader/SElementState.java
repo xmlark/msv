@@ -19,17 +19,8 @@ public class SElementState extends ElementState implements SActionReceiver, SRul
 		if(!tag.namespaceURI.equals(SRELAXNGReader.SchematronURI))
 			return super.createChildState(tag);
 
-		/*
-		TODO:
-			The context attribute of the rule element specifies "match".
-			For example, <rule context="CCC"> matches to any elements whose
-			name is CCC, even if it is not a direct child of the node.
-			
-			I couldn't find how to achieve this by using Xalan. So just for now,
-			"rule" element is disabled.
-		*/
-//		if( tag.localName.equals("rule") )
-//			return new SRuleState();
+		if( tag.localName.equals("rule") )
+			return new SRuleState();
 		if( tag.localName.equals("assert") )
 			return new SActionState.SAssertState();
 		if( tag.localName.equals("report") )

@@ -42,7 +42,7 @@ public class SRuleState extends SimpleState implements SActionReceiver {
 			rule.asserts = (SAction[])asserts.toArray(new SAction[asserts.size()]);
 			rule.reports = (SAction[])reports.toArray(new SAction[reports.size()]);
 			try {
-				rule.xpath = new XPath(context,null,new PrefixResolverImpl(this), XPath.SELECT);
+				rule.xpath = new XPath(context,null,new PrefixResolverImpl(this), XPath.MATCH);
 				((SRuleReceiver)parentState).onRule(rule);
 			} catch( TransformerException e ) {
 				reader.reportError( reader.ERR_INVALID_XPATH, context, e.getMessage() );

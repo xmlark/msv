@@ -17,9 +17,9 @@ OVERVIEW
 ----------------------------------------------------------------------
 
 By using this tool, you can embed Schematron constraints into RELAX NG
-schemas. Then this tool validates documents again both RELAX NG grammar
-and embeded schematron constraints. Schematron makes it easy to write
-many constraints which were difficult to achieve by RELAX NG alone.
+schemas. Then this tool validates documents against both RELAX NG grammar
+and embedded schematron constraints. Schematron makes it easy to write
+many constraints which are difficult to achieve by RELAX NG alone.
 
 To validate documents with Schematron-annotated RELAX NG grammar, enter
 the following command:
@@ -62,16 +62,37 @@ an element mathces a pattern, schematron constraints are checked for
 that element.
 
 In plain Schematron, a <rule> element supplies context information.
-In Schematron-annotated RELAX NG grammars, on the other hand, an <element>
-pattern supplies the context information instead.
+In Schematron-annotated RELAX NG, on the other hand, an <element> pattern
+supplies the context information instead.
 
-This release supports <assert> and <report> of Schematron 1.3. You can
-write as many constraints as you want in one <element> pattern.
 
-Namespace prefixes found in XPath expression is resolved through xmlns
-declarations in the grammar file. And the default namespace is bound to
-the URI declared by the ns attribute of RELAX NG. Consider the following
-example:
+This tool also supports the use of <rule> elements in RELAX NG grammar.
+
+<define name="root" xmlns:s="http://www.ascc.net/xml/schematron">
+  <element name="root">
+    <!-- content model definition in RELAX NG, as usual -->
+    ...
+    
+    <!-- for any hotel element found within this element -->
+    <s:rule context="hotel">
+      <s:assert test="count(*)>1">
+        at least one child element is necessary.
+      </s:assert>
+    </s:rule>
+  </element>
+</define>
+
+First, nodes that match the context attribute are computed.
+Then assertions are tested for each node.
+
+
+This release supports <rule>, <assert> and <report> of Schematron 1.3.
+You can write as many constraints as you want in one <element> pattern.
+
+Namespace prefixes found in XPath expression are resolved through xmlns
+declarations in the grammar file. Note that the default namespace is
+bound to the URI declared by the ns attribute of RELAX NG. Consider
+the following example:
 
 <grammar xmlns="http://relaxng.org/ns/structure/0.9"
          xmlns:foo="http://www.example.org/foo"
@@ -93,9 +114,8 @@ The XPath expression "foo:abc|def" will match
 elements. Note that "def" does NOT match elements with the namespace
 URI of "http://relaxng.org/ns/structure/0.9".
 
-Annotated RELAX NG grammars are still interoperable. Other RELAX NG
-processors that do not support Schematron will silently ignore all
-Schematron constraints.
+Annotated RELAX NG grammars are still interoperable in the sense that
+other RELAX NG processors will silently ignore all Schematron constraints.
 
 
 

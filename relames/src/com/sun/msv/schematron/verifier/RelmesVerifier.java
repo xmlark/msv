@@ -11,14 +11,19 @@ import com.sun.msv.schematron.grammar.SAction;
 import com.sun.msv.schematron.grammar.SRule;
 import com.sun.msv.schematron.util.DOMBuilder;
 import org.apache.xpath.XPathContext;
+import org.apache.xml.utils.PrefixResolverDefault;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.LocatorImpl;
 import org.relaxng.datatype.Datatype;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.traversal.NodeIterator;
-import java.util.Vector;
+import java.util.Map;
+import java.util.Stack;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
@@ -57,39 +62,48 @@ public class RelmesVerifier implements IVerifier {
 		
 		public void startElement( String ns, String local, String qname, Attributes atts ) throws SAXException {
 			super.startElement(ns,local,qname,atts);
+			locationMap.put( super.parent, new Loc(getLocator()) );
 			
 			Object o = getCurrentElementType();
-			if( o instanceof SElementExp )
+			if( o instanceof SElementExp ) {
+//				System.out.println("Schematron node found");
 				// memorize this node so that we can check it later.
-				checks.add(new CheckItem( super.parent, (SElementExp)o, getLocator() ));
+				checks.put( super.parent, o );
+			}
 		}
 		
-		private class CheckItem {
-			CheckItem( Node node, SElementExp type, Locator loc ) {
-				this.node = node;
-				this.type = type;
-				// copy the location. since Locator object is owned by the parser.
-				this.location = new LocatorImpl(loc);
+		private class Loc {
+			Loc( Locator src ) {
+				this.line = src.getLineNumber();
+				this.col = src.getColumnNumber();
 			}
-			public final Node			node;
-			public final SElementExp	type;
-			public final Locator		location;
-		};
+			public final int line;
+			public final int col;
+		}
 		
 		/**
-		 * list of CheckItems to be checked.
+		 * a map from Element to Loc object.
+		 * This map will be used to report the source of error.
 		 */
-		private Vector checks = new Vector();
+		private final Map locationMap = new java.util.HashMap();
+		
+		/**
+		 * a map from Node to SElementExp.
+		 * These are checked later.
+		 */
+		private Map checks = new java.util.HashMap();
 		
 		public void startDocument() throws SAXException {
 			super.startDocument();
 			checks.clear();
+			locationMap.clear();
 		}
 		
 		public void endDocument() throws SAXException {
 			super.endDocument();
 			schematronValid = true;
-			
+
+/*
 			final int len = checks.size();
 			for( int i=0; i<len; i++ ) {
 				CheckItem item = (CheckItem)checks.get(i);
@@ -102,46 +116,106 @@ public class RelmesVerifier implements IVerifier {
 					return;
 				}
 			}
+*/		
+			try {
+				testNode(super.dom);
+			} catch( TransformerException e ) {
+				getVErrorHandler().onError( new ValidityViolation(
+					null, "XPath error:"+e.getMessage() ) );
+				schematronValid = false;
+			}
 		}
 		
-		private void testItem( CheckItem item )
-					throws SAXException, TransformerException {
-			// perform test
-			for( int i=0; i<item.type.rules.length; i++ )
-				testRule( item, item.type.rules[i] );
+		/** SRule objects that are currently in effect. */
+		private final Stack effectiveRules = new Stack();
+		
+		private void testNode( Node node ) throws SAXException, TransformerException {
+			
+			// if this node has the corresponding rule to be checked,
+			// push it to the stack.
+			// if we already have the same rule object, there is no need to
+			// add it twice.
+			SElementExp exp = (SElementExp)checks.get(node);
+//			System.out.println("node tested");
+			int numRulesAdded = 0;
+			if(exp!=null ) {
+//				System.out.println("rule added");
+				for( int i=0; i<exp.rules.length; i++ ) {
+					if(!effectiveRules.contains(exp.rules)) {
+						effectiveRules.push(exp.rules[i]);
+						numRulesAdded++;
+					}
+				}
+			}
+			
+			// test effective rules against this node
+			int len = effectiveRules.size();
+			for( int i=0; i<len; i++ )
+				testRule( (SRule)effectiveRules.get(i), node );
+			
+			// recursively process children
+			if( node.getNodeType()==node.ELEMENT_NODE ) {
+				Element e = (Element)node;
+				NamedNodeMap atts = e.getAttributes();
+				len = atts.getLength();
+				for( int i=0; i<len; i++ )
+					testNode( atts.item(i) );
+			}
+			
+			NodeList children = node.getChildNodes();
+			len = children.getLength();
+			for( int i=0; i<len; i++ )
+				testNode( children.item(i) );
+			
+			// a rule is in effect only in itself or descendants.
+			for( ; numRulesAdded>0; numRulesAdded-- )
+				effectiveRules.pop();
 		}
 		
-		private void testRule( CheckItem item, SRule rule )
+		/**
+		 * tests the specified rule against the node.
+		 */
+		private void testRule( SRule rule, Node node )
 					throws SAXException, TransformerException {
-			// the following fragment are basically copy&paste from
-			// org.apache.xpath.XPathAPI
-					
+			
+			if( !rule.matches(node) )	return;
+			
+//			System.out.println("rule tested");
+			
+			PrefixResolverDefault resolver = new PrefixResolverDefault(node);
+			
 			synchronized(rule) {
 				// I'm not sure whether XPath object is thread-safe.
 				// so for precaution, synchronize it.
-				NodeIterator nodes = rule.xpath.execute(
-					new XPathContext(), item.node, item.type.prefixResolver ).nodeset();
-			
-				Node n;
-				while( (n=nodes.nextNode())!=null ) {
+				
+				for( int i=0; i<rule.asserts.length; i++ )
+					if(!rule.asserts[i].xpath.execute(
+						new XPathContext(), node, resolver ).bool() )
+						reportError( node, rule.asserts[i] );
 							
-					for( int i=0; i<rule.asserts.length; i++ )
-						if(!rule.asserts[i].xpath.execute(
-							new XPathContext(), n, item.type.prefixResolver ).bool() )
-							reportError( item, rule.asserts[i] );
-							
-					for( int i=0; i<rule.reports.length; i++ )
-						if(rule.reports[i].xpath.execute(
-							new XPathContext(), n, item.type.prefixResolver ).bool() )
-							reportError( item, rule.reports[i] );
-				}
+				for( int i=0; i<rule.reports.length; i++ )
+					if(rule.reports[i].xpath.execute(
+						new XPathContext(), node, resolver ).bool() )
+						reportError( node, rule.reports[i] );
 			}					
 		}
 
-		private void reportError( CheckItem item, SAction action ) throws SAXException {
+		private void reportError( Node node, SAction action ) throws SAXException {
+			Loc loc = (Loc)locationMap.get(node);
+			if( loc==null && node.getParentNode()!=null ) {
+				reportError( node.getParentNode(), action );
+				return;
+			}
+			
+			LocatorImpl src = new LocatorImpl();
+			src.setLineNumber(loc.line);
+			src.setColumnNumber(loc.col);
+			src.setSystemId(getLocator().getSystemId());
+			src.setPublicId(getLocator().getPublicId());
+			
 			schematronValid = false;
 			getVErrorHandler().onError( new ValidityViolation(
-				item.location, action.document ));
+				src, action.document ));
 		}
 	}
 	

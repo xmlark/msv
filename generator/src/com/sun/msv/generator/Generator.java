@@ -198,7 +198,8 @@ public class Generator implements TREXPatternVisitorVoid
 
 		if( opts.random.nextDouble() < opts.probGreedyChoiceError )
 		{// greedy choice error. visit twice.
-			noteError("greedy choice");
+			noteError("greedy choice:"+
+					  TREXPatternPrinter.printSmallest(cp));
 			((Expression)vec.get(opts.random.nextInt(vec.size()))).visit(this);
 			((Expression)vec.get(opts.random.nextInt(vec.size()))).visit(this);
 			return;
@@ -237,7 +238,7 @@ public class Generator implements TREXPatternVisitorVoid
 		
 		if( opts.random.nextDouble() < opts.probSlipInAttrError )
 		{// slip-in error. generate random attribute.
-			exp = attributeDecls[opts.random.nextInt(attributeDecls.length)];
+			onAttribute( attributeDecls[opts.random.nextInt(attributeDecls.length)] );
 			noteError("slip-in attribute "+exp.nameClass);
 		}
 		
@@ -280,7 +281,7 @@ public class Generator implements TREXPatternVisitorVoid
 		
 		if( opts.random.nextDouble() < opts.probSlipInElemError )
 		{// slip-in error. generate random element.
-			exp = elementDecls[opts.random.nextInt(elementDecls.length)];
+			onElement( elementDecls[opts.random.nextInt(elementDecls.length)] );
 			noteError("slip-in element: "+TREXPatternPrinter.printSmallest(exp) );
 		}
 		

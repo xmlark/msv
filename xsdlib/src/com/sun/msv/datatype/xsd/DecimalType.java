@@ -5,7 +5,7 @@ package com.sun.tranquilo.datatype;
  * 
  * See http://www.w3.org/TR/xmlschema-2/#decimal for the spec
  */
-public class DecimalType extends DataTypeImpl
+public class DecimalType extends ConcreteType
 {
 	public static final DecimalType theInstance = new DecimalType();
 	private DecimalType() { super("decimal"); }

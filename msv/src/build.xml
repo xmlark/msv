@@ -10,8 +10,8 @@
 	<target name="javacc">
 		<!-- run javacc for ISO8601Parser -->
 		<java classname="COM.sun.labs.javacc.Main" fork="true">
-			<arg value="-OUTPUT_DIRECTORY=${buildDir}/com/sun/tranquilo/datatype" />
-			<arg value="${sourceDir}/com/sun/tranquilo/datatype/ISO8601.jj" />
+			<arg value="-OUTPUT_DIRECTORY=${buildDir}/com/sun/tranquilo/datatype/datetime" />
+			<arg value="${sourceDir}/com/sun/tranquilo/datatype/datetime/ISO8601.jj" />
 			<classpath>
 				<pathelement location="${javaCCbin}" />
 				<pathelement path="${java.class.path}" />

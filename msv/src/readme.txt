@@ -1,4 +1,12 @@
 
+TODO
+----
+
+* add another hierarchy to better handle type dizzy-chain
+* implement SmallDateTime/SmallTimeDuration
+* test derivation and its error.
+* implement diagnose methods.
+
 Design of ModuleReader
 ----------------------
 
@@ -14,10 +22,15 @@ Design of ModuleReader
 Unresolved issue
 ----------------
 
+* consistency check of RangeFacet with respect to the facets
+  specified in somewhere of the derivation chain.
+
+* enumeration may not be able to use hash, due to date/time related value types.
+
 * license of com.sun.tranquilo.datatype.FloatValueType / FloatingDecimal 
   or otherwise tranquilo requires JDK1.3, which is probably unacceptable.
   ( ... maybe JDK1.2.2? )
-  
+  (FloatType is modified to use java.lang.Float, instead of FloatValueType)
   DoubleValueType / DecimalValueType are the same.
 
 * what should it do when it find undefined facets (like "abcdef")
@@ -55,3 +68,6 @@ Unresolved issue
   Are tab/CR/LF valid separators, or not?
   Are more than one #x20 allowed as a single separator?
   -> Yes, because whiteSpace is fixed to "collapse"
+
+* possible limit of maximum precision?
+  

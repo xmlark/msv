@@ -2,7 +2,7 @@ package com.sun.tranquilo.datatype;
 
 import java.util.StringTokenizer;
 
-public class ListType extends DataTypeImpl implements Discrete
+public class ListType extends ConcreteType implements Discrete
 {
 	/**
 	 * derives a new datatype from atomic datatype by list

@@ -1,6 +1,6 @@
 package com.sun.tranquilo.datatype;
 
-abstract class BinaryBaseType extends DataTypeImpl implements Discrete
+abstract class BinaryBaseType extends ConcreteType implements Discrete
 {
 	BinaryBaseType( String typeName ) { super(typeName); }
 	

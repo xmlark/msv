@@ -3,7 +3,7 @@ package com.sun.tranquilo.datatype;
 /**
  * base class for types derived from integer
  */
-abstract class IntegerDerivedType extends DataTypeImpl implements Comparator
+abstract class IntegerDerivedType extends ConcreteType implements Comparator
 {
 	protected IntegerDerivedType( String typeName )
 	{ super(typeName); }

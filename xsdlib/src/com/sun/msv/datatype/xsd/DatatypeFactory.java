@@ -116,6 +116,7 @@ public class DataTypeFactory
 			add( m, UnsignedIntType.theInstance );
 			add( m, UnsignedShortType.theInstance );
 			add( m, UnsignedByteType.theInstance );
+			add( m, PositiveIntegerType.theInstance );
 			return m;
 		}
 		catch( BadTypeException bte )

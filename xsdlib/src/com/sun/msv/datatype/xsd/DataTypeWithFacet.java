@@ -2,7 +2,11 @@ package com.sun.tranquilo.datatype;
 
 abstract class DataTypeWithFacet extends DataTypeImpl
 {
+	/** immediate base type, which may be a concrete type or DataTypeWithFacet */
 	protected final DataTypeImpl baseType;
+	
+	/** base concrete type */
+	protected final ConcreteType concreteType;
 	
 	/** name of this facet */
 	private final String facetName;
@@ -31,6 +35,7 @@ abstract class DataTypeWithFacet extends DataTypeImpl
 		this.baseType = baseType;
 		this.facetName = facetName;
 		this.isFacetFixed = facets.isFixed(facetName);
+		this.concreteType = baseType.getConcreteType();
 		
 		needValueCheckFlag = baseType.needValueCheck();
 		
@@ -57,4 +62,22 @@ abstract class DataTypeWithFacet extends DataTypeImpl
 	}
 	
 	protected boolean needValueCheck() { return needValueCheckFlag; }
+	
+	final protected DataTypeWithFacet getFacetObject( String facetName )
+	{
+		if(this.facetName.equals(facetName))
+			return this;
+		else
+			return baseType.getFacetObject(facetName);
+	}
+	
+	final protected ConcreteType getConcreteType()
+	{
+		return concreteType;
+	}
+	
+	final public boolean isAtomType()
+	{
+		return concreteType.isAtomType();
+	}
 }

@@ -24,7 +24,7 @@ package com.sun.tranquilo.datatype;
  * 
  * See http://www.w3.org/TR/xmlschema-2/#string for the spec
  */
-public class StringType extends DataTypeImpl implements Discrete
+public class StringType extends ConcreteType implements Discrete
 {
 	public static final StringType theInstance
 		= new StringType("string",WhiteSpaceProcessor.thePreserve);

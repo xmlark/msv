@@ -21,9 +21,9 @@ package com.sun.tranquilo.schema;
 
 import jp.gr.xml.formal.automaton.Automaton;
 import jp.gr.xml.formal.automaton.AutomatonFactory;
+import com.sun.tranquilo.datatype.BadTypeException;
 import com.sun.tranquilo.datatype.DataType;
 import com.sun.tranquilo.datatype.DataTypeFactory;
-import com.sun.tranquilo.datatype.IllegalFacetException;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;

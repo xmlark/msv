@@ -90,5 +90,4 @@ public interface DataType extends Serializable,Cloneable
 	 *			NOT_ALLOWED		if the facet is not applicable to this datatype at all.
 	 */
 	public int isFacetApplicable( String facetName );
-
 }

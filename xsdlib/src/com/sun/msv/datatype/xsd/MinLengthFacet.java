@@ -11,6 +11,15 @@ public class MinLengthFacet extends DataTypeWithValueConstraintFacet
 	
 		minLength = facets.getNonNegativeInteger(FACET_MINLENGTH);
 		facets.consume(FACET_MINLENGTH);
+		
+		// loosened facet check
+		DataTypeWithFacet o = baseType.getFacetObject(FACET_MINLENGTH);
+		if(o!=null && ((MinLengthFacet)o).minLength > this.minLength )
+			throw new BadTypeException(
+				BadTypeException.ERR_LOOSENED_FACET,
+				FACET_MINLENGTH, o.getName() );
+		
+		// consistency with maxLength is checked in DataTypeImpl.derive method.
 	}
 	
 	public Object convertToValue( String literal )

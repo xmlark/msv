@@ -31,7 +31,7 @@ import com.sun.xml.util.XmlNames;
  * TODO: if we have to check that prefix is actually declared,
  *       then we have to add more code here.
  */
-public class QnameType extends DataTypeImpl
+public class QnameType extends ConcreteType
 {
 	public static final QnameType theInstance = new QnameType();
 	private QnameType() { super("QName"); }

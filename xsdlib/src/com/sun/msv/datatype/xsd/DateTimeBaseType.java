@@ -10,7 +10,7 @@ import java.io.ByteArrayInputStream;
  *
  * this class uses IDateTimeValueType as the value object
  */
-abstract class DateTimeBaseType extends DataTypeImpl implements Comparator
+abstract class DateTimeBaseType extends ConcreteType implements Comparator
 {
 	protected DateTimeBaseType(String typeName) { super(typeName); }
 	

@@ -70,6 +70,9 @@ public class PatternFacet extends DataTypeWithLexicalConstraintFacet
 		}
 		
 		facets.consume(FACET_PATTERN);
+		
+		// loosened facet check is almost impossible for pattern facet.
+		// ignore it for now.
 	}
 	
 	protected final boolean checkLexicalConstraint( String literal )

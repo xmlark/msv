@@ -19,6 +19,8 @@ public class EnumerationFacet extends DataTypeWithValueConstraintFacet
 		
 		for( int i=0; i<len; i++ )
 		{
+			// loosened enumeration value will be detected in this process.
+			
 			final String val = (String)lexValues.elementAt(i);
 			Object o = baseType.convertToValueObject(val);
 			if(o==null)

@@ -19,6 +19,8 @@ abstract class RangeFacet extends DataTypeWithValueConstraintFacet
 				facets.getFacet(facetName), facetName );
 			
 		facets.consume(facetName);
+		
+		// TODO : consistency check of RangeFacet
 	}
 	
 	public final Object convertToValue( String literal )
@@ -26,7 +28,7 @@ abstract class RangeFacet extends DataTypeWithValueConstraintFacet
 		Object o = baseType.convertToValue(literal);
 		if(o==null)	return null;
 		
-		int r = ((Comparator)baseType).compare(limitValue,o);
+		int r = ((Comparator)concreteType).compare(limitValue,o);
 		if(!rangeCheck(r))		return null;
 		return o;
 	}

@@ -26,7 +26,7 @@ import java.io.ByteArrayInputStream;
  * 
  * See http://www.w3.org/TR/xmlschema-2/#uriReference for the spec
  */
-public class UriReferenceType extends DataTypeImpl
+public class UriReferenceType extends ConcreteType
 {
 	public static final UriReferenceType theInstance = new UriReferenceType();
 	private UriReferenceType() { super("uriReference"); }

@@ -3,6 +3,7 @@ package com.sun.tranquilo.datatype;
 import java.util.Map;
 import java.util.Vector;
 import java.util.Iterator;
+import java.math.BigInteger;
 
 /**
  * Type-safe map that contains facets bundle.
@@ -114,7 +115,16 @@ public class Facets
 			if( value>0 )	return value;
 		}
 		catch( NumberFormatException e )
-		{ ; }
+		{// let's try BigInteger to see if the value is actually positive
+			try
+			{
+				// if we can parse it in BigInteger, then treat is as Integer.MAX_VALUE
+				// this will work for most cases, I suppose.
+				if(new BigInteger(getFacet(facetName)).signum()>0)
+					return Integer.MAX_VALUE;
+			}
+			catch(NumberFormatException ee) {;}
+		}
 		
 		throw new BadTypeException(
 			BadTypeException.ERR_FACET_MUST_BE_POSITIVE_INTEGER,

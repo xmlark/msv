@@ -19,6 +19,7 @@ public class UnsignedByteType extends IntegerDerivedType
 		try
 		{
 			Short v = new Short(lexicalValue);
+			if(v==null)						return null;
 			if( v.shortValue()<0 )          return null;
 			if( v.shortValue()>upperBound ) return null;
 			return v;

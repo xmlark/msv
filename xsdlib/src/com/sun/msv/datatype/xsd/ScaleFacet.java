@@ -8,7 +8,7 @@ package com.sun.tranquilo.datatype;
 class ScaleFacet extends DataTypeWithLexicalConstraintFacet
 {
 	/** maximum number of fraction digits */
-	private final int scale;
+	protected final int scale;
 
 	public ScaleFacet( String typeName, DataTypeImpl baseType, Facets facets )
 		throws BadTypeException
@@ -18,6 +18,15 @@ class ScaleFacet extends DataTypeWithLexicalConstraintFacet
 		scale = facets.getNonNegativeInteger(FACET_SCALE);
 		
 		facets.consume( FACET_SCALE );
+		
+		// loosened facet check
+		DataTypeWithFacet o = baseType.getFacetObject(FACET_SCALE);
+		if(o!=null && ((ScaleFacet)o).scale < this.scale )
+			throw new BadTypeException(
+				BadTypeException.ERR_LOOSENED_FACET,
+				FACET_SCALE, o.getName() );
+		
+		// consistency with precision is checked in DataTypeImpl.derive method.
 	}
 
 	protected boolean checkLexicalConstraint( String literal )

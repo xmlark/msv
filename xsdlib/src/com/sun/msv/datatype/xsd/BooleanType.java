@@ -24,7 +24,7 @@ package com.sun.tranquilo.datatype;
  * 
  * See http://www.w3.org/TR/xmlschema-2/#boolean for the spec
  */
-public class BooleanType extends DataTypeImpl
+public class BooleanType extends ConcreteType
 {
 	public static final BooleanType theInstance = new BooleanType();
 	

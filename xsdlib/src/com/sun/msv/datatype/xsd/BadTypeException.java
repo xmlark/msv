@@ -34,6 +34,11 @@ public class BadTypeException extends Exception
 			args ) );
 	}
 
+	public BadTypeException(String resourcePropertyName,Object arg1,Object arg2,Object arg3)
+	{
+		this( resourcePropertyName, new Object[]{arg1,arg2,arg3} );
+	}
+	
 	public BadTypeException(String resourcePropertyName,Object arg1,Object arg2)
 	{
 		this( resourcePropertyName, new Object[]{arg1,arg2} );
@@ -65,8 +70,14 @@ public class BadTypeException extends Exception
 		= null; // facet "{0}" must be a positive integer value
 	public final static String ERR_OVERRIDING_FIXED_FACET
 		= null;	// facet "{0}" is specified as fixed in base type.
-	public final static String ERR_INCONSISTENT_MINMAX_LENGTH	= "LengthFacet.InconsistentMinMaxLength";
-	public final static String ERR_LENGTH_AND_X_IS_EXCLUSIVE	= "LengthFacet.LengthAndXIsExclusive";
+	public final static String ERR_INCONSISTENT_FACETS_1
+		= "InconsistentFacets.1";
+	public final static String ERR_INCONSISTENT_FACETS_2
+		= "InconsistentFacets.2";
+	public final static String ERR_X_AND_Y_ARE_EXCLUSIVE
+		= "XAndYAreExclusive";
+	public final static String ERR_LOOSENED_FACET
+		= "LoosenedFacet";
 	public final static String ERR_SCALE_IS_GREATER_THAN_PRECISION =
 		"PrecisionScaleFacet.ScaleIsGraterThanPrecision";
 	public final static String ERR_EXCLUSIVE_FACETS_SPECIFIED =

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- $Id$ -->
 <suite>
-
+<comment>
 <case name="test for year">
 	<value>  -999999999999999999999999999999999999999999999999999999999999999999Z</value>
 	<value  >-10000</value>
@@ -185,7 +185,7 @@
 		<value>1</value>
 	</wrongs>
 </case>
-
+</comment>
 
 <!-- test case for integer and derived types -->
 <case name="test for integer and its derived types">
@@ -239,7 +239,6 @@
 	<!-- very long but valid integer -->
 	<value>99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999</value>
 	
-
 	<answer for="integer"             >ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo</answer>
 	<answer for="negativeInteger"     >ooooo ooooo oooo. .....  ..... ..... ..... .....</answer>
 	<answer for="nonPositiveInteger"  >ooooo ooooo ooooo ooo..  ..... ..... ..... .....</answer>

@@ -2,7 +2,7 @@ package com.sun.tranquilo.datatype;
 
 /** base class of FloatType and DoubleType
  */
-abstract class FloatingNumberType extends DataTypeImpl implements Comparator
+abstract class FloatingNumberType extends ConcreteType implements Comparator
 {
 	protected FloatingNumberType( String typeName ) { super("typeName"); }
 	

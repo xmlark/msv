@@ -58,9 +58,15 @@ public class DataTypeTester
 			for( int i=0; i<lst.size(); i++ )
 			{
 				Element item = (Element)lst.get(i);
+				pattern.reset();
 				
+				DataType t = DataTypeFactory.getTypeByName(item.getAttributeValue("for"));
+				if(t==null)
+				{
+					System.out.println(item.getAttributeValue("for") + " is undefined type");
+				}
 				testDataType(
-					DataTypeFactory.getTypeByName(item.getAttributeValue("for")),
+					t,
 					values, wrongValues,
 					new BaseAnswerWrapper(item.getText(),pattern)
 						// wrap it by intrisic restriction of this datatype

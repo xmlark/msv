@@ -7,8 +7,8 @@ package com.sun.tranquilo.datatype;
  */
 class PrecisionFacet extends DataTypeWithLexicalConstraintFacet
 {
-	/** maximum number of total digits. -1 if unspecified. */
-	private final int		precision;
+	/** maximum number of total digits. */
+	protected final int		precision;
 
 	public PrecisionFacet( String typeName, DataTypeImpl baseType, Facets facets )
 		throws BadTypeException
@@ -18,6 +18,15 @@ class PrecisionFacet extends DataTypeWithLexicalConstraintFacet
 		precision = facets.getPositiveInteger(FACET_PRECISION);
 		
 		facets.consume( FACET_PRECISION );
+		
+		// loosened facet check
+		DataTypeWithFacet o = baseType.getFacetObject(FACET_PRECISION);
+		if(o!=null && ((PrecisionFacet)o).precision < this.precision )
+			throw new BadTypeException(
+				BadTypeException.ERR_LOOSENED_FACET,
+				FACET_PRECISION, o.getName() );
+		
+		// consistency with scale is checked in DataTypeImpl.derive method.
 	}
 
 	protected boolean checkLexicalConstraint( String literal )

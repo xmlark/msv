@@ -23,6 +23,7 @@ public class UnsignedIntType extends LongType
 		try
 		{
 			Long v = (Long)super.convertToValue(lexicalValue);
+			if( v==null )						return null;
 			if( v.longValue()<0 )               return null;
 			if( v.longValue()>upperBound )      return null;
 			return v;

@@ -24,7 +24,7 @@ package com.sun.tranquilo.datatype;
  * 
  * See http://www.w3.org/TR/xmlschema-2/#ENTITY for the spec
  */
-public class EntityType extends DataTypeImpl
+public class EntityType extends ConcreteType
 {
 	public static final EntityType theInstance = new EntityType();
 	private EntityType() { super("ENTITY"); }

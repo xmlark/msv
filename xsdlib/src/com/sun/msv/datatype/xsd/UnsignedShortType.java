@@ -9,7 +9,7 @@ package com.sun.tranquilo.datatype;
  * UnsignedShortType uses a IntType as a base implementation, for the convenience and
  * faster performance.
  */
-public class UnsignedShortType extends LongType
+public class UnsignedShortType extends IntType
 {
 	public static final UnsignedShortType theInstance = new UnsignedShortType();
 	private UnsignedShortType() { super("unsignedShort"); }
@@ -23,6 +23,7 @@ public class UnsignedShortType extends LongType
 		try
 		{
 			Integer v = (Integer)super.convertToValue(lexicalValue);
+			if(v==null)						return null;
 			if( v.intValue()<0 )            return null;
 			if( v.intValue()>upperBound )   return null;
 			return v;

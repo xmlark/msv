@@ -146,7 +146,7 @@ public class Driver {
 		if( verbose )
 			System.out.println( localize( MSG_PARSING_TIME, new Long(parsingTime-stime) ) );
 
-
+		
 		if(dump) {
 			if( grammar instanceof RELAXModule )
 				dumpRELAXModule( (RELAXModule)grammar );
@@ -172,7 +172,7 @@ public class Driver {
 		else
 		if( grammar instanceof XMLSchemaGrammar )
 			// use verifier+identity constraint checker.
-			verifier = new XMLSchemaVerifier( new REDocumentDeclaration(grammar) );
+			verifier = new XMLSchemaVerifier( (XMLSchemaGrammar)grammar );
 		else
 			// validate normally by using Verifier.
 			verifier = new SimpleVerifier( new REDocumentDeclaration(grammar) );
@@ -223,7 +223,7 @@ public class Driver {
 		System.out.println("*** top level ***");
 		System.out.println(ExpressionPrinter.printFragment(g.topLevel));
 		
-		Iterator itr = g.schemata.values().iterator();
+		Iterator itr = g.iterateSchemas();
 		while(itr.hasNext()) {
 			XMLSchemaSchema s = (XMLSchemaSchema)itr.next();
 			dumpXMLSchema(s);
@@ -237,7 +237,7 @@ public class Driver {
 		for( int i=0; i<es.length; i++ ) {
 			ElementDeclExp exp = (ElementDeclExp)es[i];
 			System.out.println( exp.name + "  : " +
-				ExpressionPrinter.printContentModel(exp.self.contentModel) );
+				ExpressionPrinter.printContentModel(exp.body.contentModel) );
 		}
 		
 		System.out.println("*** complex types ***");
@@ -316,13 +316,13 @@ public class Driver {
 	}
 
 	private static class XMLSchemaVerifier implements DocumentVerifier {
-		private final DocumentDeclaration docDecl;
+		private final XMLSchemaGrammar grammar;
 		
-		XMLSchemaVerifier( DocumentDeclaration docDecl ) { this.docDecl = docDecl; }
+		XMLSchemaVerifier( XMLSchemaGrammar grammar ) { this.grammar = grammar; }
 
 		public boolean verify( XMLReader p, InputSource instance ) throws Exception {
 			ReportErrorHandler reh = new ReportErrorHandler();
-			Verifier v = new IDConstraintChecker( docDecl, reh );
+			Verifier v = new IDConstraintChecker( grammar, reh );
 		
 			p.setDTDHandler(v);
 			p.setContentHandler(v);

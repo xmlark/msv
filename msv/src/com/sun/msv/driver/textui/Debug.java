@@ -11,5 +11,5 @@ package com.sun.msv.driver.textui;
 
 public class Debug
 {
-	public static boolean debug = false;
+	public static boolean debug = System.getProperty("DEBUG_SUN_MSV")!=null;
 }

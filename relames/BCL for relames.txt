@@ -17,8 +17,7 @@ SOFTWARE INFORMATION
 
 The Sun Multi-Schema XML Validator Schematron add-on is a Java tool
 to validate XML documents against RELAX NG schemas annotated with
-Schematron schemas. This release includes software developed by
-the Apache Software Foundation.
+Schematron schemas.
 
 
 
@@ -168,9 +167,9 @@ How will the Software be delivered to Licensee?
           the appropriate attorney representing your sales group to request 
           a different type of license and you should not submit this BCL Request Form.
 
-     [   ] Binary Only 
+     [ X ] Binary Only 
 
-     [ X ] Both Source Example Code and Binary
+     [   ] Both Source Example Code and Binary
 
 
 Indicate the Method of Distribution for the Software by Sun 
@@ -198,7 +197,7 @@ that has been received from another company ? Note, this includes any freeware
 
      A description of the Third Party Code contained in the Software and 
      an explanation of how it is used in Sun's Software:
-     ___It is bundled for the user's convenience___
+     ___ this product relies on the part of Xerces-J Parser ___
 
      The name of the Program Manager who can provide the Contract Services Group 
      with information about and copies of all third party contracts relating to 

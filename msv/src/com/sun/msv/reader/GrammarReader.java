@@ -559,7 +559,21 @@ public abstract class GrammarReader
 
 	private Locator[] prepareLocation( Locator[] param ) {
 		// if null is given, use the current location.
-		if( param!=null )	return param;
+		if( param!=null ) {
+			int cnt=0;
+			for( int i=0; i<param.length; i++ )
+				if( param[i]!=null )	cnt++;
+			
+			if( param.length==cnt ) return param;
+			
+			// remove null from the array.
+			Locator[] locs = new Locator[cnt];
+			cnt=0;
+			for( int i=0; i<param.length; i++ )
+				if( param[i]!=null )	locs[cnt++] = param[i];
+			
+			return locs;
+		}
 		if( locator!=null )		return new Locator[]{locator};
 		else					return new Locator[0];
 	}

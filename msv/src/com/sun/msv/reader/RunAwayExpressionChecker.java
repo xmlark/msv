@@ -95,7 +95,7 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
     public void onAttribute( AttributeExp exp ) {
         enter(exp);
         exp.exp.visit(this);
-        leave(exp);
+        leave();
     }
     public void onConcur( ConcurExp exp )                { binaryVisit(exp);    }
     public void onInterleave( InterleaveExp exp )        { binaryVisit(exp);    }
@@ -111,15 +111,28 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
     public void onValue( ValueExp exp )                    {}
     
     protected final void binaryVisit( BinaryExp exp ) {
-        enter(exp);
+        // do the tail recursion to avoid StackOverflowError as much as possible
+        int cnt=0;
+        
+        while(true) {
+            enter(exp);
+            cnt++;
+            exp.exp2.visit(this);
+            if( exp.exp1 instanceof BinaryExp )
+                exp = (BinaryExp)exp.exp1;
+            else
+                break;
+        }
+        
         exp.exp1.visit(this);
-        exp.exp2.visit(this);
-        leave(exp);
+        
+        for( ; cnt>0; cnt-- )
+            leave();
     }
     protected final void unaryVisit( UnaryExp exp ) {
         enter(exp);
         exp.exp.visit(this);
-        leave(exp);
+        leave();
     }
     
     private void enter( Expression exp ) {
@@ -161,9 +174,8 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
         contentModel.add(exp);
         refStack.push(exp);
     }
-    private void leave( Expression exp ) {
-        contentModel.remove(exp);
-        refStack.pop();
+    private void leave() {
+        contentModel.remove(refStack.pop());
     }
 
     public void onRef( ReferenceExp exp ) {
@@ -172,12 +184,12 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
             testedExps.add(exp);
             exp.exp.visit(this);
         }
-        leave(exp);
+        leave();
     }
     public void onOther( OtherExp exp ) {
         enter(exp);
         exp.exp.visit(this);
-        leave(exp);
+        leave();
     }
     
     public void onElement( ElementExp exp )

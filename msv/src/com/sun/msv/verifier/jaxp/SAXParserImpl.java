@@ -18,7 +18,6 @@ import org.iso_relax.verifier.Schema;
 import org.iso_relax.verifier.Verifier;
 import org.iso_relax.verifier.VerifierFactory;
 import org.xml.sax.InputSource;
-import org.xml.sax.Parser;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
@@ -54,7 +53,8 @@ class SAXParserImpl extends SAXParser
 		this.verifier = _verifier;
 	}
 	
-	public Parser getParser() throws SAXException {
+        /** @deprecated */
+	public org.xml.sax.Parser getParser() throws SAXException {
 		// maybe we should throw an UnsupportedOperationException,
 		// rather than doing a trick like this.
 		return new XMLReaderAdapter(getXMLReader());

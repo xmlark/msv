@@ -63,13 +63,17 @@ public class OccurrenceExp extends OtherExp {
     
     /** Maximum occurence. -1 to indicate "unbounded" */
     public final int maxOccurs;
-    /** Minimum occurence. -1 to indicate "unbounded" */
+    /** Minimum occurence. */
     public final int minOccurs;
     
-    /**
-     * The unit of repetition.
-     */
+    /** The unit of repetition. */
     public final Expression itemExp;
+    
+    /** Obtains a string representation suitable for quick debugging. */
+    public String toString() {
+        return itemExp.toString()+"["+minOccurs+","+
+            (maxOccurs==-1?"inf":String.valueOf(maxOccurs))+"]";
+    }
     
     // serialization support
     private static final long serialVersionUID = 1;    

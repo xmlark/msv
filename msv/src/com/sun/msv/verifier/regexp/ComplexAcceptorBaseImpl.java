@@ -11,7 +11,7 @@ package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.IDContextProvider;
+import com.sun.msv.grammar.IDContextProvider2;
 import com.sun.msv.util.DatatypeRef;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
@@ -34,19 +34,19 @@ public abstract class ComplexAcceptorBaseImpl extends ContentModelAcceptor
 		this.contents = contents;
 	}
 
-	/** eats string literal */
-	public final boolean onText( String literal, IDContextProvider context, StringRef refErr, DatatypeRef refType ) {
-		if(!super.onText(literal,context,refErr,refType))	return false;
-
-		final StringToken token = new StringToken(docDecl,literal,context);
-		final ResidualCalculator res = docDecl.resCalc;
-
-		// some may become invalid, but at least one always remain valid
-		for( int i=0; i<contents.length; i++ )
-			contents[i] = res.calcResidual( contents[i], token );
-		
-		return true;
-	}
+    /** eats string literal */
+    public final boolean onText2( String literal, IDContextProvider2 context, StringRef refErr, DatatypeRef refType ) {
+        if(!super.onText2(literal,context,refErr,refType))	return false;
+        
+        final StringToken token = new StringToken(docDecl,literal,context);
+        final ResidualCalculator res = docDecl.resCalc;
+        
+        // some may become invalid, but at least one always remain valid
+        for( int i=0; i<contents.length; i++ )
+            contents[i] = res.calcResidual( contents[i], token );
+        
+        return true;
+    }
 	
 	public final boolean stepForward( Acceptor child, StringRef errRef ) {
 		if(!super.stepForward(child,errRef))	return false;

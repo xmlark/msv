@@ -14,6 +14,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
 import com.sun.msv.datatype.xsd.StringType;
+import com.sun.msv.grammar.IDContextProvider2;
 import com.sun.msv.reader.ExpressionOwner;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.IgnoreState;
@@ -92,7 +93,7 @@ abstract class TypeState extends SimpleState
 	public final void startElement( String namespaceURI, String localName, String qName, Attributes atts )
 	{// within the island of XSD, foreign namespaces are prohibited.
 		final StartTagInfo tag = new StartTagInfo(
-			namespaceURI,localName,qName,new AttributesImpl(atts),null);
+			namespaceURI,localName,qName,new AttributesImpl(atts),(IDContextProvider2)null);
 		// we have to copy Attributes, otherwise it will be mutated by SAX parser
 			
 		State nextState = createChildState(tag);

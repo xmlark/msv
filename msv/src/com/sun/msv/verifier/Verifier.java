@@ -18,6 +18,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 
 import com.sun.msv.datatype.xsd.StringType;
+import com.sun.msv.grammar.IDContextProvider2;
 import com.sun.msv.util.DatatypeRef;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
@@ -72,7 +73,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
 
     /** An object used to store start tag information.
      * the same object is reused. */
-    private final StartTagInfo sti = new StartTagInfo(null, null, null, null, null);
+    private final StartTagInfo sti = new StartTagInfo(null, null, null, null, (IDContextProvider2)null);
 
     public final boolean isValid() {
         return !hadError && isFinished;
@@ -134,12 +135,12 @@ public class Verifier extends AbstractVerifier implements IVerifier {
     
             case Acceptor.STRING_STRICT :
                 final String txt = new String(text);
-                if (!current.onText(txt, this, null, characterType)) {
+                if (!current.onText2(txt, this, null, characterType)) {
                     // error
                     // diagnose error, if possible
                     StringRef err = new StringRef();
                     characterType.types = null;
-                    current.onText(txt, this, err, characterType);
+                    current.onText2(txt, this, err, characterType);
     
                     // report an error
                     onError(err, localizeMessage(ERR_UNEXPECTED_TEXT, null), new ErrorInfo.BadText(text));
@@ -257,14 +258,14 @@ public class Verifier extends AbstractVerifier implements IVerifier {
             System.out.println("-- processing attribute: @" + qName);
     
         attributeType.types = null;
-        if (!child.onAttribute(uri, localName, qName, value, this, null, attributeType)) {
+        if (!child.onAttribute2(uri, localName, qName, value, this, null, attributeType)) {
             // error
             if (com.sun.msv.driver.textui.Debug.debug)
                 System.out.println("-- bad attribute: error recovery");
     
             // let the acceptor recover from the error.
             StringRef ref = new StringRef();
-            child.onAttribute(uri, localName, qName, value, this, ref, null);
+            child.onAttribute2(uri, localName, qName, value, this, ref, null);
             onError(
                 ref,
                 localizeMessage(ERR_UNEXPECTED_ATTRIBUTE, new Object[] { qName }),
@@ -379,12 +380,12 @@ public class Verifier extends AbstractVerifier implements IVerifier {
     public void endDocument() throws SAXException {
         // ID/IDREF check
         if (performIDcheck) {
-            if (!ids.containsAll(idrefs)) {
+            if (!ids.keySet().containsAll(idrefs)) {
                 hadError = true;
                 Iterator itr = idrefs.iterator();
                 while (itr.hasNext()) {
                     Object idref = itr.next();
-                    if (!ids.contains(idref))
+                    if (!ids.keySet().contains(idref))
                         onError(localizeMessage(ERR_UNSOLD_IDREF, new Object[] { idref }), null);
                 }
             }

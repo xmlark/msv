@@ -24,11 +24,13 @@ import com.sun.msv.grammar.DataOrValueExp;
 import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.IDContextProvider;
+import com.sun.msv.grammar.IDContextProvider2;
 import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.NamespaceNameClass;
 import com.sun.msv.grammar.NotNameClass;
 import com.sun.msv.grammar.SimpleNameClass;
 import com.sun.msv.grammar.ValueExp;
+import com.sun.msv.grammar.util.IDContextProviderWrapper;
 import com.sun.msv.util.DatatypeRef;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
@@ -153,20 +155,29 @@ public abstract class ExpressionAcceptor implements Acceptor {
 	protected abstract Acceptor createAcceptor(
 		Expression contentModel, Expression continuation/*can be null*/,
 		ElementExp[] primitives, int numPrimitives );
-
-	
-	
-	public final boolean onAttribute(
-		String namespaceURI, String localName, String qName, String value,
-		IDContextProvider context, StringRef refErr, DatatypeRef refType ) {
-		
-		// instead of creating a new object each time,
-		// use a cached copy.
-		docDecl.attToken.reinit( namespaceURI,localName,qName,
-				new StringToken(docDecl,value,context,refType) );
-		
-		return onAttribute( docDecl.attToken, refErr );
-	}
+        
+    /**
+     * @deprecated
+     */
+    public final boolean onAttribute(
+        String namespaceURI, String localName, String qName, String value,
+        IDContextProvider context, StringRef refErr, DatatypeRef refType ) {
+        
+        return onAttribute2( namespaceURI, localName, qName, value,
+            IDContextProviderWrapper.create(context), refErr, refType );
+    }
+    
+    public final boolean onAttribute2(
+        String namespaceURI, String localName, String qName, String value,
+        IDContextProvider2 context, StringRef refErr, DatatypeRef refType ) {
+    	
+        // instead of creating a new object each time,
+        // use a cached copy.
+        docDecl.attToken.reinit( namespaceURI,localName,qName,
+    	   new StringToken(docDecl,value,context,refType) );
+    	
+        return onAttribute( docDecl.attToken, refErr );
+    }
 	
 	protected boolean onAttribute( AttributeToken token, StringRef refErr ) {
 		Expression r = docDecl.attFeeder.feed( this.expression, token, ignoreUndeclaredAttributes );
@@ -321,10 +332,17 @@ public abstract class ExpressionAcceptor implements Acceptor {
 		expression = residual;
 		return true;
 	}
+    
+    /**
+     * @deprecated
+     */
+    public final boolean onText( String literal, IDContextProvider context, StringRef refErr, DatatypeRef refType ) {
+        return onText2( literal, IDContextProviderWrapper.create(context), refErr, refType );
+    }
 	
-	public boolean onText( String literal, IDContextProvider provider, StringRef refErr, DatatypeRef refType ) {
-		return stepForward( new StringToken(docDecl,literal,provider,refType), refErr );
-	}
+    public boolean onText2( String literal, IDContextProvider2 provider, StringRef refErr, DatatypeRef refType ) {
+        return stepForward( new StringToken(docDecl,literal,provider,refType), refErr );
+    }
 	
 	public final boolean stepForwardByContinuation( Expression continuation, StringRef errRef ) {
 		if( continuation!=Expression.nullSet ) {

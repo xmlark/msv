@@ -32,12 +32,13 @@ import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Grammar;
-import com.sun.msv.grammar.IDContextProvider;
+import com.sun.msv.grammar.IDContextProvider2;
 import com.sun.msv.grammar.ReferenceContainer;
 import com.sun.msv.grammar.ReferenceExp;
 import com.sun.msv.reader.datatype.xsd.XSDatatypeExp;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.Uri;
+import com.sun.msv.verifier.regexp.StringToken;
 
 /**
  * base implementation of grammar readers that read grammar from SAX2 stream.
@@ -64,7 +65,7 @@ import com.sun.msv.util.Uri;
  */
 public abstract class GrammarReader
 	extends XMLFilterImpl
-	implements IDContextProvider
+	implements IDContextProvider2
 {
 	/** document Locator that is given by XML reader */
 	public Locator locator;
@@ -638,7 +639,7 @@ public abstract class GrammarReader
 	// when the user uses enumeration over ID type,
 	// this method will be called.
 	// To make it work, simply allow everything.
-	public void onID( Datatype dt, String literal ) {}
+	public final void onID( Datatype dt, StringToken token ) {}
 
 	
 	

@@ -24,7 +24,6 @@ import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
 import com.sun.msv.verifier.Acceptor;
 import com.sun.msv.verifier.regexp.AttributeToken;
-import com.sun.msv.verifier.regexp.CombinedChildContentExpCreator;
 import com.sun.msv.verifier.regexp.SimpleAcceptor;
 
 /**
@@ -115,7 +114,7 @@ public class XSAcceptor extends SimpleAcceptor {
 	// craetes combined child content model.
 	// it should be uniquely computed.
 	//
-		CombinedChildContentExpCreator.ExpressionPair result =
+		/*CombinedChildContentExpCreator.ExpressionPair result =*/
 		_docDecl.getCCCEC().get( getExpression(), sti, true );
 		
 		switch( _docDecl.getCCCEC().numMatchedElements() ) {

@@ -10,7 +10,7 @@
 package com.sun.msv.verifier.regexp;
 
 import com.sun.msv.grammar.AttributeExp;
-import com.sun.msv.grammar.IDContextProvider;
+import com.sun.msv.grammar.IDContextProvider2;
 import com.sun.msv.util.DatatypeRef;
 
 /**
@@ -52,7 +52,7 @@ public class AttributeToken extends Token
 	}
 	
 	protected AttributeToken( REDocumentDeclaration docDecl,
-			String namespaceURI, String localName, String qName, String value, IDContextProvider context ) {
+			String namespaceURI, String localName, String qName, String value, IDContextProvider2 context ) {
 		this( docDecl, namespaceURI, localName, qName,
 			new StringToken(docDecl,value,context,new DatatypeRef()) );
 	}

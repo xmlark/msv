@@ -9,6 +9,8 @@
  */
 package com.sun.msv.verifier;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -20,7 +22,8 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.NamespaceSupport;
 
-import com.sun.msv.grammar.IDContextProvider;
+import com.sun.msv.grammar.IDContextProvider2;
+import com.sun.msv.verifier.regexp.StringToken;
 
 /**
  * Base implementation for various Verifier implementations.
@@ -38,7 +41,7 @@ import com.sun.msv.grammar.IDContextProvider;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class AbstractVerifier implements
-	ContentHandler, DTDHandler, IDContextProvider {
+	ContentHandler, DTDHandler, IDContextProvider2 {
 	
 	/** document Locator that is given by XML reader */
 	protected Locator locator;
@@ -51,7 +54,7 @@ public abstract class AbstractVerifier implements
 	protected boolean performIDcheck = true;
 	
 	/** this map remembers every ID token encountered in this document */
-	protected final Set ids = new java.util.HashSet();
+	protected final Map ids = new HashMap();
 	/** this map remembers every IDREF token encountered in this document */
 	protected final Set idrefs = new java.util.HashSet();
 	
@@ -108,46 +111,55 @@ public abstract class AbstractVerifier implements
 	/** declared notations. */
 	private final Set notations = new java.util.HashSet();
 	
-	// methods of ValidationContextProvider
-	public String resolveNamespacePrefix( String prefix ) {
-		return namespaceSupport.getURI(prefix);
-	}
-	public boolean isUnparsedEntity( String entityName ) {
-		return unparsedEntities.contains(entityName);
-	}
-	public boolean isNotation( String notationName ) {
-		return notations.contains(notationName);
-	}
-	public String getBaseUri() {
-		// TODO: Verifier should implement the base URI
-		return null;
-	}
+    // methods of ValidationContextProvider
+    public String resolveNamespacePrefix(String prefix) {
+        String uri = namespaceSupport.getURI(prefix);
+        if(uri==null && prefix.length()==0)  return "";
+        else                                return uri;
+    }
+    public boolean isUnparsedEntity(String entityName) {
+        return unparsedEntities.contains(entityName);
+    }
+    public boolean isNotation(String notationName) {
+        return notations.contains(notationName);
+    }
+    public String getBaseUri() {
+        // TODO: Verifier should implement the base URI
+        return null;
+    }
 	
 	/** this method is called when a duplicate id value is found. */
 	protected abstract void onDuplicateId( String id );
 	
-	public void onID( Datatype dt, String literal ) {
-		if(!performIDcheck)		return;
-		
-		int idType = dt.getIdType();
-		if(idType==Datatype.ID_TYPE_ID) {
-			literal = literal.trim();
-			if(!ids.add(literal))
-				// duplicate id value
-				onDuplicateId(literal);
-			return;
-		}
-		if(idType==Datatype.ID_TYPE_IDREF) {
-			idrefs.add(literal.trim());
-			return;
-		}
-		if(idType==Datatype.ID_TYPE_IDREFS) {
-			StringTokenizer tokens = new StringTokenizer(literal);
-			while(tokens.hasMoreTokens())
-				idrefs.add(tokens.nextToken());
-			return;
-		}
-		
-		throw new Error();	// assertion failed. unknown Id type.
-	}
+    public void onID(Datatype dt, StringToken token) {
+        if (!performIDcheck)
+            return;
+
+        int idType = dt.getIdType();
+        if (idType == Datatype.ID_TYPE_ID) {
+            String literal = token.literal.trim();
+            StringToken existing = (StringToken)ids.get(literal);
+            if( existing==null ) {
+                // the first tiem this ID is used
+                ids.put(literal,token);
+            } else
+            if( existing!=token ) {
+                // duplicate id value
+                onDuplicateId(literal);
+            }
+            return;
+        }
+        if (idType == Datatype.ID_TYPE_IDREF) {
+            idrefs.add(token.literal.trim());
+            return;
+        }
+        if (idType == Datatype.ID_TYPE_IDREFS) {
+            StringTokenizer tokens = new StringTokenizer(token.literal);
+            while (tokens.hasMoreTokens())
+                idrefs.add(tokens.nextToken());
+            return;
+        }
+
+        throw new Error(); // assertion failed. unknown Id type.
+    }
 }

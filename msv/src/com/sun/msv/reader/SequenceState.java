@@ -16,10 +16,8 @@ import com.sun.tranquilo.grammar.Expression;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class SequenceState extends ExpressionWithChildState
-{
-	protected Expression castExpression( Expression exp, Expression child )
-	{
+public class SequenceState extends ExpressionWithChildState {
+	protected Expression castExpression( Expression exp, Expression child ) {
 		// first one.
 		if( exp==null )	return child;
 		return reader.pool.createSequence(exp,child);

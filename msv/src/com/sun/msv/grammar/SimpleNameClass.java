@@ -25,6 +25,8 @@ public final class SimpleNameClass implements NameClass
 			&&  ( this.localName.equals(localName) || LOCALNAME_WILDCARD.equals(localName) );
 	}
 	
+	public Object visit( NameClassVisitor visitor ) { return visitor.onSimple(this); }
+	
 	public SimpleNameClass( String namespaceURI, String localName )
 	{
 		this.namespaceURI	= namespaceURI;

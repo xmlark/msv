@@ -24,6 +24,8 @@ public class NamespaceNameClass implements NameClass
 		return this.namespaceURI.equals(namespaceURI);
 	}
 	
+	public Object visit( NameClassVisitor visitor ) { return visitor.onNsName(this); }
+	
 	public NamespaceNameClass( String namespaceURI )
 	{
 		this.namespaceURI	= namespaceURI;

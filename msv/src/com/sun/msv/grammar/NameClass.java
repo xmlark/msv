@@ -37,6 +37,11 @@ public interface NameClass
 	 */
 	boolean accepts( String namespaceURI, String localName );
 	
+	/**
+	 * visitor pattern support
+	 */
+	Object visit( NameClassVisitor visitor );
+	
 	public static final String NAMESPACE_WILDCARD = "*";
 	
 	public static final String LOCALNAME_WILDCARD = "*";

@@ -22,6 +22,8 @@ public final class NotNameClass implements NameClass
 	{
 		return !child.accepts(namespaceURI,localName);
 	}
+	
+	public Object visit( NameClassVisitor visitor ) { return visitor.onNot(this); }
 
 	public NotNameClass( NameClass child )
 	{

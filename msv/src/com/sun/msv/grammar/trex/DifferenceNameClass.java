@@ -10,6 +10,7 @@
 package com.sun.tranquilo.grammar.trex;
 
 import com.sun.tranquilo.grammar.NameClass;
+import com.sun.tranquilo.grammar.NameClassVisitor;
 
 /**
  * &lt;difference&gt; name class of TREX.
@@ -26,6 +27,8 @@ public class DifferenceNameClass implements NameClass
 		return nc1.accepts(namespaceURI,localPart)
 			&& !nc2.accepts(namespaceURI,localPart);
 	}
+	
+	public Object visit( NameClassVisitor visitor ) { return ((TREXNameClassVisitor)visitor).onDifference(this); }
 	
 	public DifferenceNameClass( NameClass nc1, NameClass nc2 )
 	{

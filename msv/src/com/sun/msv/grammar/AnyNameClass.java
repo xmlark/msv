@@ -21,6 +21,8 @@ public final class AnyNameClass implements NameClass
 		return true;
 	}
 	
+	public Object visit( NameClassVisitor visitor ) { return visitor.onAnyName(this); }
+	
 	/** singleton instance */
 	public static final NameClass theInstance = new AnyNameClass();
 	

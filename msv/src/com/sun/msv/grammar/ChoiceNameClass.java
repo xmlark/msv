@@ -25,6 +25,8 @@ public class ChoiceNameClass implements NameClass
 			|| nc2.accepts(namespaceURI,localPart);
 	}
 	
+	public Object visit( NameClassVisitor visitor ) { return visitor.onChoice(this); }
+	
 	public ChoiceNameClass( NameClass nc1, NameClass nc2 )
 	{
 		this.nc1 = nc1;

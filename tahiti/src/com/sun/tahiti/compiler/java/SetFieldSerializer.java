@@ -15,14 +15,14 @@ import java.io.PrintWriter;
 import org.w3c.dom.Element;
 
 /**
- * serializes a collection field by using a Vector.
+ * serializes a collection field by using a Set.
  * 
  * @author
  *	<a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
-class VectorFieldSerializer extends FieldSerializer
+class SetFieldSerializer extends FieldSerializer
 {
-	VectorFieldSerializer( ClassSerializer parent, FieldUse fu ) {
+	SetFieldSerializer( ClassSerializer parent, FieldUse fu ) {
 		super(parent,fu);
 	}
 
@@ -37,8 +37,8 @@ class VectorFieldSerializer extends FieldSerializer
 			"	<%0> int get<%1>Size() {\n"+
 			"		return <%2>.size();\n"+
 			"	}\n"+
-			"	<%0> <%3> get<%1>( int idx ) {\n"+
-			"		return <%2>.get(idx);\n"+
+			"	<%0> boolean contains<%1>( <%3> item ) {\n"+
+			"		return <%2>.contains(item);\n"+
 			"	}\n"+
 			"	<%0> java.util.Iterator iterate<%1>() {\n"+
 			"		return <%2>.iterator();\n"+
@@ -56,11 +56,11 @@ class VectorFieldSerializer extends FieldSerializer
 			"	<%0> void clear<%1>() {\n"+
 			"		<%2>.clear();\n"+
 			"	}\n"+
-			"	<%0> <%3> set<%1>( int idx, <%3> item ) {\n"+
-			"		return <%2>.set(idx,item);\n"+
+			"	<%0> boolean remove( <%3> item ) {\n"+
+			"		return <%2>.remove(item);\n"+
 			"	}\n"+
-			"	<%0> void add<%1>( <%3> item ) {\n"+
-			"		<%2>.add(item);\n"+
+			"	<%0> boolean add<%1>( <%3> item ) {\n"+
+			"		return <%2>.add(item);\n"+
 			"	}\n",
 			new Object[]{
 				mod, capitalizedFieldName, fu.name, getTypeStr()

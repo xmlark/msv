@@ -36,8 +36,13 @@ abstract class FieldSerializer {
 			// use item type itself.
 			return new AtmostOneFieldSerializer(parent,fu);
 		
-		// otherwise use Vector
-		return new VectorFieldSerializer(parent,fu);
+		CollectionType t = fu.getCollectionType();
+		if(t==t.list)	return new ListFieldSerializer(parent,fu);
+		if(t==t.set)	return new SetFieldSerializer(parent,fu);
+		if(t==t.vector)	return new VectorFieldSerializer(parent,fu);
+		
+		// assertion failed
+		throw new Error("unrecognized collection type:"+t);
 	}
 	
 

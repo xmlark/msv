@@ -87,7 +87,7 @@ public class ContentModelAcceptor extends ExpressionAcceptor
 			 o!=null; o=o.next )	i++;
 		
 		Expression[] contents = new Expression[i];
-		Expression[] owners = new ElementExp[i];
+		ElementExp[] owners = new ElementExp[i];
 		
 		i=0;
 		for( CombinedChildContentExpCreator.OwnerAndContent o = primitives;
@@ -100,7 +100,7 @@ public class ContentModelAcceptor extends ExpressionAcceptor
 		
 		return new ComplexAcceptor(
 			(TREXDocumentDeclaration)docDecl,
-			combined, primitives );
+			combined, contents, owners );
 	}
 	
 	// ContentModelAcceptor does not support type-assignment.

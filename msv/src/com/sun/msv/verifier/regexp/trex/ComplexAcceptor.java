@@ -13,12 +13,6 @@ import com.sun.tranquilo.datatype.ValidationContextProvider;
 import com.sun.tranquilo.grammar.Expression;
 import com.sun.tranquilo.grammar.ElementExp;
 import com.sun.tranquilo.verifier.Acceptor;
-import com.sun.tranquilo.verifier.regexp.StringToken;
-import com.sun.tranquilo.verifier.regexp.ElementToken;
-import com.sun.tranquilo.verifier.regexp.CombinedChildContentExpCreator;
-import com.sun.tranquilo.verifier.regexp.ResidualCalculator;
-import com.sun.tranquilo.util.StringRef;
-import com.sun.tranquilo.util.DataTypeRef;
 
 /**
  * Accept that is used when more than one pattern can be applicable to the current context.
@@ -36,23 +30,6 @@ final class ComplexAcceptor extends ComplexAcceptorBaseImpl
 	{
 		super( docDecl, combined, contentModels );
 		this.owners = owners;
-/*		
-		int i=0;
-		for( CombinedChildContentExpCreator.OwnerAndContent o = primitives;
-			 o!=null; o=o.next )	i++;
-		
-		contents = new Expression[i];
-		owners = new ElementExp[i];
-		
-		i=0;
-		for( CombinedChildContentExpCreator.OwnerAndContent o = primitives;
-			 o!=null; o=o.next )
-		{
-			contents[i] = o.content;
-			owners[i] = o.owner;
-			i++;
-		}
-*/
 	}
 
 	/**

@@ -462,7 +462,7 @@ public class RELAXNGReader extends TREXBaseReader {
 	 * In case of an error, this field may be set to null after issuing an error.
 	 * So care should be taken not to report the same error again.
 	 */
-	private DatatypeLibrary datatypeLib = BuiltinDatatypeLibrary.theInstance;
+	private DatatypeLibrary datatypeLib = resolveDataTypeLibrary("");
 	
 	public DatatypeLibrary getCurrentDatatypeLibrary() {
 		if(datatypeLib==null) {
@@ -497,7 +497,7 @@ public class RELAXNGReader extends TREXBaseReader {
 		// the datatypeLibrary attribute does not do chameleon
 		dtLibStack.push(datatypeLib);
 		dtLibURIStack.push(datatypeLibURI);
-		datatypeLib = BuiltinDatatypeLibrary.theInstance;
+		datatypeLib = resolveDataTypeLibrary("");
 		datatypeLibURI = "";
 
 		super.startDocument();

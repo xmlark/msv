@@ -35,10 +35,11 @@ public class AttributeExp extends Expression implements NameClassAndExpression {
     }
     
     public boolean equals( Object o ) {
-        return this==o;
-//        if(!(o instanceof AttributeExp))    return false;
-//        return ((AttributeExp)o).nameClass.equals(nameClass)
-//            && ((AttributeExp)o).exp.equals(exp);
+        // reject derived classes
+        if(o.getClass()!=AttributeExp.class)    return false;
+        
+        AttributeExp rhs = (AttributeExp)o;
+        return rhs.nameClass.equals(nameClass) && rhs.exp.equals(exp);
     }
     
     public Object visit( ExpressionVisitor visitor )                { return visitor.onAttribute(this);    }

@@ -125,6 +125,10 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 			return Long.toString(r);
 		}
 		
+		if( dt.getClass()==UnsignedIntType.class )
+			return Long.toString( random.nextLong()&0x7FFFFFFF );
+		
+		if( dt.getClass()==Byte.class )			return Long.toString( random.nextInt(256) );
 		if( dt.getClass()==ShortType.class )	return Long.toString( (short)random.nextInt() );
 		if( dt.getClass()==IntType.class )		return Long.toString( random.nextInt() );
 		if( dt.getClass()==LongType.class )		return Long.toString( random.nextLong() );
@@ -136,6 +140,9 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		if( dt.getClass()==NcnameType.class )	return generateNCName();
 		if( dt.getClass()==NumberType.class )	return generateDecimal();
 		if( dt.getClass()==BooleanType.class )	return generateBoolean();
+		if( dt instanceof FloatType || dt instanceof DoubleType )
+			return generateFloating();
+		
 		// TODO: implement this method better.
 		if( dt.getClass()==QnameType.class )	return generateNCName();
 		
@@ -273,5 +280,9 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 			r += ch;
 		}
 		return r;
+	}
+
+	protected String generateFloating() {
+		return Float.toString(random.nextFloat());
 	}
 }

@@ -21,10 +21,8 @@ import com.sun.msv.util.StartTagInfo;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public abstract class NameClassWithoutChildState extends NameClassState
-{
-	protected final State createChildState(StartTagInfo tag)
-	{
+public abstract class NameClassWithoutChildState extends NameClassState {
+	protected final State createChildState(StartTagInfo tag) {
 		// return null to indicate that this element does not accept a child.
 		return null;
 	}

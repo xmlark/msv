@@ -35,7 +35,7 @@ public class IncludePatternState extends ExpressionWithoutChildState implements 
 		
 		if(href==null)
 		{// name attribute is required.
-			reader.reportError( TREXGrammarReader.ERR_MISSING_ATTRIBUTE,
+			reader.reportError( TREXBaseReader.ERR_MISSING_ATTRIBUTE,
 				"include","href");
 			// recover by returning something that can be interpreted as Pattern
 			return Expression.nullSet;

@@ -18,27 +18,18 @@ import com.sun.msv.reader.State;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class RootIncludedPatternState extends RootState
-{
+public class RootIncludedPatternState extends RootState {
 	/**
 	 * parsed external pattern will be reported to this object.
-	 * 
 	 * This state parses top-level, so parentState is null.
 	 */
 	private final IncludePatternState grandParent;
 	
-	protected RootIncludedPatternState( IncludePatternState grandpa )	{ this.grandParent = grandpa; }
-		
-	protected State createChildState( StartTagInfo tag )
-	{// pattern elements are also allowed as document element in case of inclusion
-		State next = reader.createExpressionChildState(this,tag);
-		if(next!=null)	return next;
-		
-		return super.createChildState(tag);
+	protected RootIncludedPatternState( IncludePatternState grandpa ) {
+		this.grandParent = grandpa;
 	}
-
-	public void onEndChild(Expression exp)
-	{
+		
+	public void onEndChild(Expression exp) {
 		// this must be from grammar element. pass it to the IncludePatternState.
 		grandParent.onEndChild(exp);
 	}

@@ -13,7 +13,6 @@ import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.reader.State;
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.trex.TREXGrammar;
-import com.sun.msv.reader.RunAwayExpressionChecker;
 
 /**
  * parses &lt;grammar&gt; element.
@@ -27,18 +26,16 @@ import com.sun.msv.reader.RunAwayExpressionChecker;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class GrammarState extends MergeGrammarState
-{
+public class GrammarState extends MergeGrammarState {
 	protected TREXGrammar previousGrammar;
 	protected TREXGrammar newGrammar;
 	
-	protected Expression makeExpression()
-	{// start pattern is the grammar-as-a-pattern.
+	protected Expression makeExpression() {
+		// start pattern is the grammar-as-a-pattern.
 		return newGrammar.start;
 	}
 
-	protected void startSelf()
-	{
+	protected void startSelf() {
 		super.startSelf();
 		
 		previousGrammar = getReader().grammar;
@@ -46,29 +43,19 @@ class GrammarState extends MergeGrammarState
 		getReader().grammar = newGrammar;
 	}
 
-	public void endSelf()
-	{
+	public void endSelf() {
 		final TREXGrammar grammar = getReader().grammar;
 		
 		// detect references to undefined pattterns
 		reader.detectUndefinedOnes(
-			grammar.namedPatterns, TREXGrammarReader.ERR_UNDEFINED_PATTERN );
+			grammar.namedPatterns, TREXBaseReader.ERR_UNDEFINED_PATTERN );
 
 		// is start pattern defined?
-		if( grammar.start==null )
-		{
+		if( grammar.start==null ) {
 			reader.reportError( reader.ERR_MISSING_TOPLEVEL );
 			grammar.start = Expression.nullSet;	// recover by assuming a valid pattern
 		}
 		
-		// make sure that there is no recurisve patterns.
-		RunAwayExpressionChecker.check( getReader(), grammar.start );
-		if( !reader.hadError )
-			// make sure that there is no sequenced string.
-			// when run-away expression is found, calling this method results in
-			// stack overflow.
-			grammar.start.visit( new TREXSequencedStringChecker(getReader()) );
-
 		// this method is called when this State is about to be removed.
 		// restore the previous grammar
 		if( previousGrammar!=null )

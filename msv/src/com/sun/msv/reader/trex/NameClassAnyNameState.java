@@ -18,10 +18,8 @@ import com.sun.msv.datatype.WhiteSpaceProcessor;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class NameClassAnyNameState extends NameClassWithoutChildState
-{
-	protected NameClass makeNameClass()
-	{
+public class NameClassAnyNameState extends NameClassWithoutChildState {
+	protected NameClass makeNameClass() {
 		return AnyNameClass.theInstance;
 	}
 }

@@ -23,20 +23,19 @@ import com.sun.msv.grammar.trex.TREXGrammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class RootState extends SimpleState implements ExpressionOwner
-{
-	protected State createChildState( StartTagInfo tag )
-	{
+public class RootState extends SimpleState implements ExpressionOwner {
+	
+	protected State createChildState( StartTagInfo tag ) {
 		// grammar has to be treated separately so as not to
 		// create unnecessary TREXGrammar object.
 		if(tag.localName.equals("grammar"))
 			return new GrammarState();
 		
 		State s = reader.createExpressionChildState(this,tag);
-		if(s!=null)
-		{// other pattern element is specified.
+		if(s!=null) {
+			// other pattern element is specified.
 			// create wrapper grammar
-			final TREXGrammarReader reader = (TREXGrammarReader)this.reader;
+			final TREXBaseReader reader = (TREXBaseReader)this.reader;
 			reader.grammar = new TREXGrammar( reader.pool, null );
 			simple = true;
 		}
@@ -52,16 +51,14 @@ public class RootState extends SimpleState implements ExpressionOwner
 	
 	// GrammarState implements ExpressionState,
 	// so RootState has to implement ExpressionOwner.
-	public void onEndChild(Expression exp)
-	{
+	public void onEndChild(Expression exp) {
+		final TREXBaseReader reader = (TREXBaseReader)this.reader;
+
 		if( simple )
-		{
-			((TREXGrammarReader)reader).grammar.start = exp;
-			// run-away expression check is not necessary,
-			// because there can be no Ref element.
+			// set the top-level expression if that is necessary.
+			reader.grammar.start = exp;
 			
-			// make sure that there is no sequenced string.
-			exp.visit( new TREXSequencedStringChecker((TREXGrammarReader)reader) );
-		}
+		// perform final wrap-up.
+		reader.wrapUp();
 	}
 }

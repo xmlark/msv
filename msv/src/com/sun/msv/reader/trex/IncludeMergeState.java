@@ -26,7 +26,7 @@ public class IncludeMergeState extends ChildlessState
 
 		if(href==null)
 		{// name attribute is required.
-			reader.reportError( TREXGrammarReader.ERR_MISSING_ATTRIBUTE,
+			reader.reportError( TREXBaseReader.ERR_MISSING_ATTRIBUTE,
 				"include","href");
 			// recover by ignoring this include element
 		}

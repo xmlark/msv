@@ -25,14 +25,14 @@ public class RefState extends ExpressionWithoutChildState
 	{
 		if(!startTag.containsAttribute("name"))
 		{// name attribute is required.
-			reader.reportError( TREXGrammarReader.ERR_MISSING_ATTRIBUTE,
+			reader.reportError( TREXBaseReader.ERR_MISSING_ATTRIBUTE,
 				"ref","name");
 			// recover by returning something that can be interpreted as Pattern
 			return Expression.nullSet;
 		}
 		
 		final String name = startTag.getAttribute("name");
-		TREXGrammar grammar = ((TREXGrammarReader)this.reader).grammar;
+		TREXGrammar grammar = ((TREXBaseReader)this.reader).grammar;
 		
 		if(startTag.containsAttribute("parent")
 		&& startTag.getAttribute("parent").equals("true") )
@@ -41,7 +41,7 @@ public class RefState extends ExpressionWithoutChildState
 			
 			if( grammar==null )
 			{
-				reader.reportError( TREXGrammarReader.ERR_NONEXISTENT_PARENT_GRAMMAR );
+				reader.reportError( TREXBaseReader.ERR_NONEXISTENT_PARENT_GRAMMAR );
 				return Expression.nullSet;
 				// recover by returning something that can be interpreted as Pattern
 			}

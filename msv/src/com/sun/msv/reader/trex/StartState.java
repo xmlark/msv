@@ -20,7 +20,7 @@ import com.sun.msv.reader.SequenceState;
  */
 public class StartState extends SequenceState
 {
-	protected final TREXGrammarReader getReader() { return (TREXGrammarReader)reader; }
+	protected final TREXBaseReader getReader() { return (TREXBaseReader)reader; }
 	
 	protected Expression annealExpression( Expression exp )
 	{

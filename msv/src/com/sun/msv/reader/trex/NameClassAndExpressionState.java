@@ -32,7 +32,7 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
 	protected String getNamespace()
 	{
 		// usually, propagated "ns" attribute should be used
-		return ((TREXGrammarReader)reader).targetNamespace;
+		return ((TREXBaseReader)reader).targetNamespace;
 	}
 	
 	protected void startSelf()
@@ -50,7 +50,7 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
 			final String[] s = reader.splitQName(name);
 			if(s==null)
 			{
-				reader.reportError( TREXGrammarReader.ERR_UNDECLEARED_PREFIX, name );
+				reader.reportError( TREXBaseReader.ERR_UNDECLEARED_PREFIX, name );
 				// recover by using a dummy name
 				nameClass = new SimpleNameClass( "", name );
 			}
@@ -63,7 +63,7 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
 	public void onEndChild( NameClass p )
 	{
 		if( nameClass!=null )	// name class has already specified
-			reader.reportError( TREXGrammarReader.ERR_MORE_THAN_ONE_NAMECLASS );
+			reader.reportError( TREXBaseReader.ERR_MORE_THAN_ONE_NAMECLASS );
 		nameClass = p;
 	}
 
@@ -71,7 +71,7 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
 	{
 		if( nameClass==null )	// nameClass should be specified before content model.
 		{
-			State nextState = ((TREXGrammarReader)reader).createNameClassChildState(this,tag);
+			State nextState = ((TREXBaseReader)reader).createNameClassChildState(this,tag);
 			if( nextState!=null )	return nextState;
 			
 			// to provide better error message, analyze the situation further.
@@ -83,7 +83,7 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
 				// OK. tag is recognized as an content model.
 				// so probably this user forgot to specify name class.
 				// report so and recover by assuming some NameClass
-				reader.reportError( TREXGrammarReader.ERR_MISSING_CHILD_NAMECLASS );
+				reader.reportError( TREXBaseReader.ERR_MISSING_CHILD_NAMECLASS );
 				nameClass = AnyNameClass.theInstance;
 				return nextState;
 			}
@@ -99,7 +99,7 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
 	{
 		if( nameClass==null )
 		{// name class is missing
-			reader.reportError( TREXGrammarReader.ERR_MISSING_CHILD_NAMECLASS );
+			reader.reportError( TREXBaseReader.ERR_MISSING_CHILD_NAMECLASS );
 			nameClass = AnyNameClass.theInstance;
 		}
 		

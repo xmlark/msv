@@ -34,8 +34,8 @@ class TREXSequencedStringChecker implements ExpressionVisitor
 	private static final Object elements = new Object();
 	private static final Object both = new Object();
 	
-	private final TREXGrammarReader reader;
-	TREXSequencedStringChecker( TREXGrammarReader reader )
+	private final TREXBaseReader reader;
+	TREXSequencedStringChecker( TREXBaseReader reader )
 	{ this.reader = reader;	}
 	
 	/**

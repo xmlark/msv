@@ -19,12 +19,9 @@ import java.util.List;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class NameClassChoiceState extends NameClassWithChildState
-{
-	protected NameClass castNameClass( NameClass halfCasted, NameClass newChild )
-	{
+public class NameClassChoiceState extends NameClassWithChildState {
+	protected NameClass castNameClass( NameClass halfCasted, NameClass newChild ) {
 		if( halfCasted==null )	return newChild;	// first item
-		
 		else return new ChoiceNameClass( halfCasted, newChild );
 	}
 }

@@ -17,10 +17,8 @@ import com.sun.msv.reader.SimpleState;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public abstract class NameClassState extends SimpleState
-{
-	public final void endSelf()
-	{
+public abstract class NameClassState extends SimpleState {
+	public final void endSelf() {
 		// pass the pattern to the parent
 		((NameClassOwner)parentState).onEndChild(makeNameClass());
 		super.endSelf();
@@ -33,8 +31,7 @@ public abstract class NameClassState extends SimpleState
 	 */
 	protected abstract NameClass makeNameClass();
 	
-	protected final String getPropagatedNamespace()
-	{
-		return ((TREXGrammarReader)reader).targetNamespace;
+	protected final String getPropagatedNamespace() {
+		return ((TREXBaseReader)reader).targetNamespace;
 	}
 }

@@ -18,7 +18,6 @@ import com.sun.msv.grammar.NameClass;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-interface NameClassOwner
-{
+interface NameClassOwner {
 	void onEndChild( NameClass p );
 }

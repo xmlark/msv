@@ -24,23 +24,20 @@ public abstract class NameClassWithChildState extends NameClassState implements 
 	/**
 	 * name class object that is being created.
 	 * See {@link castNameClass} and {@link annealNameClass} methods
-	 * for how will a pattern be created.
+	 * for how a pattern will be created.
 	 */
 	protected NameClass nameClass = null;
 
 	/**
 	 * receives a Pattern object that is contained in this element.
 	 */
-	public final void onEndChild( NameClass childNameClass )
-	{
+	public final void onEndChild( NameClass childNameClass ) {
 		nameClass = castNameClass( nameClass, childNameClass );
 	}
 	
-	protected final NameClass makeNameClass()
-	{
-		if( nameClass==null )
-		{
-			reader.reportError( TREXGrammarReader.ERR_MISSING_CHILD_NAMECLASS );
+	protected final NameClass makeNameClass() {
+		if( nameClass==null ) {
+			reader.reportError( TREXBaseReader.ERR_MISSING_CHILD_NAMECLASS );
 			nameClass = AnyNameClass.theInstance;
 			// recover by assuming some name class.
 		}
@@ -48,7 +45,7 @@ public abstract class NameClassWithChildState extends NameClassState implements 
 	}
 	
 	protected State createChildState( StartTagInfo tag ) {
-		return ((TREXGrammarReader)reader).createNameClassChildState(this,tag);
+		return ((TREXBaseReader)reader).createNameClassChildState(this,tag);
 	}
 
 		
@@ -71,8 +68,7 @@ public abstract class NameClassWithChildState extends NameClassState implements 
 	 * performs final wrap-up and returns a fully created NameClass object
 	 * that represents this element.
 	 */
-	protected NameClass annealNameClass( NameClass nameClass )
-	{
+	protected NameClass annealNameClass( NameClass nameClass ) {
 		// default implementation does nothing.
 		return nameClass;
 	}

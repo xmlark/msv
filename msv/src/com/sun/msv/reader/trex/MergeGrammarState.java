@@ -25,7 +25,7 @@ import com.sun.msv.reader.*;
  */
 public class MergeGrammarState extends ExpressionState implements ExpressionOwner
 {
-	protected final TREXGrammarReader getReader() { return (TREXGrammarReader)reader; }
+	protected final TREXBaseReader getReader() { return (TREXBaseReader)reader; }
 	
 	protected Expression makeExpression()
 	{// this method doesn't provide any pattern

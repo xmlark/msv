@@ -35,7 +35,7 @@ public class AttributeState extends NameClassAndExpressionState
 		if( ns!=null )	return ns;	// "ns" attribute always has precedence.
 		
 		// if global="true" is specified, it defaults to propagated ns attribute.
-		if( global )	return ((TREXGrammarReader)reader).targetNamespace;
+		if( global )	return ((TREXBaseReader)reader).targetNamespace;
 		
 		// otherwise, it defaults to ""
 		return "";
@@ -46,7 +46,7 @@ public class AttributeState extends NameClassAndExpressionState
 	{
 		// <attribute> is allowed to have only one pattern
 		if(!firstChild)
-			reader.reportError( TREXGrammarReader.ERR_MORE_THAN_ONE_CHILD_EXPRESSION );
+			reader.reportError( TREXBaseReader.ERR_MORE_THAN_ONE_CHILD_EXPRESSION );
 			// recover by ignore the error
 		firstChild = false;
 		return newChild;

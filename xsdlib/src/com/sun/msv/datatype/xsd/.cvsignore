@@ -7,3 +7,4 @@ TokenMgrError.java
 UriReferenceParser.java
 UriReferenceParserConstants.java
 UriReferenceParserTokenManager.java
+*.class

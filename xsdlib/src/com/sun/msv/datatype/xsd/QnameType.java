@@ -95,6 +95,7 @@ public class QnameType extends BuiltinAtomicType implements Discrete {
 	public final int isFacetApplicable( String facetName ) {
 		if( facetName.equals(FACET_PATTERN)
 		||	facetName.equals(FACET_ENUMERATION)
+        ||  facetName.equals(FACET_WHITESPACE)
 		||	facetName.equals(FACET_LENGTH)
 		||	facetName.equals(FACET_MAXLENGTH)
 		||	facetName.equals(FACET_MINLENGTH)

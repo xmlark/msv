@@ -27,6 +27,7 @@ abstract class IntegerDerivedType extends BuiltinAtomicType implements Comparato
 		// TODO : should we allow scale facet, or not?
 		if( facetName.equals(FACET_TOTALDIGITS)
 		||	facetName.equals(FACET_PATTERN)
+        ||  facetName.equals(FACET_WHITESPACE)
 		||	facetName.equals(FACET_ENUMERATION)
 		||	facetName.equals(FACET_MAXINCLUSIVE)
 		||	facetName.equals(FACET_MININCLUSIVE)

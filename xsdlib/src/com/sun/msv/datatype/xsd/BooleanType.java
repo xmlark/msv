@@ -60,8 +60,10 @@ public class BooleanType extends BuiltinAtomicType {
     }
     
 	public int isFacetApplicable( String facetName ) {
-		if(facetName.equals("pattern"))		return APPLICABLE;
-		if(facetName.equals("enumeration")) return APPLICABLE;
+		if(facetName.equals(FACET_PATTERN)
+		|| facetName.equals(FACET_ENUMERATION)
+        || facetName.equals(FACET_WHITESPACE))
+            return APPLICABLE;
 		return NOT_ALLOWED;
 	}
 	public Class getJavaObjectType() {

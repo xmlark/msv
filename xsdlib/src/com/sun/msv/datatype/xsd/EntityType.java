@@ -40,6 +40,7 @@ public class EntityType extends BuiltinAtomicType {
 		||	facetName.equals(FACET_MINLENGTH)
 		||	facetName.equals(FACET_MAXLENGTH)
 		||	facetName.equals(FACET_PATTERN)
+        ||  facetName.equals(FACET_WHITESPACE)
 		||	facetName.equals(FACET_ENUMERATION) )
 			return APPLICABLE;
 		else

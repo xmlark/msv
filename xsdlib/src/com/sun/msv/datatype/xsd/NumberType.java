@@ -131,6 +131,7 @@ public class NumberType extends BuiltinAtomicType implements Comparator {
 		||	facetName.equals(FACET_FRACTIONDIGITS)
 		||	facetName.equals(FACET_PATTERN)
 		||	facetName.equals(FACET_ENUMERATION)
+        ||  facetName.equals(FACET_WHITESPACE)
 		||	facetName.equals(FACET_MAXINCLUSIVE)
 		||	facetName.equals(FACET_MININCLUSIVE)
 		||	facetName.equals(FACET_MAXEXCLUSIVE)

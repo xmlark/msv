@@ -192,6 +192,7 @@ public class AnyURIType extends BuiltinAtomicType implements Discrete {
 		||	facetName.equals(FACET_MINLENGTH)
 		||	facetName.equals(FACET_MAXLENGTH)
 		||	facetName.equals(FACET_PATTERN)
+        ||  facetName.equals(FACET_WHITESPACE)
 		||	facetName.equals(FACET_ENUMERATION) )
 			return APPLICABLE;
 		else

@@ -64,6 +64,7 @@ public final class DurationType extends BuiltinAtomicType implements Comparator 
 	public final int isFacetApplicable( String facetName ) {
 		if( facetName.equals(FACET_PATTERN)
 		||	facetName.equals(FACET_ENUMERATION)
+        ||  facetName.equals(FACET_WHITESPACE)
 		||	facetName.equals(FACET_MAXINCLUSIVE)
 		||	facetName.equals(FACET_MAXEXCLUSIVE)
 		||	facetName.equals(FACET_MININCLUSIVE)

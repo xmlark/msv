@@ -127,7 +127,12 @@ public class XMLSchemaReader extends GrammarReader {
 				)
 			)
 		);
+
+		this.grammar = new XMLSchemaGrammar(pool);
 		
+		xsdSchema = new XMLSchemaSchema( XMLSchemaNamespace, grammar );
+		markSchemaAsDefined(xsdSchema);
+	
 		ElementPattern e = new ElementPattern( AnyNameClass.theInstance, Expression.nullSet );
 		e.contentModel =
 			pool.createMixed(
@@ -135,9 +140,11 @@ public class XMLSchemaReader extends GrammarReader {
 					pool.createChoice(
 						pool.createAttribute( AnyNameClass.theInstance ),
 						e )));
-		complexUrType = new ReferenceExp( "$ur-type", e.contentModel );
+		complexUrType = new ComplexTypeExp( xsdSchema, "anyType" );
+		complexUrType.self.exp = e.contentModel;
+		complexUrType.complexBaseType = complexUrType;
+		complexUrType.derivationMethod = ComplexTypeExp.RESTRICTION;
 		
-		this.grammar = new XMLSchemaGrammar(pool);
 	}
 	
 	
@@ -156,7 +163,7 @@ public class XMLSchemaReader extends GrammarReader {
 	/**
 	 * expression that matches to "ur-type" when used as a complex type.
 	 */
-	public final ReferenceExp complexUrType;
+	public final ComplexTypeExp complexUrType;
 	
 	/** value of the "attributeFormDefault" attribute. */
 	protected String attributeFormDefault;
@@ -176,6 +183,10 @@ public class XMLSchemaReader extends GrammarReader {
 	/** grammar object which is being under construction. */
 	protected final XMLSchemaGrammar grammar;
 	protected XMLSchemaSchema currentSchema;
+	/**
+	 * XMLSchemaSchema object that has XMLSchemaNamespace as its target namespace.
+	 */
+	protected final XMLSchemaSchema xsdSchema;
 	
 	/**
 	 * tables that store all SystemIds that we've read.
@@ -206,12 +217,11 @@ public class XMLSchemaReader extends GrammarReader {
 	 */
 	public XMLSchemaSchema getOrCreateSchema( String namespaceURI ) {
 		
-		XMLSchemaSchema g = (XMLSchemaSchema)grammar.schemata.get(namespaceURI);
+		XMLSchemaSchema g = (XMLSchemaSchema)grammar.getByNamespace(namespaceURI);
 		if(g!=null)		return g;
 		
 		// create new one.
 		g = new XMLSchemaSchema(namespaceURI,grammar);
-		grammar.schemata.put(namespaceURI,g);
 		
 		// memorize the first link so that we can report the source of error
 		// if this namespace turns out to be undefined.
@@ -599,7 +609,7 @@ public class XMLSchemaReader extends GrammarReader {
 		
 		// TODO: undefined grammar check.
 		Expression grammarTopLevel = Expression.nullSet;
-		itr = grammar.schemata.values().iterator();
+		itr = grammar.iterateSchemas();
 		while( itr.hasNext() ) {
 			XMLSchemaSchema schema = (XMLSchemaSchema)itr.next();
 			

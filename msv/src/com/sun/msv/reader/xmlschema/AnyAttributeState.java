@@ -55,7 +55,7 @@ public class AnyAttributeState extends AnyState {
 				
 				anyAttExp.exp = Expression.epsilon;
 				NameClass nc = getNameClass(namespace,currentSchema);
-				Iterator itr = reader.grammar.schemata.values().iterator();
+				Iterator itr = reader.grammar.iterateSchemas();
 				while( itr.hasNext() ) {
 					XMLSchemaSchema schema = (XMLSchemaSchema)itr.next();
 					// nc is built by using NamespaceNameClass.

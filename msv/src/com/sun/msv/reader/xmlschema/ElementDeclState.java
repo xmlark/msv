@@ -19,6 +19,7 @@ import com.sun.msv.grammar.trex.ElementPattern;
 import com.sun.msv.grammar.xmlschema.ElementDeclExp;
 import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
+import com.sun.msv.grammar.xmlschema.XMLSchemaTypeExp;
 import com.sun.msv.grammar.xmlschema.IdentityConstraint;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringPair;
@@ -139,27 +140,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 			// recover by abandoning this element.
 			return Expression.nullSet;
 		}
-/*		
-		String block = startTag.getDefaultedAttribute("block", reader.blockDefault );
-		if( block!=null ) {
-			StringTokenizer tokens = new StringTokenizer(block);
-			boolean blockExtension = false;
-			boolean blockRestriction = false;
-			boolean blockSubstitution = false;
-			
-			while( tokens.hasMoreTokens() ) {
-				String token = tokens.nextToken();
-				if( token.equals("#all") )
-					blockExtension = blockRestriction = blockSubstitution = true;
-				if( token.equals("extension") )
-					blockExtension = true;
-				if( token.equals("restriction") )
-					blockRestriction = true;
-				if( token.equals("substitution") )
-					blockSubstitution = true;
-			}
-		}
-*/		
+		
 		String targetNamespace;
 		if( isGlobal() )
 			// TODO: form attribute is prohibited at toplevel.

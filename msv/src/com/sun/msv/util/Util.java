@@ -34,7 +34,7 @@ public class Util
 				path = "/" + path;
 //			if (!path.endsWith("/") && isDirectory())
 //				path = path + "/";
-			return new InputSource( new URL("file", "", path).toExternalForm() );
+            return new InputSource("file://"+path);
 		} catch( Exception e ) {
 			// try it as an URL
 			return new InputSource(fileOrURL);

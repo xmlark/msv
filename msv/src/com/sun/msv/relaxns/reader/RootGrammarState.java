@@ -31,10 +31,8 @@ import com.sun.tranquilo.grammar.Expression;
  */
 public class RootGrammarState extends SimpleState implements ExpressionOwner
 {
-	protected State createChildState( StartTagInfo tag )
-	{
-		if(tag.namespaceURI.equals(RELAXNSReader.RELAXNamespaceNamespace)
-		&& tag.localName.equals("grammar") ) 
+	protected State createChildState( StartTagInfo tag ) {
+		if(tag.localName.equals("grammar") ) 
 			// it is a grammar.
 			return new GrammarState();
 		
@@ -55,9 +53,12 @@ public class RootGrammarState extends SimpleState implements ExpressionOwner
 			reader.hadError = true;
 		
 		// also bind top-level expression
-		reader.grammar.topLevel = 
-			reader.grammar.topLevel.visit(
-				new IslandSchemaImpl.Binder(schemaProvider, handler, reader.pool ) );
+		if( reader.grammar.topLevel!=null )
+			// this 'if' clause is necessary when
+			// <topLevel> is not specified.
+			reader.grammar.topLevel = 
+				reader.grammar.topLevel.visit(
+					new IslandSchemaImpl.Binder(schemaProvider, handler, reader.pool ) );
 		
 /* binding code has to go somewhere.
 		

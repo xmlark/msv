@@ -25,8 +25,6 @@ public class GrammarState extends SimpleState
 
 	protected State createChildState( StartTagInfo tag )
 	{
-		if(!RELAXNSReader.RELAXNamespaceNamespace.equals(tag.namespaceURI) )	return null;
-
 		if(tag.localName.equals("namespace"))	return new NamespaceState();
 		if(tag.localName.equals("topLevel"))	return new TopLevelState();
 		if(tag.localName.equals("include"))		return new IncludeGrammarState();

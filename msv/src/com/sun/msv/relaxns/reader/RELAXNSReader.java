@@ -37,6 +37,9 @@ import org.iso_relax.dispatcher.SchemaProvider;
 public class RELAXNSReader
 	extends RELAXReader
 {
+	/** namespace URI of RELAX Namespace. */
+	public static final String RELAXNamespaceNamespace = "http://www.xml.gr.jp/xmlns/relaxNamespace";
+	
 	/** loads RELAX grammar */
 	public static RELAXGrammar parse( String moduleURL,
 		SAXParserFactory factory, GrammarReaderController controller, TREXPatternPool pool )
@@ -122,6 +125,17 @@ public class RELAXNSReader
 		throw new Error();
 	}
 	
+	protected boolean isGrammarElement( StartTagInfo tag )
+	{
+		if( !RELAXNamespaceNamespace.equals(tag.namespaceURI) )
+			return false;
+		
+		// annotation is ignored at this level.
+		// by returning false, the entire subtree will be simply ignored.
+		if(tag.localName.equals("annotation"))	return false;
+		
+		return true;
+	}
 	
 	protected Expression resolveElementRef( String namespace, String label ) {
 		return resolveRef(namespace,label,"ref");

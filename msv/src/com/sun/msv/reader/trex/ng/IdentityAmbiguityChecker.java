@@ -10,6 +10,7 @@
 package com.sun.msv.reader.trex.ng;
 
 import com.sun.msv.grammar.*;
+import com.sun.msv.grammar.util.ExpressionWalker;
 import com.sun.msv.util.StringPair;
 import java.util.Set;
 
@@ -86,32 +87,14 @@ public class IdentityAmbiguityChecker {
 		return true;	// no problem.
 	}
 	
-	/** visits all child expressions. */
-	private static class ExpressionWalker implements ExpressionVisitorVoid {
+	/** visits all the content model. (but not child elements/attributes) */
+	private static class ContentModelWalker extends ExpressionWalker {
 		public void onAttribute( AttributeExp exp ) {}
 		public void onElement( ElementExp exp ) {}
-		public void onEpsilon() {}
-		public void onNullSet() {}
-		public void onAnyString() {}
-		public void onTypedString( TypedStringExp exp ) {}
-		
-		public void onOneOrMore( OneOrMoreExp exp )		{ exp.exp.visit(this); }
-		public void onMixed( MixedExp exp )				{ exp.exp.visit(this); }
-		public void onList( ListExp exp )				{ exp.exp.visit(this); }
-		public void onRef( ReferenceExp exp )			{ exp.exp.visit(this); }
-		public void onChoice( ChoiceExp exp )			{ onBinExp(exp); }
-		public void onSequence( SequenceExp exp )		{ onBinExp(exp); }
-		public void onInterleave( InterleaveExp exp )	{ onBinExp(exp); }
-		public void onConcur( ConcurExp exp )			{ onBinExp(exp); }
-		
-		public void onBinExp( BinaryExp exp ) {
-			exp.exp1.visit(this);
-			exp.exp2.visit(this);
-		}
 	}
 
 	/** collects all identity constraints used with in the expression. */
-	private final ExpressionWalker constraintsCollector = new ExpressionWalker() {
+	private final ContentModelWalker constraintsCollector = new ContentModelWalker() {
 		// TODO: do the real work
 		public void onTypedString( TypedStringExp exp ) { throw new Error(); }
 	};
@@ -151,14 +134,14 @@ public class IdentityAmbiguityChecker {
 	};
 	
 	/** collects all possible names for elements. */
-	private final ExpressionWalker elementNameCollector = new ExpressionWalker() {
+	private final ContentModelWalker elementNameCollector = new ContentModelWalker() {
 		public void onElement( ElementExp exp ) {
 			exp.getNameClass().visit( nameCollector );
 		}
 	};
 
 	/** collects all possible names for attributes. */
-	private final ExpressionWalker attributeNameCollector = new ExpressionWalker() {
+	private final ContentModelWalker attributeNameCollector = new ContentModelWalker() {
 		public void onAttribute( AttributeExp exp ) {
 			exp.nameClass.visit( nameCollector );
 		}
@@ -170,6 +153,7 @@ public class IdentityAmbiguityChecker {
 		public Expression onOneOrMore( OneOrMoreExp exp )	{ return exp.exp.visit(this); }
 		public Expression onMixed( MixedExp exp )			{ return exp.exp.visit(this); }
 		public Expression onRef( ReferenceExp exp )			{ return exp.exp.visit(this); }
+		public Expression onOther( OtherExp exp )			{ return exp.exp.visit(this); }
 		public Expression onEpsilon()						{ return Expression.epsilon; }
 		public Expression onNullSet()						{ return Expression.epsilon; }
 		public Expression onAnyString()						{ return Expression.epsilon; }

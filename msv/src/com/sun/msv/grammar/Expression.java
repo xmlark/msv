@@ -67,6 +67,15 @@ public abstract class Expression implements java.io.Serializable {
 	}
 	
 	/**
+	 * this constructor can be used for the ununified expressions.
+	 * the only reason there are two parameters is to prevent unintentional
+	 * use of the default constructor.
+	 */
+	protected Expression( Object foolProof1, Object foolProof2 ) {
+		this.cachedHashCode = System.identityHashCode(this);
+	}
+	
+	/**
 	 * this field can be used by Verifier implementation to speed up
 	 * validation. Due to its nature, this field is not serialized.
 	 * 

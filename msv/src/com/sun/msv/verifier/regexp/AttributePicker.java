@@ -77,8 +77,12 @@ public class AttributePicker implements ExpressionVisitorExpression
 	public Expression onNullSet()
 		{ return Expression.nullSet; }
 	
-	public Expression onRef( ReferenceExp exp )
-		{ return exp.exp.visit(this); }
+	public Expression onRef( ReferenceExp exp ) {
+		return exp.exp.visit(this);
+	}
+	public Expression onOther( OtherExp exp ) {
+		return exp.exp.visit(this);
+	}
 	
 	public Expression onTypedString( TypedStringExp exp ) {
 		return Expression.epsilon;

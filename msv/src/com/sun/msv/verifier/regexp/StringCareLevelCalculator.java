@@ -21,8 +21,8 @@ import com.sun.msv.verifier.Acceptor;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class StringCareLevelCalculator implements ExpressionVisitorBoolean
-{
+public class StringCareLevelCalculator implements ExpressionVisitorBoolean {
+	
 	protected StringCareLevelCalculator(){}
 	
 	/** singleton instance. */
@@ -39,6 +39,7 @@ public class StringCareLevelCalculator implements ExpressionVisitorBoolean
 	public boolean onMixed( MixedExp exp )				{ return true; }
 	public boolean onList( ListExp exp )				{ return true; }
 	public boolean onRef( ReferenceExp exp )			{ return exp.exp.visit(this); }
+	public boolean onOther( OtherExp exp )				{ return exp.exp.visit(this); }
 	public boolean onEpsilon()							{ return false; }
 	public boolean onNullSet()							{ return false; }
 	public boolean onAnyString()						{ return true; }

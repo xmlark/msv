@@ -98,6 +98,9 @@ public class ResidualCalculator implements ExpressionVisitorExpression {
 	public Expression onRef( ReferenceExp exp ) {
 		return exp.exp.visit(this);
 	}
+	public Expression onOther( OtherExp exp ) {
+		return exp.exp.visit(this);
+	}
 	public Expression onSequence( SequenceExp exp ) {
 		Expression r = pool.createSequence( exp.exp1.visit(this), exp.exp2 );
 		

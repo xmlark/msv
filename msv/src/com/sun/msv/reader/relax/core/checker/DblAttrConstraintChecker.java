@@ -82,6 +82,7 @@ public class DblAttrConstraintChecker implements RELAXExpressionVisitorVoid
 	public void onChoice( ChoiceExp exp )		{ exp.exp1.visit(this);exp.exp2.visit(this); }
 	public void onEpsilon()							{;}
 	public void onRef( ReferenceExp exp )			{;}
+	public void onOther( OtherExp exp )			{ exp.exp.visit(this); }
 	
 	public void onElement( ElementExp exp )			{;}
 	public void onOneOrMore( OneOrMoreExp exp )		{ exp.exp.visit(this); }

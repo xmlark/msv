@@ -407,6 +407,9 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
 	public void onRef( ReferenceExp exp ) {
 		exp.exp.visit(this);
 	}
+	public void onOther( OtherExp exp ) {
+		exp.exp.visit(this);
+	}
 	public void onChoice( ChoiceExp exp )
 	{
 		exp.exp1.visit(this);

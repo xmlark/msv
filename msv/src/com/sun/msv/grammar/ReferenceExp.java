@@ -44,6 +44,11 @@ public class ReferenceExp extends Expression {
 		super( hashCode(name==null?"":name,HASHCODE_REF) );
 		this.name = name;
 	}
+
+	public ReferenceExp( String name, Expression exp ) {
+		this(name);
+		this.exp = exp;
+	}
 	
 	/**
 	 * checks if this ReferenceExp is properly defined.

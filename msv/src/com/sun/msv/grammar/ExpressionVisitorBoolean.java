@@ -23,6 +23,7 @@ public interface ExpressionVisitorBoolean {
 	boolean onMixed( MixedExp exp );
 	boolean onList( ListExp exp );
 	boolean onRef( ReferenceExp exp );
+	boolean onOther( OtherExp exp );
 	boolean onEpsilon();
 	boolean onNullSet();
 	boolean onAnyString();

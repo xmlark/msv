@@ -118,6 +118,9 @@ public class AttributeFeeder implements ExpressionVisitorExpression {
 	public Expression onRef( ReferenceExp exp ) {
 		return exp.exp.visit(this);
 	}
+	public Expression onOther( OtherExp exp ) {
+		return exp.exp.visit(this);
+	}
 	public Expression onSequence( SequenceExp exp ) {
 //		if( isAttributeFree(exp) )	return Expression.nullSet;
 		// for attributes only, sequence acts as orderless

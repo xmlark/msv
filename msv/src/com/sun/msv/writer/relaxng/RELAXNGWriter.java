@@ -375,6 +375,9 @@ public class RELAXNGWriter implements GrammarWriter {
 			public Object onRef( ReferenceExp exp ) {
 				return exp.exp.visit(this);
 			}
+			public Object onOther( OtherExp exp ) {
+				return exp.exp.visit(this);
+			}
 			public Object onNullSet() {
 				return null;
 			}
@@ -563,9 +566,12 @@ public class RELAXNGWriter implements GrammarWriter {
 	
 	
 	/** visits Expression and writes its XML representation. */
-	protected class PatternWriter
-		implements ExpressionVisitorVoid {
+	protected class PatternWriter implements ExpressionVisitorVoid {
 		
+		public void onOther( OtherExp exp ) {
+			exp.exp.visit(this);
+		}
+			
 		public void onRef( ReferenceExp exp ) {
 			String uniqueName = (String)exp2name.get(exp);
 			if( uniqueName!=null )
@@ -613,6 +619,9 @@ public class RELAXNGWriter implements GrammarWriter {
 					else
 						// bind contents
 						return exp.exp.visit(this);
+				}
+				public Expression onOther( OtherExp exp ) {
+					return exp.exp.visit(this);
 				}
 				public Expression onElement( ElementExp exp ) {
 					return exp;

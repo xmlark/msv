@@ -50,8 +50,13 @@ class ExportedAttPoolGenerator extends ExpressionCloner implements RELAXExpressi
 		
 	public Expression onRef( ReferenceExp exp )
 	{
-		// this class implements RELAXbrabraVisitor. So this method should never be called
+		// this class implements RELAXExpressionVisitorExpression.
+		// So this method should never be called
 		throw new Error();
+	}
+	public Expression onOther( OtherExp exp ) {
+		// OtherExps are removed from the generated expression.
+		return exp.exp.visit(this);
 	}
 		
 	public Expression onAttPool( AttPoolClause exp )

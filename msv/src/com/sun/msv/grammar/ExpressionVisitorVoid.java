@@ -23,6 +23,7 @@ public interface ExpressionVisitorVoid {
 	void onMixed( MixedExp exp );
 	void onList( ListExp exp );
 	void onRef( ReferenceExp exp );
+	void onOther( OtherExp exp );
 	void onEpsilon();
 	void onNullSet();
 	void onAnyString();

@@ -114,7 +114,8 @@ public abstract class IslandSchemaImpl
 	}
 	
 	/**
-	 * replaces all ExternalElementExp and ExternalAttributeExp by actual definitions.
+	 * replaces all ExternalElementExp and ExternalAttributeExp
+	 * by actual definitions.
 	 * 
 	 * these two expressions forms the fundamental mechanism of schema interaction.
 	 */
@@ -133,6 +134,10 @@ public abstract class IslandSchemaImpl
 		
 		public Expression onAttribute(AttributeExp exp) { return exp; }
 		public Expression onRef(ReferenceExp exp) {
+			return exp.exp.visit(this);
+		}
+		
+		public Expression onOther(OtherExp exp) {
 			try {
 				if( exp instanceof ExternalAttributeExp ) {
 					ExternalAttributeExp eexp = (ExternalAttributeExp)exp;
@@ -164,7 +169,8 @@ public abstract class IslandSchemaImpl
 					return ((DeclImpl)rule).exp;
 				}
 				
-				// this looks like an ordinary ReferenceExp.
+				// we don't know how to treat this expression.
+				// so simply remove it.
 				return exp.exp.visit(this);
 			} catch( SAXException e ) {
 				return exp;	// ignore this expcetion

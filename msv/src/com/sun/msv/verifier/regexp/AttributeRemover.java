@@ -26,5 +26,6 @@ public class AttributeRemover extends ExpressionCloner
 	
 	public Expression onAttribute( AttributeExp exp )	{ return Expression.epsilon; }
 	public Expression onRef( ReferenceExp exp )			{ return exp.exp.visit(this); }
+	public Expression onOther( OtherExp exp )			{ return exp.exp.visit(this); }
 	public Expression onElement( ElementExp exp )		{ return exp; }
 }

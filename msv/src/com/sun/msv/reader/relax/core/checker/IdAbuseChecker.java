@@ -140,12 +140,13 @@ public class IdAbuseChecker implements RELAXExpressionVisitorVoid
 			nonIdAttrNames.add(snc.localName);
 	}
 	public void onChoice( ChoiceExp exp )		{ exp.exp1.visit(this);exp.exp2.visit(this); }
-	public void onElement( ElementExp exp )	{ throw new Error(); }
-	public void onOneOrMore( OneOrMoreExp exp ){ exp.exp.visit(this); }
-	public void onMixed( MixedExp exp )		{ throw new Error(); }
+	public void onElement( ElementExp exp )		{ throw new Error(); }
+	public void onOneOrMore( OneOrMoreExp exp )	{ exp.exp.visit(this); }
+	public void onMixed( MixedExp exp )			{ throw new Error(); }
 	public void onRef( ReferenceExp exp )		{ exp.exp.visit(this); }
-	public void onEpsilon()					{}
-	public void onNullSet()					{}
+	public void onOther( OtherExp exp )			{ exp.exp.visit(this); }
+	public void onEpsilon()						{}
+	public void onNullSet()						{}
 	public void onAnyString()					{}
 	public void onSequence( SequenceExp exp )	{}
 	public void onTypedString( TypedStringExp exp )	{ throw new Error(); }

@@ -46,6 +46,7 @@ public final class ExportedHedgeRuleChecker implements RELAXExpressionVisitorBoo
 	public boolean onOneOrMore( OneOrMoreExp exp )		{ return exp.exp.visit(this); }
 	public boolean onMixed( MixedExp exp )				{ return exp.exp.visit(this); }
 	public boolean onRef( ReferenceExp exp )			{ throw new Error(); }	// should never be called
+	public boolean onOther( OtherExp exp )				{ return exp.exp.visit(this); }
 	public boolean onEpsilon()							{ return true; }
 	public boolean onNullSet()							{ return true; }
 	public boolean onAnyString()						{ return true; }

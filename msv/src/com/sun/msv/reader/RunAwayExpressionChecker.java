@@ -137,6 +137,11 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
 		exp.exp.visit(this);
 		leave(exp);
 	}
+	public void onOther( OtherExp exp ) {
+		enter(exp);
+		exp.exp.visit(this);
+		leave(exp);
+	}
 	
 	public void onElement( ElementExp exp )
 	{

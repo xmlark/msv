@@ -9,7 +9,7 @@
  */
 package com.sun.msv.relaxns.grammar;
 
-import com.sun.msv.grammar.ReferenceExp;
+import com.sun.msv.grammar.OtherExp;
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.Expression;
 import org.xml.sax.Locator;
@@ -27,12 +27,11 @@ import org.xml.sax.Locator;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ExternalAttributeExp extends ReferenceExp {
+public class ExternalAttributeExp extends OtherExp {
 	
 	public ExternalAttributeExp(
 		ExpressionPool pool, String namespaceURI, String role, Locator loc ) {
 		
-		super(namespaceURI+":"+role);
 		this.source = loc;
 		this.namespaceURI = namespaceURI;
 		this.role = role;

@@ -37,6 +37,33 @@ public abstract class BinaryExp extends Expression {
 	}
 	
 	/**
+	 * returns all child expressions in one array.
+	 * 
+	 * This method is similar to the children method but it returns an array 
+	 * that contains all children instead of an iterator object.
+	 */
+	public Expression[] getChildren() {
+		// count the number of children
+		int cnt=1;
+		Expression exp = this;
+		while( exp.getClass()==this.getClass() ) {
+			cnt++;
+			exp = ((BinaryExp)exp).exp2;
+		}
+		
+		Expression[] r = new Expression[cnt];
+		cnt=0;
+		exp=this;
+		while( exp.getClass()==this.getClass() ) {
+			r[cnt++] = ((BinaryExp)exp).exp1;
+			exp = ((BinaryExp)exp).exp2;
+		}
+		r[cnt] = exp;
+		
+		return r;
+	}
+	
+	/**
 	 * iterates all child expressions.
 	 * 
 	 * Since expressions are binarized, expressions like A|B|C is modeled as

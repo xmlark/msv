@@ -371,6 +371,9 @@ public class TREXWriter implements GrammarWriter {
 			public Object onRef( ReferenceExp exp ) {
 				return exp.exp.visit(this);
 			}
+			public Object onOther( OtherExp exp ) {
+				return exp.exp.visit(this);
+			}
 			public Object onNullSet() {
 				return null;
 			}
@@ -560,6 +563,10 @@ public class TREXWriter implements GrammarWriter {
 	protected class PatternWriter
 		implements ExpressionVisitorVoid {
 		
+		public void onOther( OtherExp exp ) {
+			exp.exp.visit(this);
+		}
+		
 		public void onRef( ReferenceExp exp ) {
 			String uniqueName = (String)exp2name.get(exp);
 			if( uniqueName!=null )
@@ -613,6 +620,9 @@ public class TREXWriter implements GrammarWriter {
 				}
 				public Expression onAttribute( AttributeExp exp ) {
 					return exp;
+				}
+				public Expression onOther( OtherExp exp ) {
+					return exp.exp.visit(this);
 				}
 			});
 		}

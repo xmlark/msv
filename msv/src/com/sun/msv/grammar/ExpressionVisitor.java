@@ -46,6 +46,7 @@ public interface ExpressionVisitor {
 	Object onMixed( MixedExp exp );
 	Object onList( ListExp exp );
 	Object onRef( ReferenceExp exp );
+	Object onOther( OtherExp exp );
 	Object onEpsilon();
 	Object onNullSet();
 	Object onAnyString();

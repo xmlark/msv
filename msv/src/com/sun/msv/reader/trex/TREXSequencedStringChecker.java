@@ -50,6 +50,9 @@ class TREXSequencedStringChecker implements ExpressionVisitor
 	public Object onRef( ReferenceExp exp ) {
 		return exp.exp.visit(this);
 	}
+	public Object onOther( OtherExp exp ) {
+		return exp.exp.visit(this);
+	}
 	
 	public Object onInterleave( InterleaveExp exp ) {
 		Object l = exp.exp1.visit(this);

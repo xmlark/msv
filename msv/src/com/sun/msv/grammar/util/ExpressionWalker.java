@@ -16,6 +16,10 @@ public abstract class ExpressionWalker implements ExpressionVisitorVoid {
 		exp.exp.visit(this);
 	}
 		
+	public void onOther( OtherExp exp ) {
+		exp.exp.visit(this);
+	}
+	
 	public void onElement( ElementExp exp ) {
 		exp.contentModel.visit(this);
 	}

@@ -1,5 +1,48 @@
 <?xml version="1.0"?>
-
+<!--
+	Ant build script for MSV and related projects.
+	
+	$Id$
+	
+	
+	
+	Tasks to help development
+	=========================
+	binary
+		compile everything to the build directory. you may want to use your IDE for this.
+	javacc
+		run JavaCC. XSDLib uses JavaCC to parse date/time related types.
+	javadoc
+		run javadoc on the working copy. Useful to check the documentation without creating
+		a distribution package.
+	
+	Tasks to batch-test the current working copy
+	============================================
+	test_msv
+		test core msv codes. parser, verifier, datatypes, and several related codes.
+	test_generator
+		test XML Generator.
+	test_rngconv
+		test RELAX NG converter
+	test_trexconv
+		test TREX converter
+	test_all
+		test all of the above. Time consuming.
+	
+	Tasks to create distribution packages
+	=====================================
+	release_xsdlib
+		create a distribution package of XSDLib
+	release_msv
+		create a distribution package of MSV
+	release_generator
+		create a distribution package of XML Generator
+	release_rngconv
+		create a distribution package of RELAX NG Converter
+	release_trexconv
+		create a distribution package of TREX Converter
+	
+-->
 <project name="tranquilo" basedir="." default="jars">
 	<property name="sourceDir" value="./src"/>
 	<property name="testDir" value="./test"/>
@@ -44,14 +87,6 @@
 					outputdirectory="${src}/com/sun/msv/datatype/datetime"
 					javacchome="${javaCClib}"
 			/>
-
-			<!-- run javacc for UriReference -->
-<!--
-			<javacc	target="${src}/com/sun/msv/datatype/anyURI.jj"
-					outputdirectory="${src}/com/sun/msv/datatype"
-					javacchome="${javaCClib}"
-			/>
--->
 		</target>
 	
 	<!-- run javacc -->
@@ -61,7 +96,24 @@
 			<param name="src" value="${sourceDir}" />
 		</antcall>
 	</target>
-
+	
+	<!-- generate javadoc documentation from the working copy -->
+	<target name="javadoc">
+		<javadoc	locale="en_US"
+					packagenames="com.sun.msv.*"
+					sourcepath="${sourceDir}"
+					classpath="lib/dispatcher;${java.class.path}"
+					destdir="${documentDir}"
+					windowtitle="Internal Use Only --- Sun Multi Schema Validator"
+					public="yes"
+					author="yes"
+					>
+			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
+			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
+			<link offline="true" href="http://iso-relax.sourceforge.net/apiDoc/" packagelistLoc="ExternalPackageLists\ISO-RELAX" />
+		</javadoc>
+	</target>
+	
 	
 	
 	
@@ -79,10 +131,14 @@
 		<include name="**/*TestG.class"/>
 	</patternset>
 	
+	<!-- XSDLib -->
+	<patternset id="tps.xsdlib">
+		<include name="com/sun/msv/datatype/*Test.class" />
+	</patternset>
+	
 	<!-- MSV core -->
 	<patternset id="tps.msv">
 		<include name="batch/verifier/*Test.class" />
-		<include name="com/sun/msv/datatype/*Test.class" />
 		<include name="com/sun/msv/util/*Test.class" />
 	</patternset>
 	
@@ -113,6 +169,21 @@
 	<target name="test">
 		<antcall target="doTest">
 			<param name="testPattern" value="tps.all"/>
+		</antcall>
+	</target>
+	
+	
+	<!-- run xsdlib test                                                 -->
+	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+	<target name="test_xsdlib">
+		<antcall target="doTest">
+			<param name="testPattern" value="tps.xsdlib"/>
+		</antcall>
+	</target>
+	<target name="test_xsdlib_package">
+		<antcall target="doReleaseTest">
+			<param name="testPattern" value="tps.xsdlib" />
+			<param name="testJar" value="./package/xsdlib.jar"/>
 		</antcall>
 	</target>
 	
@@ -281,41 +352,24 @@
 				</batchtest>
 			</junit>
 			
-<!--			<delete dir="./temp"/>	-->
+			<delete dir="./temp"/>
 		</target>
 	
 	
 	
 	
 	
-	<!-- generate javadoc documentation from the working copy -->
-	<target name="javadoc">
-		<javadoc	locale="en_US"
-					packagenames="com.sun.msv.*"
-					sourcepath="${sourceDir}"
-					classpath="lib/dispatcher;${java.class.path}"
-					destdir="${documentDir}"
-					windowtitle="Internal Use Only --- Sun Multi Schema Validator"
-					public="yes"
-					author="yes"
-					>
-			<link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api" packagelistLoc="ExternalPackageLists\CoreAPI" />
-			<link offline="true" href="http://xml.apache.org/apiDocs/" packagelistLoc="ExternalPackageLists\XML" />
-			<link offline="true" href="http://iso-relax.sourceforge.net/apiDoc/" packagelistLoc="ExternalPackageLists\ISO-RELAX" />
-		</javadoc>
-	</target>
-	
 	
 	
 	
 	
 <!--
-	release task
-	************************************************
+	release tasks
+	========================================================================
 -->
 	
 	<!-- generate XSDLib release -->
-	<target name="xsd">
+	<target name="release_xsdlib">
 		<tstamp />
 		<property name="stageName" value="xsdlib-${DSTAMP}"/>
 		
@@ -379,6 +433,8 @@
 			<fileset dir="${stageName}/src" includes="**/*.properties" />
 		</jar>
 		<delete dir="temp" />
+		<!-- copy jar file to package dir -->
+		<copy file="${stageName}/xsdlib.jar" tofile="./package/xsdlib.jar" />
 		
 		
 		<!-- creates javadoc -->
@@ -411,14 +467,16 @@
 	
 	
 	
-	<!-- generate Tranquilo release -->
-	<target name="release">
+	<!-- generate MSV release -->
+	<target name="release_msv">
 		<tstamp />
 		<property name="stageName" value="msv-${DSTAMP}" />
 		
 		<delete	dir="${stageName}" />
 		<mkdir	dir="${stageName}" />
 		<mkdir	dir="${stageName}/src" />
+		<delete	dir="temp"/>
+		<mkdir	dir="temp"/>
 
 		<!-- obtain source codes from cvs -->
 		<cvs	cvsRoot="${cvsRoot}"
@@ -447,10 +505,9 @@
 		<unjar src="${libDir}/iso-relax.jar" dest="temp" />
 		
 		<!-- compile files -->
-		<mkdir	dir="temp" />
 		<javac	srcdir="${stageName}/src"
 				destdir="temp"
-				classpath="temp;${java.class.path}">
+				classpath="temp:${java.class.path}">
 			<include name="**/*.java" />
 		</javac>
 		
@@ -525,7 +582,7 @@
 	
 	
 	<!-- generator release -->
-	<target name="generator">
+	<target name="release_generator">
 		<tstamp />
 		<property name="stageName" value="xmlgen-${DSTAMP}"/>
 		
@@ -583,6 +640,8 @@
 		</jar>
 		<delete dir="temp" />
 		<delete dir="xerces" />
+		<!-- copy jar file to package dir -->
+		<copy file="${stageName}/xmlgen.jar" tofile="./package/xmlgen.jar" />
 		
 		
 		<!-- creates javadoc -->
@@ -616,7 +675,7 @@
 
 
 	<!-- RELAX NG converter release -->
-	<target name="rngconverter">
+	<target name="release_rngconverter">
 		<tstamp />
 		<property name="stageName" value="rngconv-${DSTAMP}"/>
 		
@@ -675,6 +734,8 @@
 		</jar>
 		<delete dir="temp" />
 		<delete dir="xerces" />
+		<!-- copy jar file to package dir -->
+		<copy file="${stageName}/rngconv.jar" tofile="./package/rngconv.jar" />
 		
 		<!-- we don't create javadoc for rngconv -->
 
@@ -696,7 +757,7 @@
 
 
 	<!-- TREX converter release -->
-	<target name="trexconverter">
+	<target name="release_trexconverter">
 		<tstamp />
 		<property name="stageName" value="trexconv-${DSTAMP}"/>
 		
@@ -727,8 +788,8 @@
 		
 		<!-- create a time stamp file -->
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
-
-
+		
+		
 		<!-- creates binary jar -->
 		<jar	jarfile="${stageName}/trexconv.small.jar"
 				manifest="./META-INF/trexconv.MANIFEST.MF"
@@ -755,9 +816,11 @@
 		</jar>
 		<delete dir="temp" />
 		<delete dir="xerces" />
+		<!-- copy jar file to package dir -->
+		<copy file="${stageName}/msv.jar" tofile="./package/trexconv.jar" />
 		
 		<!-- we don't create javadoc for rngconv -->
-
+		
 <!-- temporarily, remove source codes -->
 		<delete dir="${stageName}/src" />
 		

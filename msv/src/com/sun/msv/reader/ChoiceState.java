@@ -16,10 +16,21 @@ import com.sun.tranquilo.grammar.Expression;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ChoiceState extends ExpressionWithChildState
-{
-	protected Expression castExpression( Expression exp, Expression child )
-	{
+public class ChoiceState extends ExpressionWithChildState {
+	public ChoiceState() {
+		this(false);
+	}
+	public ChoiceState( boolean allowEmptyChoice ) {
+		this.allowEmptyChoice = allowEmptyChoice;
+	}
+	
+	protected boolean allowEmptyChoice;
+	
+	protected Expression initialExpression() {
+		return allowEmptyChoice?Expression.nullSet:null;
+	}
+	
+	protected Expression castExpression( Expression exp, Expression child ) {
 		// first one.
 		if( exp==null )	return child;
 		else			return reader.pool.createChoice(exp,child);

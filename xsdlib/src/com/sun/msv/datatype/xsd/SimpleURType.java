@@ -28,6 +28,10 @@ public class SimpleURType extends ConcreteType {
 		super("anySimpleType",WhiteSpaceProcessor.thePreserve);
 	}
 	
+	/**
+	 * SimpleURType always returns null to indicate that 
+	 * there is no base type for this type.
+	 */
 	final public XSDatatype getBaseType() {
 		return null;
 	}

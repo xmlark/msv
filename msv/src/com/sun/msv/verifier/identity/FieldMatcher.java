@@ -125,7 +125,11 @@ public class FieldMatcher extends PathMatcher {
 			return;
 		}
 		
-		value = type.createValue(lexical,owner);
+		if(type==null)
+			// this is possible only when we are recovering from errors.
+			value = lexical;
+		else
+			value = type.createValue(lexical,owner);
 	}
 	
 	/** this field matches more than once. */

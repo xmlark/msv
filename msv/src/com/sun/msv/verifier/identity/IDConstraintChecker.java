@@ -153,7 +153,7 @@ public class IDConstraintChecker extends Verifier {
 		// 1) this element should be empty and there was only whitespace characters.
 		Datatype dt;
 		if( getLastCharacterType()==null )	dt = null;
-		else	dt = getLastCharacterType()[0];
+		else								dt = getLastCharacterType()[0];
 			
 		// call matchers
 		int len = matchers.size();

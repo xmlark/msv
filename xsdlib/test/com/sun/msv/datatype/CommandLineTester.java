@@ -12,6 +12,7 @@ package com.sun.msv.datatype;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
+import org.relaxng.datatype.DataTypeException;
 
 /**
  * command-line tester of datatype library.
@@ -87,7 +88,7 @@ public class CommandLineTester
 					DataType dt = incubator.derive("anonymous");
 					
 					// check validity.
-					if( dt.verify(value,null) )
+					if( dt.allows(value,null) )
 						// verify method returns true if the value is valid.
 						System.out.println("valid value");
 					else
@@ -95,8 +96,8 @@ public class CommandLineTester
 						// call diagnose method to see what is wrong.
 						try
 						{
-							DataTypeErrorDiagnosis diag = dt.diagnose(value,null);
-							System.out.println("invalid: "+diag.message );
+							DataTypeException diag = dt.diagnose(value,null);
+							System.out.println("invalid: "+diag.getMessage() );
 						}
 						catch( UnsupportedOperationException uoe )
 						{

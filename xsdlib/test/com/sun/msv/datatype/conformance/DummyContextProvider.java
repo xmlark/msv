@@ -9,14 +9,14 @@
  */
 package com.sun.msv.datatype.conformance;
 
-import com.sun.msv.datatype.ValidationContextProvider;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * dummy implementation of ValidationContextProvider.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-final public class DummyContextProvider implements ValidationContextProvider
+final public class DummyContextProvider implements ValidationContext
 {
 	private DummyContextProvider() {}
 	

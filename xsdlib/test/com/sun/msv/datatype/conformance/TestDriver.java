@@ -14,6 +14,7 @@ import org.jdom.input.SAXBuilder;
 import java.io.FileInputStream;
 import java.util.Iterator;
 import com.sun.msv.datatype.*;
+import org.relaxng.datatype.DataTypeException;
 
 /**
  * conformance test runner.
@@ -43,13 +44,13 @@ class TestDriver implements ErrorReceiver
     }
 	
 	public boolean report( UnexpectedResultException exp ) {
-		Object o = exp.type.convertToValueObject(exp.testInstance,DummyContextProvider.theInstance);
+		Object o = exp.type.createValue(exp.testInstance,DummyContextProvider.theInstance);
 		
 		System.out.println("************* error *************");
 		System.out.println("type name            : "+exp.baseTypeName);
 		System.out.println("tested instance      : \""+exp.testInstance+"\"");
 		System.out.println("supposed to be valid : "+exp.supposedToBeValid);
-		System.out.println("verify method        : "+exp.type.verify(exp.testInstance,DummyContextProvider.theInstance) );
+		System.out.println("verify method        : "+exp.type.allows(exp.testInstance,DummyContextProvider.theInstance) );
 		System.out.println("convertToValue method: "+(o!=null) );
 		System.out.println("diagnose method      : "+(exp.type.diagnose(exp.testInstance,DummyContextProvider.theInstance)==null) );
 		
@@ -64,15 +65,15 @@ class TestDriver implements ErrorReceiver
 		else
 			exp.incubator.dump(System.out);
 
-		DataTypeErrorDiagnosis err = exp.type.diagnose(exp.testInstance,DummyContextProvider.theInstance);
+		DataTypeException err = exp.type.diagnose(exp.testInstance,DummyContextProvider.theInstance);
 		
-		if( err!=null && err.message!=null )
-			System.out.println("diagnosis: " + err.message);
+		if( err!=null && err.getMessage()!=null )
+			System.out.println("diagnosis: " + err.getMessage() );
 		else
 			System.out.println("diagnosis: N/A");
 		
 		// do it again (for trace purpose)
-		exp.type.verify(exp.testInstance,DummyContextProvider.theInstance);
+		exp.type.allows(exp.testInstance,DummyContextProvider.theInstance);
 		
 		return false;
 	}

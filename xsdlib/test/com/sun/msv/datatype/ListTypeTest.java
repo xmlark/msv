@@ -29,7 +29,7 @@ public class ListTypeTest extends TestCase
 		return new TestSuite(ListTypeTest.class);
 	}
 
-	private ListType createList( String newName, DataType itemType )
+	private ListType createList( String newName, DataTypeImpl itemType )
 		throws BadTypeException
 	{
 		return (ListType)DataTypeFactory.deriveByList(newName,itemType);
@@ -55,14 +55,14 @@ public class ListTypeTest extends TestCase
 		// but better something than nothing.
 		DataType t = createList("test","short");
 		
-		assert( t.verify("  12  \t13 \r\n14\n \t   5  99  ",
+		assert( t.allows("  12  \t13 \r\n14\n \t   5  99  ",
 			DummyContextProvider.theInstance ));
-		assert(!t.verify("  51 2 6 fff  ",
+		assert(!t.allows("  51 2 6 fff  ",
 			DummyContextProvider.theInstance ));
 		
-		assert( t.verify("",	// this should be considered as a length 0 list
+		assert( t.allows("",	// this should be considered as a length 0 list
 			DummyContextProvider.theInstance ));
-		assert( t.verify(" \t \n ",
+		assert( t.allows(" \t \n ",
 			DummyContextProvider.theInstance ));
 	}
 	
@@ -72,7 +72,7 @@ public class ListTypeTest extends TestCase
 		DataType t = createList("myTest", "string" );
 
 		ListValueType v = (ListValueType)
-			t.convertToValueObject("  a b  c",DummyContextProvider.theInstance);
+			t.createValue("  a b  c",DummyContextProvider.theInstance);
 		
 		assert(v.values.length==3);
 		assertEquals(v.values[0],"a");

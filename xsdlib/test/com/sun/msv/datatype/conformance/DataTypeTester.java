@@ -74,7 +74,7 @@ public class DataTypeTester
 				Element item = (Element)lst.get(i);
 				
 				// perform test as a single type
-				DataType t = DataTypeFactory.getTypeByName(item.getAttributeValue("for"));
+				DataTypeImpl t = DataTypeFactory.getTypeByName(item.getAttributeValue("for"));
 				if(t==null)
 				{
 					System.out.println(item.getAttributeValue("for") + " is undefined type");
@@ -100,7 +100,7 @@ public class DataTypeTester
 		}
 	}
 	
-	class TheSerializationContext implements SerializationContextProvider {
+	class TheSerializationContext implements SerializationContext {
 		public String getNamespacePrefix( String uri ) {
 			// this method is not implemented seriously.
 			// basically, we don't test QName serizliation by this method.
@@ -108,7 +108,7 @@ public class DataTypeTester
 		}
 	}
 	
-	private SerializationContextProvider scp = new TheSerializationContext();
+	private SerializationContext scp = new TheSerializationContext();
 	
 	/**
 	 * tests one datatype
@@ -133,7 +133,7 @@ public class DataTypeTester
 	 *		this flag is used to test union types.
 	 */
 	public void testDataType(
-		DataType baseType,
+		DataTypeImpl baseType,
 		String[] values, String[] wrongs,
 		String baseAnswer, TestPattern pattern,
 		boolean completenessOnly )
@@ -199,10 +199,10 @@ public class DataTypeTester
 				// test each value and see what happens
 				for( int i=0; i<values.length; i++ )
 				{
-					boolean v = typeObj.verify(values[i],DummyContextProvider.theInstance);
+					boolean v = typeObj.allows(values[i],DummyContextProvider.theInstance);
 					boolean d;
 					
-					Object o = typeObj.convertToValueObject(
+					Object o = typeObj.createValue(
 						values[i],DummyContextProvider.theInstance);
 					
 					boolean roundTripError = false;
@@ -211,7 +211,7 @@ public class DataTypeTester
 							// should be able to convert it back.
 							String s = typeObj.convertToLexicalValue(o,scp);
 							// try round trip conversion.
-							Object o2 = typeObj.convertToValueObject(s,DummyContextProvider.theInstance);
+							Object o2 = typeObj.createValue(s,DummyContextProvider.theInstance);
 							if( o2==null || !o.equals(o2) )
 								roundTripError = true;
 						}
@@ -256,7 +256,7 @@ public class DataTypeTester
 
 				// test each wrong values and makes sure that they are rejected.
 				for( int i=0; i<wrongs.length; i++ )
-					if( typeObj.verify(wrongs[i],DummyContextProvider.theInstance)
+					if( typeObj.allows(wrongs[i],DummyContextProvider.theInstance)
 					||  typeObj.diagnose(wrongs[i],DummyContextProvider.theInstance)==null )
 					{
 						if( !err.report( new UnexpectedResultException(

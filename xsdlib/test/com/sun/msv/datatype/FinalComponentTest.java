@@ -62,7 +62,7 @@ public class FinalComponentTest extends TestCase
 		try
 		{
 			DataTypeFactory.deriveByUnion("intermediate",
-			  new DataType[]{
+			  new DataTypeImpl[]{
 					new FinalComponent(
 						StringType.theInstance,
 						DataType.DERIVATION_BY_UNION ),

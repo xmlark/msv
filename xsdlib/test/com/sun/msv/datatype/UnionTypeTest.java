@@ -64,9 +64,9 @@ public class UnionTypeTest extends TestCase
 		// but better something than nothing.
 		DataType u = createUnion(null,"integer","QName","gYearMonth");
 		
-		assert( u.verify("1520",DummyContextProvider.theInstance) );
-		assert( u.verify("foo:role",DummyContextProvider.theInstance) );
-		assert( u.verify("2000-05",DummyContextProvider.theInstance) );
+		assert( u.allows("1520",DummyContextProvider.theInstance) );
+		assert( u.allows("foo:role",DummyContextProvider.theInstance) );
+		assert( u.allows("2000-05",DummyContextProvider.theInstance) );
 	}
 	
 	/** test convertToObject method */
@@ -79,13 +79,13 @@ public class UnionTypeTest extends TestCase
 		DataType tu = createUnion("myTest", tf, td, th );
 		
 		assertEquals(
-			tu.convertToValueObject("2.000",DummyContextProvider.theInstance),
-			tf.convertToValueObject("2.000",DummyContextProvider.theInstance) );
+			tu.createValue("2.000",DummyContextProvider.theInstance),
+			tf.createValue("2.000",DummyContextProvider.theInstance) );
 		assertEquals(
-			tu.convertToValueObject("2001-02-20",DummyContextProvider.theInstance),
-			td.convertToValueObject("2001-02-20",DummyContextProvider.theInstance) );
+			tu.createValue("2001-02-20",DummyContextProvider.theInstance),
+			td.createValue("2001-02-20",DummyContextProvider.theInstance) );
 		assertEquals(
-			tu.convertToValueObject("1f5280",DummyContextProvider.theInstance),
-			th.convertToValueObject("1F5280",DummyContextProvider.theInstance) );
+			tu.createValue("1f5280",DummyContextProvider.theInstance),
+			th.createValue("1F5280",DummyContextProvider.theInstance) );
 	}
 }

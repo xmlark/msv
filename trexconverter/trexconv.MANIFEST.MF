@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: com.sun.msv.datatype.xsd.CommandLineTester
+Main-Class: com.sun.msv.writer.trex.Driver
 Created-By: 1.2.2 (Sun Microsystems Inc.)
 

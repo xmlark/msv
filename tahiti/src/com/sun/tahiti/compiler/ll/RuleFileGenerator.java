@@ -58,7 +58,11 @@ public class RuleFileGenerator implements Symbolizer {
 	public String getId( Object symbol ) {
 		if(symbol==null)	return "null";
 		String s = (String)allNames.get(symbol);
-		assert(s!=null);
+		
+		if(s==null) {
+			System.out.println(symbol);
+			assert(false);
+		}
 		return s;
 	}
 	
@@ -77,16 +81,10 @@ public class RuleFileGenerator implements Symbolizer {
 			{
 				int idx = grammarClassName.lastIndexOf('.');
 				if(idx<0) {
-					out.start("name");
-					out.characters(grammarClassName);
-					out.end("name");
+					out.element("name", grammarClassName);
 				} else {
-					out.start("package");
-					out.characters(grammarClassName.substring(0,idx));
-					out.end("package");
-					out.start("name");
-					out.characters(grammarClassName.substring(idx+1));
-					out.end("name");
+					out.element("package", grammarClassName.substring(0,idx));
+					out.start("name", grammarClassName.substring(idx+1));
 				}
 			}
 			
@@ -175,10 +173,17 @@ public class RuleFileGenerator implements Symbolizer {
 			final IgnoreItem[] iis = (IgnoreItem[])ignores.keySet().toArray(new IgnoreItem[0]);
 			
 			for( int i=0; i<dts.length; i++ ) {
-				out.element( "dataSymbol", new String[]{
-					"id",(String)allNames.get(dts[i]),
-					"type", ((XSDatatype)dts[i].dt).getConcreteType().getName()
-					} );
+				// TODO: serious implementation
+				out.start( "dataSymbol", new String[]{
+					"id",(String)allNames.get(dts[i])});
+				
+				out.element("library", dts[i].name.namespaceURI );
+				out.element("name", dts[i].name.localName );
+				
+				out.end("dataSymbol");
+				
+//					"type", ((XSDatatype)dts[i].dt).getConcreteType().getName()
+//					} );
 			}
 			
 			for( int i=0; i<cis.length; i++ ) {

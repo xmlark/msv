@@ -446,7 +446,7 @@ public class RestrictionChecker {
 			// check this element with elements in the area
 			for( int i=0; i<areaLen; i+=2 )
 				for( int j=areas[i]; j<areas[i+1]; j++ )
-					check(exp,exps[j]);
+					this.check(exp,exps[j]);
 		}
 		
 		protected String getErrorMessage() { return ERR_DUPLICATE_ELEMENTS; }
@@ -458,11 +458,11 @@ public class RestrictionChecker {
 			int j=0;
 			for( int i=0; i<areaLen; i+=2 ) {
 				while( j<areas[i] )
-					check(exp,exps[j++]);
+					this.check(exp,exps[j++]);
 				j=areas[i+1];
 			}
 			while(j<expsLen)
-				check(exp,exps[j++]);
+				this.check(exp,exps[j++]);
 		}
 		
 		protected String getErrorMessage() { return ERR_DUPLICATE_ATTRIBUTES; }

@@ -34,4 +34,8 @@ public class DifferenceNameClass extends NameClass {
 		this.nc1 = nc1;
 		this.nc2 = nc2;
 	}
+    
+    public String toString() {
+        return nc1.toString()+"-"+nc2.toString();
+    }
 }

@@ -68,18 +68,20 @@ class TestDriver implements ErrorReceiver
 		System.out.println("JavaObjectType       : "+(jo!=null?jo.getClass().toString():"N/A") );
 		System.out.println("expected Type        : "+exp.type.getJavaObjectType() );
 		
-		try {
-			System.out.println("serializeJavaObject  : "+exp.type.serializeJavaObject(jo,DummyContextProvider.theInstance) );
-		} catch( Exception e ) {
-			System.out.println("serializeJavaObject  : "+e );
-		}
+        if(jo!=null)
+		    try {
+		    	System.out.println("serializeJavaObject  : "+exp.type.serializeJavaObject(jo,DummyContextProvider.theInstance) );
+		    } catch( Exception e ) {
+		    	System.out.println("serializeJavaObject  : "+e );
+		    }
 		
-		try {
-			System.out.println("convertToLexical     : "+exp.type.convertToLexicalValue(o,DummyContextProvider.theInstance));
-		} catch( Exception e ) {
-			System.out.println("convertToLexical     : "+e);
-			e.printStackTrace();
-		}
+        if(o!=null)
+		    try {
+		    	System.out.println("convertToLexical     : "+exp.type.convertToLexicalValue(o,DummyContextProvider.theInstance));
+		    } catch( Exception e ) {
+		    	System.out.println("convertToLexical     : "+e);
+		    	e.printStackTrace();
+		    }
 		
 		if( exp.incubator.isEmpty() )
 			System.out.println("facets: none");

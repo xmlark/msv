@@ -10,6 +10,7 @@
 package com.sun.msv.datatype;
 
 import org.relaxng.datatype.ValidationContext;
+import java.math.BigInteger;
 
 /**
  * "integer" type.
@@ -26,5 +27,12 @@ public class IntegerType extends IntegerDerivedType {
 	
 	public Object convertToValue( String lexicalValue, ValidationContext context ) {
 		return IntegerValueType.create(lexicalValue);
+	}
+	
+	public Object createJavaObject( String literal, ValidationContext context ) {
+		Object o = convertToValue(literal,context);
+		if(o==null)		return null;
+		// o must be IntegerValueType.
+		return new BigInteger(o.toString());
 	}
 }

@@ -9,6 +9,8 @@
  */
 package com.sun.msv.datatype;
 
+import org.relaxng.datatype.ValidationContext;
+
 /**
  * base implementation for "hexBinary" and "base64Binary" types.
  * 
@@ -32,4 +34,12 @@ abstract class BinaryBaseType extends ConcreteType implements Discrete {
 		// for binary types, length is the number of bytes
 		return ((BinaryValueType)value).rawData.length;
 	}
+	
+	public Object createJavaObject( String literal, ValidationContext context ) {
+		BinaryValueType v = (BinaryValueType)createValue(literal,context);
+		if(v==null)		return null;
+		// return byte[]
+		else			return v.rawData;
+	}
+	
 }

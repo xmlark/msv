@@ -111,4 +111,11 @@ public class QnameType extends ConcreteType implements Discrete {
 		return	UnicodeUtil.countLength( v.namespaceURI )+
 				UnicodeUtil.countLength( v.localPart );
 	}
+
+	public Object createJavaObject( String literal, ValidationContext context ) {
+		QnameValueType v = (QnameValueType)createValue(literal,context);
+		if(v==null)		return null;
+		// return String[2]
+		else			return new String[]{v.namespaceURI,v.localPart};
+	}
 }

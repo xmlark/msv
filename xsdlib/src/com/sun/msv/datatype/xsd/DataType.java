@@ -10,9 +10,8 @@
 package com.sun.msv.datatype;
 
 import java.io.Serializable;
-import java.lang.Cloneable;
 import java.util.Hashtable;
-import org.relaxng.datatype.DataTypeErrorDiagnosis;
+import org.relaxng.datatype.ValidationContext;
 
 /**
  * Publicly accesible interface of XSD Datatype.
@@ -22,9 +21,7 @@ import org.relaxng.datatype.DataTypeErrorDiagnosis;
  * @author	Kohsuke Kawaguchi
  */
 public interface DataType extends
-	Serializable,
-	Cloneable,
-	org.relaxng.datatype.DataType {
+	Serializable, org.relaxng.datatype.DataType {
 
 	/**
 	 * converts value object back to the corresponding value in the lexical space.
@@ -46,6 +43,28 @@ public interface DataType extends
 	 */
 	String convertToLexicalValue( Object valueObject, SerializationContext context ) throws IllegalArgumentException;
 
+	
+	/**
+	 * converts lexcial value to a corresponding Java-friendly object
+	 * by using the given context information.
+	 * 
+	 * <p>
+	 * For the actual types returned by each type,
+	 * see <a href="package-summary.html#javaType">here</a>.
+	 * 
+	 * <p>
+	 * Note that due to the difference between those Java friendly types
+	 * and actual XML Schema specification, the returned object sometimes
+	 * loses accuracy,
+	 * 
+	 * @return	null
+	 *		when the given lexical value is not a valid lexical value for this type.
+	 */
+	Object createJavaObject( String literal, ValidationContext context );
+	
+	
+	
+	
 	/**
 	 * checks if this type is an atom type.
 	 * 

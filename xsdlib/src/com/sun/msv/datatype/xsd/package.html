@@ -1,16 +1,155 @@
 <html><body>
-XML Schema Datatype implementations.
+W3C XML Schema Datatypes implementation.
+
+<P>
+	This package implements the recommendation version of W3C XML Schema Part 2 datatypes.
+	The latest version of the spec is <a href="http://www.w3.org/TR/xmlschema-2">here</a>.
+</P>
+<P>
+	Application developers should understand the usage of 
+	the following classes: DataTypeFactory, DataType, and 
+	ValidationContext. Other classes are implementations of those types and therefore not important.
+</P><P>
+	The current release has several limitations. See readme.txt for details. 
+</P>
+
+<A name="javaType">
+<h2>Object types returned by <code>createJavaObject</code> method</h2>
 
 <p>
-This package implements "XML Schema Part 2" datatypes.
-The latest version of the spec is <a href="http://www.w3.org/TR/xmlschema-2">here</a>.
+	The following W3C XML Schema types return <code>java.lang.String</code>, with no loss of accuracy.
+</p>
+<blockquote>
+</blockquote>
+<p>
+	The "language" type also returns <code>java.lang.String</code>, but it always returns a string in all lower-case.
+	The "anyURI" type returns <code>java.lang.String</code> too. It doesn't perform any escaping. So
+	"%20" as a value of the "anyURI" type results in "%20", not "&nbsp;".
+</p>
+<p>
+	For other types:
+</p>
+<center>
+<table border=1>
+	<tr>
+		<td>string</td>
+		<td rowspan="8">java.lang.String</td>
+	</tr>
+	<tr>
+		<td>ENTITY</td>
+	</tr>
+	<tr>
+		<td>normalizedString</td>
+	</tr>
+	<tr>
+		<td>token</td>
+	</tr>
+	<tr>
+		<td>NMTOKEN</td>
+	</tr>
+	<tr>
+		<td>Name</td>
+	</tr>
+	<tr>
+		<td>NCName</td>
+	</tr>
+	<tr>
+		<td>NOTATION</td>
+	</tr>
+	
+	<tr>
+		<td>boolean</td>
+		<td>java.lang.Boolean</td>
+	</tr>
+	<tr>
+		<td>number</td>
+		<td>java.math.BigDecimal</td>
+	</tr>
+	<tr>
+		<td>float</td>
+		<td>java.lang.Float</td>
+	</tr>
+	<tr>
+		<td>double</td>
+		<td>java.lang.Double</td>
+	</tr>
+	<tr>
+		<td>integer</td>
+		<td rowspan="13">
+			a derived class of<br>
+			java.lang.Number</td>
+	</tr>
+	<tr>
+		<td>negativeInteger</td>
+	</tr>
+	<tr>
+		<td>positiveInteger</td>
+	</tr>
+	<tr>
+		<td>nonNegativeInteger</td>
+	</tr>
+	<tr>
+		<td>nonPositiveInteger</td>
+	</tr>
+	<tr>
+		<td>unsignedLong</td>
+	</tr>
+	<tr>
+		<td>unsignedInt</td>
+	</tr>
+	<tr>
+		<td>unsignedShort</td>
+	</tr>
+	<tr>
+		<td>unsignedByte</td>
+	</tr>
+	<tr>
+		<td>long</td>
+	</tr>
+	<tr>
+		<td>int</td>
+	</tr>
+	<tr>
+		<td>short</td>
+	</tr>
+	<tr>
+		<td>byte</td>
+	</tr>
+	
+	
+	<tr>
+		<td>QName</td>
+		<td>java.lang.String[2](*1)</td>
+	</tr>
+	<tr>
+		<td>base64Binary</td>
+		<td rowspan="2">byte[]</td>
+	</tr>
+	<tr>
+		<td>hexBinary</td>
+	</tr>
+</table></center>
 
 <p>
-Application developers should understand the usage of 
-three classes and three classes only: DataTypeFactory, DataType, and 
-ValidationContextProvider.
-<P>The current release has several limitations. See readme.txt for details. 
-(Afterall, the spec is not fixed yet)</P>
-       
-
+	For types derived by list, the createJavaObject method returns array of <code>java.lang.Object</code>
+	that contains Java values of the item type.<br/>
+	
+	For types derived by restriction, the method returns the same type as the base type.<br/>
+	
+	For types derived by union, the method returns Java values of one of the member types.
+</p>
+<p>
+	The createJavaObject method currently returns meaningless types for the following W3C XML Schema datatypes.
+	Applications are discouraged to use those types.
+</p>
+<blockquote>
+	duration, dateTime, date, time, gYear, gYearMonth, gMonth, gMonthDay, gDay
+</blockquote>
+<dl>
+	<dt>*1</dt>
+	<dd>
+		The first item in the array is the namespace URI. The second (the last) item in the array is
+		the local name.
+	</dd>
+</p>
 </body></html>

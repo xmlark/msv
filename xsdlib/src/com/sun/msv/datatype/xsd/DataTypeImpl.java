@@ -38,6 +38,10 @@ public abstract class DataTypeImpl implements DataType {
 		return convertToValue(whiteSpace.process(lexicalValue),context);
 	}
 	
+	public Object createJavaObject( String literal, ValidationContext context ) {
+		return createValue(literal,context);
+	}
+	
 	/**
 	 * converts whitespace-processed lexical value into value object
 	 */

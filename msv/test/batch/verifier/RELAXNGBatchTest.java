@@ -32,7 +32,7 @@ public class RELAXNGBatchTest {
 			s.addTest( t.suite() );
 			
 			// test .ssuite files
-			SuiteTester	tester = new SuiteTester(new msv.IValidatorImpl());
+			SuiteTester	tester = new SuiteTester(new msv.IValidatorImplForRNG());
 			s.addTest(
 				tester.createTestSuiteFromDir( new File(dir), ".rng.ssuite" ));
 		}

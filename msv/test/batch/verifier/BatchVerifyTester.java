@@ -28,8 +28,8 @@ import com.sun.msv.grammar.Grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class BatchVerifyTester extends batch.BatchTester
-{
+public class BatchVerifyTester extends batch.BatchTester {
+	
 	public static void main( String[] av ) throws Exception {
 		new BatchVerifyTester().run(av);
 	}
@@ -42,12 +42,13 @@ public class BatchVerifyTester extends batch.BatchTester
 	}
 
 	public TestSuite suite() {
+		
 		TestSuite suite = super.suite();
 		
 		// add test cases from the suite file.
 		IValidator val = null;
 		if( ext.equals(".xsd") )	val = new msv.IValidatorImplForXS();
-		if( ext.equals(".rng") )	val = new msv.IValidatorImpl();
+		if( ext.equals(".rng") )	val = new msv.IValidatorImplForRNG();
 		
 		try {
 			suite.addTest( new SuiteTester(val).createTestSuiteFromDir(

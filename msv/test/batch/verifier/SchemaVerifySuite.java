@@ -53,14 +53,14 @@ class SchemaVerifySuite extends batch.SchemaSuite {
 		if( pathName.endsWith(".e"+parent.ext) ) {
 			Grammar g = null;
 			try {
-				g = parent.loader.load( is, new ThrowErrorController(), parent.factory );
+				g = parent.loader.load( is, new ThrowErrorController(parent.resolver), parent.factory );
 			} catch( Error e ) {
 				System.out.println("schema:"+e.getMessage());
 			}
 			if( g!=null )
 				fail("unexpected result");
 		} else {
-			Grammar g = parent.loader.load( is, new ThrowErrorController(), parent.factory );
+			Grammar g = parent.loader.load( is, new ThrowErrorController(parent.resolver), parent.factory );
 			if( g==null )
 				fail("unexpected result");	// unexpected result
 
@@ -113,7 +113,8 @@ class SchemaVerifySuite extends batch.SchemaSuite {
 				else
 					v = new Verifier( new REDocumentDeclaration(grammar), reporter );
 				r.setContentHandler(v);
-						
+				r.setEntityResolver(parent.resolver);
+				
 				r.parse( new InputSource(parent.dir+File.separatorChar+fileName) );
 				
 				final SAXParseException vv = reporter.getError();

@@ -98,7 +98,7 @@ public class SuiteTester {
 		if( args[0].equalsIgnoreCase("xsd") )
 			val = new msv.IValidatorImplForXS();
 		if( args[0].equalsIgnoreCase("rng") )
-			val = new msv.IValidatorImpl();
+			val = new msv.IValidatorImplForRNG();
 		
 		if( val==null ) {
 			System.out.println("unrecognized schema type: "+args[0]);

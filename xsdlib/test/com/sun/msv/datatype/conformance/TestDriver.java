@@ -55,9 +55,10 @@ class TestDriver implements ErrorReceiver
 		System.out.println("diagnose method      : "+(exp.type.diagnose(exp.testInstance,DummyContextProvider.theInstance)==null) );
 		
 		try {
-			System.out.println("convertToLexical     : "+exp.type.convertToLexicalValue(o,null));
+			System.out.println("convertToLexical     : "+exp.type.convertToLexicalValue(o,DummyContextProvider.theInstance));
 		} catch( Exception e ) {
 			System.out.println("convertToLexical     : "+e);
+			e.printStackTrace();
 		}
 		
 		if( exp.incubator.isEmpty() )

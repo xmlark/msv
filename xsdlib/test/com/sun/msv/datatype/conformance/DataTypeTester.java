@@ -100,16 +100,6 @@ public class DataTypeTester
 		}
 	}
 	
-	class TheSerializationContext implements SerializationContext {
-		public String getNamespacePrefix( String uri ) {
-			// this method is not implemented seriously.
-			// basically, we don't test QName serizliation by this method.
-			return "abc";
-		}
-	}
-	
-	private SerializationContext scp = new TheSerializationContext();
-	
 	/**
 	 * tests one datatype
 	 *
@@ -209,7 +199,7 @@ public class DataTypeTester
 					try {
 						if(o!=null) {
 							// should be able to convert it back.
-							String s = typeObj.convertToLexicalValue(o,scp);
+							String s = typeObj.convertToLexicalValue(o,DummyContextProvider.theInstance);
 							// try round trip conversion.
 							Object o2 = typeObj.createValue(s,DummyContextProvider.theInstance);
 							if( o2==null || !o.equals(o2) )

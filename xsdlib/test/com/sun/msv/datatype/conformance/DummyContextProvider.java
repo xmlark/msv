@@ -10,13 +10,14 @@
 package com.sun.msv.datatype.conformance;
 
 import org.relaxng.datatype.ValidationContext;
+import com.sun.msv.datatype.SerializationContext;
 
 /**
  * dummy implementation of ValidationContextProvider.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-final public class DummyContextProvider implements ValidationContext
+final public class DummyContextProvider implements ValidationContext, SerializationContext
 {
 	private DummyContextProvider() {}
 	
@@ -34,6 +35,17 @@ final public class DummyContextProvider implements ValidationContext
 		
 		return null;	// undefined
 	}
+	
+	public String getNamespacePrefix( String uri ) {
+		if( uri.equals("http://foo.examples.com") )
+			return "foo";
+		if( uri.equals("http://bar.examples.com") )
+			return "bar";
+		if( uri.equals("http://empty.examples.com") )
+			return "";
+		return "xyz";	// undefined
+	}
+	
 	
 	public boolean isUnparsedEntity( String name )
 	{

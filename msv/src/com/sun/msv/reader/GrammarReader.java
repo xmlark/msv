@@ -364,14 +364,16 @@ public abstract class GrammarReader
 		
 		for( InclusionContext ic = pendingIncludes; ic!=null; ic=ic.previousContext )
 			if( ic.systemId.equals(url) ) {
+				
 				// recursive include.
 				// computes what files are recurisve.
 				String s="";
-				for( int i = includeStack.indexOf(url); i<includeStack.size(); i++ )
-					s += includeStack.elementAt(i) + " > ";
-				s += url;
+				for( InclusionContext i = pendingIncludes; i!=ic; i=i.previousContext )
+					s = i.systemId + " > " + s;
 				
-				reportError( ERR_RECURSIVE_INCLUDE, url );
+				s = url + " > " + s + url;
+				
+				reportError( ERR_RECURSIVE_INCLUDE, s );
 				return;	// recover by ignoring this include.
 			}
 		
@@ -416,6 +418,12 @@ public abstract class GrammarReader
 				new Object[]{e.getMessage()},
 				e, new Locator[]{errorSource} );
 		} catch( SAXException e ) {
+			// this means that a runtime exception was thrown by the reader
+			// rethrow it.
+			if(e.getException() instanceof RuntimeException)
+				throw (RuntimeException)e.getException();
+
+			// TODO: when this can happen?
 			reportError( ERR_SAX_EXCEPTION,
 				new Object[]{e.getMessage()},
 				e, new Locator[]{errorSource} );

@@ -217,7 +217,7 @@ public class TREXGrammarReader extends GrammarReader
 			return StringType.theInstance;
 		}
 		
-		s[0] = mapNamespace(s[0]);
+		s[0] = mapNamespace(s[0]);	// s[0] == namespace URI
 		
 		DataTypeVocabulary v = grammar.dataTypes.get(s[0]);
 		if(v==null)
@@ -265,9 +265,6 @@ public class TREXGrammarReader extends GrammarReader
 		"TREXGrammarReader.UndefinedPattern";
 	public static final String ERR_UNKNOWN_DATATYPE_VOCABULARY = // arg:1
 		"TREXGrammarReader.UnknownDataTypeVocabulary";
-//	public static final String ERR_FAILED_TO_PARSE_DATATYPE = // arg:0
-//		"TREXGrammarReader.FailedToParseDataType";
-
 	public static final String ERR_BAD_COMBINE = // arg:1
 		"TREXGrammarReader.BadCombine";
 	public static final String ERR_COMBINE_MISSING = // arg:1

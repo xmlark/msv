@@ -152,8 +152,9 @@ public class IDConstraintChecker extends Verifier {
 		// getLastCharacterType may sometimes return null. For example,
 		// 1) this element should be empty and there was only whitespace characters.
 		Datatype dt;
-		if( getLastCharacterType()==null )	dt = null;
-		else								dt = getLastCharacterType()[0];
+		Datatype[] lastType = getLastCharacterType();
+		if( lastType==null || lastType.length==0 )	dt = null;
+		else										dt = getLastCharacterType()[0];
 			
 		// call matchers
 		int len = matchers.size();

@@ -47,9 +47,13 @@ a schema. It supports RELAX Namespace, RELAX Core, and TREX.</P>
   Tranquilo will detect the schema language regardless of its file extension.
 </P>
 <P>
-  You can also use URL instead of filename. 
-  Under some Java VM, wild card for filenames is not available
+  However, you have to add <code>-dtd</code> switch to use DTD.
+</P>
+<PRE>$ java -jar tranquilo.jar -dtd my.dtd MyDocument1.xml MyDocument2.xml</PRE>
+<P>
+  Some environment supports wild card for filenames, while others don't
   (e.g., "jview" VM from Microsoft).
+  You can also use URL instead of filename. 
 </P>
 <P>
   If the schema contains some errors, you will see messages like this.
@@ -81,9 +85,26 @@ the document is NOT valid.
 <P>Please note that line/column infomation is sometimes 
 inaccurate, and one tab char is counted as one character, not 4 or 8. So you 
 might want to look around to find the actual error.</P>
+
+
 <H1>Options</H1>
 <P>Command line tool has several other options. You can see the list of 
-available options by invoking Tranquilo without any arguments.</P><PRE>$ java -jar tranquilo.jar</PRE>
+available options by invoking Tranquilo without any arguments.</P>
+<PRE>$ java -jar tranquilo.jar</PRE>
+
+<DL>
+	<DT>-warning</DT>
+	<DD>
+		Display all warning messages. Warnings are useful
+		to catch potential errors.
+	</DD>
+	<DT>-loose</DT>
+	<DD>
+		This switch prevents Tranquilo to resolve external resources
+		(such as external DTD referenced from documents, or external entities).
+	</DD>
+</DL>
+
 <H1>Further Readings</H1>
 <P>To learn RELAX,&nbsp;<A href="http://www.xml.gr.jp/relax/">"How to RELAX"</A> 
 is a good starter. To learn TREX, there is <A 

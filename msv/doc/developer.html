@@ -41,7 +41,8 @@
 </P>
 <P>
   Sun Tranquilo Verifier  is  a Java tool to validate XML documents with
-  a schema . It supports RELAX Namespace, RELAX Core, and TREX.
+  a schema . It supports RELAX Namespace, RELAX Core, TREX, XML DTD,
+  and the subset of XML Schema Part 1.
 </P>
 
 
@@ -167,10 +168,11 @@ void f( SAXParserFactory pf )
 </PRE>
 <P>
   VerifierFilter validates the document before your ContentHandler receives
-  SAX events. If an error happens, @@@@@@
+  SAX events. You can call <code>isValid</code> method of VerifierFilter to
+  check the validity of the document.
 </P>
 <P>
-  Currently, there is no way to create DOM with JARV.
+  Currently, there is no way to use DOMBuilder with JARV.
 </P>
 
 <A id="load" />
@@ -185,7 +187,7 @@ void f( SAXParserFactory pf )
   <code>com.sun.tranquilo.reader.util.GrammarLoader</code>.
 </P>
 <PRE>
-Grammar loadTREX( String schemaFileNameOrURL )
+Grammar loadGrammar( String schemaFileNameOrURL )
 {
   SAXParserFactory factory = new javax.xml.parsers.SAXParserFactory();
   // or you can use different parser like Xerces-J by
@@ -200,19 +202,20 @@ Grammar loadTREX( String schemaFileNameOrURL )
 }
 </PRE>
 <P>
-  GrammarLoaded automatically detects the type of schema (RELAX Core/TREX/RELAX Namespace)
+  GrammarLoaded automatically detects the type of schema (RELAX Core/TREX/RELAX Namespace/XML Schema)
   and handles it appropriately.
   
   The second 
   parameter specifies "controller" object that receives notifacations and controls 
-  behavior of loading. By providing a different object, you can control the parsing
+  behavior of loading. <code>IgnoreController</code> is made to do nothing,
+  but by providing a different object, you can control the parsing
   process.
   
-  The third parameter specifies SAXParserFactory to be used. Both TREX and RELAX
-  use namespace, so please configure factory as namespace-aware.
+  The third parameter specifies SAXParserFactory to be used.
+  Factory has to be configured as namespace aware.
 </P>
 <P>
-  Alternatively, to load a TREX grammar,
+  Alternatively, to load a specific language,
 </P>
 <PRE>
 import com.sun.tranquilo.grammar.Grammar;
@@ -232,38 +235,27 @@ TREXGrammar loadTREX( String schemaFileNameOrURL )
 </PRE>
 <P>
   parse method also accepts several other forms of arguments (e.g., InputSource).
-</P>
-<P>
   If loading fails, parse method returns null. 
 </P>
 <P>
-  The following snip illustrates how to load RELAX module.
+  In this way, you can parse XML representation of the specific language into AGM of Tranquilo.
+</P>
+<P>
+  Since XML DTD is not written in XML format, it has to be parsed differently.
+  To parse XML DTD, do as follows
 </P>
 <PRE>
-import com.sun.tranquilo.grammar.relax.core.RELAXModule;
-import com.sun.tranquilo.grammar.trex.TREXPatternPool;
-import com.sun.tranquilo.reader.relax.core.RELAXCoreReader;
-import javax.xml.parsers.SAXParserFactory;
-
-RELAXModule loadRELAX( String schemaFileNameOrURL )
+Grammar loadDTD( String schemaFileNameOrURL )
 {
-  SAXParserFactory factory = new javax.xml.parsers.SAXParserFactory();
-  factory.setNamespaceAware(true);
-  
-  return RELAXCoreReader.parse(
-                        schemaFileNameOrURL,
-                        factory,
-                        new com.sun.tranquilo.reader.util.IgnoreController(),
-                        new TREXPatternPool() );
+  return DTDReader.parse(
+    new InputSource(schemaFileNameOrURL),
+    new com.sun.tranquilo.reader.util.IgnoreController() );
 }
 </PRE>
 <P>
-  For now, consider the fourth parameter as a magical keyword.
-  To load a RELAX grammar, use <code>com.sun.tranquilo.relaxns.reader.RELAXNSReader</code>
-  in the same way.
-</P>
-<P>
-  In this way, you can parse XML representation of RELAX/TREX into AGM of Tranquilo.
+  The first parameter specified InputSource object from which DTD is read.
+  The second paramter controlls parsing behavior.
+  Currently, Tranquilo cannot parse internal DTD subset.
 </P>
 
 
@@ -285,36 +277,39 @@ RELAXModule loadRELAX( String schemaFileNameOrURL )
   (ReferenceExp and ElementExp)</DIV>
   <LI>
   <DIV><STRONG>TREX extension:</STRONG> primitives introduced for 
-  TREX.&nbsp;InterleavePattern and ConcurPattern.</DIV>
+  TREX. InterleavePattern and ConcurPattern.</DIV>
   <LI>
-  <DIV><STRONG>RELAX stub:</STRONG> concrete implementations&nbsp;of abstract 
-  classes of the core part for RELAX.</DIV>
-  <LI>
-  <DIV><STRONG>TREX stub:</STRONG> concrete implementations of abstract classes 
-  of the core part for TREX.</DIV></LI></OL>
-<P>TREX introduces several language primitives that are not available in RELAX. 
+  <DIV><STRONG>language specific stubs:</STRONG>
+  concrete implementations of abstract classes,
+  and composite expressions of the specific language.</DIV>
+</OL>
+<P>TREX introduces several language primitives that are not available in 
+other languages. 
 These primitives are placed in TREX extension part. AGMs constructed from TREX 
 grammars may contain those primitives. AGMs from RELAX never contain primitives 
 of TREX extension.</P>
-<P>Also, RELAX and TREX have several differences in their grammar model.</P>
+<P>
+	Also, languages have several differences in their grammar models.
+</P>
 <UL>
   <LI>
   <DIV>Reference to the other expression. TREX has only one mechanism 
   (&lt;ref&gt;&amp;&lt;define&gt;), whereas RELAX has four separate 
   definitions/references 
   (&lt;tag&gt;/&lt;attPool&gt;/&lt;hedgeRule&gt;/&lt;elementRule&gt; &amp; 
-  &lt;ref&gt;/&lt;hedgeRef&gt;). The core part provides abstract ReferenceExp 
-  class, and RELAX stub provides four concrete implementations.</DIV>
+  &lt;ref&gt;/&lt;hedgeRef&gt;). XML Schema has the largest six.
+  The core part provides abstract ReferenceExp 
+  class, and RELAX stub / XML Schema provides concrete implementations.</DIV>
   <LI>
   <DIV>Constraint of tag name. RELAX constrains tag name by &lt;tag&gt; 
   declaration that is referenced by &lt;elementRule&gt; declaration. TREX 
   constrains tag name by element declaration itself. So RELAX has one 
   abstraction layer between constraint over element and constraint over tag 
-  name. Core part provides abstract ElementExp class, and stubs&nbsp;provide 
+  name. Core part provides abstract ElementExp class, and stubs provide 
   concrete implementations respectively.</DIV></LI></UL>
-<P> Generally speaking, you may want to avoid dependency&nbsp;to the stub parts. If 
+<P> Generally speaking, you may want to avoid dependency to the stub parts. If 
 your code only depends on the core part and TREX extension, your code 
-shall&nbsp;work with AGMs&nbsp;created from&nbsp;both language. 
+shall work with AGMs created from any language. 
 com.sun.tranquilo.verifier.regexp is one of such examples.</P>
 
 
@@ -465,7 +460,7 @@ Expression modifiedExp = originalExp.visit( new SwitchChoiceAndSequence() );
 </PRE>
 <P>
    See ExpressionCloner for details. For expressions that may contain TREX
-  primitives (interleave and concur), you have to&nbsp;also implement TREXPatternVisitorExpression.
+  primitives (interleave and concur), you have to also implement TREXPatternVisitorExpression.
 </P>
 
 
@@ -505,38 +500,25 @@ Expression modifiedExp = originalExp.visit( new SwitchChoiceAndSequence() );
   <code>com.sun.tranquilo.verifier.regexp</code> package.
 </P>
 <P>
-  The following example creates a RegExp VGM from a TREXGrammar.
+  The following example creates a RegExp VGM from a Grammar.
+  <code>Grammar</code> is an interface implemented by 
+  RELAXGrammar, RELAXModule, TREXGrammar, and XMLSchemaGrammar.
 </P>
 <PRE>
 import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
+import com.sun.tranquilo.grammar.Grammar;
 
-DocumentDeclaration createVGM( TREXGrammar g ) {
+DocumentDeclaration createVGM( Grammar g ) {
   return new TREXDocumentDeclaration(g);
 }
 </PRE>
 <P>
-  The following example creates a RegExp VGM from a RELAXGrammar.
+  Alternatively, you can pass arbitrary expression as the first parameter
+  and newly created pool as the 2nd parameter.
 </P>
 <PRE>
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
-
-DocumentDeclaration createVGM( RELAXGrammar g ) {
-  return new TREXDocumentDeclaration( g.topLevel, (TREXPatternPool)g.pool, true );
-}
-</PRE>
-<P>
-  For optimal performance, it is essential to provide
-  a pool that is used to load the schema.
-  This is why this guide used TREXPatternPool when loading a RELAX schema.
-</P>
-<P>
-  Alternatively, you can still pass a newly created TREXPatternPool as the 2nd parameter.
-</P>
-<PRE>
-import com.sun.tranquilo.verifier.regexp.trex.TREXDocumentDeclaration;
-
-DocumentDeclaration createVGM( RELAXGrammar g ) {
-  return new TREXDocumentDeclaration( g.topLevel, new TREXPatternPool(), true );
+DocumentDeclaration createVGM( Expression exp ) {
+  return new TREXDocumentDeclaration( exp, new TREXPatternPool() );
 }
 </PRE>
 
@@ -586,11 +568,12 @@ DocumentDeclaration createVGM( RELAXGrammar g ) {
 </P>
 <P>
   Its size will eventually reach the certain limit, and the growth stops there.
-  If your schema is RELAX or TREX without interleave, then this limit size is mostly moderate.
+  If your schema is DTD, RELAX, TREX without &lt;interleave&gt;, or XML Schema without &lt;all&gt; then this limit size is mostly moderate.
   So you can keep using the same pool forever.
 </P>
 <P>
-  However, if the grammar is TREX with &lt;interleave&gt; pattern,
+  However, if the grammar is TREX with &lt;interleave&gt; patterns,
+  or XML Schema that contains &lt;all&gt;s,
   then this limit could be exponential to the size of the grammar
   (especially if interleave contains large patterns).
   If this is the case, and your application runs 24/7 as a daemon process,
@@ -605,7 +588,7 @@ DocumentDeclaration createVGM( RELAXGrammar g ) {
   To throw away ExpressionPool, simply create a new VGM with a brand-new pool, like this.
 </P>
 <PRE>
-DocumentDeclaration vgm = new TREXDocumentDeclaration( trexGrammarAGM, new TREXPatternPool() );
+DocumentDeclaration vgm = new TREXDocumentDeclaration( grammar.getTopLevel(), new TREXPatternPool() );
 </PRE>
 
 
@@ -693,7 +676,7 @@ TREXGrammarReader reader = new TREXGrammarReader(
     new TREXPatternPool() );
 ((XMLReader)reader).parse(schemaFileName);
 
-// obtain parsed grammar object.
+// obtain parsed grammar object. it returns null in case of error
 TREXGrammar grammar = reader.getResult();
 </PRE>
 <P>

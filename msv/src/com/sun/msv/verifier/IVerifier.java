@@ -48,13 +48,23 @@ public interface IVerifier extends org.xml.sax.ContentHandler {
 	 * returns DataType object that validated the last character literals.
 	 * 
 	 * <p>
+	 * For RELAX NG grammar, this method can return an array of length 2 or more.
+	 * This happens when the last character matches &lt;list&gt; pattern.
+	 * In that case, each type corresponds to each token (where tokens are the
+	 * white-space separation of the last characters).
+	 * 
+	 * <p>
+	 * For any other grammar, this method always returns an array of length 1
+	 * (or null, if the type assignment failed).
+	 * 
+	 * <p>
 	 * So when you are using VerifierFilter, you can call this method only
 	 * in your startElement and endElement method.
 	 * 
 	 * @return null
 	 *		if type-assignment was not possible.
 	 */
-	DataType getLastCharacterType();
+	DataType[] getLastCharacterType();
 
 
 	Locator getLocator();

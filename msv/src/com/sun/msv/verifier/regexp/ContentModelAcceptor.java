@@ -27,24 +27,21 @@ import java.util.Iterator;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class ContentModelAcceptor extends ExpressionAcceptor
-{
+public class ContentModelAcceptor extends ExpressionAcceptor {
+	
 	protected ContentModelAcceptor(
-		REDocumentDeclaration docDecl, Expression exp )
-	{
+		REDocumentDeclaration docDecl, Expression exp ) {
+	
 		super(docDecl,exp);
 	}
 	
-	public boolean stepForward( Acceptor child, StringRef errRef )
-	{
+	public boolean stepForward( Acceptor child, StringRef errRef ) {
 		// TODO: explicitly mention that where the error recovery should be done.
-		if( child instanceof SimpleAcceptor )
-		{
+		if( child instanceof SimpleAcceptor ) {
 			SimpleAcceptor sa = (SimpleAcceptor)child;
 			return stepForwardByContinuation( sa.continuation, errRef );
 		}
-		if( child instanceof ComplexAcceptor )
-		{
+		if( child instanceof ComplexAcceptor ) {
 			ComplexAcceptor ca = (ComplexAcceptor)child;
 			return stepForward(
 				new ElementToken(
@@ -57,12 +54,10 @@ public class ContentModelAcceptor extends ExpressionAcceptor
 	}
 	
 	protected Acceptor createAcceptor(
-		Expression combined,
-		Expression continuation,
-		CombinedChildContentExpCreator.OwnerAndContent primitives )
-	{
-		if( primitives==null || primitives.next==null )
-		{
+		Expression combined, Expression continuation,
+		CombinedChildContentExpCreator.OwnerAndContent primitives ) {
+		
+		if( primitives==null || primitives.next==null ) {
 			// primitives==null is possible when recovering from error.
 			
 			// in this special case, combined child pattern and primitive patterns are the same.

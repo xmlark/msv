@@ -27,6 +27,7 @@ public class StringToken extends Token {
 	protected final IDContextProvider context;
 	protected final REDocumentDeclaration docDecl;
 	protected final boolean ignorable;
+	
 	/**
 	 * if this field is non-null,
 	 * this field will receive assigned DataType object.
@@ -48,8 +49,11 @@ public class StringToken extends Token {
 	
 	/** TypedStringExp can consume this token if its datatype can accept this string */
 	boolean match( TypedStringExp exp ) {
-		if(!exp.dt.allows( literal, context ))	return false;
-		if(refType!=null)	assignType(exp.dt);
+		
+		if(!exp.dt.allows( literal, context )) return false; // not accepted.
+		
+		// this type accepts me.
+		if(refType!=null)		assignType(exp.dt);
 		
 		boolean ret = true;
 		
@@ -74,17 +78,59 @@ public class StringToken extends Token {
 	boolean match( ListExp exp ) {
 		StringTokenizer tokens = new StringTokenizer(literal);
 		Expression residual = exp.exp;
-	
-		while( residual!=Expression.nullSet && tokens.hasMoreTokens() ) {
-			residual = docDecl.resCalc.calcResidual( residual,
-				createChildStringToken(tokens.nextToken()) );
+		
+		// if the application needs type information,
+		// collect them from children.
+		DataTypeRef dtRef = (this.refType!=null)?new DataTypeRef():null;
+		DataType[] childTypes = new DataType[tokens.countTokens()];
+		int cnt=0;
+		
+		while( tokens.hasMoreTokens() ) {
+			StringToken child = createChildStringToken(tokens.nextToken(),dtRef);
+			residual = docDecl.resCalc.calcResidual( residual, child );
+			
+			if( residual==Expression.nullSet )
+				// the expression is failed to accept this item.
+				return false;
+			
+			if( dtRef!=null ) {
+				if( dtRef.types==null ) {
+					// failed to assign type. bail out.
+					saturated = true;
+					refType.types = null;
+					dtRef = null;
+				} else {
+					// type is successfully assigned for this child.
+					if( dtRef.types.length!=1 )
+						// the current RELAX NG prohibits to nest <list> patterns.
+						// Thus it's not possible for this child to return more than one type.
+						throw new Error();
+					
+					childTypes[cnt++] = dtRef.types[0];
+				}
+			}
 		}
 		
-		return residual.isEpsilonReducible();
+		if(!residual.isEpsilonReducible())
+			// some expressions are still left. failed to accept this string.
+			return false;
+		
+		// this <list> accepts this string.
+		
+		// assign datatype
+		if(saturated)
+			// a type is already assigned. That means this string has more than one type.
+			// so bail out.
+			refType.types=null;
+		else
+			refType.types = childTypes;
+		saturated = true;
+		
+		return true;
 	}
 	
-	protected Token createChildStringToken( String literal ) {
-		return new StringToken( docDecl, literal, context );
+	protected StringToken createChildStringToken( String literal, DataTypeRef dtRef ) {
+		return new StringToken( docDecl, literal, context, dtRef );
 	}
 
 	// anyString can match any string
@@ -94,12 +140,13 @@ public class StringToken extends Token {
 	}
 
 	private void assignType( DataType dt ) {
-		if(saturated)
-			// more than one types are assigned. roll back to null
-			refType.type=null;
-		else {
+		if(saturated) {
+			if(refType.types[0]!=dt || refType.types.length!=1)
+				// different types are assigned. roll back to null
+				refType.types=null;
+		} else {
 			// this is the first assignment. remember this value.
-			refType.type=dt;
+			refType.types=new DataType[]{dt};
 			saturated=true;
 		}
 	}

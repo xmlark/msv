@@ -104,11 +104,11 @@ public class Verifier implements
 	
 	/** this field is used to receive type information of character literals. */
 	private final DataTypeRef characterType = new DataTypeRef();
-	public DataType getLastCharacterType() { return characterType.type; }
+	public DataType[] getLastCharacterType() { return characterType.types; }
 	
 	private void verifyText() throws SAXException {
 		if(text.length()!=0) {
-			characterType.type=null;
+			characterType.types=null;
 			switch( stringCareLevel ) {
 			case Acceptor.STRING_PROHIBITED:
 				// only whitespace is allowed.
@@ -129,7 +129,7 @@ public class Verifier implements
 					// error
 					// diagnose error, if possible
 					StringRef err = new StringRef();
-					characterType.type=null;
+					characterType.types=null;
 					current.stepForward( txt, this, err, characterType );
 					
 					// report an error
@@ -189,7 +189,7 @@ public class Verifier implements
 		
 		stringCareLevel = next.getStringCareLevel();
 		if( stringCareLevel==Acceptor.STRING_IGNORE )
-			characterType.type = StringType.theInstance;
+			characterType.types = new DataType[]{StringType.theInstance};
 		current = next;
 	}
 	
@@ -231,6 +231,8 @@ public class Verifier implements
 	
 	/**
 	 * signals an error.
+	 * 
+	 * This method can be overrided by the derived class to provide different behavior.
 	 */
 	protected ValidityViolation onError( StringRef ref, String defaultMsg ) throws SAXException {
 		ValidityViolation vv;
@@ -312,11 +314,9 @@ public class Verifier implements
 					Object idref = jtr.next();
 					if(keys==null || !keys.contains(idref)) {
 						if( symbolSpace.length()==0 )
-							errorHandler.onError( new ValidityViolation(
-								locator, localizeMessage( ERR_UNSOLD_IDREF, new Object[]{idref} ) ) );
+							onError( null, localizeMessage( ERR_UNSOLD_IDREF, new Object[]{idref} ) );
 						else
-							errorHandler.onError( new ValidityViolation(
-								locator, localizeMessage( ERR_UNSOLD_KEYREF, new Object[]{idref,symbolSpace} ) ) );
+							onError( null, localizeMessage( ERR_UNSOLD_KEYREF, new Object[]{idref,symbolSpace} ) );
 					}
 				}
 			}

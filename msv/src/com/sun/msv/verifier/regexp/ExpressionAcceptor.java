@@ -104,10 +104,9 @@ public abstract class ExpressionAcceptor implements Acceptor
 
 	
 	
-	protected boolean stepForward( Token token, StringRef errRef )
-	{
-		Expression residual = docDecl.resCalc.calcResidual(
-			expression, token );
+	protected boolean stepForward( Token token, StringRef errRef ) {
+		
+		Expression residual = docDecl.resCalc.calcResidual( expression, token );
 		
 		// if token is ignorable, make expression as so.
 		if( token.isIgnorable() )
@@ -115,16 +114,15 @@ public abstract class ExpressionAcceptor implements Acceptor
 		else
 			residual = residual;
 		
-		if( com.sun.msv.driver.textui.Debug.debug )
-		{
+		if( com.sun.msv.driver.textui.Debug.debug ) {
 			System.out.println("residual of stepForward("+token+")");
 			System.out.print(com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(expression));
 			System.out.print("   ->   ");
 			System.out.println(com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(residual));
 		}
 		
-		if( residual==Expression.nullSet )
-		{// error: we can't accept this token
+		if( residual==Expression.nullSet ) {
+			// error: we can't accept this token
 			
 			if( errRef!=null )
 			{// diagnose error.
@@ -150,8 +148,7 @@ public abstract class ExpressionAcceptor implements Acceptor
 		return true;
 	}
 	
-	public boolean stepForward( String literal, IDContextProvider provider, StringRef refErr, DataTypeRef refType )
-	{
+	public boolean stepForward( String literal, IDContextProvider provider, StringRef refErr, DataTypeRef refType ) {
 		return stepForward( new StringToken(docDecl,literal,provider,refType), refErr );
 	}
 	

@@ -16,6 +16,7 @@ import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.grammar.util.ExpressionPrinter;
 import com.sun.msv.reader.util.GrammarLoader;
 import com.sun.msv.verifier.DocumentDeclaration;
+import com.sun.msv.verifier.psvi.*;
 import com.sun.msv.verifier.util.ErrorHandlerImpl;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.XMLReader;

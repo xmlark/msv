@@ -14,7 +14,7 @@ import org.iso_relax.verifier.*;
 import com.sun.msv.verifier.util.IgnoreErrorHandler;
 
 /**
- * uses ISO-RELAX validator API to cache a grammar and then validate documents
+ * Uses ISO-RELAX validator API to cache a grammar and then validate documents
  * from multiple threads.
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>

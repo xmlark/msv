@@ -78,6 +78,15 @@ public abstract class ReferenceContainer {
 		return r;
 	}
 	
+	/** removes an object from this container.
+	 * 
+	 * @return
+	 *	removed object. Null if no such name is found.
+	 */
+	public final ReferenceExp remove( String name ) {
+		return (ReferenceExp)impl.remove(name);
+	}
+	
 	/** gets the number of ReferenceExps in this container. */
 	public final int size()	{
 		return impl.size();

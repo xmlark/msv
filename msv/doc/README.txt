@@ -43,7 +43,7 @@ This preview version implements:
 3. RELAX Namespace [3], based on the draft of 2001-03-11 [8] plus
    enhancements based on discussions held at the same mailing list.
 
-4. RELAX NG [14], based on the formal semantics [15], the tutorial [16],
+4. RELAX NG [14], based on the spec [15], the tutorial [16],
    and information available at the discussion list [17].
 
 5. TREX [9], based on the draft of 2001-02-13 [10] and the 
@@ -92,8 +92,8 @@ REFERENCES
       http://www.w3.org/TR/2001/PR-xmlschema-1-20010316/
 [14] RELAX NG
       http://www.oasis-open.org/committees/relax-ng/
-[15] RELAX NG Formal Semantics
-      http://www.oasis-open.org/committees/relax-ng/proofsystem.html
+[15] RELAX NG Spec (draft)
+      http://www.thaiopensource.com/relaxng/spec.html
 [16] RELAX NG tutorial
       http://www.oasis-open.org/committees/relax-ng/tutorial.html
 [17] RELAX NG discussion list archive

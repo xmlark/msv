@@ -32,7 +32,13 @@ public class AnyOtherElementState extends ExpressionWithoutChildState
 	
 	protected ReferenceExp skelton;
 	
-	/** creates actual expression and sets it into the skelton */
+	/** creates actual expression and sets it into the skelton.
+	 * 
+	 * This function is called from RootState.
+	 * Therefore, line information is not automatically available
+	 * when reporting error.
+	 * Implementator should keep this in mind and manually pass Locator to reportError method.
+	 */
 	protected void wrapUp( Expression choiceOfAllExportedLabels )
 	{
 		final RELAXReader reader = (RELAXReader)this.reader;
@@ -44,7 +50,13 @@ public class AnyOtherElementState extends ExpressionWithoutChildState
 			st = new StringTokenizer(includeNamespace);
 		else
 			st = new StringTokenizer(excludeNamespace);
-		// TODO: check includeNamespace!=null && excludeNamespace!=null
+		
+		if( includeNamespace!=null && excludeNamespace!=null )
+			reader.reportError(
+				new Locator[]{this.location},
+				reader.ERR_CONFLICTING_ATTRIBUTES,
+				new Object[]{"includeNamespace", "excludeNamespace"} );
+			// recovery has already done by ignoring excludeNamespace.
 		
 		NameClass nc =null;
 		

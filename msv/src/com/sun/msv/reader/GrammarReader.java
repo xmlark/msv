@@ -512,6 +512,8 @@ public abstract class GrammarReader
 		"GrammarReader.MissingAttribute";
 	public static final String ERR_MISSING_ATTRIBUTE_2 = // arg:3
 		"GrammarReader.MissingAttribute.2";
+	public static final String ERR_CONFLICTING_ATTRIBUTES = // arg:2
+		"GrammarReader.ConflictingAttribute";
 	public static final String ERR_RECURSIVE_INCLUDE = // arg:1
 		"GrammarReader.RecursiveInclude";
 	public static final String ERR_UNDEFINED_DATATYPE = // arg:1

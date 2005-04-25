@@ -1,15 +1,7 @@
 /*
- * @(#)DTDHandlerBase.java    1.6 00/04/25
+ * @(#)XmlChars.java    1.1 00/08/05
  *
- * Copyright 2000 by Sun Microsystems, Inc.,
- * 901 San Antonio Road, Palo Alto, California, 94303, U.S.A.
- * All rights reserved.
- * 
- * This software is the confidential and proprietary information
- * of Sun Microsystems, Inc. ("Confidential Information").  You
- * shall not disclose such Confidential Information and shall use
- * it only in accordance with the terms of the license agreement
- * you entered into with Sun.
+ * Copyright (c) 1998 Sun Microsystems, Inc. All Rights Reserved.
  */
 
 package com.sun.msv.scanner.dtd;

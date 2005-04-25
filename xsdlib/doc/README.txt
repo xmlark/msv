@@ -26,13 +26,15 @@ provided as a guide for implementing your own Java classes with the
 Datatypes Library.
 
 ----------------------------------------------------------------------
-CHANGES FROM THE PREVIOUS RELEASE
+LICENSE
 ----------------------------------------------------------------------
 
-1. Fixed a bug to allow the list type to have pattern facets.
+The most of the code is licensed under the BSD license (see
+license.txt). The only exception to this is the code taken from Apache,
+which is licensed under ASL 1.1 (see Apache-LICENSE-1.1.txt)
 
-2. Fixed a bug where NCName-derived types incorrectly acceptes ':'
-   (e.g., ID, IDREF)
+In the source tree, the code taken from Apache is hosted in 'src-apache'
+so that XSDLib can be built without Apache code if necessary.
 
 
 ----------------------------------------------------------------------

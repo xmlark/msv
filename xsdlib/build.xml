@@ -103,6 +103,9 @@
 		<copy todir="dist/src">
 			<fileset dir="src"/>
 		</copy>
+		<copy todir="dist/src-apache">
+			<fileset dir="src-apache"/>
+		</copy>
 		<copy todir="dist/examples">
 			<fileset dir="examples" />
 		</copy>

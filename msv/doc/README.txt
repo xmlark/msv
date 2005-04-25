@@ -31,13 +31,22 @@ ChangeLog.txt contains changes made from previous versions.
 
 
 ----------------------------------------------------------------------
+LICENSE
+----------------------------------------------------------------------
+
+The most of the code is licensed under the BSD license (see
+license.txt). The only exception to this is a part of the code of XSDLib,
+which was taken from Apache, which is licensed under ASL 1.1
+(see Apache-LICENSE-1.1.txt)
+
+
+----------------------------------------------------------------------
 TECHNICAL SUPPROT
 ----------------------------------------------------------------------
 
 Sun does not provide any official support for this software. However,
 Kohsuke KAWAGUCHI provides personal, best-effort support for this
-software. Please post any questions/comments to the "msv-interest"
-group [19].
+software. Please post any questions/comments to the msv project [19]
 
 
 ----------------------------------------------------------------------
@@ -117,7 +126,7 @@ REFERENCES
       http://lists.oasis-open.org/archives/relax-ng/
 [18] RELAX NG DTD Compatibility Spec (Upcoming version.1.0)
       (URL is not decided yet. follow the link from [14])
-[19] MSV-interest group
-      http://www.yahoogroups.com/group/msv-interest/
+[19] MSV project on java.net
+      http://msv.dev.java.net/
 ======================================================================
 END OF README

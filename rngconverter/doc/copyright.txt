@@ -1,3 +1,5 @@
+(See license.txt for the actual license terms)
+
 Copyright 2001-@@YEAR@@ Sun Microsystems, Inc. 901 San Antonio Road, Palo Alto,
 California, 94303, U.S.A. All rights reserved.
 

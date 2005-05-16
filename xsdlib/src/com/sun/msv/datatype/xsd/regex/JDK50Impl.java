@@ -17,7 +17,7 @@ final class JDK50Impl extends RegExpFactory {
     private final Method matches;
 
     JDK50Impl() throws Exception {
-        regexp = getClass().getClassLoader().loadClass("org.apache.xerces.impl.xpath.regex.RegularExpression");
+        regexp = getClass().getClassLoader().loadClass("com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression");
         ctor = regexp.getConstructor(new Class[]{String.class,String.class});
         matches = regexp.getMethod("matches",new Class[]{String.class});
     }

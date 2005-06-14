@@ -44,6 +44,7 @@ import com.sun.msv.datatype.xsd.UnsignedIntType;
 import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.datatype.xsd.XSDatatypeImpl;
 import com.sun.msv.datatype.xsd.XmlNames;
+import com.sun.msv.datatype.xsd.Base64BinaryType;
 import com.sun.xml.util.XmlChars;
 
 /**
@@ -169,6 +170,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		if( dt.getClass()==NcnameType.class )	return generateNCName();
 		if( dt.getClass()==NumberType.class )	return generateDecimal();
 		if( dt.getClass()==BooleanType.class )	return generateBoolean();
+        if( dt.getClass()==Base64BinaryType.class )	return generateBase64Binary();
 		if( dt instanceof FloatType || dt instanceof DoubleType )
 			return generateFloating();
 		
@@ -218,7 +220,15 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		return null;
 	}
 
-	protected void fail( Datatype dt ) {
+    private String generateBase64Binary() {
+        int len = random.nextInt(16)*4;
+        StringBuffer b = new StringBuffer(len);
+        for( int i=0; i<len; i++ )
+            b.append(random.nextInt(26)+'A');
+        return b.toString();
+    }
+
+    protected void fail( Datatype dt ) {
 		
 		throw new GenerationException("unable to generate value for this datatype: " +
 			(( dt instanceof XSDatatype )?((XSDatatype)dt).displayName():dt.toString()) );

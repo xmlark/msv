@@ -23,6 +23,7 @@
 		<javac
 			srcdir="./src:./test"
 			destdir="./bin"
+			source="1.2" target="1.2"
 			debug="on"
 			optimize="off"
 			classpath="${xerces.jar}:${relaxngDatatype.jar}:${junit.jar}:${jdom.jar}:${isorelax.jar}:${xalan.jar}"
@@ -33,6 +34,7 @@
 		<javac
 			srcdir="./src-apache"
 			destdir="./bin"
+			source="1.2" target="1.2"
 			debug="on"
 			optimize="off"
 			classpath="${xerces.jar}:${relaxngDatatype.jar}:${junit.jar}:${jdom.jar}:${isorelax.jar}:${xalan.jar}"
@@ -124,7 +126,7 @@
 		
 		<!-- compile files -->
 		<mkdir	dir="temp" />
-		<javac	srcdir="dist/src" destdir="temp" debug="on">
+		<javac	srcdir="dist/src" destdir="temp" debug="on" source="1.2" target="1.2">
 			
 			<classpath path="${relaxngDatatype.jar}"/>
 			<include name="**/*.java" />

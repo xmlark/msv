@@ -11,6 +11,7 @@
 		<javac
 			srcdir="./src"
 			destdir="./bin"
+			source="1.2" target="1.2"
 			debug="on"
 			optimize="off">
 			
@@ -60,7 +61,7 @@
 		
 		<!-- compile files -->
 		<mkdir	dir="temp" />
-		<javac	srcdir="dist/src" destdir="temp">
+		<javac srcdir="dist/src" destdir="temp" source="1.2" target="1.2" debug="on">
 			
 			<classpath path="../package/msv.jar"/>
 			<classpath path="${relaxngDatatype.jar}"/>

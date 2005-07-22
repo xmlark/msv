@@ -43,6 +43,7 @@
     <javac
       srcdir="./src:./test"
       destdir="./bin"
+			source="1.2" target="1.2"
       debug="on"
       optimize="off">
       

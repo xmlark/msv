@@ -34,6 +34,16 @@ Note that you need the -dtd option.
 
 
 ----------------------------------------------------------------------
+LICENSE
+----------------------------------------------------------------------
+
+The most of the code is licensed under the BSD license (see
+license.txt). The only exception to this is a part of the code of XSDLib,
+which was taken from Apache, which is licensed under ASL 1.1
+(see Apache-LICENSE-1.1.txt)
+
+
+----------------------------------------------------------------------
 KNOWN LIMITATIONS
 ----------------------------------------------------------------------
 

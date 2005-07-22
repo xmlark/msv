@@ -22,6 +22,7 @@ public class Driver
 			return;
 		}
 
+        // run it in another thread so that -Xss takes effect
         Thread t = new Thread() {
             public void run() {
                 try {

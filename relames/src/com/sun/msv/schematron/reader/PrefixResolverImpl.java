@@ -2,6 +2,7 @@ package com.sun.msv.schematron.reader;
 
 import org.apache.xml.utils.PrefixResolver;
 import org.xml.sax.Locator;
+import org.w3c.dom.Node;
 
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.State;
@@ -29,7 +30,7 @@ class PrefixResolverImpl implements PrefixResolver
 		if(prefix.equals(""))	return currentNs;
 		else					return currentResolver.resolve(prefix);
 	}
-	public String getNamespaceForPrefix( String prefix, org.w3c.dom.Node n ) {
+	public String getNamespaceForPrefix( String prefix, Node n ) {
 		return getNamespaceForPrefix(prefix);
 	}
 	public boolean handlesNullPrefixes() {

@@ -1,19 +1,19 @@
 package com.sun.msv.schematron;
 
-import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.XMLReader;
-
 import com.sun.msv.driver.textui.DebugController;
 import com.sun.msv.driver.textui.ReportErrorHandler;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.schematron.reader.SRELAXNGReader;
 import com.sun.msv.schematron.verifier.RelmesVerifier;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+
+import javax.xml.parsers.SAXParserFactory;
 
 public class Driver
 {
-	public static void main( String args[] ) throws Exception {
+	public static void main( final String[] args ) throws Exception {
 		System.out.println("relmes verifier   Copyright(C) Sun Microsystems, Inc. 2001");
 			
 		if(args.length<2) {
@@ -21,11 +21,24 @@ public class Driver
 				"Usage: relames <schema file> <document1> [<document2> ...]");
 			return;
 		}
-		
-		
+
+        Thread t = new Thread() {
+            public void run() {
+                try {
+                    doMain(args);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        t.start();
+        t.join();
+    }
+
+    public static void doMain( String[] args ) throws Exception {
 		System.out.println("parsing    "+args[0]);
 		// parse a grammar
-		SAXParserFactory factory = javax.xml.parsers.SAXParserFactory.newInstance();
+		SAXParserFactory factory = SAXParserFactory.newInstance();
 		factory.setNamespaceAware(true);
 		Grammar grammar = SRELAXNGReader.parse( args[0], factory, new DebugController(false,false) );
 		if(grammar==null)	return;
@@ -45,7 +58,7 @@ public class Driver
 			else
 				System.out.println("NOT valid\n");
 		}
-		} catch( org.xml.sax.SAXException e ) {
+		} catch( SAXException e ) {
 			if(e.getException()!=null)
 				e.getException().printStackTrace();
 			throw e;

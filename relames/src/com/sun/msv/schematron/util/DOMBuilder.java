@@ -9,16 +9,16 @@
  */
 package com.sun.msv.schematron.util;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * builds DOM from SAX2 event stream.
@@ -28,7 +28,9 @@ public class DOMBuilder extends DefaultHandler {
 	protected final DocumentBuilder builder;
 	protected Document dom;
 	protected Node parent;
-	
+
+    private StringBuffer buf = new StringBuffer();
+
 	public DOMBuilder( DocumentBuilder builder ) {
 		this.builder = builder;
 	}
@@ -48,6 +50,7 @@ public class DOMBuilder extends DefaultHandler {
 	}
 	
 	public void startElement( String ns, String local, String qname, Attributes atts ) throws SAXException {
+        processText();
 		Element e = dom.createElementNS( ns, local );
 		parent.appendChild(e);
 		parent = e;
@@ -57,14 +60,23 @@ public class DOMBuilder extends DefaultHandler {
 	}
 	
 	public void endElement( String ns, String local, String qname ) throws SAXException {
+        processText();
 		parent = parent.getParentNode();
 	}
 	
 	public void characters( char[] buf, int start, int len ) throws SAXException {
-		parent.appendChild( dom.createTextNode(new String(buf,start,len)) );
+        // Xalan doesn't like consequtive text nodes in a DOM tree when
+        // doing XPath, so buffer them
+        this.buf.append(buf,start,len);
+    }
+
+    private void processText() {
+        if(buf.length()>0)
+    		parent.appendChild( dom.createTextNode(buf.toString()) );
+        buf.setLength(0);
 	}
 	
 	public void ignorableWhitespace( char[] buf, int start, int len ) throws SAXException {
-		parent.appendChild( dom.createTextNode(new String(buf,start,len)) );
+        characters(buf,start,len);
 	}
 }

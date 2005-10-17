@@ -21,9 +21,9 @@ public class SRule extends SActions
 	/**
 	 * checks if the given Node matches this rule.
 	 */
-	public boolean matches( Node node ) throws TransformerException {
+	public boolean matches( XPathContext xcntxt, Node node ) throws TransformerException {
 		return match.execute(
-			new XPathContext(), node, new PrefixResolverDefault(node) )
+			xcntxt, node, new PrefixResolverDefault(node) )
 			.num() != XPath.MATCH_SCORE_NONE;
 	}
 }

@@ -68,7 +68,9 @@ public class RelmesVerifier implements IVerifier {
          */
         private final Map idMap = new HashMap();
         
-        
+        XPathContext xctxt = new XPathContext();
+
+
 		SchematronVerifier() throws ParserConfigurationException {}
 		
 		public void startElement( String ns, String local, String qname, Attributes atts ) throws SAXException {
@@ -92,14 +94,14 @@ public class RelmesVerifier implements IVerifier {
                         ((org.apache.xerces.dom.CoreDocumentImpl)super.dom).putIdentifier(
                             atts.getValue(i), (Element)super.parent );
                     } catch( Throwable t ) {
-                        ; // ignore any error. it wasn't Xerces.
+                        // ignore any error. it wasn't Xerces.
                     }
                     try {
                         // Crimson?
                         ((org.apache.crimson.tree.ElementNode2)super.parent)
                             .setIdAttributeName(atts.getQName(i));
                     } catch( Throwable t ) {
-                        ; // ignore any error. it wasn't Crimson.
+                        // ignore any error. it wasn't Crimson.
                     }
                 }
             }
@@ -190,7 +192,7 @@ public class RelmesVerifier implements IVerifier {
 		private void testRule( SRule rule, Node node )
 					throws SAXException, TransformerException {
 			
-			if( !rule.matches(node) )	return;
+			if( !rule.matches(xctxt,node) )	return;
             
             testActions(rule,node);
         }
@@ -201,8 +203,8 @@ public class RelmesVerifier implements IVerifier {
 //			System.out.println("rule tested");
 			
 			PrefixResolverDefault resolver = new PrefixResolverDefault(node);
-			
-			synchronized(actions) {
+
+            synchronized(actions) {
 				// I'm not sure whether XPath object is thread-safe.
 				// so for precaution, synchronize it.
                 
@@ -210,13 +212,13 @@ public class RelmesVerifier implements IVerifier {
                 // so again just for precaution, we will create new ones each time
 				
 				for( int i=0; i<actions.asserts.length; i++ )
-					if(!actions.asserts[i].xpath.execute(
-						new XPathContext(), node, resolver ).bool() )
-						reportError( node, actions.asserts[i] );
+                    if (!actions.asserts[i].xpath.execute(
+                        xctxt, node, resolver).bool())
+                        reportError(node, actions.asserts[i]);
 							
 				for( int i=0; i<actions.reports.length; i++ )
 					if(actions.reports[i].xpath.execute(
-						new XPathContext(), node, resolver ).bool() )
+						xctxt, node, resolver ).bool() )
 						reportError( node, actions.reports[i] );
 			}					
 		}
@@ -246,14 +248,6 @@ public class RelmesVerifier implements IVerifier {
 			getErrorHandler().error( new ValidityViolation(
 				src, action.document, null ));
 		}
-        
-        
-        /**
-         * XPathContext implementation that supports ID.
-         */
-        private class XPathContextImpl extends XPathContext
-        {
-        }
 	}
 	
 	

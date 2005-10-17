@@ -126,7 +126,7 @@
 		
 		<!-- compile files -->
 		<mkdir	dir="temp" />
-		<javac	srcdir="dist/src" destdir="temp" debug="on" source="1.2" target="1.2">
+		<javac	srcdir="dist/src:dist/src-apache" destdir="temp" debug="on" source="1.2" target="1.2">
 			
 			<classpath path="${relaxngDatatype.jar}"/>
 			<include name="**/*.java" />

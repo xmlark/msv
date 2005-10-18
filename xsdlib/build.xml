@@ -148,6 +148,7 @@
 			<fileset dir="temp" />
 			<!-- resource files -->
 			<fileset dir="dist/src" includes="**/*.properties" />
+      <fileset dir="dist/src-apache" includes="**/*.properties" />
 		</jar>
 		<delete dir="temp" />
 		<delete dir="xerces"/>

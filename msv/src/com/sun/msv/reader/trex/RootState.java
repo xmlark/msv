@@ -25,16 +25,17 @@ public class RootState extends RootIncludedPatternState {
     public RootState() { super(null); }
 
     protected State createChildState( StartTagInfo tag ) {
+        final TREXBaseReader reader = (TREXBaseReader)this.reader;
+
         // grammar has to be treated separately so as not to
         // create unnecessary TREXGrammar object.
         if(tag.localName.equals("grammar"))
-            return new GrammarState();
+            return reader.sfactory.grammar(null,tag);
         
         State s = super.createChildState(tag);
         if(s!=null) {
             // other pattern element is specified.
             // create wrapper grammar
-            final TREXBaseReader reader = (TREXBaseReader)this.reader;
             reader.grammar = reader.sfactory.createGrammar( reader.pool, null );
             simple = true;
         }

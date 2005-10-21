@@ -27,8 +27,6 @@ public class SElementState extends ElementState implements SActionReceiver, SRul
 			return new SActionState.SReportState();
         if( tag.localName.equals("pattern") )
             return new SPatternState();
-        if( tag.localName.equals("ns") )
-            return new SNsState();
         return null;
 	}
 	

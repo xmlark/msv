@@ -16,8 +16,6 @@ public class SGrammarState extends GrammarState {
             return new SRuleState();
         if( tag.localName.equals("pattern") )
             return new SPatternState();
-        if( tag.localName.equals("ns") )
-            return new SNsState();
         return null;
     }
 }

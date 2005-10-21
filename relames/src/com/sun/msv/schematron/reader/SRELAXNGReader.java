@@ -11,6 +11,7 @@ import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.trex.TREXGrammar;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.State;
+import com.sun.msv.reader.relax.core.RELAXCoreReader;
 import com.sun.msv.reader.trex.ng.RELAXNGReader;
 import com.sun.msv.util.StartTagInfo;
 
@@ -64,8 +65,12 @@ public class SRELAXNGReader extends RELAXNGReader {
     }
 
 	protected boolean isGrammarElement( StartTagInfo tag ) {
-		if( tag.namespaceURI.equals(SchematronURI) )	return true;
-		return super.isGrammarElement(tag);
+		if( tag.namespaceURI.equals(SchematronURI) ) {
+            // let <s:ns> appear anywhere
+            return !tag.localName.equals("ns");
+        }
+
+        return super.isGrammarElement(tag);
 	}
 
     /**
@@ -75,19 +80,33 @@ public class SRELAXNGReader extends RELAXNGReader {
      */
     /*package*/ final NamespaceSupport schematronNs = new NamespaceSupport();
 
-    public void startDocument() throws SAXException {
-        schematronNs.reset();
-        super.startDocument();
+    public void startElement(String nsUri, String localName, String qname, Attributes atts) throws SAXException {
+        if(nsUri.equals(SchematronURI) && localName.equals("ns")) {
+            // allow <s:ns> to appear anywhere in the document
+            String prefix = atts.getValue("prefix");
+            String uri = atts.getValue("uri");
+
+            if(prefix==null)
+                reportError( RELAXCoreReader.ERR_MISSING_ATTRIBUTE, "prefix", "ns" );
+            else
+            if(uri==null)
+                reportError( RELAXCoreReader.ERR_MISSING_ATTRIBUTE, "uri", "ns" );
+            else {
+                schematronNs.declarePrefix(prefix,uri);
+            }
+        } else {
+            schematronNs.pushContext();
+        }
+        super.startElement(nsUri,localName,qname,atts);
     }
 
-    public void startElement(String a, String b, String c, Attributes d) throws SAXException {
-        schematronNs.pushContext();
-        super.startElement(a, b, c, d);
-    }
-
-    public void endElement(String a, String b, String c) throws SAXException {
-        super.endElement(a, b, c);
-        schematronNs.popContext();
+    public void endElement(String nsUri, String localName, String qname) throws SAXException {
+        super.endElement(nsUri, localName, qname);
+        if(nsUri.equals(SchematronURI) && localName.equals("ns")) {
+            ;
+        } else {
+            schematronNs.popContext();
+        }
     }
 
 //

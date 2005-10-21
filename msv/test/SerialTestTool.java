@@ -20,7 +20,7 @@ import com.sun.msv.grammar.ExpressionPool;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
-public class SerialTest {
+public class SerialTestTool {
     public static void main(String[] args) throws Exception {
         if( args[0].equals("write") ) {
         	ExpressionPool pool = new ExpressionPool();

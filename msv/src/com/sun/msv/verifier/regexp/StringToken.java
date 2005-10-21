@@ -70,11 +70,7 @@ public class StringToken extends Token {
             return false; // not accepted.
 
         if (exp.except != Expression.nullSet) {
-            if (resCalc.calcResidual(exp.except, this) == Expression.epsilon)
-                // due to the constraint imposed on the body of the 'except' clause,
-                // comparing the residual with the epsilon is OK and cheap.
-                // but it might be better to use the isEpsilonReducible method
-                // for the robustness.
+            if (resCalc.calcResidual(exp.except, this).isEpsilonReducible())
                 return false; // this token is accepted by its 'except' clause
         }
 

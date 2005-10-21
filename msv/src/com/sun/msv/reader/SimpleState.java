@@ -59,7 +59,7 @@ public abstract class SimpleState extends State
     
     public void startElement( String namespaceURI, String localName, String qName, Attributes atts ) {
         final StartTagInfo tag = new StartTagInfo(
-            namespaceURI,localName,qName,new AttributesImpl(atts),(IDContextProvider2)null);
+            namespaceURI,localName,qName,new AttributesImpl(atts));
         // we have to copy Attributes, otherwise it will be mutated by SAX parser
             
         if( isGrammarElement(tag) ) {

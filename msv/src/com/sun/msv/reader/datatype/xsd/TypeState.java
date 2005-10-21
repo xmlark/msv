@@ -93,7 +93,7 @@ abstract class TypeState extends SimpleState
     public final void startElement( String namespaceURI, String localName, String qName, Attributes atts )
     {// within the island of XSD, foreign namespaces are prohibited.
         final StartTagInfo tag = new StartTagInfo(
-            namespaceURI,localName,qName,new AttributesImpl(atts),(IDContextProvider2)null);
+            namespaceURI,localName,qName,new AttributesImpl(atts));
         // we have to copy Attributes, otherwise it will be mutated by SAX parser
             
         State nextState = createChildState(tag);

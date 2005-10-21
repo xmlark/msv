@@ -1,12 +1,15 @@
 package com.sun.msv.schematron.verifier;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
+import com.sun.msv.schematron.grammar.SAction;
+import com.sun.msv.schematron.grammar.SActions;
+import com.sun.msv.schematron.grammar.SElementExp;
+import com.sun.msv.schematron.grammar.SRule;
+import com.sun.msv.schematron.util.DOMBuilder;
+import com.sun.msv.verifier.DocumentDeclaration;
+import com.sun.msv.verifier.IVerifier;
+import com.sun.msv.verifier.ValidityViolation;
+import com.sun.msv.verifier.Verifier;
+import com.sun.msv.verifier.VerifierFilter;
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xpath.XPathContext;
 import org.relaxng.datatype.Datatype;
@@ -21,23 +24,17 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
 
-import com.sun.msv.schematron.grammar.SAction;
-import com.sun.msv.schematron.grammar.SActions;
-import com.sun.msv.schematron.grammar.SElementExp;
-import com.sun.msv.schematron.grammar.SRule;
-import com.sun.msv.schematron.util.DOMBuilder;
-import com.sun.msv.verifier.DocumentDeclaration;
-import com.sun.msv.verifier.IVerifier;
-import com.sun.msv.verifier.ValidityViolation;
-import com.sun.msv.verifier.Verifier;
-import com.sun.msv.verifier.VerifierFilter;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
 public class RelmesVerifier implements IVerifier {
 	
 	public RelmesVerifier( IVerifier core ) throws ParserConfigurationException {
 		this.core = new VerifierFilter(core);
-		this.schChecker = new SchematronVerifier();
-		this.core.setContentHandler(schChecker);
+		this.core.setContentHandler(new SchematronVerifier());
 	}
 	public RelmesVerifier( DocumentDeclaration docDecl, ErrorHandler handler )
 				throws ParserConfigurationException {
@@ -49,11 +46,6 @@ public class RelmesVerifier implements IVerifier {
 	 * then pass type-information to the schematron checker.
 	 */
 	private final VerifierFilter core;
-	
-	/**
-	 * this object will perform the schematron validation on the endDocument method.
-	 */
-	private final SchematronVerifier schChecker;
 	
 	/**
 	 * this flag is set to true when all schematron validations are successful.

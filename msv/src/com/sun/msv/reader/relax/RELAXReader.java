@@ -22,6 +22,7 @@ import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.SequenceState;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.TerminalState;
+import com.sun.msv.reader.relax.core.InlineElementState;
 import com.sun.msv.reader.datatype.xsd.FacetState;
 import com.sun.msv.util.StartTagInfo;
 
@@ -89,7 +90,8 @@ public abstract class RELAXReader extends GrammarReader
             state instanceof SequenceState
         ||    state instanceof ElementRefState
         ||    state instanceof HedgeRefState
-        ||    state instanceof ChoiceState;
+        ||    state instanceof ChoiceState
+        ||      state instanceof InlineElementState;
     }
 
     protected Expression interceptExpression( State state, Expression exp )

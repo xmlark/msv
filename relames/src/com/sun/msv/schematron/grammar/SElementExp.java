@@ -9,7 +9,7 @@ import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.trex.ElementPattern;
 
 /**
- * ElementPattern with schematron annotation
+ * {@link ElementPattern} with schematron annotation.
  */
 public class SElementExp extends ElementPattern {
     

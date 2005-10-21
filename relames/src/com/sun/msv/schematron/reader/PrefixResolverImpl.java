@@ -15,12 +15,14 @@ import com.sun.msv.reader.State;
 class PrefixResolverImpl implements PrefixResolver
 {
 	PrefixResolverImpl( State owner ) {
-		currentNs = ((SRELAXNGReader)owner.reader).getTargetNamespace();
-		currentResolver = ((SRELAXNGReader)owner.reader).prefixResolver;
+        reader = ((SRELAXNGReader) owner.reader);
+        currentNs = reader.getTargetNamespace();
+		currentResolver = reader.prefixResolver;
 		location = owner.getLocation();
 	}
 	private final Locator location;
 	private final String currentNs;
+    private final SRELAXNGReader reader;
 	private final GrammarReader.PrefixResolver currentResolver;
 	
 	public String getBaseIdentifier() {
@@ -28,7 +30,13 @@ class PrefixResolverImpl implements PrefixResolver
 	}
 	public String getNamespaceForPrefix( String prefix ) {
 		if(prefix.equals(""))	return currentNs;
-		else					return currentResolver.resolve(prefix);
+
+        String nsUri = reader.schematronNs.getURI(prefix);
+        if(nsUri!=null)     return nsUri;
+
+        // for the compatibility reason with the past version
+        // also allow the current in-scope namespace bindings to take effect
+        return currentResolver.resolve(prefix);
 	}
 	public String getNamespaceForPrefix( String prefix, Node n ) {
 		return getNamespaceForPrefix(prefix);

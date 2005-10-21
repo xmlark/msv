@@ -2,7 +2,6 @@ package com.sun.msv.schematron.reader;
 
 import com.sun.msv.grammar.Expression;
 import com.sun.msv.reader.State;
-import com.sun.msv.reader.IgnoreState;
 import com.sun.msv.reader.trex.ng.ElementState;
 import com.sun.msv.schematron.grammar.SAction;
 import com.sun.msv.schematron.grammar.SActions;
@@ -29,7 +28,7 @@ public class SElementState extends ElementState implements SActionReceiver, SRul
         if( tag.localName.equals("pattern") )
             return new SPatternState();
         if( tag.localName.equals("ns") )
-            return new IgnoreState();
+            return new SNsState();
         return null;
 	}
 	

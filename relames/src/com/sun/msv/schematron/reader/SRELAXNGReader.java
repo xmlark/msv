@@ -3,6 +3,9 @@ package com.sun.msv.schematron.reader;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.InputSource;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.NamespaceSupport;
 
 import com.sun.msv.grammar.ExpressionPool;
 import com.sun.msv.grammar.trex.TREXGrammar;
@@ -64,9 +67,28 @@ public class SRELAXNGReader extends RELAXNGReader {
 		if( tag.namespaceURI.equals(SchematronURI) )	return true;
 		return super.isGrammarElement(tag);
 	}
-	
-	
-	
+
+    /**
+     * Schematron namespace declared via &lt;s:ns>
+     *
+     * This is the namespace context we use to resolve prefixes in the XPath expression.
+     */
+    /*package*/ final NamespaceSupport schematronNs = new NamespaceSupport();
+
+    public void startDocument() throws SAXException {
+        schematronNs.reset();
+        super.startDocument();
+    }
+
+    public void startElement(String a, String b, String c, Attributes d) throws SAXException {
+        schematronNs.pushContext();
+        super.startElement(a, b, c, d);
+    }
+
+    public void endElement(String a, String b, String c) throws SAXException {
+        super.endElement(a, b, c);
+        schematronNs.popContext();
+    }
 
 //
 // error message handling

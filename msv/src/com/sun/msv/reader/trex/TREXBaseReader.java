@@ -115,6 +115,10 @@ public abstract class TREXBaseReader extends GrammarReader {
         public TREXGrammar createGrammar( ExpressionPool pool, TREXGrammar parent ) {
             return new TREXGrammar(pool,parent);
         }
+
+        public State includedGrammar() {
+            return new RootMergedGrammarState();
+        }
     }
     public final StateFactory sfactory;
     

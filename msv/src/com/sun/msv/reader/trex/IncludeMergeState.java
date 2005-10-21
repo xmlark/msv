@@ -40,7 +40,8 @@ public class IncludeMergeState extends SimpleState {
         else
             try {
                 // parse specified file
-                reader.switchSource(this,href,new RootMergedGrammarState());
+                TREXBaseReader reader = (TREXBaseReader) this.reader;
+                reader.switchSource(this,href,reader.sfactory.includedGrammar());
             } catch( AbortException e ) {
                 // recover by ignoring the error
             }

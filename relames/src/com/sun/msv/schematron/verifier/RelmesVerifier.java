@@ -103,13 +103,13 @@ public class RelmesVerifier implements IVerifier {
 		 * a map from Element to Loc object.
 		 * This map will be used to report the source of error.
 		 */
-		private final Map locationMap = new java.util.HashMap();
+		private final Map locationMap = new HashMap();
 		
 		/**
 		 * a map from Node to SElementExp.
 		 * These are checked later.
 		 */
-		private final Map checks = new java.util.HashMap();
+		private final Map checks = new HashMap();
 		
 		public void startDocument() throws SAXException {
 			super.startDocument();

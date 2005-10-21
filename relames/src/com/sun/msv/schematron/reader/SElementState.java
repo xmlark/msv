@@ -7,14 +7,13 @@ import com.sun.msv.reader.trex.ng.ElementState;
 import com.sun.msv.schematron.grammar.SAction;
 import com.sun.msv.schematron.grammar.SActions;
 import com.sun.msv.schematron.grammar.SElementExp;
-import com.sun.msv.schematron.grammar.SPattern;
 import com.sun.msv.schematron.grammar.SRule;
 import com.sun.msv.util.StartTagInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SElementState extends ElementState implements SActionReceiver, SRuleReceiver, SPatternReceiver {
+public class SElementState extends ElementState implements SActionReceiver, SRuleReceiver {
 
 	protected State createChildState( StartTagInfo tag ) {
 		
@@ -46,13 +45,6 @@ public class SElementState extends ElementState implements SActionReceiver, SRul
 	public void onRule( SRule rule ) {
 		rules.add(rule);
 	}
-
-    public void onPattern(SPattern p) {
-        for (int i = 0; i < p.rules.length; i++) {
-            SRule rule = p.rules[i];
-            rules.add(rule);
-        }
-    }
 
     protected Expression annealExpression( Expression contentModel ) {
 

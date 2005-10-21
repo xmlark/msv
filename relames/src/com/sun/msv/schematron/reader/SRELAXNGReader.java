@@ -54,7 +54,11 @@ public class SRELAXNGReader extends RELAXNGReader {
 	// this reader overrides ElementState.
 	static private class SStateFactory extends StateFactory {
 		public State element	( State parent, StartTagInfo tag ) { return new SElementState(); }
-	}
+
+        public State grammar(State parent, StartTagInfo tag) {
+            return new SGrammarState();
+        }
+    }
 
 	protected boolean isGrammarElement( StartTagInfo tag ) {
 		if( tag.namespaceURI.equals(SchematronURI) )	return true;

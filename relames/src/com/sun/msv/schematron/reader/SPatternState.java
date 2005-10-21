@@ -2,11 +2,11 @@ package com.sun.msv.schematron.reader;
 
 import com.sun.msv.reader.SimpleState;
 import com.sun.msv.reader.State;
-import com.sun.msv.schematron.grammar.SPattern;
 import com.sun.msv.schematron.grammar.SRule;
 import com.sun.msv.util.StartTagInfo;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -31,8 +31,10 @@ public class SPatternState extends SimpleState implements SRuleReceiver {
     }
 
     public void endSelf() {
-        ((SPatternReceiver)parentState).onPattern(
-            new SPattern((SRule[]) rules.toArray(new SRule[rules.size()])));
+        for (Iterator itr = rules.iterator(); itr.hasNext();) {
+            SRule rule = (SRule) itr.next();
+            ((SRuleReceiver)parentState).onRule(rule);
+        }
 
         super.endSelf();
     }

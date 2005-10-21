@@ -85,6 +85,8 @@ public abstract class DefineState extends SimpleState implements ExpressionOwner
             ref.exp = newexp;
     
         reader.setDeclaredLocationOf(ref);
+
+        ((ExpressionOwner)parentState).onEndChild(ref);
     }
 
     

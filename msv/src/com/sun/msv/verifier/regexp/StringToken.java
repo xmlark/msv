@@ -71,6 +71,10 @@ public class StringToken extends Token {
 
         if (exp.except != Expression.nullSet) {
             if (resCalc.calcResidual(exp.except, this).isEpsilonReducible())
+                // handling whitespace correcly requires isEpsilonReducible()
+                // with the following test case
+                // <data type="string"><except><value/></except></data>
+                // with "".
                 return false; // this token is accepted by its 'except' clause
         }
 

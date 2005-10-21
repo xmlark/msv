@@ -13,6 +13,7 @@ import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.relax.core.RELAXCoreReader;
 import com.sun.msv.reader.trex.ng.RELAXNGReader;
+import com.sun.msv.reader.trex.ng.IncludeMergeState;
 import com.sun.msv.util.StartTagInfo;
 
 public class SRELAXNGReader extends RELAXNGReader {
@@ -61,6 +62,10 @@ public class SRELAXNGReader extends RELAXNGReader {
 
         public State grammar(State parent, StartTagInfo tag) {
             return new SGrammarState();
+        }
+
+        public State includedGrammar() {
+            return new SRootMergedGrammarState();
         }
     }
 

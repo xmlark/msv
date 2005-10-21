@@ -100,6 +100,10 @@ elements that appear as descendants of siblings. IOW, the following works:
  <element name="foo">
    <s:ns prefix="abc" uri="..." />
    <s:report test="abc:someNode" ... />
+   <element name="child">
+     <s:report test="abc:someNode" ... />
+     ...
+   </element>
  </element>
 
 For the backward compatibility with earlier versions of relames,

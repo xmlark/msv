@@ -61,12 +61,14 @@ In general, validation is performed in the following way: whenever
 an element mathces a pattern, schematron constraints are checked for
 that element.
 
-In plain Schematron, a <rule> element supplies context information.
-In Schematron-annotated RELAX NG, on the other hand, an <element> pattern
-supplies the context information instead.
+In plain Schematron, a <rule> element determines the context node
+against which those assertions are evaluated.
+In Schematron-annotated RELAX NG, on the other hand, the element
+that matches the <element> pattern will become the context
+information instead.
 
 
-This tool also supports the use of <rule> elements in RELAX NG grammar.
+Relames also supports the use of <rule> elements in RELAX NG grammar.
 
 <define name="root" xmlns:s="http://www.ascc.net/xml/schematron">
   <element name="root">
@@ -86,11 +88,24 @@ First, nodes that match the context attribute are computed.
 Then assertions are tested for each node.
 
 
-This release supports <rule>, <assert> and <report> of Schematron 1.3.
-You can write as many constraints as you want in one <element> pattern.
+Relames can also handle Schematron's <pattern> element --- it basically
+just ignores the <pattern> element itself and process <rule>s in it
+directly.
 
-Namespace prefixes found in XPath expression are resolved through xmlns
-declarations in the grammar file. Note that the default namespace is
+
+Relames also handles Schematron's <ns> element. They can appear in
+anywhere in the RELAX NG schema, and they affect other schematron
+elements that appear as descendants of siblings. IOW, the following works:
+
+ <element name="foo">
+   <s:ns prefix="abc" uri="..." />
+   <s:report test="abc:someNode" ... />
+ </element>
+
+For the backward compatibility with earlier versions of relames,
+Namespace prefixes found in XPath expression (like the one above)
+are also resolved through xmlns declarations in the grammar file,
+if it's not declared by <s:ns>. Note that the default namespace is
 bound to the URI declared by the ns attribute of RELAX NG. Consider
 the following example:
 
@@ -113,6 +128,10 @@ The XPath expression "foo:abc|def" will match
 {http://www.example.org/foo}abc elements and {http://www.sun.com/xml}def
 elements. Note that "def" does NOT match elements with the namespace
 URI of "http://relaxng.org/ns/structure/0.9".
+
+This release supports <rule>, <assert> and <report> of Schematron 1.3
+and <pattern> and <ns> of Schematron 1.?. You can write as many
+constraints as you want in one <element> pattern.
 
 Annotated RELAX NG grammars are still interoperable in the sense that
 other RELAX NG processors will silently ignore all Schematron constraints.

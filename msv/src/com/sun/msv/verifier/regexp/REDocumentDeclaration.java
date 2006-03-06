@@ -155,15 +155,15 @@ public class REDocumentDeclaration implements DocumentDeclaration
         "Diagnosis.UncompletedContent.Separator";
     public static final String DIAG_UNCOMPLETED_CONTENT_MORE =
         "Diagnosis.UncompletedContent.More";
-    public static final String DIAG_BAD_LITERAL_WRAPUP = // arg:1
+    public static final String DIAG_BAD_LITERAL_WRAPUP = // arg:2
         "Diagnosis.BadLiteral.WrapUp";
     public static final String DIAG_BAD_LITERAL_SEPARATOR =
         "Diagnosis.BadLiteral.Separator";
     public static final String DIAG_BAD_LITERAL_MORE =
         "Diagnosis.BadLiteral.More";
-    public static final String DIAG_BAD_LITERAL_GENERIC =
+    public static final String DIAG_BAD_LITERAL_GENERIC = // arg:1
         "Diagnosis.BadLiteral.Generic";
-    public static final String DIAG_BAD_LITERAL_INCORRECT_VALUE = // arg:1
+    public static final String DIAG_BAD_LITERAL_INCORRECT_VALUE = // arg:2
         "Diagnosis.BadLiteral.IncorrectValue";
     public static final String DIAG_SIMPLE_NAMECLASS =
         "Diagnosis.SimpleNameClass";
@@ -171,7 +171,7 @@ public class REDocumentDeclaration implements DocumentDeclaration
         "Diagnosis.NamespaceNameClass";
     public static final String DIAG_NOT_NAMESPACE_NAMECLASS =
         "Diagnosis.NotNamespaceNameClass";
-    public static final String DIAG_STRING_NOT_ALLOWED =
+    public static final String DIAG_STRING_NOT_ALLOWED = // arg:1
         "Diagnosis.StringNotAllowed";
     public static final String DIAG_BAD_KEY_VALUE = // arg:1
         "Diagnosis.BadKeyValue";

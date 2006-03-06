@@ -9,15 +9,6 @@
  */
 package com.sun.msv.verifier.regexp;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
-
-import org.relaxng.datatype.DatatypeException;
-
 import com.sun.msv.grammar.AttributeExp;
 import com.sun.msv.grammar.ChoiceExp;
 import com.sun.msv.grammar.DataOrValueExp;
@@ -35,6 +26,14 @@ import com.sun.msv.util.DatatypeRef;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
 import com.sun.msv.verifier.Acceptor;
+import org.relaxng.datatype.DatatypeException;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * {@link Acceptor} implementation.
@@ -448,7 +447,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
      *  (1) inserts separator into appropriate positions
      *  (2) appends "more" message when items are only a portion of candidates.
      */
-    private final String concatenateMessages( List items, boolean more,
+    private String concatenateMessages( List items, boolean more,
                                               String separatorStr, String moreStr )
     {
         String r="";
@@ -471,7 +470,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
         return r;
     }
 
-    private final String concatenateMessages( Set items, boolean more,
+    private String concatenateMessages( Set items, boolean more,
                                               String separatorStr, String moreStr ) {
         return concatenateMessages( new Vector(items), more, separatorStr, moreStr );
     }
@@ -482,7 +481,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
      * @return null
      *        if diagnosis failed.
      */
-    private final String getDiagnosisFromTypedString( DataOrValueExp exp, StringToken value ) {
+    private String getDiagnosisFromTypedString( DataOrValueExp exp, StringToken value ) {
         try {
             exp.getType().checkValid(    value.literal, value.context );
             
@@ -502,14 +501,10 @@ public abstract class ExpressionAcceptor implements Acceptor {
     /**
      * computes diagnosis message for bad tag name
      * 
-     * @param exp
-     *        combined child content expression without
-     *        tag name check and attributes check.
-     * 
      * @return null
      *        if diagnosis fails.
      */
-    private final String diagnoseBadTagName( StartTagInfo sti ) {
+    private String diagnoseBadTagName( StartTagInfo sti ) {
         final CombinedChildContentExpCreator cccc = docDecl.cccec;
         
         
@@ -617,13 +612,11 @@ public abstract class ExpressionAcceptor implements Acceptor {
      * 
      * @param rtoken
      *        wild card AttributeToken that was used.
-     * @param attIndex
-     *        index in sti.attributes of the attribute
-     * 
+     *
      * @return null
      *        if diagnosis fails.
      */
-    private final String diagnoseBadAttributeValue( AttributeRecoveryToken rtoken ) {
+    private String diagnoseBadAttributeValue( AttributeRecoveryToken rtoken ) {
 
         // if the combined child content expression is not complex,
         // only binary expressions used are choice and sequence.
@@ -712,7 +705,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
      * @return null
      *        if diagnosis fails.
      */
-    private final String diagnoseMissingAttribute( StartTagInfo sti ) {
+    private String diagnoseMissingAttribute( StartTagInfo sti ) {
 //        if( cccc.isComplex() )
 //            // again if the expression is complex,
 //            // hope is remote that we can find required attributes.
@@ -777,7 +770,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
     /**
      * diagnoses an error when a StringToken is rejected.
      */
-    private final String diagnoseUnexpectedLiteral( StringToken token ) {
+    private String diagnoseUnexpectedLiteral( StringToken token ) {
         final StringRecoveryToken srt = new StringRecoveryToken(token);
         
         // this residual corresponds to the expression we get
@@ -787,7 +780,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
         
         if( recoveryResidual==Expression.nullSet )
             // we now know that no string literal was expected at all.
-            return docDecl.localizeMessage( REDocumentDeclaration.DIAG_STRING_NOT_ALLOWED, null );
+            return docDecl.localizeMessage( REDocumentDeclaration.DIAG_STRING_NOT_ALLOWED, token.literal.trim() );
             // keep this.expression untouched. This is equivalent to ignore this token.
         
         // there are two possible "recovery" for this error.
@@ -811,7 +804,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
                         // incorrect value
                         return docDecl.localizeMessage(
                             REDocumentDeclaration.DIAG_BAD_LITERAL_INCORRECT_VALUE,
-                            vexp.value.toString() );
+                            vexp.value.toString(), token.literal.trim() );
                     }
                 }
             } catch( DatatypeException de ) {
@@ -820,7 +813,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
                     return de.getMessage();    // return the diagnosis.
                 
                 // we don't know the exact reason, but the value was wrong.
-                return docDecl.localizeMessage( REDocumentDeclaration.DIAG_BAD_LITERAL_GENERIC, null );
+                return docDecl.localizeMessage( REDocumentDeclaration.DIAG_BAD_LITERAL_GENERIC, token.literal.trim() );
             }
         } else {
             // there are multiple candidates.
@@ -846,10 +839,11 @@ public abstract class ExpressionAcceptor implements Acceptor {
             
             // at least we have one suggestion.
             return docDecl.localizeMessage(
-                    REDocumentDeclaration.DIAG_BAD_LITERAL_WRAPUP,
-                concatenateMessages( items, more,
-                    REDocumentDeclaration.DIAG_BAD_LITERAL_SEPARATOR,
-                    REDocumentDeclaration.DIAG_BAD_LITERAL_MORE ) );
+                REDocumentDeclaration.DIAG_BAD_LITERAL_WRAPUP,
+                    concatenateMessages( items, more,
+                        REDocumentDeclaration.DIAG_BAD_LITERAL_SEPARATOR,
+                        REDocumentDeclaration.DIAG_BAD_LITERAL_MORE ),
+                token.literal.trim() );
         }
         
         // unable to diagnose the reason of error.

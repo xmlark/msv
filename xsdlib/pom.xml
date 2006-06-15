@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.sun.msv.datatype.xsd</groupId>
+  <artifactId>xsdlib</artifactId>
+  <version>@VERSION@</version>
+  <description>XML Schema datatypes library</description>
+  <mailingLists>
+    <mailingList>
+      <name>Users List</name>
+      <subscribe>users-subscribe@msv.dev.java.net</subscribe>
+      <unsubscribe>users-unsubscribe@msv.dev.java.net</unsubscribe>
+      <archive>https://msv.dev.java.net/servlets/SummarizeList?listName=users</archive>
+    </mailingList>
+  </mailingLists>
+  <developers>
+    <developer>
+      <id>kohsuke</id>
+      <name>Kohsuke Kawaguchi</name>
+      <email>kk@kohsuke.org</email>
+    </developer>
+  </developers>
+  <dependencies>
+    <dependency>
+      <groupId>isorelax</groupId>
+      <artifactId>isorelax</artifactId>
+      <version>20030108</version>
+    </dependency>
+    <dependency>
+      <groupId>relaxngDatatype</groupId>
+      <artifactId>relaxngDatatype</artifactId>
+      <version>20020414</version>
+    </dependency>
+  </dependencies>
+</project>

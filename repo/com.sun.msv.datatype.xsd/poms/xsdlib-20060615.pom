@@ -29,7 +29,7 @@
     <dependency>
       <groupId>relaxngDatatype</groupId>
       <artifactId>relaxngDatatype</artifactId>
-      <version>20020411</version>
+      <version>20020414</version>
     </dependency>
   </dependencies>
 </project>

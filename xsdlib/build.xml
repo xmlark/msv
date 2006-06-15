@@ -194,4 +194,32 @@
 			<zipfileset dir="dist" includes="**/*.*" prefix="${stageName}" />
 		</zip>
 	</target>
+	
+	<target name="push-to-maven-prepare" depends="release">
+	  <taskdef resource="maven-repository-importer.properties">
+	    <classpath>
+	      <pathelement path="../shared/lib/maven-repository-importer.jar" />
+	    </classpath>
+	  </taskdef>
+	  <delete dir="build/maven-repo" /><!-- clean it -->
+	  <maven-repository-importer destdir="build/maven-repo" version="${DSTAMP}">
+	    <artifact jar="dist/xsdlib.jar"  pom="pom.xml" srczip="../package/xsdlib-src.zip" />
+	  </maven-repository-importer>
+	</target>
+	
+	<target name="push-to-maven" depends="push-to-maven-prepare">
+	  <!-- import to CVS-->
+	  <tstamp />
+	  <echo>importing to CVS...</echo>
+	  <cvs dest="build/maven-repo">
+	    <commandline>
+	      <argument value="-d:pserver:${user.name}@cvs.dev.java.net:/cvs" />
+	      <argument line="-z9 import -ko -W *.jar -kb -m" />
+	      <argument value="deploying new jars to the java.net maven repository" />
+
+	      <argument value="msv/repo" />
+	      <argument line="deployment-to-maven-repository t${DSTAMP}${TSTAMP}" />
+	    </commandline>
+	  </cvs>
+	</target>
 </project>

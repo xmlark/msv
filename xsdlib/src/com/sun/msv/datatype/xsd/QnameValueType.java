@@ -18,6 +18,8 @@ public class QnameValueType implements java.io.Serializable {
     public final String localPart;
     
     public boolean equals( Object o ) {
+        if(o==null || !(o instanceof QnameValueType))     return false;
+
         QnameValueType rhs = (QnameValueType)o;
         
         return namespaceURI.equals(rhs.namespaceURI) && localPart.equals(rhs.localPart);

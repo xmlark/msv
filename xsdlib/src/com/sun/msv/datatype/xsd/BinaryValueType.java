@@ -19,7 +19,7 @@ class BinaryValueType implements java.io.Serializable {
     public byte[]    rawData;
     
     public boolean equals( Object o ) {
-        if( o.getClass()!=BinaryValueType.class )    return false;
+        if( o==null || o.getClass()!=BinaryValueType.class )    return false;
         
         BinaryValueType rhs = (BinaryValueType)o;
         

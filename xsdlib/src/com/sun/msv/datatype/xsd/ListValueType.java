@@ -26,6 +26,8 @@ public class ListValueType implements java.io.Serializable
      * are equal respectively.
      */
     public boolean equals( Object o ) {
+        if(o==null || !(o instanceof ListValueType))     return false;
+
         ListValueType rhs = (ListValueType)o;
         final int len = values.length;
         if( len!=rhs.values.length )    return false;

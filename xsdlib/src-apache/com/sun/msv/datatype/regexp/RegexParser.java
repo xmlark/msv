@@ -246,7 +246,7 @@ class RegexParser {
           case '.': ret = T_DOT;            break;
           case '[': ret = T_LBRACKET;       break;
           case '^': ret = T_CARET;          break;
-          case '$': ret = T_DOLLAR;         break;
+          // case '$': ret = T_DOLLAR;         break;
           case '(':
             ret = T_LPAREN;
             if (this.offset >= this.regexlen)

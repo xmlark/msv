@@ -126,6 +126,7 @@
 			<sysproperty key="MSV_STRICT_CHECK" value="yes"/>
 			
 			<formatter type="plain" />
+			<formatter type="xml" />
 			
 			<classpath>
 				<pathelement location="bin" />

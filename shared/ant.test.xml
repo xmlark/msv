@@ -41,8 +41,8 @@
 	
 	<path id="DTDBatchTestDir">
 		<path refid="commonTestDir"/>
-		<pathelement path="${testRoot}/DTD/XHTMLm12n/examples"/>
-		<pathelement path="${testRoot}/DTD/XHTML1.0"/>
+		<pathelement path="${testRoot}/dtd/XHTMLm12n/examples"/>
+		<pathelement path="${testRoot}/dtd/XHTML1.0"/>
 	</path>
 	<property name="DTDBatchTestDir" refid="DTDBatchTestDir"/>
 	

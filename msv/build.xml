@@ -268,4 +268,11 @@
     
   </target>
   
+  <target name="clean">
+  	<delete dir="bin"/>
+  	<delete dir="dist"/>
+  	<delete dir="javadoc"/>
+  	<delete dir="temp"/>
+  	<delete dir="temp_xsdlibsrc"/>
+  </target>
 </project>

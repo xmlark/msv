@@ -16,4 +16,8 @@
 			classpath="${xerces.jar}:${junit.jar}:${saxon.jar}"
 			/>
 	</target>
+	
+	<target name="clean">
+		<delete dir="bin" />
+	</target>
 </project>

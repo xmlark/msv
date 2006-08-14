@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="msv family" basedir="." default="binary">
 	
+	<target name="clean">
+		<ant target="clean" dir="xsdlib" />
+		<ant target="clean" dir="testharness" />
+		<ant target="clean" dir="msv" />
+		<ant target="clean" dir="generator" />
+		<ant target="clean" dir="relames" />
+		<ant target="clean" dir="rngconverter" />
+	</target>
+	
 	<target name="binary">
 		<ant target="binary" dir="xsdlib" />
 		<ant target="binary" dir="testharness" />
@@ -19,5 +28,12 @@
 		<ant target="release" dir="relames" />
 		<ant target="release" dir="rngconverter" />
 		<!--ant target="release" dir="SOX2RNG" /-->
+	</target>
+	
+	
+	<!-- the relase build for JWSDP -->
+	<target name="wspack">
+		<ant target="release" dir="xsdlib" />
+		<ant target="release" dir="msv" />
 	</target>
 </project>

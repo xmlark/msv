@@ -113,4 +113,10 @@
 			<zipfileset dir="dist" includes="**/*.*" prefix="${stageName}" />
 		</zip>
 	</target>
+	
+	<target name="clean">
+		<delete dir="bin" />
+		<delete dir="dist" />
+		<delete dir="temp" />
+	</target>
 </project>

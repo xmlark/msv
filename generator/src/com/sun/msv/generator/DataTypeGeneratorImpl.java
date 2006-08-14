@@ -45,6 +45,7 @@ import com.sun.msv.datatype.xsd.XSDatatype;
 import com.sun.msv.datatype.xsd.XSDatatypeImpl;
 import com.sun.msv.datatype.xsd.XmlNames;
 import com.sun.msv.datatype.xsd.Base64BinaryType;
+import com.sun.msv.datatype.xsd.ByteType;
 import com.sun.xml.util.XmlChars;
 
 /**
@@ -158,7 +159,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 		if( dt.getClass()==UnsignedIntType.class )
 			return Long.toString( random.nextLong()&0x7FFFFFFF );
 		
-		if( dt.getClass()==Byte.class )			return Long.toString( random.nextInt(256) );
+		if( dt.getClass()== ByteType.class )     return Long.toString( random.nextInt(256) );
 		if( dt.getClass()==ShortType.class )	return Long.toString( (short)random.nextInt() );
 		if( dt.getClass()==IntType.class )		return Long.toString( random.nextInt() );
 		if( dt.getClass()==LongType.class )		return Long.toString( random.nextLong() );
@@ -196,7 +197,7 @@ public class DataTypeGeneratorImpl implements DataTypeGenerator {
 				for( int i=0; i<10; i++ ) {
 					try {
 						return dti.convertToLexicalValue(items[random.nextInt(items.length)],context);
-					} catch( Exception x ) { ; }
+					} catch( Exception x ) {  }
 				}
 			}
 			

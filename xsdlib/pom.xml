@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.sun.msv.datatype.xsd</groupId>
   <artifactId>xsdlib</artifactId>
-  <version>@VERSION@</version>
+  <version>2.0-SNAPSHOT</version>
   <description>XML Schema datatypes library</description>
   <mailingLists>
     <mailingList>
@@ -13,6 +13,43 @@
       <archive>https://msv.dev.java.net/servlets/SummarizeList?listName=users</archive>
     </mailingList>
   </mailingLists>
+  
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <!--testSourceDirectory>test</testSourceDirectory-->
+   <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.sun.msv.datatype.xsd.CommandLineTester</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+     <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src-apache</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
   <developers>
     <developer>
       <id>kohsuke</id>
@@ -30,6 +67,24 @@
       <groupId>relaxngDatatype</groupId>
       <artifactId>relaxngDatatype</artifactId>
       <version>20020414</version>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.6.0</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jdom</groupId>
+      <artifactId>jdom</artifactId>
+      <version>1.0</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

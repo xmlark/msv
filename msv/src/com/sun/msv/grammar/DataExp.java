@@ -12,6 +12,7 @@ package com.sun.msv.grammar;
 import org.relaxng.datatype.Datatype;
 
 import com.sun.msv.util.StringPair;
+import com.sun.msv.datatype.xsd.XSDatatype;
 
 /**
  * Expression that matchs characters of the particular {@link Datatype}.
@@ -71,6 +72,10 @@ public final class DataExp extends Expression implements DataOrValueExp {
     public void visit( ExpressionVisitorVoid visitor )                { visitor.onData(this); }
 
     protected boolean calcEpsilonReducibility() {
+        XSDatatype xdt = (XSDatatype)dt;
+        if(except==Expression.nullSet && xdt.isAlwaysValid())
+            // because for such datatype we return STRING_IGNORE from StringCareLevelCalculator 
+            return true;
         return false;
     }
     

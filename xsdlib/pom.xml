@@ -16,6 +16,11 @@
   
   <build>
     <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>resource</directory>
+      </resource>
+    </resources>
     <!--testSourceDirectory>test</testSourceDirectory-->
    <plugins>
       <plugin>

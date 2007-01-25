@@ -136,16 +136,12 @@
 		<!-- create a time stamp file -->
 		<echo file="temp/version.properties">version=${DSTAMP}</echo>
 		
-		<!-- create META-INF/services file -->
-		<mkdir dir="temp/META-INF/services"/>
-		<echo file="temp/META-INF/services/org.relaxng.datatype.DatatypeLibraryFactory"
-			>com.sun.msv.datatype.xsd.ngimpl.DataTypeLibraryImpl</echo>
-		
 		<!-- creates binary jar -->
 		<jar	jarfile="dist/xsdlib.jar"
 				manifest="./MANIFEST.MF"
 				compress="${compress}">
 			<fileset dir="temp" />
+			<fileset dir="resource" />
 			<!-- resource files -->
 			<fileset dir="dist/src" includes="**/*.properties" />
       <fileset dir="dist/src-apache" includes="**/*.properties" />

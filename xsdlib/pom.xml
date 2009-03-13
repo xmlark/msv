@@ -1,9 +1,16 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.sun.msv.datatype.xsd</groupId>
   <artifactId>xsdlib</artifactId>
-  <version>2.0-SNAPSHOT</version>
+  <version>2009.1-SNAPSHOT</version>
+  <name>MSV XML Schema Library</name>
+  <parent>
+    <groupId>net.java.dev.msv</groupId>
+    <artifactId>msv-parent</artifactId>
+    <version>2009.1-SNAPSHOT</version>
+    <relativePath>../../parent/pom.xml</relativePath>
+  </parent>
   <description>XML Schema datatypes library</description>
   <mailingLists>
     <mailingList>
@@ -13,16 +20,16 @@
       <archive>https://msv.dev.java.net/servlets/SummarizeList?listName=users</archive>
     </mailingList>
   </mailingLists>
-  
   <build>
-    <sourceDirectory>src</sourceDirectory>
     <resources>
       <resource>
-        <directory>resource</directory>
+        <directory>src-apache</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+	</excludes>
       </resource>
     </resources>
-    <!--testSourceDirectory>test</testSourceDirectory-->
-   <plugins>
+    <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -34,7 +41,7 @@
           </archive>
         </configuration>
       </plugin>
-     <plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
         <executions>
@@ -54,7 +61,6 @@
       </plugin>
     </plugins>
   </build>
-  
   <developers>
     <developer>
       <id>kohsuke</id>
@@ -66,29 +72,24 @@
     <dependency>
       <groupId>isorelax</groupId>
       <artifactId>isorelax</artifactId>
-      <version>20030108</version>
     </dependency>
     <dependency>
       <groupId>relaxngDatatype</groupId>
       <artifactId>relaxngDatatype</artifactId>
-      <version>20020414</version>
     </dependency>
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-      <version>2.6.0</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>jdom</groupId>
       <artifactId>jdom</artifactId>
-      <version>1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

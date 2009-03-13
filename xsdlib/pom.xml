@@ -11,7 +11,15 @@
     <version>2009.1-SNAPSHOT</version>
     <relativePath>../../parent/pom.xml</relativePath>
   </parent>
+
   <description>XML Schema datatypes library</description>
+
+  <scm>
+    <connection>scm:svn:http://msv.dev.java.net/svn/msv/trunk/xsdlib</connection>
+    <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/trunk/xsdlib</developerConnection>
+  </scm>
+
+
   <mailingLists>
     <mailingList>
       <name>Users List</name>
@@ -33,6 +41,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <goals>
+	      <goal>test-jar</goal>
+	    </goals>
+	  </execution>
+	</executions>
         <configuration>
           <archive>
             <manifest>

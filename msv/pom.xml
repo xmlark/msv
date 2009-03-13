@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.java.dev.msv</groupId>
+  <artifactId>msv-core</artifactId>
+  <version>2009.1-SNAPSHOT</version>
+  <name>MSV Core</name>
+  <parent>
+    <groupId>net.java.dev.msv</groupId>
+    <artifactId>msv-parent</artifactId>
+    <version>2009.1-SNAPSHOT</version>
+    <relativePath>../../parent/pom.xml</relativePath>
+  </parent>
+
+  <scm>
+    <connection>scm:svn:http://msv.dev.java.net/svn/msv/trunk/msv</connection>
+    <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/trunk/msv</developerConnection>
+  </scm>
+
+  <build>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>com.sun.msv.datatype.xsd</groupId>
+      <artifactId>xsdlib</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.sun.msv.datatype.xsd</groupId>
+      <artifactId>xsdlib</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>net.java.dev.msv</groupId>
+      <artifactId>msv-testharness</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>xml-resolver</groupId>
+      <artifactId>xml-resolver</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>isorelax</groupId>
+      <artifactId>isorelax</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>relaxngDatatype</groupId>
+      <artifactId>relaxngDatatype</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

@@ -38,6 +38,13 @@
   <name>MSV Parent</name>
   <url>http://msv.java.net</url>
   <packaging>pom</packaging>
+
+  <scm>
+    <connection>scm:svn:http://msv.dev.java.net/svn/msv/trunk/parent</connection>
+    <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/trunk/parent</developerConnection>
+  </scm>
+
+
   <properties>
     <surefire.fork.mode>once</surefire.fork.mode>
     <surefire.format>brief</surefire.format>
@@ -171,6 +178,16 @@
         <artifactId>jdom</artifactId>
         <version>1.0</version>
       </dependency>
+      <dependency>
+	<groupId>net.sf.saxon</groupId>
+	<artifactId>saxon</artifactId>
+	<version>8.7</version>
+      </dependency> 
+      <dependency>
+	<groupId>org.apache.ant</groupId>
+	<artifactId>ant</artifactId>
+	<version>1.7.1</version>
+      </dependency> 
     </dependencies>
   </dependencyManagement>
   <reporting>

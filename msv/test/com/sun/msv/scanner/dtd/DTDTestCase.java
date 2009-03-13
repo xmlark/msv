@@ -9,6 +9,7 @@ import org.iso_relax.dispatcher.Dispatcher;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXParseException;
 
+@org.junit.Ignore
 public class DTDTestCase extends TestCase {
     
     public DTDTestCase( String name ) {

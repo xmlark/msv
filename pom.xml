@@ -33,6 +33,12 @@
   <name>msv</name>
   <url>http://msv.java.net</url>
   <packaging>pom</packaging>
+
+  <scm>
+    <connection>scm:svn:http://msv.dev.java.net/svn/msv/trunk</connection>
+    <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/trunk</developerConnection>
+  </scm>
+
   <prerequisites>
     <maven>2.0.8</maven>
   </prerequisites>
@@ -49,6 +55,8 @@
   <modules>
     <module>parent</module>
     <module>xsdlib</module>
+    <module>testharness</module>
+    <module>msv</module>
   </modules>
   <build>
     <defaultGoal>install</defaultGoal>
@@ -134,13 +142,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-eclipse-plugin</artifactId>
           <version>2.5.1</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.apache.cxf</groupId>
-              <artifactId>cxf-buildtools</artifactId>
-              <version>${project.version}</version>
-            </dependency>
-          </dependencies>
         </plugin>
       </plugins>
     </pluginManagement>

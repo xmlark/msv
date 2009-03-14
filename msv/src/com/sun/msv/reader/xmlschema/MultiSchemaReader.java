@@ -9,6 +9,8 @@
  */
 package com.sun.msv.reader.xmlschema;
 
+import javax.xml.transform.Source;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.LocatorImpl;
 
@@ -53,8 +55,16 @@ public class MultiSchemaReader
         finish();
         return reader.getResult();
     }
-    
-    
+
+    /**
+     * Parse a schema supplied by a javax.xml.transform Source.
+     * @param source
+     */
+    public void parse(Source source) {
+        reader.switchSource(source,
+                new RootIncludedSchemaState(
+                    reader.sfactory.schemaHead(null)) );
+    }
     
     public final void parse( String source ) {
         parse(Util.getInputSource(source));
@@ -69,7 +79,6 @@ public class MultiSchemaReader
      * If possible, the caller should set the system Id to the InputSource.
      */
     public void parse( InputSource is ) {
-        
         reader.switchSource( is,
             new RootIncludedSchemaState(
                 reader.sfactory.schemaHead(null)) );

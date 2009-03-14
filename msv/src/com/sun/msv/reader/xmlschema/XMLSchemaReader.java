@@ -107,8 +107,10 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
      * @throws TransformerException
      */
     public static XMLSchemaGrammar parse(Source schema, GrammarReaderController controller) throws TransformerConfigurationException, TransformerException {
-    	// no parser factory needed, don't create one.
-        XMLSchemaReader reader = new XMLSchemaReader(controller, null);
+    	/* If the source is a SAXSource, we will still use a SAXParser,
+    	 * so we still create the parser factory.
+    	 */
+        XMLSchemaReader reader = new XMLSchemaReader(controller);
         reader.parse(schema);
         return reader.getResult();
     	

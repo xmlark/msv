@@ -15,6 +15,7 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -131,16 +132,21 @@ public final class WSDLSchemaReader {
 		WSDLGrammarReaderController wsdlController = new WSDLGrammarReaderController(
 				controller, wsdlSystemId, schemas);
 
-		XMLSchemaReader reader = new XMLSchemaReader(wsdlController, factory);
+		XMLSchemaReader reader = new XMLSchemaReader(wsdlController);
 		reader.setAdditionalNamespaceMap(wsdlNamespaceMappings);
+		MultiSchemaReader multiSchemaReader = new MultiSchemaReader(reader);
 		for (EmbeddedSchema schema : schemas.values()) {
-			InputSource inputSource = new InputSource();
-			inputSource.setSystemId(schema.getSystemId());
-			inputSource.setCharacterStream(new StringReader(schema
+
+			/*
+			DOMSource source = new DOMSource(schema.getSchemaElement());
+			source.setSystemId(schema.getSystemId());
+			*/
+			InputSource source = new InputSource();
+			source.setSystemId(schema.getSystemId());
+			source.setCharacterStream(new StringReader(schema
 					.getSchemaAsString()));
-			reader.parse(inputSource);
+			multiSchemaReader.parse(source);
 		}
-		reader.wrapUp();
-		return reader.getResult();
+		return multiSchemaReader.getResult();
 	}
 }

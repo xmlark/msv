@@ -108,8 +108,10 @@ public abstract class GrammarReader
         
         this.controller = new Controller(_controller);
         this.parserFactory = parserFactory;
-        if( !parserFactory.isNamespaceAware() )
+        // parserFactory may be null when using javax.xml.transform.
+        if (parserFactory != null && !parserFactory.isNamespaceAware()) {
             throw new IllegalArgumentException("parser factory must be namespace-aware");
+        }
         this.pool = pool;
         pushState( initialState, null, null );
     }
@@ -414,7 +416,21 @@ public abstract class GrammarReader
             resolveLocation(sourceState,url), newState );
     }
     
-    public void switchSource( InputSource source, State newState ) {
+    /**
+     * start reading input from a source defined by a SAX InputSource.
+     * @param source
+     * @param newState
+     */
+    public void switchSource(InputSource source, State newState) {
+    	switchSource(new SAXSource(source), newState);
+    }
+    
+    /**
+     * Start reading input from a source defined by a javax.xml.transform source.
+     * @param source
+     * @param newState
+     */
+    public void switchSource(Source source, State newState ) {
         String url = source.getSystemId();
         
         for( InclusionContext ic = pendingIncludes; ic!=null; ic=ic.previousContext )
@@ -437,7 +453,13 @@ public abstract class GrammarReader
         try {
             // this state will receive endDocument event.
             pushState( newState, null, null );
-            _parse( source, currentState.location );
+            try {
+				parse(source);
+			} catch (TransformerConfigurationException e) {
+				controller.error("transform error", e);
+			} catch (TransformerException e) {
+				controller.error("transform error", e);
+			}
         } finally {
             // restore the current state.
             super.setContentHandler(currentState);

@@ -2,9 +2,9 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.java.dev.msv</groupId>
-  <artifactId>msv-core</artifactId>
+  <artifactId>msv-relames</artifactId>
   <version>2009.1-SNAPSHOT</version>
-  <name>MSV Core</name>
+  <name>MSV Schematron Plugin</name>
   <parent>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv-parent</artifactId>
@@ -13,29 +13,24 @@
   </parent>
 
   <scm>
-    <connection>scm:svn:http://msv.dev.java.net/svn/msv/trunk/msv</connection>
-    <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/trunk/msv</developerConnection>
+    <connection>scm:svn:http://msv.dev.java.net/svn/msv/trunk/generator</connection>
+    <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/trunk/generator</developerConnection>
   </scm>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-	<executions>
-	  <execution>
-	    <goals>
-	      <goal>test-jar</goal>
-	    </goals>
-	  </execution>
-	</executions>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>com.sun.msv.driver.textui.Driver</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-jar-plugin</artifactId>
+	<configuration>
+	  <archive>
+	    <index>true</index>
+	  </archive>
+	  <manifest>
+	    <mainClass>com.sun.msv.generator.Driver</mainClass>
+	  </manifest>
+	  <addClasspath>true</addClasspath>
+	</configuration>
       </plugin>
     </plugins>
   </build>
@@ -58,7 +53,28 @@
       <groupId>net.java.dev.msv</groupId>
       <artifactId>msv-testharness</artifactId>
       <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>net.java.dev.msv</groupId>
+      <artifactId>msv-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.java.dev.msv</groupId>
+      <artifactId>msv-core</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>xml-resolver</groupId>
       <artifactId>xml-resolver</artifactId>
@@ -70,6 +86,10 @@
     <dependency>
       <groupId>isorelax</groupId>
       <artifactId>isorelax</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>crimson</groupId>
+      <artifactId>crimson</artifactId>
     </dependency>
     <dependency>
       <groupId>relaxngDatatype</groupId>

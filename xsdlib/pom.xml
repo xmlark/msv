@@ -9,7 +9,7 @@
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv-parent</artifactId>
     <version>2009.1-SNAPSHOT</version>
-    <relativePath>../../parent/pom.xml</relativePath>
+    <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
   <description>XML Schema datatypes library</description>

@@ -57,6 +57,8 @@
     <module>xsdlib</module>
     <module>testharness</module>
     <module>msv</module>
+    <module>generator</module>
+    <module>rngconverter</module>
   </modules>
   <build>
     <defaultGoal>install</defaultGoal>

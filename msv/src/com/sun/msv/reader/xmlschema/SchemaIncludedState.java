@@ -9,6 +9,7 @@
  */
 package com.sun.msv.reader.xmlschema;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.sun.msv.reader.IgnoreState;
@@ -90,19 +91,26 @@ public class SchemaIncludedState extends GlobalDeclState {
                 reader.reportError( XMLSchemaReader.ERR_INCONSISTENT_TARGETNAMESPACE, targetNs, expectedTargetNamespace );
                 // recover by adopting the one specified in the schema.
         }
-
-        onTargetNamespaceResolved(targetNs);
-
-        // check double inclusion.
-        Set s = (Set)reader.parsedFiles.get(targetNs);
-        if(s==null)
-            reader.parsedFiles.put( targetNs, s = new java.util.HashSet() );
         
-        if( s.contains(this.location.getSystemId()) )
+        // check double inclusion.
+        Set<String> s = reader.parsedFiles.get(targetNs);
+        if(s==null) {
+            reader.parsedFiles.put( targetNs, s = new HashSet<String>() );
+        }
+        
+        if( s.contains(this.location.getSystemId()) ) {
             // this file is already included. So skip processing it.
             ignoreContents = true;
-        else
+        } else {
             s.add(this.location.getSystemId());
+        }
+        
+        /*
+         * onTargetNamespace complains if we've seen this schema before, so we
+         * cannot call it before establishing ignoreContents.
+         */
+        onTargetNamespaceResolved(targetNs, ignoreContents);
+
 
         // process other attributes.
         
@@ -130,8 +138,12 @@ public class SchemaIncludedState extends GlobalDeclState {
         
     }
 
-    /** does something useful with determined target namespace. */
-    protected void onTargetNamespaceResolved( String targetNs ) {
+    /**
+     * This is called when the target namespace is determined for a new schema.
+     * @param targetNs namespace of the schema
+     * @param ignoreContents TODO
+     */
+    protected void onTargetNamespaceResolved( String targetNs, boolean ignoreContents ) {
     }
     
     protected void endSelf() {

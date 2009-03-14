@@ -18,6 +18,8 @@ import java.io.IOException;
 /**
  * XSLTLiaison implementation for SAXON.
  * 
+ * This doesn't use Saxon any longer. It uses the JDK TraX.
+ * 
  * <p>
  * This class 
  */
@@ -36,7 +38,7 @@ public class SAXONLiaison implements org.apache.tools.ant.taskdefs.XSLTLiaison
     private Transformer transformer = null;
 
     public SAXONLiaison() throws Exception {
-        tfactory = (TransformerFactory)			Class.forName("com.icl.saxon.TransformerFactoryImpl").newInstance();
+        tfactory = TransformerFactory.newInstance();
     }
 	
 //------------------- IMPORTANT

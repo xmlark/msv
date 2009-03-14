@@ -10,6 +10,7 @@
 package com.sun.msv.reader;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -19,6 +20,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.relaxng.datatype.Datatype;
+import org.w3c.dom.ls.LSInput;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -407,7 +409,7 @@ public abstract class GrammarReader
         String url = source.getSystemId();
         
         for( InclusionContext ic = pendingIncludes; ic!=null; ic=ic.previousContext )
-            if( ic.systemId.equals(url) ) {
+            if (ic.systemId != null && ic.systemId.equals(url) ) {
                 
                 // recursive include.
                 // computes what files are recurisve.
@@ -753,6 +755,42 @@ public abstract class GrammarReader
     public final void reportWarning( String propertyName, Object[] args, Locator[] locations ) {
         controller.warning( prepareLocation(locations),
                             localizeMessage(propertyName,args) );
+    }
+    
+    /**
+     * This is a stopgap until we can wean more of this code from SAX-dependence.
+     * 
+
+     * @param input
+     * @return
+     */
+    public static InputSource inputSourceFromLSInput(LSInput input) {
+    	InputSource inputSource = new InputSource();
+    	
+    	/*
+    	 1.   LSInput.characterStream
+    	 2. LSInput.byteStream
+     	 3. LSInput.stringData
+   	     4. LSInput.systemId
+         5. LSInput.publicId
+    	 */
+    	if (input.getCharacterStream() != null) {
+    		inputSource.setCharacterStream(input.getCharacterStream());
+    	} 
+    	if (input.getByteStream() != null) {
+    		inputSource.setByteStream(input.getByteStream());
+    	}
+    	if (input.getStringData() != null) {
+    		inputSource.setCharacterStream(new StringReader(input.getStringData()));
+    	}
+    	if (input.getSystemId() != null) {
+    		inputSource.setSystemId(input.getSystemId());
+    	}
+    	
+    	if (input.getPublicId() != null) {
+    		inputSource.setPublicId(input.getPublicId());
+    	}
+    	return inputSource;
     }
     
     

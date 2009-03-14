@@ -24,14 +24,19 @@ public class SchemaState extends SchemaIncludedState {
     
     private XMLSchemaSchema old;
     
-    protected void onTargetNamespaceResolved( String targetNs ) {
-        super.onTargetNamespaceResolved(targetNs);
-        
-        final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
+    protected void onTargetNamespaceResolved( String targetNs, boolean ignoreContents ) {
+        super.onTargetNamespaceResolved(targetNs, ignoreContents);
+    	XMLSchemaReader reader = (XMLSchemaReader)this.reader;        
         
         // sets new XMLSchemaGrammar object.
         old = reader.currentSchema;
         reader.currentSchema = reader.getOrCreateSchema(targetNs);
+        /*
+         * Don't check for errors if this is a redundant read that we are ignoring.
+         */
+        if (ignoreContents) {
+        	return;
+        }
         
         if( reader.isSchemaDefined(reader.currentSchema) )  {
             reader.reportError( XMLSchemaReader.ERR_DUPLICATE_SCHEMA_DEFINITION, targetNs );

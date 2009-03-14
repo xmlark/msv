@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
@@ -17,7 +18,7 @@ import org.xml.sax.helpers.LocatorImpl;
  * This class wraps a GrammarReaderController and
  * adds several convenient methods for the caller.
  */
-public class Controller implements GrammarReaderController,ErrorHandler
+public class Controller implements GrammarReaderController2, ErrorHandler
 {
     /** Controller works as a wrapper to this object. */
     private final GrammarReaderController core;
@@ -36,8 +37,9 @@ public class Controller implements GrammarReaderController,ErrorHandler
         this.core = _core;
     }
     
-    public InputSource resolveEntity( String p, String s ) throws SAXException, IOException {
-        return core.resolveEntity(p,s);
+    @Deprecated
+    public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+        return core.resolveEntity(publicId, systemId);
     }
     
     public void warning( Locator[] locs, String errorMessage ) {
@@ -96,4 +98,15 @@ public class Controller implements GrammarReaderController,ErrorHandler
         
         return new Locator[]{loc};
     }
+
+    /**
+     * Return the full resolver.
+     */
+	public LSResourceResolver getLSResourceResolver() {
+		if (core instanceof GrammarReaderController2) {
+			return ((GrammarReaderController2)core).getLSResourceResolver();
+		} else {
+			return null;
+		}
+	}
 }

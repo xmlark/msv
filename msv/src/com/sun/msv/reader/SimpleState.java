@@ -13,7 +13,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.AttributesImpl;
 
-import com.sun.msv.grammar.IDContextProvider2;
 import com.sun.msv.util.StartTagInfo;
 
 /**

@@ -10,15 +10,19 @@
 package com.sun.msv.reader.xmlschema;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.iso_relax.verifier.Schema;
 import org.relaxng.datatype.DatatypeException;
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
@@ -64,6 +68,12 @@ import com.sun.msv.verifier.jarv.XSFactoryImpl;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver {
+	
+	/* A schema may be embedded in a larger document with additional prefix/namespace
+	 * mappings.
+	 */
+	
+	private Map<String, String> additionalNamespaceMap;
     
     /** loads XML Schema */
     public static XMLSchemaGrammar parse( String grammarURL,
@@ -239,7 +249,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
      * The spec calls for <i>"the necessity of establishing identity
      * component by component"</i> (section 4.2.1, last note).
      */
-    public final Map parsedFiles = new java.util.HashMap();
+    public final Map<String, Set<String>> parsedFiles =	new HashMap<String, Set<String>>();
     
     public final XMLSchemaGrammar getResult() {
         if(controller.hadError())    return null;
@@ -380,7 +390,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
     /** set of XMLSchemaGrammar that is already defined.
      * XMLSchemaGrammar object is created when it is first referenced or defined.
      */
-    private final Set definedSchemata = new java.util.HashSet();
+    private final Set<XMLSchemaSchema> definedSchemata = new java.util.HashSet<XMLSchemaSchema>();
     public final void markSchemaAsDefined( XMLSchemaSchema schema ) {
         definedSchemata.add( schema );
     }
@@ -559,7 +569,24 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
      */
     public String[] splitQName( String qName ) {
         String[] r = super.splitQName(qName);
-        if(r==null)        return r;
+        if(r == null) {
+        	/* This code copies code in the base class.
+        	 * Perhaps it would be better to push and pop these prefixes,
+        	 * but they have to be at the end of the chain so they would 
+        	 * have to be pushed at 'parse', which in turn suggests
+        	 * pushing this functionality down into the grammar controller,
+        	 * which I'm not willing to try today.
+        	 */
+        	int idx = qName.indexOf(':');
+        	if (idx > 0) {
+        		String prefix = qName.substring(0, idx);
+        		String uri = additionalNamespaceMap.get(prefix);
+        		if (uri != null) {
+        			return new String[]{uri, qName.substring(idx+1), qName};
+        		}
+        	}
+        	return null;
+        }
         if(r[0].length()==0 && chameleonTargetNamespace!=null)
             r[0] = chameleonTargetNamespace;
         return r;
@@ -665,19 +692,37 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
     
     
     protected void switchSource( State sourceState, State newRootState ) throws AbortException {
-        final String schemaLocation = sourceState.getStartTag().getAttribute("schemaLocation");
+        String schemaLocation = sourceState.getStartTag().getAttribute("schemaLocation");
 
-        if(schemaLocation==null) {
-            // schemaLocation attribute is required.
-            reportError( ERR_MISSING_ATTRIBUTE, sourceState.getStartTag().qName, "schemaLocation" );
-            // recover by ignoring this element
+        if(schemaLocation == null) {
+        	LSResourceResolver resolver = controller.getLSResourceResolver();
+        	if (resolver != null) {
+        		// TODO: push LSResolver thinking down a level.
+        		String namespaceURI = sourceState.getStartTag().getAttribute("namespace");
+        		if (namespaceURI == null) {
+        			reportError("XmlSchemaReader.noLocation", sourceState.getStartTag().qName);
+        			return;
+        		}
+        		
+        		LSInput resolved = resolver.resolveResource(XMLConstants.W3C_XML_SCHEMA_NS_URI,
+        					namespaceURI, null, null, sourceState.getBaseURI());
+
+        		if (resolved == null) {
+        			reportError("XmlSchemaReader.unresolvedSchema",
+        					 sourceState.getStartTag().qName,
+        					 namespaceURI);
+        			return;
+        		}
+        		
+        		// Make the best source we can out of what comes back from the resolver.
+        		InputSource source = GrammarReader.inputSourceFromLSInput(resolved);
+        		switchSource(source, newRootState);
+        	}
+        } else {
+        	// parse specified file
+        	switchSource( sourceState, schemaLocation, newRootState );
         }
-        else
-            // parse specified file
-            switchSource( sourceState, schemaLocation, newRootState );
     }
-
-    
     
     /**
      * a flag that indicates State objects should check duplicate definitions.
@@ -753,7 +798,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
         // this process depends on the result of back-patching.
         
         // a buffer which will be used to check the recursive substitution group definition.
-        final Set recursiveSubstBuffer = new java.util.HashSet();
+        final Set<ElementDeclExp> recursiveSubstBuffer = new java.util.HashSet<ElementDeclExp>();
         
         itr = grammar.iterateSchemas();
         while( itr.hasNext() ) {
@@ -1011,4 +1056,12 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
         "XMLSchemaReader.RecursiveSubstitutionGroup";
     public static final String WRN_IMPLICIT_URTYPE_FOR_ELEMENT = // arg:0
         "XMLSchemaReader.Warning.ImplicitUrTypeForElement";
+
+	public Map<String, String> getAdditionalNamespaceMap() {
+		return additionalNamespaceMap;
+	}
+
+	public void setAdditionalNamespaceMap(Map<String, String> additionalNamespaceMap) {
+		this.additionalNamespaceMap = additionalNamespaceMap;
+	}
 }

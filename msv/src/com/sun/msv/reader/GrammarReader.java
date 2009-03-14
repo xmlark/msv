@@ -11,6 +11,7 @@ package com.sun.msv.reader;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -18,6 +19,14 @@ import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.relaxng.datatype.Datatype;
 import org.w3c.dom.ls.LSInput;
@@ -444,6 +453,29 @@ public abstract class GrammarReader
     /** parses a grammar from the specified source */
     public final void parse( InputSource source ) {
         _parse(source,null);
+    }
+    
+    /**
+     * Parse from an arbitrary javax.xml.transform source.
+     * If the Source can be processed by {@link SAXSource#sourceToInputSource(Source)},
+     * then this API will use that. Otherwise, it will use a transformer to 
+     * create a stream of SAX events. In that later case, the grammar controller 
+     * will not be called for any errors on the source side or to resolve
+     * any references; the caller is responsible for making separate arrangements.
+     * @param source
+     * @throws TransformerConfigurationException
+     * @throws TransformerException
+     */
+    public void parse(Source source) throws TransformerConfigurationException, TransformerException {
+    	InputSource saxSource = SAXSource.sourceToInputSource(source);
+    	if (saxSource != null) {
+    		parse(saxSource);
+    	} else {
+    		// take an arbitrary TraX source.
+    		TransformerFactory factory = TransformerFactory.newInstance();
+    		SAXResult result = new SAXResult(this);
+    		factory.newTransformer().transform(source, result);
+    	}
     }
     
     /** parses a grammar from the specified source */

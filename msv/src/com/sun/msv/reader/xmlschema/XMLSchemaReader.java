@@ -18,6 +18,9 @@ import java.util.Set;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.iso_relax.verifier.Schema;
 import org.relaxng.datatype.DatatypeException;
@@ -93,6 +96,22 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
         reader.parse(grammar);
         
         return reader.getResult();
+    }
+    
+    /**
+     * Convenience method to create a reader and read a single scheme.
+     * @param schema
+     * @param controller
+     * @return
+     * @throws TransformerConfigurationException
+     * @throws TransformerException
+     */
+    public static XMLSchemaGrammar parse(Source schema, GrammarReaderController controller) throws TransformerConfigurationException, TransformerException {
+    	// no parser factory needed, don't create one.
+        XMLSchemaReader reader = new XMLSchemaReader(controller, null);
+        reader.parse(schema);
+        return reader.getResult();
+    	
     }
 
 

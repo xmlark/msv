@@ -22,8 +22,8 @@ import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.SequenceState;
 import com.sun.msv.reader.State;
 import com.sun.msv.reader.TerminalState;
-import com.sun.msv.reader.relax.core.InlineElementState;
 import com.sun.msv.reader.datatype.xsd.FacetState;
+import com.sun.msv.reader.relax.core.InlineElementState;
 import com.sun.msv.util.StartTagInfo;
 
 /**

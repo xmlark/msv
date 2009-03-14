@@ -86,7 +86,7 @@ public class RELAXCoreIslandSchemaReader extends RELAXCoreReader
         ExternalElementExp exp = (ExternalElementExp)externalElementExps.get(name);
         if( exp!=null )    return exp;
         
-        exp = new ExternalElementExp( pool, namespace, label, new LocatorImpl(locator) );
+        exp = new ExternalElementExp( pool, namespace, label, new LocatorImpl(getLocator()) );
         externalElementExps.put( name, exp );
         return exp;
     }
@@ -108,7 +108,7 @@ public class RELAXCoreIslandSchemaReader extends RELAXCoreReader
     protected Expression resolveAttPoolRef( String namespace, String label )
     {
         if( namespace!=null )
-            return new ExternalAttributeExp(pool,namespace,label,new LocatorImpl(locator));
+            return new ExternalAttributeExp(pool,namespace,label,new LocatorImpl(getLocator()));
         else
             return super.resolveAttPoolRef(namespace,label);
     }

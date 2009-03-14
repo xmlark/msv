@@ -11,8 +11,8 @@ package com.sun.msv.grammar;
 
 import org.relaxng.datatype.Datatype;
 
-import com.sun.msv.util.StringPair;
 import com.sun.msv.datatype.xsd.XSDatatype;
+import com.sun.msv.util.StringPair;
 
 /**
  * Expression that matchs characters of the particular {@link Datatype}.

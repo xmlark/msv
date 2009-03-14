@@ -6,10 +6,6 @@
 
 package com.sun.msv.scanner.dtd;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
 import java.io.CharConversionException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +14,10 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.Locale;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * This is how the parser talks to its input entities, of all kinds.

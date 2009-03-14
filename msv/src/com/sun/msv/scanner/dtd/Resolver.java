@@ -4,9 +4,6 @@
 
 package com.sun.msv.scanner.dtd;
 
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,6 +11,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Hashtable;
+
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
 
 /**
  * This entity resolver class provides a number of utilities which can help

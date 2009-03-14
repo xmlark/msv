@@ -9,6 +9,15 @@
  */
 package com.sun.msv.verifier.regexp;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
+
+import org.relaxng.datatype.DatatypeException;
+
 import com.sun.msv.grammar.AttributeExp;
 import com.sun.msv.grammar.ChoiceExp;
 import com.sun.msv.grammar.DataOrValueExp;
@@ -26,14 +35,6 @@ import com.sun.msv.util.DatatypeRef;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
 import com.sun.msv.verifier.Acceptor;
-import org.relaxng.datatype.DatatypeException;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
 
 /**
  * {@link Acceptor} implementation.

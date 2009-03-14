@@ -153,7 +153,7 @@ public class RELAXNSReader extends RELAXReader {
             reportError( ERR_MISSING_ATTRIBUTE, tagName, "namespace" );
             return Expression.nullSet;
         }
-        return new ExternalElementExp( pool, namespace, label, new LocatorImpl(locator) );
+        return new ExternalElementExp( pool, namespace, label, new LocatorImpl(getLocator()) );
     }
     
     

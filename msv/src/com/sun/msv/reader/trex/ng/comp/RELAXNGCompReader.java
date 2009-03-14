@@ -199,7 +199,7 @@ public class RELAXNGCompReader extends RELAXNGReader {
         if(inAnnotation) {
             // we found a child element for a:annotation.
             // this is not OK.
-            reportWarning( CERR_ANN_CHILD_ELEMENT, null, new Locator[]{locator} );
+            reportWarning( CERR_ANN_CHILD_ELEMENT, null, new Locator[]{getLocator()} );
             ((RELAXNGGrammar)grammar).isAnnotationCompatible = false;
         }
         
@@ -212,7 +212,7 @@ public class RELAXNGCompReader extends RELAXNGReader {
                 || attUri.equals(AnnotationNamespace)
                 || attUri.equals(RELAXNGNamespace) ) {
                     // it contains an invalid attribute
-                    reportWarning( CERR_ANN_INVALID_ATTRIBUTE, new Object[]{atts.getQName(i)}, new Locator[]{locator} );
+                    reportWarning( CERR_ANN_INVALID_ATTRIBUTE, new Object[]{atts.getQName(i)}, new Locator[]{getLocator()} );
                     ((RELAXNGGrammar)grammar).isAnnotationCompatible = false;
                     break;    // abort further check.
                 }
@@ -223,7 +223,7 @@ public class RELAXNGCompReader extends RELAXNGReader {
                 && !"value".equals(lastRNGElement.top())
                 && !"param".equals(lastRNGElement.top())
                 && !"name".equals(lastRNGElement.top())) {
-                    reportWarning( CERR_ANN_MISPLACED, new Object[]{lastRNGElement.top()}, new Locator[]{locator} );
+                    reportWarning( CERR_ANN_MISPLACED, new Object[]{lastRNGElement.top()}, new Locator[]{getLocator()} );
                     ((RELAXNGGrammar)grammar).isAnnotationCompatible = false;
                 }
             }

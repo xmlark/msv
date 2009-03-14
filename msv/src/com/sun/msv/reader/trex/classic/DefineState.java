@@ -43,7 +43,7 @@ public class DefineState extends com.sun.msv.reader.trex.DefineState {
         
         // make sure that the previous definition was in a different file.
         if( reader.getDeclaredLocationOf(baseExp).getSystemId().equals(
-                reader.locator.getSystemId() ) ) {
+                reader.getLocator().getSystemId() ) ) {
             reader.reportError( TREXGrammarReader.ERR_DUPLICATE_DEFINITION, baseExp.name );
             // recovery by ignoring this definition
             return baseExp.exp;

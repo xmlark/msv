@@ -132,8 +132,8 @@ public abstract class State implements ContentHandler
         this.reader = reader;
         this.parentState = parentState;
         this.startTag = startTag;
-        if( reader.locator!=null )    // locator could be null, in case of the root state.
-        this.location = new LocatorImpl( reader.locator );
+        if( reader.getLocator()!=null )    // locator could be null, in case of the root state.
+        this.location = new LocatorImpl( reader.getLocator() );
         
         // handle the xml:base attribute.
         String base=null;
@@ -146,7 +146,7 @@ public abstract class State implements ContentHandler
         else {
             this.baseURI = parentState.baseURI;
             if( this.baseURI==null )
-                this.baseURI = reader.locator.getSystemId();
+                this.baseURI = reader.getLocator().getSystemId();
         }
         if( base!=null )
             this.baseURI = reader.combineURI( this.baseURI, base );

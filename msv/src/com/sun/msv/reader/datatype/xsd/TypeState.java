@@ -14,7 +14,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
 import com.sun.msv.datatype.xsd.StringType;
-import com.sun.msv.grammar.IDContextProvider2;
 import com.sun.msv.reader.ExpressionOwner;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.IgnoreState;

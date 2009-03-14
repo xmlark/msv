@@ -9,6 +9,8 @@
  */
 package com.sun.msv.grammar.util;
 
+import com.sun.msv.grammar.NameClass;
+
 /**
  * Computes if two name classes collide or not.
  * 

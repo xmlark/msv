@@ -11,7 +11,6 @@ package com.sun.msv.reader;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,10 +22,8 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.relaxng.datatype.Datatype;
 import org.w3c.dom.ls.LSInput;
@@ -78,7 +75,7 @@ public abstract class GrammarReader
     implements IDContextProvider2
 {
     /** document Locator that is given by XML reader */
-    public Locator locator;
+    private Locator locator;
     
     /** this object receives errors and warnings */
     public final Controller controller;
@@ -330,16 +327,16 @@ public abstract class GrammarReader
     
     private void pushInclusionContext( ) {
         pendingIncludes = new InclusionContext(
-            prefixResolver, locator, locator.getSystemId(),
+            prefixResolver, getLocator(), getLocator().getSystemId(),
             pendingIncludes );
         
         prefixResolver = basePrefixResolver;
-        locator = null;
+        setLocator(null);
     }
     
     private void popInclusionContext() {
         prefixResolver        = pendingIncludes.prefixResolver;
-        locator                = pendingIncludes.locator;
+        setLocator(pendingIncludes.locator);
         
         pendingIncludes = pendingIncludes.previousContext;
     }
@@ -369,9 +366,9 @@ public abstract class GrammarReader
             
         // in case of an error, throw the AbortException
         } catch( IOException e ) {
-            controller.error(e,locator);
+            controller.error(e,getLocator());
         } catch( SAXException e ) {
-            controller.error(e,locator);
+            controller.error(e,getLocator());
         }
         throw AbortException.theInstance;
     }
@@ -493,6 +490,13 @@ public abstract class GrammarReader
     	if (saxSource != null) {
     		parse(saxSource);
     	} else {
+    		/* a sax parser will always set up a locator to the ID information
+    		 * in the InputSource. TraX does not do this, so we have to.
+    		 */
+    		LocatorImpl sourceLocator = new LocatorImpl();
+    		sourceLocator.setSystemId(source.getSystemId());
+    		setLocator(sourceLocator);
+    		
     		// take an arbitrary TraX source.
     		TransformerFactory factory = TransformerFactory.newInstance();
     		SAXResult result = new SAXResult(this);
@@ -547,7 +551,7 @@ public abstract class GrammarReader
                 impl.put(target,list);
             }
             
-            list.add(new LocatorImpl(locator));
+            list.add(new LocatorImpl(getLocator()));
         }
         
         /**
@@ -588,7 +592,7 @@ public abstract class GrammarReader
     private final Map declaredLocations = new java.util.HashMap();
     
     public void setDeclaredLocationOf( Object o ) {
-        declaredLocations.put(o, new LocatorImpl(locator) );
+        declaredLocations.put(o, new LocatorImpl(getLocator()) );
     }
     public Locator getDeclaredLocationOf( Object o ) {
         return (Locator)declaredLocations.get(o);
@@ -661,7 +665,7 @@ public abstract class GrammarReader
     
     public void setDocumentLocator( Locator loc ) {
         super.setDocumentLocator(loc);
-        this.locator = loc;
+        this.setLocator(loc);
     }
 
 
@@ -729,10 +733,10 @@ public abstract class GrammarReader
     
     /** Performs all back-patchings. */
     public final void runBackPatchJob() {
-        Locator oldLoc = locator;
+        Locator oldLoc = getLocator();
         runBackPatchJob(backPatchJobs);
         runBackPatchJob(delayedBackPatchJobs);
-        locator = oldLoc;
+        setLocator(oldLoc);
     }
     
     private final void runBackPatchJob( Vector vec ) {
@@ -741,7 +745,7 @@ public abstract class GrammarReader
             BackPatch job = ((BackPatch)itr.next());
             // so that errors reported in the patch job will have 
             // position of its start tag.
-            locator = job.getOwnerState().getLocation();
+            setLocator(job.getOwnerState().getLocation());
             job.patch();
         }
     }
@@ -793,7 +797,7 @@ public abstract class GrammarReader
             
             return locs;
         }
-        if( locator!=null )        return new Locator[]{locator};
+        if( getLocator()!=null )        return new Locator[]{getLocator()};
         else                    return new Locator[0];
     }
     
@@ -852,7 +856,17 @@ public abstract class GrammarReader
     protected abstract String localizeMessage( String propertyName, Object[] args );
 
     
-    public static final String ERR_MALPLACED_ELEMENT =    // arg:1
+    public void setLocator(Locator locator) {
+		this.locator = locator;
+	}
+
+
+	public Locator getLocator() {
+		return locator;
+	}
+
+
+	public static final String ERR_MALPLACED_ELEMENT =    // arg:1
         "GrammarReader.MalplacedElement";
 //    public static final String ERR_IO_EXCEPTION =    // arg:1
 //        "GrammarReader.IOException";

@@ -94,12 +94,12 @@ public abstract class SimpleState extends State
         
     public final void endElement( String namespaceURI, String localName, String qName ) {
         // while processing endSelf, error should be reported for its start tag.
-        Locator prevLoc = reader.locator;
+        Locator prevLoc = reader.getLocator();
         try {
-            reader.locator = this.location;
+            reader.setLocator(this.location);
             endSelf();
         } finally {
-            reader.locator = prevLoc;
+            reader.setLocator(prevLoc);
         }
         
         reader.popState();

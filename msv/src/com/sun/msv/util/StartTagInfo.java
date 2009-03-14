@@ -9,11 +9,12 @@
  */
 package com.sun.msv.util;
 
+import org.xml.sax.Attributes;
+
 import com.sun.msv.datatype.xsd.WhiteSpaceProcessor;
 import com.sun.msv.grammar.IDContextProvider;
 import com.sun.msv.grammar.IDContextProvider2;
 import com.sun.msv.grammar.util.IDContextProviderWrapper;
-import org.xml.sax.Attributes;
 
 /**
  * immutable start tag information

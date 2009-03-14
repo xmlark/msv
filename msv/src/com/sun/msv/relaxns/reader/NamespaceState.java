@@ -151,7 +151,7 @@ public class NamespaceState extends State
         // feed moduleReader.
         //----------------------
         moduleReader.startDocument();    // simulate SAX events
-        moduleReader.setDocumentLocator(reader.locator);
+        moduleReader.setDocumentLocator(reader.getLocator());
         
         // simulate prefix mappings
         GrammarReader.PrefixResolver resolver = reader.prefixResolver;

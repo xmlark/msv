@@ -14,6 +14,7 @@ import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.NamespaceNameClass;
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.verifier.Acceptor;
+import com.sun.msv.verifier.identity.IDConstraintChecker;
 import com.sun.msv.verifier.regexp.AttributeFeeder;
 import com.sun.msv.verifier.regexp.CombinedChildContentExpCreator;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;

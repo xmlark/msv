@@ -6,12 +6,12 @@
 
 package com.sun.msv.scanner.dtd;
 
+import java.io.IOException;
+import java.net.URL;
+
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.net.URL;
 class ExternalEntity extends EntityDecl
 {
     String    systemId;    // resolved URI (not relative)

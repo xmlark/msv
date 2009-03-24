@@ -31,6 +31,12 @@
   <build>
     <resources>
       <resource>
+        <directory>src</directory>
+        <includes>
+          <include>**/*.properties</include>
+	</includes>
+      </resource>
+      <resource>
         <directory>src-apache</directory>
         <excludes>
           <exclude>**/*.java</exclude>

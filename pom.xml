@@ -167,15 +167,22 @@
       </plugin>
     </plugins>
   </reporting>
+  <repositories>
+    <repository>
+      <id>maven2-repository.dev.java.net</id>
+      <name>Java.net Repository for Maven</name>
+      <url>http://download.java.net/maven/2/</url>
+    </repository>
+  </repositories>
 
  <distributionManagement>
     <repository>
       <uniqueVersion>false</uniqueVersion>
       <id>java.net-maven2-repository</id>
-<!--
       <url>java-net:/maven2-repository/trunk/repository/</url>
--->
+<!--
       <url>https://msv.dev.java.net/svn/msv/trunk/testRepository</url>
+-->
     </repository>
   </distributionManagement>
 </project>

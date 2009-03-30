@@ -736,7 +736,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
         		}
         		
         		// Make the best source we can out of what comes back from the resolver.
-        		InputSource source = GrammarReader.inputSourceFromLSInput(resolved);
+        		Source source = GrammarReader.inputSourceFromLSInput(resolved);
         		switchSource(source, newRootState);
         	}
         } else {

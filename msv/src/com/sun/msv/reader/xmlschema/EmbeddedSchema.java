@@ -17,8 +17,6 @@ public class EmbeddedSchema {
 
 	private String systemId;
 	private Element schemaElement;
-	private String schemaAsString;
-
 	/**
 	 * Create object to represent one of the schemas in a WSDL
 	 * 
@@ -39,25 +37,4 @@ public class EmbeddedSchema {
 	public Element getSchemaElement() {
 		return schemaElement;
 	}
-
-	public String getSchemaAsString() {
-		synchronized (this) {
-			if (schemaAsString == null) {
-				TransformerFactory transformerFactory = TransformerFactory
-						.newInstance();
-				StringWriter writer = new StringWriter();
-				StreamResult result = new StreamResult(writer);
-				DOMSource source = new DOMSource(schemaElement);
-				try {
-					transformerFactory.newTransformer().transform(source,
-							result);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-				schemaAsString = writer.toString();
-			}
-		}
-		return schemaAsString;
-	}
-
 }

@@ -21,61 +21,70 @@ import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.reader.GrammarReaderController2;
 
 public class MultiSchemaReaderTest {
-	
-	private static class LocalController implements GrammarReaderController2 {
 
-		public LSResourceResolver getLSResourceResolver() {
-			return null;
-		}
+    private static class LocalController implements GrammarReaderController2 {
 
-		public void error(Locator[] locs, String errorMessage,
-				Exception nestedException) {
-			StringBuffer errors = new StringBuffer();
-			for (Locator loc : locs) {
-				errors.append("in " 
-							  + loc.getSystemId()
-							  + " " 
-							  + loc.getLineNumber()
-						      + ":" 
-						      + loc.getColumnNumber());
-			}
-			throw new RuntimeException(errors.toString(), nestedException);
-		}
+        public LSResourceResolver getLSResourceResolver() {
+            return null;
+        }
 
-		public void warning(Locator[] locs, String errorMessage) {
-			StringBuffer errors = new StringBuffer();
-			for (Locator loc : locs) {
-				errors.append("in " 
-							  + loc.getSystemId()
-							  + " " 
-							  + loc.getLineNumber()
-						      + ":" 
-						      + loc.getColumnNumber());
-			}
-			// no warning allowed.
-			throw new RuntimeException("warning: " + errors.toString());
-		}
+        public void error(Locator[] locs, String errorMessage, Exception nestedException) {
+            StringBuffer errors = new StringBuffer();
+            for (Locator loc : locs) {
+                errors.append("in " + loc.getSystemId() + " " + loc.getLineNumber() + ":"
+                              + loc.getColumnNumber());
+            }
+            throw new RuntimeException(errors.toString(), nestedException);
+        }
 
-		public InputSource resolveEntity(String publicId, String systemId)
-				throws SAXException, IOException {
-			return null;
-		}};
-	
-	@Test
-	public void testWsdlMultiSchema() throws Exception {
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-		documentBuilderFactory.setNamespaceAware(true);
-		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		URL wsdlUri = getClass().getResource("test.wsdl");
-		Document wsdl = documentBuilder.parse(wsdlUri.openStream());
-		String wsdlSystemId = wsdlUri.toExternalForm();
-		DOMSource source = new DOMSource(wsdl);
-		source.setSystemId(wsdlSystemId);
+        public void warning(Locator[] locs, String errorMessage) {
+            StringBuffer errors = new StringBuffer();
+            for (Locator loc : locs) {
+                errors.append("in " + loc.getSystemId() + " " + loc.getLineNumber() + ":"
+                              + loc.getColumnNumber());
+            }
+            // no warning allowed.
+            throw new RuntimeException("warning: " + errors.toString());
+        }
 
-		LocalController controller = new LocalController();
-		SAXParserFactory factory = SAXParserFactory.newInstance();
+        public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+            return null;
+        }
+    };
+
+    @Test
+    public void testWsdlMultiSchema() throws Exception {
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setNamespaceAware(true);
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        URL wsdlUri = getClass().getResource("test.wsdl");
+        Document wsdl = documentBuilder.parse(wsdlUri.openStream());
+        String wsdlSystemId = wsdlUri.toExternalForm();
+        DOMSource source = new DOMSource(wsdl);
+        source.setSystemId(wsdlSystemId);
+
+        LocalController controller = new LocalController();
+        SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
-		XMLSchemaGrammar result = WSDLSchemaReader.read(source, factory, controller);
-		assertNotNull(result);
-	}
+        XMLSchemaGrammar result = WSDLSchemaReader.read(source, factory, controller);
+        assertNotNull(result);
+    }
+    
+    @Test
+    public void testWsdlMultiRefSchema() throws Exception {
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setNamespaceAware(true);
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        URL wsdlUri = getClass().getResource("multireference.wsdl");
+        Document wsdl = documentBuilder.parse(wsdlUri.openStream());
+        String wsdlSystemId = wsdlUri.toExternalForm();
+        DOMSource source = new DOMSource(wsdl);
+        source.setSystemId(wsdlSystemId);
+
+        LocalController controller = new LocalController();
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        factory.setNamespaceAware(true);
+        XMLSchemaGrammar result = WSDLSchemaReader.read(source, factory, controller);
+        assertNotNull(result);
+    }
 }

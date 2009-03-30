@@ -22,6 +22,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXSource;
 
@@ -822,33 +823,39 @@ public abstract class GrammarReader
      * @param input
      * @return
      */
-    public static InputSource inputSourceFromLSInput(LSInput input) {
-    	InputSource inputSource = new InputSource();
-    	
-    	/*
-    	 1.   LSInput.characterStream
-    	 2. LSInput.byteStream
-     	 3. LSInput.stringData
-   	     4. LSInput.systemId
-         5. LSInput.publicId
-    	 */
-    	if (input.getCharacterStream() != null) {
-    		inputSource.setCharacterStream(input.getCharacterStream());
-    	} 
-    	if (input.getByteStream() != null) {
-    		inputSource.setByteStream(input.getByteStream());
-    	}
-    	if (input.getStringData() != null) {
-    		inputSource.setCharacterStream(new StringReader(input.getStringData()));
-    	}
-    	if (input.getSystemId() != null) {
-    		inputSource.setSystemId(input.getSystemId());
-    	}
-    	
-    	if (input.getPublicId() != null) {
-    		inputSource.setPublicId(input.getPublicId());
-    	}
-    	return inputSource;
+    public static Source inputSourceFromLSInput(LSInput input) {
+        Source source;
+        if (input instanceof DOMLSInput) {
+            DOMLSInput domLSInput = (DOMLSInput)input;
+            source = new DOMSource(domLSInput.getElement());
+        } else {
+
+            InputSource inputSource = new InputSource();
+
+            /*
+             * 1. LSInput.characterStream 2. LSInput.byteStream 3. LSInput.stringData 4. LSInput.systemId 5.
+             * LSInput.publicId
+             */
+            if (input.getCharacterStream() != null) {
+                inputSource.setCharacterStream(input.getCharacterStream());
+            }
+            if (input.getByteStream() != null) {
+                inputSource.setByteStream(input.getByteStream());
+            }
+            if (input.getStringData() != null) {
+                inputSource.setCharacterStream(new StringReader(input.getStringData()));
+            }
+            if (input.getPublicId() != null) {
+                // trax sources don't have public IDs.
+                inputSource.setPublicId(input.getPublicId());
+            }
+            source = new SAXSource(inputSource);
+        }
+        
+        if (input.getSystemId() != null) {
+            source.setSystemId(input.getSystemId());
+        }
+        return source;
     }
     
     

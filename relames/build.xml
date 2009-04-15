@@ -17,10 +17,9 @@
 			
 			<classpath path="../msv/bin" />
 			<classpath path="../xsdlib/bin" />
-			<classpath path="${xerces.jar}" />
-			<classpath path="${xalan.jar}" />
-			<classpath path="${relaxngDatatype.jar}"/>
-			<classpath path="${isorelax.jar}"/>
+			<classpath>
+			  <fileset dir="../shared/lib" includes="*.jar" />
+			</classpath>
 		</javac>
     <!-- copy static resource files -->
     <copy todir="bin">
@@ -64,8 +63,9 @@
 		<javac srcdir="dist/src" destdir="temp" source="1.2" target="1.2" debug="on">
 			
 			<classpath path="../package/msv.jar"/>
-			<classpath path="${relaxngDatatype.jar}"/>
-			<classpath path="${isorelax.jar}"/>
+			<classpath>
+			  <fileset dir="../shared/lib" includes="*.jar" />
+			</classpath>
 			<include name="**/*.java" />
 		</javac>
 		

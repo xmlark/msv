@@ -175,14 +175,30 @@
     </repository>
   </repositories>
 
+  <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>codehaus</id>
+      <name>Codehaus Repository</name>
+      <url>dav:https://dav.codehaus.org/repository/woodstox</url>
+      <layout>default</layout>
+    </repository>
+    <snapshotRepository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>codehausSnap</id>
+      <name>Codehaus Snapshots</name>
+      <url>dav:https://dav.codehaus.org/snapshots.repository/woodstox</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+<!--
  <distributionManagement>
     <repository>
       <uniqueVersion>false</uniqueVersion>
       <id>java.net-maven2-repository</id>
       <url>java-net:/maven2-repository/trunk/repository/</url>
-<!--
-      <url>https://msv.dev.java.net/svn/msv/trunk/testRepository</url>
--->
     </repository>
   </distributionManagement>
+-->
+
 </project>

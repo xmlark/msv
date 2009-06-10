@@ -1,3 +1,9 @@
+From points unknown to 2009.1:
+
+The 2009.1 version supports multiple interrelated W3C XML Schemas. This includes
+support for <xsd:import namespace="urn:Array"/> crossreferences. 
+
+The build system is now maven, and there were some other minor cleanups.
 
 From Apr,2002 version to Mar,2003 version
 -----------------------------------------

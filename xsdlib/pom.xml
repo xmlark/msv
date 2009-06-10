@@ -30,24 +30,24 @@ PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
 LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
 EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.sun.msv.datatype.xsd</groupId>
   <artifactId>xsdlib</artifactId>
-  <version>2009.1</version>
+  <version>2009.1-SNAPSHOT</version>
   <name>MSV XML Schema Library</name>
   <parent>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv-parent</artifactId>
-    <version>2009.1</version>
+    <version>2009.1-SNAPSHOT</version>
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
   <description>XML Schema datatypes library</description>
 
   <scm>
-    <connection>scm:svn:http://msv.dev.java.net/svn/msv/tags/msv-2009.1/xsdlib</connection>
-    <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/tags/msv-2009.1/xsdlib</developerConnection>
+    <connection>scm:svn:http://msv.dev.java.net/svn/msv/trunk/xsdlib</connection>
+    <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/trunk/xsdlib</developerConnection>
   </scm>
 
   <mailingLists>

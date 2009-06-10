@@ -30,6 +30,7 @@
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv</artifactId>
     <version>2009.1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.java.dev.msv</groupId>
@@ -44,8 +45,7 @@
     <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/trunk/parent</developerConnection>
   </scm>
 
-
-  <properties>
+ <properties>
     <surefire.fork.mode>once</surefire.fork.mode>
     <surefire.format>brief</surefire.format>
     <surefire.usefile>false</surefire.usefile>

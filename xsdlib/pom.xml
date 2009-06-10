@@ -19,7 +19,6 @@
     <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/trunk/xsdlib</developerConnection>
   </scm>
 
-
   <mailingLists>
     <mailingList>
       <name>Users List</name>

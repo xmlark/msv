@@ -174,7 +174,7 @@
       <url>http://download.java.net/maven/2/</url>
     </repository>
   </repositories>
-
+<!--
   <distributionManagement>
     <repository>
       <uniqueVersion>false</uniqueVersion>
@@ -190,8 +190,7 @@
       <url>dav:https://dav.codehaus.org/snapshots.repository/woodstox</url>
     </snapshotRepository>
   </distributionManagement>
-
-<!--
+-->
  <distributionManagement>
     <repository>
       <uniqueVersion>false</uniqueVersion>
@@ -199,6 +198,5 @@
       <url>java-net:/maven2-repository/trunk/repository/</url>
     </repository>
   </distributionManagement>
--->
 
 </project>

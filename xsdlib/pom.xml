@@ -34,20 +34,20 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.sun.msv.datatype.xsd</groupId>
   <artifactId>xsdlib</artifactId>
-  <version>2009.1</version>
+  <version>2009.2-SNAPSHOT</version>
   <name>MSV XML Schema Library</name>
   <parent>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv-parent</artifactId>
-    <version>2009.1</version>
+    <version>2009.2-SNAPSHOT</version>
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
   <description>XML Schema datatypes library</description>
 
   <scm>
-    <connection>scm:svn:http://msv.dev.java.net/svn/msv/tags/msv-2009.1/xsdlib</connection>
-    <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/tags/msv-2009.1/xsdlib</developerConnection>
+    <connection>scm:svn:http://msv.dev.java.net/svn/msv/trunk/xsdlib</connection>
+    <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/trunk/xsdlib</developerConnection>
   </scm>
 
   <mailingLists>

@@ -34,13 +34,13 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv</artifactId>
-    <version>2009.1-SNAPSHOT</version>
+    <version>2009.1</version>
     <name>msv</name>
     <url>http://msv.java.net</url>
     <packaging>pom</packaging>
     <scm>
-        <connection>scm:svn:http://msv.dev.java.net/svn/msv/trunk</connection>
-        <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/trunk</developerConnection>
+        <connection>scm:svn:http://msv.dev.java.net/svn/msv/tags/msv-2009.1</connection>
+        <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/tags/msv-2009.1</developerConnection>
     </scm>
     <prerequisites>
         <maven>2.0.8</maven>
@@ -51,7 +51,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <licenses>
         <license>
             <name>BSD</name>
-            <url/>
+            <url />
             <distribution>repo</distribution>
         </license>
     </licenses>

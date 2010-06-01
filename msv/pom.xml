@@ -89,14 +89,22 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
       <groupId>net.java.dev.msv</groupId>
       <artifactId>msv-testharness</artifactId>
       <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
+    <!-- Note: Xerces only needed for TextUI; hence optional
+      -->
     <dependency>
       <groupId>xml-resolver</groupId>
       <artifactId>xml-resolver</artifactId>
+      <optional>true</optional>
+      <version>1.2</version>
     </dependency>
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
+      <!-- Note: Xerces only needed for TextUI; hence optional
+        -->
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>isorelax</groupId>
@@ -105,10 +113,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <dependency>
       <groupId>relaxngDatatype</groupId>
       <artifactId>relaxngDatatype</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

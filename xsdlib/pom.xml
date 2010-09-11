@@ -45,9 +45,14 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
   <description>XML Schema datatypes library</description>
 
-  <scm>
+  <scm> 
+<!--
     <connection>scm:svn:http://msv.dev.java.net/svn/msv/trunk/xsdlib</connection>
     <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/trunk/xsdlib</developerConnection>
+-->
+   <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
+    <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
+    <url>http://github.com/kohsuke/msv</url>
   </scm>
 
   <mailingLists>
@@ -121,18 +126,12 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
   </developers>
   <dependencies>
     <dependency>
-      <groupId>isorelax</groupId>
-      <artifactId>isorelax</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>relaxngDatatype</groupId>
-      <artifactId>relaxngDatatype</artifactId>
-    </dependency>
-    <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
       <optional>true</optional>
     </dependency>
+
+    <!-- Test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

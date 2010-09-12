@@ -52,4 +52,23 @@ public class ComplexContentState extends ExpressionWithChildState {
         
         return newChildExpression;
     }
+
+    /* Patch to address issue #1, [http://github.com/kohsuke/msv/issues#issue/1].
+     */
+    @Override
+    protected Expression annealExpression(Expression contentType) {
+      String mixed = startTag.getAttribute("mixed");
+
+      if ("true".equals(mixed)) {
+        contentType = reader.pool.createMixed(contentType);
+      } else {
+        if (mixed != null && !"false".equals(mixed)) {
+          reader.reportError(XMLSchemaReader.ERR_BAD_ATTRIBUTE_VALUE, "mixed", mixed);
+          // recover by ignoring this error.
+        }
+      }
+
+      return contentType;
+    }
+
 }

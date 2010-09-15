@@ -29,20 +29,25 @@
   <parent>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv</artifactId>
-    <version>2009.2-SNAPSHOT</version>
+    <version>2010.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.java.dev.msv</groupId>
   <artifactId>msv-parent</artifactId>
-  <version>2009.2-SNAPSHOT</version>
+  <version>2010.1-SNAPSHOT</version>
   <name>MSV Parent</name>
   <url>http://msv.java.net</url>
   <packaging>pom</packaging>
 
   <scm>
+<!--
     <connection>scm:svn:http://msv.dev.java.net/svn/msv/trunk/parent</connection>
     <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/trunk/parent</developerConnection>
+-->
+    <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
+    <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
+    <url>http://github.com/kohsuke/msv</url>
   </scm>
 
  <properties>
@@ -130,9 +135,26 @@
 
   <repositories>
     <repository>
-      <id>maven2-repository.dev.java.net</id>
-      <name>Java.net Repository for Maven</name>
-      <url>http://download.java.net/maven/2/</url>
+      <id>sonatype</id>
+      <name>Sonatype</name>
+      <layout>default</layout>
+      <url>http://oss.sonatype.org/content/repositories/releases</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+        <checksumPolicy>warn</checksumPolicy>
+      </releases>
+    </repository>
+    <repository>
+      <id>maven</id>
+      <name>Maven</name>
+      <layout>default</layout>
+      <url>http://repo1.maven.org/maven2</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+        <checksumPolicy>warn</checksumPolicy>
+      </releases>
     </repository>
   </repositories>
 

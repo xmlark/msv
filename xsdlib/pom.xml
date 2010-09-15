@@ -34,12 +34,13 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.sun.msv.datatype.xsd</groupId>
   <artifactId>xsdlib</artifactId>
-  <version>2009.2-SNAPSHOT</version>
-  <name>MSV XML Schema Library</name>
+  <version>2010.1-SNAPSHOT</version>
+  <name>MSV XML Schema Datatype Library</name>
+  <packaging>bundle</packaging>
   <parent>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv-parent</artifactId>
-    <version>2009.2-SNAPSHOT</version>
+    <version>2010.1-SNAPSHOT</version>
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
@@ -72,12 +73,21 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
       <name>Kohsuke Kawaguchi</name>
       <email>kk@kohsuke.org</email>
     </developer>
+    <developer>
+      <id>tatu</id>
+      <name>Tatu Saloranta</name>
+      <email>tatu.saloranta@iki.fi</email>
+    </developer>
   </developers>
   <dependencies>
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>relaxngDatatype</groupId>
+      <artifactId>relaxngDatatype</artifactId>
     </dependency>
 
     <!-- Test dependencies -->
@@ -110,6 +120,28 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
       </resource>
     </resources>
     <plugins>
+      <!-- Compilation: require JDK 1.5 -->
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>  
+        <configuration>
+          <source>1.5</source>  
+          <target>1.5</target>  
+        </configuration>  
+      </plugin>
+      <!-- Also build source jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Ant test jar as well -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -128,14 +160,43 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
           </archive>
         </configuration>
       </plugin>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <version>2.0</version>
-            <configuration>
-                <mavenExecutorId>forked-path</mavenExecutorId>
-            </configuration>
-        </plugin>
+      <!-- Plus, let's make jars OSGi bundles as well  -->
+      <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <extensions>true</extensions>
+          <configuration>
+            <instructions>
+              <Bundle-Name>${project.name}</Bundle-Name>
+              <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+              <Bundle-Description>${project.name}</Bundle-Description>
+              <Import-Package>
+org.relaxng.datatype,
+org.relaxng.datatype.helpers
+</Import-Package>
+              <DynamicImport-Package>
+org.apache.xerces.impl.xpath.regex
+</DynamicImport-Package>
+              <Private-Package>
+com.sun.msv.datatype.regexp,
+com.sun.xml.util
+</Private-Package>
+              <Export-Package>
+com.sun.msv.datatype,
+com.sun.msv.datatype.xsd*
+</Export-Package>
+            </instructions>
+          </configuration>
+      </plugin>
+      <!-- Need GPG signatures for releases -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.0</version>
+        <configuration>
+          <mavenExecutorId>forked-path</mavenExecutorId>
+        </configuration>
+      </plugin>
 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -157,7 +218,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
       </plugin>
     </plugins>
   </build>
-<!--
   <profiles>
         <profile>
             <id>release-sign-artifacts</id>
@@ -187,6 +247,5 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             </build>
         </profile>
   </profiles>
--->
 
 </project>

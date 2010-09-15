@@ -3,12 +3,12 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.java.dev.msv</groupId>
   <artifactId>msv-testharness</artifactId>
-  <version>2009.2-SNAPSHOT</version>
+  <version>2010.1-SNAPSHOT</version>
   <name>MSV Test Harness</name>
   <parent>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv-parent</artifactId>
-    <version>2009.2-SNAPSHOT</version>
+    <version>2010.1-SNAPSHOT</version>
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 

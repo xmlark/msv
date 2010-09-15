@@ -36,6 +36,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
   <artifactId>xsdlib</artifactId>
   <version>2010.1-SNAPSHOT</version>
   <name>MSV XML Schema Datatype Library</name>
+  <description>XML Schema datatypes library</description>
   <packaging>bundle</packaging>
   <parent>
     <groupId>net.java.dev.msv</groupId>
@@ -43,8 +44,13 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <version>2010.1-SNAPSHOT</version>
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
-
-  <description>XML Schema datatypes library</description>
+  <licenses>
+    <license>
+      <name>BSD</name>
+      <url>http://www.opensource.org/licenses/bsd-license.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <scm> 
 <!--
@@ -169,7 +175,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             <instructions>
               <Bundle-Name>${project.name}</Bundle-Name>
               <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-              <Bundle-Description>${project.name}</Bundle-Description>
+              <Bundle-Description>${project.description}</Bundle-Description>
               <Import-Package>
 org.relaxng.datatype,
 org.relaxng.datatype.helpers

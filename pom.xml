@@ -39,7 +39,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv</artifactId>
-    <version>2010.1-SNAPSHOT</version>
+    <version>2010.1</version>
     <name>msv</name>
     <url>http://github.com/kohsuke/msv</url>
     <packaging>pom</packaging>

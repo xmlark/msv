@@ -34,12 +34,12 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.java.dev.msv</groupId>
   <artifactId>msv-core</artifactId>
-  <version>2010.1-SNAPSHOT</version>
+  <version>2009.1</version>
   <name>MSV Core</name>
   <parent>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv-parent</artifactId>
-    <version>2010.1-SNAPSHOT</version>
+    <version>2009.1</version>
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 

@@ -57,7 +57,7 @@ public class MultiSchemaReaderTest {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        URL wsdlUri = getClass().getResource("test.wsdl");
+        URL wsdlUri = getClass().getResource("/test.wsdl");
         assertNotNull(wsdlUri);
         Document wsdl = documentBuilder.parse(wsdlUri.openStream());
         String wsdlSystemId = wsdlUri.toExternalForm();
@@ -76,7 +76,7 @@ public class MultiSchemaReaderTest {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        URL wsdlUri = getClass().getResource("multireference.wsdl");
+        URL wsdlUri = getClass().getResource("/multireference.wsdl");
         assertNotNull(wsdlUri);
         Document wsdl = documentBuilder.parse(wsdlUri.openStream());
         String wsdlSystemId = wsdlUri.toExternalForm();

@@ -34,7 +34,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.java.dev.msv</groupId>
   <artifactId>msv-core</artifactId>
-  <version>2010.1-SNAPSHOT</version>
+  <version>2010.1</version>
   <name>MSV Core</name>
   <description>Multi-Schema Validator Core package
 </description>
@@ -185,13 +185,41 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
               <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
               <Bundle-Description>${project.description}</Bundle-Description>
               <Import-Package>
+javax.xml.namespace,
+javax.xml.parsers,
+javax.xml.transform*,
+javax.xml.xpath,
+org.iso_relax.dispatcher,
+org.iso_relax.dispatcher.impl,
+org.iso_relax.verifier,
+org.iso_relax.verifier.impl,
+org.relaxng.datatype,
+org.relaxng.datatype.helpers,
+org.xml.sax,
+org.xml.sax.helpers,
+org.w3c.dom,
+org.w3c.dom.ls,
+com.sun.msv.datatype,
+com.sun.msv.datatype.xsd,
+com.sun.msv.datatype.xsd.ngimpl,
+com.sun.msv.datatype.xsd.regex
 </Import-Package>
               <DynamicImport-Package>
+org.apache.xerces.impl.xpath.regex,
+org.apache.xml.resolver,
+org.apache.xml.resolver.tools
 </DynamicImport-Package>
               <Private-Package>
+com.sun.msv.util
 </Private-Package>
               <Export-Package>
-com.sun.msv*
+com.sun.msv.driver.textui,
+com.sun.msv.grammar*,
+com.sun.msv.reader*,
+com.sun.msv.relaxns*,
+com.sun.msv.scanner*,
+com.sun.msv.verifier*,
+com.sun.msv.writer*
 </Export-Package>
             </instructions>
           </configuration>

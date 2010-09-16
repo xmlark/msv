@@ -68,6 +68,13 @@
         <version>2.9.1</version>
         <optional>true</optional>
     </dependency>
+    <dependency><!-- for tests -->
+        <groupId>xml-resolver</groupId>
+        <artifactId>xml-resolver</artifactId>
+        <version>1.2</version>
+        <optional>true</optional>
+        <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>net.java.dev.msv</groupId>
@@ -88,11 +95,6 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>xerces</groupId>
-        <artifactId>xercesImpl</artifactId>
-	<scope>test</scope>
     </dependency>
   </dependencies>
 </project>

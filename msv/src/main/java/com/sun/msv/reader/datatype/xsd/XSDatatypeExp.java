@@ -136,7 +136,7 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
         
         if( context.callStack.contains(this) ) {
             // a recursive definition is detected.
-            Vector locs = new Vector();
+            Vector<Locator> locs = new Vector<Locator>();
             for( int i=0; i<context.callStack.size(); i++ )
                 locs.add( ((XSDatatypeExp)context.callStack.get(i)).ownerState.getLocation() );
                 
@@ -257,13 +257,13 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
     
     /** Derives a new type by union. */
     public static XSDatatypeExp makeUnion( final String typeNameUri,
-        final String typeName, final Collection members, GrammarReader reader )
+        final String typeName, final Collection<XSDatatypeExp> members, GrammarReader reader )
             throws DatatypeException {
         
         final XSDatatype[] m = new XSDatatype[members.size()];
         
         int i=0;
-        Iterator itr = members.iterator();
+        Iterator<XSDatatypeExp> itr = members.iterator();
         while(itr.hasNext()) {
             XSDatatypeExp item = (XSDatatypeExp)itr.next();
             
@@ -275,7 +275,7 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
                             throws DatatypeException {
                             
                             int i=0;
-                            Iterator itr = members.iterator();
+                            Iterator<XSDatatypeExp> itr = members.iterator();
                             while(itr.hasNext())
                                 m[i++] = ((XSDatatypeExp)itr.next()).getType(context);
                             
@@ -362,6 +362,6 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
     public static class RenderingContext {
         RenderingContext() {}
         
-        private final Stack callStack = new Stack();
+        private final Stack<Object> callStack = new Stack<Object>();
     }
 }

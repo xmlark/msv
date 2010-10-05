@@ -1,8 +1,6 @@
 package com.sun.msv.writer.relaxng;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.ValidationContext;
@@ -120,7 +118,7 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
         visitBinExp("group", exp, SequenceExp.class);
     }
     
-    public void visitBinExp(String elementName, BinaryExp exp, Class type) {
+    public void visitBinExp(String elementName, BinaryExp exp, Class<?> type) {
         // since AGM is binarized,
         // <choice> a b c </choice> is represented as
         // <choice> a <choice> b c </choice></choice>
@@ -178,7 +176,7 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
         if (exp.dt instanceof XSDatatypeImpl) {
             XSDatatypeImpl base = (XSDatatypeImpl)exp.dt;
 
-            final Vector ns = new Vector();
+            final List<String> ns = new ArrayList<String>();
 
             String lex = base.convertToLexicalValue(exp.value, new SerializationContext() {
                 public String getNamespacePrefix(String namespaceURI) {
@@ -238,10 +236,10 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
         }
 
         // store names of the applied facets into this set
-        Set appliedFacets = new HashSet();
+        Set<String> appliedFacets = new HashSet<String>();
 
         // store effective facets (those which are not shadowed by another facet).
-        Vector effectiveFacets = new Vector();
+        Vector<XSDatatype> effectiveFacets = new Vector<XSDatatype>();
 
         XSDatatype x = dt;
         while (x instanceof DataTypeWithFacet || x instanceof FinalComponent) {
@@ -424,7 +422,7 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
             writer.start("choice");
 
         for (int i = 0; i < values.length; i++) {
-            final Vector ns = new Vector();
+            final Vector<String> ns = new Vector<String>();
 
             String lex = dt.convertToLexicalValue(values[i], new SerializationContext() {
                 public String getNamespacePrefix(String namespaceURI) {

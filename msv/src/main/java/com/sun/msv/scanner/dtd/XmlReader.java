@@ -4,14 +4,8 @@
 
 package com.sun.msv.scanner.dtd;
 
-import java.io.ByteArrayInputStream;
-import java.io.CharConversionException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PushbackInputStream;
-import java.io.Reader;
-import java.util.Hashtable;
+import java.io.*;
+import java.util.HashMap;
 
 
 // NOTE:  Add I18N support to this class when JDK gets the ability to
@@ -118,7 +112,7 @@ final class XmlReader extends Reader {
     // in particular none of the EBCDIC ones IANA defines (and
     // which IBM encourages).
     //
-    static private final Hashtable charsets = new Hashtable (31);
+    static private final HashMap<String,String> charsets = new HashMap<String,String>(32);
 
     static {
     charsets.put ("UTF-16", "Unicode");

@@ -98,9 +98,6 @@ public class RELAXNGReader extends TREXBaseReader {
         super( controller, parserFactory, pool, stateFactory, new RootState() );
     }
     
-    
-
-    
     /**
      * Schema for schema of RELAX NG.
      */
@@ -116,16 +113,11 @@ public class RELAXNGReader extends TREXBaseReader {
                     new com.sun.msv.verifier.jarv.RELAXNGFactoryImpl().compileSchema(
                         RELAXNGReader.class.getResourceAsStream("relaxng.rng"));
             } catch( Exception e ) {
-                e.printStackTrace();
-                throw new Error("unable to load schema-for-schema for RELAX NG");
+                throw new RuntimeException("unable to load schema-for-schema for RELAX NG", e);
             }
         }
-        
         return relaxNGSchema4Schema;
     }
-    
-    
-    
     
     protected String localizeMessage( String propertyName, Object[] args ) {
         String format;
@@ -144,13 +136,15 @@ public class RELAXNGReader extends TREXBaseReader {
     }
     
     /** Map from ReferenceExps to RefExpParseInfos. */
-    private final Map refExpParseInfos = new java.util.HashMap();
+    private final Map<ReferenceExp,RefExpParseInfo> refExpParseInfos = new java.util.HashMap<ReferenceExp,RefExpParseInfo>();
     
     /** Gets RefExpParseInfo object for the specified ReferenceExp. */
     protected RefExpParseInfo getRefExpParseInfo( ReferenceExp exp ) {
-        RefExpParseInfo r = (RefExpParseInfo)refExpParseInfos.get(exp);
-        if(r==null)
-            refExpParseInfos.put(exp, r = new RefExpParseInfo());
+        RefExpParseInfo r = refExpParseInfos.get(exp);
+        if(r==null) {
+            r = new RefExpParseInfo();
+            refExpParseInfos.put(exp, r);
+        }
         return r;
     }
     
@@ -233,18 +227,17 @@ public class RELAXNGReader extends TREXBaseReader {
          * <p>
          * This is used to detect recursive self reference errors.
          */
-        public final Vector directRefs = new Vector();
+        public final Vector<ReferenceExp> directRefs = new Vector<ReferenceExp>();
         
         /**
          * ReferenceExps which are referenced from this pattern indirectly
          * (with ElementExp in between.)
          */
-        public final Vector indirectRefs = new Vector();
+        public final Vector<ReferenceExp> indirectRefs = new Vector<ReferenceExp>();
     }
     
     /** Namespace URI of RELAX NG */
     public static final String RELAXNGNamespace = "http://relaxng.org/ns/structure/1.0";
-
     protected boolean isGrammarElement( StartTagInfo tag ) {
         return RELAXNGNamespace.equals(tag.namespaceURI)
         // allow old namespace URI for now.
@@ -364,22 +357,19 @@ public class RELAXNGReader extends TREXBaseReader {
         }
         return ErrorDatatypeLibrary.theInstance;
     }
-
     
-    
-    
-    
+    @SuppressWarnings("serial")
     private static class AbortException extends Exception {}
     
     private void checkRunawayExpression(
-        ReferenceExp node, Stack items, Set visitedExps ) throws AbortException {
+        ReferenceExp node, Stack<ReferenceExp> items, Set<ReferenceExp> visitedExps ) throws AbortException {
                                                                                     
         if( !visitedExps.add(node) )
             return;        // this ReferenceExp has already been processed.
         items.push(node);
         
         // test direct references
-        Iterator itr = getRefExpParseInfo(node).directRefs.iterator();
+        Iterator<ReferenceExp> itr = getRefExpParseInfo(node).directRefs.iterator();
         while( itr.hasNext() ) {
             ReferenceExp child = (ReferenceExp)itr.next();
             
@@ -388,7 +378,7 @@ public class RELAXNGReader extends TREXBaseReader {
                 // find a cycle.
                 
                 String s = "";
-                Vector locs = new Vector();
+                Vector<Locator> locs = new Vector<Locator>();
             
                 for( ; idx<items.size(); idx++ ) {
                     ReferenceExp e = (ReferenceExp)items.get(idx);
@@ -398,7 +388,9 @@ public class RELAXNGReader extends TREXBaseReader {
                     s += e.name;
                     
                     Locator loc = getDeclaredLocationOf(e);
-                    if(loc==null)    continue;
+                    if(loc==null) {
+                        continue;
+                    }
                     locs.add(loc);
                 }
                 
@@ -415,11 +407,11 @@ public class RELAXNGReader extends TREXBaseReader {
         }
 
         // test indirect references
-        Stack empty = new Stack();
+        Stack<ReferenceExp> empty = new Stack<ReferenceExp>();
         itr = getRefExpParseInfo(node).indirectRefs.iterator();
-        while( itr.hasNext() )
-            checkRunawayExpression( (ReferenceExp)itr.next(), empty, visitedExps );
-        
+        while( itr.hasNext() ) {
+            checkRunawayExpression(itr.next(), empty, visitedExps );
+        }        
         items.pop();
     }
     
@@ -434,7 +426,7 @@ public class RELAXNGReader extends TREXBaseReader {
         
         // checks the runaway expression
         try {
-            checkRunawayExpression( grammar, new Stack(), new java.util.HashSet() );
+            checkRunawayExpression( grammar, new Stack<ReferenceExp>(), new java.util.HashSet<ReferenceExp>() );
         } catch( AbortException e ) {;}
         
         if( !controller.hadError() )

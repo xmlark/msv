@@ -13,6 +13,7 @@ import java.util.Map;
 
 import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.grammar.Expression;
+import com.sun.msv.util.StringPair;
 
 /**
  * this object will be added to Expression.verifierTag
@@ -42,7 +43,7 @@ final class OptimizationTag
      * Since it is possible for multiple threads to access the same OptimizationTag
      * concurrently, it has to be serialized.
      */
-    final Map simpleElementTokenResidual = new java.util.Hashtable();
+    final Map<Object,Object> simpleElementTokenResidual = new java.util.Hashtable<Object,Object>();
     
     protected static final class OwnerAndCont
     {
@@ -52,7 +53,7 @@ final class OptimizationTag
         { this.owner=owner; this.continuation=cont; }
     };
     /** map from (namespaceURI,tagName) pair to OwnerAndContinuation. */
-    final Map transitions = new java.util.Hashtable();
+    final Map<StringPair,Object> transitions = new java.util.Hashtable<StringPair,Object>();
 
     /** AttributePruner.prune(exp) */
     Expression attributePrunedExpression;

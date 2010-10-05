@@ -137,6 +137,7 @@ public class GrammarLoader
     }
     
     /** wrapper exception so that we can throw it from the GrammarReaderController. */
+    @SuppressWarnings("serial")
     private static class GrammarLoaderException extends RuntimeException {
         GrammarLoaderException( SAXException e ) {
             super(e.getMessage());
@@ -413,7 +414,7 @@ public class GrammarLoader
         */
         parser.setContentHandler( new DefaultHandler(){
             private Locator locator;
-            private Vector prefixes = new Vector();
+            private Vector<String[]> prefixes = new Vector<String[]>();
             public void setDocumentLocator( Locator loc ) {
                 this.locator = loc;
             }

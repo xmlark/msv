@@ -10,6 +10,7 @@
 package com.sun.msv.driver.textui;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -68,9 +69,10 @@ public class Driver {
         System.exit(run(args));
     }
     
+    @SuppressWarnings("deprecation")
     public static int run( String[] args ) throws Exception {
-        final List fileNames = new ArrayList();
-        final List classPaths = new ArrayList();
+        final List<String> fileNames = new ArrayList<String>();
+        final List<URL> classPaths = new ArrayList<URL>();
         
         String grammarName = null;
         boolean dump=false;
@@ -325,7 +327,7 @@ public class Driver {
         System.out.println("*** top level ***");
         System.out.println(ExpressionPrinter.printFragment(g.topLevel));
         
-        Iterator itr = g.iterateSchemas();
+        Iterator<?> itr = g.iterateSchemas();
         while(itr.hasNext()) {
             XMLSchemaSchema s = (XMLSchemaSchema)itr.next();
             dumpXMLSchema(s);

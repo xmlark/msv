@@ -39,7 +39,7 @@ import java.util.Enumeration;
  *
  * @version $Revision$
  */
-final class SimpleHashtable implements Enumeration
+final class SimpleHashtable implements Enumeration<Object>
 {
     // entries ...
     private Entry        table[];
@@ -103,7 +103,7 @@ final class SimpleHashtable implements Enumeration
      * @return  an enumeration of the keys in this hashtable.
      * @see     Enumeration
      */
-    public Enumeration keys() {
+    public Enumeration<Object> keys() {
     currentBucket = 0;
     current = null;
     return this;

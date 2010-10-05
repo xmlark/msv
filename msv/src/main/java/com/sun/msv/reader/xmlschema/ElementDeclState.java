@@ -273,7 +273,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 
     
     /** identity constraints found in this element. */
-    protected final Vector idcs = new Vector();
+    protected final Vector<IdentityConstraint> idcs = new Vector<IdentityConstraint>();
         
     /** this method is called when an identity constraint declaration is found.
      */

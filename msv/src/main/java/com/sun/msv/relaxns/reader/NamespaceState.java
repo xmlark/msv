@@ -74,11 +74,8 @@ public class NamespaceState extends State
         final String validation = startTag.getAttribute("validation");
         if( "false".equals(validation) )
         {// this module will not be validated.
-            
             // create stub module.
-            getReader().grammar.moduleMap.put(
-                namespace, new IgnoredSchema() );
-            
+            getReader().grammar.moduleMap.put(namespace, new IgnoredSchema() );
             return;    // done.
         }
 
@@ -155,7 +152,7 @@ public class NamespaceState extends State
         
         // simulate prefix mappings
         GrammarReader.PrefixResolver resolver = reader.prefixResolver;
-        Vector prefixes = new Vector();
+        Vector<String> prefixes = new Vector<String>();
         while( resolver instanceof GrammarReader.ChainPrefixResolver ) {
             GrammarReader.ChainPrefixResolver ch = (GrammarReader.ChainPrefixResolver)resolver;
             prefixes.add( ch.prefix );

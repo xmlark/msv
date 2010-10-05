@@ -196,7 +196,9 @@ public class ElementDeclExp extends ReferenceExp
      * 
      * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
      */
+    @SuppressWarnings("serial")
     public class XSElementExp extends ElementExp {
+
         public final SimpleNameClass elementName;
         public final NameClass getNameClass() { return elementName; }
         
@@ -215,7 +217,7 @@ public class ElementDeclExp extends ReferenceExp
          * These identity constraints are not enforced by the default Verifier
          * implementation.
          */
-        public final Vector identityConstraints = new Vector();
+        public final Vector<Object> identityConstraints = new Vector<Object>();
         
         public final ElementDeclExp parent;
     }

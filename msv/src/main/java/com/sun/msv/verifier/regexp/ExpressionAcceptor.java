@@ -23,7 +23,6 @@ import com.sun.msv.grammar.ChoiceExp;
 import com.sun.msv.grammar.DataOrValueExp;
 import com.sun.msv.grammar.ElementExp;
 import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.IDContextProvider;
 import com.sun.msv.grammar.IDContextProvider2;
 import com.sun.msv.grammar.NameClass;
 import com.sun.msv.grammar.NamespaceNameClass;
@@ -156,12 +155,13 @@ public abstract class ExpressionAcceptor implements Acceptor {
         Expression contentModel, Expression continuation/*can be null*/,
         ElementExp[] primitives, int numPrimitives );
         
+
     /**
      * @deprecated
      */
     public final boolean onAttribute(
         String namespaceURI, String localName, String qName, String value,
-        IDContextProvider context, StringRef refErr, DatatypeRef refType ) {
+        com.sun.msv.grammar.IDContextProvider context, StringRef refErr, DatatypeRef refType ) {
         
         return onAttribute2( namespaceURI, localName, qName, value,
             IDContextProviderWrapper.create(context), refErr, refType );
@@ -331,7 +331,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
     /**
      * @deprecated
      */
-    public final boolean onText( String literal, IDContextProvider context, StringRef refErr, DatatypeRef refType ) {
+    public final boolean onText( String literal, com.sun.msv.grammar.IDContextProvider context, StringRef refErr, DatatypeRef refType ) {
         return onText2( literal, IDContextProviderWrapper.create(context), refErr, refType );
     }
     
@@ -386,9 +386,8 @@ public abstract class ExpressionAcceptor implements Acceptor {
     
 // error recovery
 //==================================================
-    
-    
-    
+
+    /*
     private final Expression mergeContinuation( Expression exp1, Expression exp2 ) {
         if(exp1==null && exp2==null)    return null;
         if(exp1==null || exp1==Expression.nullSet)    return exp2;
@@ -396,6 +395,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
         
         return docDecl.pool.createChoice(exp1,exp2);
     }
+    */
     
     /**
      * creates Acceptor that recovers from errors.
@@ -448,16 +448,16 @@ public abstract class ExpressionAcceptor implements Acceptor {
      *  (1) inserts separator into appropriate positions
      *  (2) appends "more" message when items are only a portion of candidates.
      */
-    private String concatenateMessages( List items, boolean more,
+    private String concatenateMessages( List<String> items, boolean more,
                                               String separatorStr, String moreStr )
     {
         String r="";
         String sep = docDecl.localizeMessage(separatorStr,null);
         
         Collections.sort(items,
-            new Comparator(){
-                public int compare( Object o1, Object o2 ) {
-                    return ((String)o1).compareTo((String)o2);
+            new Comparator<String>(){
+                public int compare( String o1, String o2 ) {
+                    return o1.compareTo(o2);
                 }
             });    // sort candidates.
         
@@ -471,9 +471,9 @@ public abstract class ExpressionAcceptor implements Acceptor {
         return r;
     }
 
-    private String concatenateMessages( Set items, boolean more,
+    private String concatenateMessages( Set<String> items, boolean more,
                                               String separatorStr, String moreStr ) {
-        return concatenateMessages( new Vector(items), more, separatorStr, moreStr );
+        return concatenateMessages( new Vector<String>(items), more, separatorStr, moreStr );
     }
 
     /**
@@ -533,7 +533,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
                         
         // therefore we can provide candidates for users.
                         
-        Set s = new java.util.HashSet();
+        Set<String> s = new java.util.LinkedHashSet<String>();
         boolean more = false;
 
         // if there is a SimpleNameClass with the same localName
@@ -668,10 +668,9 @@ public abstract class ExpressionAcceptor implements Acceptor {
             //
             // falls into this pattern.
                                 
-            final Set items = new java.util.HashSet();
+            final Set<String> items = new java.util.LinkedHashSet<String>();
             boolean more = false;
-                                
-            
+
             ChoiceExp ch = (ChoiceExp)constraint;
             Expression[] children = ch.getChildren();                    
             for( int i=0; i<children.length; i++ ) {
@@ -721,7 +720,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
         // AttributePruner must return Expression other than nullSet.
         // In that case, there should have been no error.
 
-        final Set s = new java.util.HashSet();
+        final Set<String> s = new java.util.LinkedHashSet<String>();
         boolean more = false;
                 
         while( e instanceof ChoiceExp ) {
@@ -818,10 +817,10 @@ public abstract class ExpressionAcceptor implements Acceptor {
             }
         } else {
             // there are multiple candidates.
-            final Set items = new java.util.HashSet();
+            final Set<String> items = new java.util.LinkedHashSet<String>();
             boolean more = false;
             
-            Iterator itr = srt.failedExps.iterator();
+            Iterator<Object> itr = srt.failedExps.iterator();
                                 
             while(itr.hasNext()) {
                 DataOrValueExp texp = (DataOrValueExp)itr.next();
@@ -879,7 +878,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
         final CombinedChildContentExpCreator cccc = docDecl.cccec;
         cccc.get( expression, null, false );
         
-        Set s = new java.util.HashSet();    // this set will receive possible tag names.
+        Set<String> s = new java.util.LinkedHashSet<String>();    // this set will receive possible tag names.
         boolean more = false;                // this flag is set to true if there are more
                                             // candidate.
         

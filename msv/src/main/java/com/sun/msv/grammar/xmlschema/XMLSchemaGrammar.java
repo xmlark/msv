@@ -43,7 +43,7 @@ public class XMLSchemaGrammar implements Grammar {
     }
 
     /** map from namespace URI to loaded XMLSchemaSchema object. */
-    protected final Map schemata = new java.util.HashMap();
+    protected final Map<String, Object> schemata = new java.util.HashMap<String, Object>();
     
     /** gets XMLSchemaSchema object that has the given target namespace.
      * 
@@ -57,7 +57,7 @@ public class XMLSchemaGrammar implements Grammar {
      * returns an Iterator that enumerates XMLSchemaSchema objects
      * that are defined in this grammar.
      */
-    public Iterator iterateSchemas() {
+    public Iterator<Object> iterateSchemas() {
         return schemata.values().iterator();
     }
     

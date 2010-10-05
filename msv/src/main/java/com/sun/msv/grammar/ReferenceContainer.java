@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public abstract class ReferenceContainer implements java.io.Serializable {
     
-    protected final Map impl = new java.util.HashMap();
+    protected final Map<String,ReferenceExp> impl = new java.util.HashMap<String,ReferenceExp>();
     
     /**
      * gets or creates ReferenceExp object.
@@ -67,7 +67,7 @@ public abstract class ReferenceContainer implements java.io.Serializable {
     }
     
     /** iterates all ReferenceExp in this container */
-    public final Iterator iterator() {
+    public final Iterator<ReferenceExp> iterator() {
         return impl.values().iterator();
     }
     

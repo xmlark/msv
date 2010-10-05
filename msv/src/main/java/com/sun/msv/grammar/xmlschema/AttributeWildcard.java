@@ -67,7 +67,7 @@ public class AttributeWildcard {
             Expression exp = Expression.epsilon;
             LaxDefaultNameClass laxNc = new LaxDefaultNameClass(name);
             
-            Iterator itr = grammar.iterateSchemas();
+            Iterator<Object> itr = grammar.iterateSchemas();
             while( itr.hasNext() ) {
                 XMLSchemaSchema schema = (XMLSchemaSchema)itr.next();
                 // nc is built by using NamespaceNameClass.

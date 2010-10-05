@@ -94,7 +94,7 @@ public class AttributeState extends ExpressionWithChildState implements XSTypeOw
         final String fixed = startTag.getAttribute("fixed");
         final String name = startTag.getAttribute("name");
         final String use = startTag.getAttribute("use");
-
+        final String defaultValue = startTag.getAttribute("fixed");
 
         Expression exp;
         
@@ -123,6 +123,11 @@ public class AttributeState extends ExpressionWithChildState implements XSTypeOw
                     startTag.getAttribute("form") );
         
             if( fixed!=null ) {
+                // Can not have both 'fixed' and 'default':
+                if (defaultValue != null) {
+                    reader.reportError(new Locator[]{ this.location },
+                            XMLSchemaReader.ERR_DUPLICATE_ELEMENT_DEFINITION, null);
+                }
                 if(contentType instanceof XSDatatypeExp ) {
                     // we know that the attribute value is of XSDatatypeExp
                     final XSDatatypeExp baseType = (XSDatatypeExp)contentType;
@@ -151,13 +156,12 @@ public class AttributeState extends ExpressionWithChildState implements XSTypeOw
                 }
             }
             
-            if( "prohibited".equals(use) )
+            if( "prohibited".equals(use) ) {
                 // use='prohibited' is implemented through NoneType
                 contentType = reader.pool.createData( NoneType.theInstance );
-            
-            exp = createAttribute(
-                new SimpleNameClass( targetNamespace, name ),
-                contentType );
+            }
+            exp = createAttribute(new SimpleNameClass( targetNamespace, name ),
+                contentType, defaultValue);
         }
         
         if( isGlobal() ) {
@@ -197,8 +201,8 @@ public class AttributeState extends ExpressionWithChildState implements XSTypeOw
     /**
      * Allows the derived class to change it.
      */
-    protected Expression createAttribute( NameClass nc, Expression exp ) {
-        return reader.pool.createAttribute(nc,exp);
+    protected Expression createAttribute( NameClass nc, Expression exp, String defaultValue) {
+        return reader.pool.createAttribute(nc, exp, defaultValue);
     }
     
     public String getTargetNamespaceUri() {

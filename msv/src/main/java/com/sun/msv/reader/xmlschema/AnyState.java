@@ -96,7 +96,7 @@ public abstract class AnyState extends ExpressionWithoutChildState {
         final XMLSchemaReader reader = (XMLSchemaReader)this.reader;
         LaxDefaultNameClass laxNc = new LaxDefaultNameClass(allowedNc);
                 
-        Iterator itr = reader.grammar.iterateSchemas();
+        Iterator<Object> itr = reader.grammar.iterateSchemas();
         while( itr.hasNext() ) {
             XMLSchemaSchema schema = (XMLSchemaSchema)itr.next();
             if(allowedNc.accepts( schema.targetNamespace, NameClass.LOCALNAME_WILDCARD )) {

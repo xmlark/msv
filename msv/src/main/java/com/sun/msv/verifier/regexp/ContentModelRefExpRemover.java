@@ -41,10 +41,10 @@ public class ContentModelRefExpRemover {
 
         public Expression onAttribute(AttributeExp exp) {
             Expression content = exp.exp.visit(this);
-            if (content == Expression.nullSet)
+            if (content == Expression.nullSet) {
                 return Expression.nullSet; // this attribute is not allowed
-            else
-                return pool.createAttribute(exp.nameClass, content);
+            }
+            return pool.createAttribute(exp.nameClass, content, exp.getDefaultValue());
         }
 
         public Expression onRef(ReferenceExp exp) {

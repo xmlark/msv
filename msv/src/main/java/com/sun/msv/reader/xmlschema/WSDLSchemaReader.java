@@ -1,11 +1,6 @@
 package com.sun.msv.reader.xmlschema;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -27,7 +22,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 import com.sun.msv.grammar.xmlschema.XMLSchemaGrammar;
 import com.sun.msv.reader.GrammarReaderController2;
@@ -54,7 +48,7 @@ public final class WSDLSchemaReader {
 
         }
 
-        public Iterator getPrefixes(String namespaceURI) {
+        public Iterator<?> getPrefixes(String namespaceURI) {
             List<String> prefixes = new ArrayList<String>();
             if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(namespaceURI)) {
                 prefixes.add("xs");

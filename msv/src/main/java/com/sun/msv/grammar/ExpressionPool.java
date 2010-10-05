@@ -52,9 +52,13 @@ public class ExpressionPool implements java.io.Serializable {
     public final Expression createAttribute( NameClass nameClass ) {
         return unify(new AttributeExp(nameClass,Expression.anyString));
     }
-    public final Expression createAttribute( NameClass nameClass, Expression content ) {
-        if(content==Expression.nullSet)        return content;
-        return unify(new AttributeExp(nameClass,content));
+    public final Expression createAttribute( NameClass nameClass, Expression content, String defaultValue) {
+        if(content==Expression.nullSet) {
+            return content;
+        }
+        AttributeExp exp = new AttributeExp(nameClass,content);
+        exp.setDefaultValue(defaultValue);
+        return unify(exp);
     }
     
     public final Expression createEpsilon() { return Expression.epsilon; }
@@ -167,10 +171,10 @@ public class ExpressionPool implements java.io.Serializable {
         
         // special (optimized) unification.
         Expression o = expTable.getBinExp( left, right, SequenceExp.class );
-        if(o==null)
+        if(o==null) {
             return unify( new SequenceExp(left,right) );
-        else
-            return o;
+        }
+        return o;
     }
 
     public final Expression createConcur( Expression left, Expression right ) {

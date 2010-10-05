@@ -37,7 +37,7 @@ class IDCompatibilityChecker extends CompatibilityChecker {
     
     private static class IDAttMap {
         final ElementExp sampleDecl;
-        final Map idatts = new java.util.HashMap();
+        final Map<StringPair,Object> idatts = new java.util.HashMap<StringPair,Object>();
         
         IDAttMap( ElementExp e ) { this.sampleDecl=e; }
     }
@@ -46,10 +46,10 @@ class IDCompatibilityChecker extends CompatibilityChecker {
         grammar.isIDcompatible = true;
         
         // a map from element names(StringPair) to DefAttMap
-        final Map name2value = new HashMap();
+        final Map<StringPair,Object> name2value = new HashMap<StringPair,Object>();
         
         // a set of all ElementExps in the grammar.
-        final Set elements = new HashSet();
+        final Set<ElementExp> elements = new HashSet<ElementExp>();
         
         final RefExpRemover remover = new RefExpRemover(reader.pool,false);
         
@@ -144,8 +144,9 @@ class IDCompatibilityChecker extends CompatibilityChecker {
                 // this is the only place we can have ID/IDREF types.
                                     
                 // store that this attribute is used for ID/IDREF.
-                if(curAtts==null)
+                if(curAtts==null) {
                     curAtts = new IDAttMap(curElm);
+                }
                 curAtts.idatts.put(attName,texp.getName());
                             
             }
@@ -177,16 +178,16 @@ class IDCompatibilityChecker extends CompatibilityChecker {
         
         make sure that no other attributes are competing with id attributes.
         */
-        Iterator itr = elements.iterator();
-        final Vector vec = new Vector();    // IDAttMaps of the competing elements
+        Iterator<ElementExp> itr = elements.iterator();
+        final Vector<Object> vec = new Vector<Object>();    // IDAttMaps of the competing elements
         while( itr.hasNext() ) {
             final ElementExp eexp = (ElementExp)itr.next();
             
             // list up all competing elements.
             vec.clear();
-            Iterator jtr = name2value.entrySet().iterator();
+            Iterator<Map.Entry<StringPair,Object>> jtr = name2value.entrySet().iterator();
             while(jtr.hasNext()) {
-                Map.Entry e = (Map.Entry)jtr.next();
+                Map.Entry<StringPair,Object> e = jtr.next();
                 if( eexp.getNameClass().accepts((StringPair)e.getKey()) )
                     vec.add( e.getValue()/*IDAttMap*/ );
             }
@@ -235,10 +236,10 @@ class IDCompatibilityChecker extends CompatibilityChecker {
                     // compete with ID.
                     for( int i=vec.size()-1; i>=0; i-- ) {
                         IDAttMap iam = (IDAttMap)vec.get(i);
-                        Iterator jtr = iam.idatts.entrySet().iterator();
+                        Iterator<Map.Entry<StringPair,Object>> jtr = iam.idatts.entrySet().iterator();
                         while( jtr.hasNext() ) {
-                            Map.Entry e = (Map.Entry)jtr.next();
-                            if(exp.nameClass.accepts( (StringPair)e.getKey() )) {
+                            Map.Entry<StringPair,Object> e = jtr.next();
+                            if(exp.nameClass.accepts(e.getKey() )) {
                                 // competing attributes
                                 reportCompError(
                                     new Locator[]{

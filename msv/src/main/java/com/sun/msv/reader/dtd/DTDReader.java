@@ -121,12 +121,12 @@ public class DTDReader implements DTDEventListener {
      * map from prefix to set of possible namespace URI.
      * default namespace (without prefix) is stored by using "" as a key.
      */
-    protected final Map namespaces = createInitialNamespaceMap();
+    protected final Map<String, Set<String>> namespaces = createInitialNamespaceMap();
     
-    protected final static Map createInitialNamespaceMap() {
-        Map m = new java.util.HashMap();
+    protected final static Map<String, Set<String>> createInitialNamespaceMap() {
+        Map<String, Set<String>> m = new java.util.HashMap<String, Set<String>>();
         // prefix xml is implicitly declared.
-        Set s = new java.util.HashSet();
+        Set<String> s = new java.util.HashSet<String>();
         s.add("http://www.w3.org/XML/1998/namespace");
         m.put("xml",s);
         return m;
@@ -145,7 +145,7 @@ public class DTDReader implements DTDEventListener {
             // if this is an attribute and unprefixed, it is local to the element.
             return new SimpleNameClass(s[0],s[1]);
         
-        Set vec = (Set)namespaces.get(s[0]/*uri*/);
+        Set<String> vec = namespaces.get(s[0]/*uri*/);
         if(vec==null) {
             if(s[0].equals(""))
                 // this DTD does not attempt to use namespace.
@@ -213,9 +213,9 @@ public class DTDReader implements DTDEventListener {
     }
     
     /** map from element name to its content model. */
-    protected final Map elementDecls = new java.util.HashMap();
+    protected final Map<String,Object> elementDecls = new java.util.HashMap<String,Object>();
     /** map from element name to (map from attribute name to AttModel). */
-    protected final Map attributeDecls = new java.util.HashMap();
+    protected final Map<String,Map<String,Object>> attributeDecls = new java.util.HashMap<String,Map<String,Object>>();
     
     private static class AttModel {
         Expression    value;
@@ -381,11 +381,12 @@ public class DTDReader implements DTDEventListener {
             throw new Error();
     }
 
-    private Set getPossibleNamespaces( String prefix ) {
-        Set s = (Set)namespaces.get(prefix);
-        if(s!=null)        return s;
-        s = new java.util.HashSet();
-        namespaces.put(prefix,s);
+    private Set<String> getPossibleNamespaces( String prefix ) {
+        Set<String> s = namespaces.get(prefix);
+        if(s == null) {
+            s = new java.util.HashSet<String>();
+            namespaces.put(prefix,s);
+        }
         return s;
     }
     
@@ -413,7 +414,7 @@ public class DTDReader implements DTDEventListener {
                 // we don't have a default value, so no way to determine URI.
                 defaultValue = ABANDON_URI_SNIFFING;
             
-            Set s;
+            Set<String> s;
             if( attributeName.equals("xmlns") )
                 s = getPossibleNamespaces("");
             else
@@ -426,10 +427,10 @@ public class DTDReader implements DTDEventListener {
             return;
         }
         
-        Map attList = (Map)attributeDecls.get(elementName);
+        Map<String,Object> attList = attributeDecls.get(elementName);
         if( attList==null ) {
             // the first attribute for this element.
-            attList = new java.util.HashMap();
+            attList = new java.util.HashMap<String,Object>();
             attributeDecls.put(elementName,attList);
         }
         
@@ -483,21 +484,20 @@ public class DTDReader implements DTDEventListener {
      *        ReferenceExp that corresponds to the created element declaration.
      */
     protected ReferenceExp createElementDeclaration( String elementName ) {
-        final Map attList = (Map)attributeDecls.get(elementName);
-        
+        final Map<String,Object> attList = attributeDecls.get(elementName);
         
         Expression contentModel = Expression.epsilon;
         
         if(attList!=null) {
             // create AttributeExps and append it to tag.
-            Iterator jtr = attList.keySet().iterator();
+            Iterator<String> jtr = attList.keySet().iterator();
             while( jtr.hasNext() ) {
                 String attName = (String)jtr.next();
                 AttModel model = (AttModel)attList.get(attName);
                         
                 // wrap it by AttributeExp.
                 Expression exp = grammar.pool.createAttribute(
-                    getNameClass(attName,true), model.value );
+                    getNameClass(attName,true), model.value, null);
         
                 // apply attribute use.
                 // unless USE_REQUIRED, the attribute is optional.
@@ -532,7 +532,7 @@ public class DTDReader implements DTDEventListener {
         Expression allExp = Expression.nullSet;
         
         // create declarations
-        Iterator itr = elementDecls.keySet().iterator();
+        Iterator<String> itr = elementDecls.keySet().iterator();
         while( itr.hasNext() ) {
             Expression exp = createElementDeclaration( (String)itr.next() );
             allExp = grammar.pool.createChoice( allExp, exp );
@@ -577,10 +577,6 @@ public class DTDReader implements DTDEventListener {
         controller.warning(e);
     }
     
-    
-    
-
-    
     /** this map remembers where ReferenceExps are defined,
      * and where user defined types are defined.
      * 
@@ -590,7 +586,7 @@ public class DTDReader implements DTDEventListener {
      * This behavior is essential to correctly implement
      * TREX constraint that no two &lt;define&gt; is allowed in the same file.
      */
-    private final Map declaredLocations = new java.util.HashMap();
+    private final Map<Object,Locator> declaredLocations = new java.util.HashMap<Object,Locator>();
     
     public void setDeclaredLocationOf( Object o ) {
         declaredLocations.put(o, new LocatorImpl(locator) );
@@ -598,12 +594,6 @@ public class DTDReader implements DTDEventListener {
     public Locator getDeclaredLocationOf( Object o ) {
         return (Locator)declaredLocations.get(o);
     }
-    
-    
-    
-    
-    
-    
     
 // validation context provider methods
 //----------------------------------------

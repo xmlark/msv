@@ -68,8 +68,7 @@ public class AnyElementState extends AnyState
                 
                 exp.exp = Expression.nullSet;
                 NameClass nc = getNameClass(namespace,currentSchema);
-                Iterator itr;
-                itr = reader.grammar.iterateSchemas();
+                Iterator<Object> itr = reader.grammar.iterateSchemas();
                 while( itr.hasNext() ) {
                     XMLSchemaSchema schema = (XMLSchemaSchema)itr.next();
                     // nc is built by using NamespaceNameClass.

@@ -759,14 +759,13 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
      * has completed.
      */
     protected void wrapUp() {
-        Iterator itr;
         
         // mark schema namespace as defined
         markSchemaAsDefined(xsdSchema);        
         
         // TODO: undefined grammar check.
         Expression grammarTopLevel = Expression.nullSet;
-        itr = grammar.iterateSchemas();
+        Iterator<Object> itr = grammar.iterateSchemas();
         while( itr.hasNext() ) {
             XMLSchemaSchema schema = (XMLSchemaSchema)itr.next();
             
@@ -1075,6 +1074,8 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
         "XMLSchemaReader.UnrelatedTypesInSubstitutionGroup";
     public static final String ERR_RECURSIVE_SUBSTITUTION_GROUP = // arg:2
         "XMLSchemaReader.RecursiveSubstitutionGroup";
+    public static final String ERR_FIXED_AND_DEFAULT = // arg:0
+        "XMLSchemaReader.FixedAndDefault";
     public static final String WRN_IMPLICIT_URTYPE_FOR_ELEMENT = // arg:0
         "XMLSchemaReader.Warning.ImplicitUrTypeForElement";
 

@@ -197,15 +197,18 @@ public class ElementDeclExp extends ReferenceExp
      * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
      */
     @SuppressWarnings("serial")
-    public class XSElementExp extends ElementExp {
+    public static class XSElementExp extends ElementExp {
 
         public final SimpleNameClass elementName;
         public final NameClass getNameClass() { return elementName; }
+        // 05-Oct-2010, tatu: if element has "default" value, it is stored here:
+        public final String defaultValue;
         
-        public XSElementExp( SimpleNameClass elementName, Expression contentModel ) {
+        public XSElementExp(ElementDeclExp parent, SimpleNameClass elementName, Expression contentModel, String defaultValue ) {
             super(contentModel,false);
             this.elementName = elementName;
-            parent = ElementDeclExp.this;
+            this.defaultValue = defaultValue;
+            this.parent = parent;
         }
         
         /**
@@ -221,9 +224,6 @@ public class ElementDeclExp extends ReferenceExp
         
         public final ElementDeclExp parent;
     }
-
-    
-    
     
 //
 // Schema component properties

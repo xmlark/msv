@@ -51,7 +51,7 @@ class ExportedAttPoolGenerator extends ExpressionCloner implements RELAXExpressi
             
         return pool.createAttribute(
             new SimpleNameClass( targetNamespace, nc.localName ),
-            exp.exp );
+            exp.exp, null);
     }
         
     // we are traversing attPools. thus these will never be possible.

@@ -30,7 +30,7 @@ public class ResourceChecker {
      *        Fields whose name does not start with this prefix are not tested.
      *        Can be "".
      */
-    public static void check( Class cls, String prefix, Checker checker ) throws Exception {
+    public static void check( Class<?> cls, String prefix, Checker checker ) throws Exception {
         Field[] fields = cls.getDeclaredFields();
         
         for( int i=0; i<fields.length; i++ ) {

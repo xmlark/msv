@@ -160,7 +160,7 @@ public class ElementDeclState extends ExpressionWithChildState {
         String fixed = startTag.getAttribute("fixed");
         // 05-Oct-2010, tatu: Need to support "default" value as well (does it need normalization?)
         String defaultValue = startTag.getAttribute("default");
-
+        
         if( fixed!=null ) {
             // Can not have both 'fixed' and 'default':
             if (defaultValue != null) {

@@ -7,11 +7,7 @@ package com.sun.msv.scanner.dtd;
 import java.io.InputStream;
 import java.text.FieldPosition;
 import java.text.MessageFormat;
-import java.util.Hashtable;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
+import java.util.*;
 
 /**
  * This class provides support for multi-language string lookup, as needed
@@ -128,7 +124,7 @@ abstract public class MessageCatalog {
      *
      * @param packageMember Class whose package has localized messages
      */
-    protected MessageCatalog (Class packageMember)
+    protected MessageCatalog (Class<?> packageMember)
     {
     this (packageMember, "Messages");
     }
@@ -142,7 +138,7 @@ abstract public class MessageCatalog {
      * @param packageMember Class whose package has localized messages
      * @param bundle Name of a group of resource bundles
      */
-    private MessageCatalog (Class packageMember, String bundle)
+    private MessageCatalog (Class<?> packageMember, String bundle)
     {
     int    index;
 
@@ -422,7 +418,7 @@ abstract public class MessageCatalog {
     // cache for isLanguageSupported(), below ... key is a language
     // or locale name, value is a Boolean
     //
-    private Hashtable        cache = new Hashtable (5);
+    private HashMap<String,Boolean> cache = new HashMap<String,Boolean>();
 
 
     /**
@@ -453,20 +449,20 @@ abstract public class MessageCatalog {
     // Use previous results if possible.  We expect that the codebase
     // is immutable, so we never worry about changing the cache.
     // 
-    Boolean        value = (Boolean) cache.get (localeName);
+    Boolean        value = cache.get(localeName);
 
     if (value != null)
-        return value.booleanValue ();
+        return value.booleanValue();
 
     //
     // Try "language_country_variant", then "language_country",
     // then finally "language" ... assuming the longest locale name
     // is passed.  If not, we'll try fewer options.
     //
-    ClassLoader        loader = null;
+    ClassLoader loader = null;
 
     for (;;) {
-        String        name = bundleName + "_" + localeName;
+        String name = bundleName + "_" + localeName;
 
         // look up classes ...
         try {

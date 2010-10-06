@@ -60,9 +60,9 @@ public abstract class AbstractVerifier implements
     protected boolean performIDcheck = true;
     
     /** this map remembers every ID token encountered in this document */
-    protected final Map ids = new HashMap();
+    protected final Map<Object,Object> ids = new HashMap<Object,Object>();
     /** this map remembers every IDREF token encountered in this document */
-    protected final Set idrefs = new java.util.HashSet();
+    protected final Set<Object> idrefs = new java.util.HashSet<Object>();
     
     public void setDocumentLocator( Locator loc ) {
         this.locator = loc;
@@ -112,10 +112,10 @@ public abstract class AbstractVerifier implements
     protected final NamespaceSupport namespaceSupport = new NamespaceSupport();
 
     /** unparsed entities found in the document. */
-    private final Set unparsedEntities = new java.util.HashSet();
+    private final Set<String> unparsedEntities = new java.util.HashSet<String>();
     
     /** declared notations. */
-    private final Set notations = new java.util.HashSet();
+    private final Set<String> notations = new java.util.HashSet<String>();
     
     // methods of ValidationContextProvider
     public String resolveNamespacePrefix(String prefix) {

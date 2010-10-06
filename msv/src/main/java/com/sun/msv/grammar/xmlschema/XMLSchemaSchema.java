@@ -45,7 +45,7 @@ public class XMLSchemaSchema implements java.io.Serializable {
     /** choice of all global element declarations. */
     public Expression topLevel;
     
-    
+    @SuppressWarnings("serial")
     final public class SimpleTypeContainer extends ReferenceContainer {
         public SimpleTypeExp getOrCreate( String name ) {
             return (SimpleTypeExp)super._getOrCreate(name); }
@@ -59,7 +59,7 @@ public class XMLSchemaSchema implements java.io.Serializable {
     /** map from simple type name to SimpleTypeExp object */
     public final SimpleTypeContainer simpleTypes = new SimpleTypeContainer();
     
-    
+    @SuppressWarnings("serial")
     final public class ComplexTypeContainer extends ReferenceContainer {
         public ComplexTypeExp getOrCreate( String name ) {
             return (ComplexTypeExp)super._getOrCreate(name); }
@@ -73,7 +73,7 @@ public class XMLSchemaSchema implements java.io.Serializable {
     /** map from simple type name to SimpleTypeExp object */
     public final ComplexTypeContainer complexTypes = new ComplexTypeContainer();
 
-    
+    @SuppressWarnings("serial")
     final public class AttributeGroupContainer extends ReferenceContainer {
         public AttributeGroupExp getOrCreate( String name ) {
             return (AttributeGroupExp)super._getOrCreate(name); }
@@ -87,7 +87,7 @@ public class XMLSchemaSchema implements java.io.Serializable {
     /** map from attribute group name to AttributeGroupExp object */
     public final AttributeGroupContainer attributeGroups = new AttributeGroupContainer();
     
-    
+    @SuppressWarnings("serial")
     final public class AttributeDeclContainer extends ReferenceContainer {
         public AttributeDeclExp getOrCreate( String name ) {
             return (AttributeDeclExp)super._getOrCreate(name); }
@@ -101,7 +101,7 @@ public class XMLSchemaSchema implements java.io.Serializable {
     /** map from attribute declaration name to AttributeDeclExp object */
     public final AttributeDeclContainer attributeDecls = new AttributeDeclContainer();
     
-    
+    @SuppressWarnings("serial")
     final public class ElementDeclContainer extends ReferenceContainer {
         public ElementDeclExp getOrCreate( String name ) {
             return (ElementDeclExp)super._getOrCreate(name); }
@@ -115,7 +115,7 @@ public class XMLSchemaSchema implements java.io.Serializable {
     /** map from attribute declaration name to AttributeDeclExp object */
     public final ElementDeclContainer elementDecls = new ElementDeclContainer();
     
-    
+    @SuppressWarnings("serial")
     final public class GroupDeclContainer extends ReferenceContainer {
         public GroupDeclExp getOrCreate( String name ) {
             return (GroupDeclExp)super._getOrCreate(name); }
@@ -129,11 +129,11 @@ public class XMLSchemaSchema implements java.io.Serializable {
     /** map from attribute declaration name to AttributeDeclExp object */
     public final GroupDeclContainer groupDecls = new GroupDeclContainer();
     
-    
+    @SuppressWarnings("serial")
     final public class IdentityConstraintContainer implements java.io.Serializable {
-        private final Map storage = new java.util.HashMap();
+        private final Map<String,IdentityConstraint> storage = new java.util.HashMap<String,IdentityConstraint>();
         public IdentityConstraint get( String name ) {
-            return (IdentityConstraint)storage.get(name);
+            return storage.get(name);
         }
         public void add( String name, IdentityConstraint idc ) {
             storage.put(name,idc);

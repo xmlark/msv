@@ -311,11 +311,11 @@ public class ExpressionPool implements java.io.Serializable {
             this.parent = parent;
         }
 
-        public Expression getBinExp(Expression left, Expression right, Class type) {
+        public Expression getBinExp(Expression left, Expression right, Class<?> type) {
             int hash = (left.hashCode()+right.hashCode())^type.hashCode();
             return getBinExp( hash, left, right, type );
         }
-        private Expression getBinExp(int hash, Expression left, Expression right, Class type) {
+        private Expression getBinExp(int hash, Expression left, Expression right, Class<?> type) {
             if (parent != null) {
                 Expression e = parent.getBinExp(hash, left, right, type);
                 if (e != null)
@@ -338,7 +338,7 @@ public class ExpressionPool implements java.io.Serializable {
             }
         }
 
-        public Expression get(int hash, Expression child, Class type) {
+        public Expression get(int hash, Expression child, Class<?> type) {
             if (parent != null) {
                 Expression e = parent.get(hash, child, type);
                 if (e != null)

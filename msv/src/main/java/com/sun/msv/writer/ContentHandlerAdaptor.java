@@ -20,6 +20,7 @@ import org.xml.sax.helpers.NamespaceSupport;
  * @author David Megginson, 
  *         <a href="mailto:sax@megginson.com">sax@megginson.com</a>
  */
+@SuppressWarnings("deprecation")
 public class ContentHandlerAdaptor implements DocumentHandler {
     
     private final NamespaceSupport nsSupport = new NamespaceSupport();
@@ -200,7 +201,7 @@ public class ContentHandlerAdaptor implements DocumentHandler {
         String names[] = processName(qName, false);
         if (contentHandler != null) {
             contentHandler.endElement(names[0], names[1], names[2]);
-            Enumeration prefixes = nsSupport.getDeclaredPrefixes();
+            Enumeration<?> prefixes = nsSupport.getDeclaredPrefixes();
             while (prefixes.hasMoreElements()) {
                 String prefix = (String)prefixes.nextElement();
                 contentHandler.endPrefixMapping(prefix);

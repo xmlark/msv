@@ -21,19 +21,19 @@ public class DTDTestCase extends TestCase {
         private boolean started = false;
         private boolean ended = false;
         
-        public final Map pi = new HashMap();
+        public final Map<String,String> pi = new HashMap<String,String>();
         
         public void processingInstruction(String target, String data) {
             pi.put(target,data);
         }
 
-        public final Map notations = new HashMap();
+        public final Map<String,Object> notations = new HashMap<String,Object>();
         
         public void notationDecl(String name, String publicId, String systemId) {
             notations.put( name, new Dispatcher.NotationDecl(name,publicId,systemId) );
         }
 
-        public final Map unparsedEntities = new HashMap();
+        public final Map<String,Object> unparsedEntities = new HashMap<String,Object>();
         
         public void unparsedEntityDecl(String name, String publicId, 
             String systemId, String notationName) {
@@ -42,12 +42,12 @@ public class DTDTestCase extends TestCase {
                 new Dispatcher.UnparsedEntityDecl(name,publicId,systemId,notationName) );
         }
 
-        public final Map internalEntities = new HashMap();
+        public final Map<String,String> internalEntities = new HashMap<String,String>();
         public void internalGeneralEntityDecl( String name, String value ) {
             internalEntities.put(name,value);
         }
 
-        public final Map externalEntities = new HashMap();
+        public final Map<String,Object> externalEntities = new HashMap<String,Object>();
         public void externalGeneralEntityDecl(String name, String publicId, String systemId) {
             externalEntities.put( name, new Dispatcher.NotationDecl(name,publicId,systemId) );
         }
@@ -86,7 +86,7 @@ public class DTDTestCase extends TestCase {
         private boolean inContentModel;
         private String model;
         
-        private final Map contentModels = new HashMap();
+        private final Map<String,Object> contentModels = new HashMap<String,Object>();
         
         public void startContentModel( String elementName, short contentModelType ) {
             assertTrue(!inContentModel);

@@ -51,7 +51,7 @@ public class EmptyStringType extends BuiltinAtomicType {
         else                throw new IllegalArgumentException();
     }
     
-    public Class getJavaObjectType() {
+    public Class<?> getJavaObjectType() {
         return String.class;
     }
     

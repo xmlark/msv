@@ -35,6 +35,7 @@ import com.sun.msv.reader.State;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+@SuppressWarnings("serial")
 public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPatch
 {
     /** Creates this object from existing XSDatatype. */

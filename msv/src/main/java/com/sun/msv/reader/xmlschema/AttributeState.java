@@ -94,7 +94,7 @@ public class AttributeState extends ExpressionWithChildState implements XSTypeOw
         final String fixed = startTag.getAttribute("fixed");
         final String name = startTag.getAttribute("name");
         final String use = startTag.getAttribute("use");
-        final String defaultValue = startTag.getAttribute("fixed");
+        final String defaultValue = startTag.getAttribute("default");
 
         Expression exp;
         
@@ -160,6 +160,7 @@ public class AttributeState extends ExpressionWithChildState implements XSTypeOw
                 // use='prohibited' is implemented through NoneType
                 contentType = reader.pool.createData( NoneType.theInstance );
             }
+
             exp = createAttribute(new SimpleNameClass( targetNamespace, name ),
                 contentType, defaultValue);
         }

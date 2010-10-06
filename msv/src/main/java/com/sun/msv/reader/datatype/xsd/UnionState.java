@@ -33,14 +33,14 @@ public class UnionState extends TypeState implements XSTypeOwner {
         this.newTypeName = newTypeName;
     }
     
-    private final ArrayList memberTypes = new ArrayList();
+    private final ArrayList<XSDatatypeExp> memberTypes = new ArrayList<XSDatatypeExp>();
                                                   
     protected State createChildState( StartTagInfo tag ) {
         // accepts elements from the same namespace only.
-        if( !startTag.namespaceURI.equals(tag.namespaceURI) )    return null;
+        if( !startTag.namespaceURI.equals(tag.namespaceURI) ) return null;
         
-        if( tag.localName.equals("annotation") )    return new IgnoreState();
-        if( tag.localName.equals("simpleType") )    return new SimpleTypeState();
+        if( tag.localName.equals("annotation") ) return new IgnoreState();
+        if( tag.localName.equals("simpleType") ) return new SimpleTypeState();
         
         return null;    // unrecognized
     }

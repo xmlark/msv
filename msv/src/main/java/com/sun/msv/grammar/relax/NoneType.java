@@ -48,7 +48,7 @@ public class NoneType extends BuiltinAtomicType {
         throw new IllegalArgumentException();
     }
     
-    public Class getJavaObjectType() {
+    public Class<?> getJavaObjectType() {
         return Object.class;    // actually, it never returns a value.
     }
     

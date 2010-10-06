@@ -38,7 +38,7 @@ public class Daemon implements Runnable
     
     Grammar grammar;
     /** file names that have to be validated. */
-    private final Stack jobs = new Stack();
+    private final Stack<Object> jobs = new Stack<Object>();
     
     private void _main( String[] args ) throws Exception
     {

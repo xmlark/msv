@@ -30,7 +30,7 @@ public class DataTypeVocabularyMap implements java.io.Serializable {
     public DataTypeVocabulary get( String namespaceURI ) {
         
         DataTypeVocabulary v = (DataTypeVocabulary)impl.get(namespaceURI);
-        if(v!=null)        return v;
+        if(v!=null) return v;
         
         // TODO: generic way to load a vocabulary
         if( namespaceURI.equals( com.sun.msv.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace ) ) {
@@ -38,7 +38,6 @@ public class DataTypeVocabularyMap implements java.io.Serializable {
             impl.put( com.sun.msv.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace, v );
             impl.put( com.sun.msv.reader.datatype.xsd.XSDVocabulary.XMLSchemaNamespace2, v );
         }
-        
         return v;
     }
     

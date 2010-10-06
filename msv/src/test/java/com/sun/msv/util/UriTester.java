@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
+@SuppressWarnings("unused")
 public class UriTester {
     public static void main(String[] args) throws IOException {
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));

@@ -17,6 +17,7 @@ import com.sun.msv.grammar.ChoiceExp;
 import com.sun.msv.grammar.ConcurExp;
 import com.sun.msv.grammar.DataExp;
 import com.sun.msv.grammar.ElementExp;
+import com.sun.msv.grammar.Expression;
 import com.sun.msv.grammar.ExpressionVisitor;
 import com.sun.msv.grammar.InterleaveExp;
 import com.sun.msv.grammar.ListExp;
@@ -85,7 +86,7 @@ public class TREXSequencedStringChecker implements ExpressionVisitor
      * once an ElementExp/AttributeExp is checked, it will be added to this set.
      * this set is used to prevent infinite recursion.
      */
-    private final Set checkedExps = new java.util.HashSet();
+    private final Set<Expression> checkedExps = new java.util.HashSet<Expression>();
     
     /**
      * set of checked ReferenceExps.
@@ -93,11 +94,11 @@ public class TREXSequencedStringChecker implements ExpressionVisitor
      * Once a ReferenceExp is checked, it will be added (with its result)
      * to this map. This is useful to speed up the check.
      */
-    private final Map checkedRefExps = new java.util.HashMap();
+    private final Map<ReferenceExp,Object> checkedRefExps = new java.util.HashMap<ReferenceExp,Object>();
     
     public Object onRef( ReferenceExp exp ) {
         Object r = checkedRefExps.get(exp);
-        if(r!=null)    return r;
+        if(r!=null) return r;
         checkedRefExps.put(exp, r=exp.exp.visit(this) );
         return r;
     }

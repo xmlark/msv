@@ -22,6 +22,7 @@ import com.sun.msv.verifier.regexp.StringToken;
  * @author
  *     Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
+@SuppressWarnings("deprecation")
 public final class IDContextProviderWrapper implements IDContextProvider2 {
     private final IDContextProvider core;
     

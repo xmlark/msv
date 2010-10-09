@@ -214,6 +214,7 @@ public class TypeDetector extends Verifier {
      * </choice>
      * </XMP></PRE>
      */
+    @SuppressWarnings("serial")
     public class AmbiguousDocumentException extends SAXException {
         public AmbiguousDocumentException() {
             super("");

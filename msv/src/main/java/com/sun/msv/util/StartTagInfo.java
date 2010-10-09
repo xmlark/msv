@@ -21,6 +21,7 @@ import com.sun.msv.grammar.util.IDContextProviderWrapper;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+@SuppressWarnings("deprecation")
 public class StartTagInfo {
     
     public String        namespaceURI;

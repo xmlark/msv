@@ -417,7 +417,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
         if (performIDcheck) {
             if (!ids.keySet().containsAll(idrefs)) {
                 hadError = true;
-                Iterator itr = idrefs.iterator();
+                Iterator<Object> itr = idrefs.iterator();
                 while (itr.hasNext()) {
                     Object idref = itr.next();
                     if (!ids.keySet().contains(idref))
@@ -425,7 +425,7 @@ public class Verifier extends AbstractVerifier implements IVerifier {
                 }
             }
             if (duplicateIds != null) {
-                Iterator itr = duplicateIds.iterator();
+                Iterator<String> itr = duplicateIds.iterator();
                 while (itr.hasNext()) {
                     Object id = itr.next();
                     onError(localizeMessage(ERR_DUPLICATE_ID, new Object[] { id }), null);
@@ -441,11 +441,12 @@ public class Verifier extends AbstractVerifier implements IVerifier {
      * Errors are reported at the endDocument method because
      * the onDuplicateId method cannot throw an exception.
      */
-    private Set duplicateIds;
+    private Set<String> duplicateIds;
     
     public void onDuplicateId(String id) {
-        if (duplicateIds == null)
-            duplicateIds = new java.util.HashSet();
+        if (duplicateIds == null) {
+            duplicateIds = new java.util.HashSet<String>();
+        }
         duplicateIds.add(id);
     }
     

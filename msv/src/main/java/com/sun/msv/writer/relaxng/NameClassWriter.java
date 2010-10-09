@@ -69,7 +69,7 @@ public class NameClassWriter implements NameClassVisitor {
     }
             
     private void processChoice( ChoiceNameClass nc ) {
-        Stack s = new Stack();
+        Stack<NameClass> s = new Stack<NameClass>();
         s.push(nc.nc1);
         s.push(nc.nc2);
             

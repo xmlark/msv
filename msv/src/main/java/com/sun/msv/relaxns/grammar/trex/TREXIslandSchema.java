@@ -23,6 +23,7 @@ import com.sun.msv.relaxns.verifier.IslandSchemaImpl;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+@SuppressWarnings("serial")
 public class TREXIslandSchema extends IslandSchemaImpl
 {
     /** underlying TREX pattern which this IslandSchema is representing */

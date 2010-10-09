@@ -91,7 +91,7 @@ public class LaxDefaultNameClass extends NameClass {
      * each item represents one name.
      * it also contains WILDCARD as entry.
      */
-    private final Set names = new java.util.HashSet();
+    private final Set<StringPair> names = new java.util.HashSet<StringPair>();
     
     /**
      * add a name so that this name will be rejected by the accepts method.

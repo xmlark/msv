@@ -9,13 +9,7 @@
  */
 package com.sun.msv.verifier.regexp;
 
-import com.sun.msv.grammar.AttributeExp;
-import com.sun.msv.grammar.ElementExp;
-import com.sun.msv.grammar.Expression;
-import com.sun.msv.grammar.ExpressionCloner;
-import com.sun.msv.grammar.ExpressionPool;
-import com.sun.msv.grammar.OtherExp;
-import com.sun.msv.grammar.ReferenceExp;
+//import com.sun.msv.grammar.*;
 
 /**
  * Non-recursive ReferenceExpRemover with a cache.
@@ -30,6 +24,7 @@ public class ContentModelRefExpRemover {
     
 
     // the class that does the actual job.
+    /*
     private static class Remover extends ExpressionCloner {
         public Remover(ExpressionPool pool) {
             super(pool);
@@ -55,4 +50,5 @@ public class ContentModelRefExpRemover {
             return exp.exp.visit(this);
         }
     }
+    */
 }

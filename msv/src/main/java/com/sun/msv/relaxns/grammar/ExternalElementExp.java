@@ -27,6 +27,7 @@ import com.sun.msv.grammar.NamespaceNameClass;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+@SuppressWarnings("serial")
 public class ExternalElementExp extends ElementExp
 {
     public NameClass getNameClass() { return nameClass; }

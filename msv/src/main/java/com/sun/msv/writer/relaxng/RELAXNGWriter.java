@@ -150,6 +150,7 @@ import com.sun.msv.writer.XMLWriter;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+@SuppressWarnings("deprecation")
 public class RELAXNGWriter implements GrammarWriter, Context {
     
     protected XMLWriter writer = new XMLWriter();
@@ -181,9 +182,9 @@ public class RELAXNGWriter implements GrammarWriter, Context {
         this.grammar = g;
         
         // collect all reachable ElementExps and ReferenceExps.
-        final Set nodes = new HashSet();
+        final Set<Expression> nodes = new HashSet<Expression>();
         // ElementExps and ReferenceExps who are referenced more than once.
-        final Set heads = new HashSet();
+        final Set<Expression> heads = new HashSet<Expression>();
         
         g.getTopLevel().visit( new ExpressionWalker(){
             // ExpressionWalker class traverses expressions in depth-first order.
@@ -215,13 +216,13 @@ public class RELAXNGWriter implements GrammarWriter, Context {
         
         // create (name->RefExp) map while resolving name conflicts
         // 
-        Map name2exp = new HashMap();
+        Map<String,Expression> name2exp = new HashMap<String,Expression>();
         {
             int cnt=0;    // use to name anonymous RefExp.
         
-            Iterator itr = heads.iterator();
+            Iterator<Expression> itr = heads.iterator();
             while( itr.hasNext() ) {
-                Expression exp = (Expression)itr.next();
+                Expression exp = itr.next();
                 if( exp instanceof ReferenceExp ) {
                     ReferenceExp rexp = (ReferenceExp)exp;
                     if( rexp.name == null ) {
@@ -262,12 +263,13 @@ public class RELAXNGWriter implements GrammarWriter, Context {
         }
         
         // then reverse name2ref to ref2name
-        exp2name = new HashMap();
+        exp2name = new HashMap<Expression,String>();
         {
-            Iterator itr = name2exp.keySet().iterator();
+            Iterator<String> itr = name2exp.keySet().iterator();
             while( itr.hasNext() ) {
-                String name = (String)itr.next();
-                exp2name.put( name2exp.get(name), name );
+                String name = itr.next();
+                Expression expr = name2exp.get(name);
+                exp2name.put(expr, name);
             }
         }
         
@@ -300,10 +302,10 @@ public class RELAXNGWriter implements GrammarWriter, Context {
             }
             
             // write all named expressions
-            Iterator itr = exp2name.keySet().iterator();
+            Iterator<Expression> itr = exp2name.keySet().iterator();
             while( itr.hasNext() ) {
-                Expression exp = (Expression)itr.next();
-                String name = (String)exp2name.get(exp);
+                Expression exp = itr.next();
+                String name = exp2name.get(exp);
                 if( exp instanceof ReferenceExp )
                     exp = ((ReferenceExp)exp).exp;
                 writer.start("define",new String[]{"name",name});
@@ -338,8 +340,7 @@ public class RELAXNGWriter implements GrammarWriter, Context {
      * "unique name" is used to write/reference this ReferenceExp.
      * ReferenceExps who are not in this list can be directly written into XML.
      */
-    protected Map exp2name;
-    
+    protected Map<Expression,String> exp2name;
     
     /**
      * sniffs namespace URI that can be used as default 'ns' attribute
@@ -422,14 +423,15 @@ public class RELAXNGWriter implements GrammarWriter, Context {
     
     public void writeNameClass( NameClass src ) {
         final String MAGIC = PossibleNamesCollector.MAGIC;
-        Set names = PossibleNamesCollector.calc(src);
+        Set<StringPair> names = PossibleNamesCollector.calc(src);
         
         // convert a name class to the canonical form.
         StringPair[] values = (StringPair[])names.toArray(new StringPair[names.size()]);
 
-        Set uriset = new HashSet();
-        for( int i=0; i<values.length; i++ )
+        Set<String> uriset = new HashSet<String>();
+        for( int i=0; i<values.length; i++ ) {
             uriset.add( values[i].namespaceURI );
+        }
         
         NameClass r = null;
         String[] uris = (String[])uriset.toArray(new String[uriset.size()]);
@@ -439,8 +441,8 @@ public class RELAXNGWriter implements GrammarWriter, Context {
             NameClass tmp = null;
             
             for( int j=0; j<values.length; j++ ) {
-                if( !values[j].namespaceURI.equals(uris[i]) )    continue;
-                if( values[j].localName==MAGIC )                continue;
+                if( !values[j].namespaceURI.equals(uris[i]) ) continue;
+                if( values[j].localName==MAGIC ) continue;
                 
                 if( src.accepts(values[j])!=src.accepts(uris[i],MAGIC) ) {
                     if(tmp==null)    tmp = new SimpleNameClass(values[j]);

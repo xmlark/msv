@@ -79,7 +79,7 @@ public class RELAXCoreIslandSchemaReader extends RELAXCoreReader
     }
     
     /** map from StringPair(namespace,label) to ExternalElementExp. */
-    private final Map externalElementExps = new java.util.HashMap();
+    private final Map<StringPair,Expression> externalElementExps = new java.util.HashMap<StringPair,Expression>();
     private ExternalElementExp getExtElementExp( String namespace, String label )
     {
         StringPair name = new StringPair(namespace,label);
@@ -119,5 +119,5 @@ public class RELAXCoreIslandSchemaReader extends RELAXCoreReader
      * 
      * each object will be invoked to do a wrap up by bind method of IslandSchema.
      */
-    protected final Set pendingAnyOtherElements = new java.util.HashSet();
+    protected final Set<Expression> pendingAnyOtherElements = new java.util.HashSet<Expression>();
 }

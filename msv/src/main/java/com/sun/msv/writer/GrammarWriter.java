@@ -19,6 +19,7 @@ import com.sun.msv.grammar.Grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+@SuppressWarnings("deprecation")
 public interface GrammarWriter {
     
     /**

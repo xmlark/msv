@@ -19,6 +19,7 @@ package com.sun.msv.reader;
  * The receiver shouldn't report this exception to the application,
  * since it has already been reported by the thrower.
  */
+@SuppressWarnings("serial")
 public class AbortException extends Exception
 {
     private AbortException() {

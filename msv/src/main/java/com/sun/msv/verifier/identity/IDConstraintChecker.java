@@ -50,7 +50,7 @@ public class IDConstraintChecker extends Verifier {
     protected final XMLSchemaGrammar grammar;
     
     /** active mathcers. */
-    protected final Vector matchers = new Vector();
+    protected final Vector<Matcher> matchers = new Vector<Matcher>();
     
     protected void add( Matcher matcher ) {
         matchers.add(matcher);
@@ -64,7 +64,7 @@ public class IDConstraintChecker extends Verifier {
      * 
      * One SelectorMatcher correponds to one scope of the identity constraint.
      */
-    private final Map keyValues = new java.util.HashMap();
+    private final Map<SelectorMatcher,Set<Object>> keyValues = new java.util.HashMap<SelectorMatcher,Set<Object>>();
     
     /**
      * a map from keyref <code>SelectorMatcher</code> to key/unique
@@ -72,7 +72,7 @@ public class IDConstraintChecker extends Verifier {
      * 
      * Given a keyref scope, this map stores which key scope should it refer to.
      */
-    private final Map referenceScope = new java.util.HashMap();
+    private final Map<SelectorMatcher,SelectorMatcher> referenceScope = new java.util.HashMap<SelectorMatcher,SelectorMatcher>();
     
     /**
      * a map from <code>IdentityConstraint</code> to a <code>LightStack</code> of
@@ -80,27 +80,30 @@ public class IDConstraintChecker extends Verifier {
      * 
      * Each stack top keeps the currently active scope for the given IdentityConstraint.
      */
-    private final Map activeScopes = new java.util.HashMap();
+    private final Map<IdentityConstraint,LightStack> activeScopes = new java.util.HashMap<IdentityConstraint,LightStack>();
     protected SelectorMatcher getActiveScope( IdentityConstraint c ) {
-        LightStack s = (LightStack)activeScopes.get(c);
-        if(s==null)    return null;
-        if(s.size()==0)    return null;
+        LightStack s = activeScopes.get(c);
+        if(s==null) return null;
+        if(s.size()==0) return null;
         return (SelectorMatcher)s.top();
     }
     protected void pushActiveScope( IdentityConstraint c, SelectorMatcher matcher ) {
-        LightStack s = (LightStack)activeScopes.get(c);
-        if(s==null)
+        LightStack s = activeScopes.get(c);
+        if(s==null) {
             activeScopes.put(c,s=new LightStack());
+        }
         s.push(matcher);
     }
     protected void popActiveScope( IdentityConstraint c, SelectorMatcher matcher ) {
-        LightStack s = (LightStack)activeScopes.get(c);
-        if(s==null)
+        LightStack s = activeScopes.get(c);
+        if(s==null) {
             // since it's trying to pop, there must be a non-empty stack.
             throw new Error();
-        if(s.pop()!=matcher)
+        }
+        if(s.pop()!=matcher) {
             // trying to pop a non-active scope.
             throw new Error();
+        }
     }
         
     
@@ -109,22 +112,22 @@ public class IDConstraintChecker extends Verifier {
      * @return true        if this is a new value.
      */
     protected boolean addKeyValue( SelectorMatcher scope, KeyValue value ) {
-        Set keys = (Set)keyValues.get(scope);
-        if(keys==null)
-            keyValues.put(scope, keys = new java.util.HashSet());
+        Set<Object> keys = keyValues.get(scope);
+        if(keys==null) {
+            keyValues.put(scope, keys = new java.util.HashSet<Object>());
+        }
         return keys.add(value);
     }
     /**
      * gets the all <code>KeyValue</code>s that were added within the specified scope.
      */
     protected KeyValue[] getKeyValues( SelectorMatcher scope ) {
-        Set keys = (Set)keyValues.get(scope);
-        if(keys==null)
+        Set<Object> keys = keyValues.get(scope);
+        if(keys==null) {
             return new KeyValue[0];
+        }
         return (KeyValue[])keys.toArray(new KeyValue[keys.size()]);
     }
-    
-    
     
     public void startDocument() throws SAXException {
         super.startDocument();
@@ -135,18 +138,19 @@ public class IDConstraintChecker extends Verifier {
         super.endDocument();
         
         // keyref check
-        Map.Entry[] scopes = (Map.Entry[])
-            keyValues.entrySet().toArray(new Map.Entry[keyValues.size()]);
+        @SuppressWarnings("unchecked")
+        Map.Entry<Object,Object>[] scopes = (Map.Entry<Object,Object>[])
+            keyValues.entrySet().toArray(new Map.Entry<?,?>[keyValues.size()]);
         if(com.sun.msv.driver.textui.Debug.debug)
             System.out.println("key/keyref check: there are "+keyValues.size()+" scope(s)");
         
         for( int i=0; i<scopes.length; i++ ) {
             final SelectorMatcher key = (SelectorMatcher)scopes[i].getKey();
-            final Set value = (Set)scopes[i].getValue();
+            final Set<?> value = (Set<?>)scopes[i].getValue();
             
             if( key.idConst instanceof KeyRefConstraint ) {
                 // get the set of corresponding keys.
-                Set keys = (Set)keyValues.get( referenceScope.get(key) );
+                Set<Object> keys = keyValues.get( referenceScope.get(key) );
                 KeyValue[] keyrefs = (KeyValue[])
                     value.toArray(new KeyValue[value.size()]);
                 

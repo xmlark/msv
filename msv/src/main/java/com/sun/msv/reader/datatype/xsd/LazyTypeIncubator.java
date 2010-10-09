@@ -52,7 +52,7 @@ class LazyTypeIncubator implements XSTypeIncubator { // package local
      * applied facets.
      * Order between facets are possibly significant.
      */
-    private final List facets = new java.util.LinkedList();
+    private final List<Facet> facets = new java.util.LinkedList<Facet>();
     
     public void addFacet( String name, String strValue, boolean fixed,
                      ValidationContext context ) {
@@ -72,9 +72,9 @@ class LazyTypeIncubator implements XSTypeIncubator { // package local
                 
                 TypeIncubator ti = new TypeIncubator( baseType.getType(context) );
                 
-                Iterator itr = facets.iterator();
+                Iterator<Facet> itr = facets.iterator();
                 for( int i=0; i<facetSize; i++ ) {
-                    Facet f = (Facet)itr.next();
+                    Facet f = itr.next();
                     ti.addFacet( f.name, f.value, f.fixed, f.context );
                 }
                 return ti.derive(nsUri,localName);

@@ -41,14 +41,14 @@ import com.sun.msv.util.StringPair;
 public class NameClassSimplifier {
     
     public static NameClass simplify( NameClass nc ) {
-        final Set possibleNames = PossibleNamesCollector.calc(nc);
+        final Set<StringPair> possibleNames = PossibleNamesCollector.calc(nc);
         final String MAGIC = PossibleNamesCollector.MAGIC;
         
-        Set uris = new java.util.HashSet();
+        Set<String> uris = new java.util.HashSet<String>();
         
-        Iterator itr = possibleNames.iterator();
+        Iterator<StringPair> itr = possibleNames.iterator();
         while( itr.hasNext() ) {
-            StringPair name = (StringPair)itr.next();
+            StringPair name = itr.next();
             if( name.localName!=MAGIC ) {
                 // a simple name.
                 if( nc.accepts(name)==nc.accepts( name.namespaceURI, MAGIC ) ) {
@@ -73,9 +73,9 @@ public class NameClassSimplifier {
             possibleNames.remove( new StringPair(MAGIC,MAGIC) );
         
         NameClass result = null;
-        Iterator jtr = uris.iterator();
+        Iterator<String> jtr = uris.iterator();
         while( jtr.hasNext() ) {
-            final String uri = (String)jtr.next();
+            final String uri = jtr.next();
             
             NameClass local = null;
             itr = possibleNames.iterator();

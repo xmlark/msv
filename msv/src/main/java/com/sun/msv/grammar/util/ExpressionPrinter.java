@@ -80,10 +80,9 @@ public class ExpressionPrinter implements ExpressionVisitor {
      */
     public String printRefContainer( ReferenceContainer cont ) {
         String r="";
-        java.util.Iterator itr = cont.iterator();
+        java.util.Iterator<ReferenceExp> itr = cont.iterator();
         while( itr.hasNext() ) {
-            ReferenceExp exp = (ReferenceExp)itr.next();
-            
+            ReferenceExp exp = itr.next();
             r += exp.name + "  : " + exp.exp.visit(this) + "\n";
         }
         return r;

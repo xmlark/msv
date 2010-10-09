@@ -130,6 +130,7 @@ public abstract class FactoryImpl extends VerifierFactory {
     
     
     /** wrapper exception so that we can throw it from the GrammarReaderController. */
+    @SuppressWarnings("serial")
     private static class WrapperException extends RuntimeException {
         WrapperException( SAXException e ) {
             super(e.getMessage());

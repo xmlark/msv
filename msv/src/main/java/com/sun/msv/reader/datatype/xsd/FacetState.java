@@ -24,11 +24,11 @@ import com.sun.msv.reader.GrammarReader;
 public class FacetState extends ChildlessState
 {
     /** set of recognizable facet names */
-    public static final Set facetNames = initFacetNames();
+    public static final Set<String> facetNames = initFacetNames();
     
-    static private Set initFacetNames()
+    static private Set<String> initFacetNames()
     {
-        Set s = new java.util.HashSet();
+        Set<String> s = new java.util.HashSet<String>();
         s.add("length");
         s.add("minLength");
         s.add("maxLength");

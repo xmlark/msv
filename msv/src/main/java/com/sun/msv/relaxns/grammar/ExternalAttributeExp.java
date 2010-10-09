@@ -28,6 +28,7 @@ import com.sun.msv.grammar.OtherExp;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+@SuppressWarnings("serial")
 public class ExternalAttributeExp extends OtherExp {
     
     public ExternalAttributeExp(

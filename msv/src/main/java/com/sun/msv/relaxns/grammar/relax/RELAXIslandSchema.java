@@ -34,14 +34,15 @@ import com.sun.msv.relaxns.verifier.IslandSchemaImpl;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+@SuppressWarnings("serial")
 public class RELAXIslandSchema extends IslandSchemaImpl
 {
     /** underlying RELAX module which this IslandSchema is representing */
     protected final RELAXModule module;
 
-    protected Set pendingAnyOtherElements;
+    protected Set<Expression> pendingAnyOtherElements;
 
-    public RELAXIslandSchema( RELAXModule module, Set pendingAnyOtherElements ) {
+    public RELAXIslandSchema( RELAXModule module, Set<Expression> pendingAnyOtherElements ) {
         this.module = module;
         this.pendingAnyOtherElements = pendingAnyOtherElements;
         
@@ -76,9 +77,10 @@ public class RELAXIslandSchema extends IslandSchemaImpl
         {// wrap up anyOtherElements.
             Expression pseudoContentModel = createChoiceOfAllExportedRules(provider);
                 
-            Iterator itr = pendingAnyOtherElements.iterator();
-            while( itr.hasNext() )
+            Iterator<Expression> itr = pendingAnyOtherElements.iterator();
+            while( itr.hasNext() ) {
                 ((AnyOtherElementExp)itr.next()).wrapUp(module,pseudoContentModel,provider,handler);
+            }
             pendingAnyOtherElements = null;
         }
         
@@ -97,7 +99,7 @@ public class RELAXIslandSchema extends IslandSchemaImpl
     private Expression createChoiceOfAllExportedRules( SchemaProvider provider ) {
         Expression exp = Expression.nullSet;
         
-        Iterator itr = provider.iterateNamespace();
+        Iterator<?> itr = provider.iterateNamespace();
         while( itr.hasNext() ) {
             String namespace = (String)itr.next();
             IslandSchema is = provider.getSchemaByNamespace(namespace);

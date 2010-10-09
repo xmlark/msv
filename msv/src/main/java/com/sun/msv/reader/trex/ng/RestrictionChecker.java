@@ -82,7 +82,7 @@ public class RestrictionChecker {
     }
     
     /** Visited ElementExp/AttributeExps. */
-    private final java.util.Set visitedExps = new java.util.HashSet();
+    private final java.util.Set<Expression> visitedExps = new java.util.HashSet<Expression>();
 
     /** Object that checks duplicate attributes in a content model. */
     private DuplicateAttributesChecker attDupChecker;

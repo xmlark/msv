@@ -52,7 +52,7 @@ class TREXIslandVerifier
      * 
      * this map is used in endChildIsland method.
      */
-    protected final Map rule2exp = new java.util.HashMap();
+    protected final Map<ElementDecl,Expression> rule2exp = new java.util.HashMap<ElementDecl,Expression>();
     
     TREXIslandVerifier( RulesAcceptor initialAcceptor ) {
         super( null, null );        // quick hack.
@@ -90,12 +90,12 @@ class TREXIslandVerifier
         if( current instanceof ComplexAcceptor ) {
             ComplexAcceptor ca = (ComplexAcceptor)current;
             
-            Vector vec = null;
+            Vector<Object> vec = null;
             
             for( int i=0; i<ca.owners.length; i++ )
                 if( ca.owners[i] instanceof ExternalElementExp ) {    
                     // bingo
-                    if(vec==null)    vec=new Vector();
+                    if(vec==null)    vec=new Vector<Object>();
                     vec.add( ca.owners[i] );
                 }
             
@@ -123,7 +123,7 @@ class TREXIslandVerifier
             for( int i=0; i<ca.owners.length; i++ )
                 if( ca.owners[i] instanceof AnyOtherElementExp ) {    
                     // bingo
-                    if(vec==null)    vec=new Vector();
+                    if(vec==null) vec=new Vector<Object>();
                     vec.add( ca.owners[i] );
                 }
             
@@ -190,8 +190,9 @@ class TREXIslandVerifier
         throws SAXException {
 
         // memorize AnyOtherElementExps to the map
-        for( int i=0; i<exps.length; i++ )
+        for( int i=0; i<exps.length; i++ ) {
             rule2exp.put( exps[i], exps[i] );
+        }
         IslandVerifier iv = new AnyOtherElementVerifier(exps);
         dispatcher.switchVerifier(iv);
         
@@ -241,13 +242,13 @@ class TREXIslandVerifier
      * set of unparsed entity names.
      * this set is created on demand.
      */
-    private Set unparsedEntities;
+    private Set<String> unparsedEntities;
     
     // IslandVerifier resolves unparsed entity through dispatcher
     public boolean isUnparsedEntity( String entityName ) {
         // create the set only when it is used.
         if( unparsedEntities==null ) {
-            unparsedEntities = new java.util.HashSet();
+            unparsedEntities = new java.util.HashSet<String>();
             int len = dispatcher.countUnparsedEntityDecls();
             for( int i=0; i<len; i++ )
                 unparsedEntities.add( dispatcher.getUnparsedEntityDecl(i).name );

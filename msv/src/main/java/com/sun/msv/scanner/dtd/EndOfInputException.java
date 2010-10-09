@@ -8,5 +8,6 @@ package com.sun.msv.scanner.dtd;
 
 import java.io.IOException;
 
+@SuppressWarnings("serial")
 class EndOfInputException extends IOException {}
 

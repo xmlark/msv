@@ -34,7 +34,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.java.dev.msv</groupId>
   <artifactId>msv-core</artifactId>
-  <version>2010.2-SNAPSHOT</version>
+  <version>2010.2</version>
   <name>MSV Core</name>
   <description>Multi-Schema Validator Core package
 </description>

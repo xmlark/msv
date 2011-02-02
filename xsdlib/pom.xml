@@ -176,7 +176,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
       <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.6</version>
                 <configuration>
                     <source>1.5</source>
                     <target>1.5</target>

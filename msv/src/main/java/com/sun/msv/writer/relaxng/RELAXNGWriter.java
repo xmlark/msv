@@ -308,7 +308,8 @@ public class RELAXNGWriter implements GrammarWriter, Context {
                 String name = exp2name.get(exp);
                 if( exp instanceof ReferenceExp )
                     exp = ((ReferenceExp)exp).exp;
-                writer.start("define",new String[]{"name",name});
+                String cleanedName = cleanName(name);
+                writer.start("define",new String[]{"name",cleanedName});
                 writeIsland( exp );
                 writer.end("define");
             }
@@ -320,6 +321,11 @@ public class RELAXNGWriter implements GrammarWriter, Context {
         }
     }
     
+    private String cleanName(String name) {
+        // uniqueness has some risks here.
+        return name.replaceAll("[():#/]", "_");
+    }
+
     /**
      * writes a bunch of expression into one tree.
      */
@@ -501,7 +507,7 @@ public class RELAXNGWriter implements GrammarWriter, Context {
         public void onRef( ReferenceExp exp ) {
             String uniqueName = (String)exp2name.get(exp);
             if( uniqueName!=null )
-                this.writer.element("ref", new String[]{"name",uniqueName});
+                this.writer.element("ref", new String[]{"name",cleanName(uniqueName)});
             else
                 // this expression will not be written as a named pattern.
                 exp.exp.visit(this);
@@ -511,7 +517,7 @@ public class RELAXNGWriter implements GrammarWriter, Context {
             String uniqueName = (String)exp2name.get(exp);
             if( uniqueName!=null ) {
                 // this element will be written as a named pattern
-                this.writer.element("ref", new String[]{"name",uniqueName} );
+                this.writer.element("ref", new String[]{"name",cleanName(uniqueName)} );
                 return;
             } else
                 writeElement(exp);

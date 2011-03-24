@@ -34,7 +34,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.sun.msv.datatype.xsd</groupId>
   <artifactId>xsdlib</artifactId>
-  <version>2010.2-SNAPSHOT</version>
+  <version>2011.1-SNAPSHOT</version>
   <name>MSV XML Schema Datatype Library</name>
   <description>XML Schema datatypes library</description>
   <packaging>bundle</packaging>
@@ -52,10 +52,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
   </licenses>
 
   <scm> 
-<!--
-    <connection>scm:svn:http://msv.dev.java.net/svn/msv/trunk/xsdlib</connection>
-    <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/trunk/xsdlib</developerConnection>
--->
     <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
     <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
     <url>http://github.com/kohsuke/msv</url>

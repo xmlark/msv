@@ -3,18 +3,18 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.java.dev.msv</groupId>
   <artifactId>msv-relames</artifactId>
-  <version>2009.1-SNAPSHOT</version>
+  <version>2011.1-SNAPSHOT</version>
   <name>MSV Schematron Plugin</name>
   <parent>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv-parent</artifactId>
-    <version>2009.1</version>
+    <version>2011.1-SNAPSHOT</version>
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
   <scm>
-    <connection>scm:svn:http://msv.dev.java.net/svn/msv/trunk/generator</connection>
-    <developerConnection>scm:svn:https://msv.dev.java.net/svn/msv/trunk/generator</developerConnection>
+    <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
+    <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
   </scm>
 
   <build>

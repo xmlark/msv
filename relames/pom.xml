@@ -12,11 +12,6 @@
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
-  <scm>
-    <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
-    <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
-  </scm>
-
   <build>
     <plugins>
       <plugin>

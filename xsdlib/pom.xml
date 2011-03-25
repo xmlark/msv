@@ -31,145 +31,118 @@ LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
 EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.sun.msv.datatype.xsd</groupId>
-  <artifactId>xsdlib</artifactId>
-  <version>2011.1-SNAPSHOT</version>
-  <name>MSV XML Schema Datatype Library</name>
-  <description>XML Schema datatypes library</description>
-  <packaging>bundle</packaging>
-  <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>5</version>
-  </parent>
-  <licenses>
-    <license>
-      <name>BSD</name>
-      <url>http://www.opensource.org/licenses/bsd-license.php</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-
-  <scm> 
-    <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
-    <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.sun.msv.datatype.xsd</groupId>
+    <artifactId>xsdlib</artifactId>
+    <version>2011.1-SNAPSHOT</version>
+    <name>MSV XML Schema Datatype Library</name>
+    <description>XML Schema datatypes library</description>
     <url>http://github.com/kohsuke/msv</url>
-  </scm>
- <properties>
-    <surefire.fork.mode>once</surefire.fork.mode>
-    <surefire.format>brief</surefire.format>
-    <surefire.usefile>false</surefire.usefile>
-    <surefire.fork.vmargs>-ea</surefire.fork.vmargs>
-<!-- lint when ready to work on this -->
-<!--        <compile.flags>-Xlint:unchecked,deprecation,fallthrough,finally</compile.flags> -->
-    <eclipse.outputDirectory>${basedir}/target/classes</eclipse.outputDirectory>
-    <downloadSources>true</downloadSources>
-  </properties>
-  <prerequisites>
-    <maven>2.2.1</maven>
-  </prerequisites>
-
-  <mailingLists>
-    <mailingList>
-      <name>Users List</name>
-      <subscribe>users-subscribe@msv.dev.java.net</subscribe>
-      <unsubscribe>users-unsubscribe@msv.dev.java.net</unsubscribe>
-      <archive>https://msv.dev.java.net/servlets/SummarizeList?listName=users</archive>
-    </mailingList>
-  </mailingLists>
-  <developers>
-    <developer>
-      <id>kohsuke</id>
-      <name>Kohsuke Kawaguchi</name>
-      <email>kk@kohsuke.org</email>
-    </developer>
-    <developer>
-      <id>tatu</id>
-      <name>Tatu Saloranta</name>
-      <email>tatu.saloranta@iki.fi</email>
-    </developer>
-  </developers>
-  <dependencies>
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-      <version>2.9.1</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>relaxngDatatype</groupId>
-      <artifactId>relaxngDatatype</artifactId>
-      <version>20020414</version>
-    </dependency>
-
-    <!-- Test dependencies -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.4</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jdom</groupId>
-      <artifactId>jdom</artifactId>
-      <version>1.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>**/*.properties</include>
-	</includes>
-      </resource>
-    </resources>
-    <plugins>
-      <!-- Compilation: require JDK 1.5 -->
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>  
-        <configuration>
-          <source>1.5</source>  
-          <target>1.5</target>  
-        </configuration>  
-      </plugin>
-      <!-- Also build source jar -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Ant test jar as well -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-	<executions>
-	  <execution>
-	    <goals>
-	      <goal>test-jar</goal>
-	    </goals>
-	  </execution>
-	</executions>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>com.sun.msv.datatype.xsd.CommandLineTester</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-      <!-- Need to provide javadocs -->
-      <plugin>
+    <packaging>bundle</packaging>
+    <parent>
+        <groupId>net.java.dev.msv</groupId>
+        <artifactId>msv-parent</artifactId>
+        <version>2011.1-SNAPSHOT</version>
+        <relativePath>../parent/pom.xml</relativePath>
+    </parent>
+    <licenses>
+        <license>
+            <name>BSD</name>
+            <url>http://www.opensource.org/licenses/bsd-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
+        <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
+        <url>http://github.com/kohsuke/msv</url>
+    </scm>
+    <properties>
+        <surefire.fork.mode>once</surefire.fork.mode>
+        <surefire.format>brief</surefire.format>
+        <surefire.usefile>false</surefire.usefile>
+        <surefire.fork.vmargs>-ea</surefire.fork.vmargs>
+        <!-- lint when ready to work on this -->
+        <!--        <compile.flags>-Xlint:unchecked,deprecation,fallthrough,finally</compile.flags> -->
+        <eclipse.outputDirectory>${basedir}/target/classes</eclipse.outputDirectory>
+        <downloadSources>true</downloadSources>
+    </properties>
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
+    <developers>
+        <developer>
+            <id>kohsuke</id>
+            <name>Kohsuke Kawaguchi</name>
+            <email>kk@kohsuke.org</email>
+        </developer>
+        <developer>
+            <id>tatu</id>
+            <name>Tatu Saloranta</name>
+            <email>tatu.saloranta@iki.fi</email>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.9.1</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>relaxngDatatype</groupId>
+            <artifactId>relaxngDatatype</artifactId>
+            <version>20020414</version>
+        </dependency>
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <!-- Also build source jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Ant test jar as well -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.sun.msv.datatype.xsd.CommandLineTester</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <!-- Need to provide javadocs -->
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
@@ -177,7 +150,8 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                     <target>1.5</target>
                     <encoding>UTF-8</encoding>
                     <maxmemory>1g</maxmemory>
-                    <links><!-- JDK 1.6 javadocs will remain longer -->
+                    <links>
+                        <!-- JDK 1.6 javadocs will remain longer -->
                         <link>http://java.sun.com/javase/6/docs/api/</link>
                     </links>
                 </configuration>
@@ -190,104 +164,102 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                         </goals>
                     </execution>
                 </executions>
-      </plugin>
-
-      <!-- Plus, let's make jars OSGi bundles as well  -->
-      <plugin>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-          <extensions>true</extensions>
-          <configuration>
-            <instructions>
-              <Bundle-Name>${project.name}</Bundle-Name>
-              <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-              <Bundle-Description>${project.description}</Bundle-Description>
-              <Import-Package>
+            </plugin>
+            <!-- Plus, let's make jars OSGi bundles as well  -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+		<version>2.3.4</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Name>${project.name}</Bundle-Name>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Description>${project.description}</Bundle-Description>
+                        <Import-Package>
 org.relaxng.datatype,
 org.relaxng.datatype.helpers
 </Import-Package>
-              <DynamicImport-Package>
+                        <DynamicImport-Package>
 org.apache.xerces.impl.xpath.regex
 </DynamicImport-Package>
-              <Private-Package>
+                        <Private-Package>
 com.sun.msv.datatype.regexp,
 com.sun.xml.util
 </Private-Package>
-              <Export-Package>
+                        <Export-Package>
 com.sun.msv.datatype,
 com.sun.msv.datatype.xsd*
 </Export-Package>
-            </instructions>
-          </configuration>
-      </plugin>
-      <!-- Need GPG signatures for releases -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>2.0</version>
-        <configuration>
-          <mavenExecutorId>forked-path</mavenExecutorId>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>add-source</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>src-apache</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-eclipse-plugin</artifactId>
-          <configuration>
-            <outputDirectory>${eclipse.outputDirectory}</outputDirectory>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <includes>
-              <include>**/*Test.java</include>
-              <include>**/*TestCase.java</include>
-              <include>**/*TestCases.java</include>
-            </includes>
-            <excludes>
-              <exclude>**/*$*</exclude>
-            </excludes>
-            <reportFormat>${surefire.format}</reportFormat>
-            <useFile>${surefire.usefile}</useFile>
-            <forkMode>${surefire.fork.mode}</forkMode>
-            <childDelegation>false</childDelegation>
-            <argLine>${surefire.fork.vmargs}</argLine>
-            <systemProperties>
-              <property>
-                <name>java.awt.headless</name>
-                <value>${java.awt.headless}</value>
-              </property>
-              <property>
-                <name>surefire.fork.vmargs</name>
-                <value>${surefire.fork.vmargs}</value>
-              </property>
-            </systemProperties>
-          </configuration>
-        </plugin>
-    </plugins>
-  </build>
-  <profiles>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <!-- Need GPG signatures for releases -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.0</version>
+                <configuration>
+                    <mavenExecutorId>forked-path</mavenExecutorId>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src-apache</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>${eclipse.outputDirectory}</outputDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*TestCase.java</include>
+                        <include>**/*TestCases.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/*$*</exclude>
+                    </excludes>
+                    <reportFormat>${surefire.format}</reportFormat>
+                    <useFile>${surefire.usefile}</useFile>
+                    <forkMode>${surefire.fork.mode}</forkMode>
+                    <childDelegation>false</childDelegation>
+                    <argLine>${surefire.fork.vmargs}</argLine>
+                    <systemProperties>
+                        <property>
+                            <name>java.awt.headless</name>
+                            <value>${java.awt.headless}</value>
+                        </property>
+                        <property>
+                            <name>surefire.fork.vmargs</name>
+                            <value>${surefire.fork.vmargs}</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
         <profile>
             <id>release-sign-artifacts</id>
             <activation>
@@ -315,6 +287,5 @@ com.sun.msv.datatype.xsd*
                 </plugins>
             </build>
         </profile>
-  </profiles>
-
+    </profiles>
 </project>

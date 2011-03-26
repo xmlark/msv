@@ -34,12 +34,12 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv-rngconverter</artifactId>
-    <version>2011.1</version>
+    <version>2011.2-SNAPSHOT</version>
     <name>MSV RNG Converter</name>
     <parent>
         <groupId>net.java.dev.msv</groupId>
         <artifactId>msv-parent</artifactId>
-        <version>2011.1</version>
+        <version>2011.2-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
     <scm>

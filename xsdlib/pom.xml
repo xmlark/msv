@@ -45,17 +45,10 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         <version>2011.1-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
-    <licenses>
-        <license>
-            <name>BSD</name>
-            <url>http://www.opensource.org/licenses/bsd-license.php</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
     <scm>
-        <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
-        <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
-        <url>http://github.com/kohsuke/msv</url>
+      <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
+      <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
+      <url>http://github.com/kohsuke/msv</url> 
     </scm>
     <properties>
         <surefire.fork.mode>once</surefire.fork.mode>

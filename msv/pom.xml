@@ -36,8 +36,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <artifactId>msv-core</artifactId>
     <version>2011.1-SNAPSHOT</version>
     <name>MSV Core</name>
-    <description>Multi-Schema Validator Core package
-</description>
+    <description>Multi-Schema Validator Core package</description>
     <packaging>bundle</packaging>
     <parent>
         <groupId>net.java.dev.msv</groupId>
@@ -45,6 +44,11 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         <version>2011.1-SNAPSHOT</version>
         <relativePath>../parent/pom.xml</relativePath>
     </parent>
+    <scm>
+      <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
+      <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
+      <url>http://github.com/kohsuke/msv</url> 
+    </scm>
     <prerequisites>
         <maven>2.2.1</maven>
     </prerequisites>

@@ -44,9 +44,9 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <url>http://github.com/kohsuke/msv</url>
     <packaging>pom</packaging>
     <scm>
-      <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
-      <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
-      <url>http://github.com/kohsuke/msv</url> 
+        <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
+        <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
+        <url>http://github.com/kohsuke/msv</url>
     </scm>
     <prerequisites>
         <maven>2.2.1</maven>
@@ -58,22 +58,22 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <licenses>
         <license>
             <name>BSD</name>
-            <url />
+            <url/>
             <distribution>repo</distribution>
         </license>
     </licenses>
-  <developers>
-    <developer>
-      <id>kohsuke</id>
-      <name>Kohsuke Kawaguchi</name>
-      <email>kk@kohsuke.org</email>
-    </developer>
-    <developer>
-      <id>tatu</id>
-      <name>Tatu Saloranta</name>
-      <email>tatu.saloranta@iki.fi</email>
-    </developer>
-  </developers>
+    <developers>
+        <developer>
+            <id>kohsuke</id>
+            <name>Kohsuke Kawaguchi</name>
+            <email>kk@kohsuke.org</email>
+        </developer>
+        <developer>
+            <id>tatu</id>
+            <name>Tatu Saloranta</name>
+            <email>tatu.saloranta@iki.fi</email>
+        </developer>
+    </developers>
     <modules>
         <module>parent</module>
         <module>xsdlib</module>
@@ -82,25 +82,16 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         <module>generator</module>
         <module>rngconverter</module>
     </modules>
-
     <profiles>
+        <!-- Must sign artifacts to push via Sonatype -->
         <profile>
-            <id>deploy</id>
+            <id>release</id>
             <build>
-                <defaultGoal>deploy</defaultGoal>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>2.0.4</version>
-                        <configuration>
-                          <source>1.5</source>
-                          <target>1.5</target>
-                          <encoding>UTF-8</encoding>
-                          <links>
-                            <link>http://java.sun.com/javase/6/docs/api/</link>
-                          </links>
-                        </configuration>
+                        <version>2.1.2</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -121,16 +112,15 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <source>1.5</source>
+                            <target>1.5</target>
+                            <encoding>UTF-8</encoding>
+                            <links>
+                                <link>http://java.sun.com/javase/6/docs/api/</link>
+                            </links>
+                        </configuration>
                     </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- Must sign artifacts to push via Sonatype -->
-        <profile>
-            <id>release-sign-artifacts</id>
-            <build>
-                <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -149,7 +139,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             </build>
         </profile>
     </profiles>
-
     <build>
         <defaultGoal>install</defaultGoal>
         <pluginManagement>
@@ -170,9 +159,8 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                     <version>2.1</version>
                     <configuration>
                         <useReleaseProfile>true</useReleaseProfile>
-			<releaseProfiles>release,deploy,release-sign-artifacts</releaseProfiles>
+                        <releaseProfiles>release</releaseProfiles>
                         <preparationGoals>clean install</preparationGoals>
-                        <goals>deploy</goals>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                     </configuration>
                 </plugin>
@@ -227,7 +215,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-		<version>2.3.1</version>
+                <version>2.3.1</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

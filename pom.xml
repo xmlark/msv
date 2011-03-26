@@ -129,12 +129,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         <!-- Must sign artifacts to push via Sonatype -->
         <profile>
             <id>release-sign-artifacts</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -175,10 +169,10 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.1</version>
                     <configuration>
-                        <useReleaseProfile>false</useReleaseProfile>
+                        <useReleaseProfile>true</useReleaseProfile>
+			<releaseProfiles>release,deploy,release-sign-artifacts</releaseProfiles>
                         <preparationGoals>clean install</preparationGoals>
                         <goals>deploy</goals>
-                        <arguments>-Pdeploy</arguments>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                     </configuration>
                 </plugin>

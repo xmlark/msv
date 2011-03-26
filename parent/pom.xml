@@ -29,13 +29,13 @@
   <parent>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv</artifactId>
-    <version>2011.2-SNAPSHOT</version>
+    <version>2011.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.java.dev.msv</groupId>
   <artifactId>msv-parent</artifactId>
-  <version>2011.2-SNAPSHOT</version>
+  <version>2011.1-SNAPSHOT</version>
   <name>MSV Parent</name>
   <url>http://msv.java.net</url>
   <packaging>pom</packaging>

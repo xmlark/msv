@@ -40,10 +40,9 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <url>http://github.com/kohsuke/msv</url>
     <packaging>bundle</packaging>
     <parent>
-        <groupId>net.java.dev.msv</groupId>
-        <artifactId>msv-parent</artifactId>
-        <version>2011.2-SNAPSHOT</version>
-        <relativePath>../parent/pom.xml</relativePath>
+      <groupId>net.java.dev.msv</groupId>
+      <artifactId>msv</artifactId>
+      <version>2011.2-SNAPSHOT</version>
     </parent>
     <scm>
       <connection>scm:git:git@github.com:kohsuke/msv.git</connection>

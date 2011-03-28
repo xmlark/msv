@@ -6,10 +6,9 @@
   <version>2011.1-SNAPSHOT</version>
   <name>MSV Schematron Plugin</name>
   <parent>
-    <groupId>net.java.dev.msv</groupId>
-    <artifactId>msv-parent</artifactId>
-    <version>2011.1-SNAPSHOT</version>
-    <relativePath>../parent/pom.xml</relativePath>
+      <groupId>net.java.dev.msv</groupId>
+      <artifactId>msv</artifactId>
+      <version>2011.2-SNAPSHOT</version>
   </parent>
     <scm>
       <connection>scm:git:git@github.com:kohsuke/msv.git</connection>

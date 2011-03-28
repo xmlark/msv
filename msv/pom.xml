@@ -55,12 +55,12 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         <dependency>
             <groupId>com.sun.msv.datatype.xsd</groupId>
             <artifactId>xsdlib</artifactId>
-            <version>2010.1</version>
+            <version>2011.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.java.dev.msv</groupId>
             <artifactId>msv-testharness</artifactId>
-            <version>2009.1</version>
+            <version>2011.2-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <!-- Note: Xerces only needed for TextUI; hence optional

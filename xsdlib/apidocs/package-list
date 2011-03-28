@@ -1,0 +1,7 @@
+com.sun.msv.datatype
+com.sun.msv.datatype.regexp
+com.sun.msv.datatype.xsd
+com.sun.msv.datatype.xsd.datetime
+com.sun.msv.datatype.xsd.ngimpl
+com.sun.msv.datatype.xsd.regex
+com.sun.xml.util

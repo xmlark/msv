@@ -1,0 +1,33 @@
+-classpath
+'/Users/benson/x/msv/testharness/target/classes:/Users/benson/.m2/repository/org/apache/ant/ant-launcher/1.7.1/ant-launcher-1.7.1.jar:/Users/benson/.m2/repository/org/apache/ant/ant/1.7.1/ant-1.7.1.jar'
+-encoding
+'UTF-8'
+-protected
+-quiet
+-sourcepath
+'/Users/benson/x/msv/testharness/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2011. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/Users/benson/x/msv/testharness/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'MSV Test Harness 2011.2-SNAPSHOT API'
+-link
+'http://java.sun.com/j2se/1.5.0/docs/api'
+-linkoffline
+'http://github.com/kohsuke/msv/apidocs' '/Users/benson/x/msv/xsdlib/target/site/apidocs'
+-linkoffline
+'http://github.com/kohsuke/msv/msv-core/apidocs' '/Users/benson/x/msv/msv/target/site/apidocs'
+-linkoffline
+'http://github.com/kohsuke/msv/msv-generator/apidocs' '/Users/benson/x/msv/generator/target/site/apidocs'
+-linkoffline
+'http://github.com/kohsuke/msv/msv-rngconverter/apidocs' '/Users/benson/x/msv/rngconverter/target/site/apidocs'
+-use
+-version
+-windowtitle
+'MSV Test Harness 2011.2-SNAPSHOT API'

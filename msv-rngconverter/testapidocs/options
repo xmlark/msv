@@ -1,0 +1,33 @@
+-classpath
+'/Users/benson/x/msv/rngconverter/target/classes:/Users/benson/x/msv/rngconverter/target/test-classes:/Users/benson/x/msv/testharness/target/classes:/Users/benson/.m2/repository/xml-apis/xml-apis/1.3.04/xml-apis-1.3.04.jar:/Users/benson/.m2/repository/org/apache/ant/ant-launcher/1.7.1/ant-launcher-1.7.1.jar:/Users/benson/x/msv/msv/target/test-classes:/Users/benson/.m2/repository/relaxngDatatype/relaxngDatatype/20020414/relaxngDatatype-20020414.jar:/Users/benson/.m2/repository/org/apache/ant/ant/1.7.1/ant-1.7.1.jar:/Users/benson/x/msv/xsdlib/target/test-classes:/Users/benson/.m2/repository/junit/junit/4.8.2/junit-4.8.2.jar:/Users/benson/x/msv/xsdlib/target/classes:/Users/benson/.m2/repository/xerces/xercesImpl/2.9.1/xercesImpl-2.9.1.jar:/Users/benson/x/msv/msv/target/classes:/Users/benson/.m2/repository/isorelax/isorelax/20030108/isorelax-20030108.jar:/Users/benson/.m2/repository/xml-resolver/xml-resolver/1.2/xml-resolver-1.2.jar'
+-encoding
+'UTF-8'
+-protected
+-quiet
+-sourcepath
+'/Users/benson/x/msv/rngconverter/src/test/java'
+-author
+-bottom
+'Copyright &#169; 2011. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/Users/benson/x/msv/rngconverter/target/site/testapidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'MSV RNG Converter 2011.2-SNAPSHOT Test API'
+-link
+'../apidocs'
+-link
+'http://java.sun.com/j2se/1.5.0/docs/api'
+-linkoffline
+'http://github.com/kohsuke/msv/apidocs' '/Users/benson/x/msv/xsdlib/target/site/testapidocs'
+-linkoffline
+'http://github.com/kohsuke/msv/msv-core/apidocs' '/Users/benson/x/msv/msv/target/site/testapidocs'
+-linkoffline
+'http://github.com/kohsuke/msv/msv-generator/apidocs' '/Users/benson/x/msv/generator/target/site/testapidocs'
+-use
+-version
+-windowtitle
+'MSV RNG Converter 2011.2-SNAPSHOT Test API'

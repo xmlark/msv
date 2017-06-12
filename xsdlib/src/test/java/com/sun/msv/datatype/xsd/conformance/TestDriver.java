@@ -2,27 +2,26 @@
  * @(#)$Id$
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
- * 
- * This software is the proprietary information of Sun Microsystems, Inc.  
+ *
+ * This software is the proprietary information of Sun Microsystems, Inc.
  * Use is subject to license terms.
- * 
+ *
  */
 package com.sun.msv.datatype.xsd.conformance;
 
 import com.sun.msv.datatype.xsd.TypeIncubator;
 import com.sun.msv.datatype.xsd.XSDatatype;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
+import java.util.Iterator;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.DatatypeException;
 
-import java.util.Iterator;
-
 /**
  * conformance test runner.
- * 
+ *
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 class TestDriver implements ErrorReceiver
@@ -46,7 +45,7 @@ class TestDriver implements ErrorReceiver
             System.err.println(e.getMessage());
         }
     }
-    
+
     private DatatypeException getDiagnosis( Datatype dt, String literal ) {
         try {
             dt.checkValid(literal,DummyContextProvider.theInstance);
@@ -55,11 +54,11 @@ class TestDriver implements ErrorReceiver
             return de;
         }
     }
-    
+
     public boolean report( UnexpectedResultException exp ) {
         Object o = exp.type.createValue(exp.testInstance,DummyContextProvider.theInstance);
         Object jo = exp.type.createJavaObject(exp.testInstance,DummyContextProvider.theInstance);
-        
+
         System.out.println("************* error *************");
         System.out.println("type name            : "+exp.baseTypeName);
         System.out.println("tested instance      : \""+exp.testInstance+"\"");
@@ -70,14 +69,14 @@ class TestDriver implements ErrorReceiver
         System.out.println("diagnose method      : "+(getDiagnosis(exp.type,exp.testInstance)==null) );
         System.out.println("JavaObjectType       : "+(jo!=null?jo.getClass().toString():"N/A") );
         System.out.println("expected Type        : "+exp.type.getJavaObjectType() );
-        
+
         if(jo!=null)
             try {
                 System.out.println("serializeJavaObject  : "+exp.type.serializeJavaObject(jo,DummyContextProvider.theInstance) );
             } catch( Exception e ) {
                 System.out.println("serializeJavaObject  : "+e );
             }
-        
+
         if(o!=null)
             try {
                 System.out.println("convertToLexical     : "+exp.type.convertToLexicalValue(o,DummyContextProvider.theInstance));
@@ -85,22 +84,22 @@ class TestDriver implements ErrorReceiver
                 System.out.println("convertToLexical     : "+e);
                 e.printStackTrace();
             }
-        
+
         if( exp.incubator.isEmpty() )
             System.out.println("facets: none");
         else
             exp.incubator.dump(System.out);
 
         DatatypeException err = getDiagnosis( exp.type, exp.testInstance );
-        
+
         if( err!=null && err.getMessage()!=null )
             System.out.println("diagnosis: " + err.getMessage() );
         else
             System.out.println("diagnosis: N/A");
-        
+
         // do it again (for trace purpose)
         exp.type.isValid(exp.testInstance,DummyContextProvider.theInstance);
-        
+
         return false;
     }
 
@@ -110,14 +109,14 @@ class TestDriver implements ErrorReceiver
         System.err.println("test case error");
         facets.dump(System.err);
         System.err.println();
-        
+
         try
         {// do it again (for debug)
             baseType.derive("anonymous",facets);
         }
         catch( Exception ee ) { ; }
 */
-        
+
         return false;
     }
 }

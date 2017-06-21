@@ -58,7 +58,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         </site>
     </distributionManagement>
     <properties>
-        <jdk.version>1.8</jdk.version>
+        <jdk.version>1.6</jdk.version>
         <surefire.fork.mode>once</surefire.fork.mode>
         <surefire.format>brief</surefire.format>
         <surefire.usefile>false</surefire.usefile>
@@ -127,7 +127,9 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                             <target>${jdk.version}</target>
                             <encoding>UTF-8</encoding>
                             <links>
-                                <link>http://docs.oracle.com/javase/8/docs/api/</link>
+                                <!-- may choose whatever JDK version, try something close to our minimum req
+                                  -->
+                                <link>http://docs.oracle.com/javase/7/docs/api/</link>
                                 <link>http://xerces.apache.org/xerces-j/apiDocs/</link>	
                             </links>
                         </configuration>

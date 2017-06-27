@@ -39,7 +39,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv</artifactId>
-    <version>2017.1</version>
+    <version>2017.2-SNAPSHOT</version>
     <name>msv</name>
     <url>http://github.com/kohsuke/msv</url>
     <packaging>pom</packaging>
@@ -47,7 +47,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
         <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
         <url>http://github.com/kohsuke/msv</url>
-      <tag>msv-2017.1</tag>
+      <tag>HEAD</tag>
   </scm>
     <prerequisites>
         <maven>3.0.3</maven><!-- tested with 3.3.9 -->

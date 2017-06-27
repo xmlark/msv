@@ -3,12 +3,12 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.java.dev.msv</groupId>
   <artifactId>msv-testharness</artifactId>
-  <version>2017.2-SNAPSHOT</version>
+  <version>2017.1-SNAPSHOT</version>
   <name>MSV Test Harness</name>
   <parent>
       <groupId>net.java.dev.msv</groupId>
       <artifactId>msv</artifactId>
-      <version>2017.2-SNAPSHOT</version>
+      <version>2017.1-SNAPSHOT</version>
   </parent>
 
   <scm>

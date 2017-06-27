@@ -34,14 +34,14 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv-core</artifactId>
-    <version>2017.2-SNAPSHOT</version>
+    <version>2017.1-SNAPSHOT</version>
     <name>MSV Core</name>
     <description>Multi-Schema Validator Core package</description>
     <packaging>jar</packaging><!-- OSGi bundle is missing activator interface -->
     <parent>
       <groupId>net.java.dev.msv</groupId>
       <artifactId>msv</artifactId>
-      <version>2017.2-SNAPSHOT</version>
+      <version>2017.1-SNAPSHOT</version>
     </parent>
     <scm>
       <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
@@ -56,12 +56,12 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         <dependency>
             <groupId>com.sun.msv.datatype.xsd</groupId>
             <artifactId>xsdlib</artifactId>
-            <version>2017.2-SNAPSHOT</version>
+            <version>2017.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.java.dev.msv</groupId>
             <artifactId>msv-testharness</artifactId>
-            <version>2017.2-SNAPSHOT</version>
+            <version>2017.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <!-- Note: Xerces only needed for TextUI; hence optional

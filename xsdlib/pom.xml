@@ -34,7 +34,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sun.msv.datatype.xsd</groupId>
     <artifactId>xsdlib</artifactId>
-    <version>2017.1</version>
+    <version>2017.2-SNAPSHOT</version>
     <name>MSV XML Schema Datatype Library</name>
     <description>XML Schema datatypes library</description>
     <url>http://github.com/kohsuke/msv</url>
@@ -42,13 +42,13 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <parent>
       <groupId>net.java.dev.msv</groupId>
       <artifactId>msv</artifactId>
-      <version>2017.1</version>
+      <version>2017.2-SNAPSHOT</version>
     </parent>
     <scm>
       <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
       <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
       <url>http://github.com/kohsuke/msv</url> 
-      <tag>msv-2017.1</tag>
+      <tag>HEAD</tag>
   </scm>
     <properties>
         <surefire.fork.mode>once</surefire.fork.mode>

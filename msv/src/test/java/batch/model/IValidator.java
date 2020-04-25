@@ -12,7 +12,6 @@ package batch.model;
 import java.io.File;
 import java.io.InputStream;
 
-import org.omg.CORBA.Any;
 
 /**
  * A validator has to implement this interface to be tested with this harness.

@@ -211,6 +211,13 @@ public class ElementDeclExp extends ReferenceExp
             this.parent = parent;
         }
         
+        public XSElementExp(ElementDeclExp parent, SimpleNameClass elementName, Expression contentModel) {
+            super(contentModel,false);
+            this.elementName = elementName;
+            this.defaultValue = null;
+            this.parent = parent;
+        }        
+        
         /**
          * identity constraints associated to this declaration.
          * When no constraint exists, this field may be null (or empty vector).

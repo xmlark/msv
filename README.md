@@ -1,6 +1,7 @@
 # Multi-Schema Validator
 
 Multi-Schema XML Validator (MSV) is a Java technology tool to validate XML documents against several kinds of XML schemata. It supports RELAX NG, RELAX Namespace, RELAX Core, TREX, XML DTDs, and a subset of XML Schema Part 1.
+MSV was tested sucessfully with JDK 8 and JDK 11 on Windows & Linux.
 
 # MSV development
 
@@ -14,7 +15,7 @@ MSV consists of a number of sub-projects. Each sub-projects has its own director
 | msv | Multi-Schema XML Validator. A schema model and validator implementation. Dependent on XSDLib and testharness. |
 | relames | Multi-Schema XML Validator Schematron add-on. An experimental implementation of RELAX NG + Schematron validation. Dependent on MSV. |
 | rngconverter | RELAX NG Converter. reads a schema and produces an equivalent RELAX NG schema. Dependent on MSV. |
-| schmit | XSLT Extension For Schema Annotation |
+| schmit | MSV Schmit (Schema-in-transformation XSLT add-on). XSLT Extension For Schema Annotation. |
 | tahiti | Data-binding implementation |
 | testharness | Test harness that is used to parse composite test suite files (.ssuite). |
 | trexconverter | TREX Converter. Reads a schema and produces an equivalent TREX pattern.|
@@ -36,7 +37,8 @@ Most of the sub-projects have a similar directory structure.
 
 
 ## Build instruction
-To build the entire project, use [Maven 3](https://maven.apache.org/download.cgi) on command line: 
+To build the entire project, use [Maven 3](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html). [Maven is downloadable for free at Apache.](https://maven.apache.org/download.cgi). 
+To build via command line at project root level use:  
 'mvn install' 
 This builds the release packages for all sub-projects in a proper order.
 When preparing release packages, it is a good idea to use this target so that dependencies are processed correctly. (But you should run a project-local "release" first to make sure that there is no error in the repository.)

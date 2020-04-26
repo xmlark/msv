@@ -453,10 +453,5 @@ public class RuleGenerator
 				|| exp instanceof FieldItem
 				|| exp instanceof PrimitiveItem
 				|| exp instanceof IgnoreItem);
-	}
-	
-	private static void assert( boolean b ) {
-		if(!b)	throw new Error();
-	}
-	
+	}	
 }

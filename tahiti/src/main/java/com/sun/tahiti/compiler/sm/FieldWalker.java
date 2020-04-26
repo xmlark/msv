@@ -64,8 +64,4 @@ abstract class FieldWalker extends ExpressionWalker
 		assert(!(exp instanceof JavaItem));
 		super.onOther(exp);
 	}
-
-	private static void assert( boolean b ) {
-		if(!b)	throw new Error();
-	}
 }

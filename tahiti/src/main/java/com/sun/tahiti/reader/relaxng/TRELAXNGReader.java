@@ -55,7 +55,7 @@ public class TRELAXNGReader extends RELAXNGReader implements TahitiGrammarReader
 
 	protected Expression interceptExpression( ExpressionState state, Expression exp ) {
 		// if an error was found, stop processing.
-		if( hadError )	return exp;
+//		if( hadError )	return exp;
 		
 		// check Tahiti attributes.
 		
@@ -260,7 +260,7 @@ public class TRELAXNGReader extends RELAXNGReader implements TahitiGrammarReader
 		super.wrapUp();
 		
 		// if we already have an error, abort further processing.
-		if(hadError)	return;
+//		if(hadError)	return;
 
 		// if no package name is specified, place it to the root pacakge.
 		if(annGrammar.grammarName==null)

@@ -58,7 +58,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         <module>relames</module>
         <module>rngconverter</module>
         <module>schmit</module>
-        <!--<module>tahiti</module>-->
+        <module>tahiti</module>
         <module>testharness</module>
         <!--<module>trexconverter</module>-->
         <module>xsdlib</module>

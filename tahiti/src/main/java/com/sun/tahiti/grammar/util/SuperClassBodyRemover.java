@@ -80,7 +80,7 @@ public class SuperClassBodyRemover extends ExpressionCloner {
 	}
 	
 	public Expression onAttribute( AttributeExp exp ) {
-		return pool.createAttribute( exp.nameClass, exp.exp.visit(this) );
+		return pool.createAttribute( exp.nameClass, exp.exp.visit(this), exp.getDefaultValue());
 	}
 	
 	public Expression onElement( ElementExp exp ) {
@@ -154,8 +154,9 @@ public class SuperClassBodyRemover extends ExpressionCloner {
 			We cannot strip the ClassItem of the "base" correctly unless
 			we copy the definition of the "body" elment.
 			*/
+            @Override
 			public Expression onAttribute( AttributeExp exp ) {
-				return super.pool.createAttribute(exp.nameClass,exp.exp.visit(this));
+				return super.pool.createAttribute(exp.nameClass,exp.exp.visit(this), exp.getDefaultValue());
 			}
 			
 			public Expression onElement( ElementExp exp ) {

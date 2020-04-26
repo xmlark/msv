@@ -226,8 +226,4 @@ class Binder implements TypedContentHandler {
 		
 		return theResult[0];
 	}
-	
-	private static void assert( boolean b ) {
-		if(!b)	throw new Error();
-	}
 }

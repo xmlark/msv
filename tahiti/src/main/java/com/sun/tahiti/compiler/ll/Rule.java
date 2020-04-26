@@ -186,9 +186,5 @@ public final class Rule {
 		writer.end("right");
 		
 		writer.end("rule");
-	}
-	
-	private static void assert( boolean b ) {
-		if(!b)	throw new Error();
-	}
+	}	
 }

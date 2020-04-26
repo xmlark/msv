@@ -576,12 +576,6 @@ public class MarshallerGenerator implements ExpressionVisitorVoid {
 		
 		return branchFields;
 	}
-	
-	
-	private static void assert( boolean b ) {
-		if(!b)	throw new Error();
-	}
-
 
 	private static String localize( String prop, Object arg ) {
 		return localize( prop, new Object[]{arg} );

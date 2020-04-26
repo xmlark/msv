@@ -222,7 +222,7 @@ class TemporaryClassItemRemover {
 		public Expression onAttribute( AttributeExp exp ) {
 			Expression body = exp.exp.visit(this);
 			if( body==exp.exp )	return exp;
-			else	return pool.createAttribute( exp.nameClass, body );
+			else	return pool.createAttribute( exp.nameClass, body, exp.getDefaultValue());
 		}
 	
 		private final Set visitedExps = new java.util.HashSet();

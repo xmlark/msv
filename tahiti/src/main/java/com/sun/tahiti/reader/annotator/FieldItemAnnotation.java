@@ -153,7 +153,7 @@ class FieldItemAnnotation
 		public Expression onAttribute( AttributeExp exp ) {
 			Expression body = visitXMLItemContent(exp);
 			if( body==exp.exp )	return exp;
-			else	return pool.createAttribute( exp.nameClass, body );
+			else	return pool.createAttribute( exp.nameClass, body, exp.getDefaultValue());
 		}
 	
 		public Expression onElement( ElementExp exp ) {
@@ -394,7 +394,4 @@ class FieldItemAnnotation
 //		return Character.toLowerCase(bareName.charAt(0))+bareName.substring(1);
 //	}
 		
-	private static void assert( boolean b ) {
-		if(!b)	throw new Error();
-	}
 }

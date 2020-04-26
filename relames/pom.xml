@@ -6,6 +6,8 @@
     <version>${revision}</version>
     <packaging>jar</packaging>
 
+    <!-- Ignore WARNING: 'version' contains an expression but should be a constant. -->
+    <!-- https://stackoverflow.com/questions/25682244/flattened-pom-is-not-being-used -->   
     <parent>
         <groupId>net.java.dev.msv</groupId>
         <artifactId>msv</artifactId> 

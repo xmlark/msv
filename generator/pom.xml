@@ -4,7 +4,9 @@
   <groupId>net.java.dev.msv</groupId>
   <artifactId>msv-generator</artifactId>
   <version>${revision}</version>
-  <name>MSV Generator</name>
+  
+  <!-- Ignore WARNING: 'version' contains an expression but should be a constant. -->
+  <!-- https://stackoverflow.com/questions/25682244/flattened-pom-is-not-being-used -->      
   <parent>
       <groupId>net.java.dev.msv</groupId>
       <artifactId>msv</artifactId>
@@ -12,6 +14,7 @@
       <relativePath>../pom.xml</relativePath>
   </parent>
 
+  <name>MSV Generator</name>
   <build>
     <plugins>
       <plugin>

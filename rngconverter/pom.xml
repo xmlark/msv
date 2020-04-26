@@ -34,14 +34,18 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv-rngconverter</artifactId>
-    <version>${revision}</version>
-    <name>MSV RNG Converter</name>
+    <version>${revision}</version>    
+    
+    <!-- Ignore WARNING: 'version' contains an expression but should be a constant. -->
+    <!-- https://stackoverflow.com/questions/25682244/flattened-pom-is-not-being-used -->       
     <parent>
-      <groupId>net.java.dev.msv</groupId>
-      <artifactId>msv</artifactId>
+        <groupId>net.java.dev.msv</groupId>
+        <artifactId>msv</artifactId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
+    
+    <name>MSV RNG Converter</name>    
     <build>
         <plugins>
             <plugin>

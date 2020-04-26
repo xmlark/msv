@@ -168,8 +168,4 @@ public final class Rules {
 		}
 		return result;
 	}
-
-	private static void assert( boolean b ) {
-		if(!b)	throw new Error();
-	}
 }

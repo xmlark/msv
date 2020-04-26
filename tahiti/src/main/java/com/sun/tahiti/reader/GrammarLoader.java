@@ -15,7 +15,6 @@ import com.sun.tahiti.reader.xmlschema.TXMLSchemaReader;
 import com.sun.msv.reader.GrammarReader;
 import com.sun.msv.reader.GrammarReaderController;
 import com.sun.msv.reader.util.ForkContentHandler;
-import com.sun.msv.reader.util.GrammarReaderControllerAdaptor;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 import java.util.Vector;
@@ -106,14 +105,14 @@ public class GrammarLoader {
 				// redirect all successive events to the winner.
 				parser.setContentHandler(winner[0]);
 				parser.setErrorHandler(
-					new GrammarReaderControllerAdaptor(winner[0],controller));
+					new com.sun.msv.reader.Controller(controller));
 			}
 		});
 		
 		if( source instanceof String )	parser.parse( (String)source );
 		else							parser.parse( (InputSource)source );
 		
-		if( relaxNg.hadError || xmlSchema.hadError )	return null;
+//		if( relaxNg.hadError || xmlSchema.hadError )	return null;
 		if(winner[0]==relaxNg)			return relaxNg.getAnnotatedResult();
 		else							return xmlSchema.getAnnotatedResult();
 	}

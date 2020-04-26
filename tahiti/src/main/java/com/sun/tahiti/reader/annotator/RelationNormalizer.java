@@ -160,7 +160,7 @@ class RelationNormalizer {
 			Expression newContent = exp.exp.visit(this);
 			if( newContent!=exp.exp )
 				// the content model is modified.
-				return reader.pool.createAttribute( exp.getNameClass(), newContent );
+				return reader.pool.createAttribute( exp.getNameClass(), newContent, exp.getDefaultValue());
 			else
 				return exp;
 		}

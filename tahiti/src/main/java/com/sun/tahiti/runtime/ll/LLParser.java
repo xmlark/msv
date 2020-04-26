@@ -113,10 +113,10 @@ public final class LLParser {
 		}
 	}
 	
-	/** “ü—Íƒg[ƒNƒ“—ñ */
+	/** ï¿½ï¿½ï¿½Íƒgï¿½[ï¿½Nï¿½ï¿½ï¿½ï¿½ */
 	Packet[] inputs;
 	
-	/** ƒg[ƒNƒ““Ç‚ÝŽæ‚èŠí */
+	/** ï¿½gï¿½[ï¿½Nï¿½ï¿½ï¿½Ç‚ÝŽï¿½ï¿½ï¿½ */
 	class InputReader {
 		
 		InputReader(Packet[] attributes,int len) {
@@ -127,11 +127,11 @@ public final class LLParser {
 			this.base = this.idx = 0;
 		}
 		
-		private boolean[]	used;	// Á”ï‚µ‚½ƒg[ƒNƒ“‚Ítrue‚É‚È‚Á‚Ä‚¢‚é
-		private int			base;		// ‚Ü‚¾–¢Á‰»ƒg[ƒNƒ“‚Ìæ“ªˆÊ’u
-		private int			idx;		// Œ»Ý‚Ìƒg[ƒNƒ“ˆÊ’u
+		private boolean[]	used;	// ï¿½ï¿½ï¿½ï‚µï¿½ï¿½ï¿½gï¿½[ï¿½Nï¿½ï¿½ï¿½ï¿½trueï¿½É‚È‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
+		private int			base;		// ï¿½Ü‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½[ï¿½Nï¿½ï¿½ï¿½Ìæ“ªï¿½Ê’u
+		private int			idx;		// ï¿½ï¿½ï¿½Ý‚Ìƒgï¿½[ï¿½Nï¿½ï¿½ï¿½Ê’u
 		public int getCurrentIndex() { return idx; }
-		// ƒtƒBƒ‹ƒ^‚ª‚©‚©‚Á‚Ä‚¢‚é‚ÆA—¼ŽÒ‚ªH‚¢ˆá‚¤‚±‚Æ‚ª‚ ‚é
+		// ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ÆAï¿½ï¿½ï¿½Ò‚ï¿½ï¿½Hï¿½ï¿½ï¿½á‚¤ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½ï¿½ï¿½ï¿½
 		
 		public Packet[]		attributes;	// unconsumed attributes
 		public int			attLen;		// length of attributes.
@@ -368,7 +368,7 @@ public final class LLParser {
 		reader = new InputReader(_attributes,_attributes.length);
 		stackTop = null;
 		actionPos = 0;
-//		inputTokenReceiver = new Receiver[inputs.length];	// TODO:Ä—˜—p
+//		inputTokenReceiver = new Receiver[inputs.length];	// TODO:ï¿½Ä—ï¿½ï¿½p
 //		Map attributeListener = new java.util.HashMap();	// AttributePacket -> Action map
 			
 		// the result of unmarshalling is stored to this root object.
@@ -642,10 +642,6 @@ LLparser:
 			return "$$$";	// terminal symbol
 		
 		throw new Error(symbol.toString());
-	}
-	
-	protected static void assert( boolean b ) {
-		if(!b)	throw new Error("asesrtion failed");
 	}
 	
 	private void popStack() {

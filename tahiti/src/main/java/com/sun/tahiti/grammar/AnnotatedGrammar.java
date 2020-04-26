@@ -39,9 +39,11 @@ public final class AnnotatedGrammar implements Grammar
 	}
 	
 	public Expression topLevel;
+    @Override
 	public Expression getTopLevel() { return topLevel; }
 	
 	private final ExpressionPool pool;
+    @Override
 	public ExpressionPool getPool() { return pool; }
 	
 	
@@ -106,8 +108,8 @@ public final class AnnotatedGrammar implements Grammar
 			System.out.println(com.sun.msv.grammar.util.ExpressionPrinter.printContentModel(c));
 			System.out.println(c.getTypeName());
 		}
-		assert(c.isTemporary);
-		assert(classes.containsValue(c));
+		assert c.isTemporary : "ClassItem is not temporary!";
+		assert classes.containsValue(c) : "Classes did not contain ClassIte!"; 
 		
 		classes.remove(c.name);
 	}
@@ -116,11 +118,5 @@ public final class AnnotatedGrammar implements Grammar
 		Object[] o = col.toArray();
 		for( int i=0; i<o.length; i++ )
 			removeClassItem( (ClassItem)o[i] );
-	}
-	
-	
-	
-	private static final void assert( boolean b ) {
-		if(!b)	throw new Error();
 	}
 }

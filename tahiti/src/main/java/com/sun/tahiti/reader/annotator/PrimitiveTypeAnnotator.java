@@ -62,7 +62,7 @@ class PrimitiveTypeAnnotator extends ExpressionCloner {
 	public Expression onAttribute( AttributeExp exp ) {
 		if( visitedExps.contains(exp) )	return exp;
 		
-		Expression e = pool.createAttribute( exp.nameClass, exp.exp.visit(this) );
+		Expression e = pool.createAttribute( exp.nameClass, exp.exp.visit(this), exp.getDefaultValue() );
 		visitedExps.add(e);
 		return e;
 	}

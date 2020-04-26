@@ -106,7 +106,7 @@ public class TXMLSchemaReader extends XMLSchemaReader implements TahitiGrammarRe
 		super.wrapUp();
 		
 		// if we already have an error, abort further processing.
-		if(hadError)	return;
+//		if(hadError)	return;
 
 		// if no package name is specified, place it to the root pacakge.
 		if(annGrammar.grammarName==null)
@@ -123,13 +123,17 @@ public class TXMLSchemaReader extends XMLSchemaReader implements TahitiGrammarRe
 	
 	// several State objects are replaced to annotated AGM with Tahiti items.
 	public static class StateFactory extends XMLSchemaReader.StateFactory {
-		protected State complexTypeDecl		(State parent,StartTagInfo tag)	{ return new TComplexTypeDeclState(); }
-		protected State elementDecl			(State parent,StartTagInfo tag)	{ return new TElementDeclState(); }
-		protected State any					(State parent,StartTagInfo tag)	{ return new TAnyElementState(); }
-		protected State anyAttribute		(State parent,StartTagInfo tag)	{ return new TAnyAttributeState(); }
+        @Override
+		public State complexTypeDecl		(State parent,StartTagInfo tag)	{ return new TComplexTypeDeclState(); }
+        @Override
+		public State elementDecl			(State parent,StartTagInfo tag)	{ return new TElementDeclState(); }
+        @Override
+		public State any					(State parent,StartTagInfo tag)	{ return new TAnyElementState(); }
+        @Override
+		public State anyAttribute		(State parent,StartTagInfo tag)	{ return new TAnyAttributeState(); }
 		
 		// complexContent/extension
-		protected State complexExt			(State parent,StartTagInfo tag, ComplexTypeExp decl)	{ return new TComplexContentBodyState(decl,true); }
+		public State complexExt			(State parent,StartTagInfo tag, ComplexTypeExp decl)	{ return new TComplexContentBodyState(decl,true); }
 	}
 
 

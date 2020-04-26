@@ -165,9 +165,5 @@ public class LLTableCalculator
 		});
 		
 		return r;
-	}
-	
-	private static void assert( boolean b ) {
-		if(!b)	throw new Error();
-	}
+	}	
 }

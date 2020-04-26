@@ -76,11 +76,6 @@ public class NotAllowedRemover extends ExpressionCloner {
 		if( body==Expression.nullSet )
 			return Expression.nullSet;
 		
-		return pool.createAttribute( exp.nameClass, body );
-	}
-	
-	
-	private static void assert( boolean b ) {
-		if(!b)	throw new Error();
-	}
+		return pool.createAttribute( exp.nameClass, body, exp.getDefaultValue());
+	}	
 }

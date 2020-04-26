@@ -478,10 +478,5 @@ public class RuleSerializer implements Symbolizer {
 	private static String javaStringEscape( String s ) {
 //		throw new Error();
 		return "\""+s+"\"";
-	}
-	
-	
-	private static void assert( boolean b ) {
-		if(!b)	throw new Error();
-	}
+	}	
 }

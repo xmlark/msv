@@ -34,18 +34,14 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv-rngconverter</artifactId>
-    <version>2017.2-SNAPSHOT</version>
+    <version>${revision}</version>
     <name>MSV RNG Converter</name>
     <parent>
       <groupId>net.java.dev.msv</groupId>
       <artifactId>msv</artifactId>
-      <version>2017.2-SNAPSHOT</version>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-    <scm>
-      <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
-      <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
     <build>
         <plugins>
             <plugin>
@@ -72,16 +68,9 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     </build>
     <dependencies>
         <dependency>
-            <groupId>com.sun.msv.datatype.xsd</groupId>
+            <groupId>net.java.dev.msv</groupId>
             <artifactId>xsdlib</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.msv.datatype.xsd</groupId>
-            <artifactId>xsdlib</artifactId>
-            <version>${project.version}</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>net.java.dev.msv</groupId>
@@ -95,34 +84,16 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>2.11.0</version>
-        </dependency>
-        <dependency>
             <groupId>xml-resolver</groupId>
             <artifactId>xml-resolver</artifactId>
             <version>1.2</version>
             <scope>test</scope>
-        </dependency>
+        </dependency>        
         <dependency>
             <groupId>net.java.dev.msv</groupId>
             <artifactId>msv-core</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>isorelax</groupId>
-            <artifactId>isorelax</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>relaxngDatatype</groupId>
-            <artifactId>relaxngDatatype</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

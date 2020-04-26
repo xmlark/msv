@@ -32,24 +32,18 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.sun.msv.datatype.xsd</groupId>
+    <groupId>net.java.dev.msv</groupId>
     <artifactId>xsdlib</artifactId>
-    <version>2017.2-SNAPSHOT</version>
-    <name>MSV XML Schema Datatype Library</name>
-    <description>XML Schema datatypes library</description>
-    <url>http://github.com/kohsuke/msv</url>
+    <version>${revision}</version>
     <packaging>jar</packaging><!-- OSGi bundle is missing activator interface -->
+    
     <parent>
-      <groupId>net.java.dev.msv</groupId>
-      <artifactId>msv</artifactId>
-      <version>2017.2-SNAPSHOT</version>
+        <groupId>net.java.dev.msv</groupId>
+        <artifactId>msv</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-    <scm>
-      <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
-      <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
-      <url>http://github.com/kohsuke/msv</url> 
-      <tag>HEAD</tag>
-  </scm>
+
     <properties>
         <surefire.fork.mode>once</surefire.fork.mode>
         <surefire.format>brief</surefire.format>
@@ -60,39 +54,11 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         <eclipse.outputDirectory>${basedir}/target/classes</eclipse.outputDirectory>
         <downloadSources>true</downloadSources>
     </properties>
-    <prerequisites>
-        <maven>2.2.1</maven>
-    </prerequisites>
-    <developers>
-        <developer>
-            <id>kohsuke</id>
-            <name>Kohsuke Kawaguchi</name>
-            <email>kk@kohsuke.org</email>
-        </developer>
-        <developer>
-            <id>tatu</id>
-            <name>Tatu Saloranta</name>
-            <email>tatu.saloranta@iki.fi</email>
-        </developer>
-    </developers>
+
+    <name>MSV XML Schema Datatype Library</name>
+    <description>XML Schema datatypes library</description>    
     <dependencies>
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>2.11.0</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>relaxngDatatype</groupId>
-            <artifactId>relaxngDatatype</artifactId>
-            <version>20020414</version>
-        </dependency>
         <!-- Test dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.jdom</groupId>
             <artifactId>jdom2</artifactId>
@@ -139,13 +105,16 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-					<source>${jdk.version}</source>
-					<target>${jdk.version}</target>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
                     <encoding>UTF-8</encoding>
                     <maxmemory>1g</maxmemory>
+                    <additionalOptions>
+                        <additionalOption>${javadoc.opts}</additionalOption>
+                    </additionalOptions>                    
                     <links>
-						<link>http://docs.oracle.com/javase/8/docs/api/</link>
-						<link>http://xerces.apache.org/xerces-j/apiDocs/</link>	
+                        <link>http://docs.oracle.com/javase/8/docs/api/</link>
+                        <link>http://xerces.apache.org/xerces-j/apiDocs/</link>	
                     </links>
                 </configuration>
                 <executions>
@@ -165,7 +134,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-		<version>2.3.4</version>
+                <version>4.2.1</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -173,20 +142,20 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Description>${project.description}</Bundle-Description>
                         <Import-Package>
-org.relaxng.datatype,
-org.relaxng.datatype.helpers
-</Import-Package>
+                            org.relaxng.datatype,
+                            org.relaxng.datatype.helpers
+                        </Import-Package>
                         <DynamicImport-Package>
-org.apache.xerces.impl.xpath.regex
-</DynamicImport-Package>
+                            org.apache.xerces.impl.xpath.regex
+                        </DynamicImport-Package>
                         <Private-Package>
-com.sun.msv.datatype.regexp,
-com.sun.xml.util
-</Private-Package>
+                            com.sun.msv.datatype.regexp,
+                            com.sun.xml.util
+                        </Private-Package>
                         <Export-Package>
-com.sun.msv.datatype,
-com.sun.msv.datatype.xsd*
-</Export-Package>
+                            com.sun.msv.datatype,
+                            com.sun.msv.datatype.xsd*
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>
@@ -291,6 +260,6 @@ com.sun.msv.datatype.xsd*
             <properties>
                 <javadoc.opts>-Xdoclint:none</javadoc.opts>
             </properties>
-        </profile>        
+        </profile>
     </profiles>
 </project>

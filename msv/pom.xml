@@ -34,52 +34,52 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv-core</artifactId>
-    <version>2017.2-SNAPSHOT</version>
-    <name>MSV Core</name>
-    <description>Multi-Schema Validator Core package</description>
+    <version>${revision}</version>
     <packaging>jar</packaging><!-- OSGi bundle is missing activator interface -->
+    
     <parent>
-      <groupId>net.java.dev.msv</groupId>
-      <artifactId>msv</artifactId>
-      <version>2017.2-SNAPSHOT</version>
+        <groupId>net.java.dev.msv</groupId>
+        <artifactId>msv</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
-    <scm>
-      <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
-      <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
-      <url>http://github.com/kohsuke/msv</url> 
-      <tag>HEAD</tag>
-  </scm>
-    <prerequisites>
-        <maven>2.2.1</maven><!-- tested with 3.3.9 -->
-    </prerequisites>
+    
+    <name>MSV Core</name>
+    <description>Multi-Schema Validator Core package</description>    
     <dependencies>
         <dependency>
-            <groupId>com.sun.msv.datatype.xsd</groupId>
+            <groupId>net.java.dev.msv</groupId>
             <artifactId>xsdlib</artifactId>
-            <version>2017.2-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>net.java.dev.msv</groupId>
             <artifactId>msv-testharness</artifactId>
-            <version>2017.2-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
-        <!-- Note: Xerces only needed for TextUI; hence optional
-      -->
         <dependency>
             <groupId>xml-resolver</groupId>
             <artifactId>xml-resolver</artifactId>
             <optional>true</optional>
             <version>1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>2.11.0</version>
-            <!-- Note: Xerces only needed for TextUI; hence optional
-        -->
+        </dependency>        
+        <!-- Note: Xerces only needed for TextUI; hence optional
+    <dependency>
+        <groupId>xml-resolver</groupId>
+        <artifactId>xml-resolver</artifactId>
+        <optional>true</optional>
+        <version>1.2</version>
+    </dependency>
+    <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+        <version>2.11.0</version>      -->
+
+        <!-- Note: Xerces only needed for TextUI; hence optional
+
             <optional>true</optional>
-        </dependency>
+        </dependency>       
         <dependency>
             <groupId>isorelax</groupId>
             <artifactId>isorelax</artifactId>
@@ -94,7 +94,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-        </dependency>
+        </dependency> -->
     </dependencies>
     <build>
         <plugins>
@@ -117,13 +117,16 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <!-- defined in the parent pom.xml -->
-					<source>${jdk.version}</source>
-					<target>${jdk.version}</target>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
                     <encoding>UTF-8</encoding>
                     <maxmemory>1g</maxmemory>
+                    <additionalOptions>
+                        <additionalOption>${javadoc.opts}</additionalOption>
+                    </additionalOptions>                       
                     <links>
-						<link>http://docs.oracle.com/javase/8/docs/api/</link>
-						<link>http://xerces.apache.org/xerces-j/apiDocs/</link>		
+                        <link>http://docs.oracle.com/javase/8/docs/api/</link>
+                        <link>http://xerces.apache.org/xerces-j/apiDocs/</link>		
                     </links>
                 </configuration>
                 <executions>
@@ -150,42 +153,42 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Description>${project.description}</Bundle-Description>
                         <Import-Package>
-javax.xml.namespace,
-javax.xml.parsers,
-javax.xml.transform*,
-javax.xml.xpath,
-org.iso_relax.dispatcher,
-org.iso_relax.dispatcher.impl,
-org.iso_relax.verifier,
-org.iso_relax.verifier.impl,
-org.relaxng.datatype,
-org.relaxng.datatype.helpers,
-org.xml.sax,
-org.xml.sax.helpers,
-org.w3c.dom,
-org.w3c.dom.ls,
-com.sun.msv.datatype,
-com.sun.msv.datatype.xsd,
-com.sun.msv.datatype.xsd.ngimpl,
-com.sun.msv.datatype.xsd.regex
-</Import-Package>
+                            javax.xml.namespace,
+                            javax.xml.parsers,
+                            javax.xml.transform*,
+                            javax.xml.xpath,
+                            org.iso_relax.dispatcher,
+                            org.iso_relax.dispatcher.impl,
+                            org.iso_relax.verifier,
+                            org.iso_relax.verifier.impl,
+                            org.relaxng.datatype,
+                            org.relaxng.datatype.helpers,
+                            org.xml.sax,
+                            org.xml.sax.helpers,
+                            org.w3c.dom,
+                            org.w3c.dom.ls,
+                            com.sun.msv.datatype,
+                            com.sun.msv.datatype.xsd,
+                            com.sun.msv.datatype.xsd.ngimpl,
+                            com.sun.msv.datatype.xsd.regex
+                        </Import-Package>
                         <DynamicImport-Package>
-org.apache.xerces.impl.xpath.regex,
-org.apache.xml.resolver,
-org.apache.xml.resolver.tools
-</DynamicImport-Package>
+                            org.apache.xerces.impl.xpath.regex,
+                            org.apache.xml.resolver,
+                            org.apache.xml.resolver.tools
+                        </DynamicImport-Package>
                         <Private-Package>
-com.sun.msv.util
-</Private-Package>
+                            com.sun.msv.util
+                        </Private-Package>
                         <Export-Package>
-com.sun.msv.driver.textui,
-com.sun.msv.grammar*,
-com.sun.msv.reader*,
-com.sun.msv.relaxns*,
-com.sun.msv.scanner*,
-com.sun.msv.verifier*,
-com.sun.msv.writer*
-</Export-Package>
+                            com.sun.msv.driver.textui,
+                            com.sun.msv.grammar*,
+                            com.sun.msv.reader*,
+                            com.sun.msv.relaxns*,
+                            com.sun.msv.scanner*,
+                            com.sun.msv.verifier*,
+                            com.sun.msv.writer*
+                        </Export-Package>
                     </instructions>
                 </configuration>
             </plugin>

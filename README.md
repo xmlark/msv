@@ -2,6 +2,9 @@
 
 Multi-Schema XML Validator (MSV) is a Java technology tool to validate XML documents against several kinds of XML schemata. It supports RELAX NG, RELAX Namespace, RELAX Core, TREX, XML DTDs, and a subset of XML Schema Part 1.
 
+## License
+The project is licensed under the BSD license.
+
 # MSV development
 
 ## Directory structure

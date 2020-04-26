@@ -1,34 +1,22 @@
-<?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>net.java.dev.msv</groupId>
+    <artifactId>msv</artifactId>
+    <version>2017.3-SNAPSHOT</version>
+  </parent>
   <groupId>net.java.dev.msv</groupId>
   <artifactId>msv-generator</artifactId>
-  <version>${revision}</version>
+  <version>2017.3-SNAPSHOT</version>
   <name>MSV Generator</name>
-  <parent>
-      <groupId>net.java.dev.msv</groupId>
-      <artifactId>msv</artifactId>
-      <version>${revision}</version>
-      <relativePath>../pom.xml</relativePath>
-  </parent>
-
-  <build>
-    <plugins>
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-jar-plugin</artifactId>
-	<configuration>
-	  <archive>
-	    <index>true</index>
-	  </archive>
-	  <manifest>
-	    <mainClass>com.sun.msv.generator.Driver</mainClass>
-	  </manifest>
-	  <addClasspath>true</addClasspath>
-	</configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <licenses>
+    <license>
+      <name>BSD</name>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <dependencies>
     <dependency>
       <groupId>net.java.dev.msv</groupId>
@@ -42,14 +30,12 @@
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>net.java.dev.msv</groupId>
       <artifactId>msv-testharness</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>net.java.dev.msv</groupId>
       <artifactId>msv-core</artifactId>
@@ -60,16 +46,15 @@
       <artifactId>msv-core</artifactId>
       <version>${project.version}</version>
       <classifier>tests</classifier>
-      <scope>test</scope>      
-    </dependency>    
-    <dependency><!-- for tests -->
-        <groupId>xml-resolver</groupId>
-        <artifactId>xml-resolver</artifactId>
-        <version>1.2</version>
-        <optional>true</optional>
-        <scope>test</scope>
-    </dependency>    
-
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>xml-resolver</groupId>
+      <artifactId>xml-resolver</artifactId>
+      <version>1.2</version>
+      <scope>test</scope>
+      <optional>true</optional>
+    </dependency>
     <dependency>
       <groupId>net.java.dev.msv</groupId>
       <artifactId>msv-core</artifactId>
@@ -78,4 +63,20 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <index>true</index>
+          </archive>
+          <manifest>
+            <mainClass>com.sun.msv.generator.Driver</mainClass>
+          </manifest>
+          <addClasspath>true</addClasspath>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

@@ -25,8 +25,9 @@ public class AnnotatedXSElementExp extends ElementDeclExp.XSElementExp implement
     private final List annotations;
     
     public AnnotatedXSElementExp(
-        ElementDeclExp decl, List _annotations) {        
-        decl.new(decl.getElementExp().elementName, decl.getElementExp().contentModel);
+        ElementDeclExp decl, List _annotations) {
+        
+        decl.super(decl.getElementExp().elementName, decl.getElementExp().contentModel);
         this.annotations = _annotations;
     }
 

@@ -10,15 +10,15 @@ MSV consists of a number of sub-projects. Each sub-projects has its own director
 
 | sub-project | description |
 | :---------- | :---------- |
-| xsdlib | XML Datatypes Library. An implementation of W3C XML Schema Part 2. |
-| testharness | Test harness that is used to parse composite test suite files (.ssuite). |
-| msv | Multi-Schema XML Validator. A schema model and validator implementation. Dependent on XSDLib and testharness. |
-| rngconverter | RELAX NG Converter. reads a schema and produces an equivalent RELAX NG schema. Dependent on MSV. |
 | generator | XML Instance Generator. A tool that produces valid XML documents by reading a schema. Dependent on MSV. |
+| msv | Multi-Schema XML Validator. A schema model and validator implementation. Dependent on XSDLib and testharness. |
 | relames | Multi-Schema XML Validator Schematron add-on. An experimental implementation of RELAX NG + Schematron validation. Dependent on MSV. |
-| sox2rng | SOX to RELAX NG converter. Dependent on MSV. |
+| rngconverter | RELAX NG Converter. reads a schema and produces an equivalent RELAX NG schema. Dependent on MSV. |
+| schmit | XSLT Extension For Schema Annotation |
 | tahiti | Data-binding implementation |
+| testharness | Test harness that is used to parse composite test suite files (.ssuite). |
 | trexconverter | TREX Converter. Reads a schema and produces an equivalent TREX pattern.|
+| xsdlib | XML Datatypes Library. An implementation of W3C XML Schema Part 2. |
 
 ### There are several other directories which are used to store other materials.
 | directory | description |

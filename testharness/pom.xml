@@ -1,23 +1,25 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>net.java.dev.msv</groupId>
-  <artifactId>msv-testharness</artifactId>
-  <version>${revision}</version>
-  <name>MSV Test Harness</name>
-  <parent>
-      <groupId>net.java.dev.msv</groupId>
-      <artifactId>msv</artifactId>
-      <version>${revision}</version>
-      <relativePath>../pom.xml</relativePath>
-  </parent>
-
-  <scm>
-    <connection>scm:git:git@github.com:kohsuke/msv.git</connection>
-    <developerConnection>scm:git:git@github.com:kohsuke/msv.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
-
-  <build>
-  </build>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.java.dev.msv</groupId>
+    <artifactId>msv-testharness</artifactId>
+    <version>${revision}</version>
+    
+    <!-- Ignore WARNING on ${revision} -->
+    <!-- https://stackoverflow.com/questions/25682244/flattened-pom-is-not-being-used -->      
+    <parent>
+        <groupId>net.java.dev.msv</groupId>
+        <artifactId>msv</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    
+    <name>MSV Test Harness</name>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.10.7</version>
+        </dependency>
+    </dependencies>
 </project>

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.java.dev.msv</groupId>
+    <artifactId>msv-trexconverter</artifactId>
+    <version>${revision}</version>
+    
+    <!-- Ignore WARNING on ${revision} -->
+    <!-- https://stackoverflow.com/questions/25682244/flattened-pom-is-not-being-used -->      
+    <parent>
+        <groupId>net.java.dev.msv</groupId>
+        <artifactId>msv</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    
+    <name>MSV TREX Converter</name>
+    <description> TREX Converter. Reads a schema and produces an equivalent TREX pattern.</description>
+    <dependencies>
+        <dependency>
+            <groupId>net.java.dev.msv</groupId>
+            <artifactId>msv-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>    
+        <dependency>
+            <groupId>net.java.dev.msv</groupId>
+            <artifactId>xsdlib</artifactId>
+            <version>${project.version}</version>
+        </dependency>        
+    </dependencies>
+</project>

@@ -93,6 +93,7 @@ public class ResidualCalculator implements ExpressionVisitorExpression {
         if( token instanceof ElementToken )
             return calcResidual(exp,(ElementToken)token);
         
+        Token oldToken = this.token;
         this.token=token;
         Expression r = exp.visit(this);
 
@@ -100,6 +101,7 @@ public class ResidualCalculator implements ExpressionVisitorExpression {
         if( token.isIgnorable() )
             r = pool.createChoice(r,exp);
         
+        this.token = oldToken; // restore for users on stack
         return r;
     }
     

@@ -33,14 +33,14 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.java.dev.msv</groupId>
-    <artifactId>msv</artifactId>    
+    <artifactId>msv</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
 
     <properties>
         <jdk.version>1.8</jdk.version>
         <revision>2017.3-SNAPSHOT</revision>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>        
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <java.awt.headless>true</java.awt.headless>
@@ -50,8 +50,8 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         <surefire.fork.vmargs>-ea</surefire.fork.vmargs>
         <compiler.fork>false</compiler.fork>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>        
-    
+    </properties>
+
     <modules>
         <module>generator</module>
         <module>msv</module>
@@ -63,7 +63,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         <module>trexconverter</module>
         <module>xsdlib</module>
     </modules>
-    
+
     <name>msv</name>
     <url>https://github.com/xmlark/msv</url>
     <dependencies>
@@ -95,13 +95,13 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             <groupId>relaxngDatatype</groupId>
             <artifactId>relaxngDatatype</artifactId>
             <version>20020414</version>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13</version>
             <scope>test</scope>
-        </dependency>          
+        </dependency>
     </dependencies>
     <scm>
         <connection>scm:git:git@github.com:xmlark/msv.git</connection>
@@ -139,7 +139,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             <id>svante</id>
             <name>Svante Schubert</name>
             <email>svanteschubert@apache.org</email>
-        </developer>        
+        </developer>
     </developers>
     <profiles>
         <!-- Must sign artifacts to push via Sonatype -->
@@ -181,7 +181,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                                 <!-- may choose whatever JDK version, try something close to our minimum req
                                 -->
                                 <link>http://docs.oracle.com/javase/7/docs/api/</link>
-                                <link>http://xerces.apache.org/xerces-j/apiDocs/</link>	
+                                <link>http://xerces.apache.org/xerces-j/apiDocs/</link>
                             </links>
                         </configuration>
                     </plugin>
@@ -232,7 +232,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             </build>
         </profile>
     </profiles>
-    <build>                  
+    <build>
         <defaultGoal>install</defaultGoal>
         <pluginManagement>
         <plugins>

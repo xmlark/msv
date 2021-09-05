@@ -4,8 +4,9 @@
 # Log file
 *.log
 
-# IDE file
+# IDE files
 nb-configuration.xml
+.idea/
 
 # VSCode files
 .vscode/

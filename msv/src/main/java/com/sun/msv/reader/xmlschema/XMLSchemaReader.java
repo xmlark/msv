@@ -610,6 +610,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
      * the default empty namespace("") has to be treated as a reference to
      * the intended target namespace.
      */
+    @Override
     public String[] splitQName( String qName ) {
         String[] r = super.splitQName(qName);
         if(r == null) {

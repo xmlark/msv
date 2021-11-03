@@ -146,6 +146,23 @@ public class ElementDeclState extends ExpressionWithChildState {
             return Expression.nullSet;
         }
         
+        String type = startTag.getAttribute("type");
+        String prefix = null;        
+        if(type != null){
+            int idx = type.indexOf(':');
+            if (idx > 0) {
+                prefix = type.substring(0, idx);            
+            }
+        }else{
+            String ref = startTag.getAttribute("ref");
+            if(ref != null){
+                int idx = ref.indexOf(':');
+                if (idx > 0) {
+                    prefix = ref.substring(0, idx);            
+                }            
+            }
+        }    
+                        
         String targetNamespace;
         if( isGlobal() )
             // TODO: form attribute is prohibited at toplevel.
@@ -190,7 +207,7 @@ public class ElementDeclState extends ExpressionWithChildState {
         reader.setDeclaredLocationOf(decl);
         
         ElementDeclExp.XSElementExp exp = new ElementDeclExp.XSElementExp(decl, 
-            new SimpleNameClass(targetNamespace,name), contentType, defaultValue);
+            new SimpleNameClass(targetNamespace,prefix, name), contentType, defaultValue);
         
         // set the body.
         decl.setElementExp(exp);

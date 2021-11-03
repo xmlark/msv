@@ -79,6 +79,12 @@ public abstract class TREXBaseReader extends GrammarReader {
     protected String targetNamespace ="";
     public final String getTargetNamespace() { return targetNamespace; }
     
+    /** stack that stores value of ancestor 'prefix' attribute. */
+    private LightStack prefixStack = new LightStack();    
+        /** target prefix: currently active 'prefix' attribute */
+    protected String targetPrefix ="";    
+    public final String getTargetPrefix() { return targetPrefix; }
+    
     /**
      * creates various State object, which in turn parses grammar.
      * parsing behavior can be customized by implementing custom StateFactory.
@@ -172,10 +178,17 @@ public abstract class TREXBaseReader extends GrammarReader {
     
 // SAX event interception
 //--------------------------------
+    @Override
     public void startElement( String a, String b, String c, Attributes d ) throws SAXException
     {
+        // handle attribute 'prefix' propagation
+        prefixStack.push(targetPrefix);
+        int p = c.indexOf(":");
+        if( p!=-1 )
+            targetPrefix = c.substring(0, p);
+        
         // handle 'ns' attribute propagation
-        nsStack.push(targetNamespace);
+        nsStack.push(targetNamespace);        
         if( d.getIndex("ns")!=-1 )
             targetNamespace = d.getValue("ns");
         // if nothing specified, targetNamespace stays the same.
@@ -187,6 +200,7 @@ public abstract class TREXBaseReader extends GrammarReader {
     {
         super.endElement(a,b,c);
         targetNamespace = (String)nsStack.pop();
+        targetPrefix = (String)prefixStack.pop();
     }
 
 

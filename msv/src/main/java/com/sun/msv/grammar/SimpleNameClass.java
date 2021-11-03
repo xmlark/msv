@@ -17,7 +17,8 @@ import com.sun.msv.util.StringPair;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public final class SimpleNameClass extends NameClass {
-    public final String    namespaceURI;
+    public final String namespaceURI;
+    public final String prefix;
     public final String localName;
     
     public boolean accepts( String namespaceURI, String localName ) {
@@ -33,9 +34,16 @@ public final class SimpleNameClass extends NameClass {
     }
     
     public SimpleNameClass( String namespaceURI, String localName ) {
-        this.namespaceURI    = namespaceURI;
+        this.namespaceURI    = namespaceURI; 
+        this.prefix = null;
         this.localName        = localName;
     }
+        
+    public SimpleNameClass( String namespaceURI, String prefix, String localName ) {
+        this.namespaceURI    = namespaceURI;
+        this.prefix = prefix;
+        this.localName        = localName;
+    }    
     
     public StringPair toStringPair() {
         return new StringPair(namespaceURI,localName);

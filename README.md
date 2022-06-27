@@ -1,8 +1,7 @@
 # Multi-Schema Validator
 
 Multi-Schema XML Validator (MSV) is a Java technology tool to validate XML documents against several kinds of XML schemata. It supports RELAX NG, RELAX Namespace, RELAX Core, TREX, XML DTDs, and a subset of XML Schema Part 1.
-MSV was tested sucessfully with JDK 8 and JDK 11 on Windows & Linux.
-
+MSV was tested sucessfully with JDK 8, JDK 11 and JDK 17 on Windows & Linux.
 # MSV development
 
 ## Directory structure
@@ -39,9 +38,9 @@ Most of the sub-projects have a similar directory structure.
 ## Build instruction
 To build the entire project, use [Maven 3](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html). [Maven is downloadable for free at Apache.](https://maven.apache.org/download.cgi).
 To build via command line at project root level use:
-'mvn install'
+'***mvn install***'
 This builds the release packages for all sub-projects in a proper order.
 When preparing release packages, it is a good idea to use this target so that dependencies are processed correctly. (But you should run a project-local "release" first to make sure that there is no error in the repository.)
 
 ### Project-wise build
-When you are working on a sub-project, you can build in the project directory via 'mvn install'.
+When you are working on a sub-project, you can build in the project directory via '***mvn install***'.

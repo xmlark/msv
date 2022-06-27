@@ -63,22 +63,18 @@
       <artifactId>msv-core</artifactId>
       <version>${project.version}</version>
       <classifier>tests</classifier>
-      <scope>test</scope>      
+      <scope>test</scope>
     </dependency>    
     <dependency><!-- for tests -->
         <groupId>xml-resolver</groupId>
         <artifactId>xml-resolver</artifactId>
-        <version>1.2</version>
         <optional>true</optional>
         <scope>test</scope>
-    </dependency>    
-
+    </dependency>
     <dependency>
-      <groupId>net.java.dev.msv</groupId>
-      <artifactId>msv-core</artifactId>
-      <version>${project.version}</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

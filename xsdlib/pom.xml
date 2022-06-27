@@ -38,7 +38,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <packaging>jar</packaging><!-- OSGi bundle is missing activator interface -->
 
     <!-- Ignore WARNING on ${revision} -->
-    <!-- https://stackoverflow.com/questions/25682244/flattened-pom-is-not-being-used -->            
+    <!-- https://stackoverflow.com/questions/25682244/flattened-pom-is-not-being-used -->
     <parent>
         <groupId>net.java.dev.msv</groupId>
         <artifactId>msv</artifactId>
@@ -58,13 +58,26 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     </properties>
 
     <name>MSV XML Schema Datatype Library</name>
-    <description>XML Schema datatypes library</description>    
+    <description>XML Schema datatypes library</description>
     <dependencies>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+        </dependency>
+        <!-- origin of this is a bit unclear -->
+        <dependency>
+            <groupId>relaxngDatatype</groupId>
+            <artifactId>relaxngDatatype</artifactId>
+        </dependency>
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.jdom</groupId>
             <artifactId>jdom2</artifactId>
-            <version>2.0.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -107,16 +120,13 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
                     <encoding>UTF-8</encoding>
                     <maxmemory>1g</maxmemory>
                     <additionalOptions>
                         <additionalOption>${javadoc.opts}</additionalOption>
-                    </additionalOptions>                    
+                    </additionalOptions>
                     <links>
-                        <link>http://docs.oracle.com/javase/8/docs/api/</link>
-                        <link>http://xerces.apache.org/xerces-j/apiDocs/</link>	
+                        <link>https://xerces.apache.org/xerces-j/apiDocs/</link>
                     </links>
                 </configuration>
                 <executions>
@@ -128,7 +138,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                         </goals>
                         <configuration>
                             <additionalparam>${javadoc.opts}</additionalparam>
-                        </configuration>                          
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -136,7 +146,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>4.2.1</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -165,7 +174,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.3</version>
                 <configuration>
                     <mavenExecutorId>forked-path</mavenExecutorId>
                 </configuration>
@@ -240,7 +248,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>

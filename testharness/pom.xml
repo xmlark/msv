@@ -6,7 +6,7 @@
     <version>${revision}</version>
     
     <!-- Ignore WARNING on ${revision} -->
-    <!-- https://stackoverflow.com/questions/25682244/flattened-pom-is-not-being-used -->      
+    <!-- https://stackoverflow.com/questions/25682244/flattened-pom-is-not-being-used -->
     <parent>
         <groupId>net.java.dev.msv</groupId>
         <artifactId>msv</artifactId>
@@ -19,7 +19,6 @@
         <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>
-            <version>1.10.7</version>
         </dependency>
     </dependencies>
 </project>

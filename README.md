@@ -1,7 +1,7 @@
 # Multi-Schema Validator
 
 Multi-Schema XML Validator (MSV) is a Java technology tool to validate XML documents against several kinds of XML schemata. It supports RELAX NG, RELAX Namespace, RELAX Core, TREX, XML DTDs, and a subset of XML Schema Part 1.
-MSV was tested sucessfully with JDK 8, JDK 11 and JDK 17 on Windows & Linux.
+The builds of MSV sub-projects were tested sucessfully using JDK 8, JDK 11 and JDK 17 on Windows and Linux.
 # MSV development
 
 ## Directory structure
@@ -29,10 +29,10 @@ MSV consists of a number of sub-projects. Each sub-projects has its own director
 Most of the sub-projects have a similar directory structure.
 
 | directory | description |
-| :-------- | :---------- |
-| src | keeps source files. Files in this directory will be included in the release package. |
-| src/test | keeps test files. Files in this directory will NOT be included in the release package. JUnit is used throughout the project, and every test code must have "Test.java" as suffix to be recognized as a test. |
-| target | keeps the compiled .class files. both "test" and "src" are compiled into this directory. |
+|:----------| :---------- |
+| src/main  | keeps source files. Files in this directory will be included in the release package. |
+| src/test  | keeps test files. Files in this directory will NOT be included in the release package. JUnit is used throughout the project, and every test code must have "Test.java" as suffix to be recognized as a test. |
+| target    | keeps the compiled .class files. both "test" and "src" are compiled into this directory. |
 
 
 ## Build instruction

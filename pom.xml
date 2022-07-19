@@ -297,6 +297,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                             <value>${surefire.fork.vmargs}</value>
                         </property>
                     </systemProperties>
+                    <skipTests>${skipTests}</skipTests>
                 </configuration>
             </plugin>
             <plugin>

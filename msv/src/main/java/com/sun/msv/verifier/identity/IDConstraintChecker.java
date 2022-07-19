@@ -1,12 +1,37 @@
 /*
- * @(#)$Id$
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * Copyright (c) 2001-2013 Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * - Redistributions  of  source code  must  retain  the above  copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * - Redistribution  in binary  form must  reproduct the  above copyright
+ *   notice, this list of conditions  and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * Neither  the  name   of  Sun  Microsystems,  Inc.  or   the  names  of
+ * contributors may be  used to endorse or promote  products derived from
+ * this software without specific prior written permission.
  * 
- * This software is the proprietary information of Sun Microsystems, Inc.  
- * Use is subject to license terms.
- * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS  OR   IMPLIED  CONDITIONS,  REPRESENTATIONS   AND  WARRANTIES,
+ * INCLUDING  ANY  IMPLIED WARRANTY  OF  MERCHANTABILITY,  FITNESS FOR  A
+ * PARTICULAR PURPOSE  OR NON-INFRINGEMENT, ARE HEREBY  EXCLUDED. SUN AND
+ * ITS  LICENSORS SHALL  NOT BE  LIABLE  FOR ANY  DAMAGES OR  LIABILITIES
+ * SUFFERED BY LICENSEE  AS A RESULT OF OR  RELATING TO USE, MODIFICATION
+ * OR DISTRIBUTION OF  THE SOFTWARE OR ITS DERIVATIVES.  IN NO EVENT WILL
+ * SUN OR ITS  LICENSORS BE LIABLE FOR ANY LOST  REVENUE, PROFIT OR DATA,
+ * OR  FOR  DIRECT,   INDIRECT,  SPECIAL,  CONSEQUENTIAL,  INCIDENTAL  OR
+ * PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
+ * LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  */
+
 package com.sun.msv.verifier.identity;
 
 import java.util.Map;
@@ -50,7 +75,7 @@ public class IDConstraintChecker extends Verifier {
     protected final XMLSchemaGrammar grammar;
     
     /** active mathcers. */
-    protected final Vector<Matcher> matchers = new Vector<Matcher>();
+    protected final Vector matchers = new Vector();
     
     protected void add( Matcher matcher ) {
         matchers.add(matcher);
@@ -64,7 +89,7 @@ public class IDConstraintChecker extends Verifier {
      * 
      * One SelectorMatcher correponds to one scope of the identity constraint.
      */
-    private final Map<SelectorMatcher,Set<Object>> keyValues = new java.util.HashMap<SelectorMatcher,Set<Object>>();
+    private final Map keyValues = new java.util.HashMap();
     
     /**
      * a map from keyref <code>SelectorMatcher</code> to key/unique
@@ -72,7 +97,7 @@ public class IDConstraintChecker extends Verifier {
      * 
      * Given a keyref scope, this map stores which key scope should it refer to.
      */
-    private final Map<SelectorMatcher,SelectorMatcher> referenceScope = new java.util.HashMap<SelectorMatcher,SelectorMatcher>();
+    private final Map referenceScope = new java.util.HashMap();
     
     /**
      * a map from <code>IdentityConstraint</code> to a <code>LightStack</code> of
@@ -80,30 +105,27 @@ public class IDConstraintChecker extends Verifier {
      * 
      * Each stack top keeps the currently active scope for the given IdentityConstraint.
      */
-    private final Map<IdentityConstraint,LightStack> activeScopes = new java.util.HashMap<IdentityConstraint,LightStack>();
+    private final Map activeScopes = new java.util.HashMap();
     protected SelectorMatcher getActiveScope( IdentityConstraint c ) {
-        LightStack s = activeScopes.get(c);
-        if(s==null) return null;
-        if(s.size()==0) return null;
+        LightStack s = (LightStack)activeScopes.get(c);
+        if(s==null)    return null;
+        if(s.size()==0)    return null;
         return (SelectorMatcher)s.top();
     }
     protected void pushActiveScope( IdentityConstraint c, SelectorMatcher matcher ) {
-        LightStack s = activeScopes.get(c);
-        if(s==null) {
+        LightStack s = (LightStack)activeScopes.get(c);
+        if(s==null)
             activeScopes.put(c,s=new LightStack());
-        }
         s.push(matcher);
     }
     protected void popActiveScope( IdentityConstraint c, SelectorMatcher matcher ) {
-        LightStack s = activeScopes.get(c);
-        if(s==null) {
+        LightStack s = (LightStack)activeScopes.get(c);
+        if(s==null)
             // since it's trying to pop, there must be a non-empty stack.
             throw new Error();
-        }
-        if(s.pop()!=matcher) {
+        if(s.pop()!=matcher)
             // trying to pop a non-active scope.
             throw new Error();
-        }
     }
         
     
@@ -112,22 +134,22 @@ public class IDConstraintChecker extends Verifier {
      * @return true        if this is a new value.
      */
     protected boolean addKeyValue( SelectorMatcher scope, KeyValue value ) {
-        Set<Object> keys = keyValues.get(scope);
-        if(keys==null) {
-            keyValues.put(scope, keys = new java.util.HashSet<Object>());
-        }
+        Set keys = (Set)keyValues.get(scope);
+        if(keys==null)
+            keyValues.put(scope, keys = new java.util.HashSet());
         return keys.add(value);
     }
     /**
      * gets the all <code>KeyValue</code>s that were added within the specified scope.
      */
     protected KeyValue[] getKeyValues( SelectorMatcher scope ) {
-        Set<Object> keys = keyValues.get(scope);
-        if(keys==null) {
+        Set keys = (Set)keyValues.get(scope);
+        if(keys==null)
             return new KeyValue[0];
-        }
         return (KeyValue[])keys.toArray(new KeyValue[keys.size()]);
     }
+    
+    
     
     public void startDocument() throws SAXException {
         super.startDocument();
@@ -138,19 +160,18 @@ public class IDConstraintChecker extends Verifier {
         super.endDocument();
         
         // keyref check
-        @SuppressWarnings("unchecked")
-        Map.Entry<Object,Object>[] scopes = (Map.Entry<Object,Object>[])
-            keyValues.entrySet().toArray(new Map.Entry<?,?>[keyValues.size()]);
+        Map.Entry[] scopes = (Map.Entry[])
+            keyValues.entrySet().toArray(new Map.Entry[keyValues.size()]);
         if(com.sun.msv.driver.textui.Debug.debug)
             System.out.println("key/keyref check: there are "+keyValues.size()+" scope(s)");
         
         for( int i=0; i<scopes.length; i++ ) {
             final SelectorMatcher key = (SelectorMatcher)scopes[i].getKey();
-            final Set<?> value = (Set<?>)scopes[i].getValue();
+            final Set value = (Set)scopes[i].getValue();
             
             if( key.idConst instanceof KeyRefConstraint ) {
                 // get the set of corresponding keys.
-                Set<Object> keys = keyValues.get( referenceScope.get(key) );
+                Set keys = (Set)keyValues.get( referenceScope.get(key) );
                 KeyValue[] keyrefs = (KeyValue[])
                     value.toArray(new KeyValue[value.size()]);
                 

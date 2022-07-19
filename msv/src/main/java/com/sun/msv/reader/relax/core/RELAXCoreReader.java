@@ -1,12 +1,37 @@
 /*
- * @(#)$Id$
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * Copyright (c) 2001-2013 Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * - Redistributions  of  source code  must  retain  the above  copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * - Redistribution  in binary  form must  reproduct the  above copyright
+ *   notice, this list of conditions  and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * Neither  the  name   of  Sun  Microsystems,  Inc.  or   the  names  of
+ * contributors may be  used to endorse or promote  products derived from
+ * this software without specific prior written permission.
  * 
- * This software is the proprietary information of Sun Microsystems, Inc.  
- * Use is subject to license terms.
- * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS  OR   IMPLIED  CONDITIONS,  REPRESENTATIONS   AND  WARRANTIES,
+ * INCLUDING  ANY  IMPLIED WARRANTY  OF  MERCHANTABILITY,  FITNESS FOR  A
+ * PARTICULAR PURPOSE  OR NON-INFRINGEMENT, ARE HEREBY  EXCLUDED. SUN AND
+ * ITS  LICENSORS SHALL  NOT BE  LIABLE  FOR ANY  DAMAGES OR  LIABILITIES
+ * SUFFERED BY LICENSEE  AS A RESULT OF OR  RELATING TO USE, MODIFICATION
+ * OR DISTRIBUTION OF  THE SOFTWARE OR ITS DERIVATIVES.  IN NO EVENT WILL
+ * SUN OR ITS  LICENSORS BE LIABLE FOR ANY LOST  REVENUE, PROFIT OR DATA,
+ * OR  FOR  DIRECT,   INDIRECT,  SPECIAL,  CONSEQUENTIAL,  INCIDENTAL  OR
+ * PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
+ * LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  */
+
 package com.sun.msv.reader.relax.core;
 
 import java.util.Iterator;
@@ -153,8 +178,7 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
      * ReferenceExp is used to wrap an expression to provide location information.
      * (attPool element with combine attribute).
      */
-    @SuppressWarnings("serial")
-    protected final ReferenceContainer combinedAttPools = new ReferenceContainer() {
+    protected final ReferenceContainer combinedAttPools = new ReferenceContainer(){
         protected ReferenceExp createReference( String name ) {
             return new ReferenceExp(name);
         }
@@ -175,7 +199,7 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
     /**
      * User-defined datatypes (from type name to XSDatatypeExp object.
      */
-    private final Map<String,XSDatatypeExp> userDefinedTypes = new java.util.HashMap<String,XSDatatypeExp>();
+    private final Map userDefinedTypes = new java.util.HashMap();
     
     public final void addUserDefinedType( XSDatatypeExp exp ) {
         userDefinedTypes.put( exp.name, exp );
@@ -291,9 +315,9 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
         runBackPatchJob();
         
         // register user-defined types to the module
-        Iterator<Map.Entry<String,XSDatatypeExp>> itr = userDefinedTypes.entrySet().iterator();
+        Iterator itr = userDefinedTypes.entrySet().iterator();
         while( itr.hasNext() ) {
-            XSDatatypeExp e = itr.next().getValue();
+            XSDatatypeExp e = (XSDatatypeExp)((Map.Entry)itr.next()).getValue();
             module.datatypes.add(e.getCreatedType());
         }
         
@@ -369,7 +393,7 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
             
         
         {// make sure that there is no exported hedgeRule that references a label in the other namespace.
-            Iterator<ReferenceExp> jtr = module.hedgeRules.iterator();
+            Iterator jtr = module.hedgeRules.iterator();
             while(jtr.hasNext()) {
                 HedgeRules hr = (HedgeRules)jtr.next();
                 if(!hr.exported)    continue;
@@ -396,13 +420,13 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
 
     private Expression choiceOfExported( ReferenceContainer con )
     {
-        Iterator<ReferenceExp> itr = con.iterator();
+        Iterator itr = con.iterator();
         Expression r = Expression.nullSet;
-        while( itr.hasNext() ) {
+        while( itr.hasNext() )
+        {
             Exportable ex= (Exportable)itr.next();
-            if( ex.isExported() ) {
+            if( ex.isExported() )
                 r = pool.createChoice(r,(Expression)ex);
-            }
         }
         return r;
     }
@@ -415,7 +439,7 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
     private void detectDoubleAttributeConstraints( RELAXModule module ) {
         final DblAttrConstraintChecker checker = new DblAttrConstraintChecker();
         
-        Iterator<?> itr = module.tags.iterator();
+        Iterator itr = module.tags.iterator();
         while( itr.hasNext() )
             // errors will be reported within this method
             // no recovery is necessary.
@@ -424,7 +448,7 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
 
     
     private void detectCollision( ReferenceContainer col1, ReferenceContainer col2, String errMsg ) {
-        Iterator<?> itr = col1.iterator();
+        Iterator itr = col1.iterator();
         while( itr.hasNext() ) {
             ReferenceExp r1    = (ReferenceExp)itr.next();
             ReferenceExp r2    = col2._get( r1.name );

@@ -1,12 +1,37 @@
 /*
- * @(#)$Id$
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * Copyright (c) 2001-2013 Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * - Redistributions  of  source code  must  retain  the above  copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * - Redistribution  in binary  form must  reproduct the  above copyright
+ *   notice, this list of conditions  and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * Neither  the  name   of  Sun  Microsystems,  Inc.  or   the  names  of
+ * contributors may be  used to endorse or promote  products derived from
+ * this software without specific prior written permission.
  * 
- * This software is the proprietary information of Sun Microsystems, Inc.  
- * Use is subject to license terms.
- * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS  OR   IMPLIED  CONDITIONS,  REPRESENTATIONS   AND  WARRANTIES,
+ * INCLUDING  ANY  IMPLIED WARRANTY  OF  MERCHANTABILITY,  FITNESS FOR  A
+ * PARTICULAR PURPOSE  OR NON-INFRINGEMENT, ARE HEREBY  EXCLUDED. SUN AND
+ * ITS  LICENSORS SHALL  NOT BE  LIABLE  FOR ANY  DAMAGES OR  LIABILITIES
+ * SUFFERED BY LICENSEE  AS A RESULT OF OR  RELATING TO USE, MODIFICATION
+ * OR DISTRIBUTION OF  THE SOFTWARE OR ITS DERIVATIVES.  IN NO EVENT WILL
+ * SUN OR ITS  LICENSORS BE LIABLE FOR ANY LOST  REVENUE, PROFIT OR DATA,
+ * OR  FOR  DIRECT,   INDIRECT,  SPECIAL,  CONSEQUENTIAL,  INCIDENTAL  OR
+ * PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
+ * LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  */
+
 package com.sun.msv.reader.trex.ng;
 
 import java.text.MessageFormat;
@@ -98,6 +123,9 @@ public class RELAXNGReader extends TREXBaseReader {
         super( controller, parserFactory, pool, stateFactory, new RootState() );
     }
     
+    
+
+    
     /**
      * Schema for schema of RELAX NG.
      */
@@ -113,11 +141,16 @@ public class RELAXNGReader extends TREXBaseReader {
                     new com.sun.msv.verifier.jarv.RELAXNGFactoryImpl().compileSchema(
                         RELAXNGReader.class.getResourceAsStream("relaxng.rng"));
             } catch( Exception e ) {
-                throw new RuntimeException("unable to load schema-for-schema for RELAX NG", e);
+                e.printStackTrace();
+                throw new Error("unable to load schema-for-schema for RELAX NG");
             }
         }
+        
         return relaxNGSchema4Schema;
     }
+    
+    
+    
     
     protected String localizeMessage( String propertyName, Object[] args ) {
         String format;
@@ -136,15 +169,13 @@ public class RELAXNGReader extends TREXBaseReader {
     }
     
     /** Map from ReferenceExps to RefExpParseInfos. */
-    private final Map<ReferenceExp,RefExpParseInfo> refExpParseInfos = new java.util.HashMap<ReferenceExp,RefExpParseInfo>();
+    private final Map refExpParseInfos = new java.util.HashMap();
     
     /** Gets RefExpParseInfo object for the specified ReferenceExp. */
     protected RefExpParseInfo getRefExpParseInfo( ReferenceExp exp ) {
-        RefExpParseInfo r = refExpParseInfos.get(exp);
-        if(r==null) {
-            r = new RefExpParseInfo();
-            refExpParseInfos.put(exp, r);
-        }
+        RefExpParseInfo r = (RefExpParseInfo)refExpParseInfos.get(exp);
+        if(r==null)
+            refExpParseInfos.put(exp, r = new RefExpParseInfo());
         return r;
     }
     
@@ -227,17 +258,18 @@ public class RELAXNGReader extends TREXBaseReader {
          * <p>
          * This is used to detect recursive self reference errors.
          */
-        public final Vector<ReferenceExp> directRefs = new Vector<ReferenceExp>();
+        public final Vector directRefs = new Vector();
         
         /**
          * ReferenceExps which are referenced from this pattern indirectly
          * (with ElementExp in between.)
          */
-        public final Vector<ReferenceExp> indirectRefs = new Vector<ReferenceExp>();
+        public final Vector indirectRefs = new Vector();
     }
     
     /** Namespace URI of RELAX NG */
     public static final String RELAXNGNamespace = "http://relaxng.org/ns/structure/1.0";
+
     protected boolean isGrammarElement( StartTagInfo tag ) {
         return RELAXNGNamespace.equals(tag.namespaceURI)
         // allow old namespace URI for now.
@@ -357,19 +389,22 @@ public class RELAXNGReader extends TREXBaseReader {
         }
         return ErrorDatatypeLibrary.theInstance;
     }
+
     
-    @SuppressWarnings("serial")
+    
+    
+    
     private static class AbortException extends Exception {}
     
     private void checkRunawayExpression(
-        ReferenceExp node, Stack<ReferenceExp> items, Set<ReferenceExp> visitedExps ) throws AbortException {
+        ReferenceExp node, Stack items, Set visitedExps ) throws AbortException {
                                                                                     
         if( !visitedExps.add(node) )
             return;        // this ReferenceExp has already been processed.
         items.push(node);
         
         // test direct references
-        Iterator<ReferenceExp> itr = getRefExpParseInfo(node).directRefs.iterator();
+        Iterator itr = getRefExpParseInfo(node).directRefs.iterator();
         while( itr.hasNext() ) {
             ReferenceExp child = (ReferenceExp)itr.next();
             
@@ -378,7 +413,7 @@ public class RELAXNGReader extends TREXBaseReader {
                 // find a cycle.
                 
                 String s = "";
-                Vector<Locator> locs = new Vector<Locator>();
+                Vector locs = new Vector();
             
                 for( ; idx<items.size(); idx++ ) {
                     ReferenceExp e = (ReferenceExp)items.get(idx);
@@ -388,9 +423,7 @@ public class RELAXNGReader extends TREXBaseReader {
                     s += e.name;
                     
                     Locator loc = getDeclaredLocationOf(e);
-                    if(loc==null) {
-                        continue;
-                    }
+                    if(loc==null)    continue;
                     locs.add(loc);
                 }
                 
@@ -407,11 +440,11 @@ public class RELAXNGReader extends TREXBaseReader {
         }
 
         // test indirect references
-        Stack<ReferenceExp> empty = new Stack<ReferenceExp>();
+        Stack empty = new Stack();
         itr = getRefExpParseInfo(node).indirectRefs.iterator();
-        while( itr.hasNext() ) {
-            checkRunawayExpression(itr.next(), empty, visitedExps );
-        }        
+        while( itr.hasNext() )
+            checkRunawayExpression( (ReferenceExp)itr.next(), empty, visitedExps );
+        
         items.pop();
     }
     
@@ -426,7 +459,7 @@ public class RELAXNGReader extends TREXBaseReader {
         
         // checks the runaway expression
         try {
-            checkRunawayExpression( grammar, new Stack<ReferenceExp>(), new java.util.HashSet<ReferenceExp>() );
+            checkRunawayExpression( grammar, new Stack(), new java.util.HashSet() );
         } catch( AbortException e ) {;}
         
         if( !controller.hadError() )

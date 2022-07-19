@@ -1,12 +1,37 @@
 /*
- * @(#)$Id$
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * Copyright (c) 2001-2013 Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * - Redistributions  of  source code  must  retain  the above  copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * - Redistribution  in binary  form must  reproduct the  above copyright
+ *   notice, this list of conditions  and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * Neither  the  name   of  Sun  Microsystems,  Inc.  or   the  names  of
+ * contributors may be  used to endorse or promote  products derived from
+ * this software without specific prior written permission.
  * 
- * This software is the proprietary information of Sun Microsystems, Inc.  
- * Use is subject to license terms.
- * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS  OR   IMPLIED  CONDITIONS,  REPRESENTATIONS   AND  WARRANTIES,
+ * INCLUDING  ANY  IMPLIED WARRANTY  OF  MERCHANTABILITY,  FITNESS FOR  A
+ * PARTICULAR PURPOSE  OR NON-INFRINGEMENT, ARE HEREBY  EXCLUDED. SUN AND
+ * ITS  LICENSORS SHALL  NOT BE  LIABLE  FOR ANY  DAMAGES OR  LIABILITIES
+ * SUFFERED BY LICENSEE  AS A RESULT OF OR  RELATING TO USE, MODIFICATION
+ * OR DISTRIBUTION OF  THE SOFTWARE OR ITS DERIVATIVES.  IN NO EVENT WILL
+ * SUN OR ITS  LICENSORS BE LIABLE FOR ANY LOST  REVENUE, PROFIT OR DATA,
+ * OR  FOR  DIRECT,   INDIRECT,  SPECIAL,  CONSEQUENTIAL,  INCIDENTAL  OR
+ * PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
+ * LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  */
+
 package com.sun.msv.relaxns.verifier;
 
 import java.util.Map;
@@ -52,7 +77,7 @@ class TREXIslandVerifier
      * 
      * this map is used in endChildIsland method.
      */
-    protected final Map<ElementDecl,Expression> rule2exp = new java.util.HashMap<ElementDecl,Expression>();
+    protected final Map rule2exp = new java.util.HashMap();
     
     TREXIslandVerifier( RulesAcceptor initialAcceptor ) {
         super( null, null );        // quick hack.
@@ -90,12 +115,12 @@ class TREXIslandVerifier
         if( current instanceof ComplexAcceptor ) {
             ComplexAcceptor ca = (ComplexAcceptor)current;
             
-            Vector<Object> vec = null;
+            Vector vec = null;
             
             for( int i=0; i<ca.owners.length; i++ )
                 if( ca.owners[i] instanceof ExternalElementExp ) {    
                     // bingo
-                    if(vec==null)    vec=new Vector<Object>();
+                    if(vec==null)    vec=new Vector();
                     vec.add( ca.owners[i] );
                 }
             
@@ -123,7 +148,7 @@ class TREXIslandVerifier
             for( int i=0; i<ca.owners.length; i++ )
                 if( ca.owners[i] instanceof AnyOtherElementExp ) {    
                     // bingo
-                    if(vec==null) vec=new Vector<Object>();
+                    if(vec==null)    vec=new Vector();
                     vec.add( ca.owners[i] );
                 }
             
@@ -190,9 +215,8 @@ class TREXIslandVerifier
         throws SAXException {
 
         // memorize AnyOtherElementExps to the map
-        for( int i=0; i<exps.length; i++ ) {
+        for( int i=0; i<exps.length; i++ )
             rule2exp.put( exps[i], exps[i] );
-        }
         IslandVerifier iv = new AnyOtherElementVerifier(exps);
         dispatcher.switchVerifier(iv);
         
@@ -242,13 +266,13 @@ class TREXIslandVerifier
      * set of unparsed entity names.
      * this set is created on demand.
      */
-    private Set<String> unparsedEntities;
+    private Set unparsedEntities;
     
     // IslandVerifier resolves unparsed entity through dispatcher
     public boolean isUnparsedEntity( String entityName ) {
         // create the set only when it is used.
         if( unparsedEntities==null ) {
-            unparsedEntities = new java.util.HashSet<String>();
+            unparsedEntities = new java.util.HashSet();
             int len = dispatcher.countUnparsedEntityDecls();
             for( int i=0; i<len; i++ )
                 unparsedEntities.add( dispatcher.getUnparsedEntityDecl(i).name );

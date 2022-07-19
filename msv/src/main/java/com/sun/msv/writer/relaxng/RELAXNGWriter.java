@@ -1,12 +1,37 @@
 /*
- * @(#)$Id$
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * Copyright (c) 2001-2013 Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * - Redistributions  of  source code  must  retain  the above  copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * - Redistribution  in binary  form must  reproduct the  above copyright
+ *   notice, this list of conditions  and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * Neither  the  name   of  Sun  Microsystems,  Inc.  or   the  names  of
+ * contributors may be  used to endorse or promote  products derived from
+ * this software without specific prior written permission.
  * 
- * This software is the proprietary information of Sun Microsystems, Inc.  
- * Use is subject to license terms.
- * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS  OR   IMPLIED  CONDITIONS,  REPRESENTATIONS   AND  WARRANTIES,
+ * INCLUDING  ANY  IMPLIED WARRANTY  OF  MERCHANTABILITY,  FITNESS FOR  A
+ * PARTICULAR PURPOSE  OR NON-INFRINGEMENT, ARE HEREBY  EXCLUDED. SUN AND
+ * ITS  LICENSORS SHALL  NOT BE  LIABLE  FOR ANY  DAMAGES OR  LIABILITIES
+ * SUFFERED BY LICENSEE  AS A RESULT OF OR  RELATING TO USE, MODIFICATION
+ * OR DISTRIBUTION OF  THE SOFTWARE OR ITS DERIVATIVES.  IN NO EVENT WILL
+ * SUN OR ITS  LICENSORS BE LIABLE FOR ANY LOST  REVENUE, PROFIT OR DATA,
+ * OR  FOR  DIRECT,   INDIRECT,  SPECIAL,  CONSEQUENTIAL,  INCIDENTAL  OR
+ * PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
+ * LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  */
+
 package com.sun.msv.writer.relaxng;
 
 import java.util.HashMap;
@@ -150,7 +175,6 @@ import com.sun.msv.writer.XMLWriter;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-@SuppressWarnings("deprecation")
 public class RELAXNGWriter implements GrammarWriter, Context {
     
     protected XMLWriter writer = new XMLWriter();
@@ -182,9 +206,9 @@ public class RELAXNGWriter implements GrammarWriter, Context {
         this.grammar = g;
         
         // collect all reachable ElementExps and ReferenceExps.
-        final Set<Expression> nodes = new HashSet<Expression>();
+        final Set nodes = new HashSet();
         // ElementExps and ReferenceExps who are referenced more than once.
-        final Set<Expression> heads = new HashSet<Expression>();
+        final Set heads = new HashSet();
         
         g.getTopLevel().visit( new ExpressionWalker(){
             // ExpressionWalker class traverses expressions in depth-first order.
@@ -216,13 +240,13 @@ public class RELAXNGWriter implements GrammarWriter, Context {
         
         // create (name->RefExp) map while resolving name conflicts
         // 
-        Map<String,Expression> name2exp = new HashMap<String,Expression>();
+        Map name2exp = new HashMap();
         {
             int cnt=0;    // use to name anonymous RefExp.
         
-            Iterator<Expression> itr = heads.iterator();
+            Iterator itr = heads.iterator();
             while( itr.hasNext() ) {
-                Expression exp = itr.next();
+                Expression exp = (Expression)itr.next();
                 if( exp instanceof ReferenceExp ) {
                     ReferenceExp rexp = (ReferenceExp)exp;
                     if( rexp.name == null ) {
@@ -263,13 +287,12 @@ public class RELAXNGWriter implements GrammarWriter, Context {
         }
         
         // then reverse name2ref to ref2name
-        exp2name = new HashMap<Expression,String>();
+        exp2name = new HashMap();
         {
-            Iterator<String> itr = name2exp.keySet().iterator();
+            Iterator itr = name2exp.keySet().iterator();
             while( itr.hasNext() ) {
-                String name = itr.next();
-                Expression expr = name2exp.get(name);
-                exp2name.put(expr, name);
+                String name = (String)itr.next();
+                exp2name.put( name2exp.get(name), name );
             }
         }
         
@@ -302,14 +325,13 @@ public class RELAXNGWriter implements GrammarWriter, Context {
             }
             
             // write all named expressions
-            Iterator<Expression> itr = exp2name.keySet().iterator();
+            Iterator itr = exp2name.keySet().iterator();
             while( itr.hasNext() ) {
-                Expression exp = itr.next();
-                String name = exp2name.get(exp);
+                Expression exp = (Expression)itr.next();
+                String name = (String)exp2name.get(exp);
                 if( exp instanceof ReferenceExp )
                     exp = ((ReferenceExp)exp).exp;
-                String cleanedName = cleanName(name);
-                writer.start("define",new String[]{"name",cleanedName});
+                writer.start("define",new String[]{"name",name});
                 writeIsland( exp );
                 writer.end("define");
             }
@@ -321,11 +343,6 @@ public class RELAXNGWriter implements GrammarWriter, Context {
         }
     }
     
-    private String cleanName(String name) {
-        // uniqueness has some risks here.
-        return name.replaceAll("[():#/]", "_");
-    }
-
     /**
      * writes a bunch of expression into one tree.
      */
@@ -346,7 +363,8 @@ public class RELAXNGWriter implements GrammarWriter, Context {
      * "unique name" is used to write/reference this ReferenceExp.
      * ReferenceExps who are not in this list can be directly written into XML.
      */
-    protected Map<Expression,String> exp2name;
+    protected Map exp2name;
+    
     
     /**
      * sniffs namespace URI that can be used as default 'ns' attribute
@@ -429,15 +447,14 @@ public class RELAXNGWriter implements GrammarWriter, Context {
     
     public void writeNameClass( NameClass src ) {
         final String MAGIC = PossibleNamesCollector.MAGIC;
-        Set<StringPair> names = PossibleNamesCollector.calc(src);
+        Set names = PossibleNamesCollector.calc(src);
         
         // convert a name class to the canonical form.
         StringPair[] values = (StringPair[])names.toArray(new StringPair[names.size()]);
 
-        Set<String> uriset = new HashSet<String>();
-        for( int i=0; i<values.length; i++ ) {
+        Set uriset = new HashSet();
+        for( int i=0; i<values.length; i++ )
             uriset.add( values[i].namespaceURI );
-        }
         
         NameClass r = null;
         String[] uris = (String[])uriset.toArray(new String[uriset.size()]);
@@ -447,8 +464,8 @@ public class RELAXNGWriter implements GrammarWriter, Context {
             NameClass tmp = null;
             
             for( int j=0; j<values.length; j++ ) {
-                if( !values[j].namespaceURI.equals(uris[i]) ) continue;
-                if( values[j].localName==MAGIC ) continue;
+                if( !values[j].namespaceURI.equals(uris[i]) )    continue;
+                if( values[j].localName==MAGIC )                continue;
                 
                 if( src.accepts(values[j])!=src.accepts(uris[i],MAGIC) ) {
                     if(tmp==null)    tmp = new SimpleNameClass(values[j]);
@@ -507,7 +524,7 @@ public class RELAXNGWriter implements GrammarWriter, Context {
         public void onRef( ReferenceExp exp ) {
             String uniqueName = (String)exp2name.get(exp);
             if( uniqueName!=null )
-                this.writer.element("ref", new String[]{"name",cleanName(uniqueName)});
+                this.writer.element("ref", new String[]{"name",uniqueName});
             else
                 // this expression will not be written as a named pattern.
                 exp.exp.visit(this);
@@ -517,7 +534,7 @@ public class RELAXNGWriter implements GrammarWriter, Context {
             String uniqueName = (String)exp2name.get(exp);
             if( uniqueName!=null ) {
                 // this element will be written as a named pattern
-                this.writer.element("ref", new String[]{"name",cleanName(uniqueName)} );
+                this.writer.element("ref", new String[]{"name",uniqueName} );
                 return;
             } else
                 writeElement(exp);

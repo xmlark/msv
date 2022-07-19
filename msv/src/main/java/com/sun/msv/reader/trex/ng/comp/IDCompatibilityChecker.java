@@ -1,3 +1,37 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (c) 2001-2013 Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * - Redistributions  of  source code  must  retain  the above  copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * - Redistribution  in binary  form must  reproduct the  above copyright
+ *   notice, this list of conditions  and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * Neither  the  name   of  Sun  Microsystems,  Inc.  or   the  names  of
+ * contributors may be  used to endorse or promote  products derived from
+ * this software without specific prior written permission.
+ * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS  OR   IMPLIED  CONDITIONS,  REPRESENTATIONS   AND  WARRANTIES,
+ * INCLUDING  ANY  IMPLIED WARRANTY  OF  MERCHANTABILITY,  FITNESS FOR  A
+ * PARTICULAR PURPOSE  OR NON-INFRINGEMENT, ARE HEREBY  EXCLUDED. SUN AND
+ * ITS  LICENSORS SHALL  NOT BE  LIABLE  FOR ANY  DAMAGES OR  LIABILITIES
+ * SUFFERED BY LICENSEE  AS A RESULT OF OR  RELATING TO USE, MODIFICATION
+ * OR DISTRIBUTION OF  THE SOFTWARE OR ITS DERIVATIVES.  IN NO EVENT WILL
+ * SUN OR ITS  LICENSORS BE LIABLE FOR ANY LOST  REVENUE, PROFIT OR DATA,
+ * OR  FOR  DIRECT,   INDIRECT,  SPECIAL,  CONSEQUENTIAL,  INCIDENTAL  OR
+ * PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
+ * LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+ */
+
 package com.sun.msv.reader.trex.ng.comp;
 
 import java.util.HashMap;
@@ -37,7 +71,7 @@ class IDCompatibilityChecker extends CompatibilityChecker {
     
     private static class IDAttMap {
         final ElementExp sampleDecl;
-        final Map<StringPair,Object> idatts = new java.util.HashMap<StringPair,Object>();
+        final Map idatts = new java.util.HashMap();
         
         IDAttMap( ElementExp e ) { this.sampleDecl=e; }
     }
@@ -46,10 +80,10 @@ class IDCompatibilityChecker extends CompatibilityChecker {
         grammar.isIDcompatible = true;
         
         // a map from element names(StringPair) to DefAttMap
-        final Map<StringPair,Object> name2value = new HashMap<StringPair,Object>();
+        final Map name2value = new HashMap();
         
         // a set of all ElementExps in the grammar.
-        final Set<ElementExp> elements = new HashSet<ElementExp>();
+        final Set elements = new HashSet();
         
         final RefExpRemover remover = new RefExpRemover(reader.pool,false);
         
@@ -144,9 +178,8 @@ class IDCompatibilityChecker extends CompatibilityChecker {
                 // this is the only place we can have ID/IDREF types.
                                     
                 // store that this attribute is used for ID/IDREF.
-                if(curAtts==null) {
+                if(curAtts==null)
                     curAtts = new IDAttMap(curElm);
-                }
                 curAtts.idatts.put(attName,texp.getName());
                             
             }
@@ -178,16 +211,16 @@ class IDCompatibilityChecker extends CompatibilityChecker {
         
         make sure that no other attributes are competing with id attributes.
         */
-        Iterator<ElementExp> itr = elements.iterator();
-        final Vector<Object> vec = new Vector<Object>();    // IDAttMaps of the competing elements
+        Iterator itr = elements.iterator();
+        final Vector vec = new Vector();    // IDAttMaps of the competing elements
         while( itr.hasNext() ) {
             final ElementExp eexp = (ElementExp)itr.next();
             
             // list up all competing elements.
             vec.clear();
-            Iterator<Map.Entry<StringPair,Object>> jtr = name2value.entrySet().iterator();
+            Iterator jtr = name2value.entrySet().iterator();
             while(jtr.hasNext()) {
-                Map.Entry<StringPair,Object> e = jtr.next();
+                Map.Entry e = (Map.Entry)jtr.next();
                 if( eexp.getNameClass().accepts((StringPair)e.getKey()) )
                     vec.add( e.getValue()/*IDAttMap*/ );
             }
@@ -236,10 +269,10 @@ class IDCompatibilityChecker extends CompatibilityChecker {
                     // compete with ID.
                     for( int i=vec.size()-1; i>=0; i-- ) {
                         IDAttMap iam = (IDAttMap)vec.get(i);
-                        Iterator<Map.Entry<StringPair,Object>> jtr = iam.idatts.entrySet().iterator();
+                        Iterator jtr = iam.idatts.entrySet().iterator();
                         while( jtr.hasNext() ) {
-                            Map.Entry<StringPair,Object> e = jtr.next();
-                            if(exp.nameClass.accepts(e.getKey() )) {
+                            Map.Entry e = (Map.Entry)jtr.next();
+                            if(exp.nameClass.accepts( (StringPair)e.getKey() )) {
                                 // competing attributes
                                 reportCompError(
                                     new Locator[]{

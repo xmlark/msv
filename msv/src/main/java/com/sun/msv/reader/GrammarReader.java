@@ -1,17 +1,45 @@
 /*
- * @(#)$Id$
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * Copyright (c) 2001-2013 Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * - Redistributions  of  source code  must  retain  the above  copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * - Redistribution  in binary  form must  reproduct the  above copyright
+ *   notice, this list of conditions  and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * Neither  the  name   of  Sun  Microsystems,  Inc.  or   the  names  of
+ * contributors may be  used to endorse or promote  products derived from
+ * this software without specific prior written permission.
  * 
- * This software is the proprietary information of Sun Microsystems, Inc.  
- * Use is subject to license terms.
- * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS  OR   IMPLIED  CONDITIONS,  REPRESENTATIONS   AND  WARRANTIES,
+ * INCLUDING  ANY  IMPLIED WARRANTY  OF  MERCHANTABILITY,  FITNESS FOR  A
+ * PARTICULAR PURPOSE  OR NON-INFRINGEMENT, ARE HEREBY  EXCLUDED. SUN AND
+ * ITS  LICENSORS SHALL  NOT BE  LIABLE  FOR ANY  DAMAGES OR  LIABILITIES
+ * SUFFERED BY LICENSEE  AS A RESULT OF OR  RELATING TO USE, MODIFICATION
+ * OR DISTRIBUTION OF  THE SOFTWARE OR ITS DERIVATIVES.  IN NO EVENT WILL
+ * SUN OR ITS  LICENSORS BE LIABLE FOR ANY LOST  REVENUE, PROFIT OR DATA,
+ * OR  FOR  DIRECT,   INDIRECT,  SPECIAL,  CONSEQUENTIAL,  INCIDENTAL  OR
+ * PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
+ * LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  */
+
 package com.sun.msv.reader;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
@@ -174,14 +202,14 @@ public abstract class GrammarReader
      * Iterates Map.Entry objects which has the prefix as key and
      * the namespace URI as value.
      */
-    public Iterator<Object> iterateInscopeNamespaces() {
-        return new Iterator<Object>() {
+    public Iterator iterateInscopeNamespaces() {
+        return new Iterator() {
             private PrefixResolver resolver = proceed(prefixResolver);
             public Object next() {
                 final ChainPrefixResolver cpr = (ChainPrefixResolver)resolver;
                 resolver = proceed(cpr.previous);
                 
-                return new Map.Entry<Object,Object>() {
+                return new Map.Entry() {
                     public Object getKey() { return cpr.prefix; }
                     public Object getValue() { return cpr.uri; }
                     public Object setValue(Object o) { throw new UnsupportedOperationException(); }
@@ -351,7 +379,6 @@ public abstract class GrammarReader
      * @return
      *        always return non-null valid object
      */
-    @SuppressWarnings("deprecation")
     public final InputSource resolveLocation( State sourceState, String uri )
         throws AbortException {
         
@@ -538,15 +565,15 @@ public abstract class GrammarReader
      * this information is used to report the source of errors.
      */
     public class BackwardReferenceMap {
-        private final Map<Object,List<Object>> impl = new java.util.HashMap<Object,List<Object>>();
+        private final Map impl = new java.util.HashMap();
                                                          
         /** memorize a reference to an object. */
         public void memorizeLink( Object target ) {
-            List<Object> list;
-            if( impl.containsKey(target) ) list = (List<Object>)impl.get(target);
+            ArrayList list;
+            if( impl.containsKey(target) )    list = (ArrayList)impl.get(target);
             else {
                 // new target.
-                list = new ArrayList<Object>();
+                list = new ArrayList();
                 impl.put(target,list);
             }
             
@@ -561,12 +588,12 @@ public abstract class GrammarReader
         public Locator[] getReferer( Object target ) {
             // TODO: does anyone want to get all of the referer?
             if( impl.containsKey(target) ) {
-                List<Object> lst = (List<Object>)impl.get(target);
+                ArrayList lst = (ArrayList)impl.get(target);
                 Locator[] locs = new Locator[lst.size()];
                 lst.toArray(locs);
                 return locs;
             }
-            return null;
+            else                            return null;
         }
     }
     /** keeps track of all backward references to every ReferenceExp.
@@ -588,7 +615,7 @@ public abstract class GrammarReader
      * This behavior is essential to correctly implement
      * TREX constraint that no two &lt;define&gt; is allowed in the same file.
      */
-    private final Map<Object, Locator> declaredLocations = new java.util.HashMap<Object, Locator>();
+    private final Map declaredLocations = new java.util.HashMap();
     
     public void setDeclaredLocationOf( Object o ) {
         declaredLocations.put(o, new LocatorImpl(getLocator()) );
@@ -603,14 +630,14 @@ public abstract class GrammarReader
      * this method is used in the final wrap-up process of parsing.
      */
     public void detectUndefinedOnes( ReferenceContainer container, String errMsg ) {
-        Iterator<ReferenceExp> itr = container.iterator();
+        Iterator itr = container.iterator();
         while( itr.hasNext() ) {
             // ReferenceExp object is created when it is first referenced or defined.
             // its exp field is supplied when it is defined.
             // therefore, ReferenceExp with its exp field null means
             // it is referenced but not defined.
             
-            ReferenceExp ref = itr.next();
+            ReferenceExp ref = (ReferenceExp)itr.next();
             if( !ref.isDefined() ) {
                 reportError( backwardReference.getReferer(ref),
                             errMsg, new Object[]{ref.name} );
@@ -719,8 +746,8 @@ public abstract class GrammarReader
         State getOwnerState();
     }
     
-    private final Vector<BackPatch> backPatchJobs = new Vector<BackPatch>();
-    private final Vector<BackPatch> delayedBackPatchJobs = new Vector<BackPatch>();
+    private final Vector backPatchJobs = new Vector();
+    private final Vector delayedBackPatchJobs = new Vector();
     public final void addBackPatchJob( BackPatch job ) {
         backPatchJobs.add(job);
     }
@@ -738,10 +765,10 @@ public abstract class GrammarReader
         setLocator(oldLoc);
     }
     
-    private final void runBackPatchJob( Vector<BackPatch> vec ) {
-        Iterator<BackPatch> itr = vec.iterator();
+    private final void runBackPatchJob( Vector vec ) {
+        Iterator itr = vec.iterator();
         while( itr.hasNext() ) {
-            BackPatch job = itr.next();
+            BackPatch job = ((BackPatch)itr.next());
             // so that errors reported in the patch job will have 
             // position of its start tag.
             setLocator(job.getOwnerState().getLocation());

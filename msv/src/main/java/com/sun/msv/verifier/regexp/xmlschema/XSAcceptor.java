@@ -1,12 +1,37 @@
 /*
- * @(#)$Id$
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * Copyright (c) 2001-2013 Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * - Redistributions  of  source code  must  retain  the above  copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * - Redistribution  in binary  form must  reproduct the  above copyright
+ *   notice, this list of conditions  and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * Neither  the  name   of  Sun  Microsystems,  Inc.  or   the  names  of
+ * contributors may be  used to endorse or promote  products derived from
+ * this software without specific prior written permission.
  * 
- * This software is the proprietary information of Sun Microsystems, Inc.  
- * Use is subject to license terms.
- * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS  OR   IMPLIED  CONDITIONS,  REPRESENTATIONS   AND  WARRANTIES,
+ * INCLUDING  ANY  IMPLIED WARRANTY  OF  MERCHANTABILITY,  FITNESS FOR  A
+ * PARTICULAR PURPOSE  OR NON-INFRINGEMENT, ARE HEREBY  EXCLUDED. SUN AND
+ * ITS  LICENSORS SHALL  NOT BE  LIABLE  FOR ANY  DAMAGES OR  LIABILITIES
+ * SUFFERED BY LICENSEE  AS A RESULT OF OR  RELATING TO USE, MODIFICATION
+ * OR DISTRIBUTION OF  THE SOFTWARE OR ITS DERIVATIVES.  IN NO EVENT WILL
+ * SUN OR ITS  LICENSORS BE LIABLE FOR ANY LOST  REVENUE, PROFIT OR DATA,
+ * OR  FOR  DIRECT,   INDIRECT,  SPECIAL,  CONSEQUENTIAL,  INCIDENTAL  OR
+ * PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
+ * LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  */
+
 package com.sun.msv.verifier.regexp.xmlschema;
 
 import org.relaxng.datatype.DatatypeException;
@@ -20,7 +45,6 @@ import com.sun.msv.grammar.xmlschema.ElementDeclExp;
 import com.sun.msv.grammar.xmlschema.SimpleTypeExp;
 import com.sun.msv.grammar.xmlschema.XMLSchemaSchema;
 import com.sun.msv.grammar.xmlschema.XMLSchemaTypeExp;
-import com.sun.msv.reader.xmlschema.XMLSchemaReader;
 import com.sun.msv.util.StartTagInfo;
 import com.sun.msv.util.StringRef;
 import com.sun.msv.verifier.Acceptor;
@@ -167,9 +191,9 @@ public class XSAcceptor extends SimpleAcceptor {
             return super.createChildAcceptor(sti,refErr);
         
         String[] typeName = (String[])QnameType.theInstance.createJavaObject(type,sti.context);
-        if(typeName==null) {
+        if(typeName==null)
             return onTypeResolutionFailure(sti,type,refErr);
-        }
+        
         
         Expression contentModel;
         
@@ -183,41 +207,31 @@ public class XSAcceptor extends SimpleAcceptor {
             }
         } else {
             XMLSchemaSchema schema = _docDecl.grammar.getByNamespace(typeName[0]);
-            if(schema==null) {
+            if(schema==null)
                 return onTypeResolutionFailure(sti,type,refErr);
-            }
-
+        
             final XMLSchemaTypeExp currentType = xe.parent.getTypeDefinition();
             ComplexTypeExp cexp = schema.complexTypes.get(typeName[1]);
             if(cexp!=null) {
-                if(cexp.isDerivedTypeOf( currentType, xe.parent.block|currentType.getBlock() )) {
+                if(cexp.isDerivedTypeOf( currentType,
+                        xe.parent.block|currentType.getBlock() ))
                     // this type can substitute the current type.
                     contentModel = cexp;
-                // 08-Oct-2010, tatu: Fix to specific symptom of GitHub Issue#2:
-                } else if ("anyType".equals(currentType.name)
-                        && (currentType instanceof ComplexTypeExp)
-                        && XMLSchemaReader.XMLSchemaNamespace.equals(((ComplexTypeExp) currentType).parent.targetNamespace)) 
-                {
-                    // xs:anyType
-                    contentModel = cexp;
-                } else {
+                else
                     return onNotSubstitutableType(sti,type,refErr);
-                }
             } else {
                 SimpleTypeExp sexp = schema.simpleTypes.get(typeName[1]);
-                if(sexp==null) {
-                    return onTypeResolutionFailure(sti,type,refErr);
-                }
-                if(!(currentType instanceof SimpleTypeExp)) {
+                if(sexp==null)    return onTypeResolutionFailure(sti,type,refErr);
+                
+                if(!(currentType instanceof SimpleTypeExp))
                     return onNotSubstitutableType(sti,type,refErr);
-                }
+                
                 SimpleTypeExp curT = (SimpleTypeExp)currentType;
                 if(sexp.getDatatype().isDerivedTypeOf(
-                    curT.getDatatype(), !xe.parent.isRestrictionBlocked() )) {
+                    curT.getDatatype(), !xe.parent.isRestrictionBlocked() ))
                     contentModel = sexp;
-                } else {
+                else
                     return onNotSubstitutableType(sti,type,refErr);
-                }
             }
         }
         
@@ -227,17 +241,15 @@ public class XSAcceptor extends SimpleAcceptor {
 
 
     private Acceptor onNotSubstitutableType( StartTagInfo sti, String type, StringRef refErr ) {
-        if(refErr==null) {
-            return null;
-        }
+        if(refErr==null)        return null;
+        
         refErr.str = _docDecl.localizeMessage( XSREDocDecl.ERR_NOT_SUBSTITUTABLE_TYPE, type );
         return super.createChildAcceptor(sti,refErr);
     }
     
     private Acceptor onTypeResolutionFailure( StartTagInfo sti, String type, StringRef refErr ) {
-        if(refErr==null) {
-            return null;
-        }
+        if(refErr==null)        return null;
+        
         refErr.str = _docDecl.localizeMessage( XSREDocDecl.ERR_UNDEFINED_TYPE, type );
         return super.createChildAcceptor(sti,refErr);
     }

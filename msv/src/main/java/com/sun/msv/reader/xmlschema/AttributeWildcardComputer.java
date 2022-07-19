@@ -1,12 +1,37 @@
 /*
- * @(#)$Id$
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * Copyright (c) 2001-2013 Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * - Redistributions  of  source code  must  retain  the above  copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * - Redistribution  in binary  form must  reproduct the  above copyright
+ *   notice, this list of conditions  and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * Neither  the  name   of  Sun  Microsystems,  Inc.  or   the  names  of
+ * contributors may be  used to endorse or promote  products derived from
+ * this software without specific prior written permission.
  * 
- * This software is the proprietary information of Sun Microsystems, Inc.  
- * Use is subject to license terms.
- * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS  OR   IMPLIED  CONDITIONS,  REPRESENTATIONS   AND  WARRANTIES,
+ * INCLUDING  ANY  IMPLIED WARRANTY  OF  MERCHANTABILITY,  FITNESS FOR  A
+ * PARTICULAR PURPOSE  OR NON-INFRINGEMENT, ARE HEREBY  EXCLUDED. SUN AND
+ * ITS  LICENSORS SHALL  NOT BE  LIABLE  FOR ANY  DAMAGES OR  LIABILITIES
+ * SUFFERED BY LICENSEE  AS A RESULT OF OR  RELATING TO USE, MODIFICATION
+ * OR DISTRIBUTION OF  THE SOFTWARE OR ITS DERIVATIVES.  IN NO EVENT WILL
+ * SUN OR ITS  LICENSORS BE LIABLE FOR ANY LOST  REVENUE, PROFIT OR DATA,
+ * OR  FOR  DIRECT,   INDIRECT,  SPECIAL,  CONSEQUENTIAL,  INCIDENTAL  OR
+ * PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
+ * LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  */
+
 package com.sun.msv.reader.xmlschema;
 
 import java.util.HashSet;
@@ -25,7 +50,6 @@ import com.sun.msv.grammar.xmlschema.AttWildcardExp;
 import com.sun.msv.grammar.xmlschema.AttributeGroupExp;
 import com.sun.msv.grammar.xmlschema.AttributeWildcard;
 import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
-import com.sun.msv.util.StringPair;
 
 /**
  * Processes the attribtue wildcard according to the spec.
@@ -90,14 +114,14 @@ public class AttributeWildcardComputer extends ExpressionWalker {
     /**
      * Visited ElementExps and ReferenceExps to prevent infinite recursion.
      */
-    private final Set<Expression> visitedExps = new HashSet<Expression>();
+    private final Set visitedExps = new HashSet();
     
-    private final Stack<Expression> unprocessedElementExps = new Stack<Expression>();
+    private final Stack unprocessedElementExps = new Stack();
     
     /**
      * Used to collect AttributeWildcards of children.
      */
-    private Set<AttributeWildcard> wildcards = null;
+    private Set wildcards = null;
     
     
     public void onElement( ElementExp exp ) {
@@ -111,10 +135,10 @@ public class AttributeWildcardComputer extends ExpressionWalker {
             if( exp instanceof AttributeGroupExp ) {
                 AttributeGroupExp aexp = (AttributeGroupExp)exp;
                 
-                final Set<AttributeWildcard> o = wildcards;
+                final Set o = wildcards;
                 {
                     // process children and collect their wildcards.
-                    wildcards = new HashSet<AttributeWildcard>();
+                    wildcards = new HashSet();
                     exp.exp.visit(this);
                     // compute the attribute wildcard
                     aexp.wildcard = calcCompleteWildcard( aexp.wildcard, wildcards );
@@ -125,10 +149,10 @@ public class AttributeWildcardComputer extends ExpressionWalker {
             if( exp instanceof ComplexTypeExp ) {
                 ComplexTypeExp cexp = (ComplexTypeExp)exp;
                 
-                final Set<AttributeWildcard> o = wildcards;
+                final Set o = wildcards;
                 {
                     // process children and collect their wildcards.
-                    wildcards = new HashSet<AttributeWildcard>();
+                    wildcards = new HashSet();
                     exp.exp.visit(this);
                     // compute the attribute wildcard
                     cexp.wildcard = calcCompleteWildcard( cexp.wildcard, wildcards );
@@ -168,7 +192,7 @@ public class AttributeWildcardComputer extends ExpressionWalker {
             // add the complete att wildcard of this component.
             if( exp instanceof AttWildcardExp ) {
                 AttributeWildcard w = ((AttWildcardExp)exp).getAttributeWildcard();
-                if(w!=null) wildcards.add(w);
+                if(w!=null)    wildcards.add(w);
             }
         }
     }
@@ -176,7 +200,7 @@ public class AttributeWildcardComputer extends ExpressionWalker {
     /**
      * Computes the "complete attribute wildcard"
      */
-    private AttributeWildcard calcCompleteWildcard( AttributeWildcard local, Set<AttributeWildcard> s ) {
+    private AttributeWildcard calcCompleteWildcard( AttributeWildcard local, Set s ) {
         final AttributeWildcard[] children =
             (AttributeWildcard[])s.toArray(new AttributeWildcard[s.size()]);
         
@@ -231,7 +255,7 @@ public class AttributeWildcardComputer extends ExpressionWalker {
         if( cexp.complexBaseType==reader.complexUrType )
             return;
         
-        final Set<StringPair> explicitAtts = new HashSet<StringPair>();
+        final Set explicitAtts = new HashSet();
         
         // visit the derived type and enumerate explicitly declared attributes in it.
         cexp.body.visit( new ExpressionWalker() {
@@ -240,7 +264,7 @@ public class AttributeWildcardComputer extends ExpressionWalker {
             public void onAttribute( AttributeExp exp ) {
                 if(!(exp.nameClass instanceof SimpleNameClass))
                     // attribute uses must have a simple name.
-                    throw new RuntimeException(exp.nameClass.toString());
+                    throw new Error(exp.nameClass.toString());
                 
                 explicitAtts.add( ((SimpleNameClass)exp.nameClass).toStringPair() );
             }

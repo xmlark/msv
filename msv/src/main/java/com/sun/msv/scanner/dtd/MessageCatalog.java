@@ -1,5 +1,35 @@
 /*
- * Copyright (c) 1998 Sun Microsystems, Inc. All Rights Reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (c) 1998-2013 Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * - Redistributions  of  source code  must  retain  the above  copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * - Redistribution  in binary  form must  reproduct the  above copyright
+ *   notice, this list of conditions  and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * Neither  the  name   of  Sun  Microsystems,  Inc.  or   the  names  of
+ * contributors may be  used to endorse or promote  products derived from
+ * this software without specific prior written permission.
+ * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS  OR   IMPLIED  CONDITIONS,  REPRESENTATIONS   AND  WARRANTIES,
+ * INCLUDING  ANY  IMPLIED WARRANTY  OF  MERCHANTABILITY,  FITNESS FOR  A
+ * PARTICULAR PURPOSE  OR NON-INFRINGEMENT, ARE HEREBY  EXCLUDED. SUN AND
+ * ITS  LICENSORS SHALL  NOT BE  LIABLE  FOR ANY  DAMAGES OR  LIABILITIES
+ * SUFFERED BY LICENSEE  AS A RESULT OF OR  RELATING TO USE, MODIFICATION
+ * OR DISTRIBUTION OF  THE SOFTWARE OR ITS DERIVATIVES.  IN NO EVENT WILL
+ * SUN OR ITS  LICENSORS BE LIABLE FOR ANY LOST  REVENUE, PROFIT OR DATA,
+ * OR  FOR  DIRECT,   INDIRECT,  SPECIAL,  CONSEQUENTIAL,  INCIDENTAL  OR
+ * PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
+ * LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  */
 
 package com.sun.msv.scanner.dtd;
@@ -7,7 +37,11 @@ package com.sun.msv.scanner.dtd;
 import java.io.InputStream;
 import java.text.FieldPosition;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 
 /**
  * This class provides support for multi-language string lookup, as needed
@@ -124,7 +158,7 @@ abstract public class MessageCatalog {
      *
      * @param packageMember Class whose package has localized messages
      */
-    protected MessageCatalog (Class<?> packageMember)
+    protected MessageCatalog (Class packageMember)
     {
     this (packageMember, "Messages");
     }
@@ -138,7 +172,7 @@ abstract public class MessageCatalog {
      * @param packageMember Class whose package has localized messages
      * @param bundle Name of a group of resource bundles
      */
-    private MessageCatalog (Class<?> packageMember, String bundle)
+    private MessageCatalog (Class packageMember, String bundle)
     {
     int    index;
 
@@ -418,7 +452,7 @@ abstract public class MessageCatalog {
     // cache for isLanguageSupported(), below ... key is a language
     // or locale name, value is a Boolean
     //
-    private HashMap<String,Boolean> cache = new HashMap<String,Boolean>();
+    private Hashtable        cache = new Hashtable (5);
 
 
     /**
@@ -449,20 +483,20 @@ abstract public class MessageCatalog {
     // Use previous results if possible.  We expect that the codebase
     // is immutable, so we never worry about changing the cache.
     // 
-    Boolean        value = cache.get(localeName);
+    Boolean        value = (Boolean) cache.get (localeName);
 
     if (value != null)
-        return value.booleanValue();
+        return value.booleanValue ();
 
     //
     // Try "language_country_variant", then "language_country",
     // then finally "language" ... assuming the longest locale name
     // is passed.  If not, we'll try fewer options.
     //
-    ClassLoader loader = null;
+    ClassLoader        loader = null;
 
     for (;;) {
-        String name = bundleName + "_" + localeName;
+        String        name = bundleName + "_" + localeName;
 
         // look up classes ...
         try {

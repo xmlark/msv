@@ -1,3 +1,37 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (c) 2001-2013 Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * - Redistributions  of  source code  must  retain  the above  copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * - Redistribution  in binary  form must  reproduct the  above copyright
+ *   notice, this list of conditions  and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * Neither  the  name   of  Sun  Microsystems,  Inc.  or   the  names  of
+ * contributors may be  used to endorse or promote  products derived from
+ * this software without specific prior written permission.
+ * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS  OR   IMPLIED  CONDITIONS,  REPRESENTATIONS   AND  WARRANTIES,
+ * INCLUDING  ANY  IMPLIED WARRANTY  OF  MERCHANTABILITY,  FITNESS FOR  A
+ * PARTICULAR PURPOSE  OR NON-INFRINGEMENT, ARE HEREBY  EXCLUDED. SUN AND
+ * ITS  LICENSORS SHALL  NOT BE  LIABLE  FOR ANY  DAMAGES OR  LIABILITIES
+ * SUFFERED BY LICENSEE  AS A RESULT OF OR  RELATING TO USE, MODIFICATION
+ * OR DISTRIBUTION OF  THE SOFTWARE OR ITS DERIVATIVES.  IN NO EVENT WILL
+ * SUN OR ITS  LICENSORS BE LIABLE FOR ANY LOST  REVENUE, PROFIT OR DATA,
+ * OR  FOR  DIRECT,   INDIRECT,  SPECIAL,  CONSEQUENTIAL,  INCIDENTAL  OR
+ * PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
+ * LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+ */
+
 package com.sun.msv.reader.trex.ng.comp;
 
 import java.util.HashMap;
@@ -27,7 +61,7 @@ import com.sun.msv.verifier.regexp.StringToken;
 
 class DefAttCompatibilityChecker extends CompatibilityChecker {
     
-    DefAttCompatibilityChecker( RELAXNGCompReader _reader, Map<AttributeExp,String> _defaultedAttributes ) {
+    DefAttCompatibilityChecker( RELAXNGCompReader _reader, Map _defaultedAttributes ) {
         super(_reader);
         this.defaultedAttributes = _defaultedAttributes;
     }
@@ -36,26 +70,25 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
         grammar.isDefaultAttributeValueCompatible = val;
     }
     
-    private final Map<AttributeExp,String> defaultedAttributes;
+    private final Map defaultedAttributes;
 
     /**
      * used to abort the check.
      */
-    @SuppressWarnings("serial")
     private static final class Abort extends RuntimeException {}
 
     private static final class DefAttMap {
         /**
          * the map from the attribute name (as StringPair) to the default value (as String).
          */
-        final Map<StringPair,String> defaultAttributes;
+        final Map defaultAttributes;
         /**
          * one of the ElementExps that have this particular element name.
          * used only for the error reporting.
          */
         final ElementExp sampleDecl;
         
-        DefAttMap( ElementExp sample, Map<StringPair,String> atts ) { this.sampleDecl=sample; this.defaultAttributes=atts; }
+        DefAttMap( ElementExp sample, Map atts ) { this.sampleDecl=sample; this.defaultAttributes=atts; }
     }
     
     private final RefExpRemover refRemover =
@@ -78,11 +111,11 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
         if( defaultedAttributes.size()==0 )
             return;    // no default attribute is used. no need for the check.
         
-        Iterator<Map.Entry<AttributeExp,String>> itr = defaultedAttributes.entrySet().iterator();
+        Iterator itr = defaultedAttributes.entrySet().iterator();
         ResidualCalculator resCalc = new ResidualCalculator(reader.pool);
             
         while( itr.hasNext() ) {
-            Map.Entry<AttributeExp,String> item = itr.next();
+            Map.Entry item = (Map.Entry)itr.next();
             AttributeExp exp = (AttributeExp)item.getKey();
             String value = (String)item.getValue();
                     
@@ -115,10 +148,10 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
             return;
                 
         // a map from element names to DefAttMap
-        final Map<StringPair,Object> name2value = new HashMap<StringPair,Object>();
+        final Map name2value = new HashMap();
         
         // a set of all ElementExps in the grammar.
-        final Set<Expression> elements = new HashSet<Expression>();
+        final Set elements = new HashSet();
         
         // tests if defaulted attributes are optional and doesn't have
         // oneOrMoreAncestor.
@@ -138,7 +171,7 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
              * A map from attribute name to defaulted AttributeExps
              * of the current element.
              */
-            private Map<StringPair,String> currentAttributes = null;
+            private Map currentAttributes = null;
                     
             /**
              * name of the current ElementExp
@@ -158,7 +191,7 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
                 final boolean oldC        = inChoice;
                 final boolean oldOOM    = inOneOrMore;
                 final SimpleNameClass prevElemName = currentElementName;
-                final Map<StringPair,String> oldCA = currentAttributes;
+                final Map oldCA = currentAttributes;
                         
                 inSimpleElement = (exp.getNameClass() instanceof SimpleNameClass);
                 inOptionalChoice = true;
@@ -169,7 +202,7 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
                 if(inSimpleElement) {
                     currentElementName = (SimpleNameClass)exp.getNameClass();
                     en = new StringPair(currentElementName);
-                    currentAttributes = new HashMap<StringPair,String>();
+                    currentAttributes = new HashMap();
                 } else
                     currentElementName = null;
                 
@@ -177,9 +210,9 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
 
                 if(en!=null) {
                     DefAttMap m = (DefAttMap)name2value.get(en);
-                    if(m==null) {
+                    if(m==null)
                         name2value.put(en, new DefAttMap(exp,currentAttributes));
-                    } else {
+                    else {
                         // there was another ElementExp with the same name.
                         // we need to check that their default attribute values
                         // are consistent.
@@ -277,9 +310,9 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
                 
         
         // test that the competing elements also has the same default values.
-        Iterator<Expression> exprs = elements.iterator();
-        while(exprs.hasNext()) {
-            final ElementExp eexp = (ElementExp)exprs.next();
+        itr = elements.iterator();
+        while(itr.hasNext()) {
+            final ElementExp eexp = (ElementExp)itr.next();
             
             NameClass nc = eexp.getNameClass();
             if(!(nc instanceof SimpleNameClass)) {
@@ -288,9 +321,9 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
                 // (this is checked within the first pass.
                 // so in this case, we just need to make sure that
                 // any competing elements do not have defaulted attributes.
-                Iterator<Map.Entry<StringPair, Object>> jtr = name2value.entrySet().iterator();
+                Iterator jtr = name2value.entrySet().iterator();
                 while(jtr.hasNext()) {
-                    Map.Entry<StringPair,Object> e = jtr.next();
+                    Map.Entry e = (Map.Entry)jtr.next();
                     if(nc.accepts((StringPair)e.getKey())) {
                         // this element competes with this eexp.
                         DefAttMap defAtts = (DefAttMap)e.getValue();
@@ -332,6 +365,8 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
             }
         }
     };
+
+
 
     public static final String CERR_DEFVALUE_NAME_IS_NOT_SIMPLE = // arg:0
         "RELAXNGReader.Compatibility.DefaultValue.NameIsNotSimple";

@@ -1,5 +1,35 @@
 /*
- * Copyright (c) 1998 Sun Microsystems, Inc. All Rights Reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (c) 1998-2013 Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * - Redistributions  of  source code  must  retain  the above  copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * - Redistribution  in binary  form must  reproduct the  above copyright
+ *   notice, this list of conditions  and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * Neither  the  name   of  Sun  Microsystems,  Inc.  or   the  names  of
+ * contributors may be  used to endorse or promote  products derived from
+ * this software without specific prior written permission.
+ * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS  OR   IMPLIED  CONDITIONS,  REPRESENTATIONS   AND  WARRANTIES,
+ * INCLUDING  ANY  IMPLIED WARRANTY  OF  MERCHANTABILITY,  FITNESS FOR  A
+ * PARTICULAR PURPOSE  OR NON-INFRINGEMENT, ARE HEREBY  EXCLUDED. SUN AND
+ * ITS  LICENSORS SHALL  NOT BE  LIABLE  FOR ANY  DAMAGES OR  LIABILITIES
+ * SUFFERED BY LICENSEE  AS A RESULT OF OR  RELATING TO USE, MODIFICATION
+ * OR DISTRIBUTION OF  THE SOFTWARE OR ITS DERIVATIVES.  IN NO EVENT WILL
+ * SUN OR ITS  LICENSORS BE LIABLE FOR ANY LOST  REVENUE, PROFIT OR DATA,
+ * OR  FOR  DIRECT,   INDIRECT,  SPECIAL,  CONSEQUENTIAL,  INCIDENTAL  OR
+ * PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
+ * LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  */
 
 package com.sun.msv.scanner.dtd;
@@ -10,7 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
+import java.util.Hashtable;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -77,11 +107,11 @@ public class Resolver implements EntityResolver
     private boolean        ignoringMIME;
 
     // table mapping public IDs to (local) URIs
-    private HashMap<String,String> id2uri;
+    private Hashtable        id2uri;
 
     // tables mapping public IDs to resources and classloaders
-    private HashMap<String,String> id2resource;
-    private HashMap<String,ClassLoader> id2loader;
+    private Hashtable        id2resource;
+    private Hashtable        id2loader;
 
     //
     // table of MIME content types (less attributes!) known
@@ -371,37 +401,37 @@ public class Resolver implements EntityResolver
      * @param publicId The managed public ID being mapped
      * @param uri The URI of the preferred copy of that entity
      */
-    public void registerCatalogEntry (String publicId, String uri)
+    public void registerCatalogEntry (
+    String        publicId,
+    String        uri
+    )
     {
-        if (id2uri == null) {
-            id2uri = new HashMap<String,String>(17);
-        }
-        id2uri.put (publicId, uri);
+    if (id2uri == null)
+        id2uri = new Hashtable (17);
+    id2uri.put (publicId, uri);
     }
 
 
     // return the resource as a stream
     private InputStream mapResource (String publicId)
     {
-        // System.out.println ("++ PUBLIC: " + publicId);
-        if (publicId == null || id2resource == null)
-            return null;
+    // System.out.println ("++ PUBLIC: " + publicId);
+    if (publicId == null || id2resource == null)
+        return null;
+
+    String        resourceName = (String) id2resource.get (publicId);
+    ClassLoader    loader = null;
+
+    if (resourceName == null)
+        return null;
+    // System.out.println ("++ Resource: " + resourceName);
     
-        String resourceName = id2resource.get (publicId);
-        ClassLoader loader = null;
-    
-        if (resourceName == null)
-            return null;
-        // System.out.println ("++ Resource: " + resourceName);
-        
-        if (id2loader != null) {
-            loader = id2loader.get (publicId);
-        }
-        // System.out.println ("++ Loader: " + loader);
-        if (loader == null) {
-            return ClassLoader.getSystemResourceAsStream (resourceName);
-        }
-        return loader.getResourceAsStream (resourceName);
+    if (id2loader != null)
+        loader = (ClassLoader) id2loader.get (publicId);
+    // System.out.println ("++ Loader: " + loader);
+    if (loader == null)
+        return ClassLoader.getSystemResourceAsStream (resourceName);
+    return loader.getResourceAsStream (resourceName);
     }
 
     /**
@@ -420,18 +450,20 @@ public class Resolver implements EntityResolver
      * @param loader The class loader holding the resource, or null if
      *    it is a system resource.
      */
-    public void registerCatalogEntry (String publicId, String resourceName, ClassLoader loader)
+    public void registerCatalogEntry (
+    String        publicId,
+    String        resourceName,
+    ClassLoader    loader
+    )
     {
-        if (id2resource == null) {
-            id2resource = new HashMap<String,String>();
-        }
-        id2resource.put (publicId, resourceName);
-    
-        if (loader != null) {
-            if (id2loader == null) {
-                id2loader = new HashMap<String,ClassLoader>();
-            }
-            id2loader.put (publicId, loader);
-        }
+    if (id2resource == null)
+        id2resource = new Hashtable (17);
+    id2resource.put (publicId, resourceName);
+
+    if (loader != null) {
+        if (id2loader == null)
+        id2loader = new Hashtable (17);
+        id2loader.put (publicId, loader);
+    }
     }
 }

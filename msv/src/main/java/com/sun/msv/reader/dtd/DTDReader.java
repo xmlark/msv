@@ -1,12 +1,37 @@
 /*
- * @(#)$Id$
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * Copyright (c) 2001-2013 Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * - Redistributions  of  source code  must  retain  the above  copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * - Redistribution  in binary  form must  reproduct the  above copyright
+ *   notice, this list of conditions  and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * Neither  the  name   of  Sun  Microsystems,  Inc.  or   the  names  of
+ * contributors may be  used to endorse or promote  products derived from
+ * this software without specific prior written permission.
  * 
- * This software is the proprietary information of Sun Microsystems, Inc.  
- * Use is subject to license terms.
- * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS  OR   IMPLIED  CONDITIONS,  REPRESENTATIONS   AND  WARRANTIES,
+ * INCLUDING  ANY  IMPLIED WARRANTY  OF  MERCHANTABILITY,  FITNESS FOR  A
+ * PARTICULAR PURPOSE  OR NON-INFRINGEMENT, ARE HEREBY  EXCLUDED. SUN AND
+ * ITS  LICENSORS SHALL  NOT BE  LIABLE  FOR ANY  DAMAGES OR  LIABILITIES
+ * SUFFERED BY LICENSEE  AS A RESULT OF OR  RELATING TO USE, MODIFICATION
+ * OR DISTRIBUTION OF  THE SOFTWARE OR ITS DERIVATIVES.  IN NO EVENT WILL
+ * SUN OR ITS  LICENSORS BE LIABLE FOR ANY LOST  REVENUE, PROFIT OR DATA,
+ * OR  FOR  DIRECT,   INDIRECT,  SPECIAL,  CONSEQUENTIAL,  INCIDENTAL  OR
+ * PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
+ * LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  */
+
 package com.sun.msv.reader.dtd;
 
 import java.util.Iterator;
@@ -121,12 +146,12 @@ public class DTDReader implements DTDEventListener {
      * map from prefix to set of possible namespace URI.
      * default namespace (without prefix) is stored by using "" as a key.
      */
-    protected final Map<String, Set<String>> namespaces = createInitialNamespaceMap();
+    protected final Map namespaces = createInitialNamespaceMap();
     
-    protected final static Map<String, Set<String>> createInitialNamespaceMap() {
-        Map<String, Set<String>> m = new java.util.HashMap<String, Set<String>>();
+    protected final static Map createInitialNamespaceMap() {
+        Map m = new java.util.HashMap();
         // prefix xml is implicitly declared.
-        Set<String> s = new java.util.HashSet<String>();
+        Set s = new java.util.HashSet();
         s.add("http://www.w3.org/XML/1998/namespace");
         m.put("xml",s);
         return m;
@@ -145,7 +170,7 @@ public class DTDReader implements DTDEventListener {
             // if this is an attribute and unprefixed, it is local to the element.
             return new SimpleNameClass(s[0],s[1]);
         
-        Set<String> vec = namespaces.get(s[0]/*uri*/);
+        Set vec = (Set)namespaces.get(s[0]/*uri*/);
         if(vec==null) {
             if(s[0].equals(""))
                 // this DTD does not attempt to use namespace.
@@ -213,9 +238,9 @@ public class DTDReader implements DTDEventListener {
     }
     
     /** map from element name to its content model. */
-    protected final Map<String,Object> elementDecls = new java.util.HashMap<String,Object>();
+    protected final Map elementDecls = new java.util.HashMap();
     /** map from element name to (map from attribute name to AttModel). */
-    protected final Map<String,Map<String,Object>> attributeDecls = new java.util.HashMap<String,Map<String,Object>>();
+    protected final Map attributeDecls = new java.util.HashMap();
     
     private static class AttModel {
         Expression    value;
@@ -381,12 +406,11 @@ public class DTDReader implements DTDEventListener {
             throw new Error();
     }
 
-    private Set<String> getPossibleNamespaces( String prefix ) {
-        Set<String> s = namespaces.get(prefix);
-        if(s == null) {
-            s = new java.util.HashSet<String>();
-            namespaces.put(prefix,s);
-        }
+    private Set getPossibleNamespaces( String prefix ) {
+        Set s = (Set)namespaces.get(prefix);
+        if(s!=null)        return s;
+        s = new java.util.HashSet();
+        namespaces.put(prefix,s);
         return s;
     }
     
@@ -414,7 +438,7 @@ public class DTDReader implements DTDEventListener {
                 // we don't have a default value, so no way to determine URI.
                 defaultValue = ABANDON_URI_SNIFFING;
             
-            Set<String> s;
+            Set s;
             if( attributeName.equals("xmlns") )
                 s = getPossibleNamespaces("");
             else
@@ -427,10 +451,10 @@ public class DTDReader implements DTDEventListener {
             return;
         }
         
-        Map<String,Object> attList = attributeDecls.get(elementName);
+        Map attList = (Map)attributeDecls.get(elementName);
         if( attList==null ) {
             // the first attribute for this element.
-            attList = new java.util.HashMap<String,Object>();
+            attList = new java.util.HashMap();
             attributeDecls.put(elementName,attList);
         }
         
@@ -484,20 +508,21 @@ public class DTDReader implements DTDEventListener {
      *        ReferenceExp that corresponds to the created element declaration.
      */
     protected ReferenceExp createElementDeclaration( String elementName ) {
-        final Map<String,Object> attList = attributeDecls.get(elementName);
+        final Map attList = (Map)attributeDecls.get(elementName);
+        
         
         Expression contentModel = Expression.epsilon;
         
         if(attList!=null) {
             // create AttributeExps and append it to tag.
-            Iterator<String> jtr = attList.keySet().iterator();
+            Iterator jtr = attList.keySet().iterator();
             while( jtr.hasNext() ) {
                 String attName = (String)jtr.next();
                 AttModel model = (AttModel)attList.get(attName);
                         
                 // wrap it by AttributeExp.
                 Expression exp = grammar.pool.createAttribute(
-                    getNameClass(attName,true), model.value, null);
+                    getNameClass(attName,true), model.value );
         
                 // apply attribute use.
                 // unless USE_REQUIRED, the attribute is optional.
@@ -532,7 +557,7 @@ public class DTDReader implements DTDEventListener {
         Expression allExp = Expression.nullSet;
         
         // create declarations
-        Iterator<String> itr = elementDecls.keySet().iterator();
+        Iterator itr = elementDecls.keySet().iterator();
         while( itr.hasNext() ) {
             Expression exp = createElementDeclaration( (String)itr.next() );
             allExp = grammar.pool.createChoice( allExp, exp );
@@ -577,6 +602,10 @@ public class DTDReader implements DTDEventListener {
         controller.warning(e);
     }
     
+    
+    
+
+    
     /** this map remembers where ReferenceExps are defined,
      * and where user defined types are defined.
      * 
@@ -586,7 +615,7 @@ public class DTDReader implements DTDEventListener {
      * This behavior is essential to correctly implement
      * TREX constraint that no two &lt;define&gt; is allowed in the same file.
      */
-    private final Map<Object,Locator> declaredLocations = new java.util.HashMap<Object,Locator>();
+    private final Map declaredLocations = new java.util.HashMap();
     
     public void setDeclaredLocationOf( Object o ) {
         declaredLocations.put(o, new LocatorImpl(locator) );
@@ -594,6 +623,12 @@ public class DTDReader implements DTDEventListener {
     public Locator getDeclaredLocationOf( Object o ) {
         return (Locator)declaredLocations.get(o);
     }
+    
+    
+    
+    
+    
+    
     
 // validation context provider methods
 //----------------------------------------

@@ -1,14 +1,46 @@
 /*
- * @(#)XmlChars.java    1.1 00/08/05
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 1998 Sun Microsystems, Inc. All Rights Reserved.
+ * Copyright (c) 1998-2013 Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * - Redistributions  of  source code  must  retain  the above  copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * - Redistribution  in binary  form must  reproduct the  above copyright
+ *   notice, this list of conditions  and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * Neither  the  name   of  Sun  Microsystems,  Inc.  or   the  names  of
+ * contributors may be  used to endorse or promote  products derived from
+ * this software without specific prior written permission.
+ * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS  OR   IMPLIED  CONDITIONS,  REPRESENTATIONS   AND  WARRANTIES,
+ * INCLUDING  ANY  IMPLIED WARRANTY  OF  MERCHANTABILITY,  FITNESS FOR  A
+ * PARTICULAR PURPOSE  OR NON-INFRINGEMENT, ARE HEREBY  EXCLUDED. SUN AND
+ * ITS  LICENSORS SHALL  NOT BE  LIABLE  FOR ANY  DAMAGES OR  LIABILITIES
+ * SUFFERED BY LICENSEE  AS A RESULT OF OR  RELATING TO USE, MODIFICATION
+ * OR DISTRIBUTION OF  THE SOFTWARE OR ITS DERIVATIVES.  IN NO EVENT WILL
+ * SUN OR ITS  LICENSORS BE LIABLE FOR ANY LOST  REVENUE, PROFIT OR DATA,
+ * OR  FOR  DIRECT,   INDIRECT,  SPECIAL,  CONSEQUENTIAL,  INCIDENTAL  OR
+ * PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
+ * LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  */
-
 
 package com.sun.msv.scanner.dtd;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Locale;
+import java.util.Set;
+import java.util.Vector;
 
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -34,7 +66,7 @@ import org.xml.sax.SAXParseException;
  * @author David Brownell
  * @author Janet Koenig
  * @author Kohsuke KAWAGUCHI
- * @version $Id$
+ * @version $Id: DTDParser.java 1776 2013-01-29 18:34:35Z snajper $
  */
 public class DTDParser {
     public final static String TYPE_CDATA = "CDATA";
@@ -63,14 +95,14 @@ public class DTDParser {
 
     // DTD state, used during parsing
 //    private SimpleHashtable    elements = new SimpleHashtable (47);
-    protected final Set<String> declaredElements = new java.util.HashSet<String>();
+    protected final Set declaredElements = new java.util.HashSet();
     private SimpleHashtable    params = new SimpleHashtable (7);
 
     // exposed to package-private subclass
-    Hashtable<String,Object> notations = new Hashtable<String,Object>(7);
-    SimpleHashtable entities = new SimpleHashtable (17);
+    Hashtable            notations = new Hashtable (7);
+    SimpleHashtable        entities = new SimpleHashtable (17);
 
-    private SimpleHashtable ids = new SimpleHashtable ();
+    private SimpleHashtable     ids = new SimpleHashtable ();
 
     // listeners for DTD parsing events
     private DTDEventListener    dtdHandler;
@@ -80,8 +112,8 @@ public class DTDParser {
 
     // string constants -- use these copies so "==" works
     // package private
-    static final String strANY = "ANY";
-    static final String strEMPTY = "EMPTY";
+    static final String        strANY = "ANY";
+    static final String        strEMPTY = "EMPTY";
     
     /**
      * Used by applications to request locale for diagnostics.
@@ -338,7 +370,9 @@ public class DTDParser {
         // after the document element is parsed, since XML allows forward
         // references, and only now can we know if they're all resolved.
 
-        for (Enumeration<Object> e = ids.keys (); e.hasMoreElements (); ) {
+        for (Enumeration e = ids.keys ();
+                e.hasMoreElements ();
+                ) {
             String id = (String)e.nextElement ();
             Boolean value = (Boolean)ids.get(id);
             if (Boolean.FALSE == value)
@@ -1261,7 +1295,7 @@ public class DTDParser {
         return;
     }
 
-        ArrayList<String> l = new ArrayList<String>();
+        ArrayList l = new ArrayList();
 //    l.add(new StringModel(StringModelType.PCDATA));
     
 
@@ -1344,7 +1378,7 @@ public class DTDParser {
 ///        Attribute    a = new Attribute (name);
         
         String typeName;
-        Vector<String> values = null;    // notation/enumeration values
+        Vector values = null;    // notation/enumeration values
         
         // Note:  use the type constants from Attribute
         // so that "==" may be used (faster)
@@ -1388,15 +1422,14 @@ public class DTDParser {
             nextChar ('(', "F-029", null);
             maybeWhitespace ();
 
-            values = new Vector<String>();
+            values = new Vector();
             do {
                 String name;
                 if ((name = maybeGetName ()) == null)
                 fatal ("P-068");
                 // permit deferred declarations
-                if (notations.get (name) == null) {
-                    notations.put (name, name);
-                }
+                if (notations.get (name) == null)
+                notations.put (name, name);
                 values.addElement (name);
                 maybeWhitespace ();
                 if (peek ("|"))
@@ -1414,7 +1447,7 @@ public class DTDParser {
             maybeWhitespace ();
 
 ///            Vector v = new Vector ();
-            values = new Vector<String>();
+            values = new Vector();
             do {
                 String name = getNmtoken ();
 ///                v.addElement (name);

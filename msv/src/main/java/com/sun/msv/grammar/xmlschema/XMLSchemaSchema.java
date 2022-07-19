@@ -1,12 +1,37 @@
 /*
- * @(#)$Id$
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * Copyright (c) 2001-2013 Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * - Redistributions  of  source code  must  retain  the above  copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * - Redistribution  in binary  form must  reproduct the  above copyright
+ *   notice, this list of conditions  and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * Neither  the  name   of  Sun  Microsystems,  Inc.  or   the  names  of
+ * contributors may be  used to endorse or promote  products derived from
+ * this software without specific prior written permission.
  * 
- * This software is the proprietary information of Sun Microsystems, Inc.  
- * Use is subject to license terms.
- * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS  OR   IMPLIED  CONDITIONS,  REPRESENTATIONS   AND  WARRANTIES,
+ * INCLUDING  ANY  IMPLIED WARRANTY  OF  MERCHANTABILITY,  FITNESS FOR  A
+ * PARTICULAR PURPOSE  OR NON-INFRINGEMENT, ARE HEREBY  EXCLUDED. SUN AND
+ * ITS  LICENSORS SHALL  NOT BE  LIABLE  FOR ANY  DAMAGES OR  LIABILITIES
+ * SUFFERED BY LICENSEE  AS A RESULT OF OR  RELATING TO USE, MODIFICATION
+ * OR DISTRIBUTION OF  THE SOFTWARE OR ITS DERIVATIVES.  IN NO EVENT WILL
+ * SUN OR ITS  LICENSORS BE LIABLE FOR ANY LOST  REVENUE, PROFIT OR DATA,
+ * OR  FOR  DIRECT,   INDIRECT,  SPECIAL,  CONSEQUENTIAL,  INCIDENTAL  OR
+ * PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
+ * LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  */
+
 package com.sun.msv.grammar.xmlschema;
 
 import java.util.Map;
@@ -45,7 +70,7 @@ public class XMLSchemaSchema implements java.io.Serializable {
     /** choice of all global element declarations. */
     public Expression topLevel;
     
-    @SuppressWarnings("serial")
+    
     final public class SimpleTypeContainer extends ReferenceContainer {
         public SimpleTypeExp getOrCreate( String name ) {
             return (SimpleTypeExp)super._getOrCreate(name); }
@@ -59,7 +84,7 @@ public class XMLSchemaSchema implements java.io.Serializable {
     /** map from simple type name to SimpleTypeExp object */
     public final SimpleTypeContainer simpleTypes = new SimpleTypeContainer();
     
-    @SuppressWarnings("serial")
+    
     final public class ComplexTypeContainer extends ReferenceContainer {
         public ComplexTypeExp getOrCreate( String name ) {
             return (ComplexTypeExp)super._getOrCreate(name); }
@@ -73,7 +98,7 @@ public class XMLSchemaSchema implements java.io.Serializable {
     /** map from simple type name to SimpleTypeExp object */
     public final ComplexTypeContainer complexTypes = new ComplexTypeContainer();
 
-    @SuppressWarnings("serial")
+    
     final public class AttributeGroupContainer extends ReferenceContainer {
         public AttributeGroupExp getOrCreate( String name ) {
             return (AttributeGroupExp)super._getOrCreate(name); }
@@ -87,7 +112,7 @@ public class XMLSchemaSchema implements java.io.Serializable {
     /** map from attribute group name to AttributeGroupExp object */
     public final AttributeGroupContainer attributeGroups = new AttributeGroupContainer();
     
-    @SuppressWarnings("serial")
+    
     final public class AttributeDeclContainer extends ReferenceContainer {
         public AttributeDeclExp getOrCreate( String name ) {
             return (AttributeDeclExp)super._getOrCreate(name); }
@@ -101,7 +126,7 @@ public class XMLSchemaSchema implements java.io.Serializable {
     /** map from attribute declaration name to AttributeDeclExp object */
     public final AttributeDeclContainer attributeDecls = new AttributeDeclContainer();
     
-    @SuppressWarnings("serial")
+    
     final public class ElementDeclContainer extends ReferenceContainer {
         public ElementDeclExp getOrCreate( String name ) {
             return (ElementDeclExp)super._getOrCreate(name); }
@@ -115,7 +140,7 @@ public class XMLSchemaSchema implements java.io.Serializable {
     /** map from attribute declaration name to AttributeDeclExp object */
     public final ElementDeclContainer elementDecls = new ElementDeclContainer();
     
-    @SuppressWarnings("serial")
+    
     final public class GroupDeclContainer extends ReferenceContainer {
         public GroupDeclExp getOrCreate( String name ) {
             return (GroupDeclExp)super._getOrCreate(name); }
@@ -129,11 +154,11 @@ public class XMLSchemaSchema implements java.io.Serializable {
     /** map from attribute declaration name to AttributeDeclExp object */
     public final GroupDeclContainer groupDecls = new GroupDeclContainer();
     
-    @SuppressWarnings("serial")
+    
     final public class IdentityConstraintContainer implements java.io.Serializable {
-        private final Map<String,IdentityConstraint> storage = new java.util.HashMap<String,IdentityConstraint>();
+        private final Map storage = new java.util.HashMap();
         public IdentityConstraint get( String name ) {
-            return storage.get(name);
+            return (IdentityConstraint)storage.get(name);
         }
         public void add( String name, IdentityConstraint idc ) {
             storage.put(name,idc);

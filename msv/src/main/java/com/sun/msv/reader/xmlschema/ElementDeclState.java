@@ -1,12 +1,37 @@
 /*
- * @(#)$Id$
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
+ * Copyright (c) 2001-2013 Oracle and/or its affiliates. All rights reserved.
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * - Redistributions  of  source code  must  retain  the above  copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * - Redistribution  in binary  form must  reproduct the  above copyright
+ *   notice, this list of conditions  and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * Neither  the  name   of  Sun  Microsystems,  Inc.  or   the  names  of
+ * contributors may be  used to endorse or promote  products derived from
+ * this software without specific prior written permission.
  * 
- * This software is the proprietary information of Sun Microsystems, Inc.  
- * Use is subject to license terms.
- * 
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS  OR   IMPLIED  CONDITIONS,  REPRESENTATIONS   AND  WARRANTIES,
+ * INCLUDING  ANY  IMPLIED WARRANTY  OF  MERCHANTABILITY,  FITNESS FOR  A
+ * PARTICULAR PURPOSE  OR NON-INFRINGEMENT, ARE HEREBY  EXCLUDED. SUN AND
+ * ITS  LICENSORS SHALL  NOT BE  LIABLE  FOR ANY  DAMAGES OR  LIABILITIES
+ * SUFFERED BY LICENSEE  AS A RESULT OF OR  RELATING TO USE, MODIFICATION
+ * OR DISTRIBUTION OF  THE SOFTWARE OR ITS DERIVATIVES.  IN NO EVENT WILL
+ * SUN OR ITS  LICENSORS BE LIABLE FOR ANY LOST  REVENUE, PROFIT OR DATA,
+ * OR  FOR  DIRECT,   INDIRECT,  SPECIAL,  CONSEQUENTIAL,  INCIDENTAL  OR
+ * PUNITIVE  DAMAGES, HOWEVER  CAUSED  AND REGARDLESS  OF  THE THEORY  OF
+ * LIABILITY, ARISING  OUT OF  THE USE OF  OR INABILITY TO  USE SOFTWARE,
+ * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
  */
+
 package com.sun.msv.reader.xmlschema;
 
 import java.util.Vector;
@@ -156,41 +181,35 @@ public class ElementDeclState extends ExpressionWithChildState {
             targetNamespace = ((XMLSchemaReader)reader).resolveNamespaceOfElementDecl(
                 startTag.getAttribute("form") );
         
-        // TODO: better way to handle the "fixed" attribute.
-        String fixed = startTag.getAttribute("fixed");
-        // 05-Oct-2010, tatu: Need to support "default" value as well (does it need normalization?)
-        String defaultValue = startTag.getAttribute("default");
         
-        if( fixed!=null ) {
-            // Can not have both 'fixed' and 'default':
-            if (defaultValue != null) {
-                reader.reportError(new Locator[]{ this.location },
-                        XMLSchemaReader.ERR_DUPLICATE_ELEMENT_DEFINITION, null);
-            }
+        // TODO: better way to handle the "fixed" attribtue.
+        String fixed = startTag.getAttribute("fixed");
+        if( fixed!=null )
             // TODO: is this 'fixed' value should be added through enumeration facet?
             // TODO: check if content model is a simpleType.
             contentType = reader.pool.createValue(
                 com.sun.msv.datatype.xsd.TokenType.theInstance,
                 new StringPair("","token"), fixed ); // emulate RELAX NG built-in token type
-        }
+        
         
         ElementDeclExp decl;
         if( isGlobal() ) {
             decl = reader.currentSchema.elementDecls.getOrCreate(name);
-            if( decl.getElementExp()!=null ) {
-                reader.reportError(new Locator[]{ this.location, reader.getDeclaredLocationOf(decl) },
+            if( decl.getElementExp()!=null )
+                reader.reportError( 
+                    new Locator[]{this.location,reader.getDeclaredLocationOf(decl)},
                     XMLSchemaReader.ERR_DUPLICATE_ELEMENT_DEFINITION,
                     new Object[]{name} );
-            }            
+            
         } else {
             // create a local object.
             decl = new ElementDeclExp(reader.currentSchema,null);
         }
         
         reader.setDeclaredLocationOf(decl);
-        
-        ElementDeclExp.XSElementExp exp = new ElementDeclExp.XSElementExp(decl, 
-            new SimpleNameClass(targetNamespace,name), contentType, defaultValue);
+
+        ElementDeclExp.XSElementExp exp = decl.new XSElementExp(
+            new SimpleNameClass(targetNamespace,name), contentType );
         
         // set the body.
         decl.setElementExp(exp);
@@ -279,7 +298,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 
     
     /** identity constraints found in this element. */
-    protected final Vector<IdentityConstraint> idcs = new Vector<IdentityConstraint>();
+    protected final Vector idcs = new Vector();
         
     /** this method is called when an identity constraint declaration is found.
      */

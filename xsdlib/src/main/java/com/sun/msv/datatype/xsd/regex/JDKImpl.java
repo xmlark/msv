@@ -37,18 +37,18 @@ import java.lang.reflect.Method;
 import java.text.ParseException;
 
 /**
- * {@link RegExpFactory} by Xerces.
+ * {@link RegExpFactory} by a copy of Xerces in Sun's JDK 5.0.
  *
  * @author Kohsuke Kawaguchi
  */
-final class XercesImpl extends RegExpFactory {
-    
+final class JDKImpl extends RegExpFactory {
+
     private final Class regexp;
     private final Constructor ctor;
     private final Method matches;
 
-    XercesImpl() throws Exception {
-        regexp = getClass().getClassLoader().loadClass("org.apache.xerces.impl.xpath.regex.RegularExpression");
+    JDKImpl() throws Exception {
+        regexp = getClass().getClassLoader().loadClass("com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression");
         ctor = regexp.getConstructor(new Class[]{String.class,String.class});
         matches = regexp.getMethod("matches",new Class[]{String.class});
     }
@@ -78,4 +78,5 @@ final class XercesImpl extends RegExpFactory {
             }
         };
     }
+
 }

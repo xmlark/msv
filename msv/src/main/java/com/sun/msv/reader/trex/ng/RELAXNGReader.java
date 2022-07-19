@@ -220,7 +220,7 @@ public class RELAXNGReader extends TREXBaseReader {
          * This named pattern is not being redefined.
          * So it will be a part of the grammar.
          */
-        public static RedefinitionStatus notBeingRedefined = new RedefinitionStatus();
+        public static final RedefinitionStatus notBeingRedefined = new RedefinitionStatus();
         /**
          * This named pattern is being redefined. So even if we'll see some
          * &lt;define> with this name, it will not be a part of the grammar.
@@ -228,11 +228,11 @@ public class RELAXNGReader extends TREXBaseReader {
          * We need to issue an error if the pattern is redefined but there is no original
          * in the included grammar.
          */
-        public static RedefinitionStatus originalNotFoundYet = new RedefinitionStatus();
+        public static final RedefinitionStatus originalNotFoundYet = new RedefinitionStatus();
         /**
          * The same as {@link #originalNotFoundYet}, but we saw the original definition.
          */
-        public static RedefinitionStatus originalFound = new RedefinitionStatus();
+        public static final RedefinitionStatus originalFound = new RedefinitionStatus();
         
         /**
          * Current redefinition status.

@@ -73,12 +73,10 @@ public class ExpressionPrinter implements ExpressionVisitor {
      */
     public final static int CONTENTMODEL = 0x002;
 
-    
-    
     // singleton access
-    public static ExpressionPrinter fragmentInstance = new ExpressionPrinter(FRAGMENT);
-    public static ExpressionPrinter contentModelInstance = new ExpressionPrinter(CONTENTMODEL);
-    public static ExpressionPrinter smallestInstance = new ExpressionPrinter(CONTENTMODEL|FRAGMENT);
+    public static final ExpressionPrinter fragmentInstance = new ExpressionPrinter(FRAGMENT);
+    public static final ExpressionPrinter contentModelInstance = new ExpressionPrinter(CONTENTMODEL);
+    public static final ExpressionPrinter smallestInstance = new ExpressionPrinter(CONTENTMODEL|FRAGMENT);
     
     public static String printFragment(Expression exp) {
         return (String)exp.visit(fragmentInstance);

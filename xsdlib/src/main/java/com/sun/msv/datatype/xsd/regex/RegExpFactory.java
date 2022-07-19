@@ -43,7 +43,7 @@ public abstract class RegExpFactory {
         String[] classList = new String[] {
             "com.sun.msv.datatype.regexp.InternalImpl",
             "com.sun.msv.datatype.xsd.regex.XercesImpl",
-            "com.sun.msv.datatype.xsd.regex.JDK50Impl"
+            "com.sun.msv.datatype.xsd.regex.JDKImpl"
         };
 
         for( int i=0; i<classList.length; i++ ) {

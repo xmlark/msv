@@ -301,7 +301,7 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
 
             // find the same facet twice.
             // pattern is allowed more than once.
-            if (!appliedFacets.contains(facetName) || appliedFacets.equals(XSDatatypeImpl.FACET_PATTERN)) {
+            if (!appliedFacets.contains(facetName)) {
 
                 appliedFacets.add(facetName);
                 effectiveFacets.add(x);

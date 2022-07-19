@@ -71,6 +71,7 @@ public final class ValueExp extends Expression implements DataOrValueExp {
     }
     
     public boolean equals( Object o ) {
+        if (o == null) return false;
         // Note that equals method of this class *can* be sloppy, 
         // since this class does not have a pattern as its child.
         

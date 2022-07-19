@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999-2002 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999-2013 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -513,10 +513,12 @@ final class RangeToken extends Token implements java.io.Serializable {
 
     void dumpRanges() {
         System.err.print("RANGE: ");
-        if (this.ranges == null)
+        if (this.ranges != null) {
+            for (int i = 0;  i < this.ranges.length;  i += 2) {
+                System.err.print("["+this.ranges[i]+","+this.ranges[i+1]+"] ");
+            }
+        } else {
             System.err.println(" NULL");
-        for (int i = 0;  i < this.ranges.length;  i += 2) {
-            System.err.print("["+this.ranges[i]+","+this.ranges[i+1]+"] ");
         }
         System.err.println("");
     }

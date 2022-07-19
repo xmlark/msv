@@ -39,7 +39,7 @@ import java.util.Locale;
 
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.xml.resolver.tools.CatalogResolver;
+import com.sun.org.apache.xml.internal.resolver.tools.CatalogResolver;
 import org.iso_relax.dispatcher.Dispatcher;
 import org.iso_relax.dispatcher.SchemaProvider;
 import org.iso_relax.dispatcher.impl.DispatcherImpl;

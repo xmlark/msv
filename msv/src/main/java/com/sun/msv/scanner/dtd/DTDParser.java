@@ -63,7 +63,6 @@ import org.xml.sax.SAXParseException;
  * @author David Brownell
  * @author Janet Koenig
  * @author Kohsuke KAWAGUCHI
- * @version $Id: DTDParser.java 1793 2013-02-18 12:52:53Z snajper $
  */
 public class DTDParser {
     public final static String TYPE_CDATA = "CDATA";
@@ -92,14 +91,14 @@ public class DTDParser {
 
     // DTD state, used during parsing
 //    private SimpleHashtable    elements = new SimpleHashtable (47);
-    protected final Set declaredElements = new java.util.HashSet();
+    protected final Set<String> declaredElements = new java.util.HashSet<String>();
     private SimpleHashtable    params = new SimpleHashtable (7);
 
     // exposed to package-private subclass
-    Hashtable            notations = new Hashtable (7);
-    SimpleHashtable        entities = new SimpleHashtable (17);
+    Hashtable<String,Object> notations = new Hashtable<String,Object>(7);
+    SimpleHashtable entities = new SimpleHashtable (17);
 
-    private SimpleHashtable     ids = new SimpleHashtable ();
+    private SimpleHashtable ids = new SimpleHashtable ();
 
     // listeners for DTD parsing events
     private DTDEventListener    dtdHandler;
@@ -109,8 +108,8 @@ public class DTDParser {
 
     // string constants -- use these copies so "==" works
     // package private
-    static final String        strANY = "ANY";
-    static final String        strEMPTY = "EMPTY";
+    static final String strANY = "ANY";
+    static final String strEMPTY = "EMPTY";
     
     /**
      * Used by applications to request locale for diagnostics.
@@ -367,9 +366,7 @@ public class DTDParser {
         // after the document element is parsed, since XML allows forward
         // references, and only now can we know if they're all resolved.
 
-        for (Enumeration e = ids.keys ();
-                e.hasMoreElements ();
-                ) {
+        for (Enumeration<Object> e = ids.keys (); e.hasMoreElements (); ) {
             String id = (String)e.nextElement ();
             Boolean value = (Boolean)ids.get(id);
             if (Boolean.FALSE == value)
@@ -1292,7 +1289,7 @@ public class DTDParser {
         return;
     }
 
-        ArrayList l = new ArrayList();
+        ArrayList<String> l = new ArrayList<String>();
 //    l.add(new StringModel(StringModelType.PCDATA));
     
 
@@ -1375,7 +1372,7 @@ public class DTDParser {
 ///        Attribute    a = new Attribute (name);
         
         String typeName;
-        Vector values = null;    // notation/enumeration values
+        Vector<String> values = null;    // notation/enumeration values
         
         // Note:  use the type constants from Attribute
         // so that "==" may be used (faster)
@@ -1419,14 +1416,15 @@ public class DTDParser {
             nextChar ('(', "F-029", null);
             maybeWhitespace ();
 
-            values = new Vector();
+            values = new Vector<String>();
             do {
                 String name;
                 if ((name = maybeGetName ()) == null)
                 fatal ("P-068");
                 // permit deferred declarations
-                if (notations.get (name) == null)
-                notations.put (name, name);
+                if (notations.get (name) == null) {
+                    notations.put (name, name);
+                }
                 values.addElement (name);
                 maybeWhitespace ();
                 if (peek ("|"))
@@ -1444,7 +1442,7 @@ public class DTDParser {
             maybeWhitespace ();
 
 ///            Vector v = new Vector ();
-            values = new Vector();
+            values = new Vector<String>();
             do {
                 String name = getNmtoken ();
 ///                v.addElement (name);

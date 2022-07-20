@@ -55,6 +55,7 @@ import com.sun.msv.grammar.NotNameClass;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+@SuppressWarnings("serial")
 public class AnyOtherElementExp extends ElementExp implements ElementDecl {
     
     public NameClass getNameClass() { return nameClass; }
@@ -139,7 +140,7 @@ public class AnyOtherElementExp extends ElementExp implements ElementDecl {
             // in case of 'excludeNamespace',
             // all defined namespace is also considered as illegal.
             
-            Iterator itr = provider.iterateNamespace();
+            Iterator<?> itr = provider.iterateNamespace();
             while( itr.hasNext() )
             {
                 NamespaceNameClass nsnc = new NamespaceNameClass( (String)itr.next() );

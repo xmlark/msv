@@ -40,6 +40,8 @@ import com.sun.msv.grammar.SimpleNameClass;
  */
 public final class StringPair implements java.io.Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     public final String namespaceURI;
     public final String localName;
     
@@ -54,7 +56,8 @@ public final class StringPair implements java.io.Serializable
         namespaceURI=ns;
         localName=ln;
     }
-    
+
+    @Override
     public boolean equals( Object o )
     {
         if(!(o instanceof StringPair))    return false;
@@ -62,8 +65,10 @@ public final class StringPair implements java.io.Serializable
         return namespaceURI.equals(((StringPair)o).namespaceURI)
             && localName.equals(((StringPair)o).localName);
     }
+    @Override
     public int hashCode() { return namespaceURI.hashCode()^localName.hashCode(); }
     
+    @Override
     public String toString() {
         return "{"+namespaceURI+"}"+localName;
     }

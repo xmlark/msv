@@ -45,9 +45,9 @@ import com.sun.msv.util.StringPair;
 
 /**
  * Minimizes a name class.
- * 
+ *
  * Sometimes, a name class could become unnecessarily big. For example,
- * 
+ *
  * <PRE><XMP>
  * <choice>
  *   <anyName/>
@@ -55,22 +55,22 @@ import com.sun.msv.util.StringPair;
  *   <anyName/>
  * </choice>
  * </XMP></PRE>
- * 
+ *
  * This procedure converts those name classes to the equivalent small name class.
- * 
+ *
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class NameClassSimplifier {
-    
+
     public static NameClass simplify( NameClass nc ) {
-        final Set possibleNames = PossibleNamesCollector.calc(nc);
+        final Set<StringPair> possibleNames = PossibleNamesCollector.calc(nc);
         final String MAGIC = PossibleNamesCollector.MAGIC;
-        
-        Set uris = new java.util.HashSet();
-        
-        Iterator itr = possibleNames.iterator();
+
+        Set<String> uris = new java.util.HashSet<String>();
+
+        Iterator<StringPair> itr = possibleNames.iterator();
         while( itr.hasNext() ) {
-            StringPair name = (StringPair)itr.next();
+            StringPair name = itr.next();
             if( name.localName!=MAGIC ) {
                 // a simple name.
                 if( nc.accepts(name)==nc.accepts( name.namespaceURI, MAGIC ) ) {
@@ -85,28 +85,28 @@ public class NameClassSimplifier {
                     continue;
                 }
             }
-            
+
             // collect the remainig namespace URIs.
             if( name.namespaceURI!=MAGIC )
                 uris.add(name.namespaceURI);
         }
-        
+
         if( !nc.accepts(MAGIC,MAGIC) )
             possibleNames.remove( new StringPair(MAGIC,MAGIC) );
-        
+
         NameClass result = null;
-        Iterator jtr = uris.iterator();
+        Iterator<String> jtr = uris.iterator();
         while( jtr.hasNext() ) {
-            final String uri = (String)jtr.next();
-            
+            final String uri = jtr.next();
+
             NameClass local = null;
             itr = possibleNames.iterator();
             while( itr.hasNext() ) {
                 final StringPair name = (StringPair)itr.next();
-                
+
                 if(!name.namespaceURI.equals(uri))        continue;
                 if(name.localName==MAGIC)                continue;
-                
+
                 if(local==null)    local = new SimpleNameClass(name);
                 else            local = new ChoiceNameClass(local,new SimpleNameClass(name));
             }
@@ -116,21 +116,21 @@ public class NameClassSimplifier {
                 else
                     local = new DifferenceNameClass(new NamespaceNameClass(uri),local);
             }
-            
+
             if(local!=null) {
                 if(result==null)    result = local;
                 else                result = new ChoiceNameClass(result,local);
             }
         }
-        
+
         if( nc.accepts(MAGIC,MAGIC) ) {
             if(result==null)        result = NameClass.ALL;
             else                    result = new NotNameClass(result);
         }
-        
+
         if( result==null )
             result = AnyNameClass.NONE;
-        
+
         return result;
     }
 }

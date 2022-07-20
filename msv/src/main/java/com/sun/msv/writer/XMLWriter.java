@@ -45,6 +45,7 @@ import org.xml.sax.helpers.AttributeListImpl;
  * <p>
  * This class throws {@link SAXRuntimeException}, instead of SAXException.
  */
+@SuppressWarnings("deprecation")
 public class XMLWriter
 {
     protected DocumentHandler handler;

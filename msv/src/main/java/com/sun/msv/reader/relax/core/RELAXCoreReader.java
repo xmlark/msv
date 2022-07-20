@@ -77,6 +77,7 @@ import com.sun.msv.util.StartTagInfo;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+@SuppressWarnings("serial")
 public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
     
     /** loads RELAX module */
@@ -196,7 +197,7 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
     /**
      * User-defined datatypes (from type name to XSDatatypeExp object.
      */
-    private final Map userDefinedTypes = new java.util.HashMap();
+    private final Map<String,XSDatatypeExp> userDefinedTypes = new java.util.HashMap<String,XSDatatypeExp>();
     
     public final void addUserDefinedType( XSDatatypeExp exp ) {
         userDefinedTypes.put( exp.name, exp );
@@ -312,9 +313,9 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
         runBackPatchJob();
         
         // register user-defined types to the module
-        Iterator itr = userDefinedTypes.entrySet().iterator();
+        Iterator<Map.Entry<String,XSDatatypeExp>> itr = userDefinedTypes.entrySet().iterator();
         while( itr.hasNext() ) {
-            XSDatatypeExp e = (XSDatatypeExp)((Map.Entry)itr.next()).getValue();
+            XSDatatypeExp e = itr.next().getValue();
             module.datatypes.add(e.getCreatedType());
         }
         
@@ -390,7 +391,7 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
             
         
         {// make sure that there is no exported hedgeRule that references a label in the other namespace.
-            Iterator jtr = module.hedgeRules.iterator();
+            Iterator<ReferenceExp> jtr = module.hedgeRules.iterator();
             while(jtr.hasNext()) {
                 HedgeRules hr = (HedgeRules)jtr.next();
                 if(!hr.exported)    continue;
@@ -417,7 +418,7 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
 
     private Expression choiceOfExported( ReferenceContainer con )
     {
-        Iterator itr = con.iterator();
+        Iterator<ReferenceExp> itr = con.iterator();
         Expression r = Expression.nullSet;
         while( itr.hasNext() )
         {
@@ -436,7 +437,7 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
     private void detectDoubleAttributeConstraints( RELAXModule module ) {
         final DblAttrConstraintChecker checker = new DblAttrConstraintChecker();
         
-        Iterator itr = module.tags.iterator();
+        Iterator<?> itr = module.tags.iterator();
         while( itr.hasNext() )
             // errors will be reported within this method
             // no recovery is necessary.
@@ -445,7 +446,7 @@ public class RELAXCoreReader extends RELAXReader implements XSDatatypeResolver {
 
     
     private void detectCollision( ReferenceContainer col1, ReferenceContainer col2, String errMsg ) {
-        Iterator itr = col1.iterator();
+        Iterator<?> itr = col1.iterator();
         while( itr.hasNext() ) {
             ReferenceExp r1    = (ReferenceExp)itr.next();
             ReferenceExp r2    = col2._get( r1.name );

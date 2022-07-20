@@ -58,7 +58,7 @@ public class PossibleNamesCollector implements NameClassVisitor {
      * computes all possibile names for this name class, and returns
      * the set of {@link StringPair}.
      */
-    public static Set calc( NameClass nc ) {
+    public static Set<StringPair> calc( NameClass nc ) {
         PossibleNamesCollector col = new PossibleNamesCollector();
         nc.visit(col);
         return col.names;
@@ -69,7 +69,7 @@ public class PossibleNamesCollector implements NameClassVisitor {
     private static final StringPair pairForAny = new StringPair( MAGIC, MAGIC );
     
     /** this set will receive all possible names. */
-    private Set names = new java.util.HashSet();
+    private Set<StringPair> names = new java.util.HashSet<StringPair>();
     
     public Object onChoice( ChoiceNameClass nc ) {
         nc.nc1.visit(this);

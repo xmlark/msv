@@ -101,7 +101,7 @@ public class Util
     }
 
 
-    public static String which( Class clazz ) {
+    public static String which( Class<?> clazz ) {
         return which( clazz.getName(), clazz.getClassLoader() );
     }
 

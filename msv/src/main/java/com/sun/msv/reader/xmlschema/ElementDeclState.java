@@ -178,35 +178,43 @@ public class ElementDeclState extends ExpressionWithChildState {
             targetNamespace = ((XMLSchemaReader)reader).resolveNamespaceOfElementDecl(
                 startTag.getAttribute("form") );
         
-        
-        // TODO: better way to handle the "fixed" attribtue.
+        // TODO: better way to handle the "fixed" attribute.
+
         String fixed = startTag.getAttribute("fixed");
-        if( fixed!=null )
+        // 05-Oct-2010, tatu: Need to support "default" value as well (does it need normalization?)
+        String defaultValue = startTag.getAttribute("default");
+        
+        if( fixed!=null ) {
+            // Can not have both 'fixed' and 'default':
+            if (defaultValue != null) {
+                reader.reportError(new Locator[]{ this.location },
+                        XMLSchemaReader.ERR_DUPLICATE_ELEMENT_DEFINITION, null);
+            }
             // TODO: is this 'fixed' value should be added through enumeration facet?
             // TODO: check if content model is a simpleType.
             contentType = reader.pool.createValue(
                 com.sun.msv.datatype.xsd.TokenType.theInstance,
                 new StringPair("","token"), fixed ); // emulate RELAX NG built-in token type
-        
+        }
         
         ElementDeclExp decl;
         if( isGlobal() ) {
             decl = reader.currentSchema.elementDecls.getOrCreate(name);
-            if( decl.getElementExp()!=null )
-                reader.reportError( 
-                    new Locator[]{this.location,reader.getDeclaredLocationOf(decl)},
+            if( decl.getElementExp()!=null ) {
+                reader.reportError(new Locator[]{ this.location, reader.getDeclaredLocationOf(decl) },
+
                     XMLSchemaReader.ERR_DUPLICATE_ELEMENT_DEFINITION,
                     new Object[]{name} );
-            
+            }            
         } else {
             // create a local object.
             decl = new ElementDeclExp(reader.currentSchema,null);
         }
         
         reader.setDeclaredLocationOf(decl);
-
-        ElementDeclExp.XSElementExp exp = decl.new XSElementExp(
-            new SimpleNameClass(targetNamespace,name), contentType );
+        
+        ElementDeclExp.XSElementExp exp = new ElementDeclExp.XSElementExp(decl, 
+            new SimpleNameClass(targetNamespace,name), contentType, defaultValue);
         
         // set the body.
         decl.setElementExp(exp);
@@ -295,7 +303,7 @@ public class ElementDeclState extends ExpressionWithChildState {
 
     
     /** identity constraints found in this element. */
-    protected final Vector idcs = new Vector();
+    protected final Vector<IdentityConstraint> idcs = new Vector<IdentityConstraint>();
         
     /** this method is called when an identity constraint declaration is found.
      */
@@ -303,3 +311,4 @@ public class ElementDeclState extends ExpressionWithChildState {
         idcs.add(idc);
     }
 }
+

@@ -49,10 +49,10 @@ import com.sun.msv.util.DatatypeRef;
 class StringRecoveryToken extends StringToken {
     
     StringRecoveryToken( StringToken base ) {
-        this( base, new java.util.HashSet() );
+        this( base, new java.util.HashSet<Object>() );
     }
     
-    StringRecoveryToken( StringToken base, Set failedExps ) {
+    StringRecoveryToken( StringToken base, Set<Object> failedExps ) {
         super( base.resCalc, base.literal, base.context, null );
         this.failedExps = failedExps;
     }
@@ -61,7 +61,7 @@ class StringRecoveryToken extends StringToken {
      * TypedStringExps and ListExps that
      * rejected this token are collected into this set.
      */
-    final Set failedExps;
+    final Set<Object> failedExps;
     
     public boolean match( DataExp exp ) {
         if( super.match(exp) )

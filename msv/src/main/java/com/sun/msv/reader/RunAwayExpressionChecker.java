@@ -75,21 +75,21 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
     protected static final RuntimeException eureka = new RuntimeException();
         
     /** set of ElementExps which are already confirmed as being not a run-away exp. */
-    private final Set testedExps = new java.util.HashSet();
+    private final Set<Expression> testedExps = new java.util.HashSet<Expression>();
     
     /** Expressions which are used as the content model of current element. */
-    private Set contentModel = new java.util.HashSet();
+    private Set<Expression> contentModel = new java.util.HashSet<Expression>();
     
     /** 
      * visited Expressions.
      * this information is useful for the user to figure out where did they make a mistake.
      */
-    private Stack refStack = new Stack();
+    private Stack<Expression> refStack = new Stack<Expression>();
     
     /**
      * Queue of unchecked element exps.
      */
-    private Stack unprocessedElementExps = new Stack();
+    private Stack<Expression> unprocessedElementExps = new Stack<Expression>();
     
     private final GrammarReader reader;
     
@@ -168,7 +168,7 @@ public class RunAwayExpressionChecker implements ExpressionVisitorVoid
             int i = refStack.indexOf(exp);
             int sz = refStack.size();
             
-            Vector locs = new Vector();
+            Vector<Locator> locs = new Vector<Locator>();
             
             for( ; i<sz; i++ ) {
                 if( refStack.elementAt(i) instanceof ReferenceExp ) {

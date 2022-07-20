@@ -55,7 +55,7 @@ public class IncludeMergeState extends com.sun.msv.reader.trex.IncludeMergeState
     }
     
     /** set of ReferenceExps which are redefined by this inclusion. */
-    private final Set redefinedPatterns = new java.util.HashSet();
+    private final Set<Expression> redefinedPatterns = new java.util.HashSet<Expression>();
     
     // this class has to implement ExpressionOwner because
     // <define> state requires this interface.

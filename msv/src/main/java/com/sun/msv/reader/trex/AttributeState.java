@@ -72,7 +72,7 @@ public class AttributeState extends NameClassAndExpressionState
     }
 
     protected Expression annealExpression( Expression contentModel ) {
-        Expression e = reader.pool.createAttribute( nameClass, contentModel );
+        Expression e = reader.pool.createAttribute( nameClass, contentModel, null );
         if(e instanceof AttributeExp)
             reader.setDeclaredLocationOf(e);
         return e;

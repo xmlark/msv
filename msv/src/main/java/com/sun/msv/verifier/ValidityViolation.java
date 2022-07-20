@@ -39,6 +39,7 @@ import org.xml.sax.SAXParseException;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+@SuppressWarnings("serial")
 public class ValidityViolation extends SAXParseException {
     
     private ErrorInfo errorInfo;

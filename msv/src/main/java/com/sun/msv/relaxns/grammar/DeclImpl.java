@@ -41,6 +41,7 @@ import com.sun.msv.grammar.ReferenceExp;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+ @SuppressWarnings("serial")
 public class DeclImpl
     implements    org.iso_relax.dispatcher.ElementDecl,
                 org.iso_relax.dispatcher.AttributesDecl,

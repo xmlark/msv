@@ -55,7 +55,7 @@ public class UnionState extends TypeState implements XSTypeOwner {
         this.newTypeName = newTypeName;
     }
     
-    private final ArrayList memberTypes = new ArrayList();
+    private final ArrayList<XSDatatypeExp> memberTypes = new ArrayList<XSDatatypeExp>();
                                                   
     protected State createChildState( StartTagInfo tag ) {
         // accepts elements from the same namespace only.

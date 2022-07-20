@@ -60,11 +60,11 @@ import com.sun.msv.grammar.ValueExp;
  */
 public class ElementsOfConcernCollector implements ExpressionVisitor
 {
-    private Collection result;
+    private Collection<Expression> result;
     
     public ElementsOfConcernCollector() {}
     
-    public final void collect( Expression exp, Collection result )
+    public final void collect( Expression exp, Collection<Expression> result )
     {
         this.result = result;
         exp.visit(this);

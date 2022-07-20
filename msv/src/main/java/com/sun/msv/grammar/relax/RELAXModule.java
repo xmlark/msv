@@ -46,7 +46,8 @@ import com.sun.msv.grammar.ReferenceExp;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RELAXModule implements Grammar {
-    
+
+    @SuppressWarnings("serial")
     final public class ElementRulesContainer extends ReferenceContainer {
         public ElementRules getOrCreate( String name ) {
             return (ElementRules)super._getOrCreate(name);
@@ -61,6 +62,7 @@ public class RELAXModule implements Grammar {
     /** map from label name to ElementRules object */
     public final ElementRulesContainer elementRules = new ElementRulesContainer();
     
+    @SuppressWarnings("serial")
     final public class HedgeRulesContainer extends ReferenceContainer {
         public HedgeRules getOrCreate( String name ) {
             return (HedgeRules)super._getOrCreate(name);
@@ -75,6 +77,7 @@ public class RELAXModule implements Grammar {
     /** map from label name to HedgeRules object */
     public final HedgeRulesContainer hedgeRules = new HedgeRulesContainer();
 
+    @SuppressWarnings("serial")
     final public class TagContainer extends ReferenceContainer {
         public TagClause getOrCreate( String name ) {
             return (TagClause)super._getOrCreate(name);
@@ -89,6 +92,7 @@ public class RELAXModule implements Grammar {
     /** map from role name to TagClause object */
     public final TagContainer tags = new TagContainer();
 
+    @SuppressWarnings("serial")
     final public class AttPoolContainer extends ReferenceContainer {
         public AttPoolClause getOrCreate( String name ) {
             return (AttPoolClause)super._getOrCreate(name);
@@ -124,7 +128,7 @@ public class RELAXModule implements Grammar {
     
     /** Datatypes. */
     public class DatatypeContainer {
-        private final Map m = new java.util.HashMap();
+        private final Map<String,XSDatatype> m = new java.util.HashMap<String,XSDatatype>();
         
         public XSDatatype get( String name ) {
             return (XSDatatype)m.get(name);

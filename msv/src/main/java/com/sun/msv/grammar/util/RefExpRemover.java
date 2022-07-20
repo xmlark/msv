@@ -53,7 +53,7 @@ import com.sun.msv.grammar.ReferenceExp;
 public class RefExpRemover extends ExpressionCloner {
 
     /** set of visited ElementExps */
-    private final Set visitedElements = new java.util.HashSet();
+    private final Set<ElementExp> visitedElements = new java.util.HashSet<ElementExp>();
 
     private final boolean recursive;
 
@@ -96,7 +96,7 @@ public class RefExpRemover extends ExpressionCloner {
         if (content == Expression.nullSet)
             return Expression.nullSet; // this attribute is not allowed
         else
-            return pool.createAttribute(exp.nameClass, content);
+            return pool.createAttribute(exp.nameClass, content, exp.getDefaultValue());
     }
     public Expression onRef(ReferenceExp exp) {
         return exp.exp.visit(this);

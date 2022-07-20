@@ -74,9 +74,13 @@ public class ExpressionPool implements java.io.Serializable {
     public final Expression createAttribute( NameClass nameClass ) {
         return unify(new AttributeExp(nameClass,Expression.anyString));
     }
-    public final Expression createAttribute( NameClass nameClass, Expression content ) {
-        if(content==Expression.nullSet)        return content;
-        return unify(new AttributeExp(nameClass,content));
+    public final Expression createAttribute( NameClass nameClass, Expression content, String defaultValue) {
+        if(content==Expression.nullSet) {
+            return content;
+        }
+        AttributeExp exp = new AttributeExp(nameClass,content);
+        exp.setDefaultValue(defaultValue);
+        return unify(exp);
     }
     
     public final Expression createEpsilon() { return Expression.epsilon; }
@@ -329,11 +333,11 @@ public class ExpressionPool implements java.io.Serializable {
             this.parent = parent;
         }
 
-        public Expression getBinExp(Expression left, Expression right, Class type) {
+        public Expression getBinExp(Expression left, Expression right, Class<?> type) {
             int hash = (left.hashCode()+right.hashCode())^type.hashCode();
             return getBinExp( hash, left, right, type );
         }
-        private Expression getBinExp(int hash, Expression left, Expression right, Class type) {
+        private Expression getBinExp(int hash, Expression left, Expression right, Class<?> type) {
             if (parent != null) {
                 Expression e = parent.getBinExp(hash, left, right, type);
                 if (e != null)
@@ -356,7 +360,7 @@ public class ExpressionPool implements java.io.Serializable {
             }
         }
 
-        public Expression get(int hash, Expression child, Class type) {
+        public Expression get(int hash, Expression child, Class<?> type) {
             if (parent != null) {
                 Expression e = parent.get(hash, child, type);
                 if (e != null)

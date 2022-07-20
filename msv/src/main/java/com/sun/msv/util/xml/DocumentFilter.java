@@ -46,6 +46,7 @@ import org.xml.sax.SAXException;
  * @author
  *    <a href="mailto:kohsuke.kawaguchi@sun.com">Kohsuke KAWAGUCHI</a>
  */
+ @SuppressWarnings("deprecation")
 public class DocumentFilter implements DocumentHandler
 {
     public DocumentHandler next;

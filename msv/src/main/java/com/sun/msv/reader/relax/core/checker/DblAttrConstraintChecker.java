@@ -68,7 +68,7 @@ public class DblAttrConstraintChecker implements RELAXExpressionVisitorVoid
      * 
      * keys are names of visited AttributeExps, and its value is
      * Clause object in which AttributeExp is declared. */
-    private final Map atts = new java.util.HashMap();
+    private final Map<StringPair,ReferenceExp> atts = new java.util.HashMap<StringPair,ReferenceExp>();
     
     /** current clause. */
     private ReferenceExp current;
@@ -86,7 +86,8 @@ public class DblAttrConstraintChecker implements RELAXExpressionVisitorVoid
                 new Object[]{ e.name.localName } );
         }
     }
-    
+
+    @SuppressWarnings("serial")
     private static final class Eureka extends RuntimeException {
         final StringPair name;
         Eureka( StringPair an ) { name=an; }

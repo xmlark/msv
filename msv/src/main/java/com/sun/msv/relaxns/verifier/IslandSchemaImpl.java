@@ -83,14 +83,15 @@ import com.sun.msv.verifier.regexp.REDocumentDeclaration;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+@SuppressWarnings("serial")
 public abstract class IslandSchemaImpl
             implements IslandSchema, java.io.Serializable {
     
     /** map from name to DeclImpl. */
-    protected final Map elementDecls = new java.util.HashMap();
+    protected final Map<String,ElementDecl> elementDecls = new java.util.HashMap<String,ElementDecl>();
     
     /** map from name to DeclImpl. */
-    protected final Map attributesDecls = new java.util.HashMap();
+    protected final Map<String,AttributesDecl> attributesDecls = new java.util.HashMap<String,AttributesDecl>();
     
     public IslandVerifier createNewVerifier( String namespace, ElementDecl[] rules ) {
         // see the class comment.
@@ -110,7 +111,7 @@ public abstract class IslandSchemaImpl
         return (ElementDecl)elementDecls.get(name);
     }
     
-    public Iterator iterateElementDecls() {
+    public Iterator<ElementDecl> iterateElementDecls() {
         return elementDecls.values().iterator();
     }
     
@@ -124,7 +125,7 @@ public abstract class IslandSchemaImpl
         return (AttributesDecl)attributesDecls.get(name);
     }
     
-    public Iterator iterateAttributesDecls() {
+    public Iterator<AttributesDecl> iterateAttributesDecls() {
         return attributesDecls.values().iterator();
     }
     
@@ -155,7 +156,7 @@ public abstract class IslandSchemaImpl
         
         protected final SchemaProvider provider;
         protected final ErrorHandler errorHandler;
-        private final Set boundElements = new java.util.HashSet();
+        private final Set<Object> boundElements = new java.util.HashSet<Object>();
         
         public Binder(SchemaProvider provider,ErrorHandler errorHandler,ExpressionPool pool)
         {

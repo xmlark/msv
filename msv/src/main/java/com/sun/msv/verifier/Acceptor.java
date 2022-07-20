@@ -141,6 +141,7 @@ import com.sun.msv.util.StringRef;
  * @see DocumentDeclaration
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+ @SuppressWarnings("deprecation")
 public interface Acceptor
 {
     /**

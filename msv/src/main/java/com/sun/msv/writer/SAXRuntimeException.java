@@ -40,6 +40,7 @@ import org.xml.sax.SAXException;
  * by RuntimeException. This exception is catched outside of visitor
  * and nested exception is re-thrown.
  */
+@SuppressWarnings("serial")
 public class SAXRuntimeException extends RuntimeException {
     public final SAXException e;
     public SAXRuntimeException( SAXException e ) { this.e=e; }

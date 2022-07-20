@@ -42,6 +42,7 @@ import com.sun.msv.grammar.Grammar;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+ @SuppressWarnings("serial")
 public class RELAXGrammar implements Grammar {
     
     /**
@@ -50,7 +51,7 @@ public class RELAXGrammar implements Grammar {
      * 
      * @see org.iso_relax.dispatcher.IslandSchema
      */
-    public final Map moduleMap = new java.util.HashMap();
+    public final Map<String,Object> moduleMap = new java.util.HashMap<String,Object>();
     
     /** top-level expression */
     public Expression topLevel;

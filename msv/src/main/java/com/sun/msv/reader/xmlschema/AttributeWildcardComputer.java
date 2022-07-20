@@ -47,6 +47,7 @@ import com.sun.msv.grammar.xmlschema.AttWildcardExp;
 import com.sun.msv.grammar.xmlschema.AttributeGroupExp;
 import com.sun.msv.grammar.xmlschema.AttributeWildcard;
 import com.sun.msv.grammar.xmlschema.ComplexTypeExp;
+import com.sun.msv.util.StringPair;
 
 /**
  * Processes the attribtue wildcard according to the spec.
@@ -111,14 +112,14 @@ public class AttributeWildcardComputer extends ExpressionWalker {
     /**
      * Visited ElementExps and ReferenceExps to prevent infinite recursion.
      */
-    private final Set visitedExps = new HashSet();
+    private final Set<Expression> visitedExps = new HashSet<Expression>();
     
-    private final Stack unprocessedElementExps = new Stack();
+    private final Stack<Expression> unprocessedElementExps = new Stack<Expression>();
     
     /**
      * Used to collect AttributeWildcards of children.
      */
-    private Set wildcards = null;
+    private Set<AttributeWildcard> wildcards = null;
     
     
     public void onElement( ElementExp exp ) {
@@ -132,10 +133,10 @@ public class AttributeWildcardComputer extends ExpressionWalker {
             if( exp instanceof AttributeGroupExp ) {
                 AttributeGroupExp aexp = (AttributeGroupExp)exp;
                 
-                final Set o = wildcards;
+                final Set<AttributeWildcard> o = wildcards;
                 {
                     // process children and collect their wildcards.
-                    wildcards = new HashSet();
+                    wildcards = new HashSet<AttributeWildcard>();
                     exp.exp.visit(this);
                     // compute the attribute wildcard
                     aexp.wildcard = calcCompleteWildcard( aexp.wildcard, wildcards );
@@ -146,10 +147,10 @@ public class AttributeWildcardComputer extends ExpressionWalker {
             if( exp instanceof ComplexTypeExp ) {
                 ComplexTypeExp cexp = (ComplexTypeExp)exp;
                 
-                final Set o = wildcards;
+                final Set<AttributeWildcard> o = wildcards;
                 {
                     // process children and collect their wildcards.
-                    wildcards = new HashSet();
+                    wildcards = new HashSet<AttributeWildcard>();
                     exp.exp.visit(this);
                     // compute the attribute wildcard
                     cexp.wildcard = calcCompleteWildcard( cexp.wildcard, wildcards );
@@ -189,7 +190,7 @@ public class AttributeWildcardComputer extends ExpressionWalker {
             // add the complete att wildcard of this component.
             if( exp instanceof AttWildcardExp ) {
                 AttributeWildcard w = ((AttWildcardExp)exp).getAttributeWildcard();
-                if(w!=null)    wildcards.add(w);
+                if(w!=null) wildcards.add(w);
             }
         }
     }
@@ -197,7 +198,7 @@ public class AttributeWildcardComputer extends ExpressionWalker {
     /**
      * Computes the "complete attribute wildcard"
      */
-    private AttributeWildcard calcCompleteWildcard( AttributeWildcard local, Set s ) {
+    private AttributeWildcard calcCompleteWildcard( AttributeWildcard local, Set<AttributeWildcard> s ) {
         final AttributeWildcard[] children =
             (AttributeWildcard[])s.toArray(new AttributeWildcard[s.size()]);
         
@@ -252,7 +253,7 @@ public class AttributeWildcardComputer extends ExpressionWalker {
         if( cexp.complexBaseType==reader.complexUrType )
             return;
         
-        final Set explicitAtts = new HashSet();
+        final Set<StringPair> explicitAtts = new HashSet<StringPair>();
         
         // visit the derived type and enumerate explicitly declared attributes in it.
         cexp.body.visit( new ExpressionWalker() {
@@ -261,7 +262,7 @@ public class AttributeWildcardComputer extends ExpressionWalker {
             public void onAttribute( AttributeExp exp ) {
                 if(!(exp.nameClass instanceof SimpleNameClass))
                     // attribute uses must have a simple name.
-                    throw new Error(exp.nameClass.toString());
+                    throw new RuntimeException(exp.nameClass.toString());
                 
                 explicitAtts.add( ((SimpleNameClass)exp.nameClass).toStringPair() );
             }
@@ -301,3 +302,4 @@ public class AttributeWildcardComputer extends ExpressionWalker {
         });
     }
 }
+

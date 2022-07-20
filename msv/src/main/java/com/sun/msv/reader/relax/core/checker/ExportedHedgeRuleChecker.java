@@ -75,7 +75,7 @@ public final class ExportedHedgeRuleChecker implements RELAXExpressionVisitorBoo
      * and hr3 has a reference to the other module, this stack is
      * {hr1,hr2,hr3} when an error is found. 
      */
-    private final Stack traversalStack = new Stack();
+    private final Stack<HedgeRules> traversalStack = new Stack<HedgeRules>();
     
     public ReferenceExp[] errorSnapshot = null;
     

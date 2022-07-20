@@ -60,7 +60,7 @@ import com.sun.msv.util.StartTagInfo;
 public class IdentityConstraintState extends SimpleState {
     
     protected XPath[] selector;
-    protected final Vector fields = new Vector();
+    protected final Vector<Field> fields = new Vector<Field>();
     
     protected State createChildState( StartTagInfo tag ) {
     
@@ -182,7 +182,7 @@ public class IdentityConstraintState extends SimpleState {
     }
 
     protected XPath[] parseSelector( String xpath ) {
-        final Vector pathObjs = new Vector();
+        final Vector<XPath> pathObjs = new Vector<XPath>();
         
         // split to A|B|C
         StringTokenizer paths = new StringTokenizer(xpath,"|");
@@ -198,7 +198,7 @@ public class IdentityConstraintState extends SimpleState {
     }
     
     protected Field parseField( String xpath ) {
-        final Vector pathObjs = new Vector();
+        final Vector<XPath> pathObjs = new Vector<XPath>();
         Field field = new Field();
         
         // split to A|B|C
@@ -208,7 +208,7 @@ public class IdentityConstraintState extends SimpleState {
             pathObjs.add(pathObj);
             
             if(!parsePath(pathObj,paths.nextToken(),true))
-                return new Field();    // recover by retuning a dummy field.
+                return new Field();    // recover by returning a dummy field.
         }
         
         field.paths = (XPath[])pathObjs.toArray(new XPath[pathObjs.size()]);
@@ -222,7 +222,7 @@ public class IdentityConstraintState extends SimpleState {
      * @return    true if it succeeds in parsing. Otherwise false.
      */
     protected boolean parsePath( XPath pathObj, String xpath, boolean parseField ) {
-        final Vector stepObjs = new Vector();
+        final Vector<NameClass> stepObjs = new Vector<NameClass>();
         if(xpath.startsWith(".//")) {
             pathObj.isAnyDescendant = true;
             xpath = xpath.substring(3);
@@ -276,3 +276,4 @@ public class IdentityConstraintState extends SimpleState {
         return true;
     }
 }
+

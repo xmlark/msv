@@ -85,7 +85,7 @@ public final class WSDLSchemaReader {
 
         }
 
-        public Iterator getPrefixes(String namespaceURI) {
+        public Iterator<?> getPrefixes(String namespaceURI) {
             List<String> prefixes = new ArrayList<String>();
             if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(namespaceURI)) {
                 prefixes.add("xs");

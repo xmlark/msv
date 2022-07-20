@@ -375,6 +375,7 @@ public class XmlChars
     }
     }
 
+/*
     private static boolean isDigit (char c)
     {
     // [88] Digit ::= ... 
@@ -386,6 +387,7 @@ public class XmlChars
     return Character.isDigit (c)
         && ! ( (c >= 0xff10) && (c <= 0xff19));
     }
+*/
 
     private static boolean isExtender (char c)
     {

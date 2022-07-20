@@ -199,14 +199,14 @@ public abstract class GrammarReader
      * Iterates Map.Entry objects which has the prefix as key and
      * the namespace URI as value.
      */
-    public Iterator iterateInscopeNamespaces() {
-        return new Iterator() {
+    public Iterator<Object> iterateInscopeNamespaces() {
+        return new Iterator<Object>() {
             private PrefixResolver resolver = proceed(prefixResolver);
             public Object next() {
                 final ChainPrefixResolver cpr = (ChainPrefixResolver)resolver;
                 resolver = proceed(cpr.previous);
                 
-                return new Map.Entry() {
+                return new Map.Entry<Object, Object>() {
                     public Object getKey() { return cpr.prefix; }
                     public Object getValue() { return cpr.uri; }
                     public Object setValue(Object o) { throw new UnsupportedOperationException(); }
@@ -376,6 +376,7 @@ public abstract class GrammarReader
      * @return
      *        always return non-null valid object
      */
+    @SuppressWarnings("deprecation")
     public final InputSource resolveLocation( State sourceState, String uri )
         throws AbortException {
         
@@ -562,15 +563,15 @@ public abstract class GrammarReader
      * this information is used to report the source of errors.
      */
     public class BackwardReferenceMap {
-        private final Map impl = new java.util.HashMap();
+        private final Map<Object,ArrayList<Object>> impl = new java.util.HashMap<Object,ArrayList<Object>>();
                                                          
         /** memorize a reference to an object. */
         public void memorizeLink( Object target ) {
-            ArrayList list;
-            if( impl.containsKey(target) )    list = (ArrayList)impl.get(target);
+            ArrayList<Object> list;
+            if( impl.containsKey(target) )    list = impl.get(target);
             else {
                 // new target.
-                list = new ArrayList();
+                list = new ArrayList<Object>();
                 impl.put(target,list);
             }
             
@@ -585,12 +586,13 @@ public abstract class GrammarReader
         public Locator[] getReferer( Object target ) {
             // TODO: does anyone want to get all of the referer?
             if( impl.containsKey(target) ) {
-                ArrayList lst = (ArrayList)impl.get(target);
+                ArrayList<Object> lst = impl.get(target);
                 Locator[] locs = new Locator[lst.size()];
                 lst.toArray(locs);
                 return locs;
             }
-            else                            return null;
+            else
+                return null;
         }
     }
     /** keeps track of all backward references to every ReferenceExp.
@@ -612,7 +614,7 @@ public abstract class GrammarReader
      * This behavior is essential to correctly implement
      * TREX constraint that no two &lt;define&gt; is allowed in the same file.
      */
-    private final Map declaredLocations = new java.util.HashMap();
+    private final Map<Object, Locator> declaredLocations = new java.util.HashMap<Object, Locator>();
     
     public void setDeclaredLocationOf( Object o ) {
         declaredLocations.put(o, new LocatorImpl(getLocator()) );
@@ -627,14 +629,14 @@ public abstract class GrammarReader
      * this method is used in the final wrap-up process of parsing.
      */
     public void detectUndefinedOnes( ReferenceContainer container, String errMsg ) {
-        Iterator itr = container.iterator();
+        Iterator<ReferenceExp> itr = container.iterator();
         while( itr.hasNext() ) {
             // ReferenceExp object is created when it is first referenced or defined.
             // its exp field is supplied when it is defined.
             // therefore, ReferenceExp with its exp field null means
             // it is referenced but not defined.
             
-            ReferenceExp ref = (ReferenceExp)itr.next();
+            ReferenceExp ref = itr.next();
             if( !ref.isDefined() ) {
                 reportError( backwardReference.getReferer(ref),
                             errMsg, new Object[]{ref.name} );
@@ -743,8 +745,8 @@ public abstract class GrammarReader
         State getOwnerState();
     }
     
-    private final Vector backPatchJobs = new Vector();
-    private final Vector delayedBackPatchJobs = new Vector();
+    private final Vector<BackPatch> backPatchJobs = new Vector<BackPatch>();
+    private final Vector<BackPatch> delayedBackPatchJobs = new Vector<BackPatch>();
     public final void addBackPatchJob( BackPatch job ) {
         backPatchJobs.add(job);
     }
@@ -762,10 +764,10 @@ public abstract class GrammarReader
         setLocator(oldLoc);
     }
     
-    private final void runBackPatchJob( Vector vec ) {
-        Iterator itr = vec.iterator();
+    private final void runBackPatchJob( Vector<BackPatch> vec ) {
+        Iterator<BackPatch> itr = vec.iterator();
         while( itr.hasNext() ) {
-            BackPatch job = ((BackPatch)itr.next());
+            BackPatch job = itr.next();
             // so that errors reported in the patch job will have 
             // position of its start tag.
             setLocator(job.getOwnerState().getLocation());

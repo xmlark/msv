@@ -85,13 +85,13 @@ import com.sun.msv.reader.relax.core.RELAXCoreReader;
 public class IdAbuseChecker implements RELAXExpressionVisitorVoid {
     
     /** set of Strings: tag names that are used in this module */
-    private final Set tagNames = new java.util.HashSet();
+    private final Set<String> tagNames = new java.util.HashSet<String>();
     /** set of Strings: tag names that are used more than once in this module */
-    private final Set overloadedNames = new java.util.HashSet();
+    private final Set<String> overloadedNames = new java.util.HashSet<String>();
     /** set of Strings: names of non-ID/IDREF attributes */
-    private final Set nonIdAttrNames = new java.util.HashSet();
+    private final Set<String> nonIdAttrNames = new java.util.HashSet<String>();
     /** set of AttributeExps: that have ID/IDREF values */
-    private final Set idAttributes = new java.util.HashSet();
+    private final Set<AttributeExp> idAttributes = new java.util.HashSet<AttributeExp>();
 
     private final RELAXModule module;
     private final RELAXCoreReader reader;
@@ -108,7 +108,7 @@ public class IdAbuseChecker implements RELAXExpressionVisitorVoid {
     }
     
     private void run() {
-        Iterator itr;
+        Iterator<?> itr;
         // extracts all tag names and
         // classify attribute names into
         //   (1) names that are used as ID/IDREF

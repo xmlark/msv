@@ -91,9 +91,9 @@ public class SchemaProviderImpl extends AbstractSchemaProviderImpl {
         this.topLevel = new DeclImpl[]{new DeclImpl("##start",grammar.topLevel)};
         
         // add all parsed modules into the provider.
-        Iterator itr = grammar.moduleMap.keySet().iterator();
+        Iterator<String> itr = grammar.moduleMap.keySet().iterator();
         while( itr.hasNext() ) {
-            String namespaceURI = (String)itr.next();
+            String namespaceURI = itr.next();
             addSchema(
                 namespaceURI, (IslandSchema)grammar.moduleMap.get(namespaceURI) );
         }
@@ -105,9 +105,10 @@ public class SchemaProviderImpl extends AbstractSchemaProviderImpl {
         ErrorHandlerFilter filter = new ErrorHandlerFilter(handler);
         
         try {
-            Iterator itr = schemata.values().iterator();
-            while( itr.hasNext() )
+            Iterator<?> itr = schemata.values().iterator();
+            while( itr.hasNext() ) {
                 ((IslandSchema)itr.next()).bind( this, filter );
+            }
         } catch( SAXException e ) {
             // bind method may throw SAXException.
             return false;

@@ -48,6 +48,7 @@ import com.sun.msv.reader.datatype.DataTypeVocabularyMap;
  */
 public class TREXGrammar extends ReferenceExp implements Grammar{
     
+    @SuppressWarnings("serial")
     static final public class RefContainer extends ReferenceContainer {
         public ReferenceExp getOrCreate( String name ) {
             return super._getOrCreate(name);

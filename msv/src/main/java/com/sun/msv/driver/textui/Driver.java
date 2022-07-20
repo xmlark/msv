@@ -32,6 +32,7 @@
 package com.sun.msv.driver.textui;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,7 +40,7 @@ import java.util.Locale;
 
 import javax.xml.parsers.SAXParserFactory;
 
-import com.sun.org.apache.xml.internal.resolver.tools.CatalogResolver;
+import org.apache.xml.resolver.tools.CatalogResolver;
 import org.iso_relax.dispatcher.Dispatcher;
 import org.iso_relax.dispatcher.SchemaProvider;
 import org.iso_relax.dispatcher.impl.DispatcherImpl;
@@ -90,9 +91,10 @@ public class Driver {
         System.exit(run(args));
     }
     
+    @SuppressWarnings("deprecation")
     public static int run( String[] args ) throws Exception {
-        final List fileNames = new ArrayList();
-        final List classPaths = new ArrayList();
+        final List<String> fileNames = new ArrayList<String>();
+        final List<URL> classPaths = new ArrayList<URL>();
         
         String grammarName = null;
         boolean dump=false;
@@ -347,7 +349,7 @@ public class Driver {
         System.out.println("*** top level ***");
         System.out.println(ExpressionPrinter.printFragment(g.topLevel));
         
-        Iterator itr = g.iterateSchemas();
+        Iterator<?> itr = g.iterateSchemas();
         while(itr.hasNext()) {
             XMLSchemaSchema s = (XMLSchemaSchema)itr.next();
             dumpXMLSchema(s);

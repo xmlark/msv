@@ -31,9 +31,9 @@
 
 package com.sun.msv.writer.relaxng;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
+
+
 
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.ValidationContext;
@@ -82,46 +82,46 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
         this.writer = ctxt.getWriter();
         this.context = ctxt;
     }
-    
+
     protected final XMLWriter writer;
     protected final Context context;
-    
+
     public abstract void onOther(OtherExp exp);
     public abstract void onRef(ReferenceExp exp);
-    
+
     public void onElement(ElementExp exp) {
         writer.start("element");
         context.writeNameClass(exp.getNameClass());
         visitUnary(exp.contentModel);
         writer.end("element");
     }
-    
+
     public void onEpsilon() {
         writer.element("empty");
     }
-    
+
     public void onNullSet() {
         writer.element("notAllowed");
     }
-    
+
     public void onAnyString() {
         writer.element("text");
     }
-    
+
     public void onInterleave(InterleaveExp exp) {
         visitBinExp("interleave", exp, InterleaveExp.class);
     }
-    
+
     public void onConcur(ConcurExp exp) {
         throw new IllegalArgumentException("the grammar includes concur, which is not supported");
     }
-    
+
     public void onList(ListExp exp) {
         writer.start("list");
         visitUnary(exp.exp);
         writer.end("list");
     }
-    
+
     protected void onOptional(Expression exp) {
         if (exp instanceof OneOrMoreExp) {
             // (X+)? == X*
@@ -132,7 +132,7 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
         visitUnary(exp);
         writer.end("optional");
     }
-    
+
     public void onChoice(ChoiceExp exp) {
         // use optional instead of <choice> p <empty/> </choice>
         if (exp.exp1 == Expression.epsilon) {
@@ -143,15 +143,15 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
             onOptional(exp.exp1);
             return;
         }
-    
+
         visitBinExp("choice", exp, ChoiceExp.class);
     }
-    
+
     public void onSequence(SequenceExp exp) {
         visitBinExp("group", exp, SequenceExp.class);
     }
-    
-    public void visitBinExp(String elementName, BinaryExp exp, Class type) {
+
+    public void visitBinExp(String elementName, BinaryExp exp, Class<?> type) {
         // since AGM is binarized,
         // <choice> a b c </choice> is represented as
         // <choice> a <choice> b c </choice></choice>
@@ -162,33 +162,33 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
             children[i].visit(this);
         writer.end(elementName);
     }
-    
+
     public void onMixed(MixedExp exp) {
         writer.start("mixed");
         visitUnary(exp.exp);
         writer.end("mixed");
     }
-    
+
     public void onOneOrMore(OneOrMoreExp exp) {
         writer.start("oneOrMore");
         visitUnary(exp.exp);
         writer.end("oneOrMore");
     }
-    
+
     protected void onZeroOrMore(OneOrMoreExp exp) {
         // note that this method is not a member of TREXPatternVisitor.
         writer.start("zeroOrMore");
         visitUnary(exp.exp);
         writer.end("zeroOrMore");
     }
-    
+
     public void onAttribute(AttributeExp exp) {
         writer.start("attribute");
         context.writeNameClass(exp.nameClass);
         visitUnary(exp.exp);
         writer.end("attribute");
     }
-    
+
     /**
      * print expression but surpress unnecessary sequence.
      */
@@ -204,12 +204,12 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
         } else
             exp.visit(this);
     }
-    
+
     public void onValue( ValueExp exp ) {
         if (exp.dt instanceof XSDatatypeImpl) {
             XSDatatypeImpl base = (XSDatatypeImpl)exp.dt;
 
-            final Vector ns = new Vector();
+            final List<String> ns = new ArrayList<String>();
 
             String lex = base.convertToLexicalValue(exp.value, new SerializationContext() {
                 public String getNamespacePrefix(String namespaceURI) {
@@ -231,10 +231,10 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
             writer.end("value");
             return;
         }
-            
+
         throw new UnsupportedOperationException( exp.dt.getClass().getName() );
     }
-        
+
     public void onData(DataExp exp) {
         Datatype dt = exp.dt;
 
@@ -253,11 +253,11 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
         // unknown datatype
         writer.element("data-unknown", new String[] { "class", dt.getClass().getName()});
     }
-        
-        
+
+
     /**
      * serializes the given datatype.
-     * 
+     *
      * The caller should generate events for &lt;simpleType&gt; element
      * if necessary.
      */
@@ -269,10 +269,10 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
         }
 
         // store names of the applied facets into this set
-        Set appliedFacets = new HashSet();
+        Set<String> appliedFacets = new HashSet<String>();
 
         // store effective facets (those which are not shadowed by another facet).
-        Vector effectiveFacets = new Vector();
+        Vector<XSDatatype> effectiveFacets = new Vector<XSDatatype>();
 
         XSDatatype x = dt;
         while (x instanceof DataTypeWithFacet || x instanceof FinalComponent) {
@@ -301,7 +301,7 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
 
             // find the same facet twice.
             // pattern is allowed more than once.
-            if (!appliedFacets.contains(facetName)) {
+            if (!appliedFacets.contains(facetName) || appliedFacets.equals(XSDatatypeImpl.FACET_PATTERN)) {
 
                 appliedFacets.add(facetName);
                 effectiveFacets.add(x);
@@ -372,13 +372,13 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
 
         writer.end("data");
     }
-    
+
     protected void param(String name, String value) {
         writer.start("param", new String[] { "name", name });
         writer.characters(value);
         writer.end("param");
     }
-        
+
     /**
      * returns true if the specified type is a pre-defined XSD type
      * without any facet.
@@ -392,7 +392,7 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
                 || x instanceof com.sun.msv.grammar.relax.EmptyStringType
                 || x instanceof com.sun.msv.grammar.relax.NoneType);
     }
-        
+
     /**
      * serializes a union type.
      * this method is called by serializeDataType method.
@@ -406,7 +406,7 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
 
         writer.end("choice");
     }
-        
+
     /**
      * serializes a list type.
      * this method is called by serializeDataType method.
@@ -455,7 +455,7 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
             writer.start("choice");
 
         for (int i = 0; i < values.length; i++) {
-            final Vector ns = new Vector();
+            final Vector<String> ns = new Vector<String>();
 
             String lex = dt.convertToLexicalValue(values[i], new SerializationContext() {
                 public String getNamespacePrefix(String namespaceURI) {

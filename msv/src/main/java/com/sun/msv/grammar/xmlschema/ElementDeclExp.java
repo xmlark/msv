@@ -218,14 +218,19 @@ public class ElementDeclExp extends ReferenceExp
      * 
      * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
      */
-    public class XSElementExp extends ElementExp {
+    @SuppressWarnings("serial")
+    public static class XSElementExp extends ElementExp {
+
         public final SimpleNameClass elementName;
         public final NameClass getNameClass() { return elementName; }
+        // 05-Oct-2010, tatu: if element has "default" value, it is stored here:
+        public final String defaultValue;
         
-        public XSElementExp( SimpleNameClass elementName, Expression contentModel ) {
+        public XSElementExp(ElementDeclExp parent, SimpleNameClass elementName, Expression contentModel, String defaultValue ) {
             super(contentModel,false);
             this.elementName = elementName;
-            parent = ElementDeclExp.this;
+            this.defaultValue = defaultValue;
+            this.parent = parent;
         }
         
         /**
@@ -237,14 +242,11 @@ public class ElementDeclExp extends ReferenceExp
          * These identity constraints are not enforced by the default Verifier
          * implementation.
          */
-        public final Vector identityConstraints = new Vector();
+        public final Vector<Object> identityConstraints = new Vector<Object>();
         
         public final ElementDeclExp parent;
     }
 
-    
-    
-    
 //
 // Schema component properties
 //======================================

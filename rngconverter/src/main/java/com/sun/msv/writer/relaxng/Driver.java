@@ -31,6 +31,9 @@
 
 package com.sun.msv.writer.relaxng;
 
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+
 import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.xml.serialize.OutputFormat;
@@ -49,23 +52,27 @@ import com.sun.msv.reader.util.GrammarLoader;
 public class Driver {
     public static void main(String[] args) throws Exception {
 
-        if (args.length != 1) {
+        if (args.length != 2) {
             System.out.println(localize(MSG_USAGE));
             return;
         }
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
+        String input = args[0];
+        String output = args[1];
+        PrintStream out = new PrintStream(new FileOutputStream(output));
 
         // load a grammar.
-        Grammar g = GrammarLoader.loadSchema(args[0], new DebugController(false, false, System.err), factory);
+        Grammar g = GrammarLoader.loadSchema(input, new DebugController(true, false, System.err), factory);
 
         if (g == null) {
             System.err.println(localize(MSG_GRAMMAR_ERROR));
             return;
         }
 
-        writeGrammar(g, System.out);
+        writeGrammar(g, out);
+        out.close();
     }
     
     /**

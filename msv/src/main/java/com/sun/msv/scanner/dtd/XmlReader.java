@@ -38,7 +38,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PushbackInputStream;
 import java.io.Reader;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 
 // NOTE:  Add I18N support to this class when JDK gets the ability to
@@ -126,7 +126,7 @@ final class XmlReader extends Reader {
         || "ASCII".equalsIgnoreCase (encoding))
         return new AsciiReader (in);
     if ("ISO-8859-1".equalsIgnoreCase (encoding)
-        // plus numerous aliases ... 
+        // plus numerous aliases ...
         )
         return new Iso8859_1Reader (in);
 
@@ -145,7 +145,7 @@ final class XmlReader extends Reader {
     // in particular none of the EBCDIC ones IANA defines (and
     // which IBM encourages).
     //
-    static private final Hashtable charsets = new Hashtable (31);
+    static private final HashMap<String,String> charsets = new HashMap<String,String>(32);
 
     static {
     charsets.put ("UTF-16", "Unicode");
@@ -248,7 +248,7 @@ final class XmlReader extends Reader {
           break;
 
                 // 3c 3f 78 6d == ASCII and supersets '<?xm'
-                case '?': 
+                case '?':
                   if (buf [2] != 'x' || buf [3] != 'm')
               break;
           //
@@ -339,7 +339,7 @@ final class XmlReader extends Reader {
     //
     // Then, we'll skip any
     //     S version="..."     [or single quotes]
-    // bit and get any subsequent 
+    // bit and get any subsequent
     //     S encoding="..."     [or single quotes]
     //
     // We put an arbitrary size limit on how far we read; lots
@@ -364,7 +364,7 @@ final class XmlReader extends Reader {
         // ... but require at least a little!
         if (i == 0)
         break;
-        
+
         // terminate the loop ASAP
         if (c == '?')
         sawQuestion = true;
@@ -373,7 +373,7 @@ final class XmlReader extends Reader {
             break;
         sawQuestion = false;
         }
-        
+
         // did we get the "key =" bit yet?
         if (key == null || !sawEq) {
         if (keyBuf == null) {
@@ -615,7 +615,7 @@ final class XmlReader extends Reader {
             break;
             }
         }
-        
+
         //
         // RFC 2279 describes UTF-8; there are six encodings.
         // Each encoding takes a fixed number of characters
@@ -623,7 +623,7 @@ final class XmlReader extends Reader {
         // first byte.  The five and six byte-per-character
         // encodings address characters which are disallowed
         // in XML documents, as do some four byte ones.
-        // 
+        //
 
         //
         // Single byte == ASCII.  Common; optimize.
@@ -635,13 +635,13 @@ final class XmlReader extends Reader {
             buf [offset + i++] = (char) c;
             continue;
         }
-        
+
         //
         // Multibyte chars -- check offsets optimistically,
         // ditto the "10xx xxxx" format for subsequent bytes
         //
         int        off = start;
-        
+
         try {
             // 2 bytes
             if ((buffer [off] & 0x0E0) == 0x0C0) {

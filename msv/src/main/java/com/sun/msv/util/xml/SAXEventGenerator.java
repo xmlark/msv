@@ -110,6 +110,7 @@ public class SAXEventGenerator {
     
     // wrap SAXException into a RuntimeException so that
     // exception can pass through DOMVisitor.
+    @SuppressWarnings("serial")
     private static class SAXWrapper extends RuntimeException {
         SAXWrapper( SAXException e ) { this.e=e; }
         SAXException e;

@@ -58,7 +58,7 @@ import com.sun.msv.verifier.regexp.StringToken;
 
 class DefAttCompatibilityChecker extends CompatibilityChecker {
     
-    DefAttCompatibilityChecker( RELAXNGCompReader _reader, Map _defaultedAttributes ) {
+    DefAttCompatibilityChecker( RELAXNGCompReader _reader, Map<AttributeExp,String> _defaultedAttributes ) {
         super(_reader);
         this.defaultedAttributes = _defaultedAttributes;
     }
@@ -72,20 +72,21 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
     /**
      * used to abort the check.
      */
+    @SuppressWarnings("serial")
     private static final class Abort extends RuntimeException {}
 
     private static final class DefAttMap {
         /**
          * the map from the attribute name (as StringPair) to the default value (as String).
          */
-        final Map defaultAttributes;
+        final Map<StringPair,String> defaultAttributes;
         /**
          * one of the ElementExps that have this particular element name.
          * used only for the error reporting.
          */
         final ElementExp sampleDecl;
         
-        DefAttMap( ElementExp sample, Map atts ) { this.sampleDecl=sample; this.defaultAttributes=atts; }
+        DefAttMap( ElementExp sample, Map<StringPair,String> atts ) { this.sampleDecl=sample; this.defaultAttributes=atts; }
     }
     
     private final RefExpRemover refRemover =
@@ -108,11 +109,11 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
         if( defaultedAttributes.size()==0 )
             return;    // no default attribute is used. no need for the check.
         
-        Iterator itr = defaultedAttributes.entrySet().iterator();
+        Iterator<Map.Entry<AttributeExp,String>> itr = defaultedAttributes.entrySet().iterator();
         ResidualCalculator resCalc = new ResidualCalculator(reader.pool);
             
         while( itr.hasNext() ) {
-            Map.Entry item = (Map.Entry)itr.next();
+            Map.Entry<AttributeExp,String> item = itr.next();
             AttributeExp exp = (AttributeExp)item.getKey();
             String value = (String)item.getValue();
                     
@@ -145,10 +146,10 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
             return;
                 
         // a map from element names to DefAttMap
-        final Map name2value = new HashMap();
+        final Map<StringPair,Object> name2value = new HashMap<StringPair,Object>();
         
         // a set of all ElementExps in the grammar.
-        final Set elements = new HashSet();
+        final Set<Expression> elements = new HashSet<Expression>();
         
         // tests if defaulted attributes are optional and doesn't have
         // oneOrMoreAncestor.
@@ -168,7 +169,7 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
              * A map from attribute name to defaulted AttributeExps
              * of the current element.
              */
-            private Map currentAttributes = null;
+            private Map<StringPair,String> currentAttributes = null;
                     
             /**
              * name of the current ElementExp
@@ -188,7 +189,7 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
                 final boolean oldC        = inChoice;
                 final boolean oldOOM    = inOneOrMore;
                 final SimpleNameClass prevElemName = currentElementName;
-                final Map oldCA = currentAttributes;
+                final Map<StringPair,String> oldCA = currentAttributes;
                         
                 inSimpleElement = (exp.getNameClass() instanceof SimpleNameClass);
                 inOptionalChoice = true;
@@ -199,7 +200,7 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
                 if(inSimpleElement) {
                     currentElementName = (SimpleNameClass)exp.getNameClass();
                     en = new StringPair(currentElementName);
-                    currentAttributes = new HashMap();
+                    currentAttributes = new HashMap<StringPair,String>();
                 } else
                     currentElementName = null;
                 
@@ -307,9 +308,9 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
                 
         
         // test that the competing elements also has the same default values.
-        itr = elements.iterator();
-        while(itr.hasNext()) {
-            final ElementExp eexp = (ElementExp)itr.next();
+        Iterator<Expression> exprs = elements.iterator();
+        while(exprs.hasNext()) {
+            final ElementExp eexp = (ElementExp)exprs.next();
             
             NameClass nc = eexp.getNameClass();
             if(!(nc instanceof SimpleNameClass)) {
@@ -318,9 +319,9 @@ class DefAttCompatibilityChecker extends CompatibilityChecker {
                 // (this is checked within the first pass.
                 // so in this case, we just need to make sure that
                 // any competing elements do not have defaulted attributes.
-                Iterator jtr = name2value.entrySet().iterator();
+                Iterator<Map.Entry<StringPair, Object>> jtr = name2value.entrySet().iterator();
                 while(jtr.hasNext()) {
-                    Map.Entry e = (Map.Entry)jtr.next();
+                    Map.Entry<StringPair,Object> e = jtr.next();
                     if(nc.accepts((StringPair)e.getKey())) {
                         // this element competes with this eexp.
                         DefAttMap defAtts = (DefAttMap)e.getValue();

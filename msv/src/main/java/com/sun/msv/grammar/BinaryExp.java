@@ -39,7 +39,10 @@ import java.util.Iterator;
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class BinaryExp extends Expression {
-    
+
+    // serialization support
+    private static final long serialVersionUID = 1;
+
     public final Expression exp1;
     public final Expression exp2;
     
@@ -99,9 +102,9 @@ public abstract class BinaryExp extends Expression {
      * This method returns an iterator that iterates all children
      * (A,B, and C in this example)
      */
-    public Iterator children() {
+    public Iterator<Object> children() {
         final Expression[] items = getChildren();
-        return new Iterator() {
+        return new Iterator<Object>() {
             private int idx =0;
             
             public Object next() {
@@ -111,8 +114,4 @@ public abstract class BinaryExp extends Expression {
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    
-    
-    // serialization support
-    private static final long serialVersionUID = 1;    
 }

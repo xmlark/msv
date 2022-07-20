@@ -51,6 +51,7 @@ import org.xml.sax.helpers.NamespaceSupport;
  * @author David Megginson, 
  *         <a href="mailto:sax@megginson.com">sax@megginson.com</a>
  */
+@SuppressWarnings("deprecation")
 public class ContentHandlerAdaptor implements DocumentHandler {
     
     private final NamespaceSupport nsSupport = new NamespaceSupport();

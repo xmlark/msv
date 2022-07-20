@@ -34,7 +34,7 @@ package com.sun.msv.scanner.dtd;
 import java.io.InputStream;
 import java.text.FieldPosition;
 import java.text.MessageFormat;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -54,7 +54,7 @@ import java.util.ResourceBundle;
  * class.  This ensures that the correct class loader will always be used to
  * access message resources, and minimizes use of memory: <PRE>
  *    package <em>some.package</em>;
- *    
+ *
  *    // "foo" might be public
  *    class foo {
  *      ...
@@ -122,7 +122,7 @@ import java.util.ResourceBundle;
  *    as eliminating or improving messages) to break another package.
  *
  *    </OL>
- *    
+ *
  * <P> The "resources" sub-package can be treated separately from the
  * package with which it is associated.  That main package may be sealed
  * and possibly signed, preventing other software from adding classes to
@@ -151,11 +151,11 @@ abstract public class MessageCatalog {
      * Create a message catalog for use by classes in the same package
      * as the specified class.  This uses <em>Messages</em> resource
      * bundles in the <em>resources</em> sub-package of class passed as
-     * a parameter. 
+     * a parameter.
      *
      * @param packageMember Class whose package has localized messages
      */
-    protected MessageCatalog (Class packageMember)
+    protected MessageCatalog (Class<?> packageMember)
     {
     this (packageMember, "Messages");
     }
@@ -169,7 +169,7 @@ abstract public class MessageCatalog {
      * @param packageMember Class whose package has localized messages
      * @param bundle Name of a group of resource bundles
      */
-    private MessageCatalog (Class packageMember, String bundle)
+    private MessageCatalog (Class<?> packageMember, String bundle)
     {
     int    index;
 
@@ -278,7 +278,7 @@ abstract public class MessageCatalog {
         retval += parameters [i];
         }
         return retval;*/
-    } 
+    }
     format = new MessageFormat (bundle.getString (messageId));
     format.setLocale (locale);
 
@@ -449,7 +449,7 @@ abstract public class MessageCatalog {
     // cache for isLanguageSupported(), below ... key is a language
     // or locale name, value is a Boolean
     //
-    private Hashtable        cache = new Hashtable (5);
+    private HashMap<String,Boolean> cache = new HashMap<String,Boolean>();
 
 
     /**
@@ -479,21 +479,21 @@ abstract public class MessageCatalog {
     //
     // Use previous results if possible.  We expect that the codebase
     // is immutable, so we never worry about changing the cache.
-    // 
-    Boolean        value = (Boolean) cache.get (localeName);
+    //
+    Boolean        value = cache.get(localeName);
 
     if (value != null)
-        return value.booleanValue ();
+        return value.booleanValue();
 
     //
     // Try "language_country_variant", then "language_country",
     // then finally "language" ... assuming the longest locale name
     // is passed.  If not, we'll try fewer options.
     //
-    ClassLoader        loader = null;
+    ClassLoader loader = null;
 
     for (;;) {
-        String        name = bundleName + "_" + localeName;
+        String name = bundleName + "_" + localeName;
 
         // look up classes ...
         try {

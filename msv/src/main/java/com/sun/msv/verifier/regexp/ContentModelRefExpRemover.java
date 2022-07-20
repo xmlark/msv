@@ -50,7 +50,7 @@ public class ContentModelRefExpRemover {
 //        return exp.getExpandedExp(pool);
 //    }
     
-
+/*
     // the class that does the actual job.
     private static class Remover extends ExpressionCloner {
         public Remover(ExpressionPool pool) {
@@ -66,7 +66,7 @@ public class ContentModelRefExpRemover {
             if (content == Expression.nullSet)
                 return Expression.nullSet; // this attribute is not allowed
             else
-                return pool.createAttribute(exp.nameClass, content);
+                return pool.createAttribute(exp.nameClass, content, exp.getDefaultValue());
         }
 
         public Expression onRef(ReferenceExp exp) {
@@ -76,5 +76,5 @@ public class ContentModelRefExpRemover {
         public Expression onOther(OtherExp exp) {
             return exp.exp.visit(this);
         }
-    }
+    }*/
 }

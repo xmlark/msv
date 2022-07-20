@@ -44,6 +44,7 @@ import com.sun.msv.util.StartTagInfo;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+ @SuppressWarnings("serial")
 public class XSDVocabulary implements DataTypeVocabulary, java.io.Serializable {
     
     /** namespace URI of XML Schema */

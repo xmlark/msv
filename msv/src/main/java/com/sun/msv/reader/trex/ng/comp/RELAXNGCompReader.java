@@ -115,7 +115,7 @@ public class RELAXNGCompReader extends RELAXNGReader {
         lastRNGElement.push(null);
     }
 
-    private final Map defaultedAttributes = new java.util.HashMap();
+    private final Map<AttributeExp,String> defaultedAttributes = new java.util.HashMap<AttributeExp,String>();
     /**
      * note that the specified expression is marked with the default value.
      * this method is called when a:defaultValue is found.

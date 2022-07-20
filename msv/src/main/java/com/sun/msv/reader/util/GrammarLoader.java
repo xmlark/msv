@@ -70,23 +70,23 @@ import com.sun.msv.verifier.regexp.xmlschema.XSREDocDecl;
 /**
  * loads any supported grammar (except XML DTD)
  * by automatically detecting the schema language.
- * 
+ *
  * <p>
  * The static version of loadVGM/loadSchema methods provides simple ways to
  * load a grammar.
- * 
+ *
  * <p>
  * Another way to use GrammarLoader is
- * 
+ *
  * <ol>
  *  <li>To instanciate an object of GrammarLoader
  *  <li>call setXXX methods to configure the parameters
  *  <li>call loadSchema/loadVGM methods (possibly multiple times) to
  *      load grammars.
  * </ol>
- * 
+ *
  * This approach will give you finer control.
- * 
+ *
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class GrammarLoader
@@ -97,10 +97,10 @@ public class GrammarLoader
 //
     /**
      * parses the specified schema and returns the result as a VGM.
-     * 
+     *
      * This method is an utility method for those applications which
      * don't need AGM (e.g., a single thread application).
-     * 
+     *
      * @return
      *        null if there was an error in the grammar.
      */
@@ -113,7 +113,7 @@ public class GrammarLoader
         if(g!=null)        return wrapByVGM(g);
         else            return null;
     }
-    
+
     public static REDocumentDeclaration loadVGM( InputSource source,
         GrammarReaderController controller,
         SAXParserFactory factory )
@@ -123,21 +123,21 @@ public class GrammarLoader
         if(g!=null)        return wrapByVGM(g);
         else            return null;
     }
-    
+
     private static REDocumentDeclaration wrapByVGM( Grammar g ) {
         if( g instanceof XMLSchemaGrammar )
             return new XSREDocDecl((XMLSchemaGrammar)g);
         else
             return new REDocumentDeclaration(g);
     }
-    
-    
+
+
     /**
      * parses the specified schema and returns the result as a VGM.
-     * 
+     *
      * This method uses the default SAX parser and throws an exception
      * if there is an error in the schema.
-     * 
+     *
      * @return
      *        non-null valid VGM object.
      */
@@ -157,8 +157,9 @@ public class GrammarLoader
             throw e.e;
         }
     }
-    
+
     /** wrapper exception so that we can throw it from the GrammarReaderController. */
+    @SuppressWarnings("serial")
     private static class GrammarLoaderException extends RuntimeException {
         GrammarLoaderException( SAXException e ) {
             super(e.getMessage());
@@ -173,19 +174,19 @@ public class GrammarLoader
                 if(locs[i]!=null)
                     throw new GrammarLoaderException(
                         new SAXParseException(errorMessage,locs[i],nestedException));
-            
+
             throw new GrammarLoaderException(
                 new SAXException(errorMessage,nestedException));
         }
         public InputSource resolveEntity( String p, String s ) { return null; }
-        
+
     }
 
-    
-    
+
+
     /**
      * parses the specified schema and returns the result as a Grammar object.
-     * 
+     *
      * @return
      *        null if there was an error in the grammar.
      */
@@ -199,7 +200,7 @@ public class GrammarLoader
         loader.setSAXParserFactory(factory);
         return loader.parse(url);
     }
-    
+
     public static Grammar loadSchema( InputSource source,
         GrammarReaderController controller,
         SAXParserFactory factory )
@@ -210,7 +211,7 @@ public class GrammarLoader
         loader.setSAXParserFactory(factory);
         return loader.parse(source);
     }
-    
+
     /**
      * returns a thread-safe AGM object, depending on the language used.
      */
@@ -234,13 +235,13 @@ public class GrammarLoader
         loader.setController(controller);
         return loader.parse(source);
     }
-    
+
     /**
      * parses the specified schema and returns the result as a Grammar object.
-     * 
+     *
      * This method uses the default SAX parser and throws an exception
      * if there is an error in the schema.
-     * 
+     *
      * @return
      *        a non-null valid Grammar.
      */
@@ -260,20 +261,20 @@ public class GrammarLoader
             throw e.e;
         }
     }
-    
+
 
 
 //
 // finer control can be achieved by using the following methods.
 //=================================================================
     public GrammarLoader() {}
-    
+
     private SAXParserFactory factory;
     /**
      * sets the factory object which is used to create XML parsers
      * to parse schema files.
      * The factory must be configured to namespace aware.
-     * 
+     *
      * <p>
      * If no SAXParserFactory is set, then the default parser is used.
      * (The parser that can be obtained by SAXParserFactory.newInstance()).
@@ -288,7 +289,7 @@ public class GrammarLoader
         }
         return factory;
     }
-    
+
     private Controller controller;
     /**
      * sets the GrammarReaderController object that will control
@@ -307,7 +308,7 @@ public class GrammarLoader
             });
         return controller;
     }
-    
+
     private ExpressionPool pool;
     /**
      * Sets the ExpressionPool object that will be used during the loading process.
@@ -321,14 +322,14 @@ public class GrammarLoader
         else                return pool;
     }
 
-    
+
     private boolean strictCheck = false;
-    
+
     /**
      * Sets the strict check flag. If set to true, schema readers will apply
      * stricter checks so that it can find errors in the schema. If set to false,
      * readers will skip some of the checks.
-     * 
+     *
      * <p>
      * When this flag is set to false, which is the default, the reader may accept
      * incorrect schemas.
@@ -339,62 +340,62 @@ public class GrammarLoader
     public boolean getStrictCheck() {
         return strictCheck;
     }
-    
-    
+
+
     public Grammar parse( InputSource source )
         throws SAXException, ParserConfigurationException, java.io.IOException {
-        
+
         return _loadSchema(source);
     }
-    
+
     public Grammar parse( String url )
         throws SAXException, ParserConfigurationException, java.io.IOException {
-        
+
         return _loadSchema(url);
     }
-    
+
     public REDocumentDeclaration parseVGM( String url )
         throws SAXException, ParserConfigurationException, java.io.IOException {
-        
+
         Grammar g = _loadSchema(url);
         if(g==null)        return null;
         else            return new REDocumentDeclaration(g);
     }
-    
+
     public REDocumentDeclaration parseVGM( InputSource source )
         throws SAXException, ParserConfigurationException, java.io.IOException {
-        
+
         Grammar g = _loadSchema(source);
         if(g==null)        return null;
         else            return new REDocumentDeclaration(g);
     }
-    
-    
-    
+
+
+
     /**
      * Checks if the specified name has ".dtd" extension.
      */
     private boolean hasDTDextension( String name ) {
         if(name==null)        return false;
-        
+
         int idx = name.length()-4;
         if(idx<0)            return false;
-        
+
         return name.substring(idx).equalsIgnoreCase(".dtd");
     }
-    
+
     /**
      * Actual "meat" of parsing schema.
-     * 
+     *
      * All other methods will ultimately come down to this method.
      */
     private Grammar _loadSchema( Object source )
             throws SAXException, ParserConfigurationException, java.io.IOException {
-        
+
         // perform the auto detection to decide whether
         // it is XML syntax based schema or DTD.
         // TODO: implement more serious detection algorithm.
-                
+
         // use the file extension to decide language type.
         // sure this is a sloppy job, but works in practice.
         // and easy to implement.
@@ -407,7 +408,7 @@ public class GrammarLoader
             if( hasDTDextension( ((InputSource)source).getSystemId() ) )
                 isDTD = true;
         }
-        
+
         if(isDTD) {
             // load as DTD
             if( source instanceof String )
@@ -416,17 +417,17 @@ public class GrammarLoader
         }
 
         // otherwise this schema is an XML syntax based schema.
-        
-        
-        // this field will receive the grammar reader 
+
+
+        // this field will receive the grammar reader
         final GrammarReader[] reader = new GrammarReader[1];
-        
+
         final XMLReader parser = getSAXParserFactory().newSAXParser().getXMLReader();
         /*
             Use a "sniffer" handler and decide which reader to use.
             Once the schema language is detected, the appropriate reader
             instance is created and events are passed to that handler.
-        
+
             From the performance perspective, it is important not to
             create unnecessary reader objects. Because readers typically
             have a lot of references to other classes, instanciating a
@@ -435,14 +436,14 @@ public class GrammarLoader
         */
         parser.setContentHandler( new DefaultHandler(){
             private Locator locator;
-            private Vector prefixes = new Vector();
+            private Vector<String[]> prefixes = new Vector<String[]>();
             public void setDocumentLocator( Locator loc ) {
                 this.locator = loc;
             }
             public void startPrefixMapping( String prefix, String uri ) {
                 prefixes.add( new String[]{prefix,uri} );
             }
-            
+
             /**
              * Sets up the pipe line of "VerifierFilter > GrammarReader"
              * so that the grammar will be properly validated.
@@ -459,7 +460,7 @@ public class GrammarLoader
                     throw new SAXException(vce);
                 }
             }
-            
+
             public void startElement( String namespaceURI, String localName, String qName, Attributes atts )
                                     throws SAXException {
                 ContentHandler winner;
@@ -501,7 +502,7 @@ public class GrammarLoader
                 ||  namespaceURI.equals("") )
                     // assume TREX
                     winner = reader[0] = new TREXGrammarReader(
-                        getController(), getSAXParserFactory(), getPool() ); 
+                        getController(), getSAXParserFactory(), getPool() );
                 else {
                     // otherwise assume RELAX NG
                     if( strictCheck ) {
@@ -516,7 +517,7 @@ public class GrammarLoader
                             getController(), getSAXParserFactory(), getPool() );
                     }
                 }
-                
+
                 // simulate the start of the document.
                 winner.setDocumentLocator(locator);
                 winner.startDocument();
@@ -534,10 +535,10 @@ public class GrammarLoader
         parser.setEntityResolver(getController());
         if( source instanceof String )    parser.parse( (String)source );
         else                            parser.parse( (InputSource)source );
-        
+
         if(getController().hadError())  return null;
         else            return reader[0].getResultAsGrammar();
     }
-    
-    
+
+
 }

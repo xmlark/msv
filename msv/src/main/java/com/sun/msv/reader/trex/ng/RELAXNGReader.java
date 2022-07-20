@@ -72,28 +72,28 @@ import com.sun.msv.util.Util;
 
 /**
  * reads RELAX NG grammar from SAX2 and constructs abstract grammar model.
- * 
+ *
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class RELAXNGReader extends TREXBaseReader {
-    
+
     /** loads RELAX NG pattern */
     public static TREXGrammar parse( String grammarURL,
         SAXParserFactory factory, GrammarReaderController controller )
     {
         RELAXNGReader reader = new RELAXNGReader(controller,factory);
         reader.parse(grammarURL);
-        
+
         return reader.getResult();
     }
-    
+
     /** loads RELAX NG pattern */
     public static TREXGrammar parse( InputSource grammar,
         SAXParserFactory factory, GrammarReaderController controller )
     {
         RELAXNGReader reader = new RELAXNGReader(controller,factory);
         reader.parse(grammar);
-        
+
         return reader.getResult();
     }
 
@@ -101,7 +101,7 @@ public class RELAXNGReader extends TREXBaseReader {
     public RELAXNGReader( GrammarReaderController controller ) {
         this(controller,createParserFactory());
     }
-    
+
     /** easy-to-use constructor. */
     public RELAXNGReader(
         GrammarReaderController controller,
@@ -109,27 +109,27 @@ public class RELAXNGReader extends TREXBaseReader {
         // TODO: add s4s
         this(controller,parserFactory,new StateFactory(),new ExpressionPool());
     }
-    
+
     /** full constructor */
     public RELAXNGReader(
         GrammarReaderController controller,
         SAXParserFactory parserFactory,
         StateFactory stateFactory,
         ExpressionPool pool ) {
-        
+
         super( controller, parserFactory, pool, stateFactory, new RootState() );
     }
-    
-    
 
-    
+
+
+
     /**
      * Schema for schema of RELAX NG.
      */
     protected static Schema relaxNGSchema4Schema = null;
-    
+
     public static Schema getRELAXNGSchema4Schema() {
-        
+
         // under the multi-thread environment, more than once s4s could be loaded.
         // it's a waste of resource, but by no means fatal.
         if(relaxNGSchema4Schema==null) {
@@ -139,65 +139,67 @@ public class RELAXNGReader extends TREXBaseReader {
                         RELAXNGReader.class.getResourceAsStream("relaxng.rng"));
             } catch( Exception e ) {
                 e.printStackTrace();
-                throw new Error("unable to load schema-for-schema for RELAX NG");
+                throw new RuntimeException("unable to load schema-for-schema for RELAX NG");
             }
         }
-        
+
         return relaxNGSchema4Schema;
     }
-    
-    
-    
-    
+
+
+
+
     protected String localizeMessage( String propertyName, Object[] args ) {
         String format;
-        
+
         try {
             format = ResourceBundle.getBundle("com.sun.msv.reader.trex.ng.Messages").getString(propertyName);
         } catch( Exception e ) {
             return super.localizeMessage(propertyName,args);
         }
-        
+
         return MessageFormat.format(format, args );
     }
-    
+
     protected TREXGrammar getGrammar() {
         return grammar;
     }
-    
+
     /** Map from ReferenceExps to RefExpParseInfos. */
-    private final Map refExpParseInfos = new java.util.HashMap();
-    
+    private final Map<ReferenceExp,RefExpParseInfo> refExpParseInfos = new java.util.HashMap<ReferenceExp,RefExpParseInfo>();
+
     /** Gets RefExpParseInfo object for the specified ReferenceExp. */
     protected RefExpParseInfo getRefExpParseInfo( ReferenceExp exp ) {
-        RefExpParseInfo r = (RefExpParseInfo)refExpParseInfos.get(exp);
-        if(r==null)
-            refExpParseInfos.put(exp, r = new RefExpParseInfo());
+        RefExpParseInfo r = refExpParseInfos.get(exp);
+        if(r==null) {
+            r = new RefExpParseInfo();
+            refExpParseInfos.put(exp, r);
+        }
         return r;
     }
-    
+
     /**
      * Info about the current ReferenceExp object which is being defined.
      * This field is maintained by DefineState.
      * <p>
      * This field is set to null when there is an error, or the pattern being
      * defined is being re-defined.
-     * 
+     *
      * <p>
      * This is a part of the process of the recursive self reference error detection.
      */
     protected RefExpParseInfo currentNamedPattern = null;
-    
+
     /**
      * Flag to indicate whether we saw &lt;element> or not. If we don't see
      * any &lt;element> between &lt;define>/&lt;start> and &lt;ref>/&lt;parentRef>,
      * then that reference will go to <code>currentNamedPattern.refs</code>.
-     * 
+     *
      * <p>
      * This is a part of the process of the recursive self reference error detection.
      */
     protected boolean directRefernce = true;
-    
+
     /**
      * information necessary to correctly parse pattern definitions.
      */
@@ -208,13 +210,13 @@ public class RELAXNGReader extends TREXBaseReader {
          * It is an error that two head declarations share the same name.
          */
         public boolean haveHead = false;
-        
+
         /**
          * The combine method which is used to combine this pattern.
          * this field is set to null if combine attribute is not yet used.
          */
         public String combineMethod = null;
-        
+
         public static class RedefinitionStatus {}
         /**
          * This named pattern is not being redefined.
@@ -233,12 +235,12 @@ public class RELAXNGReader extends TREXBaseReader {
          * The same as {@link #originalNotFoundYet}, but we saw the original definition.
          */
         public static final RedefinitionStatus originalFound = new RedefinitionStatus();
-        
+
         /**
          * Current redefinition status.
          */
         public RedefinitionStatus redefinition = notBeingRedefined;
-        
+
         /**
          * Copies the contents of rhs into this object.
          */
@@ -247,23 +249,23 @@ public class RELAXNGReader extends TREXBaseReader {
             this.combineMethod = rhs.combineMethod;
             this.redefinition = rhs.redefinition;
         }
-        
+
         /**
          * ReferenceExps which are referenced from this pattern directly
          * (without having ElementExp in between.)
-         * 
+         *
          * <p>
          * This is used to detect recursive self reference errors.
          */
-        public final Vector directRefs = new Vector();
-        
+        public final Vector<ReferenceExp> directRefs = new Vector<ReferenceExp>();
+
         /**
          * ReferenceExps which are referenced from this pattern indirectly
          * (with ElementExp in between.)
          */
-        public final Vector indirectRefs = new Vector();
+        public final Vector<ReferenceExp> indirectRefs = new Vector<ReferenceExp>();
     }
-    
+
     /** Namespace URI of RELAX NG */
     public static final String RELAXNGNamespace = "http://relaxng.org/ns/structure/1.0";
 
@@ -272,12 +274,12 @@ public class RELAXNGReader extends TREXBaseReader {
         // allow old namespace URI for now.
         || "http://relaxng.org/ns/structure/0.9".equals(tag.namespaceURI);
     }
-    
+
     /**
      * DatatypeLibrary factory object.
      */
     private DatatypeLibraryFactory datatypeLibraryFactory = new DefaultDatatypeLibraryFactory();
-    
+
     /**
      * Returns the datatypeLibraryFactory.
      */
@@ -291,8 +293,8 @@ public class RELAXNGReader extends TREXBaseReader {
     public void setDatatypeLibraryFactory(DatatypeLibraryFactory datatypeLibraryFactory) {
         this.datatypeLibraryFactory = datatypeLibraryFactory;
     }
-    
-    
+
+
     /**
      * creates various State object, which in turn parses grammar.
      * parsing behavior can be customized by implementing custom StateFactory.
@@ -301,7 +303,7 @@ public class RELAXNGReader extends TREXBaseReader {
         public State nsAnyName    ( State parent, StartTagInfo tag ) { return new NGNameState.AnyNameState(); }
         public State nsNsName    ( State parent, StartTagInfo tag ) { return new NGNameState.NsNameState(); }
         public State nsExcept    ( State parent, StartTagInfo tag ) { return new NameClassChoiceState(); }
-        
+
         public State text            ( State parent, StartTagInfo tag ) { return new TerminalState(Expression.anyString); }
         public State data            ( State parent, StartTagInfo tag ) { return new DataState(); }
         public State dataParam        ( State parent, StartTagInfo tag ) { return new DataParamState(); }
@@ -324,7 +326,7 @@ public class RELAXNGReader extends TREXBaseReader {
         /**
          * to cause errors if someone is deriving this method.
          * this method is no longer used.
-         * 
+         *
          * @deprecated
          */
         protected final DatatypeLibrary getDatatypeLibrary( String namespaceURI ) throws Exception {
@@ -335,31 +337,31 @@ public class RELAXNGReader extends TREXBaseReader {
     protected StateFactory getStateFactory() {
         return (StateFactory)super.sfactory;
     }
-    
+
     protected State createNameClassChildState( State parent, StartTagInfo tag ) {
         if(tag.localName.equals("name"))        return sfactory.nsName(parent,tag);
         if(tag.localName.equals("anyName"))        return sfactory.nsAnyName(parent,tag);
         if(tag.localName.equals("nsName"))        return sfactory.nsNsName(parent,tag);
         if(tag.localName.equals("choice"))        return sfactory.nsChoice(parent,tag);
-        
+
         return null;        // unknown element. let the default error be thrown.
     }
-    
+
     public State createExpressionChildState( State parent, StartTagInfo tag ) {
-        
+
         if(tag.localName.equals("text"))        return getStateFactory().text(parent,tag);
         if(tag.localName.equals("data"))        return getStateFactory().data(parent,tag);
         if(tag.localName.equals("value"))        return getStateFactory().value(parent,tag);
         if(tag.localName.equals("list"))        return getStateFactory().list(parent,tag);
         if(tag.localName.equals("externalRef"))    return getStateFactory().externalRef(parent,tag);
         if(tag.localName.equals("parentRef"))    return getStateFactory().parentRef(parent,tag);
-        
+
         return super.createExpressionChildState(parent,tag);
     }
-    
+
     /** obtains a named DataType object referenced by a local name. */
     public Datatype resolveDataType( String localName ) {
-        
+
         try {
             return getCurrentDatatypeLibrary().createDatatype(localName);
         } catch( DatatypeException dte ) {
@@ -367,10 +369,10 @@ public class RELAXNGReader extends TREXBaseReader {
             return com.sun.msv.datatype.xsd.StringType.theInstance;
         }
     }
-    
+
     /**
      * obtains the DataTypeLibrary that represents the specified namespace URI.
-     * 
+     *
      * If the specified URI is undefined, then this method issues an error to
      * the user and must return a dummy datatype library.
      */
@@ -378,7 +380,7 @@ public class RELAXNGReader extends TREXBaseReader {
         try {
             DatatypeLibrary lib = datatypeLibraryFactory.createDatatypeLibrary(uri);
             if(lib!=null)        return lib;
-        
+
             // issue an error
             reportError( ERR_UNKNOWN_DATATYPE_VOCABULARY, uri );
         } catch( Throwable e ) {
@@ -387,92 +389,92 @@ public class RELAXNGReader extends TREXBaseReader {
         return ErrorDatatypeLibrary.theInstance;
     }
 
-    
-    
-    
-    
+
+
+
+    @SuppressWarnings("serial")
     private static class AbortException extends Exception {}
-    
+
     private void checkRunawayExpression(
-        ReferenceExp node, Stack items, Set visitedExps ) throws AbortException {
-                                                                                    
+        ReferenceExp node, Stack<ReferenceExp> items, Set<ReferenceExp> visitedExps ) throws AbortException {
+
         if( !visitedExps.add(node) )
             return;        // this ReferenceExp has already been processed.
         items.push(node);
-        
+
         // test direct references
-        Iterator itr = getRefExpParseInfo(node).directRefs.iterator();
+        Iterator<ReferenceExp> itr = getRefExpParseInfo(node).directRefs.iterator();
         while( itr.hasNext() ) {
             ReferenceExp child = (ReferenceExp)itr.next();
-            
+
             int idx = items.lastIndexOf(child);
             if(idx!=-1) {
                 // find a cycle.
-                
+
                 String s = "";
-                Vector locs = new Vector();
-            
+                Vector<Locator> locs = new Vector<Locator>();
+
                 for( ; idx<items.size(); idx++ ) {
                     ReferenceExp e = (ReferenceExp)items.get(idx);
                     if( e.name==null )    continue;    // skip anonymous ref.
-                    
+
                     if( s.length()!=0 )     s += " > ";
                     s += e.name;
-                    
+
                     Locator loc = getDeclaredLocationOf(e);
                     if(loc==null)    continue;
                     locs.add(loc);
                 }
-                
+
                 s += " > " + child.name;
-                
+
                 reportError(
                     (Locator[])locs.toArray(new Locator[locs.size()]),
                     ERR_RUNAWAY_EXPRESSION, new Object[]{s} );
-                
+
                 throw new AbortException();
             }
-            
+
             checkRunawayExpression( child, items, visitedExps );
         }
 
         // test indirect references
-        Stack empty = new Stack();
+        Stack<ReferenceExp> empty = new Stack<ReferenceExp>();
         itr = getRefExpParseInfo(node).indirectRefs.iterator();
         while( itr.hasNext() )
-            checkRunawayExpression( (ReferenceExp)itr.next(), empty, visitedExps );
-        
+            checkRunawayExpression(itr.next(), empty, visitedExps );
+
         items.pop();
     }
-    
-    
+
+
     /**
      * Contextual restriction checker.
      */
     protected final RestrictionChecker restrictionChecker =
         new RestrictionChecker(this);
-    
+
     public void wrapUp() {
-        
+
         // checks the runaway expression
         try {
-            checkRunawayExpression( grammar, new Stack(), new java.util.HashSet() );
+            checkRunawayExpression( grammar, new Stack<ReferenceExp>(), new java.util.HashSet<ReferenceExp>() );
         } catch( AbortException e ) {;}
-        
+
         if( !controller.hadError() )
             // make sure that there is no sequenced string.
             // when run-away expression is found, calling this method results in
             // stack overflow.
             grammar.visit( new TREXSequencedStringChecker(this,true) );
-        
+
         if( !controller.hadError() )
             // check RELAX NG contextual restrictions
             restrictionChecker.check();
             // this algorithm does not work if there is a runaway expression
     }
-    
-    
-    
+
+
+
 // propagatable attributes
 //--------------------------------
     /**
@@ -482,36 +484,36 @@ public class RELAXNGReader extends TREXBaseReader {
      * So care should be taken not to report the same error again.
      */
     private DatatypeLibrary datatypeLib = resolveDataTypeLibrary("");
-    
+
     public DatatypeLibrary getCurrentDatatypeLibrary() {
         if(datatypeLib==null) {
             // load it.
             // the resolution of the datatypeLibrary has to be delayed until
             // it is actually used.
             datatypeLib = resolveDataTypeLibrary(datatypeLibURI);
-            
+
             // assertion failed
             if(datatypeLib==null)    throw new Error();
         }
         return datatypeLib;
     }
-    
+
     /**
      * the namespace URI of the currently active datatype library.
      * The empty string indicates the built-in datatype library.
      */
     protected String datatypeLibURI = "";
-    
+
     private final LightStack dtLibStack = new LightStack();
     private final LightStack dtLibURIStack = new LightStack();
 
     public String resolveNamespacePrefix( String prefix ) {
-        // In RELAX NG grammar, the default namespace should be resolved 
+        // In RELAX NG grammar, the default namespace should be resolved
         // to the current value of the ns attribute.
         if(prefix.equals(""))    return targetNamespace;
         else                    return super.resolveNamespacePrefix(prefix);
     }
-    
+
     public void startDocument() throws SAXException {
         // the datatypeLibrary attribute does not do chameleon
         dtLibStack.push(datatypeLib);
@@ -526,7 +528,7 @@ public class RELAXNGReader extends TREXBaseReader {
         datatypeLib = (DatatypeLibrary)dtLibStack.pop();
         datatypeLibURI = (String)dtLibURIStack.pop();
     }
-    
+
     public void startElement( String a, String b, String c, Attributes d ) throws SAXException {
         // handle 'datatypeLibrary' attribute propagation
         dtLibStack.push(datatypeLib);
@@ -534,14 +536,14 @@ public class RELAXNGReader extends TREXBaseReader {
         if( d.getIndex("datatypeLibrary")!=-1 ) {
             datatypeLibURI = d.getValue("datatypeLibrary");
             datatypeLib = null;
-            
+
             if( !Util.isAbsoluteURI(datatypeLibURI) )
                 reportError( ERR_NOT_ABSOLUTE_URI, datatypeLibURI );
             if( datatypeLibURI.indexOf('#')>=0 )
                 reportError( ERR_FRAGMENT_IDENTIFIER, datatypeLibURI );
-                
+
         }
-        
+
         // if nothing specified, datatype library stays the same.
         super.startElement(a,b,c,d);
     }
@@ -550,10 +552,10 @@ public class RELAXNGReader extends TREXBaseReader {
         datatypeLib = (DatatypeLibrary)dtLibStack.pop();
         datatypeLibURI = (String)dtLibURIStack.pop();
     }
-    
-    
-    
-    
+
+
+
+
     // error messages
     public static final String ERR_BAD_FACET = // arg:2
         "RELAXNGReader.BadFacet";

@@ -5,7 +5,7 @@ Currently, it supports RELAX NG.
 This release includes software developed by the Apache Software
 Foundation (https://xml.apache.org/).
 
-## OVERVIEW
+## Overview
 
 This tool is a command line tool that can compile RELAX NG grammar to
 a Java object model that in turn parses XML documents written in that
@@ -18,5 +18,4 @@ customize the generated object model.
 See [UsersGuide.html](./UsersGuide.html) for details.
 
 This tool should be considered as alpha-quality. And any feedback is
-more than welcome! Please send it to kohsuke.kawaguchi@sun.com
-
+more than welcome!

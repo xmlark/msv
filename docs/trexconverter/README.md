@@ -1,35 +1,38 @@
 # TREX CONVERTER
 
-Sun TREX Converter is a tool to convert schemas written in various
+MSV TREX Converter is a tool to convert schemas written in various
 schema languages to their equivalent in TREX.
 
 It supports schemas written in XML DTD, RELAX Core, RELAX namespace,
 RELAX NG, W3C XML Schema, and TREX itself.
 
 This release includes software developed by the Apache Software
-Foundation (http://www.apache.org/).
+Foundation (https://www.apache.org/).
 
-## USAGE
+## Usage
 
 To convert a schema written in either RELAX Core, RELAX namespace,
 RELAX NG, or W3C XML Schema, enter the following:
 
-$ java -jar rngconv.jar myschema.xsd > result.trex
+```java
+    java -jar rngconv.jar myschema.xsd > result.trex
+```
 
 The converter detects the schema language automatically (except for XML
 DTDs) and writes the result to "result.trex".
 
 To convert an XML DTD, enter the following:
 
+```java
 java -jar rngconv.jar -dtd myschema.dtd > result.trex
+```
 
 Note that you need the -dtd option.
 
-
-## KNOWN LIMITATIONS
+## Known Limitations
 
 * This software relies on Sun Multi-Schema Validator(MSV). Therefore
-  any limitations of MSV apply also to this converter. See [1] for
+  any limitations of MSV apply also to this converter. See [[1]](https://xmlark.github.io/msv/core/) for
   more information.
 
 * RELAX Core permits undeclared attributes to appear in instance
@@ -37,7 +40,7 @@ Note that you need the -dtd option.
   attributes are considered invalid after the conversion.
 
 * Identity constraints of W3C XML Schema and RELAX NG are not converted.
-  So if the source schema uses <xsd:key>,<xsd:keyref>, or <xsd:unique>,
+  So if the source schema uses &lt;xsd:key&gt;,&lt;xsd:keyref&gt;, or &lt;xsd:unique&gt;,
   this converter ignores those declarations.
 
 * It may fail to convert some datatype definitions, especially those that
@@ -47,6 +50,4 @@ Note that you need the -dtd option.
   TREX pattern. This limitation can be used to parse modularized
   TREX pattern and create a single monolithic pattern.
 
-
-[1] Multi-Schema Validator
-    	https://xmlark.github.io/msv/core/
+[1] Multi-Schema Validator https://xmlark.github.io/msv/core/

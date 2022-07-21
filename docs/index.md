@@ -15,7 +15,7 @@ MSV consists of a number of sub-projects, the main projects in bold. Each sub-pr
 | [testharness](../testharness/)       | [Test harness](./testharness/README.md)<br/>Used to parse composite test suite files (.ssuite).                                                                   |
 | **[msv core](../msv)**      | **[Multi-Schema XML Core Validator](./core/index.html)**<br/>A schema model and validator implementation [(see MSV Core JavaDoc)](https://xmlark.github.io/msv/core/api/index.html).</br>Dependent on XSDLib and testharness.                       |
 | **[generator](../generator/)**     | **[XML Instance Generator](./generator/README.md)** A tool that produces valid XML documents by reading a schema. Dependent on MSV.                                 |
-| [schmit](../schmit/)            | [MSV Schema-in-transformation XSLT add-on (Schmit)](./schmit/readme.html)<br/>XSLT Extension For Schema Annotation.                                            |
+| [schmit](../schmit/)            | [MSV SCHema In Transformation XSLT add-on (Schmit)](./schmit/readme.html)<br/>XSLT Extension For Schema Annotation.                                            |
 | [relames](../relames/)           | [Multi-Schema XML Validator Schematron add-on](./relames/README.md)<br/>An experimental implementation of RELAX NG + Schematron validation. Dependent on MSV. |
 | **[rngconverter](../rngconverter/)**  | **[RELAX NG Converter](./rngconverter/README.md)**<br/>reads a schema and produces an equivalent RELAX NG schema. Dependent on MSV.                                    |
 | [tahiti](../tahiti/)            | [Data-binding implementation](./tahiti/README.md)                                                                                         |

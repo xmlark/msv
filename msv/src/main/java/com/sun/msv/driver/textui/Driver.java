@@ -66,36 +66,109 @@ import com.sun.msv.verifier.DocumentDeclaration;
 import com.sun.msv.verifier.Verifier;
 import com.sun.msv.verifier.identity.IDConstraintChecker;
 import com.sun.msv.verifier.regexp.REDocumentDeclaration;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * command line Verifier.
- * 
+ *
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class Driver {
-    
+
     static SAXParserFactory factory;
-    
+
+    private static String MSV_NAME;
+    private static String MSV_VERSION;
+    private static String MSV_WEBSITE;
+    private static String MSV_BUILD_DATE;
+
+  private static final String CURRENT_CLASS_RESOURCE_PATH =
+          "com/sun/msv/driver/textui/Driver.class";
+  private static final String INNER_JAR_MANIFEST_PATH = "META-INF/MANIFEST.MF";
+
+
+  static {
+    try {
+        InputStream in;
+        if((in = getManifestAsStream()) != null){
+            Manifest manifest = new Manifest(in);
+            Attributes attr = manifest.getMainAttributes();
+            MSV_NAME = attr.getValue("MSV-Version");
+            MSV_VERSION = attr.getValue("MSV-Version");
+            MSV_WEBSITE = attr.getValue("MSV-Website");
+            MSV_BUILD_DATE = attr.getValue("MSV-Built-Date");
+        }else{
+            MSV_NAME = "Multi Schema Validator";
+            MSV_VERSION = "007";
+            MSV_WEBSITE = "example.com";
+            MSV_BUILD_DATE = "lately";
+        }
+    } catch (IOException e) {
+      Logger.getLogger(Driver.class.getName()).log(Level.SEVERE, null, e);
+    }
+  }
+
+  /**
+   * The problem is that in the test environment the class is NOT within the JAR, but in a class
+   * direvtory where no MANIFEST.MF exists..
+   */
+    private static InputStream getManifestAsStream() {
+        URL versionUrl;
+        InputStream in = null;
+        if ((versionUrl = Driver.class.getClassLoader().getResource(CURRENT_CLASS_RESOURCE_PATH)) != null) {
+            String versionRef = versionUrl.toString();
+            String manifestRef
+                    = versionRef.substring(0, versionRef.lastIndexOf(CURRENT_CLASS_RESOURCE_PATH))
+                    + INNER_JAR_MANIFEST_PATH;
+            URL manifestURL = null;
+            try {
+                manifestURL = new URL(manifestRef);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(Driver.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                if (manifestURL != null) {
+                    in = manifestURL.openStream();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Driver.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return in;
+    }
+
+
     /** Prints the usage screen. */
     private static void usage() {
         System.out.println( localize(MSG_USAGE) );
     }
-    
+
     /** Prints the version number. */
     private static void printVersion() {
-        System.out.println("Multi Schema Validator Ver."+
-            java.util.ResourceBundle.getBundle("version").getString("version") );
+        System.out.println("Multi Schema Validator (MSV)\n"
+              +"ver. " + MSV_VERSION + "\n"
+              + "(build "
+              + MSV_BUILD_DATE
+              + ")\n"
+              + "from "
+              + MSV_WEBSITE);
     }
-    
+
     public static void main( String[] args ) throws Exception {
         System.exit(run(args));
     }
-    
+
     @SuppressWarnings("deprecation")
     public static int run( String[] args ) throws Exception {
         final List<String> fileNames = new ArrayList<String>();
         final List<URL> classPaths = new ArrayList<URL>();
-        
+
         String grammarName = null;
         boolean dump=false;
         boolean verbose = false;
@@ -104,7 +177,7 @@ public class Driver {
         boolean strict=false;
         boolean usePanicMode=true;
         EntityResolver entityResolver=null;
-        
+
         for( int i=0; i<args.length; i++ ) {
             if( args[i].equalsIgnoreCase("-h")
             ||  args[i].equalsIgnoreCase("-help")
@@ -142,10 +215,10 @@ public class Driver {
             else
             if( args[i].equalsIgnoreCase("-locale") ) {
                 String code = args[++i];
-                
+
                 int idx = code.indexOf('-');
                 if(idx<0)    idx = code.indexOf('_');
-                
+
                 if(idx<0)
                     Locale.setDefault( new Locale(code,"") );
                 else
@@ -163,11 +236,11 @@ public class Driver {
                 // http://www.sun.com/xml/developers/resolver/
                 if(entityResolver==null)
                     entityResolver = new CatalogResolver(true);
-                
+
                 ((CatalogResolver)entityResolver).getCatalog().parseCatalog(args[++i]);
             }
             else
-            if( args[i].equalsIgnoreCase("-version") ) {
+            if( args[i].equalsIgnoreCase("-version") || args[i].equalsIgnoreCase("-v")) {
                 printVersion();
                 return 0;
             } else {
@@ -176,35 +249,35 @@ public class Driver {
                     usage();
                     return -1;
                 }
-                
+
                 if( grammarName==null )    grammarName = args[i];
                 else {
                     fileNames.add(args[i]);
                 }
             }
         }
-        
+
         if( grammarName==null ) {
             System.out.println( localize(MSG_USAGE) );
             return -1;
         }
-        
+
         if( verbose )
             printVersion();
 
-        
+
         if( factory==null )
             factory = SAXParserFactory.newInstance();
-        
+
         if( verbose ) {
             System.out.println( localize( MSG_PARSER, Util.which(factory.getClass()) ) );
         }
-        
+
         factory.setNamespaceAware(true);
         factory.setValidating(false);
         if( !standalone && verbose )
             System.out.println( localize( MSG_DTDVALIDATION ) );
-        
+
         if( standalone )
             try {
                 factory.setFeature("http://xml.org/sax/features/validation",false);
@@ -221,8 +294,8 @@ public class Driver {
             } catch( Exception e ) {
                 ;
             }
-        
-        
+
+
 
     // parse schema
     //--------------------
@@ -232,14 +305,14 @@ public class Driver {
         Grammar grammar=null;
         try {
             GrammarLoader loader = new GrammarLoader();
-            
+
             // set various parameters
             loader.setController( new DebugController(warning,false,entityResolver) );
             loader.setSAXParserFactory(factory);
             loader.setStrictCheck(strict);
-            
+
             grammar = loader.parse(grammarName);
-            
+
         } catch(SAXParseException spe) {
             if(Debug.debug)
                 spe.getException().printStackTrace();
@@ -252,12 +325,12 @@ public class Driver {
             System.out.println( localize(ERR_LOAD_GRAMMAR) );
             return -1;
         }
-            
+
         long parsingTime = System.currentTimeMillis();
         if( verbose )
             System.out.println( localize( MSG_PARSING_TIME, new Long(parsingTime-stime) ) );
 
-        
+
         if(dump) {
             if( grammar instanceof RELAXModule )
                 dumpRELAXModule( (RELAXModule)grammar );
@@ -270,10 +343,10 @@ public class Driver {
             else
             if( grammar instanceof XMLSchemaGrammar )
                 dumpXMLSchema( (XMLSchemaGrammar)grammar );
-            
+
             return -1;
         }
-        
+
     // validate documents
     //--------------------
         DocumentVerifier verifier;
@@ -287,22 +360,22 @@ public class Driver {
         else
             // validate normally by using Verifier.
             verifier = new SimpleVerifier( new REDocumentDeclaration(grammar) );
-        
-        
+
+
         boolean allValid = true;
-        
+
         for( int i=0; i<fileNames.size(); i++ )    {
-            
+
             final String instName = (String)fileNames.get(i);
             System.out.println( localize( MSG_VALIDATING, instName) );
-            
+
             boolean result=false;
-            
+
             try {
                 XMLReader reader = factory.newSAXParser().getXMLReader();
                 if(entityResolver!=null)    reader.setEntityResolver(entityResolver);
                 reader.setErrorHandler( new ReportErrorHandler() );
-                
+
                 result = verifier.verify(
                     reader,
                     Util.getInputSource(instName),
@@ -317,25 +390,25 @@ public class Driver {
                 if( e.getException()!=null )
                       e.getException().printStackTrace();
             }
-            
+
             if(result)
                 System.out.println(localize(MSG_VALID));
             else {
                 System.out.println(localize(MSG_INVALID));
                 allValid = false;
             }
-            
+
             if( i!=fileNames.size()-1 )
                 System.out.println("--------------------------------------");
         }
-        
-            
+
+
         if( verbose )
             System.out.println( localize( MSG_VALIDATION_TIME, new Long(System.currentTimeMillis()-parsingTime) ) );
-        
+
         return allValid?0:-1;
     }
-    
+
     public static void dumpTREX( TREXGrammar g ) throws Exception {
         System.out.println("*** start ***");
         System.out.println(ExpressionPrinter.printFragment(g.exp));
@@ -344,11 +417,11 @@ public class Driver {
             ExpressionPrinter.fragmentInstance.printRefContainer(
                 g.namedPatterns ) );
     }
-    
+
     public static void dumpXMLSchema( XMLSchemaGrammar g ) throws Exception {
         System.out.println("*** top level ***");
         System.out.println(ExpressionPrinter.printFragment(g.topLevel));
-        
+
         Iterator<?> itr = g.iterateSchemas();
         while(itr.hasNext()) {
             XMLSchemaSchema s = (XMLSchemaSchema)itr.next();
@@ -366,20 +439,20 @@ public class Driver {
                 ExpressionPrinter.printContentModel(
                     exp.getContentModel().getExpandedExp(s.pool)) );
         }
-        
+
         System.out.println("*** complex types ***");
         System.out.print(
             ExpressionPrinter.contentModelInstance.printRefContainer(
                 s.complexTypes ) );
     }
-    
+
     public static void dumpRELAXModule( RELAXModule m ) throws Exception {
-        
+
         System.out.println("*** top level ***");
         System.out.println(ExpressionPrinter.printFragment(m.topLevel));
-        
+
         System.out.println("\n $$$$$$[ " + m.targetNamespace + " ]$$$$$$");
-        
+
         System.out.println("*** elementRule ***");
         System.out.print(
             ExpressionPrinter.fragmentInstance.printRefContainer(
@@ -406,39 +479,39 @@ public class Driver {
     private interface DocumentVerifier {
         boolean verify( XMLReader p, InputSource instance, boolean usePanicMode ) throws Exception;
     }
-    
+
     /** validates a document by using divide &amp; validate framework. */
     private static class RELAXNSVerifier implements DocumentVerifier {
         private final SchemaProvider sp;
-        
+
         RELAXNSVerifier( SchemaProvider sp ) { this.sp=sp; }
-        
+
         public boolean verify( XMLReader p, InputSource instance, boolean panicMode ) throws Exception {
             Dispatcher dispatcher = new DispatcherImpl(sp);
             dispatcher.attachXMLReader(p);
             ReportErrorHandler errorHandler = new ReportErrorHandler();
             dispatcher.setErrorHandler( errorHandler );
-            
+
             // TODO: support the panicMode argument
             p.parse(instance);
             return !errorHandler.hadError;
         }
     }
-    
+
     private static class SimpleVerifier implements DocumentVerifier {
         private final DocumentDeclaration docDecl;
-        
+
         SimpleVerifier( DocumentDeclaration docDecl ) { this.docDecl = docDecl; }
 
         public boolean verify( XMLReader p, InputSource instance, boolean panicMode ) throws Exception {
             ReportErrorHandler reh = new ReportErrorHandler();
             Verifier v = new Verifier( docDecl, reh );
             v.setPanicMode(panicMode);
-        
+
             p.setDTDHandler(v);
             p.setContentHandler(v);
             p.setErrorHandler(reh);
-        
+
             p.parse( instance );
             return v.isValid();
         }
@@ -446,18 +519,18 @@ public class Driver {
 
     private static class XMLSchemaVerifier implements DocumentVerifier {
         private final XMLSchemaGrammar grammar;
-        
+
         XMLSchemaVerifier( XMLSchemaGrammar grammar ) { this.grammar = grammar; }
 
         public boolean verify( XMLReader p, InputSource instance, boolean panicMode ) throws Exception {
             ReportErrorHandler reh = new ReportErrorHandler();
             Verifier v = new IDConstraintChecker( grammar, reh );
             v.setPanicMode(panicMode);
-        
+
             p.setDTDHandler(v);
             p.setContentHandler(v);
             p.setErrorHandler(reh);
-        
+
             p.parse( instance );
             return v.isValid();
         }
@@ -474,7 +547,7 @@ public class Driver {
     { return localize(prop,new Object[]{arg1}); }
     public static String localize( String prop, Object arg1, Object arg2 )
     { return localize(prop,new Object[]{arg1,arg2}); }
-    
+
     public static final String MSG_DTDVALIDATION =        "Driver.DTDValidation";
     public static final String MSG_PARSER =                "Driver.Parser";
     public static final String MSG_USAGE =                "Driver.Usage";
@@ -489,4 +562,50 @@ public class Driver {
     public static final String MSG_BAILOUT =            "Driver.BailOut";
     public static final String MSG_FAILED_TO_IGNORE_EXTERNAL_DTD ="Driver.FailedToIgnoreExternalDTD";
     public static final String MSG_WARNING_FOUND =        "Driver.WarningFound";
+
+    /**
+     * Return the name of MSV;
+     *
+     * @return the MSV library name
+     */
+    public static String getMsvName() {
+        return MSV_NAME;
+    }
+
+    /**
+     * Returns the MSV library title
+     *
+     * @return A string containing both the name and the version of the MSV
+     * library.
+     */
+    public static String getMsvTitle() {
+        return getMsvName() + ' ' + getMsvVersion();
+    }
+
+    /**
+     * Return the version of the MSV library (ie. odfdom.jar)
+     *
+     * @return the MSV library version
+     */
+    public static String getMsvVersion() {
+        return MSV_VERSION;
+    }
+
+    /**
+     * Return the website of the MSV library (ie. odfdom.jar)
+     *
+     * @return the MSV library website
+     */
+    public static String getMsvWebsite() {
+        return MSV_WEBSITE;
+    }
+
+    /**
+     * Return the date when MSV had been build
+     *
+     * @return the date of the build formated as "yyyy-MM-dd'T'HH:mm:ss".
+     */
+    public static String getMsvBuildDate() {
+        return MSV_BUILD_DATE;
+    }
 }

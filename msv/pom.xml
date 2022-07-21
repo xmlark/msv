@@ -175,6 +175,11 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                                     com.sun.msv.writer*
                                 </Export-Package>
                                 <Main-Class>com.sun.msv.driver.textui.Driver</Main-Class>
+                                <Bundle-Version>${project.version}</Bundle-Version>
+                                <MSV-Name>${project.url}</MSV-Name>
+                                <MSV-Version>${project.version}</MSV-Version>
+                                <MSV-Website>${project.url}</MSV-Website>
+                                <MSV-Built-Date>${build.timestamp}</MSV-Built-Date>
                             </instructions>
                         </configuration>
                     </execution>
@@ -253,7 +258,25 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                         </goals>
                     </execution>
                 </executions>
-            </plugin>         
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <msv.version>${project.version}</msv.version>
+                    </systemPropertyVariables>                
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>failsafe-it</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <profiles>

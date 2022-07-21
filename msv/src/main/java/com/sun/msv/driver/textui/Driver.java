@@ -146,7 +146,7 @@ public class Driver {
 
     /** Prints the usage screen. */
     private static void usage() {
-        System.out.println( localize(MSG_USAGE) );
+        System.out.println( localize(MSG_USAGE, MSV_VERSION) );
     }
 
     /** Prints the version number. */
@@ -258,7 +258,7 @@ public class Driver {
         }
 
         if( grammarName==null ) {
-            System.out.println( localize(MSG_USAGE) );
+            System.out.println( localize(MSG_USAGE, MSV_VERSION) );
             return -1;
         }
 

@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.sun.msv.datatype"},{"l":"com.sun.msv.datatype.regexp"},{"l":"com.sun.msv.datatype.xsd"},{"l":"com.sun.msv.datatype.xsd.datetime"},{"l":"com.sun.msv.datatype.xsd.ngimpl"},{"l":"com.sun.msv.datatype.xsd.regex"},{"l":"com.sun.xml.util"}];updateSearchResults();

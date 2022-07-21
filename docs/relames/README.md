@@ -1,20 +1,12 @@
-======================================================================
-   README FILE FOR SUN MULTI-SCHEMA XML VALIDATOR SCHEMATRON ADD-ON
-                         version @@VERSION@@
-             Copyright (c) Sun Microsystems, 2001-@@YEAR@@
-Document written by Kohsuke Kawaguchi (kohsuke.kawaguchi@eng.sun.com)
-                                                     $Revision$
-======================================================================
+# MULTI-SCHEMA XML VALIDATOR SCHEMATRON ADD-ON
 
-The Sun Multi-Schema XML Validator Schematron add-on is a Java tool
+The Multi-Schema XML Validator Schematron add-on is a Java tool
 to validate XML documents against RELAX NG [1] schemas annotated with
 Schematron schemas [2]. This release includes software developed by
 the Apache Software Foundation [3].
 
 
-----------------------------------------------------------------------
-OVERVIEW
-----------------------------------------------------------------------
+## OVERVIEW
 
 By using this tool, you can embed Schematron constraints into RELAX NG
 schemas. Then this tool validates documents against both RELAX NG grammar
@@ -31,10 +23,7 @@ To run the program, you must have Xalan-Java [4] and JAXP-compliant
 XML parser in your classpath.
 
 
-
-----------------------------------------------------------------------
-HOW TO EMBED SCHEMATRON
-----------------------------------------------------------------------
+## HOW TO EMBED SCHEMATRON
 
 This release supports Schematron constraints to be embedded in
 the <element> pattern of RELAX NG:
@@ -142,9 +131,7 @@ other RELAX NG processors will silently ignore all Schematron constraints.
 
 
 
-----------------------------------------------------------------------
-USING FROM COMMAND LINE
-----------------------------------------------------------------------
+## USING FROM COMMAND LINE
 
 The jar file can be used as a command-line validation tool.
 Type as follows:
@@ -155,10 +142,7 @@ To get the usage screen.
 
 
 
-
-----------------------------------------------------------------------
-USING FROM YOUR PROGRAM
-----------------------------------------------------------------------
+## USING FROM YOUR PROGRAM
 
 The schematron extension can be used through JARV API [5], which makes
 it very simple to use this library from your application.
@@ -171,28 +155,22 @@ VerifierFactory factory = VerifierFactory.newInstance(
 to create a verifier factory from this extension library.
 
 
-
-----------------------------------------------------------------------
-LIMITATION
-----------------------------------------------------------------------
+## LIMITATION
 
 - id() function works correctly only if Xerces or Crimson is used as
   the DOM implementaion. This is because of the limitation in W3C DOM.
 
 
 
-----------------------------------------------------------------------
-REFERENCES
-----------------------------------------------------------------------
+## REFERENCES
 [ 1] RELAX NG
-      http://www.oasis-open.org/committees/relax-ng/
+      https://www.oasis-open.org/committees/relax-ng/
 [ 2] Schematron
-      http://www.ascc.net/xml/resource/schematron/schematron.html
+      https://www.schematron.com/
 [ 3] Apache Software Foundation
-      http://www.apache.org/
+      https://www.apache.org/
 [ 4] Xalan-Java
-      http://xml.apache.org/xalan-j/
+      https://xml.apache.org/xalan-j/
 [ 5] JARV API
       http://iso-relax.sourceforge.net/JARV/
-======================================================================
-END OF README
+

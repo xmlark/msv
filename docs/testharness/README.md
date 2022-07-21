@@ -1,19 +1,9 @@
-======================================================================
-      README FILE FOR RELAX NG CONFORMANCE TEST HARNESS FOR JAVA
-                 Copyright (c) Sun Microsystems, 2001
-
-            Document by Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
-                                                     $Revision$
-======================================================================
+# RELAX NG CONFORMANCE TEST HARNESS FOR JAVA
 
 RELAX NG Conformance Test Harness for Java is an Open-source Java
 framework to test the conformance of RELAX NG processors.
 
-
-
-----------------------------------------------------------------------
-OVERVIEW
-----------------------------------------------------------------------
+## OVERVIEW
 
 This framework parses the test suite files and then use JUnit to test
 RELAX NG processor. So first you need a test suite file.
@@ -34,14 +24,10 @@ For example, to test the conformance of MSV with foo.rts and bar.rts,
 
 $ java -jar rngtsth.jar jing.IValidatorImpl foo.rts bar.rts
 
-
 Your classpath must include junit.jar, msv.jar and msvDriver.jar.
 
 
-
-----------------------------------------------------------------------
-WRITING AN ADAPTOR
-----------------------------------------------------------------------
+## WRITING AN ADAPTOR
 
 This framework provides the core functionality to parse test suite
 files and perform tests by them.  However, to use this framework with
@@ -54,7 +40,3 @@ the org.relaxng.testharness.validator.ISchema interface.
 
 See msvDriver-src.zip for an example. It should be easy if the processor
 supports SAX or DOM based input.
-
-
-======================================================================
-END OF README

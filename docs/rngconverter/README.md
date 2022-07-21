@@ -1,11 +1,6 @@
-======================================================================
-              README FILE FOR THE SUN RELAX NG CONVERTER
-                        version @@VERSION@@
-              Copyright (c) Sun Microsystems, 2001-@@YEAR@@
-Document written by Kohsuke Kawaguchi (kohsuke.kawaguchi@eng.sun.com)
-======================================================================
+# RELAX NG CONVERTER
 
-Sun RELAX NG Converter is a tool to convert schemas written in various
+RELAX NG Converter is a tool to convert schemas written in various
 schema languages to their equivalent in RELAX NG.
 
 It supports schemas written in XML DTD, RELAX Core, RELAX namespace,
@@ -14,9 +9,8 @@ TREX, W3C XML Schema, and RELAX NG itself.
 This release includes software developed by the Apache Software
 Foundation (http://www.apache.org/).
 
-----------------------------------------------------------------------
-USAGE
-----------------------------------------------------------------------
+
+## USAGE
 
 To convert a schema written in either RELAX Core, RELAX namespace, TREX,
 or W3C XML Schema, enter the following:
@@ -33,9 +27,7 @@ java -jar rngconv.jar -dtd myschema.dtd > result.rng
 Note that you need the -dtd option.
 
 
-----------------------------------------------------------------------
-LICENSE
-----------------------------------------------------------------------
+## LICENSE
 
 The most of the code is licensed under the BSD license (see
 license.txt). The only exception to this is a part of the code of XSDLib,
@@ -43,9 +35,7 @@ which was taken from Apache, which is licensed under ASL 1.1
 (see Apache-LICENSE-1.1.txt)
 
 
-----------------------------------------------------------------------
-KNOWN LIMITATIONS
-----------------------------------------------------------------------
+## KNOWN LIMITATIONS
 
 * This software relies on Sun Multi-Schema Validator(MSV). Therefore
   any limitations of MSV apply also to this converter. See [1] for
@@ -68,8 +58,6 @@ KNOWN LIMITATIONS
   RELAX NG grammar and create a single monolithic grammar.
 
 
-[1] Sun Multi-Schema Validator
-     http://www.sun.com/software/xml/developers/multischema/
+[1] Multi-Schema Validator (MSV)
+     https://xmlark.github.io/msv/core/
 
-======================================================================
-END OF README

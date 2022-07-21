@@ -1,11 +1,6 @@
-======================================================================
-            README FILE FOR THE SUN XML DATATYPES LIBRARY
-                          version @@VERSION@@
-              Copyright (c) Sun Microsystems, 2001-@@YEAR@@
-Document written by Kohsuke Kawaguchi (kohsuke.kawaguchi@eng.sun.com)
-======================================================================
+# MSV XML DATATYPES LIBRARY
 
-Sun XML Datatypes Library, Sun's Java[tm] technology implementation of
+MSV XML Datatypes Library, Java implementation of
 W3C's XML Schema Part 2 (http://www.w3.org/TR/xmlschema-2/), is
 intended for use with applications that incorporate XML Schema Part 2.
 
@@ -16,18 +11,22 @@ Schema Part 2 Datatype.
 This product includes software developed by the Apache Software
 Foundation (http://www.apache.org/).
 
-----------------------------------------------------------------------
-SAMPLE CODE FILE
-----------------------------------------------------------------------
+## USAGE GUIDE
+
+There is an [own usage guide document](HowToUse.html)!
+
+## JAVA DOC
+
+The latest [JavaDoc API](./api/index.html)!
+
+## SAMPLE CODE FILE
 
 This distribution of the XML Datatypes Library includes a sample class
 file, src/com/sun/tranquilo/datatype/CommandLineTester.java, which is
 provided as a guide for implementing your own Java classes with the
 Datatypes Library.
 
-----------------------------------------------------------------------
-LICENSE
-----------------------------------------------------------------------
+## LICENSE
 
 The most of the code is licensed under the BSD license (see
 license.txt). The only exception to this is the code taken from Apache,
@@ -37,9 +36,7 @@ In the source tree, the code taken from Apache is hosted in 'src-apache'
 so that XSDLib can be built without Apache code if necessary.
 
 
-----------------------------------------------------------------------
-KNOWN LIMITATIONS
-----------------------------------------------------------------------
+## KNOWN LIMITATIONS
 
 1. Types "float" and "double": the spec says a lexical value must be
    mapped to the closest value in the value space. However, This
@@ -107,5 +104,3 @@ KNOWN LIMITATIONS
     http://lists.w3.org/Archives/Public/www-xml-schema-comments/2001JanMar/0367.html
     http://lists.w3.org/Archives/Public/www-xml-schema-comments/2001JanMar/0368.html
 
-======================================================================
-END OF README

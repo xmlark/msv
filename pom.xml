@@ -47,7 +47,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
         <maven.javadoc.skip>false</maven.javadoc.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <revision>2017.3-SNAPSHOT</revision>
+        <revision>2022.8-SNAPSHOT</revision>
         <skipTests>false</skipTests>
         <surefire.fork.mode>once</surefire.fork.mode>
         <surefire.fork.vmargs>-ea</surefire.fork.vmargs>

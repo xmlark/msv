@@ -7,19 +7,19 @@ Most outstanding is the design of MSV core using the [Abstract grammar model (AG
 
 ## Development Guides
 
-MSV consists of a number of sub-projects. Each sub-projects has its own directory, its own build script, etc.
+MSV consists of a number of sub-projects, the main projects in bold. Each sub-projects has its own directory, its own build script, etc.
 
-| sub-project       | description                                                                                                                                |
+| sub-project       | description & dev guide reference                                                                                                          |
 |:------------------|:-------------------------------------------------------------------------------------------------------------------------------------------|
 | **[xsdlib](../xsdlib)**        | **[XML Schema Datatype (XSD) Library](./xsdlib/README.md)**<br/>An implementation of W3C XML Schema Part 2 [(see xsdlib JavaDoc)](https://xmlark.github.io/msv/xsdlib/api/index.html). |
-| [testharness](../testharness/)       | **[Test harness](./testharness/README.md)**<br/>Used to parse composite test suite files (.ssuite).                                                                   |
+| [testharness](../testharness/)       | [Test harness](./testharness/README.md)<br/>Used to parse composite test suite files (.ssuite).                                                                   |
 | **[msv core](../msv)**      | **[Multi-Schema XML Core Validator](./core/index.html)**<br/>A schema model and validator implementation [(see MSV Core JavaDoc)](https://xmlark.github.io/msv/core/api/index.html).</br>Dependent on XSDLib and testharness.                       |
 | **[generator](../generator/)**     | **[XML Instance Generator](./generator/README.md)** A tool that produces valid XML documents by reading a schema. Dependent on MSV.                                 |
-| [schmit](../schmit/)            | **[MSV Schema-in-transformation XSLT add-on (Schmit)](./schmit/readme.html)**<br/>XSLT Extension For Schema Annotation.                                            |
-| [relames](../relames/)           | **[Multi-Schema XML Validator Schematron add-on](./relames/README.md)**<br/>An experimental implementation of RELAX NG + Schematron validation. Dependent on MSV. |
+| [schmit](../schmit/)            | [MSV Schema-in-transformation XSLT add-on (Schmit)](./schmit/readme.html)<br/>XSLT Extension For Schema Annotation.                                            |
+| [relames](../relames/)           | [Multi-Schema XML Validator Schematron add-on](./relames/README.md)<br/>An experimental implementation of RELAX NG + Schematron validation. Dependent on MSV. |
 | **[rngconverter](../rngconverter/)**  | **[RELAX NG Converter](./rngconverter/README.md)**<br/>reads a schema and produces an equivalent RELAX NG schema. Dependent on MSV.                                    |
-| [tahiti](../tahiti/)            | **[Data-binding implementation](./tahiti/README.md)**                                                                                         |
-| [trexconverter](../trexconverter/)     | **[TREX Converter](./trexconverter/README.md)**<br/>Reads a schema and produces an equivalent TREX pattern.                        |
+| [tahiti](../tahiti/)            | [Data-binding implementation](./tahiti/README.md)                                                                                         |
+| [trexconverter](../trexconverter/)     | [TREX Converter](./trexconverter/README.md)<br/>Reads a schema and produces an equivalent TREX pattern.                        |
 
 ***NOTE:*** Not [all previous forks and releases](https://github.com/svanteschubert/msv-merge-project) embrace all the projects below, only the latest msv does.
 

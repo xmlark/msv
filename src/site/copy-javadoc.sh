@@ -4,8 +4,8 @@ set -euo pipefail
 
 
 echo "Copy generated JavaDoc API from projects into /docs - must been built earlier with 'mvn install'..."
-rm -rf ../../docs/api/msv
-mv ../../msv/target/apidocs ../../docs/api/msv
+rm -rf ../../docs/core/api
+mv ../../msv/target/apidocs ../../docs/core/api
 
-rm -rf ../../docs/api/xsdlib
-mv ../../xsdlib/target/apidocs ../../docs/api/xsdlib
+rm -rf ../../docs/xsdlib/api
+mv ../../xsdlib/target/apidocs ../../docs/xsdlib/api

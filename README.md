@@ -23,7 +23,7 @@ MSV consists of a number of sub-projects, the main projects in bold. Each sub-pr
 
 ## Installation
 
-All subprojects are are available from
+All subprojects are all available from
 [Maven Central](https://search.maven.org/search?q=g:net.java.dev.msv).
 
 ## Contributing

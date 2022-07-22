@@ -9,11 +9,11 @@ Most outstanding is the design of MSV core using the [Abstract grammar model (AG
 
 MSV consists of a number of sub-projects, the main projects in bold. Each sub-projects has its own directory, its own build script, etc.
 
-| sub-project       | description & dev guide reference                                                                                                          |
-|:------------------|:-------------------------------------------------------------------------------------------------------------------------------------------|
-| **[xsdlib](../xsdlib)**        | **[XML Schema Datatype (XSD) Library](./xsdlib/README.md)**<br/>An implementation of W3C XML Schema Part 2 [(see xsdlib JavaDoc)](https://xmlark.github.io/msv/xsdlib/api/index.html). |
+| sub-project       | description & dev guide reference                                                                                 |
+|:------------------|:---------------------------------------------------------------------------------------------------------------------------------------|
+| **[xsdlib](../xsdlib)**              | **[XML Schema Datatype (XSD) Library](./xsdlib/README.md)**<br/>An implementation of W3C XML Schema Part 2 [(see xsdlib JavaDoc)](https://xmlark.github.io/msv/xsdlib/api/index.html). |
 | [testharness](../testharness/)       | [Test harness](./testharness/README.md)<br/>Used to parse composite test suite files (.ssuite).                                                                   |
-| **[msv core](../msv)**      | **[Multi-Schema XML Core Validator](./core/index.html)**<br/>A schema model and validator implementation [(see MSV Core JavaDoc)](https://xmlark.github.io/msv/core/api/index.html).</br>Dependent on XSDLib and testharness.                       |
+| **[msv core](../msv)**               | **[Multi-Schema XML Core Validator](./core/index.html)**<br/>A schema model and validator implementation [(see MSV Core JavaDoc)](https://xmlark.github.io/msv/core/api/index.html).</br>Dependent on XSDLib and testharness.                                                               |
 | **[generator](../generator/)**     | **[XML Instance Generator](./generator/README.md)** A tool that produces valid XML documents by reading a schema. Dependent on MSV.                                 |
 | [schmit](../schmit/)            | [MSV SCHema In Transformation XSLT add-on (Schmit)](./schmit/readme.html)<br/>XSLT Extension For Schema Annotation.                                            |
 | [relames](../relames/)           | [Multi-Schema XML Validator Schematron add-on](./relames/README.md)<br/>An experimental implementation of RELAX NG + Schematron validation. Dependent on MSV. |
@@ -53,7 +53,7 @@ Most of the sub-projects have a similar directory structure aligned to [the stan
 | directory | description |
 |:----------| :---------- |
 | src/main  | keeps source files. Files in this directory will be included in the release package. |
-| src/test  | keeps test files. Files in this directory will NOT be included in the release package. JUnit is used throughout the project, and every test code must have "Test.java" as suffix to be recognized as a test. |
+| src/test  | keeps test files. Files in this directory will NOT be included in the release package. JUnit is used throughout the project. |
 | target    | keeps the compiled .class files. both "test" and "src" are compiled into this directory. |
 
 ### GitHub Page directory (root)

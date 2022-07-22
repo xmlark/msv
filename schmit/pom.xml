@@ -4,16 +4,16 @@
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv-schmit</artifactId>
     <version>${revision}</version>
-    
+
     <!-- Ignore WARNING on ${revision} -->
-    <!-- https://stackoverflow.com/questions/25682244/flattened-pom-is-not-being-used -->      
+    <!-- https://stackoverflow.com/questions/25682244/flattened-pom-is-not-being-used -->
     <parent>
         <groupId>net.java.dev.msv</groupId>
         <artifactId>msv</artifactId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    
+
     <name>MSV Schema-in-transformation XSLT add-on (Schmit)</name>
     <description>MSV XSLT Extension For Schema Annotation</description>
     <dependencies>
@@ -33,4 +33,200 @@
             <artifactId>xalan</artifactId>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <!-- Need to provide javadocs -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <!-- defined in the parent pom.xml -->
+                    <encoding>UTF-8</encoding>
+                    <maxmemory>1g</maxmemory>
+                    <additionalOptions>
+                        <additionalOption>${javadoc.opts}</additionalOption>
+                    </additionalOptions>
+                    <links>
+                        <link>https://xerces.apache.org/xerces-j/apiDocs/</link>
+                    </links>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <additionalparam>${javadoc.opts}</additionalparam>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Plus, let's make jars OSGi bundles as well  ~~>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                        <configuration>
+                            <instructions>
+                                <Bundle-Name>${project.name}</Bundle-Name>
+                                <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                                <Bundle-Description>${project.description}</Bundle-Description>
+                                <Import-Package>
+                                    javax.xml.namespace,
+                                    javax.xml.parsers,
+                                    javax.xml.transform*,
+                                    javax.xml.xpath,
+                                    org.iso_relax.dispatcher,
+                                    org.iso_relax.dispatcher.impl,
+                                    org.iso_relax.verifier,
+                                    org.iso_relax.verifier.impl,
+                                    org.relaxng.datatype,
+                                    org.relaxng.datatype.helpers,
+                                    org.xml.sax,
+                                    org.xml.sax.helpers,
+                                    org.w3c.dom,
+                                    org.w3c.dom.ls,
+                                    com.sun.msv.datatype,
+                                    com.sun.msv.datatype.xsd,
+                                    com.sun.msv.datatype.xsd.ngimpl,
+                                    com.sun.msv.datatype.xsd.regex
+                                </Import-Package>
+                                <DynamicImport-Package>
+                                    org.apache.xerces.impl.xpath.regex,
+                                    org.apache.xml.resolver,
+                                    org.apache.xml.resolver.tools
+                                </DynamicImport-Package>
+                                <Private-Package>
+                                    com.sun.msv.util
+                                </Private-Package>
+                                <Export-Package>
+                                    com.sun.msv.driver.textui,
+                                    com.sun.msv.grammar*,
+                                    com.sun.msv.reader*,
+                                    com.sun.msv.relaxns*,
+                                    com.sun.msv.scanner*,
+                                    com.sun.msv.verifier*,
+                                    com.sun.msv.writer*
+                                </Export-Package>
+                                <Main-Class>com.sun.msv.generator.Driver</Main-Class>
+                                <Bundle-Version>${project.version}</Bundle-Version>
+                                <MSV-Name>${project.url}</MSV-Name>
+                                <MSV-Version>${project.version}</MSV-Version>
+                                <MSV-Website>${project.url}</MSV-Website>
+                                <MSV-Built-Date>${build.timestamp}</MSV-Built-Date>
+                            </instructions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+            <!-- Need GPG signatures for releases -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <mavenExecutorId>forked-path</mavenExecutorId>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*TestCase.java</include>
+                        <include>**/*TestCases.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/*$*</exclude>
+                    </excludes>
+                    <reportFormat>${surefire.format}</reportFormat>
+                    <useFile>${surefire.usefile}</useFile>
+                    <forkMode>${surefire.fork.mode}</forkMode>
+                    <childDelegation>false</childDelegation>
+                    <argLine>${surefire.fork.vmargs}</argLine>
+                    <systemProperties>
+                        <property>
+                            <name>java.awt.headless</name>
+                            <value>${java.awt.headless}</value>
+                        </property>
+                        <property>
+                            <name>surefire.fork.vmargs</name>
+                            <value>${surefire.fork.vmargs}</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <index>true</index>
+                        <manifest>
+                            <mainClass>org.apache.xalan.xslt.Process</mainClass>
+                        </manifest>
+                        <manifestEntries>
+                            <version>${project.version}</version>
+                        </manifestEntries>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>single</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>doclint-java8-disable</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <javadoc.opts>-Xdoclint:none</javadoc.opts>
+            </properties>
+        </profile>
+    </profiles>
 </project>

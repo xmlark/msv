@@ -28,6 +28,11 @@ This release relies on the Multi Schema Validator[2] for parsing
 schemas. Therefore, any limitation that applies to MSV will apply to
 this release.
 
+## Follow-up Documenation
+
+Please find the complete documentation [here](../docs/generator/README.md).!
+
+
 ## References
 
 [ 1] Apache Software Foundation

@@ -19,20 +19,20 @@ This tool is:
 * A library that can be incorporated into Java applications as a
   validator (see [ODF Validator](https://tdf.github.io/odftoolkit/conformance/ODFValidator.html)) or code generation tool (see [schema2template](https://tdf.github.io/odftoolkit/generator/index.html)).
 
-See commandline.html for details on how to use MSV from the command line.
-See developer.html for details on how to use it as a library.
+See [commandline.html](../docs/core/commandline.html) for details on how to use MSV from the command line.
+See [developer doc (index.html)](/docs/core/index.html) for details on how to use it as a library.
 ChangeLog.txt contains changes made from previous versions.
 
 ## License
 
 The most of the code is licensed under the BSD license (see
-license.txt). The only exception to this is a part of the code of XSDLib,
+[license.txt](../docs/core/license.txt)). The only exception to this is a part of the code of XSDLib,
 which was taken from Apache, which is licensed under ASL 1.1
-(see Apache-LICENSE-1.1.txt)
+(see [Apache-LICENSE-1.1.txt](../docs/core/Apache-LICENSE-1.1.txt)).
 
 ## Current Status
 
-This preview version implements:
+This version implements:
 
 1. XML DTD [2]
 
@@ -44,21 +44,25 @@ This preview version implements:
    enhancements based on discussions held at the same mailing list.
 
 4. RELAX NG [14], based on the spec [15].
-   See commandline.html for details of limitations.
+   See [commandline.html](../docs/core/commandline.html) for details of limitations.
 
 5. RELAX NG DTD compatibility extension[18].
-   See commandline.html for details of limitations.
+   See [commandline.html](../docs/core/commandline.html) for details of limitations.
 
 6. TREX [9], based on the draft of 2001-02-13 [10] and the
    reference implementation [11]. The only datatype vocabulary available
    is W3C XML Schema Part 2 PR [12].
 
 7. A limited subset of W3C XML Schema Part 1 REC [13].
-   See commandline.html for details of limitations.
+   See [commandline.html](../docs/core/commandline.html) for details of limitations.
 
 8. W3C XML Schema Part 2 REC [12] as a datatype vocabulary.
 
-For limitations, see commandline.html.
+For limitations, see [commandline.html](../docs/core/commandline.html).
+
+## Follow-up Documenation
+
+Please find the complete documentation [here](../docs/core/index.html).!
 
 ## References
 

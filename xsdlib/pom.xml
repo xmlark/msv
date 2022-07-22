@@ -83,30 +83,12 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     </dependencies>
     <build>
         <plugins>
-            <!-- Ant test jar as well -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.sun.msv.datatype.xsd.CommandLineTester</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
             <!-- Need to provide javadocs -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
+                    <!-- defined in the parent pom.xml -->
                     <encoding>UTF-8</encoding>
                     <maxmemory>1g</maxmemory>
                     <additionalOptions>
@@ -133,29 +115,43 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-Name>${project.name}</Bundle-Name>
-                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Bundle-Description>${project.description}</Bundle-Description>
-                        <Import-Package>
-                            org.relaxng.datatype,
-                            org.relaxng.datatype.helpers
-                        </Import-Package>
-                        <DynamicImport-Package>
-                            org.apache.xerces.impl.xpath.regex
-                        </DynamicImport-Package>
-                        <Private-Package>
-                            com.sun.msv.datatype.regexp,
-                            com.sun.xml.util
-                        </Private-Package>
-                        <Export-Package>
-                            com.sun.msv.datatype,
-                            com.sun.msv.datatype.xsd*
-                        </Export-Package>
-                    </instructions>
-                </configuration>
+                <executions>
+                    <execution>
+                        <id>bundle-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                        <configuration>
+                            <instructions>
+                                <Bundle-Name>${project.name}</Bundle-Name>
+                                <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                                <Bundle-Description>${project.description}</Bundle-Description>
+                                <Import-Package>
+                                    org.relaxng.datatype,
+                                    org.relaxng.datatype.helpers
+                                </Import-Package>
+                                <DynamicImport-Package>
+                                    org.apache.xerces.impl.xpath.regex
+                                </DynamicImport-Package>
+                                <Private-Package>
+                                    com.sun.msv.datatype.regexp,
+                                    com.sun.xml.util
+                                </Private-Package>
+                                <Export-Package>
+                                    com.sun.msv.datatype,
+                                    com.sun.msv.datatype.xsd*
+                                </Export-Package>
+                                <Main-Class>com.sun.msv.datatype.xsd.CommandLineTester</Main-Class>
+                                <Bundle-Version>${project.version}</Bundle-Version>
+                                <MSV-Name>${project.url}</MSV-Name>
+                                <MSV-Version>${project.version}</MSV-Version>
+                                <MSV-Website>${project.url}</MSV-Website>
+                                <MSV-Built-Date>${build.timestamp}</MSV-Built-Date>
+                            </instructions>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <!-- Need GPG signatures for releases -->
             <plugin>
@@ -163,31 +159,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                 <artifactId>maven-release-plugin</artifactId>
                 <configuration>
                     <mavenExecutorId>forked-path</mavenExecutorId>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>src-apache</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-eclipse-plugin</artifactId>
-                <configuration>
-                    <outputDirectory>${eclipse.outputDirectory}</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -218,6 +189,43 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                         </property>
                     </systemProperties>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifestFile>target/classes/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <index>true</index>
+                        <manifestFile>target/classes/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>single</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

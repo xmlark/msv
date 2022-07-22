@@ -2,11 +2,12 @@
  * @(#)$Id$
  *
  * Copyright 2001 Sun Microsystems, Inc. All Rights Reserved.
- * 
- * This software is the proprietary information of Sun Microsystems, Inc.  
+ *
+ * This software is the proprietary information of Sun Microsystems, Inc.
  * Use is subject to license terms.
- * 
+ *
  */
+package com.sun.msv.datatype.xsd;
 
 import com.sun.msv.datatype.xsd.DatatypeFactory;
 import com.sun.msv.datatype.xsd.StringType;
@@ -20,7 +21,7 @@ import java.util.StringTokenizer;
 
 /**
  * command-line tester of datatype library.
- * 
+ *
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class CommandLineTester
@@ -43,13 +44,13 @@ public class CommandLineTester
 		throws java.io.IOException
 	{
 		System.out.println("XML Schema Part 2 command line tool");
-		
+
 		final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		
+
 		// TypeIncubator is used to "incubate" a type by adding facets.
 		// constructor accepts the base type instance.
 		TypeIncubator incubator = new TypeIncubator(StringType.theInstance);
-		
+
 		while(true)
 		{
 			try
@@ -57,13 +58,13 @@ public class CommandLineTester
 				System.out.print("-->");
 				String s = in.readLine();
 				StringTokenizer tokens = new StringTokenizer(s);
-			
+
 				String cmd = tokens.nextToken();
-			
+
 				if( cmd.equals("base") )
 				{
 					String typeName = tokens.nextToken();
-					
+
 					// to obtain a type by name, call this method.
 					XSDatatype dt = DatatypeFactory.getTypeByName(typeName);
 					if(dt==null)
@@ -87,11 +88,11 @@ public class CommandLineTester
 				if( cmd.equals("test") )
 				{
 					String value = tokens.nextToken();
-                    
+
 					// a type can be derived by derive method.
 					// the new type contains all facets that were added.
 					XSDatatype dt = incubator.derive("","anonymous");
-					
+
 					// check validity.
 					if( dt.isValid(value,null) )
 						// verify method returns true if the value is valid.
@@ -119,13 +120,13 @@ public class CommandLineTester
 				}
 				if( cmd.equals("quit") )
 					return;
-			
+
 				help();
 			}
 			catch( DatatypeException bte )
 			{// this exception happens in cases like:
 				// 1. unapplicable facet is added ("minInclusive" for string, etc.)
-				// 2. 
+				// 2.
 				System.out.println("DatatypeException: " +bte.getMessage() );
 			}
 			catch( java.util.NoSuchElementException nse )

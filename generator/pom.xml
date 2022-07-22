@@ -59,7 +59,7 @@
         <artifactId>junit</artifactId>
         <scope>test</scope>
     </dependency>
-  </dependencies>
+    </dependencies>
     <build>
         <plugins>
             <!-- Need to provide javadocs -->
@@ -213,24 +213,6 @@
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <configuration>
-                    <systemPropertyVariables>
-                        <msv.version>${project.version}</msv.version>
-                    </systemPropertyVariables>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>failsafe-it</id>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
                         </goals>
                     </execution>
                 </executions>

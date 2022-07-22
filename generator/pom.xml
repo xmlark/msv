@@ -3,14 +3,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.java.dev.msv</groupId>
   <artifactId>msv-generator</artifactId>
-  <version>${revision}</version>
+  <version>2022.7</version>
 
   <!-- Ignore WARNING on ${revision} -->
   <!-- https://stackoverflow.com/questions/25682244/flattened-pom-is-not-being-used -->
   <parent>
       <groupId>net.java.dev.msv</groupId>
       <artifactId>msv</artifactId>
-      <version>${revision}</version>
+      <version>2022.7</version>
       <relativePath>../pom.xml</relativePath>
   </parent>
 

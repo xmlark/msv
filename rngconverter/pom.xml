@@ -80,12 +80,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         </dependency>
         <dependency>
             <groupId>net.java.dev.msv</groupId>
-            <artifactId>msv-testharness</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.java.dev.msv</groupId>
             <artifactId>msv-core</artifactId>
             <version>${project.version}</version>
         </dependency>

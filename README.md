@@ -7,12 +7,11 @@ Most outstanding is the design of MSV core using the [Abstract grammar model (AG
 
 ## Overview Sub Project
 
-MSV consists of a number of sub-projects, the main projects in bold. Each sub-projects has its own directory, its own build script, etc.
+The MSV toolkit consists of eight sub-projects, the main projects in bold. Each sub-projects has its own directory, its own build script, etc.
 
 | sub-project       | description & dev guide reference                                                                                                    |
 |:------------------|:-------------------------------------------------------------------------------------------------------------------------------------------|
 | **[xsdlib](./xsdlib)**        | **[XML Schema Datatype (XSD) Library](./docs/xsdlib/README.md)**<br/>An implementation of W3C XML Schema Part 2 [(see xsdlib JavaDoc)](https://xmlark.github.io/msv/xsdlib/api/index.html). |
-| [testharness](./testharness/)       | [Test harness](./docs/testharness/README.md)<br/>Used to parse composite test suite files (.ssuite).                                                                   |
 | **[msv core](./msv)**      | **[Multi-Schema XML Core Validator](./docs/core/index.html)**<br/>A schema model and validator implementation [(see MSV Core JavaDoc)](https://xmlark.github.io/msv/core/api/index.html).</br>Dependent on XSDLib and testharness.                       |
 | **[generator](./generator/)**     | **[XML Instance Generator](./docs/generator/README.md)** A tool that produces valid XML documents by reading a schema. Dependent on MSV.                                 |
 | [schmit](./schmit/)            | [MSV SCHema In Transformation XSLT add-on (Schmit)](./docs/schmit/readme.html)<br/>XSLT Extension For Schema Annotation.                                            |

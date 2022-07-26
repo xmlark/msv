@@ -34,7 +34,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv</artifactId>
-    <version>2022.7</version>
+    <version>2022.8-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -138,7 +138,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         <connection>scm:git:git@github.com:xmlark/msv.git</connection>
         <developerConnection>scm:git:git@git@github.com:xmlark/msv.git</developerConnection>
         <url>https://github.com/xmlark/msv</url>
-        <tag>msv-2022.7</tag>
+        <tag>HEAD</tag>
     </scm>
     <prerequisites>
         <maven>3.6.3</maven>

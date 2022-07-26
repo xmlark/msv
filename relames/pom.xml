@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv-relames</artifactId>
-    <version>2022.7-SNAPSHOT</version>
+    <version>2022.7</version>
     <packaging>jar</packaging>
 
     <!-- Ignore WARNING on ${revision} -->
@@ -11,7 +11,7 @@
     <parent>
         <groupId>net.java.dev.msv</groupId>
         <artifactId>msv</artifactId>
-        <version>2022.7-SNAPSHOT</version>
+        <version>2022.7</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

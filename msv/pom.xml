@@ -34,7 +34,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.java.dev.msv</groupId>
     <artifactId>msv-core</artifactId>
-    <version>2022.7-SNAPSHOT</version>
+    <version>2022.7</version>
     <packaging>jar</packaging><!-- OSGi bundle is missing activator interface -->
 
     <!-- Ignore WARNING on ${revision} -->
@@ -42,7 +42,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <parent>
         <groupId>net.java.dev.msv</groupId>
         <artifactId>msv</artifactId>
-        <version>2022.7-SNAPSHOT</version>
+        <version>2022.7</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

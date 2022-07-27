@@ -13,7 +13,7 @@ To run an easy examples, build 'mvn install' and run:
 For instance, from the schmit project directory call (by exchanging the correct <VERSION> on a bash) the following line
 
 ```java
-     java -jar ./target/msv-schmit-2022.8-SNAPSHOT-jar-with-dependencies.jar  -IN ./src/resources/examples/simple/test.xml -XSL ./src/resources/examples/simple/test.xsl
+     java -jar ./target/msv-schmit-2022.7-jar-with-dependencies.jar  -IN ./src/resources/examples/simple/test.xml -XSL ./src/resources/examples/simple/test.xsl
 ```
 
 To see the details of the command line syntax, just run:

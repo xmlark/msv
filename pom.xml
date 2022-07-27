@@ -68,11 +68,11 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
     <name>msv</name>
     <description>
-        The Multi Schema Validation toolkit is a Java based toolkit consisting of 8 different submodules. 
+        The Multi Schema Validation toolkit is a Java based toolkit consisting of 8 different submodules.
         The core module is the Multi-Schema XML Validator (MSV) for the validation of XML documents against several kinds of XML schemata
         The core supports RELAX NG, RELAX Namespace, RELAX Core, TREX, XML DTDs, and a subset of XML Schema Part 1.
         This core offers an API useable for programmatic access of the grammar, such as code generation.
-    </description>    
+    </description>
     <url>https://github.com/xmlark/msv</url>
     <!-- At root project level defining dependencies useable across all projects.
     Making version management easy and consistent! -->
@@ -214,44 +214,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                             </execution>
                         </executions>
                     </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>3.2.1</version>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <encoding>UTF-8</encoding>
-                            <!-- only works on JDK8 -->
-                            <additionalparam>-Xdoclint:none</additionalparam>
-                            <links>
-                                <link>https://xerces.apache.org/xerces-j/apiDocs/</link>
-                            </links>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.3.0</version>
-                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -333,6 +295,14 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -412,7 +382,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.4.0</version>
                 <configuration>
                     <!-- only works on JDK8 -->
                     <additionalparam>-Xdoclint:none</additionalparam>

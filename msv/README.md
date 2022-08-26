@@ -8,7 +8,7 @@ the Apache Software Foundation [[1]](https://www.apache.org/).
 
 ## Overview
 
-Most outstanding is the design of MSV core using the [Abstract grammar model (AGM)](https://xmlark.github.io/msv/nativeAPI.html). This is a schema-independent grammar model. All supported schemata are parsed into this internal representation. Allowing one API to deal them all.
+Most outstanding is the design of MSV core using the [Abstract grammar model (AGM)](https://xmlark.github.io/msv/core/index.html). This is a schema-independent grammar model. All supported schemata are parsed into this internal representation. Allowing one API to deal them all.
 
 This tool is:
 

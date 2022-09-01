@@ -167,7 +167,7 @@ public class ElementDeclState extends ExpressionWithChildState {
             // recover by abandoning this element.
             return Expression.nullSet;
         }
-        
+// 2DO: DoubleCheck the requirement of the following is type/ref the RelaxNG attributes with type NCName? Debug & likely remove!
         String type = startTag.getAttribute("type");
         String prefix = null;        
         if(type != null){
@@ -184,7 +184,7 @@ public class ElementDeclState extends ExpressionWithChildState {
                 }            
             }
         }    
-                        
+
         String targetNamespace;
         if( isGlobal() )
             // TODO: form attribute is prohibited at toplevel.
@@ -231,7 +231,7 @@ public class ElementDeclState extends ExpressionWithChildState {
         reader.setDeclaredLocationOf(decl);
         
         ElementDeclExp.XSElementExp exp = new ElementDeclExp.XSElementExp(decl, 
-            new SimpleNameClass(targetNamespace,prefix, name), contentType, defaultValue);
+            new SimpleNameClass(targetNamespace, name, prefix), contentType, defaultValue);
         
         // set the body.
         decl.setElementExp(exp);

@@ -55,11 +55,11 @@ import com.sun.msv.util.StartTagInfo;
 
 /**
  * reads TREX grammar from SAX2 and constructs abstract grammar model.
- * 
+ *
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class TREXBaseReader extends GrammarReader {
-    
+
     /** full constructor */
     public TREXBaseReader(
         GrammarReaderController controller,
@@ -67,23 +67,23 @@ public abstract class TREXBaseReader extends GrammarReader {
         ExpressionPool pool,
         StateFactory stateFactory,
         State rootState ) {
-        
+
         super(controller,parserFactory,pool,rootState);
         this.sfactory = stateFactory;
     }
-    
+
     protected String localizeMessage( String propertyName, Object[] args ) {
         String format;
-        
+
         try {
             format = ResourceBundle.getBundle("com.sun.msv.reader.trex.Messages").getString(propertyName);
         } catch( Exception e ) {
             format = ResourceBundle.getBundle("com.sun.msv.reader.Messages").getString(propertyName);
         }
-        
+
         return MessageFormat.format(format, args );
     }
-    
+
     /** grammar object currently being loaded. */
     protected TREXGrammar grammar;
     /** obtains parsed grammar object only if parsing was successful. */
@@ -94,19 +94,19 @@ public abstract class TREXBaseReader extends GrammarReader {
     public Grammar getResultAsGrammar() {
         return getResult();
     }
-    
+
     /** stack that stores value of ancestor 'ns' attribute. */
     private LightStack nsStack = new LightStack();
     /** target namespace: currently active 'ns' attribute */
     protected String targetNamespace ="";
     public final String getTargetNamespace() { return targetNamespace; }
-    
+
     /** stack that stores value of ancestor 'prefix' attribute. */
-    private LightStack prefixStack = new LightStack();    
+    private LightStack prefixStack = new LightStack();
         /** target prefix: currently active 'prefix' attribute */
-    protected String targetPrefix ="";    
+    protected String targetPrefix ="";
     public final String getTargetPrefix() { return targetPrefix; }
-    
+
     /**
      * creates various State object, which in turn parses grammar.
      * parsing behavior can be customized by implementing custom StateFactory.
@@ -139,7 +139,7 @@ public abstract class TREXBaseReader extends GrammarReader {
         }
         // <div>s in the <grammar> element is not available by default.
         public State divInGrammar( State parent, StartTagInfo tag ) { return null; }
-        
+
         public TREXGrammar createGrammar( ExpressionPool pool, TREXGrammar parent ) {
             return new TREXGrammar(pool,parent);
         }
@@ -149,7 +149,7 @@ public abstract class TREXBaseReader extends GrammarReader {
         }
     }
     public final StateFactory sfactory;
-    
+
     protected State createNameClassChildState( State parent, StartTagInfo tag )
     {
         if(tag.localName.equals("name"))        return sfactory.nsName(parent,tag);
@@ -158,10 +158,10 @@ public abstract class TREXBaseReader extends GrammarReader {
         if(tag.localName.equals("not"))            return sfactory.nsNot(parent,tag);
         if(tag.localName.equals("difference"))    return sfactory.nsDifference(parent,tag);
         if(tag.localName.equals("choice"))        return sfactory.nsChoice(parent,tag);
-        
+
         return null;        // unknown element. let the default error be thrown.
     }
-    
+
     public State createExpressionChildState( State parent, StartTagInfo tag )
     {
         if(tag.localName.equals("element"))        return sfactory.element(parent,tag);
@@ -184,11 +184,11 @@ public abstract class TREXBaseReader extends GrammarReader {
 
         return null;        // unknown element. let the default error be thrown.
     }
-    
+
     /**
      * performs final wrap-up.
      * This method is called from the RootState object, after the parsing is completed.
-     * 
+     *
      * <p>
      * This method has to be called after the run-away expression check is done.
      */
@@ -196,26 +196,26 @@ public abstract class TREXBaseReader extends GrammarReader {
 
 
 
-    
-    
+
+
 // SAX event interception
 //--------------------------------
     @Override
-    public void startElement( String a, String b, String c, Attributes d ) throws SAXException
+        public void startElement( String a, String b, String c, Attributes d ) throws SAXException
     {
         // handle attribute 'prefix' propagation
         prefixStack.push(targetPrefix);
         int p = c.indexOf(":");
         if( p!=-1 )
             targetPrefix = c.substring(0, p);
-        
+
         // handle 'ns' attribute propagation
-        nsStack.push(targetNamespace);        
+        nsStack.push(targetNamespace);
         if( d.getIndex("ns")!=-1 )
             targetNamespace = d.getValue("ns");
         // if nothing specified, targetNamespace stays the same.
         // for root state, startTag is null.
-        
+
         super.startElement(a,b,c,d);
     }
     public void endElement( String a, String b, String c ) throws SAXException
@@ -227,7 +227,7 @@ public abstract class TREXBaseReader extends GrammarReader {
 
 
     // error messages
-    
+
     public static final String ERR_MISSING_CHILD_NAMECLASS = // arg:0
         "TREXGrammarReader.MissingChildNameClass";
     public static final String ERR_MORE_THAN_ONE_NAMECLASS = // arg:0
@@ -258,5 +258,5 @@ public abstract class TREXBaseReader extends GrammarReader {
         "TREXGrammarReader.RepeatedString";
     public static final String ERR_INTERLEAVED_ANYSTRING =
         "TREXGrammarReader.InterleavedAnyString";
-        
+
 }

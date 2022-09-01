@@ -39,9 +39,9 @@ import com.sun.msv.util.StartTagInfo;
 
 /**
  * Base implementation for ElementState and AttributeState
- * 
+ *
  * This class collects one name class and patterns
- * 
+ *
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public abstract class NameClassAndExpressionState extends SequenceState implements NameClassOwner {
@@ -72,11 +72,11 @@ public abstract class NameClassAndExpressionState extends SequenceState implemen
                 // recover by using a dummy name
                 nameClass = new SimpleNameClass("", name);
             } else
-                nameClass = new SimpleNameClass(s[0], s[1]);
+                nameClass = new SimpleNameClass(s[0], s[1], s[2]);
         } else
             nameClass = new SimpleNameClass(getNamespace(), name);
     }
-    
+
     public void onEndChild(NameClass p) {
         if (nameClass != null) // name class has already specified
             reader.reportError(TREXBaseReader.ERR_MORE_THAN_ONE_NAMECLASS);

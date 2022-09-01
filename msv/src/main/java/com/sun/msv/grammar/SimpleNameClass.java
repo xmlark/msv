@@ -57,22 +57,22 @@ public final class SimpleNameClass extends NameClass {
     
     public SimpleNameClass( String namespaceURI, String localName ) {
         this.namespaceURI    = namespaceURI; 
-        this.prefix = null;
         this.localName        = localName;
+        this.prefix = null;
     }
         
-    public SimpleNameClass( String namespaceURI, String prefix, String localName ) {
+    public SimpleNameClass( String namespaceURI, String localName, String prefix ) {
         this.namespaceURI    = namespaceURI;
-        this.prefix = prefix;
         this.localName        = localName;
-    }    
+        this.prefix = prefix;
+    }
     
     public StringPair toStringPair() {
         return new StringPair(namespaceURI,localName);
     }
     
     public String toString() {
-        if( namespaceURI.length()==0 )    return localName;
+        if( prefix != null )    return prefix + ":" + localName;
         else                            return /*namespaceURI+":"+*/localName;
     }
     

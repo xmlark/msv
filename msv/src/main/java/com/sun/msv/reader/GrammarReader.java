@@ -235,8 +235,9 @@ public abstract class GrammarReader
     
     
     /**
-     * Resolves a QName into a pair of (namespace URI,local name).
-     * Therefore this method returns null if it fails to process QName.
+     * Resolves a QName into a triple of (namespace URI, local name, prefix)
+     * if no prefix and default Namespace was unbound both are returned as empty strings.
+     * Therefore, this method returns null if it fails to process QName.
      */
     public String[] splitQName( String qName ) {
         int idx = qName.indexOf(':');
@@ -245,13 +246,13 @@ public abstract class GrammarReader
             // if the default namespace is not bounded, return "".
             // this behavior is consistent with SAX.
             if(ns==null)    ns="";
-            return new String[]{ns,qName,qName};
+            return new String[]{ns, qName, ns};
         }
-        
+
         String uri = prefixResolver.resolve(qName.substring(0,idx));
         if(uri==null)    return null;    // prefix is not defined.
-        
-        return new String[]{uri, qName.substring(idx+1), qName};
+
+        return new String[]{uri, qName.substring(idx+1), qName.substring(0,idx)};
     }
     
 

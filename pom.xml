@@ -455,6 +455,25 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                     </execution>
                 </executions>
             </plugin>
+            <plugin>	
+                <groupId>org.apache.maven.plugins</groupId>	
+                <artifactId>maven-failsafe-plugin</artifactId>	
+                <version>2.22.2</version>	
+                <configuration>	
+                    <systemPropertyVariables>	
+                        <msv.version>${project.version}</msv.version>	
+                    </systemPropertyVariables>	
+                </configuration>	
+                <executions>	
+                    <execution>	
+                        <id>failsafe-it</id>	
+                        <goals>	
+                            <goal>integration-test</goal>	
+                            <goal>verify</goal>	
+                        </goals>	
+                    </execution>	
+                </executions>	
+            </plugin>
             </plugins>
         </pluginManagement>
         <extensions>

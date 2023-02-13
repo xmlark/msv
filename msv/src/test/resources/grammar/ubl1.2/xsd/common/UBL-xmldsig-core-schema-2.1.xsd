@@ -12,6 +12,7 @@
         PUBLIC "-//W3C//DTD XMLSchema 200102//EN" 
                "http://www.w3.org/2001/XMLSchema.dtd"
 -->
+<!--
 <!DOCTYPE schema
  [
    <!ATTLIST schema 
@@ -20,7 +21,7 @@
    <!ENTITY % p ''>
    <!ENTITY % s ''>
   ]>
-
+-->
 <!-- Schema for XML Signatures
     http://www.w3.org/2000/09/xmldsig#
     $Revision: 1.1 $ on $Date: 2002/02/08 20:32:26 $ by $Author: reagle $

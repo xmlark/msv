@@ -46,13 +46,14 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
         <maven.javadoc.skip>false</maven.javadoc.skip>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <revision>2022.7-SNAPSHOT</revision>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>        
         <skipTests>false</skipTests>
         <surefire.fork.mode>once</surefire.fork.mode>
         <surefire.fork.vmargs>-ea</surefire.fork.vmargs>
         <surefire.format>brief</surefire.format>
         <surefire.usefile>false</surefire.usefile>
+        <revision>2022.8-SNAPSHOT</revision>
+        <msv.version>${project.version}</msv.version>
     </properties>
 
     <modules>
@@ -450,25 +451,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                         <phase>verify</phase>
                         <goals>
                             <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.22.2</version>
-                <configuration>
-                    <systemPropertyVariables>
-                        <msv.version>${project.version}</msv.version>
-                    </systemPropertyVariables>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>failsafe-it</id>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
                         </goals>
                     </execution>
                 </executions>

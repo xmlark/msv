@@ -179,6 +179,7 @@ public class Driver {
         EntityResolver entityResolver=null;
 
         for( int i=0; i<args.length; i++ ) {
+            args[i] = args[i].trim();
             if( args[i].equalsIgnoreCase("-h")
             ||  args[i].equalsIgnoreCase("-help")
             ||  args[i].equalsIgnoreCase("-?")) {

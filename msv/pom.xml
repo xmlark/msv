@@ -196,6 +196,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                     <forkMode>${surefire.fork.mode}</forkMode>
                     <childDelegation>false</childDelegation>
                     <argLine>${surefire.fork.vmargs}</argLine>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
                     <systemProperties>
                         <property>
                             <name>java.awt.headless</name>
@@ -252,6 +253,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                     <systemPropertyVariables>
                         <msv.version>${project.version}</msv.version>
                     </systemPropertyVariables>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
                 </configuration>
                 <executions>
                     <execution>

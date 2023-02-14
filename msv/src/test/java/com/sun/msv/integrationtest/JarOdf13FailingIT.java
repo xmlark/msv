@@ -29,13 +29,13 @@
  */
 package com.sun.msv.integrationtest;
 
+import static com.sun.msv.integrationtest.JarRunner.getUserDirectoryUrlPath;
 import java.io.File;
 import java.util.logging.Logger;
 import org.junit.Test;
 
 public class JarOdf13FailingIT {
 
-    private static final String TEST_DIR = System.getProperty("user.dir").replace('\\', '/');
     private static final Logger LOG = Logger.getLogger(JarOdf13FailingIT.class.getName());
     private static final String[] TEST_PARAMETERS = {"-warning",
         "src" + File.separator + "test" + File.separator + "resources" + File.separator + "grammar" + File.separator + "odf1.3" + File.separator + "OpenDocument-v1.3-schema.rng",
@@ -49,7 +49,7 @@ public class JarOdf13FailingIT {
         "The \"IDREF\" type has IDREF semantics and therefore it must be placed directly under an attribute pattern.",
         "  location unknown",
         "validating src" + File.separator + "test" + File.separator + "resources" + File.separator + "files" + File.separator + "odf1.3" + File.separator + "character-styles_odt" + File.separator + "wrong.xml",
-        "Error at line:61, column:16 of file:///" + TEST_DIR + "/src/test/resources/files/odf1.3/character-styles_odt/wrong.xml",
+        "Error at line:61, column:16 of file://" + getUserDirectoryUrlPath() + "/src/test/resources/files/odf1.3/character-styles_odt/wrong.xml",
         "  tag name \"office:blub\" is not allowed. Possible tag names are: <office:chart>,<office:database>,<office:drawing>,<office:image>,<office:presentation>,<office:spreadsheet>,<office:text>"
     };
 

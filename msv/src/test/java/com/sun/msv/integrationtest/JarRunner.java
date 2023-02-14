@@ -74,8 +74,7 @@ public class JarRunner {
             LOG.log(Level.INFO, "Calling java defined by JAVA_HOME: {0}/bin/java", javaHome);
             javaPath = System.getenv("JAVA_HOME") + File.separator + "bin" + File.separator + "java";
         }
-        String jarPath = "\"" + getJarPath() + "\"";
-
+        String jarPath = getJarPath();
         String cmdLineCall = javaPath + " -jar " + jarPath + " " + String.join(" ", cmdLineParameters);
 
 //        try {
@@ -149,4 +148,19 @@ public class JarRunner {
             Assert.fail(e.toString() + "\n" + errors.toString());
         }
     }
+    
+    
+    private static final String OS = System.getProperty("os.name").toLowerCase(); 
+    private static boolean isWindows() {
+        return OS.contains("win");
+    }
+    static String getUserDirectoryUrlPath(){
+        String userDir = null;
+        if(isWindows()){
+            userDir = "/" + System.getProperty("user.dir").replace('\\', '/');
+        }else{
+            userDir = System.getProperty("user.dir").replace('\\', '/');
+        }
+        return userDir;
+    }    
 }

@@ -77,6 +77,7 @@ public class JarRunner {
         String jarPath = getJarPath();
         String cmdLineCall = javaPath + " -jar " + jarPath + " " + String.join(" ", cmdLineParameters);
 
+// Enable this for debugging with an IDE as within the same process (and not as by JAR execution in a new process)
 //        try {
 //            Driver.run(cmdLineParameters);
 //        } catch (Exception ex) {

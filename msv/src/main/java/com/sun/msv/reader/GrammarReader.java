@@ -246,7 +246,7 @@ public abstract class GrammarReader
             // if the default namespace is not bounded, return "".
             // this behavior is consistent with SAX.
             if(ns==null)    ns="";
-            return new String[]{ns, qName, ns};
+            return new String[]{ns, qName, ""};
         }
 
         String uri = prefixResolver.resolve(qName.substring(0,idx));

@@ -626,7 +626,7 @@ public class XMLSchemaReader extends GrammarReader implements XSDatatypeResolver
         		String prefix = qName.substring(0, idx);
         		String uri = additionalNamespaceMap.get(prefix);
         		if (uri != null) {
-        			return new String[]{uri, qName.substring(idx+1), qName};
+        			return new String[]{uri, qName.substring(idx+1), qName, prefix};
         		}
         	}
         	return null;

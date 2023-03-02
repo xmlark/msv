@@ -63,6 +63,6 @@ public class NameClassNameState extends NameClassWithoutChildState {
         String[] qname 
             = reader.splitQName(name);
         
-        return new SimpleNameClass( qname[0], qname[1] );
+        return new SimpleNameClass( qname[0], qname[1], qname[2] );
     }
 }

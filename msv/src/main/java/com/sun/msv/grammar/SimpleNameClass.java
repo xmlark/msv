@@ -58,7 +58,7 @@ public final class SimpleNameClass extends NameClass {
     public SimpleNameClass( String namespaceURI, String localName ) {
         this.namespaceURI    = namespaceURI; 
         this.localName        = localName;
-        this.prefix = null;
+        this.prefix = "";
     }
         
     public SimpleNameClass( String namespaceURI, String localName, String prefix ) {
@@ -72,8 +72,8 @@ public final class SimpleNameClass extends NameClass {
     }
     
     public String toString() {
-        if( prefix != null )    return prefix + ":" + localName;
-        else                            return /*namespaceURI+":"+*/localName;
+        if( prefix != null && !prefix.isEmpty())    return prefix + ":" + localName;
+        else return /*namespaceURI+":"+*/localName;
     }
     
     // serialization support

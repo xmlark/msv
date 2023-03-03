@@ -78,8 +78,7 @@ public class ExpressionPool implements java.io.Serializable {
         if(content==Expression.nullSet) {
             return content;
         }
-        AttributeExp exp = new AttributeExp(nameClass,content);
-        exp.setDefaultValue(defaultValue);
+        AttributeExp exp = new AttributeExp(nameClass,content,defaultValue);
         return unify(exp);
     }
     

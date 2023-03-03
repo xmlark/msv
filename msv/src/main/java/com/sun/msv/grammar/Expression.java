@@ -362,5 +362,5 @@ public abstract class Expression implements java.io.Serializable {
         return this;
     }
 
-    private static final long serialVersionUID = -569561418606215601L;
+    private static final long serialVersionUID = -435673418606215601L;
 }

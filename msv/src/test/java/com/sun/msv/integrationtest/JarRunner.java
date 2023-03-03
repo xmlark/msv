@@ -44,6 +44,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Assert;
 
+/** This class executed the new build JAR (bundled with all dependencies) for integration regression tests. 
+ Provided indiviudal test parameters and expected output lines it compares them latest command output.
+ 
+ NOTE: If used as entry point of debugging the Driver.run(cmdLineParameters); should be uncommented, to avoid calling a new process for the JAR execution.
+*/
 public class JarRunner {
 
     private static final Logger LOG = Logger.getLogger(JarRunner.class.getName());
@@ -57,7 +62,11 @@ public class JarRunner {
         return workingDir + File.separatorChar + "target" + File.separatorChar + JAR_NAME_PREFIX + msvVersion + JAR_NAME_SUFFIX;
     }
 
-    static void getOutputLinesFromJarCall(String[] cmdLineParameters, String[] expectedOutputLines) {
+    /** Takes the comandline parameters of the JAR call with the expected command line joint output & error lines and compares it with the output lines provided by the test
+     * @param cmdLineParameters  the command line parameters as String array 
+     * @param expectedOutputLines  the expected command line output (joint with error lines) as String array 
+     */
+    public static void getOutputLinesFromJarCall(String[] cmdLineParameters, String[] expectedOutputLines) {
         List<String> outputLines = getOutputLines(cmdLineParameters);
         compareOutputWithReference(outputLines, expectedOutputLines);
     }

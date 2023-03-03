@@ -25,7 +25,7 @@ The MSV toolkit consists of eight sub-projects, the main projects in bold. Each 
 ## Installation
 
 All subprojects are all available from
-[Maven Central](https://search.maven.org/search?q=g:net.java.dev.msv).
+[Maven Central](https://central.sonatype.com/namespace/net.java.dev.msv).
 
 ## Contributing
 

@@ -77,5 +77,5 @@ public final class SimpleNameClass extends NameClass {
     }
     
     // serialization support
-    private static final long serialVersionUID = 1;    
+    private static final long serialVersionUID = 2;
 }

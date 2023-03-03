@@ -56,7 +56,7 @@ public class AttributeExp extends Expression implements NameClassAndExpression {
     protected String defaultValue;
 
     public AttributeExp( NameClass nameClass, Expression exp ) {
-        super( nameClass.hashCode()+exp.hashCode() );
+        super( nameClass.hashCode()^exp.hashCode() );
         this.nameClass    = nameClass;
         this.exp        = exp;
     }
@@ -65,9 +65,9 @@ public class AttributeExp extends Expression implements NameClassAndExpression {
     public void setDefaultValue(String v) { defaultValue = v; }
 
     protected final int calcHashCode() {
-        int hash = nameClass.hashCode()+exp.hashCode();
+        int hash = nameClass.hashCode()^exp.hashCode();
         if (defaultValue != null) {
-            hash += defaultValue.hashCode();
+            hash ^= defaultValue.hashCode();
         }
         return hash;
     }

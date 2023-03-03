@@ -47,13 +47,13 @@ public abstract class BinaryExp extends Expression {
     public final Expression exp2;
 
     public BinaryExp( Expression left, Expression right ) {
-        super( left.hashCode()+right.hashCode() );
+        super( left.hashCode()^right.hashCode() );
         this.exp1 = left;
         this.exp2 = right;
     }
 
     protected final int calcHashCode() {
-        return exp1.hashCode()+exp2.hashCode();
+        return exp1.hashCode()^exp2.hashCode();
     }
 
     public boolean equals( Object o ) {

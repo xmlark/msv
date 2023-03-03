@@ -223,13 +223,11 @@ public abstract class Expression implements java.io.Serializable {
     public abstract boolean equals(Object o);
 
     static protected int hashCode(Object o1, Object o2, int hashKey) {
-        // TODO: more efficient hashing algorithm
-        return o1.hashCode() + o2.hashCode() + hashKey;
+        return o1.hashCode() ^ o2.hashCode() ^ hashKey;
     }
 
     static protected int hashCode(Object o, int hashKey) {
-        // TODO: more efficient hashing algorithm
-        return o.hashCode() + hashKey;
+        return o.hashCode() ^ hashKey;
     }
 
     private static class EpsilonExpression extends Expression {

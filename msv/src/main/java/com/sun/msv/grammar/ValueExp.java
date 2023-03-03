@@ -59,14 +59,14 @@ public final class ValueExp extends Expression implements DataOrValueExp {
     public StringPair getName() { return name; }
 
     protected ValueExp( Datatype dt, StringPair typeName, Object value ) {
-        super(dt.hashCode()+dt.valueHashCode(value));
+        super(dt.hashCode()^dt.valueHashCode(value));
         this.dt=dt;
         this.name = typeName;
         this.value = value;
     }
 
     protected final int calcHashCode() {
-        return dt.hashCode()+dt.valueHashCode(value);
+        return dt.hashCode()^dt.valueHashCode(value);
     }
 
     public boolean equals( Object o ) {

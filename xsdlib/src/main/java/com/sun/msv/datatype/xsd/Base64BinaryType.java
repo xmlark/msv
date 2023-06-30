@@ -225,6 +225,7 @@ public class Base64BinaryType extends BinaryBaseType {
     }
 
     private static boolean isXMLSpace(char c) {
+        // Per https://www.w3.org/TR/xml/#NT-S
         return c == ' ' || c == '\r' || c == '\n' || c == '\t';
     }
 

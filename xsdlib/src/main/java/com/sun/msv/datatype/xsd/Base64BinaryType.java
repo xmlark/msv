@@ -129,24 +129,22 @@ public class Base64BinaryType extends BinaryBaseType {
         int i;
 
         for( i=0; i<len; i++ ) {
+            if( isXMLSpace(buf[i]) )
+                continue;        // ignore whitespace
             if( buf[i]=='=' )    // decodeMap['=']!=-1, so we have to check this first.
                 break;
-            if( buf[i]>=256 )
+            if( buf[i]>=256 || decodeMap[buf[i]] == -1 )
                 return -1;      // incorrect character
-            if( decodeMap[buf[i]]!=-1 )
-                base64count++;
+            base64count++;
         }
 
         // once we saw '=', nothing but '=' can be appeared.
         for( ; i<len; i++ ) {
-            if( buf[i]=='=' ) {
-                paddingCount++;
-                continue;
-            }
-            if( buf[i]>=256 )
+            if( isXMLSpace(buf[i]) )
+                continue;        // ignore whitespace
+            if( buf[i]!='=' )
                 return -1;      // incorrect character
-            if( decodeMap[buf[i]]!=-1 )
-                return -1;
+            paddingCount++;
         }
 
         // no more than two paddings are allowed.
@@ -224,6 +222,10 @@ public class Base64BinaryType extends BinaryBaseType {
             throw new IllegalArgumentException();
         
         return serializeJavaObject( ((BinaryValueType)value).rawData, context );
+    }
+
+    private static boolean isXMLSpace(char c) {
+        return c == ' ' || c == '\r' || c == '\n' || c == '\t';
     }
 
     // serialization support

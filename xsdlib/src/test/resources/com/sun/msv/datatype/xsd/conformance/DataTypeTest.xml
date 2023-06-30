@@ -446,8 +446,8 @@
 	<value>ABCX</value>
 	<value>DEFG52==</value>
 	<value>HIJKL1x=</value>
-	<value>AB))((==</value>	<!-- "))((" will be ignored -->
 	<value>52==</value>
+	<value>&#9;5&#10;2&#13;=&#32;=&#10;</value>
 	
 	<answer for="base64Binary"		>ooooo</answer>
 	
@@ -469,6 +469,13 @@
 		<value>tr===</value>
 		<value>onp</value>
 		<value>1qb==</value>
+		<!-- invalid characters -->
+		<value>AB))((==</value>
+		<value>AB==#@!</value>
+		<value>#!@AB==</value>
+		<!-- valid characters after the start of the padding -->
+		<value>AB==A</value>
+		<value>AB=A=</value>
 	</wrongs>
 </case>
 

@@ -32,7 +32,7 @@ public class Multiplicity {
 		this.min = min; this.max = max;
 	}
 	public Multiplicity( int min, int max ) {
-		this.min = min; this.max = new Integer(max);
+		this.min = min; this.max = Integer.valueOf(max);
 	}
 	
 	/** returns true if the multiplicity is (1,1). */
@@ -78,13 +78,13 @@ public class Multiplicity {
 			Math.min(lhs.min,rhs.min),
 			(lhs.max==null||rhs.max==null)?
 				null:
-				new Integer(Math.max(lhs.max.intValue(),rhs.max.intValue())) );
+				Integer.valueOf(Math.max(lhs.max.intValue(),rhs.max.intValue())) );
 	}
 	public static Multiplicity group( Multiplicity lhs, Multiplicity rhs ) {
 		return new Multiplicity( lhs.min+rhs.min,
 			(lhs.max==null||rhs.max==null)?
 				null:
-				new Integer(lhs.max.intValue()+rhs.max.intValue()) );
+				Integer.valueOf(lhs.max.intValue()+rhs.max.intValue()) );
 	}
 	public static Multiplicity oneOrMore( Multiplicity c ) {
 		if(c.max==null)				return c; // (x,*) => (x,*)

@@ -156,9 +156,9 @@ public class IdentityConstraintState extends SimpleState {
                             XMLSchemaReader.ERR_KEY_FIELD_NUMBER_MISMATCH,
                             new Object[]{
                                 idc.localName,
-                                new Integer(idc.fields.length),
+                                Integer.valueOf(idc.fields.length),
                                 keyRef.localName,
-                                new Integer(keyRef.fields.length) } );
+                                Integer.valueOf(keyRef.fields.length) } );
                         return;
                     }
                     

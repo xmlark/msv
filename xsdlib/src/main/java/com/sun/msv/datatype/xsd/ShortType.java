@@ -44,8 +44,8 @@ import org.relaxng.datatype.ValidationContext;
 public class ShortType extends IntegerDerivedType {
     public static final ShortType theInstance =
         new ShortType("short",createRangeFacet(IntType.theInstance,
-            new Short(Short.MIN_VALUE),
-            new Short(Short.MAX_VALUE)));
+            Short.valueOf(Short.MIN_VALUE),
+            Short.valueOf(Short.MAX_VALUE)));
     
     protected ShortType(String typeName,XSDatatypeImpl baseFacets) {
         super(typeName,baseFacets);
@@ -62,7 +62,7 @@ public class ShortType extends IntegerDerivedType {
     public static Short load( String s ) {
         // Implementation of JDK1.2.2/JDK1.3 is suitable enough
         try {
-            return new Short(removeOptionalPlus(s));
+            return Short.valueOf(removeOptionalPlus(s));
         } catch( NumberFormatException e ) {
             return null;
         }

@@ -127,7 +127,7 @@ public class BigDateTimeValueType implements IDateTimeValueType {
         int minute,
         BigDecimal second,
         java.util.TimeZone timeZone) {
-        this(year, new Integer(month), new Integer(day), new Integer(hour), new Integer(minute), second, timeZone);
+        this(year, Integer.valueOf(month), Integer.valueOf(day), Integer.valueOf(hour), Integer.valueOf(minute), second, timeZone);
     }
 
     public BigDateTimeValueType(
@@ -388,10 +388,10 @@ public class BigDateTimeValueType implements IDateTimeValueType {
             // set those fields blank which are not originally specified.
             return new BigDateTimeValueType(
                 this.year != null ? oyear : null,
-                this.month != null ? new Integer(omonth) : null,
-                this.day != null ? new Integer(oday.intValue()) : null,
-                this.hour != null ? new Integer(ohour) : null,
-                this.minute != null ? new Integer(ominute) : null,
+                this.month != null ? Integer.valueOf(omonth) : null,
+                this.day != null ? Integer.valueOf(oday.intValue()) : null,
+                this.hour != null ? Integer.valueOf(ohour) : null,
+                this.minute != null ? Integer.valueOf(ominute) : null,
                 this.second != null ? osecond : null,
                 this.zone);
         } else {
@@ -466,8 +466,8 @@ public class BigDateTimeValueType implements IDateTimeValueType {
     /*
         public static void main( String[] args )
         {
-            Object o1 = new BigDateTimeValueType( new BigInteger("2001"), new Integer(5), new Integer(1), null, null, null, null );
-            Object o2 = new BigDateTimeValueType( new BigInteger("2001"), new Integer(5), new Integer(1), null, null, null, null );
+            Object o1 = new BigDateTimeValueType( new BigInteger("2001"), Integer.valueOf(5), Integer.valueOf(1), null, null, null, null );
+            Object o2 = new BigDateTimeValueType( new BigInteger("2001"), Integer.valueOf(5), Integer.valueOf(1), null, null, null, null );
             
             System.out.println(o1.hashCode());
             System.out.println(o2.hashCode());
@@ -481,8 +481,8 @@ public class BigDateTimeValueType implements IDateTimeValueType {
     
         public static void main( String[] args )
         {
-            Object o1 = new BigDateTimeValueType( new BigInteger("1512"), new Integer(1), new Integer(4), null, null, null, TimeZone.create(-12*60) );
-            Object o2 = new BigDateTimeValueType( new BigInteger("1512"), new Integer(1), new Integer(5), null, null, null, TimeZone.create(+12*60) );
+            Object o1 = new BigDateTimeValueType( new BigInteger("1512"), Integer.valueOf(1), Integer.valueOf(4), null, null, null, TimeZone.create(-12*60) );
+            Object o2 = new BigDateTimeValueType( new BigInteger("1512"), Integer.valueOf(1), Integer.valueOf(5), null, null, null, TimeZone.create(+12*60) );
             
             System.out.println(o1.hashCode());
             System.out.println(o2.hashCode());

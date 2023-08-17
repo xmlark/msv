@@ -37,7 +37,7 @@ public class DateTimeFactoryTest extends TestCase {
     {
         // 1 second
         IDateTimeValueType sec1 = DateTimeFactory.
-            createFromTime(null,null,new Integer(1000),null);
+            createFromTime(null,null,Integer.valueOf(1000),null);
         assertEquals( sec1,
                       new BigDateTimeValueType(null, null, null, null, null, new BigDecimal("1"), null ) );
     }

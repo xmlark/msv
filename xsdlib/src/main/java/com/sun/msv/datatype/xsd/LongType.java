@@ -45,8 +45,8 @@ public class LongType extends IntegerDerivedType {
     public static final LongType theInstance = new LongType();
     private LongType() {
         super("long",createRangeFacet( IntegerType.theInstance,
-            new Long(Long.MIN_VALUE),
-            new Long(Long.MAX_VALUE)));
+            Long.valueOf(Long.MIN_VALUE),
+            Long.valueOf(Long.MAX_VALUE)));
     }
     protected LongType( String typeName, XSDatatypeImpl baseFacets ) {
         super(typeName,baseFacets);
@@ -63,7 +63,7 @@ public class LongType extends IntegerDerivedType {
     public static Long load( String s ) {
         // Implementation of JDK1.2.2/JDK1.3 is suitable enough
         try {
-            return new Long(removeOptionalPlus(s));
+            return Long.valueOf(removeOptionalPlus(s));
         } catch( NumberFormatException e ) {
             return null;
         }

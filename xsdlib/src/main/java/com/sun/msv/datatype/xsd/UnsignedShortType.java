@@ -51,7 +51,7 @@ public class UnsignedShortType extends IntType {
         super("unsignedShort",createRangeFacet(
             UnsignedIntType.theInstance,
             null,
-            new Integer(65535)));
+            Integer.valueOf(65535)));
     }
     
     public XSDatatype getBaseType() {

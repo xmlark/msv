@@ -69,7 +69,7 @@ public class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet {
         if( cnt<=precision )    return;
         
         throw new DatatypeException( DatatypeException.UNKNOWN,
-            localize(ERR_TOO_MUCH_PRECISION, new Integer(cnt), new Integer(precision)) );
+            localize(ERR_TOO_MUCH_PRECISION, Integer.valueOf(cnt), Integer.valueOf(precision)) );
     }
     
     /** counts the number of digits */

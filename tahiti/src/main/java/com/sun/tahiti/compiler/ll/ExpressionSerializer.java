@@ -156,7 +156,7 @@ class ExpressionSerializer {
 	public void assignId( Expression exp ) {
 		if( expr2id.containsKey(exp) )	throw new Error("assertion failed");
 			
-		expr2id.put( exp, new Integer(expr2id.size()) );
+		expr2id.put( exp, Integer.valueOf(expr2id.size()) );
 	}
 	
 	

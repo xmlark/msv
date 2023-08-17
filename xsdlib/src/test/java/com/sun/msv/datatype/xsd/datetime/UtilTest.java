@@ -56,17 +56,17 @@ public class UtilTest extends TestCase
     public void testObjCompare()
     {
         assertEquals( Comparator.EQUAL,        Util.objCompare(null,null) );
-        assertEquals( Comparator.LESS,        Util.objCompare(new Integer(10), new Integer(20)) );
-        assertEquals( Comparator.GREATER,    Util.objCompare(new Integer(25), new Integer(20)) );
-        assertEquals( Comparator.UNDECIDABLE,Util.objCompare(null,new Integer(1)) );
-        assertEquals( Comparator.UNDECIDABLE,Util.objCompare(new Integer(1),null) );
+        assertEquals( Comparator.LESS,        Util.objCompare(Integer.valueOf(10), Integer.valueOf(20)) );
+        assertEquals( Comparator.GREATER,    Util.objCompare(Integer.valueOf(25), Integer.valueOf(20)) );
+        assertEquals( Comparator.UNDECIDABLE,Util.objCompare(null,Integer.valueOf(1)) );
+        assertEquals( Comparator.UNDECIDABLE,Util.objCompare(Integer.valueOf(1),null) );
     }
     
     /** Test of int2bi method, of class com.sun.msv.datatype.datetime.Util. */
     public void testInt2bi()
     {
         assertEquals( Util.int2bi(15), new BigInteger("15") );
-        assertEquals( Util.int2bi(new Integer(15)), new BigInteger("15") );
+        assertEquals( Util.int2bi(Integer.valueOf(15)), new BigInteger("15") );
     }
     
     /** Test of maximumDayInMonthFor method, of class com.sun.msv.datatype.datetime.Util. */

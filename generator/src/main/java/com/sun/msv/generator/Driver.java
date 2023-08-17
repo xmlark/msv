@@ -214,7 +214,7 @@ public class Driver {
 				opt.insertComment = false;
 			else
 			if( args[i].equalsIgnoreCase("-depth") )
-				opt.cutBackDepth = new Integer(args[++i]).intValue();
+				opt.cutBackDepth = Integer.valueOf(args[++i]).intValue();
 			else
 			if( args[i].equalsIgnoreCase("-example") ) {
                 String fileName = args[++i];
@@ -229,10 +229,10 @@ public class Driver {
                 }
 			} else
 			if( args[i].equalsIgnoreCase("-width") )
-				opt.width = new Rand.UniformRand( opt.random, new Integer(args[++i]).intValue() );
+				opt.width = new Rand.UniformRand( opt.random, Integer.valueOf(args[++i]).intValue() );
 			else
 			if( args[i].equalsIgnoreCase("-n") ) {
-				number = new Integer(args[++i]).intValue();
+				number = Integer.valueOf(args[++i]).intValue();
 				if( number<1 )	number=1;
 			}
 			else
@@ -251,7 +251,7 @@ public class Driver {
 				encoding = args[++i];
 			else
 			if( args[i].equalsIgnoreCase("-seed") )
-				opt.random.setSeed( new Long(args[++i]).longValue() );
+				opt.random.setSeed( Long.valueOf(args[++i]).longValue() );
 			else
 			if( args[i].equalsIgnoreCase("-nonvalidate") )	// secret option
 				validate = false;

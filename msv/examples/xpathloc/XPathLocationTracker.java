@@ -178,20 +178,20 @@ public class XPathLocationTracker extends XMLFilterImpl {
     
     
     /**
-     * Effectively the same as <pre>new Integer(i)</pre>
+     * Effectively the same as <pre>Integer.valueOf(i)</pre>
      */
     private static Integer getInt(int i) {
         if(i<ints.length)
             return ints[i];
         else
-            return new Integer(i);
+            return Integer.valueOf(i);
     }
     
     private static final Integer[] ints = new Integer[] {
-        new Integer(0),
-        new Integer(1),
-        new Integer(2),
-        new Integer(3),
-        new Integer(4)
+        Integer.valueOf(0),
+        Integer.valueOf(1),
+        Integer.valueOf(2),
+        Integer.valueOf(3),
+        Integer.valueOf(4)
     };
 }

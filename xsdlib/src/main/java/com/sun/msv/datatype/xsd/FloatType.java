@@ -73,9 +73,9 @@ public class FloatType extends FloatingNumberType {
         */
         
         try {
-            if(s.equals("NaN"))        return new Float(Float.NaN);
-            if(s.equals("INF"))        return new Float(Float.POSITIVE_INFINITY);
-            if(s.equals("-INF"))    return new Float(Float.NEGATIVE_INFINITY);
+            if(s.equals("NaN"))        return Float.valueOf(Float.NaN);
+            if(s.equals("INF"))        return Float.valueOf(Float.POSITIVE_INFINITY);
+            if(s.equals("-INF"))    return Float.valueOf(Float.NEGATIVE_INFINITY);
             
             if(s.length()==0
             || !isDigitOrPeriodOrSign(s.charAt(0))

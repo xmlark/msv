@@ -95,7 +95,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             <dependency>
                 <groupId>xalan</groupId>
                 <artifactId>xalan</artifactId>
-                <version>2.7.2</version>
+                <version>2.7.3</version>
             </dependency>
             <dependency>
                 <groupId>isorelax</groupId>

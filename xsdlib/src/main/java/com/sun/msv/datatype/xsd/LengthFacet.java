@@ -82,7 +82,7 @@ public class LengthFacet extends DataTypeWithValueConstraintFacet {
         int cnt = ((Discrete)concreteType).countLength(o);
         if(cnt!=length)
             throw new DatatypeException( DatatypeException.UNKNOWN,
-                localize(ERR_LENGTH, new Integer(cnt), new Integer(length)) );
+                localize(ERR_LENGTH, Integer.valueOf(cnt), Integer.valueOf(length)) );
     }
 
     // serialization support

@@ -85,19 +85,19 @@ public class PreciseCalendarParser extends AbstractCalendarParser {
     }
 
     protected void setMinutes(int i) {
-        minute = new Integer(i);
+        minute = Integer.valueOf(i);
     }
 
     protected void setHours(int i) {
-        hour = new Integer(i);
+        hour = Integer.valueOf(i);
     }
 
     protected void setDay(int i) {
-        day = new Integer(i-1);     // zero origin
+        day = Integer.valueOf(i-1);     // zero origin
     }
 
     protected void setMonth(int i) {
-        month = new Integer(i-1);   // zero origin
+        month = Integer.valueOf(i-1);   // zero origin
     }
 
     protected void setYear(int i) {

@@ -45,8 +45,8 @@ public class IntType extends IntegerDerivedType {
     
     public static final IntType theInstance =
         new IntType("int",createRangeFacet( LongType.theInstance,
-            new Integer(Integer.MIN_VALUE),
-            new Integer(Integer.MAX_VALUE)));
+            Integer.valueOf(Integer.MIN_VALUE),
+            Integer.valueOf(Integer.MAX_VALUE)));
     
     protected IntType(String typeName,XSDatatypeImpl baseFacets) {
         super(typeName,baseFacets);
@@ -63,7 +63,7 @@ public class IntType extends IntegerDerivedType {
     public static Integer load( String s ) {
         // Implementation of JDK1.2.2/JDK1.3 is suitable enough
         try {
-            return new Integer(removeOptionalPlus(s));
+            return Integer.valueOf(removeOptionalPlus(s));
         } catch( NumberFormatException e ) {
             return null;
         }

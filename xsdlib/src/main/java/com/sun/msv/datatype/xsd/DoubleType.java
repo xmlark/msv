@@ -58,9 +58,9 @@ public class DoubleType extends FloatingNumberType {
     public static Double load( String lexicalValue ) {
         // TODO : probably the same problems exist as in the case of float
         try {
-            if(lexicalValue.equals("NaN"))    return new Double(Double.NaN);
-            if(lexicalValue.equals("INF"))    return new Double(Double.POSITIVE_INFINITY);
-            if(lexicalValue.equals("-INF"))    return new Double(Double.NEGATIVE_INFINITY);
+            if(lexicalValue.equals("NaN"))    return Double.valueOf(Double.NaN);
+            if(lexicalValue.equals("INF"))    return Double.valueOf(Double.POSITIVE_INFINITY);
+            if(lexicalValue.equals("-INF"))    return Double.valueOf(Double.NEGATIVE_INFINITY);
             
             if(lexicalValue.length()==0
             || !isDigitOrPeriodOrSign(lexicalValue.charAt(0))

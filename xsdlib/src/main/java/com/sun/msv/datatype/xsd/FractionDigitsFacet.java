@@ -71,7 +71,7 @@ public class FractionDigitsFacet extends DataTypeWithLexicalConstraintFacet {
         
         throw new DatatypeException( DatatypeException.UNKNOWN, 
             localize(ERR_TOO_MUCH_SCALE,
-            new Integer(cnt), new Integer(scale)) );
+            Integer.valueOf(cnt), Integer.valueOf(scale)) );
     }
     
     /** count the number of fractional digits.

@@ -56,7 +56,7 @@ class Util {
     protected static final BigInteger the210379680 = new BigInteger("210379680");
                                                                     
     protected static final BigDecimal decimal0 = new BigDecimal(BigInteger.ZERO,0);
-    protected static final Integer int0 = new Integer(0);
+    protected static final Integer int0 = Integer.valueOf(0);
                                                       
     protected static java.util.TimeZone timeZonePos14 = new SimpleTimeZone( 14*60*60*1000,"");
     protected static java.util.TimeZone timeZoneNeg14 = new SimpleTimeZone(-14*60*60*1000,"");

@@ -52,7 +52,7 @@ public class UnsignedIntType extends LongType {
         super("unsignedInt",createRangeFacet(
             UnsignedLongType.theInstance,
             null,
-            new Long(4294967295L)));
+            Long.valueOf(4294967295L)));
     }
     
     final public XSDatatype getBaseType() {

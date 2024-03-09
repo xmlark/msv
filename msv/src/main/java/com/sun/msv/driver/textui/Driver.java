@@ -329,7 +329,7 @@ public class Driver {
 
         long parsingTime = System.currentTimeMillis();
         if( verbose )
-            System.out.println( localize( MSG_PARSING_TIME, new Long(parsingTime-stime) ) );
+            System.out.println( localize( MSG_PARSING_TIME, Long.valueOf(parsingTime-stime) ) );
 
 
         if(dump) {
@@ -405,7 +405,7 @@ public class Driver {
 
 
         if( verbose )
-            System.out.println( localize( MSG_VALIDATION_TIME, new Long(System.currentTimeMillis()-parsingTime) ) );
+            System.out.println( localize( MSG_VALIDATION_TIME, Long.valueOf(System.currentTimeMillis()-parsingTime) ) );
 
         return allValid?0:-1;
     }

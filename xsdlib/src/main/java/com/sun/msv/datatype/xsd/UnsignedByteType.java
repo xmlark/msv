@@ -47,7 +47,7 @@ public class UnsignedByteType extends ShortType {
         super("unsignedByte",createRangeFacet(
             UnsignedShortType.theInstance,
             null,
-            new Short((short)255)));
+            Short.valueOf((short)255)));
     }
 
     /** upper bound value. this is the maximum possible valid value as an unsigned int */

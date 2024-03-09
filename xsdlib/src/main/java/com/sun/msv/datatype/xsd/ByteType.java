@@ -45,7 +45,7 @@ public class ByteType extends IntegerDerivedType {
     public final static ByteType theInstance = new ByteType();
     private ByteType() {
         super("byte",createRangeFacet(ShortType.theInstance,
-            new Byte(Byte.MIN_VALUE), new Byte(Byte.MAX_VALUE)));
+            Byte.valueOf(Byte.MIN_VALUE), Byte.valueOf(Byte.MAX_VALUE)));
     }
     
     final public XSDatatype getBaseType() {
@@ -59,7 +59,7 @@ public class ByteType extends IntegerDerivedType {
     public static Byte load( String s ) {
         // Implementation of JDK1.2.2/JDK1.3 is suitable enough
         try {
-            return new Byte(removeOptionalPlus(s));
+            return Byte.valueOf(removeOptionalPlus(s));
         } catch( NumberFormatException e ) {
             return null;
         }

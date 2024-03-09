@@ -86,8 +86,8 @@ public class TREXSequencedStringChecker implements ExpressionVisitor
 
     /** integer pool implementation. */
     private static final Integer[] intPool = new Integer[]{
-            new Integer(0),new Integer(1),new Integer(2),new Integer(3),
-            new Integer(4),new Integer(5),new Integer(6),new Integer(7) };
+            Integer.valueOf(0),Integer.valueOf(1),Integer.valueOf(2),Integer.valueOf(3),
+            Integer.valueOf(4),Integer.valueOf(5),Integer.valueOf(6),Integer.valueOf(7) };
 
     // 3 bit of information
     private static final int HAS_ELEMENT = 4;

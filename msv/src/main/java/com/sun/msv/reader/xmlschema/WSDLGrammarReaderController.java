@@ -31,12 +31,15 @@
 
 package com.sun.msv.reader.xmlschema;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 
 import com.sun.msv.reader.GrammarReaderController2;
 
@@ -47,6 +50,7 @@ public class WSDLGrammarReaderController implements
 		GrammarReaderController2, LSResourceResolver {
 	
 	private GrammarReaderController2 nextController;
+	private EntityResolver entityResolver;
 	
 	private Map<String, EmbeddedSchema> schemas;
 	private String baseURI;
@@ -75,8 +79,28 @@ public class WSDLGrammarReaderController implements
 		}
 	}
 
-	public InputSource resolveEntity(String publicId, String systemId) {
-		return null;
+	public void setEntityResolver(EntityResolver entityResolver)
+	{
+		this.entityResolver = entityResolver;
+	}
+	
+	public InputSource resolveEntity(String publicId, String systemId) 
+	{
+		InputSource is = null;
+		
+		if (entityResolver != null)
+		{
+			try
+			{
+				is = entityResolver.resolveEntity(publicId, systemId);
+			}
+			catch (SAXException | IOException ex)
+			{
+				ex.printStackTrace();
+			}
+		}
+				
+		return is;
 	}
 
 	public LSResourceResolver getLSResourceResolver() {

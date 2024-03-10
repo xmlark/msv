@@ -25,7 +25,7 @@ import org.relaxng.datatype.DatatypeException;
  *
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-public class TestDriverTest implements ErrorReceiver
+public class TestDriver implements ErrorReceiver
 {
 
   
@@ -33,7 +33,7 @@ public class TestDriverTest implements ErrorReceiver
     
     public static void main (String args[]) throws Exception {
         
-        TestDriverTest testDriver = new TestDriverTest();        
+        TestDriver testDriver = new TestDriver();        
         if( args.length>=1 )    testDriver.parser = args[0];
         else                    testDriver.parser = "org.apache.xerces.parsers.SAXParser";
         // reads test case file        
@@ -45,7 +45,7 @@ public class TestDriverTest implements ErrorReceiver
 
         try {
             // reads test case file
-            Document doc = new SAXBuilder(parser).build(TestDriverTest.class.getResourceAsStream("DataTypeTest.xml") );
+            Document doc = new SAXBuilder(parser).build(TestDriver.class.getResourceAsStream("DataTypeTest.xml") );
 
             DataTypeTester tester = new DataTypeTester(System.out,this);
             // perform test for each "case" item

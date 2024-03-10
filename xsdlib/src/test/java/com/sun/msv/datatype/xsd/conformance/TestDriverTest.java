@@ -16,6 +16,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+import org.junit.Test;
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.DatatypeException;
 
@@ -24,18 +25,29 @@ import org.relaxng.datatype.DatatypeException;
  *
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
-class TestDriver implements ErrorReceiver
+public class TestDriverTest implements ErrorReceiver
 {
-    public static void main (String args[]) throws Exception {
-        try {
-            String parser;
-            if( args.length>=1 )    parser = args[0];
-            else                    parser = "org.apache.xerces.parsers.SAXParser";
-            // reads test case file
-            Document doc = new SAXBuilder(parser).build(
-                TestDriver.class.getResourceAsStream("DataTypeTest.xml") );
 
-            DataTypeTester tester = new DataTypeTester(System.out,new TestDriver());
+  
+    String parser;
+    
+    public static void main (String args[]) throws Exception {
+        
+        TestDriverTest testDriver = new TestDriverTest();        
+        if( args.length>=1 )    testDriver.parser = args[0];
+        else                    testDriver.parser = "org.apache.xerces.parsers.SAXParser";
+        // reads test case file        
+        testDriver.runTests();
+    }
+
+    @Test
+    public void runTests() throws Exception {
+
+        try {
+            // reads test case file
+            Document doc = new SAXBuilder(parser).build(TestDriverTest.class.getResourceAsStream("DataTypeTest.xml") );
+
+            DataTypeTester tester = new DataTypeTester(System.out,this);
             // perform test for each "case" item
             Iterator itr = doc.getRootElement().getChildren("case").iterator();
             while(itr.hasNext())

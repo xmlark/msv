@@ -86,7 +86,11 @@ abstract class DateTimeBaseType extends BuiltinAtomicType implements Comparator 
         
     /** converts our DateTimeValueType to a java-friendly Date type. */
     public final Object _createJavaObject(String literal, ValidationContext context) {
-        return CalendarParser.parse(getFormat(),literal);
+        try {
+            return CalendarParser.parse(getFormat(),literal);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     public final String serializeJavaObject(Object value, SerializationContext context) {

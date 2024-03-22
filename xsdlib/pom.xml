@@ -161,6 +161,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                         <include>**/*Test.java</include>
                         <include>**/*TestCase.java</include>
                         <include>**/*TestCases.java</include>
+                        <include>com/sun/msv/datatype/xsd/conformance/TestDriver.java</include>
                     </includes>
                     <excludes>
                         <exclude>**/*$*</exclude>

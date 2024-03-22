@@ -23,6 +23,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 import org.jdom2.Element;
+import org.junit.Assert;
 import org.relaxng.datatype.DatatypeException;
 
 /**
@@ -240,7 +241,7 @@ public class DataTypeTester
                             Object o2 = typeObj.createJavaObject(s,DummyContextProvider.theInstance);
                             if( o2==null ) {
                                 System.out.println("round-trip conversion failed");
-                                roundTripError = true;
+                                roundTripError = true;                                
                             }
                         }
                     }
@@ -266,6 +267,8 @@ public class DataTypeTester
                             continue;    // do not report error if
                                         // the validator accepts things that
                                         // may not be accepted.
+                    }else if(roundTripError){
+                        Assert.fail("RoundtripError!");
                     }
 
                     // dump error messages
@@ -293,13 +296,14 @@ public class DataTypeTester
 
                     if( typeObj.createJavaObject(wrongs[i],DummyContextProvider.theInstance)!=null )
                         err = true;
-
+                        
                     if( err ) {
                         if( !this.err.report( new UnexpectedResultException(
                             typeObj, baseType.getName(),
                             wrongs[i], false, ti ) ) )
                         {
                             out.println("test aborted");
+                            Assert.fail("Test aborted!");
                             return;
                         }
                     }

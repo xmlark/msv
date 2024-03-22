@@ -16,6 +16,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+import org.junit.Assert;
 import org.junit.Test;
 import org.relaxng.datatype.Datatype;
 import org.relaxng.datatype.DatatypeException;
@@ -55,6 +56,7 @@ public class TestDriver implements ErrorReceiver
         } catch(JDOMException e) {
             e.printStackTrace();
             System.err.println(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -86,7 +88,7 @@ public class TestDriver implements ErrorReceiver
             try {
                 System.out.println("serializeJavaObject  : "+exp.type.serializeJavaObject(jo,DummyContextProvider.theInstance) );
             } catch( Exception e ) {
-                System.out.println("serializeJavaObject  : "+e );
+                System.out.println("serializeJavaObject  : "+e );                
             }
 
         if(o!=null)
@@ -111,7 +113,7 @@ public class TestDriver implements ErrorReceiver
 
         // do it again (for trace purpose)
         exp.type.isValid(exp.testInstance,DummyContextProvider.theInstance);
-
+        Assert.fail("ErrorReported!");
         return false;
     }
 
@@ -128,7 +130,7 @@ public class TestDriver implements ErrorReceiver
         }
         catch( Exception ee ) { ; }
 */
-
+        Assert.fail("TestCaseErrorReported!");
         return false;
     }
 }

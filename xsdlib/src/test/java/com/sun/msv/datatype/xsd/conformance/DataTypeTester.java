@@ -216,11 +216,15 @@ public class DataTypeTester
                             // try round trip conversion.
                             Object o2 = typeObj.createValue(s,DummyContextProvider.theInstance);
                             if( o2==null || !o.equals(o2) )
+                            {
+                                System.out.println("equals error: \n\"" + o.toString() + "\"\n\"" + s + "\"\n\"" + o2.toString() + "\"");
                                 roundTripError = true;
+                            }
                         }
                     } catch( UnsupportedOperationException uoe ) {
                         // ignore this exception
                     } catch( IllegalArgumentException iae ) {
+                        System.out.println("roundtrip IllegalArgumentException");
                         roundTripError = true;
                     }
 

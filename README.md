@@ -1,7 +1,7 @@
 # Multi-Schema Validator Toolkit
 
 The Multi Schema Validation toolkit is a Java based toolkit consisting of 8 different submodules.
-The core module is the Multi-Schema XML Validator (MSV) for the validation of XML documents against several kinds of XML schemata
+The core module is the Multi-Schema XML Validator (MSV) for the validation of XML documents against several kinds of XML schemata.
 The core supports RELAX NG, RELAX Namespace, RELAX Core, TREX, XML DTDs, and a subset of XML Schema Part 1.
 <br/>
 Most outstanding is the design of MSV core using the [Abstract grammar model (AGM)](https://xmlark.github.io/msv/core/nativeAPI.html). This is a schema-independent grammar model. All supported schemata are parsed into this internal representation. This model, coupled with the grammar reader, may be useful for other applications. For instance, two use cases are the generation of source code using [schema2template](https://tdf.github.io/odftoolkit/generator/index.html) or the [ODF Validator](https://tdf.github.io/odftoolkit/conformance/ODFValidator.html).

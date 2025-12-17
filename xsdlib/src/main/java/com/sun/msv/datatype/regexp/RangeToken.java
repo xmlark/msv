@@ -70,6 +70,7 @@ final class RangeToken extends Token implements java.io.Serializable {
     RangeToken icaseCache = null;
     int[] map = null;
     int nonMapIndex;
+    volatile boolean mapCreated;
 
     RangeToken(int type) {
         super(type);
@@ -524,7 +525,7 @@ final class RangeToken extends Token implements java.io.Serializable {
     }
 
     boolean match(int ch) {
-        if (this.map == null)  this.createMap();
+        if (!this.mapCreated)  this.createMap();
         boolean ret;
         if (this.type == RANGE) {
             if (ch < MAPSIZE)
@@ -547,7 +548,8 @@ final class RangeToken extends Token implements java.io.Serializable {
     }
 
     private static final int MAPSIZE = 256;
-    private void createMap() {
+    private synchronized void createMap() {
+        if (this.mapCreated) return;
         int asize = MAPSIZE/32;                 // 32 is the number of bits in `int'.
         this.map = new int[asize];
         this.nonMapIndex = this.ranges.length;
@@ -567,6 +569,7 @@ final class RangeToken extends Token implements java.io.Serializable {
                 break;
             }
         }
+        this.mapCreated = true;
         //for (int i = 0;  i < asize;  i ++)  System.err.println("Map: "+Integer.toString(this.map[i], 16));
     }
 

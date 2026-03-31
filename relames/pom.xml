@@ -47,9 +47,6 @@
                     <!-- defined in the parent pom.xml -->
                     <encoding>UTF-8</encoding>
                     <maxmemory>1g</maxmemory>
-                    <additionalOptions>
-                        <additionalOption>${javadoc.opts}</additionalOption>
-                    </additionalOptions>
                     <links>
                         <link>https://xerces.apache.org/xerces-j/apiDocs/</link>
                     </links>
@@ -61,9 +58,6 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
-                        <configuration>
-                            <additionalparam>${javadoc.opts}</additionalparam>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -214,15 +208,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-        <profile>
-            <id>doclint-java8-disable</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <properties>
-                <javadoc.opts>-Xdoclint:none</javadoc.opts>
-            </properties>
         </profile>
     </profiles>
 </project>

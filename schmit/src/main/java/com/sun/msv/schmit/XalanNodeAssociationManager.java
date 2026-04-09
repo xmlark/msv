@@ -9,6 +9,7 @@
  */
 package com.sun.msv.schmit;
 
+import org.apache.xalan.Version;
 import org.apache.xalan.processor.XSLProcessorVersion;
 import org.w3c.dom.Node;
 
@@ -34,25 +35,13 @@ public abstract class XalanNodeAssociationManager {
             int minor = XSLProcessorVersion.class.getField("RELEASE").getInt(null);
             return major * 100 + minor;
         } catch (Exception ignored) {
-            // Xalan 2.7.3 removed VERSION/RELEASE constants, use version string fallback.
+            // Fall back to org.apache.xalan.Version (e.g. reflection or field access failed).
         }
 
         try {
-            String version = XSLProcessorVersion.getVersion();
-            if (version != null) {
-                int idx = version.indexOf("2.");
-                if (idx >= 0 && version.length() > idx + 2) {
-                    int pos = idx + 2;
-                    int minor = 0;
-                    while (pos < version.length() && Character.isDigit(version.charAt(pos))) {
-                        minor = (minor * 10) + (version.charAt(pos) - '0');
-                        pos++;
-                    }
-                    return 200 + minor;
-                }
-            }
+            return Version.getMajorVersionNum() * 100 + Version.getReleaseVersionNum();
         } catch (Exception ignored) {
-            // Best effort detection; default to modern implementation below.
+            // Best effort; default to modern implementation below.
         }
 
         return Integer.MAX_VALUE;

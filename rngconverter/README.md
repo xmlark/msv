@@ -15,7 +15,7 @@ To convert a schema written in either RELAX Core, RELAX namespace, TREX,
 or W3C XML Schema, enter the following:
 
 ```java
-    java -jar rngconv.jar myschema.xsd > result.rng
+    java -jar msv-rngconverter-<VERSION>-jar-with-dependencies.jar myschema.xsd result.rng
 ```
 
 The converter detects the schema language automatically (except for XML
@@ -24,10 +24,8 @@ DTDs) and writes the result to "result.rng".
 To convert an XML DTD, enter the following:
 
 ```java
-    java -jar rngconv.jar -dtd myschema.dtd > result.rng
+    java -jar msv-rngconverter-<VERSION>-jar-with-dependencies.jar myschema.dtd result.rng
 ```
-
-Note that you need the -dtd option.
 
 ## Follow-up Documenation
 

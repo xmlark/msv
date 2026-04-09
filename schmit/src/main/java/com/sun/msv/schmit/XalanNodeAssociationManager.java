@@ -27,6 +27,36 @@ import org.w3c.dom.Node;
 public abstract class XalanNodeAssociationManager {
     public abstract void put( Node key, Object value );
     public abstract Object get( Node key );
+
+    private static int detectXalanVersion() {
+        try {
+            int major = XSLProcessorVersion.class.getField("VERSION").getInt(null);
+            int minor = XSLProcessorVersion.class.getField("RELEASE").getInt(null);
+            return major * 100 + minor;
+        } catch (Exception ignored) {
+            // Xalan 2.7.3 removed VERSION/RELEASE constants, use version string fallback.
+        }
+
+        try {
+            String version = XSLProcessorVersion.getVersion();
+            if (version != null) {
+                int idx = version.indexOf("2.");
+                if (idx >= 0 && version.length() > idx + 2) {
+                    int pos = idx + 2;
+                    int minor = 0;
+                    while (pos < version.length() && Character.isDigit(version.charAt(pos))) {
+                        minor = (minor * 10) + (version.charAt(pos) - '0');
+                        pos++;
+                    }
+                    return 200 + minor;
+                }
+            }
+        } catch (Exception ignored) {
+            // Best effort detection; default to modern implementation below.
+        }
+
+        return Integer.MAX_VALUE;
+    }
     
     /**
      * Creates a new instance.
@@ -48,7 +78,7 @@ public abstract class XalanNodeAssociationManager {
             }
         } else {
             // guess from the version number of Xalan
-            int ver = XSLProcessorVersion.VERSION*100 + XSLProcessorVersion.RELEASE;
+            int ver = detectXalanVersion();
             if( Debug.debug )
                 System.err.println("Xalan version: "+ver);
             if( ver>202 )

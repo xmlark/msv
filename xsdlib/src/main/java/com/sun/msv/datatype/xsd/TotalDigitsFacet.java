@@ -74,35 +74,29 @@ public class TotalDigitsFacet extends DataTypeWithLexicalConstraintFacet {
     
     /** counts the number of digits */
     protected static int countPrecision( String literal ) {
-        final int len = literal.length();
-        boolean skipMode = true;
+        int start = 0;
+        if(literal.length()>0 && (literal.charAt(0)=='+' || literal.charAt(0)=='-'))
+            start = 1;
 
-        int count=0;
-        int trailingZero=0;
+        int dot = literal.indexOf('.');
+        int intEnd = (dot<0) ? literal.length() : dot;
+        int fracStart = (dot<0) ? literal.length() : dot+1;
+        int fracEnd = literal.length();
 
-        for( int i=0; i<len; i++ ) {
-            final char ch = literal.charAt(i);
+        // Integer trailing zeros are significant. Only trim leading zeros.
+        int intStart = start;
+        while( intStart<intEnd && literal.charAt(intStart)=='0' )
+            intStart++;
+        int intDigits = intEnd - intStart;
 
-            if(ch=='.') {
-                skipMode = false;// digits after '.' is considered significant.
-            }
+        // Fraction leading zeros are significant, but trailing zeros are not.
+        while( fracEnd>fracStart && literal.charAt(fracEnd-1)=='0' )
+            fracEnd--;
+        int fracDigits = fracEnd - fracStart;
 
-            if( skipMode ) {
-                // in skip mode, leading zeros are skipped
-                if( '1'<=ch && ch<='9' ) {
-                    count++;
-                    skipMode = false;
-                }
-            } else {
-                if( ch=='0' )   trailingZero++;
-                else            trailingZero=0;
-
-                if( '0'<=ch && ch<='9' )
-                    count++;
-            }
-        }
-
-        return count-trailingZero;
+        int total = intDigits + fracDigits;
+        // Zero still has precision 1.
+        return (total==0) ? 1 : total;
     }
 
     // serialization support

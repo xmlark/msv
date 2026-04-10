@@ -43,6 +43,7 @@ import com.sun.msv.datatype.xsd.ConcreteType;
 import com.sun.msv.datatype.xsd.DataTypeWithFacet;
 import com.sun.msv.datatype.xsd.EnumerationFacet;
 import com.sun.msv.datatype.xsd.FinalComponent;
+import com.sun.msv.datatype.xsd.Proxy;
 import com.sun.msv.datatype.xsd.FractionDigitsFacet;
 import com.sun.msv.datatype.xsd.LengthFacet;
 import com.sun.msv.datatype.xsd.ListType;
@@ -275,11 +276,16 @@ public abstract class PatternWriter implements ExpressionVisitorVoid {
         Vector<XSDatatype> effectiveFacets = new Vector<XSDatatype>();
 
         XSDatatype x = dt;
-        while (x instanceof DataTypeWithFacet || x instanceof FinalComponent) {
+        while (x instanceof DataTypeWithFacet || x instanceof FinalComponent || x instanceof Proxy) {
 
             if (x instanceof FinalComponent) {
                 // skip FinalComponent
                 x = x.getBaseType();
+                continue;
+            }
+
+            if (x instanceof Proxy) {
+                x = ((Proxy)x).baseType;
                 continue;
             }
 

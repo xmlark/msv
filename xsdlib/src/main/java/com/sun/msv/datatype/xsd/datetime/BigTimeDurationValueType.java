@@ -251,10 +251,16 @@ public class BigTimeDurationValueType implements ITimeDurationValueType {
             dateParts[dateLen++] = parsePiece(s, idx);
         }
         
-        if (s.length() != idx[0] && s.charAt(idx[0]++) != 'T') {
-            throw new IllegalArgumentException(s); // ,idx[0]-1);
+        boolean hasT = false;
+        if (s.length() != idx[0]) {
+            if (s.charAt(idx[0]) == 'T') {
+                hasT = true;
+                idx[0]++;
+            } else {
+                throw new IllegalArgumentException(s);
+            }
         }
-        
+
         int timeLen = 0;
         String[] timeParts = new String[3];
         int[] timePartsIndex = new int[3];
@@ -264,12 +270,15 @@ public class BigTimeDurationValueType implements ITimeDurationValueType {
             timePartsIndex[timeLen] = idx[0];
             timeParts[timeLen++] = parsePiece(s, idx);
         }
-        
+
         if (s.length() != idx[0]) {
             throw new IllegalArgumentException(s); // ,idx[0]);
         }
         if (dateLen == 0 && timeLen == 0) {
             throw new IllegalArgumentException(s); // ,idx[0]);
+        }
+        if (hasT && timeLen == 0) {
+            throw new IllegalArgumentException(s); // trailing T with no time components
         }
         
         // phase 2: check the ordering of chunks

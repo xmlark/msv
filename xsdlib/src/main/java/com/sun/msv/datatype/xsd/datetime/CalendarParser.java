@@ -31,6 +31,7 @@
 
 package com.sun.msv.datatype.xsd.datetime;
 
+import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -88,10 +89,13 @@ public final class CalendarParser extends AbstractCalendarParser {
         cal.set(Calendar.MONTH,i-1); // month is 0-origin.
     }
 
-    protected void setYear(int i) {
+    protected void setYear(BigInteger i) {
         // XSD has no year 0: -0001 is 1 BCE, -0002 is 2 BCE, etc.
         // GregorianCalendar is proleptic: year 0 = 1 BCE, year -1 = 2 BCE.
         // So for non-positive XSD years, add 1 to convert to Calendar convention.
-        cal.set(Calendar.YEAR, i <= 0 ? i + 1 : i);
+        // Note: years exceeding int range are truncated by intValue() - this is
+        // a limitation of GregorianCalendar which uses int for year.
+        int v = i.intValue();
+        cal.set(Calendar.YEAR, v <= 0 ? v + 1 : v);
     }
 }

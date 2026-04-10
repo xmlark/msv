@@ -80,13 +80,17 @@ abstract class AbstractCalendarParser {
                     sign=-1;
                 }
                 int yearStart = vidx;
-                int year = sign*parseInt(4,Integer.MAX_VALUE);
-                if(year==0)
+                BigInteger yearBig = parseBigInteger(4,Integer.MAX_VALUE);
+                if(sign==-1)
+                    yearBig = yearBig.negate();
+                if(yearBig.signum()==0)
                     throw new IllegalArgumentException(value); // no year 0 in XSD
-                if(vidx-yearStart>4 && value.charAt(yearStart)=='0')
+                int yearDigits = vidx-yearStart;
+                if(yearDigits>4 && value.charAt(yearStart)=='0')
                     throw new IllegalArgumentException(value); // no leading zeros on 5+ digit years
-                parsedYear = year;
-                setYear(year);
+                // store for day-in-month validation (use int if it fits, otherwise skip validation)
+                try { parsedYear = yearBig.intValueExact(); } catch(ArithmeticException e) { /* too large for int */ }
+                setYear(yearBig);
                 break;
 
             case 'M': // month
@@ -233,5 +237,5 @@ abstract class AbstractCalendarParser {
     protected abstract void setHours(int i);
     protected abstract void setDay(int i);
     protected abstract void setMonth(int i);
-    protected abstract void setYear(int i);
+    protected abstract void setYear(BigInteger i);
 }

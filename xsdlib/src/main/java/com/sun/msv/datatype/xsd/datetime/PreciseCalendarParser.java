@@ -100,11 +100,11 @@ public class PreciseCalendarParser extends AbstractCalendarParser {
         month = Integer.valueOf(i-1);   // zero origin
     }
 
-    protected void setYear(int i) {
+    protected void setYear(BigInteger i) {
         // XSD has no year 0: -0001 is 1 BCE, -0002 is 2 BCE, etc.
         // Internally, value 0 means year -1, value -1 means year -2, etc.
         // So for non-positive XSD years, add 1 to convert to internal convention.
-        year = BigInteger.valueOf(i <= 0 ? i + 1 : i);
+        year = i.signum() <= 0 ? i.add(BigInteger.ONE) : i;
     }
     
 }

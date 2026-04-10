@@ -61,15 +61,19 @@ public class DoubleType extends FloatingNumberType {
             if(lexicalValue.equals("NaN"))    return Double.valueOf(Double.NaN);
             if(lexicalValue.equals("INF"))    return Double.valueOf(Double.POSITIVE_INFINITY);
             if(lexicalValue.equals("-INF"))    return Double.valueOf(Double.NEGATIVE_INFINITY);
-            
-            if(lexicalValue.length()==0
-            || !isDigitOrPeriodOrSign(lexicalValue.charAt(0))
-            || !isDigitOrPeriodOrSign(lexicalValue.charAt(lexicalValue.length()-1)) )
+
+            // strip optional float type suffix (f/F) before validation
+            String s = lexicalValue;
+            if(s.length()>0 && (s.charAt(s.length()-1)=='f' || s.charAt(s.length()-1)=='F'))
+                s = s.substring(0, s.length()-1);
+
+            if(s.length()==0
+            || !isDigitOrPeriodOrSign(s.charAt(0))
+            || !isDigitOrPeriodOrSign(s.charAt(s.length()-1)) )
                 return null;
-            
-            
-            // these screening process is necessary due to the wobble of Float.valueOf method
-            return Double.valueOf(lexicalValue);
+
+            // these screening process is necessary due to the wobble of Double.valueOf method
+            return Double.valueOf(s);
         } catch( NumberFormatException e ) {
             return null;
         }

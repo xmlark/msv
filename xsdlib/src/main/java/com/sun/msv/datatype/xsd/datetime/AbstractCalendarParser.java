@@ -79,9 +79,12 @@ abstract class AbstractCalendarParser {
                     vidx++;
                     sign=-1;
                 }
+                int yearStart = vidx;
                 int year = sign*parseInt(4,Integer.MAX_VALUE);
                 if(year==0)
                     throw new IllegalArgumentException(value); // no year 0 in XSD
+                if(vidx-yearStart>4 && value.charAt(yearStart)=='0')
+                    throw new IllegalArgumentException(value); // no leading zeros on 5+ digit years
                 parsedYear = year;
                 setYear(year);
                 break;

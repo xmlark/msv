@@ -123,8 +123,11 @@ abstract class AbstractCalendarParser {
                     int h = parseInt(2,2);
                     skip(':');
                     int m = parseInt(2,2);
+                    int totalMinutes = h*60+m;
+                    if(totalMinutes>14*60)
+                        throw new IllegalArgumentException(value); // timezone offset out of range
                     setTimeZone(
-                        new SimpleTimeZone((h*60+m)*(vch=='+'?1:-1)*60*1000, ""/*no ID*/) );
+                        new SimpleTimeZone(totalMinutes*(vch=='+'?1:-1)*60*1000, ""/*no ID*/) );
                 } else {
                     setTimeZone(TimeZone.MISSING);
                 }

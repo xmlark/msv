@@ -49,7 +49,12 @@ abstract class AbstractCalendarParser {
     
     private int fidx;
     protected int vidx;
-    
+
+    // track parsed date components for day-in-month validation
+    private int parsedYear = Integer.MIN_VALUE;
+    private int parsedMonth = Integer.MIN_VALUE;
+    private int parsedDay = Integer.MIN_VALUE;
+
     protected AbstractCalendarParser( String format, String value ) {
         this.format = format;
         this.value = value;
@@ -77,13 +82,15 @@ abstract class AbstractCalendarParser {
                 int year = sign*parseInt(4,Integer.MAX_VALUE);
                 if(year==0)
                     throw new IllegalArgumentException(value); // no year 0 in XSD
+                parsedYear = year;
                 setYear(year);
                 break;
-            
+
             case 'M': // month
                 int month = parseInt(2,2);
                 if(month<1 || month>12)
                     throw new IllegalArgumentException(value);
+                parsedMonth = month;
                 setMonth(month);
                 break;
 
@@ -91,6 +98,7 @@ abstract class AbstractCalendarParser {
                 int day = parseInt(2,2);
                 if(day<1 || day>31)
                     throw new IllegalArgumentException(value);
+                parsedDay = day;
                 setDay(day);
                 break;
         
@@ -142,6 +150,14 @@ abstract class AbstractCalendarParser {
         if(vidx!=vlen)
             // some tokens are left in the input
             throw new IllegalArgumentException(value);//,vidx);
+
+        // validate day against month/year (day-in-month check)
+        if(parsedDay!=Integer.MIN_VALUE && parsedMonth!=Integer.MIN_VALUE) {
+            int y = parsedYear!=Integer.MIN_VALUE ? parsedYear : 4; // default to leap year if year not specified
+            int maxDay = Util.maximumDayInMonthFor(y, parsedMonth-1); // Util uses 0-based month
+            if(parsedDay > maxDay)
+                throw new IllegalArgumentException(value);
+        }
     }
     
     private char peek() throws IllegalArgumentException {

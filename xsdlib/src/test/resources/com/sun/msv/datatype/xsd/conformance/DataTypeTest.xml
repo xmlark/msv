@@ -1081,7 +1081,7 @@
 		</combination>
 		<combination mode="or">
 			<facet answer=		"...... .oooo o.... .." name="enumeration" value="+0" />
-			<facet answer=		"...... o.... o.... .." name="enumeration" value="-0" />
+			<facet answer=		"...... o.... ..... .." name="enumeration" value="-0" />
 			<facet answer=		"...... ..... ..... o." name="enumeration" value="INF" />
 			<facet answer=		"...... ..... ..... .o" name="enumeration" value="NaN" />
 		</combination>

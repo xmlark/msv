@@ -1080,8 +1080,8 @@
 			<facet answer=		"o..... ..... ..... oo" name="pattern" value="[^0-9]+" />
 		</combination>
 		<combination mode="or">
-			<facet answer=		"...... .oooo ..... .." name="enumeration" value="+0" />
-			<facet answer=		"...... o.... ..... .." name="enumeration" value="-0" />
+			<facet answer=		"...... .oooo o.... .." name="enumeration" value="+0" />
+			<facet answer=		"...... o.... o.... .." name="enumeration" value="-0" />
 			<facet answer=		"...... ..... ..... o." name="enumeration" value="INF" />
 			<facet answer=		"...... ..... ..... .o" name="enumeration" value="NaN" />
 		</combination>

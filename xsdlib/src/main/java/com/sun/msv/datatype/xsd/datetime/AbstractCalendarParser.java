@@ -78,11 +78,17 @@ abstract class AbstractCalendarParser {
                 break;
             
             case 'M': // month
-                setMonth(parseInt(2,2));
+                int month = parseInt(2,2);
+                if(month<1 || month>12)
+                    throw new IllegalArgumentException(value);
+                setMonth(month);
                 break;
-            
+
             case 'D': // days
-                setDay(parseInt(2,2));
+                int day = parseInt(2,2);
+                if(day<1 || day>31)
+                    throw new IllegalArgumentException(value);
+                setDay(day);
                 break;
         
             case 'h': // hours

@@ -43,16 +43,27 @@ class SimpleTestPattern implements TestPattern
     
     public boolean hasMore() { return idx!=1; }
 
+    public boolean isExpectedFailure() { return idx==0 && expectedFailure; }
+
+    public String getExpectedFailureReason() {
+        if(idx==0 && expectedFailure) return expectedFailureReason;
+        return null;
+    }
+
     private final String facetName;
     private final String facetValue;
     private final String answer;
+    private final boolean expectedFailure;
+    private final String expectedFailureReason;
     private int idx=0;
     
-    SimpleTestPattern( String facetName, String facetValue, String answer )
+    SimpleTestPattern( String facetName, String facetValue, String answer, boolean expectedFailure, String expectedFailureReason )
     {
         this.facetName    = facetName;
         this.facetValue    = facetValue;
         this.answer        = answer;
+        this.expectedFailure = expectedFailure;
+        this.expectedFailureReason = expectedFailureReason;
         reset();
     }
 }

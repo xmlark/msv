@@ -71,4 +71,13 @@ class ChoiceTestPattern implements TestPattern
     }
 
     public boolean hasMore() { return idx!=-1; }
+
+    public boolean isExpectedFailure() {
+        return idx!=-1 && children[idx].isExpectedFailure();
+    }
+
+    public String getExpectedFailureReason() {
+        if(idx==-1) return null;
+        return children[idx].getExpectedFailureReason();
+    }
 }

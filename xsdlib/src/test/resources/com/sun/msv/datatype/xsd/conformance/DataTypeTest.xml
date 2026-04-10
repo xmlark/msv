@@ -690,7 +690,7 @@
 			<facet answer=			"..oo .... ....... .." name="length" value="2" />
 			<facet answer=			".... oo.. ....... .." name="length" value="3" />
 			<facet answer=			".... .... ....... o." name="length" value="16" />
-			<facet answer=			".... .... ....... .o" name="length" value="26" />
+			<facet answer=			".... .... ....... .." name="length" value="26" />
 			<!-- min/maxLength -->
 			<combination>
 				<choice>

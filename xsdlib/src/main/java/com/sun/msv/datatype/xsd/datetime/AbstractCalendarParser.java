@@ -74,7 +74,10 @@ abstract class AbstractCalendarParser {
                     vidx++;
                     sign=-1;
                 }
-                setYear(sign*parseInt(4,Integer.MAX_VALUE));
+                int year = sign*parseInt(4,Integer.MAX_VALUE);
+                if(year==0)
+                    throw new IllegalArgumentException(value); // no year 0 in XSD
+                setYear(year);
                 break;
             
             case 'M': // month

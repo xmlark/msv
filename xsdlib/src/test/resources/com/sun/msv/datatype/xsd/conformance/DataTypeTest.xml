@@ -1047,7 +1047,7 @@
 	</wrongs>
 </case>
 
-<case name="test of float/double (incomplete)">
+<case name="test for float (selected edge cases)">
 	<value>-INF</value>
 	<value>-999999999999999999999999999999999999999999999999999999999999999e99999999999999999999999999999999</value> <!-- way beyond the possible range of double, but valid -->
 	<value>-1.79769313486231570999999999999999999999999999e+308</value> <!-- MAX_DOUBLE + additional digits that will be rounded to MAX_DOUBLE -->
@@ -1070,8 +1070,54 @@
 	<value>INF</value>
 	<value>NaN</value>
 
-	<!-- both types currently accept this shared lexical set (including optional trailing 'f' suffix) -->
 	<answer for="float" 		>oooooo ooooo ooooo oo </answer>
+
+	<facets><combination>
+		<combination mode="or">
+			<facet answer=		"...... .ooo. ..... .." name="pattern" value="(0|\.|e)+" />
+			<facet answer=		"o..... ..... ..... oo" name="pattern" value="[^0-9]+" />
+		</combination>
+		<combination mode="or">
+			<facet answer=		"...... ..... ..... o." name="enumeration" value="INF" />
+			<facet answer=		"...... ..... ..... .o" name="enumeration" value="NaN" />
+		</combination>
+	</combination></facets>
+
+	<wrongs>
+		<value>+INF</value>
+		<value>inf</value>
+		<value>Inf</value>
+		<value>nan</value>
+		<value>-NaN</value>
+		<value>0.005d</value>
+		<value>E-2</value>
+		<value>1e2.5</value>
+		<value>0x123</value>
+	</wrongs>
+</case>
+<case name="test for double (selected edge cases)">
+	<value>-INF</value>
+	<value>-999999999999999999999999999999999999999999999999999999999999999e99999999999999999999999999999999</value> <!-- way beyond the possible range of double, but valid -->
+	<value>-1.79769313486231570999999999999999999999999999e+308</value> <!-- MAX_DOUBLE + additional digits that will be rounded to MAX_DOUBLE -->
+	<value>-1.79769313486231570e+308</value> <!-- MAX_DOUBLE -->
+	<value>-3.4028234799999999999999E+38f</value>	<!-- MAX_FLOAT + additional digits -->
+	<value>-3.40282347e+38f</value>	<!-- MAX_FLOAT -->
+
+	<value>-.0</value>
+	<value>0.0</value>
+	<value>00000000000.00000000000e00000000000000000000000000000000</value>
+	<value>0.</value>
+	<value>+0</value>
+
+	<value>4.94065645841246544E-326</value>	<!-- should be rounded to -0 -->
+	<value>4.94065645841246544E-324</value>	<!-- MIN_DOUBLE -->
+	<value>0.70119923e-45f</value>	<!-- for float, should be rounded to -0 -->
+	<value>0.70119923000000000000000000001e-45f</value>	<!-- for float, should be rounded to MIN_FLOAT -->
+	<value>1.40239846e-45f</value>	<!-- MIN_FLOAT -->
+
+	<value>INF</value>
+	<value>NaN</value>
+
 	<answer for="double"		>oooooo ooooo ooooo oo </answer>
 
 	<facets><combination>
@@ -1080,8 +1126,6 @@
 			<facet answer=		"o..... ..... ..... oo" name="pattern" value="[^0-9]+" />
 		</combination>
 		<combination mode="or">
-			<facet answer=		"...... .oooo o.... .." name="enumeration" value="+0" />
-			<facet answer=		"...... o.... ..... .." name="enumeration" value="-0" />
 			<facet answer=		"...... ..... ..... o." name="enumeration" value="INF" />
 			<facet answer=		"...... ..... ..... .o" name="enumeration" value="NaN" />
 		</combination>

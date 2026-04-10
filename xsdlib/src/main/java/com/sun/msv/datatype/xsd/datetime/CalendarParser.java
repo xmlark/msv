@@ -89,6 +89,9 @@ public final class CalendarParser extends AbstractCalendarParser {
     }
 
     protected void setYear(int i) {
-        cal.set(Calendar.YEAR,i);
+        // XSD has no year 0: -0001 is 1 BCE, -0002 is 2 BCE, etc.
+        // GregorianCalendar is proleptic: year 0 = 1 BCE, year -1 = 2 BCE.
+        // So for non-positive XSD years, add 1 to convert to Calendar convention.
+        cal.set(Calendar.YEAR, i <= 0 ? i + 1 : i);
     }
 }

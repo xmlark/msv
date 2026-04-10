@@ -77,10 +77,6 @@ public class FloatType extends FloatingNumberType {
             if(s.equals("INF"))        return Float.valueOf(Float.POSITIVE_INFINITY);
             if(s.equals("-INF"))    return Float.valueOf(Float.NEGATIVE_INFINITY);
 
-            // strip optional float type suffix (f/F) before validation
-            if(s.length()>0 && (s.charAt(s.length()-1)=='f' || s.charAt(s.length()-1)=='F'))
-                s = s.substring(0, s.length()-1);
-
             if(s.length()==0
             || !isDigitOrPeriodOrSign(s.charAt(0))
             || !isDigitOrPeriodOrSign(s.charAt(s.length()-1)) )

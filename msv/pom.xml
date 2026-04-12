@@ -54,12 +54,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             <artifactId>xsdlib</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-            <!-- never use version 2.0.2 as it is prior version 1.4.01 -->
-            <!-- see https://mvnrepository.com/artifact/xml-apis/xml-apis -->
-        </dependency>
         <!-- Note: Xerces only needed for TextUI; hence optional -->
         <dependency>
             <groupId>xerces</groupId>

@@ -76,12 +76,12 @@ public class FloatType extends FloatingNumberType {
             if(s.equals("NaN"))        return Float.valueOf(Float.NaN);
             if(s.equals("INF"))        return Float.valueOf(Float.POSITIVE_INFINITY);
             if(s.equals("-INF"))    return Float.valueOf(Float.NEGATIVE_INFINITY);
-            
+
             if(s.length()==0
             || !isDigitOrPeriodOrSign(s.charAt(0))
             || !isDigitOrPeriodOrSign(s.charAt(s.length()-1)) )
                 return null;
-            
+
             // these screening process is necessary due to the wobble of Float.valueOf method
             return Float.valueOf(s);
         } catch( NumberFormatException e ) {

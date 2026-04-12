@@ -95,6 +95,24 @@ class FullCombinationPattern implements TestPattern
     {
         return !noMore;
     }
+
+    public boolean isExpectedFailure() {
+        for( int i=0; i<children.length; i++ ) {
+            if( children[i].isExpectedFailure() )
+                return true;
+        }
+        return false;
+    }
+
+    public String getExpectedFailureReason() {
+        for( int i=0; i<children.length; i++ ) {
+            if( children[i].isExpectedFailure() ) {
+                String reason = children[i].getExpectedFailureReason();
+                if(reason!=null) return reason;
+            }
+        }
+        return null;
+    }
     
     /**
      * adds empty test case to the base pattern
@@ -136,5 +154,14 @@ class FullCombinationPattern implements TestPattern
         }
     
         public boolean hasMore()    { return mode!=2; }
+
+        public boolean isExpectedFailure() {
+            return mode==0 && base.isExpectedFailure();
+        }
+
+        public String getExpectedFailureReason() {
+            if(mode==0) return base.getExpectedFailureReason();
+            return null;
+        }
     }
 }

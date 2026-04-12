@@ -36,4 +36,10 @@ public interface TestPattern
     
     /** true indicates get method can be safely called */
     boolean hasMore();
+
+    /** true indicates current pattern is marked as expected failure */
+    boolean isExpectedFailure();
+
+    /** optional human-readable reason for expected failure */
+    String getExpectedFailureReason();
 }

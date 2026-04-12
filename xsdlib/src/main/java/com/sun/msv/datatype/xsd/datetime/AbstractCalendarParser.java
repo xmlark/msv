@@ -49,7 +49,12 @@ abstract class AbstractCalendarParser {
     
     private int fidx;
     protected int vidx;
-    
+
+    // track parsed date components for day-in-month validation
+    private int parsedYear = Integer.MIN_VALUE;
+    private int parsedMonth = Integer.MIN_VALUE;
+    private int parsedDay = Integer.MIN_VALUE;
+
     protected AbstractCalendarParser( String format, String value ) {
         this.format = format;
         this.value = value;
@@ -74,15 +79,34 @@ abstract class AbstractCalendarParser {
                     vidx++;
                     sign=-1;
                 }
-                setYear(sign*parseInt(4,Integer.MAX_VALUE));
+                int yearStart = vidx;
+                BigInteger yearBig = parseBigInteger(4,Integer.MAX_VALUE);
+                if(sign==-1)
+                    yearBig = yearBig.negate();
+                if(yearBig.signum()==0)
+                    throw new IllegalArgumentException(value); // no year 0 in XSD
+                int yearDigits = vidx-yearStart;
+                if(yearDigits>4 && value.charAt(yearStart)=='0')
+                    throw new IllegalArgumentException(value); // no leading zeros on 5+ digit years
+                // store for day-in-month validation (use int if it fits, otherwise skip validation)
+                try { parsedYear = yearBig.intValueExact(); } catch(ArithmeticException e) { /* too large for int */ }
+                setYear(yearBig);
                 break;
-            
+
             case 'M': // month
-                setMonth(parseInt(2,2));
+                int month = parseInt(2,2);
+                if(month<1 || month>12)
+                    throw new IllegalArgumentException(value);
+                parsedMonth = month;
+                setMonth(month);
                 break;
-            
+
             case 'D': // days
-                setDay(parseInt(2,2));
+                int day = parseInt(2,2);
+                if(day<1 || day>31)
+                    throw new IllegalArgumentException(value);
+                parsedDay = day;
+                setDay(day);
                 break;
         
             case 'h': // hours
@@ -114,8 +138,11 @@ abstract class AbstractCalendarParser {
                     int h = parseInt(2,2);
                     skip(':');
                     int m = parseInt(2,2);
+                    int totalMinutes = h*60+m;
+                    if(totalMinutes>14*60)
+                        throw new IllegalArgumentException(value); // timezone offset out of range
                     setTimeZone(
-                        new SimpleTimeZone((h*60+m)*(vch=='+'?1:-1)*60*1000, ""/*no ID*/) );
+                        new SimpleTimeZone(totalMinutes*(vch=='+'?1:-1)*60*1000, ""/*no ID*/) );
                 } else {
                     setTimeZone(TimeZone.MISSING);
                 }
@@ -130,6 +157,14 @@ abstract class AbstractCalendarParser {
         if(vidx!=vlen)
             // some tokens are left in the input
             throw new IllegalArgumentException(value);//,vidx);
+
+        // validate day against month/year (day-in-month check)
+        if(parsedDay!=Integer.MIN_VALUE && parsedMonth!=Integer.MIN_VALUE) {
+            int y = parsedYear!=Integer.MIN_VALUE ? parsedYear : 4; // default to leap year if year not specified
+            int maxDay = Util.maximumDayInMonthFor(y, parsedMonth-1); // Util uses 0-based month
+            if(parsedDay > maxDay)
+                throw new IllegalArgumentException(value);
+        }
     }
     
     private char peek() throws IllegalArgumentException {
@@ -202,5 +237,5 @@ abstract class AbstractCalendarParser {
     protected abstract void setHours(int i);
     protected abstract void setDay(int i);
     protected abstract void setMonth(int i);
-    protected abstract void setYear(int i);
+    protected abstract void setYear(BigInteger i);
 }

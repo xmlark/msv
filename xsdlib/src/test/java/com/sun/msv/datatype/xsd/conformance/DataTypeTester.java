@@ -23,6 +23,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 import org.jdom2.Element;
+import org.junit.Assert;
 import org.relaxng.datatype.DatatypeException;
 
 /**
@@ -50,11 +51,20 @@ public class DataTypeTester
         out.println( testCase.getAttributeValue("name") );
 
         String[] values;
+        boolean[] expectedFailValues;
+        String[] expectedFailValueReasons;
         {// read values
             List lst = testCase.getChildren("value");
             values = new String[lst.size()];
+            expectedFailValues = new boolean[lst.size()];
+            expectedFailValueReasons = new String[lst.size()];
             for( int i=0; i<values.length; i++ )
-                values[i] = ((Element)lst.get(i)).getText();
+            {
+                Element valueElement = (Element)lst.get(i);
+                values[i] = valueElement.getText();
+                expectedFailValues[i] = "true".equals(valueElement.getAttributeValue("expectedFail"));
+                expectedFailValueReasons[i] = valueElement.getAttributeValue("expectedFailReason");
+            }
         }
 
         String[] wrongValues;
@@ -89,7 +99,7 @@ public class DataTypeTester
                 }
                 testDataType(
                     t,
-                    values, wrongValues,
+                    values, expectedFailValues, expectedFailValueReasons, wrongValues,
                     TestPatternGenerator.trimAnswer(item.getText()),
                     pattern,
                         // wrap it by intrisic restriction due to this datatype
@@ -132,7 +142,7 @@ public class DataTypeTester
      */
     public void testDataType(
         XSDatatypeImpl baseType,
-        String[] values, String[] wrongs,
+        String[] values, boolean[] expectedFailValues, String[] expectedFailValueReasons, String[] wrongs,
         String baseAnswer, TestPattern pattern,
         boolean completenessOnly )
         throws Exception
@@ -200,6 +210,10 @@ public class DataTypeTester
                 // test each value and see what happens
                 for( int i=0; i<values.length; i++ )
                 {
+                    boolean expectedFailure = expectedFailValues[i] || pattern.isExpectedFailure();
+                    String expectedFailureReason = expectedFailValues[i]
+                        ? expectedFailValueReasons[i]
+                        : pattern.getExpectedFailureReason();
                     boolean v = typeObj.isValid(values[i],DummyContextProvider.theInstance);
                     boolean d;
 
@@ -215,11 +229,15 @@ public class DataTypeTester
                             // try round trip conversion.
                             Object o2 = typeObj.createValue(s,DummyContextProvider.theInstance);
                             if( o2==null || !o.equals(o2) )
+                            {
+                                System.out.println("equals error: \n\"" + o.toString() + "\"\n\"" + s + "\"\n\"" + o2.toString() + "\"");
                                 roundTripError = true;
+                            }
                         }
                     } catch( UnsupportedOperationException uoe ) {
                         // ignore this exception
                     } catch( IllegalArgumentException iae ) {
+                        System.out.println("roundtrip IllegalArgumentException");
                         roundTripError = true;
                     }
 
@@ -240,7 +258,7 @@ public class DataTypeTester
                             Object o2 = typeObj.createJavaObject(s,DummyContextProvider.theInstance);
                             if( o2==null ) {
                                 System.out.println("round-trip conversion failed");
-                                roundTripError = true;
+                                roundTripError = true;                                
                             }
                         }
                     }
@@ -266,17 +284,22 @@ public class DataTypeTester
                             continue;    // do not report error if
                                         // the validator accepts things that
                                         // may not be accepted.
+                    }else if(roundTripError){
+                        System.out.println("RoundtripError for type=" + baseType.getName() + " value=\"" + values[i] + "\"");
+                    }
+
+                    if(expectedFailure)
+                    {
+                        if(expectedFailureReason!=null && expectedFailureReason.length()>0)
+                            out.println("  expectedFail: " + expectedFailureReason);
+                        continue;
                     }
 
                     // dump error messages
-                    if( !err.report( new UnexpectedResultException(
+                    err.report( new UnexpectedResultException(
                             typeObj, baseType.getName(),
                             values[i], answer.charAt(i)=='o',
-                            ti ) ) )
-                    {
-                        out.println("test aborted");
-                        return;
-                    }
+                            ti ) );
                 }
 
                 // test each wrong values and makes sure that they are rejected.
@@ -293,15 +316,11 @@ public class DataTypeTester
 
                     if( typeObj.createJavaObject(wrongs[i],DummyContextProvider.theInstance)!=null )
                         err = true;
-
+                        
                     if( err ) {
-                        if( !this.err.report( new UnexpectedResultException(
+                        this.err.report( new UnexpectedResultException(
                             typeObj, baseType.getName(),
-                            wrongs[i], false, ti ) ) )
-                        {
-                            out.println("test aborted");
-                            return;
-                        }
+                            wrongs[i], false, ti ) );
                     }
                 }
             }

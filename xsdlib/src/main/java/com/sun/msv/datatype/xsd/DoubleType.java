@@ -61,14 +61,13 @@ public class DoubleType extends FloatingNumberType {
             if(lexicalValue.equals("NaN"))    return Double.valueOf(Double.NaN);
             if(lexicalValue.equals("INF"))    return Double.valueOf(Double.POSITIVE_INFINITY);
             if(lexicalValue.equals("-INF"))    return Double.valueOf(Double.NEGATIVE_INFINITY);
-            
+
             if(lexicalValue.length()==0
             || !isDigitOrPeriodOrSign(lexicalValue.charAt(0))
             || !isDigitOrPeriodOrSign(lexicalValue.charAt(lexicalValue.length()-1)) )
                 return null;
-            
-            
-            // these screening process is necessary due to the wobble of Float.valueOf method
+
+            // these screening process is necessary due to the wobble of Double.valueOf method
             return Double.valueOf(lexicalValue);
         } catch( NumberFormatException e ) {
             return null;

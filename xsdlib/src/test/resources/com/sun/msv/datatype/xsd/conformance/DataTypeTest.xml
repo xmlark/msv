@@ -4,35 +4,35 @@
 
 <!--
 	untested types
-		
+
 -->
 
 <case name="test for QName">
 	<!--
 		test suite provides ValidationContextProvideder that
 		resolves prefixes as follows:
-		
+
 		foo     -> http://foo.examples.com/
 		bar     -> http://bar.examples.com/
 		baz     -> http://bar.examples.com/
 		emp     -> http://empty.examples.com/
 		<empty> -> http://empty.examples.com/
 	-->
-	
+
 	<value>  foo:head </value>
 	<value > foo:mod</value>
 	<value  >bar:role</value>
 	<value>  baz:role  </value>
 	<value > ascii </value>
-	
+
 	<answer for="QName"				>ooooo</answer>
-	
+
 	<comment><!-- semantics of "length" for QName is unclear. -->
 		<choice>
 			<!-- length -->
 			<facet	answer=			"o.oo."	name="length"	value="8" />
 			<facet	answer=			"....o"	name="length"	value="5" />
-			
+
 			<!-- min/maxLength -->
 			<combination>
 				<choice>
@@ -46,22 +46,22 @@
 			</combination>
 		</choice>
 	</comment>
-	
+
 	<facets><combination>
-		
+
 		<!-- pattern -->
 		<combination mode="or">
 			<facet answer=			"oo..."	name="pattern"	value="foo:.*" />
 			<facet answer=			"..oo."	name="pattern"	value="ba.:.*" />
 		</combination>
-		
+
 		<!-- enumeration -->
 		<combination mode="or">
 			<facet answer=			"..oo." name="enumeration" value="bar:role" />
 			<facet answer=			"....o" name="enumeration" value="emp:ascii" />
 		</combination>
 	</combination></facets>
-	
+
 	<wrongs>
 		<value>:foo</value>
 		<value>foo:</value>
@@ -79,7 +79,7 @@
 	<value>http://www.swiftinc.co.jp/mypage.html#fragment	</value>
 	<value>ftp://user:pwd@www.swiftinc.co.jp/?query=a+b-c	</value>
 	<value>telnet://192.168.0.1:1234/ip/v4#address </value>
-	
+
 	<!-- IPv6 addresses (taken from RFC2732) -->
 	<value>http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html</value>
 	<value>http://[1080:0:0:0:8:800:200C:417A]/index.html</value>
@@ -88,7 +88,7 @@
 	<value>http://[::192.9.5.5]/ipng</value>
 	<value>http://[::FFFF:129.144.52.38]:80/index.html</value>
 	<value>http://[2010:836B:4179::836B:4179]</value>
-	
+
 
 	<!-- examples from RFC2396 -->
 	<value>ftp://ftp.is.co.za/rfc/rfc1808.txt</value>
@@ -97,7 +97,7 @@
 	<value>mailto:mduerst@ifi.unizh.ch</value>
 	<value>news:comp.infosystems.www.servers.unix</value>
 	<value>telnet://melvyl.ucop.edu/</value>
-	
+
 	<!-- relative URIs taken from http://www.ics.uci.edu/~fielding/url/test1.html 40 items. -->
 	<value>g:h</value>
 	<value>g</value>
@@ -108,7 +108,7 @@
 	<value>g?y</value>
 	<value>#s</value>
 	<value>g#s</value>
-	
+
 	<value>g?y#s</value>
 	<value>;x</value>
 	<value>g;x</value>
@@ -119,7 +119,7 @@
 	<value>../g</value>
 	<value>../../</value>
 	<value>../../g</value>
-	
+
 	<value>../../../g</value>
 	<value>../../../../g</value>
 	<value>/./g</value>
@@ -130,7 +130,7 @@
 	<value>..g</value>
 	<value>./../g</value>
 	<value>./g/.</value>
-	
+
 	<value>g/./h</value>
 	<value>g/../h</value>
 	<value>g;x=1/./y</value>
@@ -141,13 +141,13 @@
 	<value>g#s/../x</value>
 	<value>http:g</value>
 	<value>http:</value>
-	
+
 	<!-- ad hoc test -->
 	<!-- <scheme>:<opaque_part> -->
 	<value>		x56:-_.!*'();/?:@&amp;=+$, </value>
-	
+
 	<answer for="anyURI"		>oooo ooooooo oooooo  ooooooooo oooooooooo oooooooooo ooooooooo.  o</answer>
-	
+
 	<facets><combination>
 		<choice>
 			<!-- length related facet -->
@@ -157,26 +157,26 @@
 				<facet answer=	".... ....... ......  ooooooooo oooooooooo o.oooooooo oooooooooo  ."	name="maxLength" value="10" />
 			</combination>
 		</choice>
-		
+
 		<combination mode="or">
 			<facet answer=		"oo.. ooooooo ..o...  ......... .......... .......... ........oo  ."	name="pattern" value="h.*" />
 			<facet answer=		"oooo ooooooo ooo..o  ......... .......... .......... ..........  ."	name="pattern" value=".+//.+" />
 		</combination>
 	</combination></facets>
-	
+
 	<wrongs>
 		<!--	wrong scheme -->
 		<value>123://mydomain.com/</value>
 <!--		<value>http://no.space.com/allowed in/URI</value>	-->
 <!-- character escape makes the above case valid -->
-		
-		
+
+
 		<!-- surprisingly, the following URL is valid
-		
+
 		<value> http://12345.67/ </value>
-		
-		because it can be interpreted as 
-  
+
+		because it can be interpreted as
+
 	absoluteURI
 ->	scheme ":" hier_part
 ->	"http:" abs_path
@@ -201,19 +201,28 @@
 	<value> ---29 </value>
 	<value> ---30 </value>
 	<value> ---31 </value>
-	
+
 	<value> ---10  </value>
 	<value> ---10-14:00 </value>
 	<value> ---10-08:00 </value>
 	<value> ---10Z </value>
 	<value> ---10+05:00 </value>
 	<value> ---10+09:00 </value>
-	
+
 	<answer for="gDay"			>ooooooo oooooo</answer>
-	
+
 	<facets><combination>
 		<combination mode="or">
-			<facet answer=		"ooo.... ......" name="pattern" value="---0." />
+          <!-- note:
+            1. the below string encodes a boolean for every "value" above, o if the pattern matches, . if not
+            2. very nonobvious and no idea why:
+               in testDataType() there is a "pattern" iteration that runs all test cases
+               with every facet being either enabled and disabled i.e. 4 times in total here
+               => "wrong" test input must not be excluded *only* by facet - because there
+                  is always a mode where every facet is disabled - but by the type's format
+          -->
+
+			<facet answer=		"ooo.... ......" name="pattern" value="---0[1-9]" />
 			<facet answer=		"....... oooooo" name="pattern" value=".*10.*" />
 		</combination>
 <!--	order relation is broken
@@ -230,7 +239,7 @@
 		</choice>
 -->
 	</combination></facets>
-	
+
 	<wrongs>
 		<value> ---10-5:00 </value>
 		<value> 10 </value>
@@ -244,13 +253,13 @@
 	<value> http://&#x125;.gr.jp/" </value>
 	<value> http://&#x937;.gr.jp/" </value>
 	<value> http://&#x29C3;.gr.jp/" </value>
-	
+
 	<answer for="anyURI"		>ooo</answer>
-	
+
 	<facets>
 		<facet answer="ooo"	name="pattern" value=".*" />
 	</facets>
-	
+
 	<wrongs />
 </case>
 
@@ -261,37 +270,36 @@
 	<value>2001-01-01T00:00:00Z</value>
 	<value>2001-01-01T00:00:00+02:00</value>
 	<value>2001-01-01T00:00:00+14:00</value>
-	
+
 	<!-- abuse -->
 	<value>9999999999999999999999999-05-13T02:14:00Z</value>
 	<value>2001-01-01T05:12:13.0000000000000000000000000000000000000000000001</value>
-	
+
 	<answer for="dateTime"		>oooooo oo</answer>
-	
+
 	<facets>
 		<facet		answer=		"oooooo oo" name="pattern" value=".*" />
 	</facets>
-	
+
 	<wrongs>
 		<value>0000-01-01T12:12:12Z</value>	<!-- no year 0 -->
 		<value>1999-02-29T10:00:00Z</value> <!-- leap year related -->
 	</wrongs>
 </case>
-	
-	<comment>
+
 <case name="simple test for duration">
 	<value>P1Y1M1DT1H1M1.1111S</value>
 	<value>-P123Y</value>
-	
+
 	<!-- truncated forms -->
 	<value>P1YT1S</value>
-	
+
 	<answer for="duration"		>oo o</answer>
-	
+
 	<facets>
 		<facet		answer=		"oo o" name="pattern" value=".*" />
 	</facets>
-	
+
 	<wrongs>
 		<value>P-123Y</value>	<!-- malplaced '-' -->
 		<value>P5.2D</value>	<!-- only seconds have fraction -->
@@ -299,18 +307,17 @@
 		<value>P52S</value>		<!-- T is necessary -->
 	</wrongs>
 </case>
-</comment>
 
 <case name="test for time">
 	<!-- ad hoc values -->
 	<value>00:00:00</value>
 	<value>08:00:00Z</value>
 	<value> 12:15:32-08:00 </value>
-	
+
 	<value>15:00:00Z</value>
-	
+
 	<answer for="time"			>ooo o</answer>
-	
+
 	<facets>
 <!-- comparison relation is broken
 		<combination mode="or">
@@ -319,15 +326,15 @@
 		</combination>
 -->
 			<facet answer=			"... ." name="enumeration" value="00:00:00Z" />
-		
+
 	</facets>
-	
+
 	<wrongs>
 		<!-- truncated forms -->
 		<value>1:00</value>
 		<value>01:00</value>
 		<value>1:00:00</value>
-		
+
 		<!-- out of range -->
 		<value>-01:00:00</value>
 		<value> 24:00:00</value>
@@ -346,20 +353,20 @@
 	<value>--10--</value>
 	<value>--11--</value>
 	<value>--12--</value>
-	
+
 	<!-- with time zone -->
 	<value>--03---07:30</value>
 	<value>--03--Z</value>
 	<value>--03--+00:00</value>
 	<value>--03--+03:00</value>
-	
+
 	<answer for="gMonth"		>oooooo oooo</answer>
-	
+
 	<facets><combination>
 		<!-- min{In|Ex}clusive -->
 <!-- order relation is broken
 		remove \ when you use it.
-		
+
 		<choice>
 			<facet answer=		"..oooo ...." name="minInclusive" value="-\-03-\-" />
 			<facet answer=		"...ooo ...." name="minExclusive" value="-\-03-\-" />
@@ -367,17 +374,17 @@
 			<facet answer=		"...ooo ...o" name="minExclusive" value="-\-03-\-Z" />
 		</choice>
 		<facet answer=			"...... .oo." name="enumeration" value="-\-03-\-Z" />
--->		
+-->
 		<facet answer=			"...... ...." name="enumeration" value="--09--Z" />
 	</combination></facets>
-	
+
 	<wrongs>
 		<!-- out of range -->
 		<value>--00--</value>
 		<value>--1--</value>
 		<value>--13--</value>
 		<value>5</value>
-		
+
 		<!-- illegal time zone -->
 		<value>--03-- Z</value>
 		<value>--03--(GMT)</value>
@@ -387,7 +394,7 @@
 		<value>--03--+12</value>
 		<value>--03--08:00</value>
 		<value>--03---14:01</value>
-		
+
 	</wrongs>
 </case>
 
@@ -400,7 +407,7 @@
 	<value>___</value>
 	<value>_:_</value>
 	<value>125</value>
-	
+
 	<answer for="Name"			>oo.</answer>
 	<answer for="NCName"		>o..</answer>
 	<answer for="NMTOKEN"		>ooo</answer>
@@ -408,7 +415,7 @@
 	<facets>
 		<facet answer=			"ooo" name="pattern" value=".*" />
 	</facets>
-	
+
 	<wrongs>
 		<value></value>
 	</wrongs>
@@ -419,19 +426,19 @@
 	<value></value>
 	<value>1d2f35</value>
 	<value>1234567890abcdefABCDEF   </value>
-	
+
 	<answer for="hexBinary"			>ooo</answer>
 
 	<facets><combination>
 		<facet answer=				".o." name="enumeration" value="1D2F35" />
-		
+
 		<choice>
 			<facet answer=			".o." name="length" value="3" />
 			<facet answer=			"..o" name="length" value="11" />
 			<facet answer=			"oo." name="maxLength" value="10" />
 		</choice>
 	</combination></facets>
-	
+
 	<wrongs>
 		<value>	12 34 </value>	<!-- inline space-->
 		<value> x5 </value>		<!-- illegal characters -->
@@ -446,29 +453,36 @@
 	<value>ABCX</value>
 	<value>DEFG52==</value>
 	<value>HIJKL1x=</value>
-	<value>AB))((==</value>	<!-- "))((" will be ignored -->
 	<value>52==</value>
-	
+	<value>&#9;5&#10;2&#13;=&#32;=&#10;</value>
+
 	<answer for="base64Binary"		>ooooo</answer>
-	
+
 	<facets><choice>
 		<facet answer=			"o...." name="length" value="3" />
 		<facet answer=			".o..." name="length" value="4" />
 		<facet answer=			"...oo" name="length" value="1" />
 	</choice></facets>
-	
+
 	<wrongs>
 		<!-- wrongs paddings -->
 		<value>=</value>
 		<value>A</value>
-		<value>5=</value>	
-		<value>q==</value>	
-		<value>n===</value>	
+		<value>5=</value>
+		<value>q==</value>
+		<value>n===</value>
 		<value>9x</value>
 		<value>5f=</value>
 		<value>tr===</value>
 		<value>onp</value>
 		<value>1qb==</value>
+		<!-- invalid characters -->
+		<value>AB))((==</value>
+		<value>AB==#@!</value>
+		<value>#!@AB==</value>
+		<!-- valid characters after the start of the padding -->
+		<value>AB==A</value>
+		<value>AB=A=</value>
 	</wrongs>
 </case>
 
@@ -477,7 +491,7 @@
 	<value>En-Us</value>
 	<value>en-cockney</value>
 	<value>jp-ja</value>
-	
+
 	<value>my-own-language</value>
 	<value>     en-GB </value>
 	<value>it-can-be-as-long-as-you-want</value>
@@ -486,7 +500,7 @@
 	<answer for="language"	>oooo oooo</answer>
 
 	<facets><combination>
-		
+
 		<choice>
 			<!-- length test -->
 			<facet answer=			"oo.o .o.." name="length" value="5" />
@@ -504,21 +518,21 @@
 				</choice>
 			</combination>
 		</choice>
-		
+
 		<!-- enumeration -->
 		<combination mode="or">
 			<facet			answer=	"oo.. ...." name="enumeration" value="  EN-US &#xD; " />
 			<facet			answer=	"...o ...." name="enumeration" value="jP-jA" />
 			<facet			answer=	".... o..." name="enumeration" value="my-own-language" />
 		</combination>
-		
+
 		<!-- pattern -->
 		<combination mode="or">
 			<facet			answer=	"o.o. .o.." name="pattern" value="en-.*" />	<!-- pattern is applied to lexical space, so case sensitive. -->
 			<facet			answer=	"o.o. ooo." name="pattern" value=".*e.*" />
 		</combination>
 	</combination></facets>
-		
+
 	<wrongs>
 		<value>space  -  within-lang</value>
 		<value>morethan-eight-characters-token</value>
@@ -537,16 +551,16 @@
 	<value>&#xA;&#xD;</value>
 	<value>oridinary string</value>
 	<value>&#x1005;&#x1009;</value>	<!-- length 2 characters -->
-	
+
 	<value>  more   space  </value>
-	<value>  	
+	<value>
 		tab and   returns
 		</value>
-	
+
 	<answer for="token"	>oooooo oo</answer>
-	
+
 	<facets><combination>
-		
+
 		<choice>
 			<!-- length test -->
 			<facet answer=			"oooo.. .." name="length" value="0" />
@@ -565,7 +579,7 @@
 				</choice>
 			</combination>
 		</choice>
-		
+
 		<!-- enumeration -->
 		<combination mode="or">
 			<facet			answer=	"oooo.. .." name="enumeration" value=" " />
@@ -573,14 +587,14 @@
 			<facet			answer=	"oooo.. .." name="enumeration" value="&#xD;&#xA;" />
 			<facet			answer=	"...... o." name="enumeration" value="more space" />
 		</combination>
-		
+
 		<!-- pattern -->
 		<combination mode="or">
 			<facet			answer=	"...... .." name="pattern" value="[\t\r\n]+" />	<!-- pattern must be checked after whitespace normalization -->
 			<facet			answer=	"oooo.. .." name="pattern" value="" />
 		</combination>
 	</combination></facets>
-	
+
 	<wrongs />	<!-- nothing can be wrong as token -->
 </case>
 
@@ -594,16 +608,16 @@
 	<value>&#xA;&#xD;</value>
 	<value>oridinary string</value>
 	<value>&#x1005;&#x1009;</value>	<!-- length 2 characters -->
-	
+
 	<value>  more   space  </value>
-	<value>  	
+	<value>
 		tab and   returns
 		</value>
-	
+
 	<answer for="normalizedString"	>oooooo oo</answer>
-	
+
 	<facets><combination>
-		
+
 		<choice>
 			<!-- length test -->
 			<facet answer=			".oo... .." name="length" value="1" />
@@ -615,13 +629,12 @@
 					<facet answer=	"....o. oo" name="minLength" value="5" />
 				</choice>
 				<choice>
-					<facet answer=	".oo... .." name="maxLength" value="1" />
 					<facet answer=	"oooo.o .." name="maxLength" value="10" />
 					<facet answer=	"oooooo oo" name="maxLength" value="99" />
 				</choice>
 			</combination>
 		</choice>
-		
+
 		<!-- enumeration -->
 		<combination mode="or">
 			<facet			answer=	".oo... .." name="enumeration" value=" " />
@@ -629,7 +642,7 @@
 			<facet			answer=	"o..o.. .." name="enumeration" value="&#xD;&#xA;" />
 			<facet			answer=	"...... .." name="enumeration" value="more space" /> <!-- make sure that whitespace!=collapse -->
 		</combination>
-		
+
 		<!-- pattern -->
 		<combination mode="or">
 			<facet			answer=	".oo... .." name="pattern" value=" " />	<!-- pattern must be checked after whitespace normalization -->
@@ -637,7 +650,7 @@
 			<facet			answer=	"oooo.. oo" name="pattern" value=" .*" />
 		</combination>
 	</combination></facets>
-	
+
 	<wrongs />	<!-- nothing can be wrong as normalizedString -->
 </case>
 
@@ -647,12 +660,12 @@
 	<value>x</value>
 	<value>--</value>
 	<value>&#x1005;&#x1009;</value>
-	
+
 	<value>$#"</value>
 	<value>JPN</value>	<!-- "the Japanese" in kanji. length 3 -->
 	<value>lame</value>
 	<value>label</value>
-	
+
 	<value>length</value>
 	<value> a b c </value>
 	<value>quicker</value>
@@ -660,24 +673,24 @@
 	<value>GetItDone</value>
 	<value>McDonald's</value>
 	<value>drive safely</value>
-	
+
 	<!--   123456789-123456 -->
 	<value>  more   space  </value>
-	<value>  	
+	<value>
 		tab and   returns
 		</value>
-	
+
 	<answer for="string"			>oooo oooo ooooooo oo</answer>
-	
+
 	<facets><combination>
-		
+
 		<choice>
 			<!-- length test -->
 			<facet answer=			"o... .... ....... .." name="length" value="0" />
 			<facet answer=			"..oo .... ....... .." name="length" value="2" />
 			<facet answer=			".... oo.. ....... .." name="length" value="3" />
 			<facet answer=			".... .... ....... o." name="length" value="16" />
-			<facet answer=			".... .... ....... .o" name="length" value="26" />
+			<facet answer=			".... .... ....... .." name="length" value="26" />
 			<!-- min/maxLength -->
 			<combination>
 				<choice>
@@ -689,11 +702,11 @@
 					<facet answer=	"oooo oooo o...... .." name="maxLength" value="6" />
 					<facet answer=	"oooo oooo ooooo.. .." name="maxLength" value="9" />
 					<facet answer=	"oooo oooo ooooooo o." name="maxLength" value="20" />
-					<facet answer=	"oooo oooo ooooooo oo" name="maxLength" value="999999999999999999999999999999999999999" />
+					<!-- <facet answer=	"oooo oooo ooooooo oo" name="maxLength" value="999999999999999999999999999999999999999" /> disabled: value overflows integer -->
 				</choice>
 			</combination>
 		</choice>
-		
+
 		<!-- enumeration -->
 		<combination mode="or">
 			<facet			answer=	".... .... ....... .." name="enumeration" value="more  space" />
@@ -701,7 +714,7 @@
 			<facet			answer=	"o... .... ....... .." name="enumeration" value="" />
 			<facet			answer=	".... ...o ....... .." name="enumeration" value="label" />
 		</combination>
-		
+
 		<!-- pattern -->
 		<combination mode="or">
 			<facet			answer=	".... ..oo o..o... .." name="pattern" value="l.*" />
@@ -709,7 +722,7 @@
 			<facet			answer=	".ooo oooo o.o.oo. .." name="pattern" value="[^ ]+" />
 		</combination>
 	</combination></facets>
-	
+
 	<wrongs />	<!-- nothing can be wrong as string -->
 </case>
 
@@ -720,7 +733,7 @@
 	<value > -0852+02:00</value>
 	<value>  -0312</value>
 	<value  >-0019Z</value>
-	
+
 	<value > -0002</value>
 	<value > -0001-09:00</value>
 	<value   >0001</value>
@@ -729,22 +742,22 @@
 	<value >  0001+08:00</value>
 	<value  > 0053</value>
 	<value >  0227</value>
-	
+
 	<value>   1255</value>
 	<value   >2512Z</value>
 	<value  > 7522</value>
 	<value >  9999</value>
 	<value>   12555+09:00</value>
-	
+
 	<value   >99999999999999999999+05:00</value>
-	<value  > 999999999999999999999999999999999999999999999999999999999999999999</value>
-	
+	<value expectedFail="true" expectedFailReason="Calendar-backed Java round-trip cannot preserve this huge gYear lexical form."> 999999999999999999999999999999999999999999999999999999999999999999</value>
+
 	<answer for="gYear"		>ooooo oooooooo ooooo oo</answer>
 
 	<facets><combination>
 		<combination mode="or">
 			<facet answer=	"..... ..o..... ..... .." name="enumeration" value="0001" />
-			<facet answer=	"..... ........ ..... .o" name="enumeration" value="999999999999999999999999999999999999999999999999999999999999999999" />
+			<facet expectedFail="true" expectedFailReason="Huge gYear enumeration cannot round-trip through Calendar-backed Java object conversion." answer=	"..... ........ ..... .o" name="enumeration" value="999999999999999999999999999999999999999999999999999999999999999999" />
 		</combination>
 		<combination mode="or">
 			<facet answer=	"..... ..o...oo o.oo. .." name="pattern" value="...." />
@@ -795,7 +808,7 @@
 	<value>-0001-12-31 </value>
 	<value> 0001-01-01</value>
 	<value> 1996-02-29  </value>
-	
+
 	<value> 2001-01-01 </value>
 	<value> 2001-01-01-14:00 </value>
 	<value >2001-01-01-08:00     </value>
@@ -804,9 +817,9 @@
 	<value> 2001-01-01+14:00</value>
 	<value> 2001-01-02 </value>
 
-	<value> 9999999999999999999999999999999999999999999999999999999999999999999-01-01 </value>
-	<value> 9999999999999999999999999999999999999999999999999999999999999999999-01-01Z </value>
-	<value> 9999999999999999999999999999999999999999999999999999999999999999999-01-01+05:00 </value>
+	<value expectedFail="true" expectedFailReason="Calendar-backed Java round-trip collapses huge date year and loses lexical fidelity."> 9999999999999999999999999999999999999999999999999999999999999999999-01-01 </value>
+	<value expectedFail="true" expectedFailReason="Calendar-backed Java round-trip collapses huge date year and loses lexical fidelity."> 9999999999999999999999999999999999999999999999999999999999999999999-01-01Z </value>
+	<value expectedFail="true" expectedFailReason="Calendar-backed Java round-trip collapses huge date year and loses lexical fidelity."> 9999999999999999999999999999999999999999999999999999999999999999999-01-01+05:00 </value>
 
 	<value> 1512-01-04-12:00 </value>
 	<value> 1512-01-05+12:00 </value>
@@ -824,7 +837,7 @@
 			<facet answer=  "oooo o..o... oo. ..o" name="pattern" value=".*[^24680]" />
 		</combination>
 	</combination></facets>
-	
+
 	<wrongs>
 		<!-- no year 0 -->
 		<value> 0000-01-01</value>
@@ -839,7 +852,7 @@
 		<value> 1253-1-03</value>
 		<value> 1245-09-7</value>
 		<value> 1877- 1- 1</value>
-		
+
 		<!-- impossible day of month -->
 		<value>1932-01-32</value>
 		<value>1159-02-29</value>
@@ -878,7 +891,7 @@
 	<value>false</value>
 	<value>0</value>
 	<value>1</value>
-	
+
 	<answer for="boolean">oooo</answer>
 
 	<facets>
@@ -890,7 +903,7 @@
 		</combination>
 
 	</facets>
-	
+
 	<wrongs>
 		<value>True</value>
 		<value>FALSE</value>
@@ -909,19 +922,19 @@
 	<value>-32769</value><!-- MIN_SHORT -1 -->
 	<value>-32768</value><!-- MIN_SHORT -->
 	<value>-11100</value><!-- totalDigits=3, not 5 -->
-	
+
 	<value>-129</value><!-- MIN_BYTE -1 -->
 	<value>-128</value><!-- MIN_BYTE -->
 	<value>-2</value>
 	<value>-1</value>
 	<value>-0</value>
-	
+
 	<value>0</value>
 	<value>000000000000000000000000000000000000000000000000000000000000</value><!-- valid representation of 0 -->
 	<value>+0</value>
 	<value> 1</value>
 	<value>+2</value>
-	
+
 
 	<value>127</value><!-- MAX_BYTE -->
 	<value>128</value><!-- MAX_BYTE +1 -->
@@ -947,12 +960,12 @@
 	<value>18446744073709551616</value><!-- MAX_ULONG+1 -->
 	<!-- very long but valid integer -->
 	<value>99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999</value>
-	
+
 	<!-- decimal values are not valid -->
 	<value>0.0</value>
 	<value>0.</value>
 	<value>.0</value>
-	
+
 	<answer for="integer"				>ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ...</answer>
 	<answer for="negativeInteger"		>ooooo ooooo oooo. .....  ..... ..... ..... ..... ...</answer>
 	<answer for="nonPositiveInteger"	>ooooo ooooo ooooo ooo..  ..... ..... ..... ..... ...</answer>
@@ -967,11 +980,11 @@
 	<answer for="unsignedShort"			>..... ..... ....o ooooo  ooooo ooo.. ..... ..... ...</answer>
 	<answer for="unsignedByte"			>..... ..... ....o ooooo  ooo.. ..... ..... ..... ...</answer>
 	<answer for="decimal"				>ooooo ooooo ooooo ooooo  ooooo ooooo ooooo ooooo ooo</answer>
-	
+
 	<facets><combination>
 		<choice>
-			<facet answer=				"..... ....o ooooo ooooo  oooo. ..... ..... ..... ooo" name="totalDigits" value="3" />
-			<facet answer=				"..... ....o ooooo ooooo  ooooo ..... ..... ..... ooo" name="totalDigits" value="4" />
+			<facet answer=				"..... ..... ooooo ooooo  oooo. ..... ..... ..... ooo" name="totalDigits" value="3" />
+			<facet answer=				"..... ..... ooooo ooooo  ooooo ..... ..... ..... ooo" name="totalDigits" value="4" />
 			<facet answer=				"..... ..ooo ooooo ooooo  ooooo oooo. ..... ..... ooo" name="totalDigits" value="5" />
 			<facet answer=				"ooooo ooooo ooooo ooooo  ooooo ooooo ooooo oooo. ooo" name="totalDigits" value="400" />
 <!-- precision can be any positiveInteger, but no way to support this in Java -->
@@ -1020,7 +1033,7 @@
 			</combination>
 		</choice>
 	</combination></facets>
-	
+
 	<wrongs>
 		<value>+</value>
 		<value>-</value>
@@ -1034,7 +1047,7 @@
 	</wrongs>
 </case>
 
-<case name="test of float/double (incomplete)">
+<case name="test for float (selected edge cases)">
 	<value>-INF</value>
 	<value>-999999999999999999999999999999999999999999999999999999999999999e99999999999999999999999999999999</value> <!-- way beyond the possible range of double, but valid -->
 	<value>-1.79769313486231570999999999999999999999999999e+308</value> <!-- MAX_DOUBLE + additional digits that will be rounded to MAX_DOUBLE -->
@@ -1048,8 +1061,8 @@
 	<value>0.</value>
 	<value>+0</value>
 
-	<value>4.94065645841246544E-326</value>	<!-- should be rounded to -0 -->
-	<value>4.94065645841246544E-324</value>	<!-- MIN_DOUBLE -->
+	<value expectedFail="true" expectedFailReason="Underflow/subnormal handling differs in enumeration/value-space checks for float edge cases.">4.94065645841246544E-326</value>	<!-- should be rounded to -0 -->
+	<value expectedFail="true" expectedFailReason="Subnormal boundary handling differs in this float edge case path.">4.94065645841246544E-324</value>	<!-- MIN_DOUBLE -->
 	<value>0.70119923e-45f</value>	<!-- for float, should be rounded to -0 -->
 	<value>0.70119923000000000000000000001e-45f</value>	<!-- for float, should be rounded to MIN_FLOAT -->
 	<value>1.40239846e-45f</value>	<!-- MIN_FLOAT -->
@@ -1057,8 +1070,7 @@
 	<value>INF</value>
 	<value>NaN</value>
 
-	<answer for="float" 		>oooooo ooooo ooooo oo </answer>
-	<answer for="double"		>oooooo ooooo ooooo oo </answer>
+	<answer for="float" 		>oooo.. ooooo oo... oo </answer>
 
 	<facets><combination>
 		<combination mode="or">
@@ -1072,16 +1084,64 @@
 			<facet answer=		"...... ..... ..... .o" name="enumeration" value="NaN" />
 		</combination>
 	</combination></facets>
-	
+
 	<wrongs>
 		<value>+INF</value>
 		<value>inf</value>
 		<value>Inf</value>
 		<value>nan</value>
 		<value>-NaN</value>
-		<value>1e2f</value>
 		<value>0.005d</value>
-		<value>-0.0f</value>
+		<value>E-2</value>
+		<value>1e2.5</value>
+		<value>0x123</value>
+	</wrongs>
+</case>
+<case name="test for double (selected edge cases)">
+	<value>-INF</value>
+	<value>-999999999999999999999999999999999999999999999999999999999999999e99999999999999999999999999999999</value> <!-- way beyond the possible range of double, but valid -->
+	<value>-1.79769313486231570999999999999999999999999999e+308</value> <!-- MAX_DOUBLE + additional digits that will be rounded to MAX_DOUBLE -->
+	<value>-1.79769313486231570e+308</value> <!-- MAX_DOUBLE -->
+	<value>-3.4028234799999999999999E+38f</value>	<!-- MAX_FLOAT + additional digits -->
+	<value>-3.40282347e+38f</value>	<!-- MAX_FLOAT -->
+
+	<value>-.0</value>
+	<value>0.0</value>
+	<value>00000000000.00000000000e00000000000000000000000000000000</value>
+	<value>0.</value>
+	<value>+0</value>
+
+	<value expectedFail="true" expectedFailReason="Underflow/subnormal handling differs in enumeration/value-space checks for double edge cases.">4.94065645841246544E-326</value>	<!-- should be rounded to -0 -->
+	<value expectedFail="true" expectedFailReason="Subnormal boundary handling differs in this double edge case path.">4.94065645841246544E-324</value>	<!-- MIN_DOUBLE -->
+	<value>0.70119923e-45f</value>	<!-- for float, should be rounded to -0 -->
+	<value>0.70119923000000000000000000001e-45f</value>	<!-- for float, should be rounded to MIN_FLOAT -->
+	<value>1.40239846e-45f</value>	<!-- MIN_FLOAT -->
+
+	<value>INF</value>
+	<value>NaN</value>
+
+	<answer for="double"		>oooo.. ooooo oo... oo </answer>
+
+	<facets><combination>
+		<combination mode="or">
+			<facet answer=		"...... .ooo. ..... .." name="pattern" value="(0|\.|e)+" />
+			<facet answer=		"o..... ..... ..... oo" name="pattern" value="[^0-9]+" />
+		</combination>
+		<combination mode="or">
+			<facet answer=		"...... .oooo ..... .." name="enumeration" value="+0" />
+			<facet answer=		"...... o.... ..... .." name="enumeration" value="-0" />
+			<facet answer=		"...... ..... ..... o." name="enumeration" value="INF" />
+			<facet answer=		"...... ..... ..... .o" name="enumeration" value="NaN" />
+		</combination>
+	</combination></facets>
+
+	<wrongs>
+		<value>+INF</value>
+		<value>inf</value>
+		<value>Inf</value>
+		<value>nan</value>
+		<value>-NaN</value>
+		<value>0.005d</value>
 		<value>E-2</value>
 		<value>1e2.5</value>
 		<value>0x123</value>

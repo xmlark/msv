@@ -53,10 +53,14 @@ class TestPatternGenerator
         }
         if( tagName.equals("facet") )
         {
+            boolean expectedFail = "true".equals(patternElement.getAttributeValue("expectedFail"));
+            String expectedFailReason = patternElement.getAttributeValue("expectedFailReason");
             return new SimpleTestPattern(
                 patternElement.getAttributeValue("name"),
                 patternElement.getAttributeValue("value"),
-                trimAnswer(patternElement.getAttributeValue("answer")) );
+                trimAnswer(patternElement.getAttributeValue("answer")),
+                expectedFail,
+                expectedFailReason );
         }
 
         throw new Exception("unknown pattern:"+tagName);

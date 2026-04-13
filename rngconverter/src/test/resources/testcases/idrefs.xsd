@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- Named type derived by restriction from xs:NMTOKENS (no extra facets).
+       This triggers the DatatypeFactory$1 / Proxy bug in PatternWriter.serializeDataType()
+       because the XSD reader wraps it as FinalComponent(Proxy(DataTypeWithFacet(ListType(...)))) -->
+  <xs:simpleType name="TokenList">
+    <xs:restriction base="xs:NMTOKENS"/>
+  </xs:simpleType>
+
+  <xs:element name="root">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="item" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="id" type="xs:ID" use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="refs" type="xs:IDREFS"/>
+      <xs:attribute name="tokens" type="TokenList"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

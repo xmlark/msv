@@ -121,6 +121,10 @@ public class DebugController implements GrammarReaderController {
     }
     
     private void printLocation( Locator loc ) {
+        if (loc == null) {
+            out.println("  location unknown");
+            return;
+        }
         String col="";
         if(loc.getColumnNumber()>=0)
             col = ":"+loc.getColumnNumber();

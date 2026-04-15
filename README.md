@@ -7,6 +7,20 @@ The core supports RELAX NG, RELAX Namespace, RELAX Core, TREX, XML DTDs, and a s
 Most outstanding is the design of MSV core using the [Abstract grammar model (AGM)](https://xmlark.github.io/msv/core/nativeAPI.html). This is a schema-independent grammar model. All supported schemata are parsed into this internal representation. This model, coupled with the grammar reader, may be useful for other applications. For instance, two use cases are the generation of source code using [schema2template](https://tdf.github.io/odftoolkit/generator/index.html) or the [ODF Validator](https://tdf.github.io/odftoolkit/conformance/ODFValidator.html).
 <br/>The builds of all MSV sub-projects were tested successfully using OpenJDK 11, 17, 25 and Oracle JDK 26 on Windows (intel) & macOS (arm).
 
+## Build Environment Notes
+
+When running Maven on very new JDKs (for example JDK 26), you may still see startup warnings like:
+
+- `sun.misc.Unsafe::staticFieldBase has been called`
+- `Final field ... has been mutated reflectively`
+
+These come from Maven runtime dependencies (`guice`/`sisu`) and are not emitted by MSV project code.
+
+For quieter local builds, use:
+
+- Maven runtime JDK: 17 or 21
+- Compilation target: keep `maven.compiler.release=11` (as configured in this project)
+
 ## Overview Sub Project
 
 The MSV toolkit consists of eight sub-projects, the main projects in bold. Each sub-projects has its own directory, its own build script, etc.

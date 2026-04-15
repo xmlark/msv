@@ -145,9 +145,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
         <url>https://github.com/xmlark/msv</url>
         <tag>HEAD</tag>
     </scm>
-    <prerequisites>
-        <maven>3.6.3</maven>
-    </prerequisites>
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
@@ -277,16 +274,10 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                     <forkMode>${surefire.fork.mode}</forkMode>
                     <childDelegation>false</childDelegation>
                     <argLine>${surefire.fork.vmargs}</argLine>
-                    <systemProperties>
-                        <property>
-                            <name>java.awt.headless</name>
-                            <value>${java.awt.headless}</value>
-                        </property>
-                        <property>
-                            <name>surefire.fork.vmargs</name>
-                            <value>${surefire.fork.vmargs}</value>
-                        </property>
-                    </systemProperties>
+                    <systemPropertyVariables>
+                        <java.awt.headless>${java.awt.headless}</java.awt.headless>
+                        <surefire.fork.vmargs>${surefire.fork.vmargs}</surefire.fork.vmargs>
+                    </systemPropertyVariables>
                     <skipTests>${skipTests}</skipTests>
                 </configuration>
             </plugin>
@@ -387,7 +378,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                     <source>${jdk.version}</source>
                     <quiet>true</quiet>
                     <bottom>MSV</bottom>
-                    <javadocVersion>${jdk.version}</javadocVersion>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -490,6 +480,26 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             </extension>
         </extensions>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven-version</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>[3.6.3,)</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>

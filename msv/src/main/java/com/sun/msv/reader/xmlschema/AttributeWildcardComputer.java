@@ -71,17 +71,17 @@ import com.sun.msv.util.StringPair;
  * 
  * Consider the following fragment:
  * 
- * <pre><xmp>
+ * <pre>{@code
  * <complexType name="base">
  *   <attribute name="abc" ... />
  * </complexType>
- * 
+ *
  * <complexType name="derived">
  *   <complexContent>
  *     <restriction base="base"/>
  *   </complexContent>
  * </complexType>
- * </xmp></pre>
+ * }</pre>
  * 
  * <p>
  * According to the spec, the derived type will have the 'abc' attribute.

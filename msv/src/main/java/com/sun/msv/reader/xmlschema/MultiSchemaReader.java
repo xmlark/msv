@@ -68,6 +68,7 @@ public class MultiSchemaReader
     /**
      * @deprecated
      */
+    @Deprecated
     public final XMLSchemaReader getReader() { return reader; }
     
     /**

@@ -44,6 +44,7 @@ public class TimeZone implements java.io.Serializable {
      * Difference from GMT in terms of minutes.
      * @deprecated here just for the serialization backward compatibility.
      */
+    @Deprecated
     public int minutes;
 
     private Object readResolve() {
@@ -76,6 +77,7 @@ public class TimeZone implements java.io.Serializable {
      * @deprecated
      *      exists just for the backward serialization compatibility.
      */
+    @Deprecated
     static class ZeroTimeZone extends TimeZone {
         ZeroTimeZone() {
         }

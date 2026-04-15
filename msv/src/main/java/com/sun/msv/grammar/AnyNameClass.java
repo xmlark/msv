@@ -50,6 +50,7 @@ public final class AnyNameClass extends NameClass {
      * 
      * @deprecated Use {@link NameClass#ALL} instead.
      */
+    @Deprecated
     public static final NameClass theInstance = new AnyNameClass();
     
     protected AnyNameClass() {}

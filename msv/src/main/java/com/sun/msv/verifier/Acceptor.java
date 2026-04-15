@@ -79,11 +79,11 @@ import com.sun.msv.util.StringRef;
  * Then, for every attributes, call the {@link #onAttribute} method.
  * After that you call the {@link #onEndAttributes} method.
  * 
- * <pre><xmp>
+ * <pre>{@code
  * for( int i=0; i<atts.getLength(); i++ )
  *   a.onAttribute( atts.getURI(i), .... );
  * a.onEndAttributes();
- * </xmp></pre>
+ * }</pre>
  * 
  * <p>
  * An error can occur at any method. See the method documentations for details.
@@ -211,6 +211,7 @@ public interface Acceptor
     /**
      * @deprecated
      */
+    @Deprecated
     boolean onAttribute(
         String namespaceURI, String localName, String qName, String value,
         IDContextProvider context, StringRef refErr, DatatypeRef refType );
@@ -270,6 +271,7 @@ public interface Acceptor
     /**
      * @deprecated
      */
+    @Deprecated
     boolean onText( String literal, IDContextProvider context, StringRef refErr, DatatypeRef refType );
     
     /**

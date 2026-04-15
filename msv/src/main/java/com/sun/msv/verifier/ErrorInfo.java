@@ -75,21 +75,21 @@ public abstract class ErrorInfo {
      * <ol><li>
      * PCDATA appears where no text is allowed at all. For example:
      *   
-     * <pre><xmp>
+     * <pre>{@code
      * <html>
      *   <head> ... </head>
      *   ** invalid text **
      *   <body> ... </body>
      * </html>
-     * </xmp></pre>
+     * }</pre>
      * 
      * <li>
      * text was not a correct value for the given datatype. For example,
      * 
-     * <pre><xmp>
+     * <pre>{@code
      * <!-- when "integer" is expected -->
      * <length> five </length>
-     * </xmp></pre>
+     * }</pre>
      * 
      * </ol>
      * 
@@ -124,30 +124,30 @@ public abstract class ErrorInfo {
      * 
      * <ol><li>
      * When a tag name appears where it is not valid to appear.
-     * <pre><xmp>
+     * <pre>{@code
      * <html>
      *   <head> ... </head>
      *   <head> ... </head> <!-- head cannot appear here -->
      *   <body> ... </body>
      * </html>
-     * </pre></xmp>
+     * }</pre>
      * 
      * <li>
      * When there is a typo in the tag name.
-     * <pre><xmp>
+     * <pre>{@code
      * <html>
      *   <heed> ... </heed> <!-- typo -->
      *   <body> ... </body>
-     * </pre></xmp>
+     * }</pre>
      * 
      * <li>
      * When an element appears where no element is allowed at all.
-     * <pre><xmp>
+     * <pre>{@code
      * <html>
      *   <head>
-     *     <meta ...>
+     *     &lt;meta ...&gt;
      *       <junk/>   <!-- meta cannot have any children -->
-     * </xmp></pre>
+     * }</pre>
      * 
      * </ol>
      * 
@@ -169,18 +169,18 @@ public abstract class ErrorInfo {
      * 
      * <ol><li>
      * When MSV sees an unexpected attribute name:
-     * <pre><xmp>
+     * <pre>{@code
      * <img hreeef="logo.gif"/>
-     * </xmp><pre>
+     * }</pre>
      * 
      * <li>
      * When an attribute value does not match the specified datatype.
      * For example, the following document causes this error if the "width"
      * attribute is specified as the int type.
      * 
-     * <pre><xmp>
+     * <pre>{@code
      * <img href="logo.gif" width="twenty four pixels" />
-     * </xmp></pre>
+     * }</pre>
      * 
      * </ol>
      * 
@@ -219,9 +219,9 @@ public abstract class ErrorInfo {
      * Note that the fields of this class provide information about the element,
      * not the attribute which is missing.
      * 
-     * <pre><xmp>
+     * <pre>{@code
      * <img/>  <!-- where is the href attribute? -->
-     * </xmp></pre>
+     * }</pre>
      */
     public static class MissingAttribute extends ElementErrorInfo {
         public MissingAttribute( String qn, String ns, String loc )    { super(qn,ns,loc); }

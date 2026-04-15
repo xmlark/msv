@@ -454,6 +454,7 @@ public class BigDateTimeValueType implements IDateTimeValueType {
      * @return
      *      a non-null valid object.
      */
+    @Deprecated
     protected java.util.TimeZone createJavaTimeZone() {
         java.util.TimeZone tz = getTimeZone();
         if(tz==null)    return TimeZone.MISSING;

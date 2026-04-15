@@ -75,7 +75,8 @@ class SAXParserImpl extends SAXParser
         this.verifier = _verifier;
     }
     
-        /** @deprecated */
+    /** @deprecated */
+    @Deprecated
     public org.xml.sax.Parser getParser() throws SAXException {
         // maybe we should throw an UnsupportedOperationException,
         // rather than doing a trick like this.

@@ -190,7 +190,7 @@ public class RELAXNGWriter implements GrammarWriter, Context {
     /**
      * generates SAX2 events of the specified grammar.
      * 
-     * @param defaultNs
+     * @param _defaultNs
      *        if specified, this namespace URI is used as "ns" attribute
      *        of grammar element. Can be null.
      * 

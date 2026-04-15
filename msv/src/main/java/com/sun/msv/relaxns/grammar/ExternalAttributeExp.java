@@ -41,7 +41,7 @@ import com.sun.msv.grammar.OtherExp;
  * place holder for imported attributes declaration.
  * 
  * This class also provides stub methods so that programs who are not aware to
- * divide&validate can gracefully degrade.
+ * divide&amp;validate can gracefully degrade.
  * 
  * <p>
  * In MSV, importing AttributesDecl from different implementations is

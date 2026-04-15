@@ -64,6 +64,7 @@ public class TypeIncubator {
      * @deprecated
      *        please use the addFacet method, which is better named.
      */
+    @Deprecated
     public void add(String name, String strValue, boolean fixed, ValidationContext context) throws DatatypeException {
         addFacet(name, strValue, fixed, context);
     }
@@ -137,6 +138,7 @@ public class TypeIncubator {
     };
 
     /** @deprecated */
+    @Deprecated
     public XSDatatypeImpl derive(String newName) throws DatatypeException {
         return derive("", newName);
     }

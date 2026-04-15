@@ -329,6 +329,7 @@ public class RELAXNGReader extends TREXBaseReader {
          *
          * @deprecated
          */
+        @Deprecated
         protected final DatatypeLibrary getDatatypeLibrary( String namespaceURI ) throws Exception {
             // unused
             throw new UnsupportedOperationException();

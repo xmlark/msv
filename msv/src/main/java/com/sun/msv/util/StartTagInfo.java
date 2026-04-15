@@ -59,6 +59,7 @@ public class StartTagInfo {
     protected StartTagInfo() {}
     
     /** @deprecated */
+    @Deprecated
     public StartTagInfo(
         String namespaceURI, String localName, String qName,
         Attributes attributes, IDContextProvider context ) {
@@ -77,6 +78,7 @@ public class StartTagInfo {
     }
 
     /** @deprecated */
+    @Deprecated
     public void reinit(
         String namespaceURI, String localName, String qName,
         Attributes attributes, IDContextProvider context ) {

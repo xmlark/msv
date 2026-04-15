@@ -203,6 +203,7 @@ public abstract class WhiteSpaceProcessor implements Serializable {
      * Older version of XSDLib was using an anonymous class. 
      * @deprecated
      */
+    @Deprecated
     private static final WhiteSpaceProcessor backwardCompatibiliyHook1 =
         new WhiteSpaceProcessor() {
             public String process(String text) {
@@ -219,6 +220,7 @@ public abstract class WhiteSpaceProcessor implements Serializable {
      * Older version of XSDLib was using an anonymous class. 
      * @deprecated
      */
+    @Deprecated
     private static final WhiteSpaceProcessor backwardCompatibiliyHook2 =
         new WhiteSpaceProcessor() {
             public String process(String text) {
@@ -235,6 +237,7 @@ public abstract class WhiteSpaceProcessor implements Serializable {
      * Older version of XSDLib was using an anonymous class. 
      * @deprecated
      */
+    @Deprecated
     private static final WhiteSpaceProcessor backwardCompatibiliyHook3 =
         new WhiteSpaceProcessor() {
             public String process(String text) {

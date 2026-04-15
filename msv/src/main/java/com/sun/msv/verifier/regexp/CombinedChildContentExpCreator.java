@@ -189,9 +189,6 @@ public class CombinedChildContentExpCreator implements ExpressionVisitorVoid {
      * If both feedAttributes and checkTagName are false, then StartTagInfo is
      * also unnecessary.
      * 
-     * @param feedAttributes
-     *        if this flag is false, Attribute feeding & pruning are skipped and 
-     *        AttributeExps are fully remained in the resulting expression.
      * @param checkTagName
      *        if this flag is false, tag name check is skipped.
      */

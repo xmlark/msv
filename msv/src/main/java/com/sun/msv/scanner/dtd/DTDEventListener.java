@@ -353,8 +353,8 @@ public interface DTDEventListener extends EventListener {
      * <p>
      * IOW, you'll never see an event sequence like (a|b,c)
      * 
-     * @return
-     *      {@link #CHOICE} or {@link #SEQUENCE}.
+     * @param connectorType
+     *      connector kind, either {@link #CHOICE} or {@link #SEQUENCE}.
      */
     public void connector( short connectorType ) throws SAXException;
     

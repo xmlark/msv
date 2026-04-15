@@ -357,7 +357,7 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
      * <p>
      * Consider the following schema:
      * 
-     * <PRE><XMP>
+     * <pre>{@code
      * <xs:simpleType name="foo">
      *   <xs:restriction base="bar">
      *     <xs:minLength value="3"/>
@@ -368,7 +368,7 @@ public class XSDatatypeExp extends ReferenceExp implements GrammarReader.BackPat
      *     <xs:minLength value="3"/>
      *   </xs:restriction>
      * </xs:simpleType>
-     * </XMP></PRE>
+     * }</pre>
      * 
      * Since two types are depending on each other, if you call the
      * getBody method of "foo" type, it will call the getBody method of "bar" type.

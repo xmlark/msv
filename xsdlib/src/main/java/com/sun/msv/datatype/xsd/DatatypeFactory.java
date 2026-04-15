@@ -87,6 +87,7 @@ public class DatatypeFactory {
     /**
      * @deprecated
      */
+    @Deprecated
     public static XSDatatype deriveByList( String newTypeName, XSDatatype itemType )
         throws DatatypeException {
         return deriveByList("",newTypeName,itemType);
@@ -120,6 +121,7 @@ public class DatatypeFactory {
     /**
      * @deprecated
      */
+    @Deprecated
     public static XSDatatype deriveByUnion( String newTypeName, XSDatatype[] memberTypes )
         throws DatatypeException {
         
@@ -127,6 +129,7 @@ public class DatatypeFactory {
     }
 
     /** @deprecated */    
+    @Deprecated
     public static XSDatatype deriveByUnion( String newTypeName, Collection memberTypes )
         throws DatatypeException {
             

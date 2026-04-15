@@ -42,6 +42,7 @@ import org.relaxng.datatype.ValidationContext;
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
+@Deprecated
 public interface IDContextProvider extends ValidationContext {
     
     /**

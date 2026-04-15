@@ -182,6 +182,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
     /**
      * @deprecated
      */
+    @Deprecated
     public final boolean onAttribute(
         String namespaceURI, String localName, String qName, String value,
         com.sun.msv.grammar.IDContextProvider context, StringRef refErr, DatatypeRef refType ) {
@@ -354,6 +355,7 @@ public abstract class ExpressionAcceptor implements Acceptor {
     /**
      * @deprecated
      */
+    @Deprecated
     public final boolean onText( String literal, com.sun.msv.grammar.IDContextProvider context, StringRef refErr, DatatypeRef refType ) {
         return onText2( literal, IDContextProviderWrapper.create(context), refErr, refType );
     }

@@ -75,7 +75,7 @@ import com.sun.msv.verifier.regexp.StringToken;
  * 
  * GrammarReader class can be used as a ContentHandler that parses a grammar.
  * So the typical usage is
- * <PRE><XMP>
+ * <pre>{@code
  * 
  * GrammarReader reader = new RELAXGrammarReader(...);
  * XMLReader parser = .... // create a new XMLReader here
@@ -83,13 +83,13 @@ import com.sun.msv.verifier.regexp.StringToken;
  * parser.setContentHandler(reader);
  * parser.parse(whateverYouLike);
  * return reader.grammar;  // obtain parsed grammar.
- * </XMP></PRE>
+ * }</pre>
  * 
  * Or you may want to use several pre-defined static "parse" methods for
  * ease of use.
  * 
- * @seealso com.sun.msv.reader.relax.RELAXReader#parse
- * @seealso com.sun.msv.reader.trex.TREXGrammarReader#parse
+ * @see com.sun.msv.reader.relax.RELAXReader#parse
+ * @see com.sun.msv.reader.trex.TREXGrammarReader#parse
  * 
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
@@ -408,6 +408,7 @@ public abstract class GrammarReader
     /**
      * @deprecated use the combineURI method.
      */
+    @Deprecated
     public final String combineURL( String baseURI, String relativeURI ) {
         return Uri.resolve(baseURI,relativeURI);
     }

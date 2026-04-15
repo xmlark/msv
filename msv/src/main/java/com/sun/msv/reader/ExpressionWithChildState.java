@@ -44,7 +44,7 @@ public abstract class ExpressionWithChildState
     
     /**
      * expression object that is being created.
-     * See {@link #castPattern} and {@link #annealPattern} methods
+     * See {@link #castExpression(Expression, Expression)} and {@link #annealExpression(Expression)} methods
      * for how will a pattern be created.
      */
     protected Expression exp;

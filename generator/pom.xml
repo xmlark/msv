@@ -157,16 +157,10 @@
                     <forkMode>${surefire.fork.mode}</forkMode>
                     <childDelegation>false</childDelegation>
                     <argLine>${surefire.fork.vmargs}</argLine>
-                    <systemProperties>
-                        <property>
-                            <name>java.awt.headless</name>
-                            <value>${java.awt.headless}</value>
-                        </property>
-                        <property>
-                            <name>surefire.fork.vmargs</name>
-                            <value>${surefire.fork.vmargs}</value>
-                        </property>
-                    </systemProperties>
+                    <systemPropertyVariables>
+                        <java.awt.headless>${java.awt.headless}</java.awt.headless>
+                        <surefire.fork.vmargs>${surefire.fork.vmargs}</surefire.fork.vmargs>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <plugin>

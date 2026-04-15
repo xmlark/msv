@@ -82,6 +82,13 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             <groupId>net.java.dev.msv</groupId>
             <artifactId>msv-core</artifactId>
             <version>${project.version}</version>
+            <!-- xml-apis duplicates javax.xml.* from the JDK; keeping it breaks tests on JDK 9+ (split package with java.xml). -->
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>xml-resolver</groupId>
@@ -94,6 +101,12 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             <version>${project.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -111,9 +124,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                     <!-- defined in the parent pom.xml -->
                     <encoding>UTF-8</encoding>
                     <maxmemory>1g</maxmemory>
-                    <additionalOptions>
-                        <additionalOption>${javadoc.opts}</additionalOption>
-                    </additionalOptions>
                     <links>
                         <link>https://xerces.apache.org/xerces-j/apiDocs/</link>
                     </links>
@@ -125,9 +135,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                         <goals>
                             <goal>jar</goal>
                         </goals>
-                        <configuration>
-                            <additionalparam>${javadoc.opts}</additionalparam>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -278,15 +285,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-        <profile>
-            <id>doclint-java8-disable</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <properties>
-                <javadoc.opts>-Xdoclint:none</javadoc.opts>
-            </properties>
         </profile>
     </profiles>
 </project>

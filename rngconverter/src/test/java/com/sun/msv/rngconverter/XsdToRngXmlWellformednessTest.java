@@ -2,7 +2,7 @@
  * Validates RNG converter output with the JDK DOM parser only
  * (no xml-apis on the test classpath — see pom exclusions).
  */
-package com.sun.msv.writer.relaxng;
+package com.sun.msv.rngconverter;
 
 import java.io.File;
 import java.io.FileOutputStream;

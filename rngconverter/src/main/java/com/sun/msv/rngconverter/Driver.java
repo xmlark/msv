@@ -29,7 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.sun.msv.writer.relaxng;
+package com.sun.msv.rngconverter;
 
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -43,6 +43,7 @@ import org.xml.sax.SAXException;
 import com.sun.msv.driver.textui.DebugController;
 import com.sun.msv.grammar.Grammar;
 import com.sun.msv.reader.util.GrammarLoader;
+import com.sun.msv.writer.relaxng.RELAXNGWriter;
 
 /**
  * converts any supported languages into the equivalent RELAX NG grammar.
@@ -90,7 +91,7 @@ public class Driver {
 
     public static String localize(String propertyName, Object[] args) {
         String format =
-            java.util.ResourceBundle.getBundle("com.sun.msv.writer.relaxng.Messages").getString(propertyName);
+            java.util.ResourceBundle.getBundle("com.sun.msv.rngconverter.Messages").getString(propertyName);
         return java.text.MessageFormat.format(format, args);
     }
     public static String localize(String prop) {

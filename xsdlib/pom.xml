@@ -47,7 +47,7 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     </parent>
 
     <properties>
-        <surefire.fork.mode>once</surefire.fork.mode>
+        <surefire.fork.mode>never</surefire.fork.mode>
         <surefire.format>brief</surefire.format>
         <surefire.usefile>false</surefire.usefile>
         <surefire.fork.vmargs>-ea</surefire.fork.vmargs>
@@ -60,10 +60,6 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
     <name>MSV XML Schema Datatype Library</name>
     <description>XML Schema datatypes library</description>
     <dependencies>
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-        </dependency>
         <!-- origin of this is a bit unclear -->
         <dependency>
             <groupId>relaxngDatatype</groupId>

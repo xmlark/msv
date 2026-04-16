@@ -18,6 +18,10 @@
     <description>MSV Tahiti</description>
     <dependencies>
         <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+        </dependency>
+        <dependency>
             <groupId>net.java.dev.msv</groupId>
             <artifactId>xsdlib</artifactId>
             <version>${project.version}</version>

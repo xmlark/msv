@@ -45,9 +45,9 @@ public class RNGConverterTest extends TestCase {
         factory.setNamespaceAware(true);
 
         Grammar grammar = GrammarLoader.loadSchema(
-                xsdUrl.toExternalForm(),
-                new DebugController(false, true, System.err),
-                factory);
+            xsdUrl.toExternalForm(),
+            new DebugController(false, true, System.err),
+            factory);
         assertNotNull("Grammar should load successfully from idrefs.xsd", grammar);
 
         ByteArrayOutputStream rngOut = new ByteArrayOutputStream();
@@ -55,6 +55,6 @@ public class RNGConverterTest extends TestCase {
 
         String rng = rngOut.toString("UTF-8");
         assertTrue("RNG output should contain a <grammar> element",
-                rng.contains("<grammar"));
+            rng.contains("<grammar"));
     }
 }

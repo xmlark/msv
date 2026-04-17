@@ -47,7 +47,7 @@ import com.sun.msv.writer.relaxng.RELAXNGWriter;
 
 /**
  * converts any supported languages into the equivalent RELAX NG grammar.
- * 
+ *
  * @author <a href="mailto:kohsuke.kawaguchi@eng.sun.com">Kohsuke KAWAGUCHI</a>
  */
 public class Driver {
@@ -75,7 +75,7 @@ public class Driver {
         writeGrammar(g, out);
         out.close();
     }
-    
+
     /**
      * Writes a grammar to the specified output.
      */

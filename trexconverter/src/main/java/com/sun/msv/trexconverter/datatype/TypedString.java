@@ -24,80 +24,80 @@ import org.relaxng.datatype.helpers.StreamingValidatorImpl;
  */
 public class TypedString implements DatabindableDatatype, java.io.Serializable {
 
-	/** this type only matches this string */
-	public final String value;
-	/** true indicates that whiteSpace should be preserved. */
-	public final boolean preserveWhiteSpace;
+    /** this type only matches this string */
+    public final String value;
+    /** true indicates that whiteSpace should be preserved. */
+    public final boolean preserveWhiteSpace;
 
-	public TypedString( String value, boolean preserveWhiteSpace ) {
-		if(preserveWhiteSpace)
-			this.value = value;
-		else
-			this.value = WhiteSpaceProcessor.theCollapse.process(value);
+    public TypedString( String value, boolean preserveWhiteSpace ) {
+        if(preserveWhiteSpace)
+            this.value = value;
+        else
+            this.value = WhiteSpaceProcessor.theCollapse.process(value);
 
-		this.preserveWhiteSpace = preserveWhiteSpace;
-	}
+        this.preserveWhiteSpace = preserveWhiteSpace;
+    }
 
-	public boolean isContextDependent() { return false; }
-	public int getIdType() { return ID_TYPE_NULL; }
+    public boolean isContextDependent() { return false; }
+    public int getIdType() { return ID_TYPE_NULL; }
 
-	public Object createValue( String literal, ValidationContext context ) {
-		if(!preserveWhiteSpace)
-			literal = WhiteSpaceProcessor.theCollapse.process(literal);
+    public Object createValue( String literal, ValidationContext context ) {
+        if(!preserveWhiteSpace)
+            literal = WhiteSpaceProcessor.theCollapse.process(literal);
 
-		if(value.equals(literal))	return literal;
-		else						return null;
-	}
+        if(value.equals(literal)) return literal;
+        else      return null;
+    }
 
-	public Object createJavaObject( String literal, ValidationContext context ) {
-		return createValue(literal,context);
-	}
-	public Class getJavaObjectType() {
-		return String.class;
-	}
+    public Object createJavaObject( String literal, ValidationContext context ) {
+        return createValue(literal,context);
+    }
+    public Class getJavaObjectType() {
+        return String.class;
+    }
 
-	public String convertToLexicalValue( Object value, SerializationContext context ) {
-		if( value instanceof String )
-			return (String)value;
-		else
-			throw new IllegalArgumentException();
-	}
-	public String serializeJavaObject( Object obj, SerializationContext context ) {
-		if( value instanceof String ) {
-			if( this.value.equals(obj) )	return value;
-			else							return null;	// invalid
-		} else
-			throw new IllegalArgumentException();
-	}
-	public boolean isValid( String literal, ValidationContext context ) {
-		return createValue(literal,context)!=null;
-	}
+    public String convertToLexicalValue( Object value, SerializationContext context ) {
+        if( value instanceof String )
+            return (String)value;
+        else
+            throw new IllegalArgumentException();
+    }
+    public String serializeJavaObject( Object obj, SerializationContext context ) {
+        if( value instanceof String ) {
+            if( this.value.equals(obj) ) return value;
+            else       return null; // invalid
+        } else
+            throw new IllegalArgumentException();
+    }
+    public boolean isValid( String literal, ValidationContext context ) {
+        return createValue(literal,context)!=null;
+    }
 
-	public void checkValid( String content, ValidationContext context ) throws DatatypeException {
-		if( createValue(content,context)!=null )	return;
+    public void checkValid( String content, ValidationContext context ) throws DatatypeException {
+        if( createValue(content,context)!=null ) return;
 
-		throw new DatatypeException(
-			DatatypeException.UNKNOWN,
-			"Invalid typed string value: " + value );
-	}
+        throw new DatatypeException(
+            DatatypeException.UNKNOWN,
+            "Invalid typed string value: " + value );
+    }
 
-	public DatatypeStreamingValidator createStreamingValidator( ValidationContext context ) {
-		return new StreamingValidatorImpl(this,context);
-	}
+    public DatatypeStreamingValidator createStreamingValidator( ValidationContext context ) {
+        return new StreamingValidatorImpl(this,context);
+    }
 
-// stubs
-	public final boolean sameValue( Object o1, Object o2 ) {
-		return o1.equals(o2);
-	}
-	public final int valueHashCode( Object o ) {
-		return o.hashCode();
-	}
+    // stubs
+    public final boolean sameValue( Object o1, Object o2 ) {
+        return o1.equals(o2);
+    }
+    public final int valueHashCode( Object o ) {
+        return o.hashCode();
+    }
 
 
 
-	public String getName() { return null; }
-	public String displayName() { return "TREX built-in string"; }
+    public String getName() { return null; }
+    public String displayName() { return "TREX built-in string"; }
 
-	public static final String DIAG_TYPED_STRING =
-		"TypedString.Diagnosis";
+    public static final String DIAG_TYPED_STRING =
+        "TypedString.Diagnosis";
 }

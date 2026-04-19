@@ -4,7 +4,7 @@ module net.java.dev.msv.core {
     requires net.java.dev.msv.xsdlib;
     requires isorelax;
     requires relaxngDatatype;
-    requires static xml.resolver;
+    requires static org.xmlresolver.xmlresolver;
 
     exports com.sun.msv.driver.textui;
     exports com.sun.msv.grammar;

@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.xml.resolver.tools.CatalogResolver;
+import org.xmlresolver.XMLResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
@@ -47,7 +47,7 @@ abstract class AbstractValidatorExImpl implements IValidatorEx
     static {
         factory.setNamespaceAware(true);
     }
-    private final static CatalogResolver resolver = new CatalogResolver();
+    private static final org.xml.sax.EntityResolver resolver = new XMLResolver().getEntityResolver();
     
     public boolean validate( Grammar grammar, File instance ) throws Exception {
         IVerifier verifier = getVerifier( grammar );

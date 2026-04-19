@@ -95,8 +95,8 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>xml-resolver</groupId>
-            <artifactId>xml-resolver</artifactId>
+            <groupId>org.xmlresolver</groupId>
+            <artifactId>xmlresolver</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

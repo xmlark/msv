@@ -14,11 +14,13 @@ import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.xml.resolver.tools.CatalogResolver;
 import org.iso_relax.verifier.Schema;
 import org.iso_relax.verifier.Verifier;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
+import org.xmlresolver.ResourceResponse;
+import org.xmlresolver.XMLResolver;
+import org.xmlresolver.XMLResolverConfiguration;
 
 import com.sun.msv.driver.textui.DebugController;
 import com.sun.msv.grammar.Grammar;
@@ -63,19 +65,24 @@ public class Main {
 
     private static class SchemaBuilder implements NamespaceReceiver {
         
-        private final CatalogResolver resolver = new CatalogResolver();
+        private final XMLResolverConfiguration resolverConfig = new XMLResolverConfiguration();
+        private final XMLResolver resolver = new XMLResolver(resolverConfig);
         private final MultiSchemaReader msr = new MultiSchemaReader(
             new XMLSchemaReader(new DebugController(true)));
         
         public SchemaBuilder( String catalogFile ) throws IOException {
-            resolver.getCatalog().parseCatalog(catalogFile);
+            resolverConfig.addCatalog(new File(catalogFile).toURI().toString());
         }
         
         public void onNamespace(String ns) {
-            InputSource is = resolver.resolveEntity(ns,"");
-            if(is==null) {
+            ResourceResponse response = resolver.lookupUri(ns);
+            if(response==null || !response.isResolved() || response.getInputStream() == null) {
                 System.out.println("no schema found for the namespace "+ns);
                 return;
+            }
+            InputSource is = new InputSource(response.getInputStream());
+            if (response.getResolvedURI() != null) {
+                is.setSystemId(response.getResolvedURI().toString());
             }
             msr.parse(is);
         }

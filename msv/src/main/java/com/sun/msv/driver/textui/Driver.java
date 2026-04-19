@@ -40,10 +40,11 @@ import java.util.Locale;
 
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.xml.resolver.tools.CatalogResolver;
 import org.iso_relax.dispatcher.Dispatcher;
 import org.iso_relax.dispatcher.SchemaProvider;
 import org.iso_relax.dispatcher.impl.DispatcherImpl;
+import org.xmlresolver.XMLResolver;
+import org.xmlresolver.XMLResolverConfiguration;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -177,6 +178,7 @@ public class Driver {
         boolean strict=false;
         boolean usePanicMode=true;
         EntityResolver entityResolver=null;
+        XMLResolverConfiguration resolverConfig = null;
 
         for( int i=0; i<args.length; i++ ) {
             args[i] = args[i].trim();
@@ -232,13 +234,13 @@ public class Driver {
             }
             else
             if( args[i].equalsIgnoreCase("-catalog") ) {
-                // use Sun's "XML Entity and URI Resolvers" by Norman Walsh
-                // to resolve external entities.
-                // http://www.sun.com/xml/developers/resolver/
-                if(entityResolver==null)
-                    entityResolver = new CatalogResolver(true);
-
-                ((CatalogResolver)entityResolver).getCatalog().parseCatalog(args[++i]);
+                // Resolve external entities through XML Resolver catalogs.
+                if (resolverConfig == null) {
+                    resolverConfig = new XMLResolverConfiguration();
+                    XMLResolver xmlResolver = new XMLResolver(resolverConfig);
+                    entityResolver = xmlResolver.getEntityResolver();
+                }
+                resolverConfig.addCatalog(new File(args[++i]).toURI().toString());
             }
             else
             if( args[i].equalsIgnoreCase("-version") || args[i].equalsIgnoreCase("-v")) {

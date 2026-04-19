@@ -1,4 +1,4 @@
-package com.sun.msv.writer.relaxng;
+package com.sun.msv.rngconverter;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URL;
@@ -15,7 +15,7 @@ import com.sun.msv.reader.util.GrammarLoader;
 
 /**
  * Tests for XSD-to-RNG conversion — exposes the DatatypeFactory$1 (Proxy)
- * Error thrown by {@link PatternWriter#serializeDataType} when an XSD
+ * Error thrown by {@link com.sun.msv.writer.relaxng.PatternWriter#serializeDataType} when an XSD
  * uses built-in list types like xs:IDREFS, xs:ENTITIES, or xs:NMTOKENS.
  */
 public class RNGConverterTest extends TestCase {
@@ -45,9 +45,9 @@ public class RNGConverterTest extends TestCase {
         factory.setNamespaceAware(true);
 
         Grammar grammar = GrammarLoader.loadSchema(
-                xsdUrl.toExternalForm(),
-                new DebugController(false, true, System.err),
-                factory);
+            xsdUrl.toExternalForm(),
+            new DebugController(false, true, System.err),
+            factory);
         assertNotNull("Grammar should load successfully from idrefs.xsd", grammar);
 
         ByteArrayOutputStream rngOut = new ByteArrayOutputStream();
@@ -55,6 +55,6 @@ public class RNGConverterTest extends TestCase {
 
         String rng = rngOut.toString("UTF-8");
         assertTrue("RNG output should contain a <grammar> element",
-                rng.contains("<grammar"));
+            rng.contains("<grammar"));
     }
 }

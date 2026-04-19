@@ -18,6 +18,10 @@
     <description> TREX Converter. Reads a schema and produces an equivalent TREX pattern.</description>
     <dependencies>
         <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+        </dependency>
+        <dependency>
             <groupId>net.java.dev.msv</groupId>
             <artifactId>msv-core</artifactId>
             <version>${project.version}</version>

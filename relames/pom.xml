@@ -18,6 +18,10 @@
     <name>MSV Schematron Plugin</name>
     <dependencies>
         <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+        </dependency>
+        <dependency>
             <groupId>net.java.dev.msv</groupId>
             <artifactId>xsdlib</artifactId>
             <version>${project.version}</version>

@@ -69,8 +69,8 @@ EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
             <artifactId>relaxngDatatype</artifactId>
         </dependency>
         <dependency>
-            <groupId>xml-resolver</groupId>
-            <artifactId>xml-resolver</artifactId>
+            <groupId>org.xmlresolver</groupId>
+            <artifactId>xmlresolver</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>

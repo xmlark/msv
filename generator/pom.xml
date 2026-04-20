@@ -45,8 +45,8 @@
       <scope>test</scope>
     </dependency>
     <dependency><!-- for tests -->
-        <groupId>xml-resolver</groupId>
-        <artifactId>xml-resolver</artifactId>
+        <groupId>org.xmlresolver</groupId>
+        <artifactId>xmlresolver</artifactId>
         <optional>true</optional>
         <scope>test</scope>
     </dependency>

@@ -18,7 +18,8 @@ import javax.xml.parsers.SAXParserFactory;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.apache.xml.resolver.tools.CatalogResolver;
+import org.xml.sax.EntityResolver;
+import org.xmlresolver.XMLResolver;
 
 import batch.driver.DTDValidator;
 import batch.driver.GenericValidator;
@@ -46,7 +47,7 @@ import batch.model.TestReader;
 public abstract class BatchTester {
     public SAXParserFactory factory = SAXParserFactory.newInstance();
 
-    public CatalogResolver resolver = new CatalogResolver();
+    public EntityResolver resolver = new XMLResolver().getEntityResolver();
     
     /** schema file extension ".rlx", ".trex", or ".dtd" */
     public String ext;
